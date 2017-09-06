@@ -1,0 +1,9 @@
+﻿<Application x:Class="Prime.Radiant.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Prime.Radiant"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+            <ResourceDictionary Source="/Simple.Wpf.Terminal.Themes;component/DarkTheme.xaml" />
+    </Application.Resources>
+</Application>

@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Radiant.Wpf", "Prime.Radiant\Prime.Radiant.Wpf\Prime.Radiant.Wpf.csproj", "{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Utility", "Prime.Utility\Prime.Utility.csproj", "{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Spark", "Prime.Radiant\Prime.Spark\Prime.Spark.csproj", "{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Prime.Setup", "Prime.Radiant\Prime.Setup\Prime.Setup.vdproj", "{818B3274-E83C-46D0-82C8-B39D7AC01DEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Radiant", "Prime.Radiant\Prime.Radiant\Prime.Radiant.csproj", "{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug (Remote)|Any CPU = Debug (Remote)|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}.Debug (Remote)|Any CPU.ActiveCfg = Debug (Remote)|Any CPU
+		{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}.Debug (Remote)|Any CPU.Build.0 = Debug (Remote)|Any CPU
+		{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69F9A700-AEE0-4DAD-B3AC-F4F5B7385A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}.Debug (Remote)|Any CPU.ActiveCfg = Debug (Remote)|Any CPU
+		{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}.Debug (Remote)|Any CPU.Build.0 = Debug (Remote)|Any CPU
+		{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD6E69D-868E-41BB-A168-CFCBEEDAFC73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Debug (Remote)|Any CPU.ActiveCfg = Debug (Remote)|Any CPU
+		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Debug (Remote)|Any CPU.Build.0 = Debug (Remote)|Any CPU
+		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{818B3274-E83C-46D0-82C8-B39D7AC01DEB}.Debug (Remote)|Any CPU.ActiveCfg = Debug
+		{818B3274-E83C-46D0-82C8-B39D7AC01DEB}.Debug (Remote)|Any CPU.Build.0 = Debug
+		{818B3274-E83C-46D0-82C8-B39D7AC01DEB}.Debug|Any CPU.ActiveCfg = Debug
+		{818B3274-E83C-46D0-82C8-B39D7AC01DEB}.Release|Any CPU.ActiveCfg = Release
+		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Debug (Remote)|Any CPU.ActiveCfg = Debug (Remote)|Any CPU
+		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Debug (Remote)|Any CPU.Build.0 = Debug (Remote)|Any CPU
+		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,41 @@
+﻿<Window x:Class="Prime.Radiant.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Prime.Radiant"
+        xmlns:terminal="clr-namespace:Simple.Wpf.Terminal;assembly=Simple.Wpf.Terminal"
+        mc:Ignorable="d" Height="400" Width="550" WindowStyle="SingleBorderWindow" Title="prime [radiant]"
+        WindowStartupLocation="CenterOwner" Background="#FF300606" Foreground="#FFFBFBFB"
+        d:DataContext="{d:DesignInstance local:StatusViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="110"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0 10">
+            <TextBlock HorizontalAlignment="Center" FontSize="15" Foreground="#eee">This is a decentralised application.</TextBlock>
+            <TextBlock HorizontalAlignment="Center" FontSize="15" Foreground="#eee">You are being connected to the REAL internet via IPFS</TextBlock>
+            <StackPanel Margin="0, 10">
+                <TextBlock HorizontalAlignment="Center" Foreground="#bbb">Everything is ALPHA, stability not guarenteed [yet].</TextBlock>
+                <TextBlock HorizontalAlignment="Center" Foreground="#bbb">Please enjoy the console output.</TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <terminal:Terminal Grid.Row="1" x:Name="Terminal" Padding="10,5,10,20"
+                    IsReadOnlyCaretVisible="False"
+                    VerticalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Path=Items, Mode=OneWay}" >
+            <terminal:Terminal.DataContext>
+                <local:TerminalViewModel/>
+            </terminal:Terminal.DataContext>
+        </terminal:Terminal>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Background="#FF300606" Margin="10,0,10,0">
+            <TextBlock Text="IPFS Status: "/>
+            <TextBlock Text="{Binding Path=IpfsStatus}" Foreground="#ccc"/>
+            <TextBlock Text="DNS Hash: " Margin="20,0,0,0"/>
+            <TextBlock Text="{Binding Path=DnsStatus}" Foreground="#ccc"/>
+        </StackPanel>
+    </Grid>
+</Window>

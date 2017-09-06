@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.Wallet"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModel:WalletViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding Path=Addresses, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding8Left}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Created" Binding="{Binding UtcCreated, Converter={StaticResource DateTimeHumanConverter}}" Width="150" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Last Checked" Binding="{Binding UtcLastChecked, Converter={StaticResource DateTimeHumanConverter}}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Service" Binding="{Binding ServiceName}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="120" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Expires" Binding="{Binding ExpiresUtc, Converter={StaticResource DateTimeHumanConverter}}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

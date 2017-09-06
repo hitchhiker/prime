@@ -1,0 +1,173 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.ChartPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:wpf1="clr-namespace:Prime.Ui.Wpf"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             Foreground="{StaticResource ForegroundBrush}"
+             mc:Ignorable="d"              
+             d:DataContext="{d:DesignInstance Type=viewModel:PriceChartPaneModel,IsDesignTimeCreatable=True}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid DataContext="{Binding Path=ChartGroupViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <ToolBar Style="{DynamicResource ToolBarStyle}" HorizontalAlignment="Left">
+                <Button Command="{Binding ZoomResetCommand}" Content="Reset zoom" ToolTip="Reset zoom to default range"/>
+                <Separator/>
+                <ToggleButton IsChecked="{Binding IsPositionLocked}" Content="Lock" ToolTip="Enable to lock the position of the chart. Disable to automatically scroll to new updates"/>
+                <Separator/>
+                <CheckBox Content="Auto" IsChecked="{Binding Path=IsAuto, Mode=TwoWay}" Visibility="Collapsed" />
+                <CheckBox Content="Daily" IsChecked="{Binding Path=IsDaily, Mode=TwoWay}" />
+                <CheckBox Content="Hour" IsChecked="{Binding Path=IsHourly, Mode=TwoWay}" IsEnabled="{Binding Path=CanHourly}"/>
+                <CheckBox Content="Minute" IsChecked="{Binding Path=IsMinute, Mode=TwoWay}" IsEnabled="{Binding Path=CanMinute}"/>
+            </ToolBar>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,8,0">
+                <controls:MetroProgressBar Foreground="#aaa"
+                                           Width="100"
+                                           Margin="0,-4,0,0"
+                                           IsIndeterminate="True"
+                                           Maximum="100"
+                                           Minimum="0"
+                                           Visibility="{Binding Path=ParentModel.IsDataBusy, Converter={StaticResource BoolToHiddenConverter}}" />
+                <TextBlock Text="Data status: " Foreground="#ccc"/>
+                <TextBlock Text="{Binding Path=ParentModel.DataStatus}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+
+            <Grid.RowDefinitions>
+                <!-- Charts -->
+                <RowDefinition Height="*"></RowDefinition>
+
+                <!-- Zoom -->
+                <RowDefinition Height="100"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- charts -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0">
+                <ItemsControl Name="DataSource" ItemsSource="{Binding Charts}" Margin="0,15,0,0" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel LastChildFill="True"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="DockPanel.Dock" Value="Bottom"/>
+                            <Setter Property="MinHeight" Value="200"/>
+                            <Setter Property="DataContext" Value="{Binding}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <wpf1:ChartControl DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Overview chart -->
+            <wpf:CartesianChart Grid.Row="1" x:Name="Overview"
+                                ScrollMode="X"
+                                DataClickCommand=""
+                                MouseWheel="Overview_MouseWheel"
+                                ScrollHorizontalFrom="{Binding OverviewZoom.ZoomFrom, Mode=TwoWay}"
+                                ScrollHorizontalTo="{Binding OverviewZoom.ZoomTo, Mode=TwoWay}"
+                                DisableAnimations="True"
+                                Series="{Binding ScrollSeriesCollection}"
+                                DataTooltip="{x:Null}">
+                <wpf:CartesianChart.Resources>
+                    <wpf1:ResolutionConverter x:Key="ResolutionConverter"/>
+                </wpf:CartesianChart.Resources>
+                <wpf:CartesianChart.AxisX>
+                    <wpf:DateAxis
+                        IsMerged="True"
+                        HeaderForeground="White"
+                        HeaderFontWeight="Normal"
+                        Period="{Binding Path=OverviewZoom.Resolution, Mode=OneWay, Converter={StaticResource ResolutionConverter}}"
+                        InitialDateTime="{Binding InitialDateTime, Mode=OneWay}"                                        
+                    />
+                </wpf:CartesianChart.AxisX>
+                <wpf:CartesianChart.AxisY>
+                    <wpf:Axis ShowLabels="False" />
+                </wpf:CartesianChart.AxisY>
+            </wpf:CartesianChart>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

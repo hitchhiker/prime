@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Prime.Ui.Wpf"
+                    xmlns:converters="clr-namespace:Prime.Ui.Wpf.Components.Converters"
+                    xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro">
+
+    <BooleanToVisibilityConverter x:Key="BoolToHiddenConverter"/>
+    <local:InvertableBooleanToVisibilityConverter x:Key="BoolToVisibilityConverterExtra"/>
+    <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+    <converters:DateTimeHumanConverter x:Key="DateTimeHumanConverter"/>
+    <dialogs:CustomDialog x:Key="ViewDialog">
+        <Canvas x:Name="Content" IsHitTestVisible="True"/>
+    </dialogs:CustomDialog>
+    <local:ViewModelLocator x:Key="Locator" />
+</ResourceDictionary>

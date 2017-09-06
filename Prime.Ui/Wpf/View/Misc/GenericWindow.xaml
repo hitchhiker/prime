@@ -1,0 +1,15 @@
+﻿<mui:ModernWindow
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    x:Class="Prime.Ui.Wpf.GenericWindow"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI"    
+    mc:Ignorable="d" Width="800" Height="520" Activated="ModernWindow_Activated"  Margin="0,0,0,0">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+</mui:ModernWindow>

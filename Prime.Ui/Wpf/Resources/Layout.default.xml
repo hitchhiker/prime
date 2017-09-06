@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LayoutRoot>
+  <RootPanel Orientation="Horizontal">
+    
+    <LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="223" DockHeight="224.5" FloatingWidth="575" FloatingHeight="689" FloatingLeft="-1846" FloatingTop="478">
+      
+      <LayoutAnchorablePane DockWidth="223" FloatingWidth="575" FloatingHeight="689" FloatingLeft="-1792" FloatingTop="483"/>
+      <LayoutAnchorablePane DockHeight="1.5556513086831*" FloatingWidth="575" FloatingHeight="689" FloatingLeft="-1846" FloatingTop="478"/>
+      
+    </LayoutAnchorablePaneGroup>
+    
+    <LayoutPanel Orientation="Vertical">
+
+      <LayoutPanel Orientation="Horizontal">
+        <LayoutDocumentPane/>
+      </LayoutPanel>
+      
+      <LayoutAnchorablePaneGroup Orientation="Horizontal" DockHeight="184.5" FloatingWidth="575" FloatingHeight="689" FloatingLeft="-1156" FloatingTop="806">
+        
+        <LayoutAnchorablePane DockWidth="1.06543967280164*" DockHeight="184.5" FloatingWidth="575" FloatingHeight="689" FloatingLeft="-1136" FloatingTop="782">
+          <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Log" IsSelected="True" ContentId="Log" FloatingLeft="653" FloatingTop="785" FloatingWidth="575" FloatingHeight="689" CanClose="False"  />
+          <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Trades" ContentId="Trades" FloatingLeft="-786" FloatingTop="781" FloatingWidth="575" FloatingHeight="689" CanClose="False"/>
+        </LayoutAnchorablePane>
+        
+      </LayoutAnchorablePaneGroup>
+      
+    </LayoutPanel>
+    
+  </RootPanel>
+  
+  <TopSide />
+  <RightSide />
+  <LeftSide />
+  <BottomSide />
+  <FloatingWindows />
+  <Hidden />
+</LayoutRoot>

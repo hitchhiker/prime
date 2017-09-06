@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.BookmarksSideBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:model="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance model:BookmarksSideBarViewModel}"
+             d:DesignHeight="300" d:DesignWidth="150">
+    <StackPanel Orientation="Vertical" Height="Auto" Background="Transparent" >
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="Transparent" >
+            <TabControl Background="Transparent" BorderThickness="0" FontSize="12">
+                <TabItem Header="All" Style="{DynamicResource MinTab}">
+                        <ItemsControl x:Name="Bookmarks" FontSize="14" ItemsSource="{Binding Path=Bookmarks, UpdateSourceTrigger=PropertyChanged}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <WrapPanel Margin="0,0,0,10">
+                                    <Button Style="{StaticResource LinkButton}" Content="{Binding Path= Title}" Cursor="Hand" Command="{Binding ElementName=Bookmarks, Path=DataContext.ItemClickedCommand}" CommandParameter="{Binding}"/>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </TabItem>
+                <TabItem Header="Exchange" Style="{DynamicResource MinTab}"></TabItem>
+                <TabItem Header="Asset" Style="{DynamicResource MinTab}"></TabItem>
+                </TabControl>
+                
+            </ScrollViewer>
+
+        <mui:BBCodeBlock Visibility="Hidden" BBCode="[url=http://getprime.org]getprime.org[/url]"/>
+        <mui:BBCodeBlock Visibility="Hidden" BBCode="[url=/UserControl/Chart2.xaml|_top]go to my page[/url]" />
+        
+    </StackPanel>
+</UserControl>

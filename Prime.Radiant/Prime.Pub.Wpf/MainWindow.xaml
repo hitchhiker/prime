@@ -1,0 +1,40 @@
+﻿<Window x:Class="Prime.Radiant.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Prime.Radiant"
+        xmlns:terminal="clr-namespace:Simple.Wpf.Terminal;assembly=Simple.Wpf.Terminal"
+        mc:Ignorable="d" Height="800" Width="650" WindowStyle="SingleBorderWindow" Title="prime [radiant]"
+        WindowStartupLocation="CenterOwner" Background="#FF300606" Foreground="#FFFBFBFB"
+        d:DataContext="{d:DesignInstance local:StatusViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0 10">
+            <TextBlock HorizontalAlignment="Center" FontSize="15" Foreground="#eee">Prime decentralised deployment application.</TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" x:Name="Chooser">
+            <Button x:Name="Prime" Content="Prime" Margin="0,0,10,0" Background="Blue" Foreground="White" Padding="10,0"></Button>
+            <Button x:Name="Radiant" Content="Radiant" Background="#777" Foreground="White" Padding="10,0"></Button>
+            <Button x:Name="Both" Content="Both" Margin="50,0,0,0" Background="Black" Foreground="White" Padding="10,0"></Button>
+        </StackPanel>
+        <terminal:Terminal Grid.Row="2" x:Name="Terminal" Padding="10,5,10,20"
+                    IsReadOnlyCaretVisible="False"
+                    VerticalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Path=Items, Mode=OneWay}" >
+            <terminal:Terminal.DataContext>
+                <local:TerminalViewModel/>
+            </terminal:Terminal.DataContext>
+        </terminal:Terminal>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Background="#FF300606" Margin="10,0,10,0">
+            <TextBlock Text="IPFS Status: "/>
+            <TextBlock Text="{Binding Path=IpfsStatus}" Foreground="#ccc"/>
+        </StackPanel>
+    </Grid>
+</Window>

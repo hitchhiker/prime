@@ -1,0 +1,26 @@
+﻿using System;
+using System.Linq;
+
+namespace Prime.Core
+{
+    public abstract class CommandContent : CommandBase, IEquatable<CommandContent>
+    {
+        private string _title;
+
+        [Bson]
+        public string Title
+        {
+            get => _title ?? DefaultTitle;
+            set => _title = value;
+        }
+
+        public abstract string DefaultTitle { get; }
+
+        public GetUriResponse GetUri()
+        {
+            return PageUris.I.Providers.Select(x => x.GetUri(this)).FirstOrDefault(x => x != null) ?? GetUriResponse.TypeNotFound;
+        }
+
+        public abstract bool Equals(CommandContent other);
+    }
+}

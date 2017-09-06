@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A593F034-8FD1-4A22-9A83-98C204A6819B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Prime.Core</RootNamespace>
+    <AssemblyName>Prime.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\litedb\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Concurrent.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Tasks, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.Tasks.1.1.0\lib\net46\Nito.AsyncEx.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Disposables, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Disposables.1.0.0\lib\portable45-net45+win8+wp8+wpa81\Nito.Disposables.dll</HintPath>
+    </Reference>
+    <Reference Include="NodaTime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NodaTime.2.2.0\lib\net45\NodaTime.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="RestEase, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestEase.1.4.2\lib\net45\RestEase.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.TypeExtensions, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Api\BaseAuthenticator.cs" />
+    <Compile Include="Api\ApiTestContext.cs" />
+    <Compile Include="Api\ApiContext.cs" />
+    <Compile Include="Asset\AssetEventArgs.cs" />
+    <Compile Include="Asset\AssetGoCommand.cs" />
+    <Compile Include="Asset\AssetUtility.cs" />
+    <Compile Include="Asset\Model\AssetExchangeEntry.cs" />
+    <Compile Include="Asset\Model\AssetExchangeData.cs" />
+    <Compile Include="Asset\Model\OhclData.cs" />
+    <Compile Include="Asset\Model\OhclDataExtensionMethods.cs" />
+    <Compile Include="Asset\Model\OhclEntry.cs" />
+    <Compile Include="Asset\Model\TimeResolution.cs" />
+    <Compile Include="Asset\Model\PriceLatest.cs" />
+    <Compile Include="Asset\Model\TimeResolutionExtensionMethods.cs" />
+    <Compile Include="Network\AggregatedCoinInfoContext.cs" />
+    <Compile Include="Provider\DataCache\ProviderDataCacheBase.cs" />
+    <Compile Include="Network\NetworkProviderContext.cs" />
+    <Compile Include="Network\NetworkProviderPrivateContext.cs" />
+    <Compile Include="Network\OhlcContext.cs" />
+    <Compile Include="Provider\DataCache\ProviderDataCaches.cs" />
+    <Compile Include="Network\PublicPriceContext.cs" />
+    <Compile Include="Network\WalletAddressAssetContext.cs" />
+    <Compile Include="Network\WalletAddressContext.cs" />
+    <Compile Include="Page\CommandContent.cs" />
+    <Compile Include="Page\GetUriResponse.cs" />
+    <Compile Include="Page\IPageUriProvider.cs" />
+    <Compile Include="Page\PageUri.cs" />
+    <Compile Include="Page\PageUris.cs" />
+    <Compile Include="DataLayer\CoverageMap\CoverageMapBase.cs" />
+    <Compile Include="DataLayer\CoverageMap\CoverageMapMemory.cs" />
+    <Compile Include="DataLayer\OhlcDataAdapter.cs" />
+    <Compile Include="Page\SimpleContentCommand.cs" />
+    <Compile Include="DataLayer\CoverageMap\CoverageMapModel.cs" />
+    <Compile Include="DataLayer\Resolution\Adapter\OhlcResolutionDataAdapterMemory.cs" />
+    <Compile Include="DataLayer\Resolution\IOhlcResolutionAdapter.cs" />
+    <Compile Include="DataLayer\Resolution\IOhlcResolutionAdapterStorage.cs" />
+    <Compile Include="DataLayer\Resolution\IOhclResolutionApi.cs" />
+    <Compile Include="DataLayer\Resolution\OhlcResolutionAdapterAdapterContext.cs" />
+    <Compile Include="DataLayer\Resolution\OhlcResolutionAdapterContext.cs" />
+    <Compile Include="DataLayer\Resolution\OhlcApiProviderDiscover.cs" />
+    <Compile Include="DataLayer\Resolution\OhlcDiscoveryContext.cs" />
+    <Compile Include="DataLayer\Resolution\OhlcResolutionDataAdapter.cs" />
+    <Compile Include="DataLayer\Resolution\Adapter\OhlcResolutionDataAdapterApi.cs" />
+    <Compile Include="DataLayer\Resolution\Adapter\OhlcResolutionDataAdapterDb.cs" />
+    <Compile Include="DataLayer\OhlcPairProviders.cs" />
+    <Compile Include="DataLayer\TimeExtensionMethods.cs" />
+    <Compile Include="DataLayer\TimeRange.cs" />
+    <Compile Include="DataLayer\TimeRanges.cs" />
+    <Compile Include="Data\Context\IHasContext.cs" />
+    <Compile Include="Data\IEmit.cs" />
+    <Compile Include="Data\Misc\FileExtensionMethods.cs" />
+    <Compile Include="Data\Misc\FinancialHelper.cs" />
+    <Compile Include="Data\Misc\ManagedFileSystem.cs" />
+    <Compile Include="Asset\Info\AssetCustomColours.cs" />
+    <Compile Include="Asset\Info\AssetInfo.cs" />
+    <Compile Include="Asset\Info\AssetInfos.cs" />
+    <Compile Include="Exchange\IOhlcProvider.cs" />
+    <Compile Include="Exchange\PriceCacheItem.cs" />
+    <Compile Include="Exchange\WebSocket\IPriceSocketProvider.cs" />
+    <Compile Include="Exchange\WebSocket\LivePriceResponse.cs" />
+    <Compile Include="Misc\ICoinListProvider.cs" />
+    <Compile Include="Misc\NotifierBase.cs" />
+    <Compile Include="Misc\Remote.cs" />
+    <Compile Include="Navigation\NavigationProvider.cs" />
+    <Compile Include="Navigation\NavigationEndpoint.cs" />
+    <Compile Include="Data\AssociatedDatasBase.cs" />
+    <Compile Include="Network\ILatestPriceAggregationProvider.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServiceLineItem.cs" />
+    <Compile Include="System\Apis\ApiKeyExtensions.cs" />
+    <Compile Include="System\Apis\INetworkProviderPrivate.cs" />
+    <Compile Include="Network\IAssetPairAggregationProvider.cs" />
+    <Compile Include="Network\Model\NetworkDatas.cs" />
+    <Compile Include="Network\NetworkExtensionMethods.cs" />
+    <Compile Include="Prime.cs" />
+    <Compile Include="CommandManager\CommandManager.cs" />
+    <Compile Include="CommandManager\CommandBase.cs" />
+    <Compile Include="CommandManager\CommandManagerEvent.cs" />
+    <Compile Include="Public\Price\IPublicPricesProvider.cs" />
+    <Compile Include="System\Apis\ApiConfiguration.cs" />
+    <Compile Include="Page\Bookmark\BookmarkedCommands.cs" />
+    <Compile Include="Page\Bookmark\ICanGenerateCommand.cs" />
+    <Compile Include="User\WindowManager\IWindowManager.cs" />
+    <Compile Include="User\UserSetting.cs" />
+    <Compile Include="Public\PublicData.cs" />
+    <Compile Include="Public\PublicDatas.cs" />
+    <Compile Include="System\Apis\ApiKey.cs" />
+    <Compile Include="System\Apis\ApiKeys.cs" />
+    <Compile Include="Asset\AssetClass.cs" />
+    <Compile Include="Asset\Assets.cs" />
+    <Compile Include="Asset\Asset.cs" />
+    <Compile Include="Asset\AssetExtensionMethods.cs" />
+    <Compile Include="Asset\Pair\AssetPair.cs" />
+    <Compile Include="Asset\AssetCodeConverterBase.cs" />
+    <Compile Include="Exchange\ExchangeCommand.cs" />
+    <Compile Include="System\Encryption\EncryptionExtensionMethods.cs" />
+    <Compile Include="System\Events\EventExtensions.cs" />
+    <Compile Include="System\Events\ObservableEvent.cs" />
+    <Compile Include="System\Money\IMoneyFormatter.cs" />
+    <Compile Include="System\Money\IRegionalFormatter.cs" />
+    <Compile Include="System\Money\MersenneTwister.cs" />
+    <Compile Include="System\Money\MidpointRoundingRule.cs" />
+    <Compile Include="System\Money\Money.cs" />
+    <Compile Include="System\Money\RoundingPlaces.cs" />
+    <Compile Include="Data\Bson\Bson.cs" />
+    <Compile Include="Data\Misc\BsonMapperMods.cs" />
+    <Compile Include="Data\Test\DataTest.cs" />
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\Model\IKeepFresh.cs" />
+    <Compile Include="Data\Test\DataTestModel.cs" />
+    <Compile Include="Data\Test\DataTestSub.cs" />
+    <Compile Include="Asset\Pair\AssetPairs.cs" />
+    <Compile Include="Exchange\ExchangeExtensionMethods.cs" />
+    <Compile Include="Exchange\Model\ExchangeData.cs" />
+    <Compile Include="Exchange\Model\ExchangeDatas.cs" />
+    <Compile Include="Provider\ProviderData.cs" />
+    <Compile Include="Provider\ProviderDatas.cs" />
+    <Compile Include="System\Apis\ApiUtilities.cs" />
+    <Compile Include="Network\Model\NetworkData.cs" />
+    <Compile Include="Data\Model\ModelBase.cs" />
+    <Compile Include="Data\Model\IModelBase.cs" />
+    <Compile Include="Data\Model\ModelBaseExtension.cs" />
+    <Compile Include="Network\INetworkProvider.cs" />
+    <Compile Include="Network\Network.cs" />
+    <Compile Include="Network\Networks.cs" />
+    <Compile Include="Exchange\BuyContext.cs" />
+    <Compile Include="Exchange\BuyResult.cs" />
+    <Compile Include="Exchange\IExchangeProvider.cs" />
+    <Compile Include="Public\Price\IPublicPriceProvider.cs" />
+    <Compile Include="Exchange\SellContext.cs" />
+    <Compile Include="Exchange\SellResult.cs" />
+    <Compile Include="System\Operation\OpContext.cs" />
+    <Compile Include="System\Operation\OpResult.cs" />
+    <Compile Include="Public\PublicContext.cs" />
+    <Compile Include="Data\Context\IDataContext.cs" />
+    <Compile Include="Data\IOnNewInstance.cs" />
+    <Compile Include="User\User.cs" />
+    <Compile Include="User\UserContext.cs" />
+    <Compile Include="Data\Context\DataContextExtensions.cs" />
+    <Compile Include="User\UserSettings.cs" />
+    <Compile Include="User\WindowManager\WindowInstanceBase.cs" />
+    <Compile Include="User\WindowManager\WindowInstances.cs" />
+    <Compile Include="User\WindowManager\WindowOpenState.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioInfoItem.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioGroupedItem.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioProviderScanner.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioLineItem.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioProvider.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioProviderScannerContext.cs" />
+    <Compile Include="Wallet\BalanceResult.cs" />
+    <Compile Include="Wallet\BalanceResults.cs" />
+    <Compile Include="Asset\IAssetCodeConverter.cs" />
+    <Compile Include="Asset\IDescribesAssets.cs" />
+    <Compile Include="Wallet\IWalletProvider.cs" />
+    <Compile Include="Wallet\Model\WalletData.cs" />
+    <Compile Include="Wallet\Model\WalletDatas.cs" />
+    <Compile Include="Wallet\WalletAddresses.cs" />
+    <Compile Include="Wallet\WalletAddress.cs" />
+    <Compile Include="Wallet\WalletExtensionMethods.cs" />
+    <Compile Include="Wallet\WalletProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ChartData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Radiant\Prime.Radiant\Prime.Radiant.csproj">
+      <Project>{ded1038d-b3c8-4bb2-868d-ad3a00535f8b}</Project>
+      <Name>Prime.Radiant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj">
+      <Project>{3cd6e69d-868e-41bb-a168-cfcbeedafc73}</Project>
+      <Name>Prime.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+  </Target>
+</Project>

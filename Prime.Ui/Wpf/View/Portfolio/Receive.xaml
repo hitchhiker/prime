@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Portfolio.Receive"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Prime.Ui.Wpf.View.Portfolio"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModel:ReceiveViewModel}"
+             d:DesignHeight="300" d:DesignWidth="600">
+    <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+        <Border Padding="15" BorderThickness="1">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Margin="0,0,0,10">Below are any existing addresses, click 'Generate' to create a new one.</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox Height="30" IsEditable="False" Margin="0,0,10,0"
+                      DisplayMemberPath="Title"
+                      ItemsSource="{Binding Path=Services}" 
+                      SelectedItem="{Binding Path=ServiceSelected, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    </ComboBox>
+
+                    <ComboBox Height="30" IsEditable="False" Margin="0,0,10,0"
+                          DisplayMemberPath="FullName"
+                          ItemsSource="{Binding Path=Assets, NotifyOnTargetUpdated=True}" 
+                          SelectedItem="{Binding Path=AssetSelected, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    </ComboBox>
+
+                    <Button Command="{Binding Path=ClickCommand}">Generate</Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding Path=WalletAddresses, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding8Left}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Created" Binding="{Binding UtcCreated, Converter={StaticResource DateTimeHumanConverter}}" Width="150" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Last Checked" Binding="{Binding UtcLastChecked, Converter={StaticResource DateTimeHumanConverter}}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Service" Binding="{Binding ServiceName}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="120" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Expires" Binding="{Binding ExpiresUtc, Converter={StaticResource DateTimeHumanConverter}}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</UserControl>
