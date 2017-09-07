@@ -71,9 +71,6 @@ namespace Prime.Utility
 
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            foreach (string dll in Directory.GetFiles(path, "*.dll"))
-                allAssemblies.Add(Assembly.LoadFile(dll));
-
             foreach (var dll in Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
             {
                 if (dll.Contains("roslyn", StringComparison.OrdinalIgnoreCase))
