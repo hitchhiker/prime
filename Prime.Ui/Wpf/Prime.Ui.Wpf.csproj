@@ -446,14 +446,14 @@
     <Compile Include="Components\LiveCharts\InstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\IResolutionSource.cs" />
     <Compile Include="Components\LiveCharts\OhlcInstantChartPoint.cs" />
-    <Compile Include="Components\LiveCharts\OverviewChartZoomComponent.cs" />
+    <Compile Include="Components\LiveCharts\Zoom\OverviewChartZoomComponent.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxis.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxisCore.cs" />
-    <Compile Include="Components\LiveCharts\ReceiverChartZoomComponent.cs" />
+    <Compile Include="Components\LiveCharts\Zoom\ReceiverChartZoomComponent.cs" />
     <Compile Include="Components\LiveCharts\ScatterMarkerSymbol.cs" />
     <Compile Include="Components\LiveCharts\SeriesDefinition.cs" />
     <Compile Include="Components\LiveCharts\SeriesType.cs" />
-    <Compile Include="Components\LiveCharts\ZoomBaseComponent.cs" />
+    <Compile Include="Components\LiveCharts\Zoom\ZoomBaseComponent.cs" />
     <Compile Include="Components\PaneStyleSelector.cs" />
     <Compile Include="Components\ResolutionSourceClass.cs" />
     <Compile Include="Components\PrimeWpf.cs" />
@@ -529,9 +529,6 @@
       <DependentUpon>Blank.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="View\Chart\OhclChart.cs">
-      <DependentUpon>OhclChart.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Test\ConsoleView.xaml.cs">
       <DependentUpon>ConsoleView.xaml</DependentUpon>
     </Compile>
@@ -566,9 +563,6 @@
     <Compile Include="ViewModel\VmBase.cs" />
     <Compile Include="View\TradingChart\IsChartTypeConverter.cs" />
     <Compile Include="View\TradingChart\IsSameObjectsMultiConverter.cs" />
-    <Compile Include="View\TradingChart\_SciTraderView.xaml.cs">
-      <DependentUpon>_SciTraderView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\BindToDataSeriesSetViewModel.cs" />
     <Compile Include="Components\Restart.cs" />
     <Compile Include="Components\MetroWindowManager.cs" />
@@ -680,10 +674,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Chart\OhclChart.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Test\ConsoleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -717,10 +707,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Misc\AddressBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\TradingChart\_SciTraderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -48,8 +48,6 @@
                                     <Setter Property="Foreground" Value="White"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding ShowX}" Value="False">
-                                    <!-- The Axis contains a showlabels property. However when disabling, the chart will be drawn differently. -->
-                                    <!-- By making it inivisible, it still sizes like the other charts -->
                                     <Setter Property="Foreground" Value="Transparent"/>
                                     <Setter Property="HeaderForeground" Value="Transparent"/>
                                     <Setter Property="Height" Value="0"></Setter>

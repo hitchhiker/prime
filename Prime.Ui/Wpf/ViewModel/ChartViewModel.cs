@@ -64,11 +64,6 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _showX, value);
         }
 
-        public Func<double, string> XAxisLabelFormatter
-        {
-            get { return new Func<double, string>((s) => { return "OK"; }); }
-        }
-
         public void CreateTruncatedVisualElement(Instant x, decimal y)
         {
             _visualElementsCollection.Add(new VisualElement
@@ -77,7 +72,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 Y = (double)y,
                 UIElement = new PackIconMaterialLight
                 {
-                    ToolTip = $"This series is possibly truncated by the lean Engine due to a maximum number of points ({ 8000 }) ",
+                    ToolTip = $"This series is possibly truncated.",
                     Width = 16,
                     Height = 16,
                     Kind = PackIconMaterialLightKind.Alert

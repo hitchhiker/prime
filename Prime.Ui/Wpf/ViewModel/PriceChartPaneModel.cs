@@ -127,9 +127,8 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _dispatcher.Invoke(delegate
             {
-                InitData(priceDataNative);
-                SetupEvents();
-
+                CreateCharts(priceDataNative);
+                SetupZoomEvents();
                 SetDataStatus();
             });
 
@@ -140,7 +139,7 @@ namespace Prime.Ui.Wpf.ViewModel
             };
         }
 
-        private void SetupEvents()
+        private void SetupZoomEvents()
         {
             foreach (var zoom in _allZooms)
             {
@@ -165,7 +164,7 @@ namespace Prime.Ui.Wpf.ViewModel
             }
         }
 
-        private void InitData(OhclData sourceData)
+        private void CreateCharts(OhclData sourceData)
         {
             if (!sourceData.Any() && sourceData.Count<2)
                 return;
@@ -197,6 +196,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 var chartResolver2= _chartResolutionProvider = new ResolutionSourceProvider(() => cz1.Resolution);
 
                 // volume 
+
                 var volchart = _volumeChart = new ChartViewModel(ChartGroupViewModel, cz1, false);
                 volchart.SeriesCollection.Add(sourceData.ToVolumeSeries(chartResolver1, "Volume"));
                 volchart.YAxesCollection.Add(GetYAxis("Volume"));
@@ -207,9 +207,8 @@ namespace Prime.Ui.Wpf.ViewModel
                 priceChart.YAxesCollection.Add(GetYAxis("Price"));
                 
                 priceChart.SeriesCollection.Add(sourceData.ToGCandleSeries(chartResolver2, "Prices"));
-                priceChart.SeriesCollection.Add(sourceData.ToSmaSeries(50, chartResolver2));
 
-                priceChart.CreateTruncatedVisualElement(ChartGroupViewModel.OverviewZoom.EndPoint, 1000);
+                //priceChart.SeriesCollection.Add(sourceData.ToSmaSeries(50, chartResolver2));
 
                 ChartGroupViewModel.ScrollSeriesCollection.Add(overView.ToScrollSeries());
                 ChartGroupViewModel.Charts.Add(volchart);
@@ -326,34 +325,18 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             return new Axis
             {
-                // Title is with combined series
                 Title = title,
                 LabelFormatter = LabelFormatter,
                 Position = AxisPosition.RightTop,
-                MinRange = 0,
-                MinValue = 0,
                 Sections = new SectionsCollection
                 {
                     // Horizontal 0 value line
                     new AxisSection
                     {
-                        ToolTip = "Hello",
                         Value = 0,
                         Stroke = Brushes.Gray,
                         StrokeThickness = 1
-                    }/*,
-                    new AxisSection
-                    {
-                        ToolTip = "Now",
-                        Value = 2700,
-                        Stroke = Brushes.Gray,
-                        StrokeThickness = 1,
-                        Fill = new SolidColorBrush
-                        {
-                            Color = System.Windows.Media.Color.FromRgb(254,132,132),
-                            Opacity = .4
-                        }
-                    }*/
+                    }
                 }
             };
         }

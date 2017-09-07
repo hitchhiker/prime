@@ -31,8 +31,7 @@ namespace Prime.Ui.Wpf
 
         private void ChartControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var cvm = DataContext as ChartViewModel;
-            if (cvm == null)
+            if (!(DataContext is ChartViewModel cvm))
                 return;
 
             if (cvm.Parent.OverviewZoom.ZoomProxy==null)

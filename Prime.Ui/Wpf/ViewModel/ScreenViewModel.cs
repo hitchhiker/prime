@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand<DockingManager> ResetLayoutCommand { get; }
         public RelayCommand<DockingManager> RestoreLayoutCommand { get; }
         public readonly CommandManager CommandManager;
+
+        public string Title { get; } = "prime [pre-alpha v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "]";
 
         public ObservableCollection<DocumentPaneViewModel> Documents
         {

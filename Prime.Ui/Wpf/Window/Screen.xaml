@@ -15,7 +15,7 @@
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
         WindowStartupLocation="CenterOwner"
-        Title="Prime Screen" FontSize="16">
+        Title="{Binding Path=Title}" FontSize="16">
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>

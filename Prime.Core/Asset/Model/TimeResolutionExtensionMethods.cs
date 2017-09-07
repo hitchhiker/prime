@@ -44,7 +44,7 @@ namespace Prime.Core
                     return TimeSpan.FromDays(3);
 
                 case TimeResolution.Day:
-                    return TimeSpan.FromDays(60);
+                    return TimeSpan.FromDays(120);
 
                 case TimeResolution.Millisecond:
                     return TimeSpan.FromSeconds(1);
