@@ -146,7 +146,7 @@ namespace Prime.Utility
                 if (!process.HasExited)
                     process.Kill();
             }
-            catch (Exception e)
+            catch
             {
                 process.Kill();
             }

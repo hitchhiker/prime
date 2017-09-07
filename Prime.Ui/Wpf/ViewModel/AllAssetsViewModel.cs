@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Data;
 using Prime.Core;
-using SharpDX.Collections;
 using Prime.Utility;
 using System.Windows.Threading;
 
@@ -11,7 +11,6 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class AllAssetsViewModel : VmBase
     {
-
         public AllAssetsViewModel() : this(null) { }
 
         public AllAssetsViewModel(ScreenViewModel screenViewModel)

@@ -177,7 +177,7 @@ namespace Prime.Utility.Encrypt
         protected string Encrypt(string source, string keyfile)
         {
             throw new Exception("TODO");
-            byte[] encrypted;
+            /*byte[] encrypted;
             using (var rsa = ReadKeypair(keyfile))
             {
                 if (rsa == null)
@@ -186,7 +186,7 @@ namespace Prime.Utility.Encrypt
                 var b = Encoding.UTF8.GetBytes(source);
                 encrypted = Encrypt(rsa, b);
             }
-            return null;
+            return null;*/
         }
 
         protected string DecryptFile(string filename, string keyfile)

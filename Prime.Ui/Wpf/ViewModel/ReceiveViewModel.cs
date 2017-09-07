@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using Prime.Core;
-using SharpDX.Collections;
 
 namespace Prime.Ui.Wpf.ViewModel
 {

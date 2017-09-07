@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
-using SharpDX.Collections;
 
 namespace Prime.Ui.Wpf.ViewModel
 {

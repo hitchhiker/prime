@@ -26,7 +26,9 @@ namespace Prime.Ui.Wpf.ViewModel
             Dispatcher = Application.Current.Dispatcher;
         }
 
+#pragma warning disable 169
         private readonly ScreenViewModel _screenViewModel;
+#pragma warning restore 169
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
         public readonly PortfolioProvider Provider;
