@@ -9,7 +9,6 @@ using System.Windows;
 using Prime.Core;
 using Framework.UI;
 using Hardcodet.Wpf.TaskbarNotification;
-using SciChart.Examples.ExternalDependencies.Controls.ExceptionView;
 using Prime.Utility;
 using Prime.Ui.Wpf;
 using Prime.Ui.Wpf.ViewModel;
@@ -35,7 +34,8 @@ namespace prime
         {
             UserContext.Current.WindowManager.Init();
         }
-
+        
+        /*
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             var exceptionView = new ExceptionView(e.Exception)
@@ -45,7 +45,7 @@ namespace prime
             exceptionView.ShowDialog();
 
             e.Handled = true;
-        }
+        }*/
 
         protected override void OnStartup(StartupEventArgs e)
         {

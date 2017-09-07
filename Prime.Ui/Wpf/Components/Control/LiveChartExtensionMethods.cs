@@ -9,7 +9,6 @@ using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using NodaTime;
 using Prime.Core;
-using SciChart.Examples.ExternalDependencies.Data;
 
 namespace Prime.Ui.Wpf
 {

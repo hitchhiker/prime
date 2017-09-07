@@ -55,13 +55,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Elysium">
-      <HintPath>..\lib\Elysium.dll</HintPath>
+      <HintPath>..\..\lib\Elysium.dll</HintPath>
     </Reference>
     <Reference Include="FirstFloor.ModernUI, Version=1.0.9.0, Culture=neutral, PublicKeyToken=bc9b0c37bf06c6a9, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ModernUI.WPF.1.0.9\lib\net45\FirstFloor.ModernUI.dll</HintPath>
     </Reference>
     <Reference Include="Framework.UI">
-      <HintPath>..\lib\Framework.UI.dll</HintPath>
+      <HintPath>..\..\lib\Framework.UI.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -94,7 +94,7 @@
     </Reference>
     <Reference Include="LiveCharts.Geared, Version=1.2.8.2, Culture=neutral, PublicKeyToken=7292f245d14ab8bf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\livechart\LiveCharts.Geared.dll</HintPath>
+      <HintPath>..\..\lib\livechart\LiveCharts.Geared.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts.Wpf, Version=0.9.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -199,68 +199,28 @@
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SciChart.Charting, Version=4.2.3.10185, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Charting.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Charting3D, Version=4.2.3.10185, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Charting3D.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Core, Version=4.2.3.10185, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Data, Version=4.2.3.10185, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Drawing, Version=4.2.3.10185, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Drawing.DirectX, Version=4.2.3.10185, Culture=neutral, PublicKeyToken=b55dd9efe817e823, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Drawing.DirectX.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Examples.ExternalDependencies, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SciChart.Examples.ExternalDependencies.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Wpf.UI, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SciChart.Wpf.UI.1.0.4\lib\net46\SciChart.Wpf.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Wpf.UI.Bootstrap, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SciChart.Wpf.UI.Bootstrap.1.0.4\lib\net46\SciChart.Wpf.UI.Bootstrap.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Wpf.UI.Reactive, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SciChart.Wpf.UI.Reactive.1.0.4\lib\net46\SciChart.Wpf.UI.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="SciChart.Wpf.UI.Transitionz, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SciChart.Wpf.UI.Transitionz.1.0.4\lib\net46\SciChart.Wpf.UI.Transitionz.dll</HintPath>
-    </Reference>
     <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SharpDX.dll</HintPath>
+      <HintPath>..\..\lib\scichart\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.D3DCompiler, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SharpDX.D3DCompiler.dll</HintPath>
+      <HintPath>..\..\lib\scichart\SharpDX.D3DCompiler.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D10, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SharpDX.Direct3D10.dll</HintPath>
+      <HintPath>..\..\lib\scichart\SharpDX.Direct3D10.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>..\..\lib\scichart\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\scichart\SharpDX.DXGI.dll</HintPath>
+      <HintPath>..\..\lib\scichart\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\StructureMap.4.5.2\lib\net45\StructureMap.dll</HintPath>
@@ -351,9 +311,6 @@
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Loader">
-      <HintPath>..\packages\System.Runtime.Loader.4.0.0\lib\netstandard1.5\System.Runtime.Loader.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -561,9 +518,7 @@
     <Compile Include="Components\CommandSuggestionProvider.cs" />
     <Compile Include="Components\CommandValidationRule.cs" />
     <Compile Include="ViewModel\VmBase.cs" />
-    <Compile Include="View\TradingChart\IsChartTypeConverter.cs" />
     <Compile Include="View\TradingChart\IsSameObjectsMultiConverter.cs" />
-    <Compile Include="ViewModel\BindToDataSeriesSetViewModel.cs" />
     <Compile Include="Components\Restart.cs" />
     <Compile Include="Components\MetroWindowManager.cs" />
     <Compile Include="Components\Converters\RatioConverter.cs" />
