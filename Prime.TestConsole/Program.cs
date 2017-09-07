@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
-using Newtonsoft.Json.Linq;
-using Nito.AsyncEx;
 using Prime.Core;
 using plugins;
 using Prime.Core.Wallet;
