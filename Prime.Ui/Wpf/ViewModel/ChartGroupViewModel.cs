@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
@@ -19,7 +18,7 @@ namespace Prime.Ui.Wpf.ViewModel
     /// <summary>
     /// View model for generic charts
     /// </summary>
-    public class ChartGroupViewModel : VmBase, IChartView
+    public class ChartGroupViewModel : VmBase, IResolutionSource
     {
         public ChartGroupViewModel() { }
 
@@ -42,9 +41,6 @@ namespace Prime.Ui.Wpf.ViewModel
         private bool _isPositionLocked;
         private ObservableCollection<ChartViewModel> _chartViewModels = new ObservableCollection<ChartViewModel>();
         private SeriesCollection _scrollSeriesCollection = new SeriesCollection();
-
-        /// <inheritdoc />
-        public Dictionary<string, Instant> LastUpdates { get; } = new Dictionary<string, Instant>();
 
         /// <inheritdoc />
         public bool IsPositionLocked
@@ -131,11 +127,6 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand<RangeChangedEventArgs> RangeChangedCommand { get; private set; }
 
         public OverviewChartZoomComponent OverviewZoom { get; private set; }
-
-        public void ParseChart(ChartDefinition chart)
-        {
-            throw new NotImplementedException();
-        }
 
         TimeResolution IResolutionSource.Resolution { get; set; }
     }

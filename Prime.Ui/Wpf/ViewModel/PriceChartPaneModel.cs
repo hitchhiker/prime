@@ -193,7 +193,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 }
 
                 var chartResolver1 = _chartResolutionProvider = new ResolutionSourceProvider(() => cz1.Resolution);
-                var chartResolver2= _chartResolutionProvider = new ResolutionSourceProvider(() => cz1.Resolution);
+                var chartResolver2 = _chartResolutionProvider = new ResolutionSourceProvider(() => cz1.Resolution);
 
                 // volume 
 

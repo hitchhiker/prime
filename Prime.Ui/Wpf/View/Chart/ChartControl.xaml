@@ -31,7 +31,7 @@
                 <wpf1:ResolutionConverter x:Key="ResolutionConverter"/>
             </wpf:CartesianChart.Resources>
             <wpf:CartesianChart.AxisX>
-                <wpf:DateAxis
+                <wpf1:PrimeDateAxis
                     Period="{Binding Path=Zoom.Resolution, Mode=OneWay, Converter={StaticResource ResolutionConverter}}"
                     InitialDateTime="{Binding Zoom.StartPointUtc, Mode=OneWay}"    
                     MinValue="{Binding Path=Zoom.ZoomFrom, Mode=TwoWay}"
@@ -56,7 +56,7 @@
                             </Style.Triggers>
                         </Style>
                     </wpf:DateAxis.Resources>
-                </wpf:DateAxis>
+                </wpf1:PrimeDateAxis>
             </wpf:CartesianChart.AxisX>
         </wpf:CartesianChart>
     </Grid>
