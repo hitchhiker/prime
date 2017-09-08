@@ -30,16 +30,25 @@ namespace Prime.Radiant
             var dispatcher = Dispatcher;
 
             Action<string> nativeLogger = (Terminal.DataContext as TerminalViewModel).AddItem;
-            void Logger(string s) => dispatcher.Invoke(() => nativeLogger.Invoke(LanguageCorrection(s)));
+
+            var logger = new Logger();
+
+            Logging.I.OnNewMessage += delegate (object o, EventArgs args)
+            {
+                if (!(args is LoggerMessageEvent lme))
+                    return;
+
+                dispatcher.Invoke(() => nativeLogger.Invoke(LanguageCorrection(lme.Message)));
+            };
 
             var pc = PublishManagerContext.LoadDefault(Dispatcher.CurrentDispatcher);
             if (pc == null)
             {
-                Logger("Configuration not found.");
+                logger.Error("Configuration not found.");
                 return;
             }
 
-            pc.Logger = Logger;
+            pc.L = logger;
             var dom = AppDomain.CurrentDomain;
 
             dom.UnhandledException +=
