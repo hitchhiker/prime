@@ -52,7 +52,7 @@ namespace Prime.Ui.Wpf
             RaisePropertyChanged(nameof(ZoomFrom));
             RaisePropertyChanged(nameof(ZoomTo));
 
-            if (CanRangeEvent())
+            if (IsMouseOver && CanRangeEvent())
                 OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
         }
 
@@ -62,21 +62,18 @@ namespace Prime.Ui.Wpf
 
         public bool CanFit(TimeResolution newResolution)
         {
-            if (newResolution == Resolution)
-                return true;
-
             var currentRange = GetTimeRange().ToTimeSpan();
 
             if (newResolution.IsSmallerThan(Resolution))
             {
                 var max = newResolution.MaxTimeSpanRange();
-                if (max <= currentRange)
+                if (max >= currentRange)
                     return true;
             }
             else
             {
                 var min = newResolution.MinTimeSpanRange();
-                if (min >= currentRange)
+                if (min <= currentRange)
                     return true;
             }
             return false;

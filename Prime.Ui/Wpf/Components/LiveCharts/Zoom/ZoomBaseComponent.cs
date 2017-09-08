@@ -37,6 +37,8 @@ namespace Prime.Ui.Wpf
 
         public Action<CorePoint, bool> ZoomProxy { get; set; }
 
+        public bool IsMouseOver { get; set; }
+
         protected ZoomBaseComponent(TimeResolution resolution, Dispatcher uiDispatcher)
         {
             Resolution = resolution;

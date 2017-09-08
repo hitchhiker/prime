@@ -57,7 +57,7 @@ namespace Prime.Ui.Wpf
             if (LastFrom != _zoomFrom)
                 RaisePropertyChanged(nameof(ZoomFrom));
 
-            if (CanRangeEvent() && (LastTo!=_zoomTo || LastFrom !=_zoomFrom))
+            if (IsMouseOver && CanRangeEvent() && (LastTo!=_zoomTo || LastFrom !=_zoomFrom))
                 OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
 
             LastFrom = _zoomFrom;

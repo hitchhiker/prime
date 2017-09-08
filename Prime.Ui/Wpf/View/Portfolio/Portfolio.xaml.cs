@@ -38,6 +38,14 @@ namespace Prime.Ui.Wpf
             InitializeComponent();
             _debounceDispatcher = new DebounceDispatcher(Dispatcher);
             this.DataContextChanged += Portfolio_DataContextChanged;
+            SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
+        }
+
+        private void SViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
 
         private void Portfolio_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

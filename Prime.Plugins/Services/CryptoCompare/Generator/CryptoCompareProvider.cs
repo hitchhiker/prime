@@ -24,6 +24,8 @@ namespace plugins
             return cd;
         }
 
+        public override string Title => "CryptoCompare Aggregator";
+
         public void RefreshCoinInfo(AssetExchangeData assetData)
         {
             var pair = assetData.AssetPair;

@@ -8,7 +8,7 @@
              d:DataContext="{d:DesignInstance viewModel:WalletViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding Path=Addresses, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding8Left}">
+        <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding Path=Addresses, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                 <DataGridTextColumn Header="Created" Binding="{Binding UtcCreated, Converter={StaticResource DateTimeHumanConverter}}" Width="150" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>

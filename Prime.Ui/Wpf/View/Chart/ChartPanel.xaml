@@ -27,8 +27,8 @@
                 <Separator/>
                 <CheckBox Content="Auto" IsChecked="{Binding Path=IsAuto, Mode=TwoWay}" Visibility="Collapsed" />
                 <CheckBox Content="Daily" IsChecked="{Binding Path=IsDaily, Mode=TwoWay}" />
-                <CheckBox Content="Hour" IsChecked="{Binding Path=IsHourly, Mode=TwoWay}" IsEnabled="{Binding Path=CanHourly}"/>
-                <CheckBox Content="Minute" IsChecked="{Binding Path=IsMinute, Mode=TwoWay}" IsEnabled="{Binding Path=CanMinute}"/>
+                <CheckBox Content="Hour" IsChecked="{Binding Path=IsHourly, Mode=TwoWay}" />
+                <CheckBox Content="Minute" IsChecked="{Binding Path=IsMinute, Mode=TwoWay}" />
             </ToolBar>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,8,0">
                 <controls:MetroProgressBar Foreground="#aaa"

@@ -31,7 +31,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private readonly List<ZoomBaseComponent> _chartZooms = new List<ZoomBaseComponent>();
         private readonly List<ZoomBaseComponent> _allZooms = new List<ZoomBaseComponent>();
-        private readonly OverviewChartZoomComponent _overviewZoom;
+        public readonly OverviewChartZoomComponent OverviewZoom;
         private ResolutionSourceProvider _chartResolutionProvider;
 
         public readonly TimeResolution OverviewDefaultResolution = TimeResolution.Day;
@@ -64,10 +64,10 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _adapter = new OhlcDataAdapter(ctx);
 
-            _overviewZoom = new OverviewChartZoomComponent(OverviewDefaultResolution, _dispatcher);
-            _allZooms.Add(_overviewZoom);
+            OverviewZoom = new OverviewChartZoomComponent(OverviewDefaultResolution, _dispatcher);
+            _allZooms.Add(OverviewZoom);
 
-            ChartGroupViewModel = new ChartGroupViewModel(this, _messenger, _overviewZoom)
+            ChartGroupViewModel = new ChartGroupViewModel(this, _messenger, OverviewZoom)
             {
                 ResolutionSelected = ReceiverDefaultResolution
             };
@@ -221,24 +221,25 @@ namespace Prime.Ui.Wpf.ViewModel
             lock (_lock)
             {
                 var newres = ChartGroupViewModel.ResolutionSelected;
-                var resetZoom = false;
+                TimeRange resetZoom = null;
 
-                TimeRange useRange = null;
+                TimeRange newRange = null;
 
-                if (!_overviewZoom.CanFit(newres))
+                if (!OverviewZoom.CanFit(newres))
                 {
-                    var ts = _overviewZoom.Resolution.GetDefaultTimeSpan();
-                    useRange = new TimeRange(_overviewZoom.EndPoint.ToDateTimeUtc(), -ts, newres);
-                    resetZoom = true;
+                    var ts = newres.GetDefaultTimeSpan();
+                    newRange = new TimeRange(OverviewZoom.EndPoint.ToDateTimeUtc(), -ts, newres);
+                    resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
                 }
                 else
-                    useRange = _overviewZoom.GetTimeRange();
-
-                useRange.TimeResolution = newres;
+                {
+                    newRange = OverviewZoom.GetTimeRange();
+                    newRange.TimeResolution = newres;
+                }
 
                 SetDataStatus("Requesting Data");
 
-                var nPriceData = _adapter.Request(useRange);
+                var nPriceData = _adapter.Request(newRange);
                 if (nPriceData == null)
                 {
                     SetDataStatus("Data missing", false);
@@ -259,13 +260,13 @@ namespace Prime.Ui.Wpf.ViewModel
                     foreach (var cz in _chartZooms)
                     {
                         cz.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
-                        cz.ZoomToRange(useRange);
+                        cz.ZoomToRange(newRange);
                     }
 
-                    if (resetZoom)
+                    if (resetZoom!=null)
                     {
-                        _overviewZoom.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
-                        _overviewZoom.ZoomToRange(_overviewZoom.GetDefaultTimeRange());
+                        OverviewZoom.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
+                        OverviewZoom.ZoomToRange(resetZoom);
                     }
                 });
             }

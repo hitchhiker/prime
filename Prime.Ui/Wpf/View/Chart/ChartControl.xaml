@@ -15,7 +15,8 @@
             DisableAnimations="True"
             Zoom="X" 
             AxisY="{Binding YAxesCollection}"
-            Series="{Binding SeriesCollection}"                 
+            Series="{Binding SeriesCollection}"
+            Pan="None"
             VisualElements="{Binding VisualElementsCollection}"                            
             LegendLocation="None"
             Hoverable="False">

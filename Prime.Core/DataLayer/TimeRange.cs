@@ -22,7 +22,7 @@ namespace Prime.Core
             UtcTo = to.ConformToResolution(timeResolution);
         }
 
-        public TimeRange(DateTime endPoint, TimeSpan fromSpan, TimeResolution timeResolution) : this(endPoint.Add(fromSpan), DateTime.UtcNow, timeResolution) { }
+        public TimeRange(DateTime endPoint, TimeSpan fromSpan, TimeResolution timeResolution) : this(endPoint.Add(fromSpan), endPoint, timeResolution) { }
 
         public TimeRange(TimeSpan fromNowSpan, TimeResolution timeResolution) : this(DateTime.UtcNow.Add(fromNowSpan), DateTime.UtcNow, timeResolution) { }
 

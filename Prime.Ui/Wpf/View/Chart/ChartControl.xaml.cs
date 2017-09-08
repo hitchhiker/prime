@@ -34,13 +34,18 @@ namespace Prime.Ui.Wpf
             if (!(DataContext is ChartViewModel cvm))
                 return;
 
+            ChartElement.MouseEnter += (o, args) => cvm.Zoom.IsMouseOver = true;
+            ChartElement.MouseLeave += (o, args) => cvm.Zoom.IsMouseOver = false;
+
             if (cvm.Parent.OverviewZoom.ZoomProxy==null)
                 cvm.Parent.OverviewZoom.ZoomProxy = (corePoint, isZoomIn) =>
                 {
+                    cvm.Zoom.IsMouseOver = true;
                     if (isZoomIn)
                         ChartElement.Model.ZoomIn(corePoint);
                     else
                         ChartElement.Model.ZoomOut(corePoint);
+                    cvm.Zoom.IsMouseOver = false;
                 };
         }
     }
