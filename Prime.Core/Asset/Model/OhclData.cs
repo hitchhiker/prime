@@ -24,15 +24,21 @@ namespace Prime.Core
         {
             Resolution = data.Resolution;
             ConvertedFrom = data.ConvertedFrom;
-            UtcDataStart = data.UtcDataStart;
             Network = data.Network;
+        }
+
+        public bool IsCovering(TimeRange range)
+        {
+            return range.UtcFrom >= UtcDataStart && range.UtcTo <= UtcDataEnd;
         }
 
         public readonly TimeResolution Resolution;
         
         public Asset ConvertedFrom { get; set; }
 
-        public DateTime UtcDataStart { get; set; }
+        public DateTime UtcDataStart => this.MinOrDefault(x => x.DateTimeUtc, DateTime.MinValue);
+
+        public DateTime UtcDataEnd => this.MaxOrDefault(x => x.DateTimeUtc, DateTime.MaxValue);
 
         public Network Network { get; set; }
 
@@ -59,6 +65,20 @@ namespace Prime.Core
             tr.AddRange(this.OrderByDescending(x => x.DateTimeUtc).TakeWhile(d => d.IsEmpty()));
             this.RemoveAll(x => tr.Contains(x));
             return this;
+        }
+
+        public void Merge(OhclData data)
+        {
+            foreach (var i in data)
+            {
+                RemoveAll(x => x.DateTimeUtc == i.DateTimeUtc);
+                Add(i);
+            }
+        }
+
+        public TimeRange RemainingFuture(TimeRange attemptedRange)
+        {
+            return attemptedRange.UtcTo > UtcDataEnd ? new TimeRange(UtcDataEnd, attemptedRange.UtcTo, attemptedRange.TimeResolution) : null;
         }
 
         public TimeRange GetTimeRange(TimeResolution timeResolution)

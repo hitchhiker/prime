@@ -96,15 +96,21 @@ namespace Prime.Core
                 OhclData results = null;
 
                 if (StorageEnabled)
-                    results = StorageAdapters.Select(x => x.GetRange(timeRange)).FirstOrDefault(o => o.IsNotEmpty());
+                    results = GetOrMergeStorage(timeRange);
 
-                if (results.IsNotEmpty())
+                var remaining = results.IsEmpty() ? null : results.RemainingFuture(timeRange);
+
+                if (!results.IsEmpty() && remaining == null)
                     Ctx.Status("Data received, processing.");
                 else if (ApiEnabled)
                 {
-                    results = ApiAdapters.Select(x => x.GetRange(timeRange)).FirstOrDefault(o => o.IsNotEmpty());
-                    if (results.IsNotEmpty())
+                    var range = remaining ?? timeRange;
+                    var apiresults = ApiAdapters.Select(x => x.GetRange(range)).FirstOrDefault(o => o.IsNotEmpty());
+                    if (apiresults.IsNotEmpty())
                         Ctx.Status("Data received, processing.");
+
+                    results = results ?? new OhclData(range.TimeResolution);
+                    results.Merge(apiresults);
                 }
 
                 if (StorageEnabled && results.IsNotEmpty())
@@ -115,6 +121,32 @@ namespace Prime.Core
 
                 return results;
             }
+        }
+
+        private OhclData GetOrMergeStorage(TimeRange timeRange)
+        {
+            var partials = new List<OhclData>();
+
+            foreach (var r in StorageAdapters.Select(x => x.GetRange(timeRange)))
+            {
+                if (r.IsEmpty())
+                    continue;
+
+                if (r.IsCovering(timeRange))
+                    return r;
+
+                partials.Add(r);
+            }
+
+            if (!partials.Any())
+                return null;
+
+            var mergedData = new OhclData(partials.First());
+
+            foreach (var i in partials)
+                mergedData.Merge(i);
+
+            return mergedData;
         }
 
         private void StoreResults(OhclData clone, TimeRange timeRange)

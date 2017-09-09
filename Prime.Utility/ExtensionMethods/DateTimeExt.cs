@@ -154,9 +154,8 @@ namespace Prime.Utility
         /// <returns></returns>
         public static DateTime UnixTimestampToDateTime(this double unixTimeStamp)
         {
-            var unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var unixTimeStampInTicks = (long)(unixTimeStamp * TimeSpan.TicksPerSecond);
-            return new DateTime(unixStart.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
+            return new DateTime(UnixEpoch.Ticks + unixTimeStampInTicks, System.DateTimeKind.Utc);
         }
 
         /// <summary>
@@ -166,14 +165,15 @@ namespace Prime.Utility
         /// <returns></returns>
         public static double ToUnixTimeStamp(this DateTime dateTime)
         {
-            var unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            var unixTimeStampInTicks = (dateTime.ToUniversalTime() - unixStart).Ticks;
+            var unixTimeStampInTicks = (dateTime.ToUniversalTime() - UnixEpoch).Ticks;
             return (double)unixTimeStampInTicks / TimeSpan.TicksPerSecond;
         }
 
         public static double ToUnixTimeStampSimple(this DateTime dateTime)
         {
-            return (dateTime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+            return (dateTime - UnixEpoch).TotalSeconds;
         }
+
+        public static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 }

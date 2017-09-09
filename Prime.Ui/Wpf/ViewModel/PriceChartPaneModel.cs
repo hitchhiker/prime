@@ -260,6 +260,7 @@ namespace Prime.Ui.Wpf.ViewModel
                     foreach (var cz in _chartZooms)
                     {
                         cz.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
+                        cz.Resolution = newRange.TimeResolution;
                         cz.ZoomToRange(newRange);
                     }
 

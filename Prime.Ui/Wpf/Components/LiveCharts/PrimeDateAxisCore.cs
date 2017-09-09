@@ -5,13 +5,14 @@ using LiveCharts.Charts;
 using LiveCharts.Definitions.Charts;
 using LiveCharts.Dtos;
 using LiveCharts.Helpers;
+using NodaTime.Extensions;
 
 namespace Prime.Ui.Wpf
 {
     public class PrimeDateAxisCore : DateAxisCore
     {
-        private DateTime _initialDateTime = DateTime.MinValue;
-        private PeriodUnit _period = PeriodUnit.Milliseconds;
+        private DateTime _initialDateTime = new NodaTime.Instant().ToDateTimeUtc();
+        private PeriodUnit _period => ((IDateAxisView)this.View).Period;
 
         public PrimeDateAxisCore(IWindowAxisView view) : base(view) { }
 
@@ -23,7 +24,7 @@ namespace Prime.Ui.Wpf
         private string FormatLabel(double x)
         {
             DateTime dateTime = this.GetdateTime(x);
-            switch (((IDateAxisView)this.View).Period)
+            switch (_period)
             {
                 case PeriodUnit.Milliseconds:
                     return dateTime.ToString("G") + dateTime.ToString(".fff");
@@ -43,7 +44,7 @@ namespace Prime.Ui.Wpf
         internal DateTime GetdateTime(double x)
         {
             DateTime dateTime;
-            switch (this._period)
+            switch (_period)
             {
                 case PeriodUnit.Milliseconds:
                     dateTime = this._initialDateTime.AddMilliseconds(Math.Floor(x));

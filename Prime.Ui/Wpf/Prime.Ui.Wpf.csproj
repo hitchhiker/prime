@@ -354,6 +354,7 @@
     <Compile Include="Components\LiveCharts\IInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\InstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\IResolutionSource.cs" />
+    <Compile Include="Components\LiveCharts\DateAxisWindows.cs" />
     <Compile Include="Components\LiveCharts\OhlcInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Zoom\OverviewChartZoomComponent.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxis.cs" />

@@ -9,7 +9,7 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class ChartViewModel : VmBase
     {
-        private ZoomBaseComponent _zoom;
+        private ReceiverChartZoomComponent _zoom;
         private SeriesCollection _seriesCollection = new SeriesCollection();
         private AxesCollection _yAxesCollection = new AxesCollection();
         private VisualElementsCollection _visualElementsCollection = new VisualElementsCollection();
@@ -21,7 +21,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public ChartViewModel() { }
 
-        public ChartViewModel(ChartGroupViewModel chart, ZoomBaseComponent zoom, bool showX = true)
+        public ChartViewModel(ChartGroupViewModel chart, ReceiverChartZoomComponent zoom, bool showX = true)
         {
             ShowX = showX;
             _parent = chart;
@@ -34,7 +34,7 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _parent, value);
         }
 
-        public ZoomBaseComponent Zoom
+        public ReceiverChartZoomComponent Zoom
         {
             get => _zoom;
             set => Set(ref _zoom, value);

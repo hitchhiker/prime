@@ -26,6 +26,10 @@ namespace Prime.Ui.Wpf
             this.Model.Separator = this.Separator.AsCoreElement(this.Model, source);
             this.Model.DisableAnimations = this.DisableAnimations;
             this.Model.Sections = this.Sections.Select<AxisSection, AxisSectionCore>((Func<AxisSection, AxisSectionCore>)(x => x.AsCoreElement(this.Model, source))).ToList<AxisSectionCore>();
+
+            this.Windows.Clear();
+            this.Windows.AddRange(DateAxisWindows.GetDateAxisWindows());
+
             ((WindowAxisCore)this.Model).Windows = this.Windows.ToList<AxisWindow>();
             ((WindowAxisCore)this.Model).Windows.ForEach((Action<AxisWindow>)(w => ((DateAxisWindow)w).DateAxisCore = (DateAxisCore)this.Model));
             return this.Model;

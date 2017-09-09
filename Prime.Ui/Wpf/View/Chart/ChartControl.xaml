@@ -33,7 +33,7 @@
             <wpf:CartesianChart.AxisX>
                 <wpf1:PrimeDateAxis
                     Period="{Binding Path=Zoom.Resolution, Mode=OneWay, Converter={StaticResource ResolutionConverter}}"
-                    InitialDateTime="{Binding Zoom.StartPointUtc, Mode=OneWay}"    
+                    InitialDateTime="{Binding Zoom.UnixEpochUtc, Mode=OneWay}"    
                     MinValue="{Binding Path=Zoom.ZoomFrom, Mode=TwoWay}"
                     MaxValue="{Binding Path=Zoom.ZoomTo, Mode=TwoWay}"                                       
                     HeaderFontWeight="Normal"  
@@ -42,7 +42,7 @@
                         <wpf:Separator/>
                     </wpf:DateAxis.Separator>
                     <wpf:DateAxis.Resources>
-                        <Style TargetType="{x:Type wpf:DateAxis}">
+                        <Style TargetType="{x:Type wpf1:PrimeDateAxis}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowX}" Value="True">
                                     <Setter Property="HeaderForeground" Value="White"/>
