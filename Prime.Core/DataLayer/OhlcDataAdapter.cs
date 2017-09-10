@@ -68,7 +68,7 @@ namespace Prime.Core
         private void RequestFullDaily()
         {
             var range = TimeRange.EveryDayTillNow;
-            OverviewOhcl = _adapterDay.Request(range)?.Trim();
+            OverviewOhcl = _adapterDay.Request(range);
 
             if (OverviewOhcl.IsEmpty())
                 throw new Exception("Data range missing during " + nameof(Init));

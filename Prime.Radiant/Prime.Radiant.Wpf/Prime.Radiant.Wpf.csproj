@@ -89,6 +89,9 @@
     <Reference Include="Ipfs.Core, Version=0.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Ipfs.Core.0.6.3\lib\net45\Ipfs.Core.dll</HintPath>
     </Reference>
+    <Reference Include="LiteDB">
+      <HintPath>..\..\lib\litedb\LiteDB.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>

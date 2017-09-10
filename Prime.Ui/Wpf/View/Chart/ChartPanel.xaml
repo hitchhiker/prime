@@ -23,12 +23,10 @@
             <ToolBar Style="{DynamicResource ToolBarStyle}" HorizontalAlignment="Left">
                 <Button Command="{Binding ZoomResetCommand}" Content="Reset zoom" ToolTip="Reset zoom to default range"/>
                 <Separator/>
-                <ToggleButton IsChecked="{Binding IsPositionLocked}" Content="Lock" ToolTip="Enable to lock the position of the chart. Disable to automatically scroll to new updates"/>
-                <Separator/>
                 <CheckBox Content="Auto" IsChecked="{Binding Path=IsAuto, Mode=TwoWay}" Visibility="Collapsed" />
                 <CheckBox Content="Daily" IsChecked="{Binding Path=IsDaily, Mode=TwoWay}" />
-                <CheckBox Content="Hour" IsChecked="{Binding Path=IsHourly, Mode=TwoWay}" IsEnabled="{Binding Path=CanHourly}"/>
-                <CheckBox Content="Minute" IsChecked="{Binding Path=IsMinute, Mode=TwoWay}" IsEnabled="{Binding Path=CanMinute}"/>
+                <CheckBox Content="Hour" IsChecked="{Binding Path=IsHourly, Mode=TwoWay}" />
+                <CheckBox Content="Minute" IsChecked="{Binding Path=IsMinute, Mode=TwoWay}" />
             </ToolBar>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,8,0">
                 <controls:MetroProgressBar Foreground="#aaa"
@@ -47,10 +45,10 @@
 
             <Grid.RowDefinitions>
                 <!-- Charts -->
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"/>
 
-                <!-- Zoom -->
-                <RowDefinition Height="100"></RowDefinition>
+                <!-- Overview -->
+                <RowDefinition Height="{Binding IsOverViewVisible, Converter={StaticResource BoolToDoubleConverter}, ConverterParameter=100}"/>
             </Grid.RowDefinitions>
 
             <!-- charts -->
@@ -77,9 +75,10 @@
             </ScrollViewer>
 
             <!-- Overview chart -->
-            <wpf:CartesianChart Grid.Row="1" x:Name="Overview"
+            <wpf:CartesianChart Grid.Row="1" 
+                                x:Name="Overview" 
+                                Visibility="{Binding IsOverViewVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                 ScrollMode="X"
-                                DataClickCommand=""
                                 MouseWheel="Overview_MouseWheel"
                                 ScrollHorizontalFrom="{Binding OverviewZoom.ZoomFrom, Mode=TwoWay}"
                                 ScrollHorizontalTo="{Binding OverviewZoom.ZoomTo, Mode=TwoWay}"
@@ -92,6 +91,7 @@
                 <wpf:CartesianChart.AxisX>
                     <wpf:DateAxis
                         IsMerged="True"
+                        MinValue="{Binding Path=OverviewZoom.StartFrom, Mode=OneWay}"
                         HeaderForeground="White"
                         HeaderFontWeight="Normal"
                         Period="{Binding Path=OverviewZoom.Resolution, Mode=OneWay, Converter={StaticResource ResolutionConverter}}"

@@ -21,6 +21,14 @@ namespace Prime.Core
         [Bson]
         public TimeRanges Unavailable { get; private set; } = new TimeRanges();
 
+        public void Clear()
+        {
+            UtcEarliestEntry = DateTime.MaxValue;
+            Found.Clear();
+            Unavailable.Clear();
+            Requested.Clear();
+        }
+
         public bool Covers(TimeRange range)
         {
             return Found.Covers(range) || Unavailable.Covers(range) || Requested.Covers(range);

@@ -38,10 +38,10 @@ namespace Prime.Core
                     return TimeSpan.FromHours(1);
 
                 case TimeResolution.Minute:
-                    return TimeSpan.FromDays(1);
+                    return TimeSpan.FromHours(4);
 
                 case TimeResolution.Hour:
-                    return TimeSpan.FromDays(3);
+                    return TimeSpan.FromDays(6);
 
                 case TimeResolution.Day:
                     return TimeSpan.FromDays(120);
@@ -56,9 +56,9 @@ namespace Prime.Core
 
         private static readonly List<(TimeSpan, TimeSpan)> Timespans = new List<(TimeSpan, TimeSpan)>
         {
-            (TimeSpan.FromDays(15), TimeSpan.FromDays(365 * 10)),
-            (TimeSpan.FromHours(20), TimeSpan.FromDays(35)),
-            (TimeSpan.FromMinutes(15), TimeSpan.FromDays(1))
+            (TimeSpan.FromDays(30), TimeSpan.FromDays(365 * 10)),
+            (TimeSpan.FromHours(30), TimeSpan.FromDays(12)),
+            (TimeSpan.FromMinutes(30), TimeSpan.FromHours(6))
         };
 
         public static TimeSpan MinTimeSpanRange(this TimeResolution timeResolution)
@@ -104,6 +104,20 @@ namespace Prime.Core
                 default:
                     return true;
             }
+        }
+
+        public static DateTime Neighbour(this TimeResolution timeResolution, DateTime current, int distance  =1)
+        {
+            switch (timeResolution)
+            {
+                case TimeResolution.Day:
+                    return current.AddDays(distance);
+                case TimeResolution.Hour:
+                    return current.AddHours(distance);
+                case TimeResolution.Minute:
+                    return current.AddMinutes(distance);
+            }
+            return DateTime.MinValue;
         }
     }
 }

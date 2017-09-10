@@ -1,4 +1,5 @@
 ﻿using System;
+using Prime.Utility;
 
 namespace Prime.Core
 {
@@ -22,7 +23,7 @@ namespace Prime.Core
             UtcTo = to.ConformToResolution(timeResolution);
         }
 
-        public TimeRange(DateTime endPoint, TimeSpan fromSpan, TimeResolution timeResolution) : this(endPoint.Add(fromSpan), DateTime.UtcNow, timeResolution) { }
+        public TimeRange(DateTime endPoint, TimeSpan fromSpan, TimeResolution timeResolution) : this(endPoint.Add(fromSpan), endPoint, timeResolution) { }
 
         public TimeRange(TimeSpan fromNowSpan, TimeResolution timeResolution) : this(DateTime.UtcNow.Add(fromNowSpan), DateTime.UtcNow, timeResolution) { }
 
@@ -74,7 +75,7 @@ namespace Prime.Core
             }
         }
 
-        public static TimeRange EveryDayTillNow => new TimeRange(new DateTime(1975, 6, 8).ToUniversalTime(), DateTime.UtcNow, TimeResolution.Day);
+        public static TimeRange EveryDayTillNow => new TimeRange(DateTimeExt.UnixEpoch, DateTime.UtcNow, TimeResolution.Day);
 
         public static TimeRange Empty => new TimeRange(DateTime.MinValue, DateTime.MinValue, TimeResolution.None);
 
@@ -82,5 +83,7 @@ namespace Prime.Core
         {
             return UtcTo-UtcFrom;
         }
+
+        public bool IsFromInfinity => UtcFrom == DateTimeExt.UnixEpoch;
     }
 }

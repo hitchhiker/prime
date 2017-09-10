@@ -94,8 +94,8 @@
         </Setter>
     </Style>
 
-    <Style TargetType="DataGridCell" x:Key="Padding8Left">
-        <Setter Property="Padding" Value="8"/>
+    <Style TargetType="DataGridCell" x:Key="Padding4Left">
+        <Setter Property="Padding" Value="4"/>
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Template">
             <Setter.Value>

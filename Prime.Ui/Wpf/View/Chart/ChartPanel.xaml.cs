@@ -21,20 +21,32 @@ namespace Prime.Ui.Wpf
     public partial class ChartPanel : UserControl
     {
         private readonly DebounceDispatcher _dispatcher;
+        private PriceChartPaneModel _pcmodel;
         public ChartPanel()
         {
             InitializeComponent();
             _dispatcher = new DebounceDispatcher();
+            this.DataContextChanged += ChartPanel_DataContextChanged;
 
-            Overview.MouseUp += Overview_MouseUp;
+        }
 
-            FixMouse();
+        private void ChartPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            _pcmodel = DataContext as PriceChartPaneModel;
+            if (_pcmodel == null)
+                return;
+
+            //Overview.MouseUp += Overview_MouseUp;
+
+            Overview.MouseEnter += (o, args) => _pcmodel.OverviewZoom.IsMouseOver = true;
+            Overview.MouseLeave += (o, args) => _pcmodel.OverviewZoom.IsMouseOver = false;
+
+            FixMouseSticking();
         }
 
         private void Overview_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var m = DataContext as ChartGroupViewModel;
-            if (m == null || e == null)
+            if (!(DataContext is ChartGroupViewModel m) || e == null)
                 return;
 
             //TODO: ScrollViewer click to reposition
@@ -43,7 +55,7 @@ namespace Prime.Ui.Wpf
         /// <summary>
         /// Fix for caught mouse on scroll
         /// </summary>
-        private void FixMouse()
+        private void FixMouseSticking()
         {
             var bt = typeof(Chart);
             var sbu = bt.GetMethod("ScrollBarOnMouseUp", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
@@ -61,9 +73,7 @@ namespace Prime.Ui.Wpf
 
         private void Debounced(MouseWheelEventArgs e)
         {
-            var m = DataContext as ChartGroupViewModel;
-            if (m == null || e == null)
-                return;
+            var m = _pcmodel.ChartGroupViewModel;
 
             var p = e.GetPosition(this);
             var corePoint = new CorePoint(p.X, p.Y);

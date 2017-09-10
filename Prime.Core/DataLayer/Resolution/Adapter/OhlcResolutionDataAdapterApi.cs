@@ -25,6 +25,20 @@ namespace Prime.Core
 
         public OhclData GetRange(TimeRange timeRange)
         {
+            var r = GetRangeInternal(timeRange);
+            if (r.IsEmpty())
+                return r;
+
+            if (timeRange.IsFromInfinity)
+                r.Trim();
+
+            r.DeGap();
+
+            return r;
+        }
+
+        private OhclData GetRangeInternal(TimeRange timeRange)
+        {
             if (Ctx.PrimaryApiProvider == null)
                 return null;
 

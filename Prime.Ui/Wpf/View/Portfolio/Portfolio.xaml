@@ -12,7 +12,7 @@
              d:DataContext="{d:DesignInstance context:PortfolioPaneViewModel}"
              d:DesignHeight="300" d:DesignWidth="800">
 
-    <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0">
+    <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
 <StackPanel Margin="20" Orientation="Vertical">
 
     <StackPanel Margin="0,0,0,30" Orientation="Horizontal">
@@ -49,7 +49,7 @@
 
     <TabControl Background="Transparent" BorderThickness="0" ItemsSource="{Binding}">
         <TabItem Header="Summary">
-            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding SummaryObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding8Left}">
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding SummaryObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Available Balance" Binding="{Binding AvailableBalance.Display}" Width="150" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
@@ -62,7 +62,7 @@
             </DataGrid>
         </TabItem>
         <TabItem Header="Assets">
-            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding PortfolioObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding8Left}">
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding PortfolioObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Network" Binding="{Binding Network}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
@@ -76,7 +76,7 @@
             </DataGrid>
         </TabItem>
         <TabItem Header="Networks">
-            <DataGrid Width="Auto" Margin="0,0,0,20" ItemsSource="{Binding PortfolioInfoObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding8Left}">
+            <DataGrid Width="Auto" Margin="0,0,0,20" ItemsSource="{Binding PortfolioInfoObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Network" Binding="{Binding Network}" CanUserSort="False" CanUserResize="False"/>
                     <DataGridTextColumn Binding="{Binding ConnectReport}" CanUserSort="False" CanUserResize="False"/>

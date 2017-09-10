@@ -9,17 +9,22 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-            <CheckBox Content="Requires Keys" IsChecked="{Binding Path=HasApiKey, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"/>
+            <Border Padding="10">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Content="Requires Keys" IsChecked="{Binding Path=HasApiKey, Mode=TwoWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True}"/>
+                    <TextBlock Text="Click on each entry and fill in the API keys"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Path=ServicesObservable}">
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Path=ServicesObservable}" Padding="10">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="0,0,0,10">
-                        <TextBlock Text="{Binding Path=Title}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"/>
+                        <TextBlock Text="{Binding Path=Title}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Cursor="Hand"/>
                         <TextBlock Text="{Binding Path=Description}"/>
                     </StackPanel>
                 </DataTemplate>

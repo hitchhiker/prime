@@ -36,7 +36,7 @@ namespace plugins
         public virtual string AggregatorName => "CryptoCompare";
 
         private string _title;
-        public string Title => _title ?? (_title = Name + " (" + AggregatorName + ")");
+        public virtual string Title => _title ?? (_title = Name + " (" + AggregatorName + ")");
 
         public abstract string Name { get; }
 

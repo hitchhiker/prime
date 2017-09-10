@@ -24,18 +24,37 @@ namespace Prime.Ui.Wpf
         public DateTime SuspendRangeEventTill = DateTime.MinValue;
 
         public double ZoomToLimit => EndPoint.ToUnixTimeTicks() / AxisModifier;
-        public double ZoomFromLimit => StartPoint.ToUnixTimeTicks() / AxisModifier;
+        public virtual double ZoomFromLimit => StartPoint.ToUnixTimeTicks() / AxisModifier;
 
         public bool IsPositionLocked { get; set; }
-        public TimeResolution Resolution { get; set; } = TimeResolution.None;
-        public Instant StartPoint { get; set; } = Instant.FromUnixTimeSeconds(0);
-        public Instant EndPoint { get; set; } = Instant.FromDateTimeUtc(DateTime.UtcNow);
+
         public double AxisModifier => Resolution.GetAxisModifier();
 
+        public DateTime UnixEpochUtc => DateTimeExt.UnixEpoch;
         public DateTime StartPointUtc => StartPoint.ToDateTimeUtc();
         public DateTime EndPointUtc => EndPoint.ToDateTimeUtc();
 
+        public Instant StartPoint
+        {
+            get => _startPoint;
+            set => Set(ref _startPoint, value);
+        }
+
+        public Instant EndPoint
+        {
+            get => _endPoint;
+            set => Set(ref _endPoint, value);
+        }
+
+        public TimeResolution Resolution
+        {
+            get => _resolution;
+            set => Set(ref _resolution, value);
+        }
+
         public Action<CorePoint, bool> ZoomProxy { get; set; }
+
+        public bool IsMouseOver { get; set; }
 
         protected ZoomBaseComponent(TimeResolution resolution, Dispatcher uiDispatcher)
         {
@@ -47,6 +66,9 @@ namespace Prime.Ui.Wpf
 
         protected double LastFrom;
         protected double LastTo;
+        private TimeResolution _resolution = TimeResolution.None;
+        private Instant _endPoint = Instant.FromDateTimeUtc(DateTime.UtcNow);
+        private Instant _startPoint = Instant.FromUnixTimeSeconds(0);
 
         public abstract double ZoomFrom { get; set; }
 

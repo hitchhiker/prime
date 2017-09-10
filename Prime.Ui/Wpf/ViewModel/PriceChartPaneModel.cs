@@ -31,7 +31,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private readonly List<ZoomBaseComponent> _chartZooms = new List<ZoomBaseComponent>();
         private readonly List<ZoomBaseComponent> _allZooms = new List<ZoomBaseComponent>();
-        private readonly OverviewChartZoomComponent _overviewZoom;
+        public readonly OverviewChartZoomComponent OverviewZoom;
         private ResolutionSourceProvider _chartResolutionProvider;
 
         public readonly TimeResolution OverviewDefaultResolution = TimeResolution.Day;
@@ -64,10 +64,11 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _adapter = new OhlcDataAdapter(ctx);
 
-            _overviewZoom = new OverviewChartZoomComponent(OverviewDefaultResolution, _dispatcher);
-            _allZooms.Add(_overviewZoom);
+            OverviewZoom = new OverviewChartZoomComponent(OverviewDefaultResolution, _dispatcher);
 
-            ChartGroupViewModel = new ChartGroupViewModel(this, _messenger, _overviewZoom)
+            _allZooms.Add(OverviewZoom);
+
+            ChartGroupViewModel = new ChartGroupViewModel(this, _messenger, OverviewZoom)
             {
                 ResolutionSelected = ReceiverDefaultResolution
             };
@@ -158,7 +159,7 @@ namespace Prime.Ui.Wpf.ViewModel
                             continue;
 
                         oz.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
-                        oz.ZoomToRange(sender.GetTimeRange());
+                        oz.ZoomToRange(sender.GetTimeRange(oz.Resolution));
                     }
                 };
             }
@@ -173,12 +174,9 @@ namespace Prime.Ui.Wpf.ViewModel
             {
                 var overView = _adapter.OverviewOhcl;
 
-                var cz1 = new ReceiverChartZoomComponent(ReceiverDefaultResolution, _dispatcher);
-                var cz2 = new ReceiverChartZoomComponent(ReceiverDefaultResolution, _dispatcher);
+                var receiverZoom = new ReceiverChartZoomComponent(ReceiverDefaultResolution, _dispatcher);
 
-                _chartZooms.Add(cz1);
-                _chartZooms.Add(cz2);
-
+                _chartZooms.Add(receiverZoom);
                 _allZooms.AddRange(_chartZooms);
 
                 var startpoint = Instant.FromDateTimeUtc(overView.Min(x => x.DateTimeUtc));
@@ -192,18 +190,18 @@ namespace Prime.Ui.Wpf.ViewModel
                     z.ZoomToRange(range);
                 }
 
-                var chartResolver1 = _chartResolutionProvider = new ResolutionSourceProvider(() => cz1.Resolution);
-                var chartResolver2= _chartResolutionProvider = new ResolutionSourceProvider(() => cz1.Resolution);
+                var chartResolver1 = _chartResolutionProvider = new ResolutionSourceProvider(() => receiverZoom.Resolution);
+                var chartResolver2 = _chartResolutionProvider = new ResolutionSourceProvider(() => receiverZoom.Resolution);
 
                 // volume 
 
-                var volchart = _volumeChart = new ChartViewModel(ChartGroupViewModel, cz1, false);
+                var volchart = _volumeChart = new ChartViewModel(ChartGroupViewModel, receiverZoom, false);
                 volchart.SeriesCollection.Add(sourceData.ToVolumeSeries(chartResolver1, "Volume"));
                 volchart.YAxesCollection.Add(GetYAxis("Volume"));
 
                 // prices / scroller
 
-                var priceChart = _priceChart = new ChartViewModel(ChartGroupViewModel, cz2);
+                var priceChart = _priceChart = new ChartViewModel(ChartGroupViewModel, receiverZoom);
                 priceChart.YAxesCollection.Add(GetYAxis("Price"));
                 
                 priceChart.SeriesCollection.Add(sourceData.ToGCandleSeries(chartResolver2, "Prices"));
@@ -213,6 +211,8 @@ namespace Prime.Ui.Wpf.ViewModel
                 ChartGroupViewModel.ScrollSeriesCollection.Add(overView.ToScrollSeries());
                 ChartGroupViewModel.Charts.Add(volchart);
                 ChartGroupViewModel.Charts.Add(priceChart);
+
+                OverviewZoom.SetStartFrom(overView.MinOrDefault(x=>x.DateTimeUtc, DateTime.MinValue));
             }
         }
 
@@ -221,29 +221,35 @@ namespace Prime.Ui.Wpf.ViewModel
             lock (_lock)
             {
                 var newres = ChartGroupViewModel.ResolutionSelected;
-                var resetZoom = false;
 
-                TimeRange useRange = null;
+                OverviewZoom.SetStartFrom(newres);
+                
+                TimeRange resetZoom = null;
+                TimeRange newRange = null;
 
-                if (!_overviewZoom.CanFit(newres))
-                {
-                    var ts = _overviewZoom.Resolution.GetDefaultTimeSpan();
-                    useRange = new TimeRange(_overviewZoom.EndPoint.ToDateTimeUtc(), -ts, newres);
-                    resetZoom = true;
-                }
+                //if (!OverviewZoom.CanFit(newres))
+                //{
+                    var ts = newres.GetDefaultTimeSpan();
+                    newRange = new TimeRange(OverviewZoom.EndPoint.ToDateTimeUtc(), -ts, newres);
+                    resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
+                /*}
                 else
-                    useRange = _overviewZoom.GetTimeRange();
-
-                useRange.TimeResolution = newres;
+                {
+                    newRange = OverviewZoom.GetTimeRange();
+                    newRange.TimeResolution = newres;
+                    resetZoom = newRange;
+                }*/
 
                 SetDataStatus("Requesting Data");
 
-                var nPriceData = _adapter.Request(useRange);
+                var nPriceData = _adapter.Request(newRange);
                 if (nPriceData == null)
                 {
                     SetDataStatus("Data missing", false);
                     return;
                 }
+
+                _renderedCoverage.Clear();
 
                 SetDataStatus();
 
@@ -259,13 +265,14 @@ namespace Prime.Ui.Wpf.ViewModel
                     foreach (var cz in _chartZooms)
                     {
                         cz.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
-                        cz.ZoomToRange(useRange);
+                        cz.Resolution = newRange.TimeResolution;
+                        cz.ZoomToRange(newRange);
                     }
 
-                    if (resetZoom)
+                    if (resetZoom!=null)
                     {
-                        _overviewZoom.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
-                        _overviewZoom.ZoomToRange(_overviewZoom.GetDefaultTimeRange());
+                        OverviewZoom.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
+                        OverviewZoom.ZoomToRange(resetZoom);
                     }
                 });
             }

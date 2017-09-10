@@ -96,16 +96,14 @@ namespace Prime.Core
                 OhclData results = null;
 
                 if (StorageEnabled)
-                    results = StorageAdapters.Select(x => x.GetRange(timeRange)).FirstOrDefault(o => o.IsNotEmpty());
+                    results = ContinuousOrMergedStorage(timeRange);
+                
+                var hasRemaining = results.IsEmpty() ? null : results.Remaining(timeRange);
 
-                if (results.IsNotEmpty())
-                    Ctx.Status("Data received, processing.");
-                else if (ApiEnabled)
-                {
-                    results = ApiAdapters.Select(x => x.GetRange(timeRange)).FirstOrDefault(o => o.IsNotEmpty());
-                    if (results.IsNotEmpty())
-                        Ctx.Status("Data received, processing.");
-                }
+                if (ApiEnabled && (results.IsEmpty() || hasRemaining != null))
+                    results = CollectApi(hasRemaining ?? timeRange, results);
+
+                Ctx.Status(results.IsNotEmpty() ? "Data received, processing." : "No data received.");
 
                 if (StorageEnabled && results.IsNotEmpty())
                 {
@@ -115,6 +113,44 @@ namespace Prime.Core
 
                 return results;
             }
+        }
+
+        private OhclData CollectApi(TimeRange range, OhclData results)
+        {
+            var apiresults = ApiAdapters.Select(x => x.GetRange(range)).FirstOrDefault(o => o.IsNotEmpty());
+
+            results = results ?? new OhclData(range.TimeResolution);
+            results.Merge(apiresults);
+            return results;
+        }
+
+        private OhclData ContinuousOrMergedStorage(TimeRange timeRange)
+        {
+            var partials = new List<OhclData>();
+
+            foreach (var r in StorageAdapters.Select(x => x.GetRange(timeRange)))
+            {
+                if (r.IsEmpty())
+                    continue;
+
+                if (r.IsCovering(timeRange))
+                    return r.HasGap() ? null : r;
+
+                partials.Add(r);
+            }
+
+            if (!partials.Any())
+                return null;
+
+            var mergedData = new OhclData(partials.First());
+
+            foreach (var i in partials)
+                mergedData.Merge(i);
+
+            if (!timeRange.IsFromInfinity && mergedData.HasGap())
+                return null;
+
+            return mergedData;
         }
 
         private void StoreResults(OhclData clone, TimeRange timeRange)

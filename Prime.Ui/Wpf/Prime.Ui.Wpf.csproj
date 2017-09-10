@@ -344,27 +344,24 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Components\Converters\BoolToColorConverter.cs" />
+    <Compile Include="Components\Converters\BoolToDoubleConverter.cs" />
     <Compile Include="Components\Converters\DateTimeHumanConverter.cs" />
     <Compile Include="Components\Converters\InvertableBooleanToVisibilityConverter.cs" />
     <Compile Include="Components\ILayoutManager.cs" />
     <Compile Include="Components\Layout\LayoutManager.cs" />
     <Compile Include="Components\Layout\LayoutUpdateStrategy.cs" />
     <Compile Include="Components\LiveCharts\CartesianMapperBase.cs" />
-    <Compile Include="Components\LiveCharts\ChartDefinition.cs" />
     <Compile Include="Components\LiveCharts\FinancialMapperBase.cs" />
-    <Compile Include="Components\LiveCharts\IChartParser.cs" />
-    <Compile Include="Components\LiveCharts\IChartView.cs" />
     <Compile Include="Components\LiveCharts\IInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\InstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\IResolutionSource.cs" />
+    <Compile Include="Components\LiveCharts\DateAxisWindows.cs" />
     <Compile Include="Components\LiveCharts\OhlcInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Zoom\OverviewChartZoomComponent.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxis.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxisCore.cs" />
     <Compile Include="Components\LiveCharts\Zoom\ReceiverChartZoomComponent.cs" />
     <Compile Include="Components\LiveCharts\ScatterMarkerSymbol.cs" />
-    <Compile Include="Components\LiveCharts\SeriesDefinition.cs" />
-    <Compile Include="Components\LiveCharts\SeriesType.cs" />
     <Compile Include="Components\LiveCharts\Zoom\ZoomBaseComponent.cs" />
     <Compile Include="Components\PaneStyleSelector.cs" />
     <Compile Include="Components\ResolutionSourceClass.cs" />

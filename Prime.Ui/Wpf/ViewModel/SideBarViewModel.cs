@@ -25,6 +25,7 @@ namespace Prime.Ui.Wpf.ViewModel
             });
 
             PortfolioClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "portfolio"); });
+            SettingsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "services"); });
         }
 
         public SideBarViewModel(ScreenViewModel screenVm) : this()
