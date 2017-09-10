@@ -24,6 +24,12 @@ namespace Prime.Core
             ConvertedVia = context.AssetIntermediary;
         }
 
+        public void SetGap(DateTime newDateTimeUtc)
+        {
+            IsGap = true;
+            DateTimeUtc = newDateTimeUtc;
+        }
+
         [BsonId]
         public ObjectId Id { get; set; }
 
@@ -32,6 +38,9 @@ namespace Prime.Core
 
         [Bson]
         public Asset ConvertedVia { get; private set; }
+
+        [Bson]
+        public bool IsGap { get; private set; }
 
         [Bson]
         public IOhlcProvider ConvertedProvider { get; private set; }

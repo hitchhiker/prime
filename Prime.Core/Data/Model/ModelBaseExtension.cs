@@ -30,5 +30,11 @@ namespace Prime.Core
         {
             return query.Where(predicate).FirstOrDefault();
         }
+
+        public static T CloneBson<T>(this T model)
+        {
+            var doc = BsonMapper.Global.ToDocument(model.GetType(), model);
+            return BsonMapper.Global.ToObject<T>(doc);
+        }
     }
 }

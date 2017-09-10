@@ -24,7 +24,7 @@ namespace Prime.Ui.Wpf
         public DateTime SuspendRangeEventTill = DateTime.MinValue;
 
         public double ZoomToLimit => EndPoint.ToUnixTimeTicks() / AxisModifier;
-        public double ZoomFromLimit => StartPoint.ToUnixTimeTicks() / AxisModifier;
+        public virtual double ZoomFromLimit => StartPoint.ToUnixTimeTicks() / AxisModifier;
 
         public bool IsPositionLocked { get; set; }
 
@@ -34,7 +34,11 @@ namespace Prime.Ui.Wpf
         public DateTime StartPointUtc => StartPoint.ToDateTimeUtc();
         public DateTime EndPointUtc => EndPoint.ToDateTimeUtc();
 
-        public Instant StartPoint { get; set; } = Instant.FromUnixTimeSeconds(0);
+        public Instant StartPoint
+        {
+            get => _startPoint;
+            set => Set(ref _startPoint, value);
+        }
 
         public Instant EndPoint
         {
@@ -64,6 +68,7 @@ namespace Prime.Ui.Wpf
         protected double LastTo;
         private TimeResolution _resolution = TimeResolution.None;
         private Instant _endPoint = Instant.FromDateTimeUtc(DateTime.UtcNow);
+        private Instant _startPoint = Instant.FromUnixTimeSeconds(0);
 
         public abstract double ZoomFrom { get; set; }
 

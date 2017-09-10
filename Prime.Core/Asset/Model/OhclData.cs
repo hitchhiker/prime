@@ -67,6 +67,67 @@ namespace Prime.Core
             return this;
         }
 
+        public bool HasGap()
+        {
+            if (Count<2)
+                return false;
+
+            var lastDate = this.OrderBy(x => x.DateTimeUtc).FirstOrDefault().DateTimeUtc;
+
+            foreach (var i in this.OrderBy(x => x.DateTimeUtc).Skip(1))
+            {
+                if (lastDate == i.DateTimeUtc || Resolution.Neighbour(lastDate) != i.DateTimeUtc)
+                    return true;
+
+                lastDate = i.DateTimeUtc;
+            }
+
+            return false;
+        }
+
+        public void DeGap()
+        {
+            if (Count < 2)
+                return;
+
+            if (!HasGap())
+                return;
+
+            var ord = this.OrderBy(x => x.DateTimeUtc).ToList();
+
+            var previous = ord.FirstOrDefault();
+            var bad = new List<OhclEntry>();
+            var add = new List<OhclEntry>();
+
+            foreach (var i in ord.Skip(1))
+            {
+                if (previous.DateTimeUtc == i.DateTimeUtc)
+                {
+                    bad.Add(i);
+                    continue;
+                }
+
+                var expected = Resolution.Neighbour(previous.DateTimeUtc);
+
+                if (expected == DateTime.MinValue)
+                    throw new Exception("Resolution bad while normalising " + GetType());
+
+                if (expected == i.DateTimeUtc)
+                {
+                    previous = i;
+                    continue;
+                }
+
+                var ne = previous.CloneBson();
+                ne.SetGap(expected);
+                add.Add(ne);
+                previous = ne;
+            }
+
+            RemoveAll(bad.Contains);
+            AddRange(add);
+        }
+
         public void Merge(OhclData data)
         {
             foreach (var i in data)
@@ -76,9 +137,13 @@ namespace Prime.Core
             }
         }
 
-        public TimeRange RemainingFuture(TimeRange attemptedRange)
+        public TimeRange Remaining(TimeRange attemptedRange)
         {
-            return attemptedRange.UtcTo > UtcDataEnd ? new TimeRange(UtcDataEnd, attemptedRange.UtcTo, attemptedRange.TimeResolution) : null;
+            var future = attemptedRange.UtcTo > UtcDataEnd ? new TimeRange(UtcDataEnd, attemptedRange.UtcTo, attemptedRange.TimeResolution) : null;
+            if (future!=null || attemptedRange.IsFromInfinity)
+                return future;
+            var past = attemptedRange.UtcFrom < UtcDataStart ? new TimeRange(attemptedRange.UtcFrom, UtcDataStart, attemptedRange.TimeResolution) : null;
+            return past;
         }
 
         public TimeRange GetTimeRange(TimeResolution timeResolution)

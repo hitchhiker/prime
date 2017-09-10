@@ -90,6 +90,7 @@
                 <wpf:CartesianChart.AxisX>
                     <wpf:DateAxis
                         IsMerged="True"
+                        MinValue="{Binding Path=OverviewZoom.StartFrom, Mode=OneWay}"
                         HeaderForeground="White"
                         HeaderFontWeight="Normal"
                         Period="{Binding Path=OverviewZoom.Resolution, Mode=OneWay, Converter={StaticResource ResolutionConverter}}"

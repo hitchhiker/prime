@@ -30,6 +30,37 @@ namespace Prime.Ui.Wpf
             set => UpdateRange(value); // this fires second, bit of a hack really.
         }
 
+        public override double ZoomFromLimit => Math.Max(StartFrom, base.ZoomFromLimit);
+
+        private double _startFrom;
+
+        public double StartFrom
+        {
+            get => _startFrom;
+            set => Set(ref _startFrom, value);
+        }
+
+        public void SetStartFrom(DateTime dateTimeUtc)
+        {
+            StartFrom = Instant.FromDateTimeUtc(dateTimeUtc).ToUnixTimeTicks() / AxisModifier;
+        }
+
+        public void SetStartFrom(TimeResolution resolution)
+        {
+            var from = EndPointUtc.AddYears(-5);
+            switch (resolution)
+            {
+                case TimeResolution.Hour:
+                    from = EndPointUtc.AddDays(-60);
+                    break;
+                case TimeResolution.Minute:
+                    from = EndPointUtc.AddMinutes(-1000);
+                    break;
+            }
+
+            StartFrom = Math.Max(Instant.FromDateTimeUtc(from).ToUnixTimeTicks() / AxisModifier, base.ZoomFromLimit);
+        }
+
         protected void UpdateRange(double zoomTo)
         {
             //check from didn't pass left edge

@@ -96,22 +96,14 @@ namespace Prime.Core
                 OhclData results = null;
 
                 if (StorageEnabled)
-                    results = GetOrMergeStorage(timeRange);
+                    results = ContinuousOrMergedStorage(timeRange);
+                
+                var hasRemaining = results.IsEmpty() ? null : results.Remaining(timeRange);
 
-                var remaining = results.IsEmpty() ? null : results.RemainingFuture(timeRange);
+                if (ApiEnabled && (results.IsEmpty() || hasRemaining != null))
+                    results = CollectApi(hasRemaining ?? timeRange, results);
 
-                if (!results.IsEmpty() && remaining == null)
-                    Ctx.Status("Data received, processing.");
-                else if (ApiEnabled)
-                {
-                    var range = remaining ?? timeRange;
-                    var apiresults = ApiAdapters.Select(x => x.GetRange(range)).FirstOrDefault(o => o.IsNotEmpty());
-                    if (apiresults.IsNotEmpty())
-                        Ctx.Status("Data received, processing.");
-
-                    results = results ?? new OhclData(range.TimeResolution);
-                    results.Merge(apiresults);
-                }
+                Ctx.Status(results.IsNotEmpty() ? "Data received, processing." : "No data received.");
 
                 if (StorageEnabled && results.IsNotEmpty())
                 {
@@ -123,7 +115,16 @@ namespace Prime.Core
             }
         }
 
-        private OhclData GetOrMergeStorage(TimeRange timeRange)
+        private OhclData CollectApi(TimeRange range, OhclData results)
+        {
+            var apiresults = ApiAdapters.Select(x => x.GetRange(range)).FirstOrDefault(o => o.IsNotEmpty());
+
+            results = results ?? new OhclData(range.TimeResolution);
+            results.Merge(apiresults);
+            return results;
+        }
+
+        private OhclData ContinuousOrMergedStorage(TimeRange timeRange)
         {
             var partials = new List<OhclData>();
 
@@ -133,7 +134,7 @@ namespace Prime.Core
                     continue;
 
                 if (r.IsCovering(timeRange))
-                    return r;
+                    return r.HasGap() ? null : r;
 
                 partials.Add(r);
             }
@@ -145,6 +146,9 @@ namespace Prime.Core
 
             foreach (var i in partials)
                 mergedData.Merge(i);
+
+            if (!timeRange.IsFromInfinity && mergedData.HasGap())
+                return null;
 
             return mergedData;
         }

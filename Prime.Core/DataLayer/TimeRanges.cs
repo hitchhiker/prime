@@ -13,7 +13,12 @@ namespace Prime.Core
 
         [Bson]
         private UniqueList<TimeRange> Items { get; set; } = new UniqueList<TimeRange>();
-        
+
+        public void Clear()
+        {
+            Items.Clear();
+        }
+
         public bool Covers(TimeRange range)
         {
             lock (_lock)

@@ -105,5 +105,19 @@ namespace Prime.Core
                     return true;
             }
         }
+
+        public static DateTime Neighbour(this TimeResolution timeResolution, DateTime current, int distance  =1)
+        {
+            switch (timeResolution)
+            {
+                case TimeResolution.Day:
+                    return current.AddDays(distance);
+                case TimeResolution.Hour:
+                    return current.AddHours(distance);
+                case TimeResolution.Minute:
+                    return current.AddMinutes(distance);
+            }
+            return DateTime.MinValue;
+        }
     }
 }
