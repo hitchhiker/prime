@@ -16,6 +16,8 @@ namespace Prime.Core
 {
     public class UserContext : NotifierBase, IDataContext, IDisposable
     {
+        public static string Version = "v0.02";
+
         public UserContext(ObjectId id, string username)
         {
             Id = id;
@@ -87,7 +89,8 @@ namespace Prime.Core
 
         private DirectoryInfo GetDirInfo()
         {
-            var pc = Path.Combine(Prime.I.StorageDirectory.FullName, "v0.02");
+            var pc = Path.Combine(Prime.I.StorageDirectory.FullName, "usr");
+            pc = Path.Combine(pc, Version);
             pc = Path.Combine(pc, Id.ToString());
             var di = new DirectoryInfo(pc);
             if (!di.Exists)

@@ -10,6 +10,8 @@ namespace Prime.Core
 {
     public class PublicContext : IDataContext
     {
+        public static string Version = "v0.01"; 
+
         public static PublicContext I => Lazy.Value;
         private static readonly Lazy<PublicContext> Lazy = new Lazy<PublicContext>(()=>new PublicContext());
 
@@ -37,8 +39,8 @@ namespace Prime.Core
 
         private DirectoryInfo GetDirInfo()
         {
-            var pc = Path.Combine(Prime.I.StorageDirectory.FullName, "v0.02");
-            pc = Path.Combine(pc, "pub");
+            var pc = Path.Combine(Prime.I.StorageDirectory.FullName, "pub");
+            pc = Path.Combine(pc, Version);
             var di = new DirectoryInfo(pc);
             if (!di.Exists)
                 di.Create();
