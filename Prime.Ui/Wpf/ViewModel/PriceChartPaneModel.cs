@@ -227,17 +227,18 @@ namespace Prime.Ui.Wpf.ViewModel
                 TimeRange resetZoom = null;
                 TimeRange newRange = null;
 
-                if (!OverviewZoom.CanFit(newres))
-                {
+                //if (!OverviewZoom.CanFit(newres))
+                //{
                     var ts = newres.GetDefaultTimeSpan();
                     newRange = new TimeRange(OverviewZoom.EndPoint.ToDateTimeUtc(), -ts, newres);
                     resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
-                }
+                /*}
                 else
                 {
                     newRange = OverviewZoom.GetTimeRange();
                     newRange.TimeResolution = newres;
-                }
+                    resetZoom = newRange;
+                }*/
 
                 SetDataStatus("Requesting Data");
 

@@ -63,6 +63,7 @@ namespace Prime.Ui.Wpf.ViewModel
             RaisePropertyChanged(nameof(IsMinute));
             RaisePropertyChanged(nameof(CanMinute));
             RaisePropertyChanged(nameof(CanHourly));
+            RaisePropertyChanged(nameof(IsOverViewVisible));
         }
 
         public bool IsAuto
@@ -121,6 +122,8 @@ namespace Prime.Ui.Wpf.ViewModel
             get => _scrollSeriesCollection;
             set => Set(ref _scrollSeriesCollection, value);
         }
+
+        public bool IsOverViewVisible => ResolutionSelected != TimeResolution.Minute;
 
         public RelayCommand ZoomResetCommand { get; private set; }
 

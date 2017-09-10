@@ -344,6 +344,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Components\Converters\BoolToColorConverter.cs" />
+    <Compile Include="Components\Converters\BoolToDoubleConverter.cs" />
     <Compile Include="Components\Converters\DateTimeHumanConverter.cs" />
     <Compile Include="Components\Converters\InvertableBooleanToVisibilityConverter.cs" />
     <Compile Include="Components\ILayoutManager.cs" />

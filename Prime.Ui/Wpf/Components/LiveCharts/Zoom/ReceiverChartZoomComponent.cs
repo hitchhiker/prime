@@ -27,7 +27,7 @@ namespace Prime.Ui.Wpf
             get => _zoomTo;
             set
             {
-                _zoomTo = value;
+                _zoomTo = Resolution == TimeResolution.Minute ? ZoomToLimit : value;
                 BothExtentsUpdated();
             }
         }

@@ -6,8 +6,10 @@
                     xmlns:avalonDockControls="http://schemas.xceed.com/wpf/xaml/avalondock"
                     xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
                     xmlns:avalonDockProperties="clr-namespace:Xceed.Wpf.AvalonDock.Properties;assembly=Xceed.Wpf.AvalonDock"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:wpf="clr-namespace:Prime.Ui.Wpf">
     <xcad:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <wpf:BoolToDoubleConverter x:Key="BoolToDoubleConverter"/>
     <xcad:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     <xcad:AnchorSideToOrientationConverter x:Key="AnchorSideToOrientationConverter"/>
     <xcad:AnchorSideToAngleConverter x:Key="AnchorSideToAngleConverter"/>

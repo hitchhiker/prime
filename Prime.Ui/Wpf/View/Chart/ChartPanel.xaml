@@ -45,10 +45,10 @@
 
             <Grid.RowDefinitions>
                 <!-- Charts -->
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"/>
 
-                <!-- Zoom -->
-                <RowDefinition Height="100"></RowDefinition>
+                <!-- Overview -->
+                <RowDefinition Height="{Binding IsOverViewVisible, Converter={StaticResource BoolToDoubleConverter}, ConverterParameter=100}"/>
             </Grid.RowDefinitions>
 
             <!-- charts -->
@@ -75,9 +75,10 @@
             </ScrollViewer>
 
             <!-- Overview chart -->
-            <wpf:CartesianChart Grid.Row="1" x:Name="Overview"
+            <wpf:CartesianChart Grid.Row="1" 
+                                x:Name="Overview" 
+                                Visibility="{Binding IsOverViewVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                 ScrollMode="X"
-                                DataClickCommand=""
                                 MouseWheel="Overview_MouseWheel"
                                 ScrollHorizontalFrom="{Binding OverviewZoom.ZoomFrom, Mode=TwoWay}"
                                 ScrollHorizontalTo="{Binding OverviewZoom.ZoomTo, Mode=TwoWay}"
