@@ -17,8 +17,7 @@ namespace Prime.Ui.Wpf
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var item = value as TreeViewItem;
-            if (item == null)
+            if (!(value is TreeViewItem item))
                 return new Thickness(0);
 
             return new Thickness(Length * item.GetDepth(), 0, 0, 0);
