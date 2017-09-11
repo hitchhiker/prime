@@ -92,7 +92,17 @@
                         <portfolio:Receive/>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="DockingWindowTitleDataTemplate" DataType="{x:Type xcad:LayoutContent}">
+                        <Label>
+                            <TextBlock Text="{Binding Path=Title}" VerticalAlignment="Center" FontSize="14" />
+                        </Label>
+                    </DataTemplate>
+
                 </xcad:DockingManager.Resources>
+
+                <xcad:DockingManager.AnchorableTitleTemplate>
+                    <StaticResource ResourceKey="DockingWindowTitleDataTemplate" />
+                </xcad:DockingManager.AnchorableTitleTemplate>
 
                 <xcad:DockingManager.LayoutUpdateStrategy>
                     <StaticResource ResourceKey="LayoutUpdateStrategy"/>
@@ -109,6 +119,7 @@
                     <wpf:PaneStyleSelector>
                         <wpf:PaneStyleSelector.DocumentStyle>
                             <Style TargetType="{x:Type xcad:LayoutItem}">
+                                <Setter Property="Margin" Value="1000"/>
                                 <Setter Property="Title" Value="{Binding Model.Name}"/>
                                 <Setter Property="CanClose" Value="{Binding Model.CanClose}"/>
                                 <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
