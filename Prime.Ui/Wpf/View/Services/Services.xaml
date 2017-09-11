@@ -24,7 +24,7 @@
         <ListBox Grid.Row="1" ItemsSource="{Binding Path=ServicesObservable}" Padding="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="0,0,0,10" VerticalAlignment="Center">
+                    <StackPanel Margin="10,10,0,10" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Path=Title}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Cursor="Hand"/>
                         <TextBlock Text="{Binding Path=Description}"/>
                     </StackPanel>
