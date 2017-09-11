@@ -23,6 +23,7 @@ namespace Prime.Core
 
         private static readonly UniqueList<string> Commands = new UniqueList<string>()
         {
+            "exchange rates",
             "portfolio",
             "services",
             "wallet",

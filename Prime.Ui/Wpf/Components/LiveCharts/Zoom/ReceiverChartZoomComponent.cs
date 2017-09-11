@@ -27,9 +27,23 @@ namespace Prime.Ui.Wpf
             get => _zoomTo;
             set
             {
-                _zoomTo = Resolution == TimeResolution.Minute ? ZoomToLimit : value;
+                _zoomTo = IsLockToEdge(value) ? ZoomToLimit : value;
                 BothExtentsUpdated();
             }
+        }
+
+        public bool IsLockToEdge(double newValue)
+        {
+            if (Resolution == TimeResolution.Minute)
+                return true;
+
+            if (IsMouseOver && _zoomTo == ZoomToLimit)
+            {
+                ZoomFrom -= ZoomToLimit - newValue;
+                return true;
+            }
+
+            return false;
         }
 
         private void BothExtentsUpdated()

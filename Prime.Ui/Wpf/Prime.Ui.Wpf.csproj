@@ -371,6 +371,7 @@
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
+    <Compile Include="ViewModel\ExchangeRateViewModel.cs" />
     <Compile Include="ViewModel\Logging\DispatchedPropertyChangedBase.cs" />
     <Compile Include="ViewModel\Logging\LogEntry.cs" />
     <Compile Include="PageUri\AssetPageUriProvider.cs" />
@@ -382,6 +383,9 @@
     <Compile Include="ViewModel\ReceiveViewModel.cs" />
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
     <Compile Include="ViewModel\WalletViewModel.cs" />
+    <Compile Include="View\Exchange\ExchangeRates.xaml.cs">
+      <DependentUpon>ExchangeRates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Misc\LogPanel.xaml.cs">
       <DependentUpon>LogPanel.xaml</DependentUpon>
     </Compile>
@@ -475,6 +479,10 @@
     <Compile Include="Components\MetroWindowManager.cs" />
     <Compile Include="Components\Converters\RatioConverter.cs" />
     <Compile Include="Components\MetroWindowInstance.cs" />
+    <Page Include="View\Exchange\ExchangeRates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Misc\LogPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

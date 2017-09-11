@@ -97,8 +97,7 @@ namespace Prime.Core
 
             Money? m;
 
-            var ppp = provider as IPublicPricesProvider;
-            if (ppp != null)
+            if (provider is IPublicPricesProvider ppp)
             {
                 try
                 {
@@ -110,8 +109,7 @@ namespace Prime.Core
                 return null;
             }
 
-            var ep = provider as IExchangeProvider;
-            if (ep == null)
+            if (!(provider is IExchangeProvider ep))
                 return null;
 
             try { 

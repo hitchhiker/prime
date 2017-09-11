@@ -15,12 +15,13 @@
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
         WindowStartupLocation="CenterOwner"
+        d:DataContext="{d:DesignInstance Type=viewmodel:ScreenViewModel}"
         Title="{Binding Path=Title}" FontSize="16">
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Content="settings" />
-            <Button>
+            <Button Content="settings" Command="{Binding SettingsCommand}"/>
+            <Button Command="{Binding SettingsCommand}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterialLight Kind="Alert" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" Width="20" />
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="deploy cupcakes" />
@@ -34,7 +35,6 @@
     </Window.Resources>
     
     <Window.InputBindings>
-        <KeyBinding Command="{Binding TestCommand}" Key="F1" Modifiers="Alt"/>
         <KeyBinding Command="{Binding ExitCommand}" Key="F4" Modifiers="Alt"/>
     </Window.InputBindings>
 
@@ -63,7 +63,11 @@
                 BorderThickness="0">
 
                 <xcad:DockingManager.Resources>
-
+                    
+                    <DataTemplate DataType="{x:Type viewmodel:ExchangeRateViewModel}">
+                        <wpf:ExchangeRates/>
+                    </DataTemplate>
+                    
                     <DataTemplate DataType="{x:Type viewmodel:PriceChartPaneModel}">
                         <wpf:ChartPanel/>
                     </DataTemplate>

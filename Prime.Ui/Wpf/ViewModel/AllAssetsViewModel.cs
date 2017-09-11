@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Data;
@@ -21,12 +22,14 @@ namespace Prime.Ui.Wpf.ViewModel
             "EUR".ToAssetRaw();
 
             Context = UserContext.Current;
-            BaseAsset = Context.BaseAsset;
+            SelectedAsset = Context.BaseAsset;
 
             UpdateAssets();
 
-            Assets.I.OnAssetsUpdated += (_, e) => _debounceDispatcher.Debounce(100, o => UpdateAssets());
+            Core.Assets.I.OnAssetsUpdated += (_, e) => _debounceDispatcher.Debounce(100, o => UpdateAssets());
         }
+
+        public bool SetAsDefault { get; set; }
 
         private readonly ScreenViewModel _screenViewModel;
         private readonly DebounceDispatcher _debounceDispatcher;
@@ -35,25 +38,32 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void UpdateAssets()
         {
-            var ast = Assets.I.Cached().Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode);
+            var currentAsssets = Core.Assets.I.Cached().Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
 
-            KnownAssetsObservable.Clear();
-            foreach (var a in ast)
-                KnownAssetsObservable.Add(a);
+            foreach (var i in Assets.Except(currentAsssets))
+                Assets.Remove(i);
 
-            RaisePropertyChanged(nameof(KnownAssetsObservable));
-            CollectionViewSource.GetDefaultView(KnownAssetsObservable).Refresh();
+            foreach (var i in currentAsssets.Except(Assets))
+                Assets.Add(i);
+
+            RaisePropertyChanged(nameof(Assets));
+            CollectionViewSource.GetDefaultView(Assets).Refresh();
         }
 
         public readonly UserContext Context;
-        private Asset _baseAsset;
+        private Asset _selectedAsset;
 
-        public Asset BaseAsset
+        public Asset SelectedAsset
         {
-            get => _baseAsset;
-            set => Set(ref _baseAsset, value, x => { return Context.BaseAsset = x; });
+            get => _selectedAsset;
+            set => Set(ref _selectedAsset, value, x =>
+            {
+                if (SetAsDefault)
+                    return Context.BaseAsset = x;
+                return x;
+            });
         }
 
-        public ObservableCollection<Asset> KnownAssetsObservable { get; private set; } = new ObservableCollection<Asset>();
+        public BindingList<Asset> Assets { get; private set; } = new BindingList<Asset>();
     }
 }

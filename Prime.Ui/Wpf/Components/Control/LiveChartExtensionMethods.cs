@@ -66,7 +66,6 @@ namespace Prime.Ui.Wpf
 
             var values = new GearedValues<InstantChartPoint>();
             values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new InstantChartPoint { X = Instant.FromDateTimeUtc(i.DateTimeUtc), Y = (decimal)i.Close }));
-
             series.Values = values;
 
             return series;
@@ -87,7 +86,7 @@ namespace Prime.Ui.Wpf
 
             var values = new GearedValues<InstantChartPoint>();
             values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new InstantChartPoint { X = Instant.FromDateTimeUtc(i.DateTimeUtc), Y = (decimal)i.VolumeTo }));
-
+            values.Quality = Quality.Low;
             series.Values = values;
 
             return series;

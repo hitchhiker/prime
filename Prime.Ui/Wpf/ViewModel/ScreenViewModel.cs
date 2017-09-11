@@ -20,6 +20,10 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand TestCommand { get; private set; }
         public RelayCommand ExitCommand { get; private set; }
 
+        public RelayCommand SettingsCommand { get; }
+        public RelayCommand WalletReceiveCommand { get; }
+        public RelayCommand WalletSendCommand { get; }
+
         public RelayCommand<DockingManager> SaveLayoutCommand { get; }
         public RelayCommand<DockingManager> ResetLayoutCommand { get; }
         public RelayCommand<DockingManager> RestoreLayoutCommand { get; }
@@ -71,6 +75,7 @@ namespace Prime.Ui.Wpf.ViewModel
             SaveLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.SaveLayout(manager));
             RestoreLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.LoadLayout(manager));
             ResetLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.ResetLayout(manager));
+            SettingsCommand = new RelayCommand(() => { SideBarViewModel.SettingsClickedCommand.Execute(null); });
         }
 
         private void OnCommandAccepted(CommandBase c)

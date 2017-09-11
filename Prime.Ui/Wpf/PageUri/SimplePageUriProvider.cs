@@ -19,6 +19,7 @@ namespace Prime.Ui.Wpf.PageUri
         
         private static readonly Dictionary<string, string> Commands = new Dictionary<string, string>()
         {
+            {"exchange rates", "/View/Exchange/ExchangeRates.xaml"},
             {"portfolio", "/View/Portfolio/Portfolio.xaml"},
             {"services", "/View/Services/Services.xaml"},
             {"wallet", "/View/Portfolio/Wallet.xaml"},
@@ -31,6 +32,8 @@ namespace Prime.Ui.Wpf.PageUri
         {
             switch (command.Command)
             {
+                case "exchange rates":
+                    return new ExchangeRateViewModel(model) { Key = command.Command, Name = command.Title };
                 case "portfolio":
                     return new PortfolioPaneViewModel(model) { Key = command.Command, Name = command.Title };
                 case "wallet":

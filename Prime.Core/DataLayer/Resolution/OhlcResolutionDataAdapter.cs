@@ -143,6 +143,7 @@ namespace Prime.Core
                 return null;
 
             var mergedData = new OhclData(partials.First());
+            mergedData.ConvertedFrom = partials.Select(x => x.ConvertedFrom).FirstOrDefault(x=>x!=null) ?? mergedData.ConvertedFrom;
 
             foreach (var i in partials)
                 mergedData.Merge(i);

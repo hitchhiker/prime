@@ -230,7 +230,17 @@ namespace Prime.Ui.Wpf.ViewModel
                 //if (!OverviewZoom.CanFit(newres))
                 //{
                     var ts = newres.GetDefaultTimeSpan();
-                    newRange = new TimeRange(OverviewZoom.EndPoint.ToDateTimeUtc(), -ts, newres);
+                    var ep = OverviewZoom.EndPoint.ToDateTimeUtc();
+                /*switch (newres)
+                {
+                    case TimeResolution.Hour:
+                        ep = ep.AddHours(23);
+                        break;
+                    case TimeResolution.Minute:
+                        ep = ep.AddHours(23).AddMinutes(59);
+                        break;
+                }*/
+                    newRange = new TimeRange(ep, -ts, newres);
                     resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
                 /*}
                 else
