@@ -75,6 +75,8 @@ namespace Prime.Core
             }
         }
 
+        public static TimeRange EverySecondTillNow => new TimeRange(DateTimeExt.UnixEpoch, DateTime.UtcNow, TimeResolution.Second);
+
         public static TimeRange EveryDayTillNow => new TimeRange(DateTimeExt.UnixEpoch, DateTime.UtcNow, TimeResolution.Day);
 
         public static TimeRange Empty => new TimeRange(DateTime.MinValue, DateTime.MinValue, TimeResolution.None);

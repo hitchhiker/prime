@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public ChartGroupViewModel() { }
 
-        public ChartGroupViewModel(PriceChartPaneModel parentModel, IMessenger messenger, OverviewChartZoomComponent zoom)
+        public ChartGroupViewModel(PriceChartPaneModel parentModel, IMessenger messenger, OverviewZoomComponent zoom)
         {
             ParentModel = parentModel;
             _messenger = messenger;
@@ -129,7 +129,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public RelayCommand<RangeChangedEventArgs> RangeChangedCommand { get; private set; }
 
-        public OverviewChartZoomComponent OverviewZoom { get; private set; }
+        public OverviewZoomComponent OverviewZoom { get; private set; }
 
         TimeResolution IResolutionSource.Resolution { get; set; }
     }

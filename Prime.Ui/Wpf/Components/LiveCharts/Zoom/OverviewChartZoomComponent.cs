@@ -12,9 +12,9 @@ namespace Prime.Ui.Wpf
     /// <summary>
     /// Chart component responsible for the zoom state
     /// </summary>
-    public class OverviewChartZoomComponent : ZoomBaseComponent
+    public class OverviewZoomComponent : ZoomBaseComponent
     {
-        public OverviewChartZoomComponent(TimeResolution resolution, Dispatcher uiDispatcher) : base(resolution, uiDispatcher)
+        public OverviewZoomComponent(TimeResolution resolution, Dispatcher uiDispatcher) : base(resolution, uiDispatcher)
         {
         }
 

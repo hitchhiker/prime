@@ -352,11 +352,11 @@
     <Compile Include="Components\Layout\LayoutUpdateStrategy.cs" />
     <Compile Include="Components\LiveCharts\CartesianMapperBase.cs" />
     <Compile Include="Components\LiveCharts\FinancialMapperBase.cs" />
-    <Compile Include="Components\LiveCharts\IInstantChartPoint.cs" />
-    <Compile Include="Components\LiveCharts\InstantChartPoint.cs" />
+    <Compile Include="Components\LiveCharts\Point\IInstantChartPoint.cs" />
+    <Compile Include="Components\LiveCharts\Point\InstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\IResolutionSource.cs" />
     <Compile Include="Components\LiveCharts\DateAxisWindows.cs" />
-    <Compile Include="Components\LiveCharts\OhlcInstantChartPoint.cs" />
+    <Compile Include="Components\LiveCharts\Point\OhlcInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Zoom\OverviewChartZoomComponent.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxis.cs" />
     <Compile Include="Components\LiveCharts\PrimeDateAxisCore.cs" />

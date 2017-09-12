@@ -31,7 +31,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private readonly List<ZoomBaseComponent> _chartZooms = new List<ZoomBaseComponent>();
         private readonly List<ZoomBaseComponent> _allZooms = new List<ZoomBaseComponent>();
-        public readonly OverviewChartZoomComponent OverviewZoom;
+        public readonly OverviewZoomComponent OverviewZoom;
         private ResolutionSourceProvider _chartResolutionProvider;
 
         public readonly TimeResolution OverviewDefaultResolution = TimeResolution.Day;
@@ -64,7 +64,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _adapter = new OhlcDataAdapter(ctx);
 
-            OverviewZoom = new OverviewChartZoomComponent(OverviewDefaultResolution, _dispatcher);
+            OverviewZoom = new OverviewZoomComponent(OverviewDefaultResolution, _dispatcher);
 
             _allZooms.Add(OverviewZoom);
 
@@ -174,13 +174,13 @@ namespace Prime.Ui.Wpf.ViewModel
             {
                 var overView = _adapter.OverviewOhcl;
 
-                var receiverZoom = new ReceiverChartZoomComponent(ReceiverDefaultResolution, _dispatcher);
+                var receiverZoom = new ReceiverZoomComponent(ReceiverDefaultResolution, _dispatcher);
 
                 _chartZooms.Add(receiverZoom);
                 _allZooms.AddRange(_chartZooms);
 
                 var startpoint = Instant.FromDateTimeUtc(overView.Min(x => x.DateTimeUtc));
-                var endpoint = Instant.FromDateTimeUtc(overView.Max(x => x.DateTimeUtc));
+                var endpoint = Instant.FromDateTimeUtc(DateTime.UtcNow); //Instant.FromDateTimeUtc(overView.Max(x => x.DateTimeUtc));
                 var range = sourceData.GetTimeRange(ChartResolution);
 
                 foreach (var z in _allZooms)

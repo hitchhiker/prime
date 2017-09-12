@@ -7,9 +7,9 @@ using Prime.Core;
 
 namespace Prime.Ui.Wpf
 {
-    public class ReceiverChartZoomComponent : ZoomBaseComponent
+    public class ReceiverZoomComponent : ZoomBaseComponent
     {
-        public ReceiverChartZoomComponent(TimeResolution resolution, Dispatcher uiDispatcher) : base(resolution, uiDispatcher)
+        public ReceiverZoomComponent(TimeResolution resolution, Dispatcher uiDispatcher) : base(resolution, uiDispatcher)
         {
             RangeDebounce = 50;
         }
