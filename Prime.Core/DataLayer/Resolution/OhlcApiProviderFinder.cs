@@ -4,12 +4,12 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OhlcApiProviderDiscover
+    public class OhlcApiProviderFinder
     {
-        private readonly OhlcDiscoveryContext _context;
+        private readonly OhlcProviderFinderContext _context;
         private readonly AssetPair _pair;
 
-        public OhlcApiProviderDiscover(OhlcDiscoveryContext context)
+        public OhlcApiProviderFinder(OhlcProviderFinderContext context)
         {
             _context = context;
             _pair = context.Pair;

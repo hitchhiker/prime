@@ -12,9 +12,11 @@ namespace Prime.Ui.Wpf
     public class PrimeDateAxisCore : DateAxisCore
     {
         private DateTime _initialDateTime = new NodaTime.Instant().ToDateTimeUtc();
+        private int _utcOffset = (int) (DateTime.Now - DateTime.UtcNow).TotalHours;
+
         private PeriodUnit _period => ((IDateAxisView)this.View).Period;
 
-        public PrimeDateAxisCore(IWindowAxisView view) : base(view) { }
+        public PrimeDateAxisCore(IWindowAxisView view) : base(view) {}
 
         public override Func<double, string> GetFormatter()
         {
@@ -47,16 +49,16 @@ namespace Prime.Ui.Wpf
             switch (_period)
             {
                 case PeriodUnit.Milliseconds:
-                    dateTime = this._initialDateTime.AddMilliseconds(Math.Floor(x));
+                    dateTime = this._initialDateTime.AddMilliseconds(Math.Floor(x)).AddHours(_utcOffset);
                     break;
                 case PeriodUnit.Seconds:
-                    dateTime = this._initialDateTime.AddSeconds(Math.Floor(x));
+                    dateTime = this._initialDateTime.AddSeconds(Math.Floor(x)).AddHours(_utcOffset);
                     break;
                 case PeriodUnit.Minutes:
-                    dateTime = this._initialDateTime.AddMinutes(Math.Floor(x));
+                    dateTime = this._initialDateTime.AddMinutes(Math.Floor(x)).AddHours(_utcOffset);
                     break;
                 case PeriodUnit.Hours:
-                    dateTime = this._initialDateTime.AddHours(Math.Floor(x));
+                    dateTime = this._initialDateTime.AddHours(Math.Floor(x)).AddHours(_utcOffset);
                     break;
                 case PeriodUnit.Days:
                     dateTime = this._initialDateTime.AddDays(Math.Floor(x));
@@ -64,6 +66,7 @@ namespace Prime.Ui.Wpf
                 default:
                     throw new ArgumentException();
             }
+
             return dateTime;
         }
     }

@@ -8,29 +8,29 @@ namespace Prime.Core
 {
     public class OhlcDataAdapter
     {
-        private readonly OhlcResolutionDataAdapter _adapterMinute;
-        private readonly OhlcResolutionDataAdapter _adapterHour;
-        private readonly OhlcResolutionDataAdapter _adapterDay;
-        public readonly OhlcResolutionAdapterAdapterContext Ctx;
+        private readonly OhlcResolutionAdapter _adapterMinute;
+        private readonly OhlcResolutionAdapter _adapterHour;
+        private readonly OhlcResolutionAdapter _adapterDay;
+        public readonly OhlcResolutionContext Ctx;
 
-        public OhlcDataAdapter(AssetPair pair) : this(new OhlcResolutionAdapterAdapterContext() {Pair = pair}) {}
+        public OhlcDataAdapter(AssetPair pair) : this(new OhlcResolutionContext() {Pair = pair}) {}
         
-        public OhlcDataAdapter(OhlcResolutionAdapterAdapterContext adapterContext)
+        public OhlcDataAdapter(OhlcResolutionContext adapterContext)
         {
             Ctx = adapterContext;
 
-            _adapters.Add(_adapterMinute = new OhlcResolutionDataAdapter(new OhlcResolutionAdapterContext(Ctx) { TimeResolution = TimeResolution.Minute}));
-            _adapters.Add(_adapterHour = new OhlcResolutionDataAdapter(new OhlcResolutionAdapterContext(Ctx) { TimeResolution = TimeResolution.Hour}));
-            _adapters.Add(_adapterDay = new OhlcResolutionDataAdapter(new OhlcResolutionAdapterContext(Ctx) { TimeResolution = TimeResolution.Day}));
+            _adapters.Add(_adapterMinute = new OhlcResolutionAdapter(new OhlcResolutionAdapterContext(Ctx) { TimeResolution = TimeResolution.Minute}));
+            _adapters.Add(_adapterHour = new OhlcResolutionAdapter(new OhlcResolutionAdapterContext(Ctx) { TimeResolution = TimeResolution.Hour}));
+            _adapters.Add(_adapterDay = new OhlcResolutionAdapter(new OhlcResolutionAdapterContext(Ctx) { TimeResolution = TimeResolution.Day}));
         }
 
         public DateTime UtcDataStart { get; set; }
 
         public OhclData OverviewOhcl { get; set; }
 
-        public IReadOnlyList<OhlcResolutionDataAdapter> Adapters => _adapters;
+        public IReadOnlyList<OhlcResolutionAdapter> Adapters => _adapters;
 
-        private readonly List<OhlcResolutionDataAdapter> _adapters = new List<OhlcResolutionDataAdapter>();
+        private readonly List<OhlcResolutionAdapter> _adapters = new List<OhlcResolutionAdapter>();
 
         private volatile bool _isInit;
 
@@ -68,7 +68,7 @@ namespace Prime.Core
         private void RequestFullDaily()
         {
             var range = TimeRange.EveryDayTillNow;
-            OverviewOhcl = _adapterDay.Request(range);
+            OverviewOhcl = Request(range);
 
             if (OverviewOhcl.IsEmpty())
                 throw new Exception("Data range missing during " + nameof(Init));
@@ -77,6 +77,13 @@ namespace Prime.Core
         }
 
         public OhclData Request(TimeRange timeRange)
+        {
+            var d = RequestInternal(timeRange);
+            //d?.OffSet(Ctx.HourOffset);
+            return d;
+        }
+
+        private OhclData RequestInternal(TimeRange timeRange)
         {
             switch (timeRange.TimeResolution)
             {

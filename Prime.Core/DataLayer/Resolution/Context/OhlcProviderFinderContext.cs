@@ -1,10 +1,10 @@
 ﻿namespace Prime.Core
 {
-    public class OhlcDiscoveryContext
+    public class OhlcProviderFinderContext
     {
-        public OhlcDiscoveryContext() { }
+        public OhlcProviderFinderContext() { }
 
-        public OhlcDiscoveryContext(OhlcDiscoveryContext context)
+        public OhlcProviderFinderContext(OhlcProviderFinderContext context)
         {
             Pair = context.Pair;
             PeggedEnabled = context.PeggedEnabled;

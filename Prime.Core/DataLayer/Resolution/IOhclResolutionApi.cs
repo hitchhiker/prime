@@ -2,7 +2,7 @@
 {
     public interface IOhclResolutionApi
     {
-        OhlcResolutionDataAdapter Adapter { get; }
+        OhlcResolutionAdapter Adapter { get; }
 
         OhclData GetRange(TimeRange timeRange);
     }

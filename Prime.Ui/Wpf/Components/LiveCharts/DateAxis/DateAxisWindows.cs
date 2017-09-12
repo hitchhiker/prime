@@ -32,7 +32,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class MilliSecondAxisWindow : DateAxisWindow
+        public sealed class MilliSecondAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -68,7 +68,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class TenMilliSecondAxisWindow : DateAxisWindow
+        public sealed class TenMilliSecondAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -104,7 +104,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class HundredMilliSecondAxisWindow : DateAxisWindow
+        public sealed class HundredMilliSecondAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -140,7 +140,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class SecondAxisWindow : DateAxisWindow
+        public sealed class SecondAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -175,7 +175,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class FifteenSecondsAxisWindow : DateAxisWindow
+        public sealed class FifteenSecondsAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -209,7 +209,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class ThirtySecondsAxisWindow : DateAxisWindow
+        public sealed class ThirtySecondsAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -243,7 +243,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class MinuteAxisWindow : DateAxisWindow
+        public sealed class MinuteAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -277,7 +277,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class QuarterAxisWindow : DateAxisWindow
+        public sealed class QuarterAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -313,7 +313,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class HalfHourAxisWindow : DateAxisWindow
+        public sealed class HalfHourAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -349,7 +349,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class HourAxisWindow : DateAxisWindow
+        public sealed class HourAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -385,7 +385,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class DayAxisWindow : DateAxisWindow
+        public sealed class DayAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -423,7 +423,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class WeekAxisWindow : DateAxisWindow
+        public sealed class WeekAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -454,7 +454,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class MonthAxisWindow : DateAxisWindow
+        public sealed class MonthAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -490,7 +490,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class YearAxisWindow : DateAxisWindow
+        public sealed class YearAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -524,7 +524,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class DecadeAxisWindow : DateAxisWindow
+        public sealed class DecadeAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -558,7 +558,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class CenturyAxisWindow : DateAxisWindow
+        public sealed class CenturyAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth
@@ -592,7 +592,7 @@ namespace Prime.Ui.Wpf
         }
 
         /// <inheritdoc />
-        public sealed class MillenniumAxisWindow : DateAxisWindow
+        public sealed class MillenniumAxisWindow : PrimeDateAxisWindow
         {
             /// <inheritdoc />
             public override double MinimumSeparatorWidth

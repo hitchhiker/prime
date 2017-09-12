@@ -9,7 +9,7 @@ namespace Prime.Core
 {
     public class OhlcResolutionDataAdapterMemory : IOhlcResolutionAdapterStorage
     {
-        public OhlcResolutionDataAdapterMemory(OhlcResolutionDataAdapter adapter)
+        public OhlcResolutionDataAdapterMemory(OhlcResolutionAdapter adapter)
         {
             Ctx = adapter.Ctx;
             _adapter = adapter;
@@ -21,11 +21,11 @@ namespace Prime.Core
         private static readonly object Lock = new object();
 
         public readonly OhlcResolutionAdapterContext Ctx;
-        private readonly OhlcResolutionDataAdapter _adapter;
+        private readonly OhlcResolutionAdapter _adapter;
 
         public TimeResolution TimeResolution => _adapter.TimeResolution;
 
-        public OhlcResolutionDataAdapter Adapter => _adapter;
+        public OhlcResolutionAdapter Adapter => _adapter;
 
         public OhclData GetRange(TimeRange timeRange)
         {

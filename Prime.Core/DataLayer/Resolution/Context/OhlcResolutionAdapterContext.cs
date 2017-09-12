@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace Prime.Core
 {
-    public class OhlcResolutionAdapterContext : OhlcDiscoveryContext
+    public class OhlcResolutionAdapterContext : OhlcProviderFinderContext
     {
         public OhlcResolutionAdapterContext() { }
 
@@ -26,7 +26,7 @@ namespace Prime.Core
             IsDataConverted = ctx.IsDataConverted;
             StatusEntry = ctx.StatusEntry;
         }
-
+        
         public bool MemoryStorageEnabled { get; set; } = true;
 
         public bool DbStorageEnabled { get; set; } = true;
@@ -72,7 +72,7 @@ namespace Prime.Core
 
         public void DiscoverAndApplyApiProviders(bool overwrite = false)
         {
-            var provs = ApiDiscoveryFunction?.Invoke() ?? new OhlcApiProviderDiscover(this).FindProvider();
+            var provs = ApiDiscoveryFunction?.Invoke() ?? new OhlcApiProviderFinder(this).FindProvider();
 
             ProvidersForConversion = provs.via;
             ProvidersForDirect = provs.direct;

@@ -149,7 +149,7 @@ namespace plugins
                 return null;
 
             var r = new OhclData(market);
-            var seriesid = OhlcResolutionDataAdapter.GetHash(pair, market, Network);
+            var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
             var from = apir.TimeFrom;
             var to = apir.TimeTo;
             foreach (var i in apir.Data.Where(x=>x.time >= from && x.time<=to))

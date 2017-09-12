@@ -158,7 +158,7 @@ namespace plugins
             var de = DateTime.UtcNow;
             var apir = AsyncContext.Run(()=> api.Markets.GetChartDataAsync(cpair, mp, ds, de));
             var r = new OhclData(market);
-            var seriesid = OhlcResolutionDataAdapter.GetHash(pair, market, Network);
+            var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
             foreach (var i in apir)
             {
                 r.Add(new OhclEntry(seriesid, i.Time, this)

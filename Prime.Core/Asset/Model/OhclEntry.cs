@@ -49,7 +49,7 @@ namespace Prime.Core
         public IOhlcProvider Provider { get; private set; }
 
         [Bson]
-        public DateTime DateTimeUtc { get; private set; }
+        public DateTime DateTimeUtc { get; set; }
 
         [Bson]
         public double Open { get; set; }

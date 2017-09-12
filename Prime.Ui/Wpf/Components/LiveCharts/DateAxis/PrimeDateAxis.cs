@@ -14,6 +14,7 @@ namespace Prime.Ui.Wpf
         {
             if (this.Model == null)
                 this.Model = (AxisCore)new PrimeDateAxisCore((IWindowAxisView)this);
+
             this.Model.ShowLabels = this.ShowLabels;
             this.Model.Chart = chart;
             this.Model.IsMerged = this.IsMerged;
@@ -31,7 +32,7 @@ namespace Prime.Ui.Wpf
             this.Windows.AddRange(DateAxisWindows.GetDateAxisWindows());
 
             ((WindowAxisCore)this.Model).Windows = this.Windows.ToList<AxisWindow>();
-            ((WindowAxisCore)this.Model).Windows.ForEach((Action<AxisWindow>)(w => ((DateAxisWindow)w).DateAxisCore = (DateAxisCore)this.Model));
+            ((WindowAxisCore)this.Model).Windows.ForEach((Action<AxisWindow>)(w => ((DateAxisWindow)w).DateAxisCore = (PrimeDateAxisCore)this.Model));
             return this.Model;
         }
     }

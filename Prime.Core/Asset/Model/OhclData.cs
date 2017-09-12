@@ -151,6 +151,12 @@ namespace Prime.Core
             return Count == 0 ? TimeRange.Empty : new TimeRange(this.Min(x => x.DateTimeUtc), this.Max(x => x.DateTimeUtc), timeResolution);
         }
 
+        public void OffSet(int hours)
+        {
+            foreach (var i in this)
+                i.DateTimeUtc= i.DateTimeUtc.AddHours(hours);
+        }
+
         public static OhclData Empty => new OhclData(TimeResolution.None);
     }
 }

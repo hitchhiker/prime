@@ -8,20 +8,20 @@ namespace Prime.Core
 {
     public class OhlcResolutionDataAdapterApi : IOhclResolutionApi
     {
-        public OhlcResolutionDataAdapterApi(OhlcResolutionDataAdapter adapter)
+        public OhlcResolutionDataAdapterApi(OhlcResolutionAdapter adapter)
         {
             _adapter = adapter;
             Ctx = adapter.Ctx;
             L = new Utility.Logger(Ctx.Status);
         }
 
-        private readonly OhlcResolutionDataAdapter _adapter;
+        private readonly OhlcResolutionAdapter _adapter;
 
         public readonly OhlcResolutionAdapterContext Ctx;
 
         public readonly Utility.Logger L;
 
-        public OhlcResolutionDataAdapter Adapter => _adapter;
+        public OhlcResolutionAdapter Adapter => _adapter;
 
         public OhclData GetRange(TimeRange timeRange)
         {
@@ -79,7 +79,7 @@ namespace Prime.Core
                 Network = Ctx.PrimaryApiProvider.Network
             };
 
-            var seriesid = OhlcResolutionDataAdapter.GetHash(Ctx.Pair, range.TimeResolution, ohcldata.Network);
+            var seriesid = OhlcResolutionAdapter.GetHash(Ctx.Pair, range.TimeResolution, ohcldata.Network);
 
             foreach (var i in d1)
             {

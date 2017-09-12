@@ -54,8 +54,8 @@ namespace Prime.Ui.Wpf.ViewModel
             CanClose = true;
             IsActive = true;
             IsSelected = true;
-
-            var ctx = new OhlcResolutionAdapterAdapterContext()
+            
+            var ctx = new OhlcResolutionContext()
             {
                 Pair = _pair,
                 RequestFullDaily = true,

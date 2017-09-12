@@ -9,9 +9,9 @@ using System.Threading;
 
 namespace Prime.Core
 {
-    public class OhlcResolutionDataAdapter
+    public class OhlcResolutionAdapter
     {
-        public OhlcResolutionDataAdapter(OhlcResolutionAdapterContext context)
+        public OhlcResolutionAdapter(OhlcResolutionAdapterContext context)
         {
             Ctx = context;
 

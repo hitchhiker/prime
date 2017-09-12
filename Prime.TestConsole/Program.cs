@@ -101,7 +101,7 @@ namespace TestConsole
             var a2 = "USD".ToAssetRaw();
             var pair = new AssetPair(a1, a2);
 
-            var ohcl = new OhlcDataAdapter(new OhlcResolutionAdapterAdapterContext() {Pair = pair});
+            var ohcl = new OhlcDataAdapter(new OhlcResolutionContext() {Pair = pair});
 
             ohcl.Init();
 

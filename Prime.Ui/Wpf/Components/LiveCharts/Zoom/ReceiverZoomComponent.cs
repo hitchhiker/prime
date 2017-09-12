@@ -27,19 +27,20 @@ namespace Prime.Ui.Wpf
             get => _zoomTo;
             set
             {
-                _zoomTo = IsLockToEdge(value) ? ZoomToLimit : value;
+                _zoomTo = IsLockToRightEdge(value) ? ZoomToLimit : value;
                 BothExtentsUpdated();
             }
         }
 
-        public bool IsLockToEdge(double newValue)
+        public bool IsLockToRightEdge(double newValue)
         {
             if (Resolution == TimeResolution.Minute)
                 return true;
 
             if (IsMouseOver && _zoomTo == ZoomToLimit)
-            {
-                ZoomFrom -= ZoomToLimit - newValue;
+            { 
+                if (newValue > ZoomToLimit)
+                    ZoomFrom -= ZoomToLimit - newValue;
                 return true;
             }
 
