@@ -14,18 +14,6 @@ namespace Prime.Ui.Wpf
 {
     public static class LiveChartExtensionMethods
     {
-        public static OhlcSeries ToOhlcSeries(this OhclData data, AssetPair pair)
-        {
-            var vals = new ChartValues<OhlcPoint>();
-            var series = new OhlcSeries() { Values = vals };
-
-            if (data == null)
-                return series;
-
-            vals.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new OhlcPoint(i.Open, i.High, i.Low, i.Close)));
-            return series;
-        }
-
         public static GCandleSeries ToGCandleSeries(this OhclData data, ResolutionSourceProvider resolver = null, string title = "")
         {
             var ohlcChartPointEvaluator = new OhlcInstantChartPointMapper(resolver ?? new ResolutionSourceProvider(data.Resolution));
@@ -43,7 +31,7 @@ namespace Prime.Ui.Wpf
                 return series;
 
             var values = new GearedValues<OhlcInstantChartPoint>();
-            values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new OhlcInstantChartPoint {X = Instant.FromDateTimeUtc(i.DateTimeUtc), Open = i.Open, High = i.High, Low = i.Low, Close = i.Close}));
+            values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new OhlcInstantChartPoint(i)));
 
             series.Values = values;
 
@@ -65,7 +53,7 @@ namespace Prime.Ui.Wpf
                 return series;
 
             var values = new GearedValues<InstantChartPoint>();
-            values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new InstantChartPoint { X = Instant.FromDateTimeUtc(i.DateTimeUtc), Y = (decimal)i.Close }));
+            values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new InstantChartPoint(i)));
             series.Values = values;
 
             return series;
@@ -85,7 +73,7 @@ namespace Prime.Ui.Wpf
                 return series;
 
             var values = new GearedValues<InstantChartPoint>();
-            values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new InstantChartPoint { X = Instant.FromDateTimeUtc(i.DateTimeUtc), Y = (decimal)i.VolumeTo }));
+            values.AddRange(data.OrderBy(x => x.DateTimeUtc).Select(i => new InstantChartPoint(i)));
             values.Quality = Quality.Low;
             series.Values = values;
 
@@ -118,7 +106,7 @@ namespace Prime.Ui.Wpf
                 var v = smadata[index];
                 if (double.IsNaN(v))
                     continue;
-                values.Add(new InstantChartPoint{X = Instant.FromDateTimeOffset(d.DateTimeUtc), Y = (decimal)v});
+                values.Add(new InstantChartPoint(d.DateTimeUtc, (decimal) v));
             }
 
             series.Values = values;

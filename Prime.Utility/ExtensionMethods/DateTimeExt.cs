@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NodaTime;
 
 namespace Prime.Utility
 {
@@ -172,6 +173,21 @@ namespace Prime.Utility
         public static double ToUnixTimeStampSimple(this DateTime dateTime)
         {
             return (dateTime - UnixEpoch).TotalSeconds;
+        }
+
+        public static Instant ToInstantLocal(this DateTime dateTime)
+        {
+            if (dateTime.Kind != DateTimeKind.Utc)
+                throw new ArgumentException(nameof(dateTime) + " must be of Kind " + DateTimeKind.Utc);
+
+            var utcf = new DateTime(dateTime.ToLocalTime().Ticks, DateTimeKind.Utc);
+
+            return Instant.FromDateTimeUtc(utcf);
+        }
+
+        public static Instant ToInstant(this DateTime dateTime)
+        {
+            return Instant.FromDateTimeUtc(dateTime);
         }
 
         public static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

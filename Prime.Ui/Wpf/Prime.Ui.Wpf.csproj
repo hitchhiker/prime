@@ -351,7 +351,7 @@
     <Compile Include="Components\Layout\LayoutManager.cs" />
     <Compile Include="Components\Layout\LayoutUpdateStrategy.cs" />
     <Compile Include="Components\LiveCharts\CartesianMapperBase.cs" />
-    <Compile Include="Components\LiveCharts\FinancialMapperBase.cs" />
+    <Compile Include="Components\LiveCharts\Point\FinancialMapperBase.cs" />
     <Compile Include="Components\LiveCharts\Point\IInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Point\InstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\IResolutionSource.cs" />
@@ -408,12 +408,12 @@
     </Compile>
     <Compile Include="ViewModel\ChartGroupViewModel.cs" />
     <Compile Include="ViewModel\ChartViewModel.cs" />
-    <Compile Include="Components\InstantChartPointMapper.cs" />
+    <Compile Include="Components\LiveCharts\Point\InstantChartPointMapper.cs" />
     <Compile Include="Messages\LogEntryReceivedMessage.cs" />
     <Compile Include="ViewModel\LogPanelItemViewModel.cs" />
     <Compile Include="ViewModel\LogPanelViewModel.cs" />
     <Compile Include="ViewModel\ScreenViewModel.cs" />
-    <Compile Include="Components\OhlcInstantChartPointMapper.cs" />
+    <Compile Include="Components\LiveCharts\Point\OhlcInstantChartPointMapper.cs" />
     <Compile Include="Components\Converters\ResolutionConverter.cs" />
     <Compile Include="Components\Command\DelegateCommand.cs" />
     <Compile Include="ViewModel\AllAssetsViewModel.cs" />

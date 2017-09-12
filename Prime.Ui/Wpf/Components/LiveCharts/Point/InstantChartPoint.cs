@@ -1,4 +1,7 @@
+using System;
 using NodaTime;
+using Prime.Core;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf
 {
@@ -7,6 +10,18 @@ namespace Prime.Ui.Wpf
         public Instant X { get; set; }
 
         public decimal Y { get; set; }
+
+        public InstantChartPoint(OhclEntry i)
+        {
+            X = i.DateTimeUtc.ToInstant();
+            Y = (decimal) i.Close;
+        }
+
+        public InstantChartPoint(DateTime dateTimeUtc, decimal y)
+        {
+            X = dateTimeUtc.ToInstant();
+            Y = y;
+        }
 
         public InstantChartPoint(Instant x, decimal y)
         {

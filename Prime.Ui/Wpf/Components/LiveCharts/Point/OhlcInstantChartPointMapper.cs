@@ -3,16 +3,16 @@ using Prime.Core;
 
 namespace Prime.Ui.Wpf
 {
-    public class InstantChartPointMapper : CartesianMapperBase<InstantChartPoint>
+    public class OhlcInstantChartPointMapper : FinancialMapperBase<OhlcInstantChartPoint>
     {
-        public InstantChartPointMapper(IResolutionSource source) : base(source)
+        public OhlcInstantChartPointMapper(IResolutionSource source) : base(source)
         {
             X(m =>
             {
                 switch (source.Resolution)
                 {
                     case TimeResolution.Millisecond:
-                        return m.X.ToUnixTimeTicks();
+                        return m.X.ToUnixTimeMilliseconds();
 
                     case TimeResolution.Second:
                         return m.X.ToUnixTimeSeconds();
@@ -30,8 +30,10 @@ namespace Prime.Ui.Wpf
                         throw new ArgumentOutOfRangeException();
                 }
             });
-
-            Y(m => (double)m.Y);
+            Open(m => m.Open);
+            Close(m => m.Close);
+            High(m => m.High);
+            Low(m => m.Low);
         }
     }
 }

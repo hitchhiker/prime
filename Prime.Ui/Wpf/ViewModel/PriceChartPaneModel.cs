@@ -190,13 +190,12 @@ namespace Prime.Ui.Wpf.ViewModel
                     z.ZoomToRange(range);
                 }
 
-                var chartResolver1 = _chartResolutionProvider = new ResolutionSourceProvider(() => receiverZoom.Resolution);
-                var chartResolver2 = _chartResolutionProvider = new ResolutionSourceProvider(() => receiverZoom.Resolution);
+                var resolver = _chartResolutionProvider = new ResolutionSourceProvider(() => receiverZoom.Resolution);
 
                 // volume 
 
                 var volchart = _volumeChart = new ChartViewModel(ChartGroupViewModel, receiverZoom, false);
-                volchart.SeriesCollection.Add(sourceData.ToVolumeSeries(chartResolver1, "Volume"));
+                volchart.SeriesCollection.Add(sourceData.ToVolumeSeries(resolver, "Volume"));
                 volchart.YAxesCollection.Add(GetYAxis("Volume"));
 
                 // prices / scroller
@@ -204,7 +203,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 var priceChart = _priceChart = new ChartViewModel(ChartGroupViewModel, receiverZoom);
                 priceChart.YAxesCollection.Add(GetYAxis("Price"));
                 
-                priceChart.SeriesCollection.Add(sourceData.ToGCandleSeries(chartResolver2, "Prices"));
+                priceChart.SeriesCollection.Add(sourceData.ToGCandleSeries(resolver, "Prices"));
 
                 //priceChart.SeriesCollection.Add(sourceData.ToSmaSeries(50, chartResolver2));
 

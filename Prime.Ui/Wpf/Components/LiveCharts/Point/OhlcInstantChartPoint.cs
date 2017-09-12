@@ -1,9 +1,20 @@
 using NodaTime;
+using Prime.Core;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf
 {
     public class OhlcInstantChartPoint : IInstantChartPoint
     {
+        public OhlcInstantChartPoint(OhclEntry i)
+        {
+            X = i.DateTimeUtc.ToInstant();
+            Open = i.Open;
+            High = i.High;
+            Low = i.Low;
+            Close = i.Close;
+        }
+
         public Instant X { get; set; }
 
         public double Open { get; set; }
