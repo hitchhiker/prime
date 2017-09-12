@@ -87,6 +87,12 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _isDataBusy, value);
         }
 
+        public bool IsGraphReady
+        {
+            get => _isGraphReady;
+            set => SetAfter(ref _isGraphReady, value, (a)=> ChartGroupViewModel.InvalidateRangeProperties());
+        }
+
         public bool IsFor(CommandBase command)
         {
             return command is AssetGoCommand;
@@ -132,6 +138,8 @@ namespace Prime.Ui.Wpf.ViewModel
                 SetupZoomEvents();
                 SetDataStatus();
             });
+
+            IsGraphReady = true;
 
             ChartGroupViewModel.PropertyChanged += delegate(object o, PropertyChangedEventArgs args)
             {
@@ -219,6 +227,8 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             lock (_lock)
             {
+                IsGraphReady = false;
+
                 var newres = ChartGroupViewModel.ResolutionSelected;
 
                 OverviewZoom.SetStartFrom(newres);
@@ -283,6 +293,8 @@ namespace Prime.Ui.Wpf.ViewModel
                         OverviewZoom.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
                         OverviewZoom.ZoomToRange(resetZoom);
                     }
+
+                    IsGraphReady = true;
                 });
             }
         }
@@ -381,6 +393,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private int _padLength = 10;
         private bool _isDataBusy;
+        private bool _isGraphReady;
 
         private string LabelFormatter(double v)
         {

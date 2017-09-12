@@ -55,21 +55,15 @@ namespace Prime.Ui.Wpf.ViewModel
             set => SetAfter(ref _resolutionSelected, value, (a) => { InvalidateRangeProperties(); });
         }
 
-        private void InvalidateRangeProperties()
+        public void InvalidateRangeProperties()
         {
-            RaisePropertyChanged(nameof(IsAuto));
             RaisePropertyChanged(nameof(IsDaily));
             RaisePropertyChanged(nameof(IsHourly));
             RaisePropertyChanged(nameof(IsMinute));
+            RaisePropertyChanged(nameof(CanDaily));
             RaisePropertyChanged(nameof(CanMinute));
             RaisePropertyChanged(nameof(CanHourly));
             RaisePropertyChanged(nameof(IsOverViewVisible));
-        }
-
-        public bool IsAuto
-        {
-            get => ResolutionSelected == TimeResolution.None;
-            set => ResolutionSelected = TimeResolution.None;
         }
 
         public bool IsDaily
@@ -90,15 +84,21 @@ namespace Prime.Ui.Wpf.ViewModel
             set => ResolutionSelected = value ? TimeResolution.Minute : TimeResolution.None;
         }
 
+        public bool CanDaily
+        {
+            get => ResolutionSelected != TimeResolution.Day && ParentModel.IsGraphReady;
+            set { }
+        }
+
         public bool CanHourly
         {
-            get => ResolutionSelected == TimeResolution.Hour || OverviewZoom.CanHourly;
+            get => ResolutionSelected != TimeResolution.Hour && ParentModel.IsGraphReady;
             set { }
         }
 
         public bool CanMinute
         {
-            get => ResolutionSelected == TimeResolution.Minute || OverviewZoom.CanMinute;
+            get => ResolutionSelected != TimeResolution.Minute && ParentModel.IsGraphReady;
             set { }
         }
 

@@ -39,8 +39,8 @@ namespace Prime.Ui.Wpf
 
             if (IsMouseOver && _zoomTo == ZoomToLimit)
             { 
-                if (newValue > ZoomToLimit)
-                    ZoomFrom -= ZoomToLimit - newValue;
+                //if (newValue > ZoomToLimit)
+                //    ZoomFrom -= ZoomToLimit - newValue;
                 return true;
             }
 
