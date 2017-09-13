@@ -17,7 +17,7 @@ namespace Prime.Core
 
         public void Refresh()
         {
-            if (UtcLastUpdated.IsFresh(TimeSpan.FromDays(7)))
+            if (UtcLastUpdated.IsWithinTheLast(TimeSpan.FromDays(7)))
                 return;
 
             DoRefresh();

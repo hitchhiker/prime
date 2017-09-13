@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -73,6 +74,8 @@ namespace Prime.Ui.Wpf.ViewModel
                 ResolutionSelected = ReceiverDefaultResolution
             };
         }
+
+        public bool AllowLive { get; set; } = true;
 
         private string _dataStatus;
         public string DataStatus
@@ -146,6 +149,19 @@ namespace Prime.Ui.Wpf.ViewModel
                 if (args.PropertyName == nameof(ChartGroupViewModel.ResolutionSelected))
                     QueueWork(UpdateFromResolutionChange);
             };
+
+            var timer = new Timer {Interval = 1000 * 10};
+            timer.Elapsed += UpdateElapsed;
+            timer.Enabled = true;
+        }
+
+        private void UpdateElapsed(object sender, ElapsedEventArgs e)
+        {
+            if (!AllowLive)
+                return;
+
+            _chartZooms.FirstOrDefault()?.Update();
+            UpdateData();
         }
 
         private void SetupZoomEvents()
@@ -188,13 +204,11 @@ namespace Prime.Ui.Wpf.ViewModel
                 _allZooms.AddRange(_chartZooms);
 
                 var startpoint = Instant.FromDateTimeUtc(overView.Min(x => x.DateTimeUtc));
-                var endpoint = Instant.FromDateTimeUtc(DateTime.UtcNow); //Instant.FromDateTimeUtc(overView.Max(x => x.DateTimeUtc));
                 var range = sourceData.GetTimeRange(ChartResolution);
 
                 foreach (var z in _allZooms)
                 {
                     z.StartPoint = startpoint;
-                    z.EndPoint = endpoint;
                     z.ZoomToRange(range);
                 }
 

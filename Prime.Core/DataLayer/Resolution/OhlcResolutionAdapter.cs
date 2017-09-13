@@ -108,6 +108,7 @@ namespace Prime.Core
                 if (StorageEnabled && results.IsNotEmpty())
                 {
                     var clone = new OhclData(results); // ienumerable modifications during storage process.
+                    clone.RemoveAll(x => x.DateTimeUtc.IsLive(timeRange.TimeResolution));
                     ThreadPool.QueueUserWorkItem(w=> StoreResults(clone, timeRange));
                 }
 

@@ -45,7 +45,7 @@ namespace Prime.Core
 
         private bool IsFresh(bool ignoreFreshState)
         {
-            return !ignoreFreshState && AssetPairs.UtcLastUpdated.IsFresh(TimeSpan.FromHours(12));
+            return !ignoreFreshState && AssetPairs.UtcLastUpdated.IsWithinTheLast(TimeSpan.FromHours(12));
         }
     }
 }

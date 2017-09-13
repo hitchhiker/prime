@@ -44,7 +44,7 @@ namespace Prime.Core
 
         public bool IsFresh()
         {
-            return UtcLastChecked.IsFresh(TimeSpan.FromDays(7));
+            return UtcLastChecked.IsWithinTheLast(TimeSpan.FromDays(7));
         }
 
         public bool IsExpired()

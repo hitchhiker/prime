@@ -138,13 +138,19 @@ namespace Prime.Utility
             return GetThisOrNextBusinessDay(new DateTime(current.Year, 1, 1));
         }
 
-        public static bool IsFresh(this DateTime dateTime, TimeSpan withinTimeSpan)
+        public static bool IsWithinTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
         {
+            if (dateTime.Kind != DateTimeKind.Utc)
+                throw new ArgumentException(nameof(IsWithinTheLast) + " only accepts UTC DateTime");
+
             return dateTime >= DateTime.UtcNow.Add(-withinTimeSpan);
         }
 
-        public static bool IsStale(this DateTime dateTime, TimeSpan withinTimeSpan)
+        public static bool IsBeforeTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
         {
+            if (dateTime.Kind != DateTimeKind.Utc)
+                throw new ArgumentException(nameof(IsBeforeTheLast) + " only accepts UTC DateTime");
+
             return dateTime <= DateTime.UtcNow.Add(-withinTimeSpan);
         }
 

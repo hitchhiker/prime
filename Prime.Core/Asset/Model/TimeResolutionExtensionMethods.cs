@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NodaTime;
+using Prime.Utility;
 
 namespace Prime.Core
 {
@@ -53,7 +54,7 @@ namespace Prime.Core
                     throw new ArgumentOutOfRangeException(nameof(GetDefaultTimeSpan) + " in " + typeof(TimeResolutionExtensionMethods));
             }
         }
-
+        
         private static readonly List<(TimeSpan, TimeSpan)> Timespans = new List<(TimeSpan, TimeSpan)>
         {
             (TimeSpan.FromDays(30), TimeSpan.FromDays(365 * 10)),
@@ -118,6 +119,32 @@ namespace Prime.Core
                     return current.AddMinutes(distance);
             }
             return DateTime.MinValue;
+        }
+
+        public static bool IsLive(this DateTime time, TimeResolution timeResolution)
+        {
+            if (time.IsBeforeTheLast(TimeSpan.FromHours(30)))
+                return false;
+
+            return time >= timeResolution.LiveStartsAt();
+        }
+
+        public static DateTime LiveStartsAt(this TimeResolution timeResolution)
+        {
+            switch (timeResolution)
+            {
+                case TimeResolution.Minute:
+                    return DateTime.UtcNow.AddMinutes(-2);
+
+                case TimeResolution.Hour:
+                    return DateTime.UtcNow.AddMinutes(-90);
+
+                case TimeResolution.Day:
+                    return DateTime.UtcNow.AddHours(-30);
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(GetDefaultTimeSpan) + " in " + typeof(TimeResolutionExtensionMethods));
+            }
         }
     }
 }

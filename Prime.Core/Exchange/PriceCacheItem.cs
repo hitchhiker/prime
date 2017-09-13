@@ -13,7 +13,7 @@ namespace Prime.Core
 
         public bool Match(AssetPair pair)
         {
-            return UtcEntered.IsFresh(TimeSpan.FromMinutes(-1)) && pair.Equals(Pair);
+            return UtcEntered.IsWithinTheLast(TimeSpan.FromMinutes(-1)) && pair.Equals(Pair);
         }
     }
 }

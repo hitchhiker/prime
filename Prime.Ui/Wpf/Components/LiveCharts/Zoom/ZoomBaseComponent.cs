@@ -40,12 +40,8 @@ namespace Prime.Ui.Wpf
             set => Set(ref _startPoint, value);
         }
 
-        public Instant EndPoint
-        {
-            get => _endPoint;
-            set => Set(ref _endPoint, value);
-        }
-
+        public Instant EndPoint => Instant.FromDateTimeUtc(DateTime.UtcNow);
+        
         public TimeResolution Resolution
         {
             get => _resolution;
@@ -75,6 +71,28 @@ namespace Prime.Ui.Wpf
         public abstract double ZoomTo { get; set; }
 
         public bool CanRangeEvent() => SuspendRangeEventTill <= DateTime.UtcNow;
+
+        public bool IsNearRightEdge()
+        {
+            var vport = _zoomTo - _zoomFrom;
+            var prox = ZoomToLimit - _zoomTo;
+            var max = vport * .1; // 10% lock tolerance
+            var isclose = prox < max;
+            return isclose;
+        }
+
+        public void Update()
+        {
+            if (!IsNearRightEdge())
+                return;
+
+            var adjust = ZoomToLimit - _zoomTo;
+            ZoomFrom += adjust;
+            ForceOneRangeUpdate = true;
+            ZoomTo += adjust;
+        }
+
+        protected bool ForceOneRangeUpdate { get; set; }
 
         public TimeRange GetDefaultTimeRange()
         {

@@ -34,7 +34,7 @@ namespace Prime.Core
             get { return _provider ?? (_provider = Networks.I.AssetPairAggregationProviders.FirstOrDefault(x => x.Id == ProviderId)); }
         }
 
-        public bool IsFresh => UtcUpdated.IsFresh(TimeSpan.FromDays(3));
+        public bool IsFresh => UtcUpdated.IsWithinTheLast(TimeSpan.FromDays(3));
 
         [Bson]
         public DateTime UtcUpdated { get; set; }

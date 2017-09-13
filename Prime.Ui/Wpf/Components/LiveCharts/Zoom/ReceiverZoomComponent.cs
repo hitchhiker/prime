@@ -27,56 +27,63 @@ namespace Prime.Ui.Wpf
             get => _zoomTo;
             set
             {
-                _zoomTo = IsLockToRightEdge(value) ? ZoomToLimit : value;
+                _zoomTo = LockToRightEdge(value);
                 BothExtentsUpdated();
             }
         }
 
-        public bool IsLockToRightEdge(double newValue)
+        public double LockToRightEdge(double newValue)
         {
             if (Resolution == TimeResolution.Minute)
-                return true;
+                return ZoomToLimit;
 
-            if (IsMouseOver && _zoomTo == ZoomToLimit)
-            { 
-                //if (newValue > ZoomToLimit)
-                //    ZoomFrom -= ZoomToLimit - newValue;
-                return true;
+            if (IsMouseOver)
+            {
+                //how close are we to the end point, if close enough then lock to right.
+
+                return IsNearRightEdge() ? ZoomToLimit : newValue;
             }
 
-            return false;
+            return newValue;
         }
+
+        private readonly object _lockExtentUpdate = new object();
 
         private void BothExtentsUpdated()
         {
-            var finalFrom = Math.Max(ZoomFromLimit, _lastSentFrom);
-            var finalTo = Math.Min(ZoomToLimit, _zoomTo);
+            lock (_lockExtentUpdate)
+            {
+                var finalFrom = Math.Max(ZoomFromLimit, _lastSentFrom);
+                var finalTo = Math.Min(ZoomToLimit, _zoomTo);
 
-            if (finalFrom > finalTo)
-                finalFrom = ZoomFromLimit;
+                if (finalFrom > finalTo)
+                    finalFrom = ZoomFromLimit;
 
-            if (finalTo < finalFrom)
-                finalTo = ZoomToLimit;
+                if (finalTo < finalFrom)
+                    finalTo = ZoomToLimit;
 
-            if (finalTo == finalFrom)
-                finalFrom--;
+                if (finalTo == finalFrom)
+                    finalFrom--;
 
-            RangeWidthLimit(ref finalFrom, ref finalTo);
+                RangeWidthLimit(ref finalFrom, ref finalTo);
 
-            _zoomTo = finalTo;
-            _zoomFrom = finalFrom;
-          
-            if (LastTo!=_zoomTo)
-                RaisePropertyChanged(nameof(ZoomTo));
+                _zoomTo = finalTo;
+                _zoomFrom = finalFrom;
 
-            if (LastFrom != _zoomFrom)
-                RaisePropertyChanged(nameof(ZoomFrom));
+                if (LastTo != _zoomTo)
+                    RaisePropertyChanged(nameof(ZoomTo));
 
-            if (IsMouseOver && CanRangeEvent() && (LastTo!=_zoomTo || LastFrom !=_zoomFrom))
-                OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+                if (LastFrom != _zoomFrom)
+                    RaisePropertyChanged(nameof(ZoomFrom));
 
-            LastFrom = _zoomFrom;
-            LastTo = _zoomTo;
+                if (ForceOneRangeUpdate || (IsMouseOver && CanRangeEvent() && (LastTo != _zoomTo || LastFrom != _zoomFrom)))
+                    OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+
+                ForceOneRangeUpdate = false;
+
+                LastFrom = _zoomFrom;
+                LastTo = _zoomTo;
+            }
         }
 
         private void RangeWidthLimit(ref double from, ref double to)

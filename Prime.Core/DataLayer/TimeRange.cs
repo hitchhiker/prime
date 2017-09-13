@@ -86,6 +86,13 @@ namespace Prime.Core
             return UtcTo-UtcFrom;
         }
 
+        public TimeRange RemoveLiveRange()
+        {
+            var livestart = TimeResolution.LiveStartsAt();
+            var ticks = Math.Min(UtcTo.Ticks, livestart.Ticks);
+            return new TimeRange(UtcFrom, new DateTime(ticks, DateTimeKind.Utc), TimeResolution);
+        }
+
         public bool IsFromInfinity => UtcFrom == DateTimeExt.UnixEpoch;
     }
 }
