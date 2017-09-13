@@ -25,6 +25,7 @@ namespace Prime.Core
         {
             "exchange rates",
             "portfolio",
+            "buy sell",
             "services",
             "wallet",
             "receive",

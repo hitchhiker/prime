@@ -23,6 +23,7 @@ namespace Prime.Ui.Wpf.PageUri
             {"portfolio", "/View/Portfolio/Portfolio.xaml"},
             {"services", "/View/Services/Services.xaml"},
             {"wallet", "/View/Portfolio/Wallet.xaml"},
+            {"buy sell", "/View/Trade/BuySell.xaml"},
             {"send", "/View/Portfolio/Send.xaml"},
             {"receive", "/View/Portfolio/Receive.xaml"}
         };
@@ -36,6 +37,8 @@ namespace Prime.Ui.Wpf.PageUri
                     return new ExchangeRateViewModel(model) { Key = command.Command, Name = command.Title };
                 case "portfolio":
                     return new PortfolioPaneViewModel(model) { Key = command.Command, Name = command.Title };
+                case "buy sell":
+                    return new BuySellViewModel(model) { Key = command.Command, Name = command.Title };
                 case "wallet":
                     return new WalletViewModel(model) { Key = command.Command, Name = command.Title };
                 case "services":

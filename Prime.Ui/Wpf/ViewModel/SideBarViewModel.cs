@@ -26,6 +26,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             PortfolioClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "portfolio"); });
             SettingsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "services"); });
+            BuySellClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "buy sell"); });
         }
 
         public SideBarViewModel(ScreenViewModel screenVm) : this()
@@ -37,6 +38,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand BookmarkClickedCommand { get; private set; }
         public RelayCommand PortfolioClickedCommand { get; private set; }
         public RelayCommand SettingsClickedCommand { get; private set; }
+        public RelayCommand BuySellClickedCommand { get; private set; }
 
         private bool _isMenuOpen;
         public bool IsMenuOpen

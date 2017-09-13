@@ -11,7 +11,8 @@
         xmlns:viewmodel="clr-namespace:Prime.Ui.Wpf.ViewModel"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:portfolio="clr-namespace:Prime.Ui.Wpf.View.Portfolio"
-        mc:Ignorable="d"
+                      xmlns:trade="clr-namespace:Prime.Ui.Wpf.View.Trade"
+                      mc:Ignorable="d"
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
         WindowStartupLocation="CenterOwner"
@@ -75,7 +76,11 @@
                     <DataTemplate DataType="{x:Type viewmodel:PortfolioPaneViewModel}">
                         <wpf:Portfolio/>
                     </DataTemplate>
-                    
+
+                    <DataTemplate DataType="{x:Type viewmodel:BuySellViewModel}">
+                        <trade:BuySell/>
+                    </DataTemplate>
+
                     <DataTemplate DataType="{x:Type viewmodel:WalletViewModel}">
                         <wpf:Wallet/>
                     </DataTemplate>
