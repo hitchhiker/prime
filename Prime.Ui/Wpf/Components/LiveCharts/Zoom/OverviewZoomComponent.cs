@@ -61,7 +61,7 @@ namespace Prime.Ui.Wpf
             StartFrom = Math.Max(Instant.FromDateTimeUtc(from).ToUnixTimeTicks() / AxisModifier, base.ZoomFromLimit);
         }
 
-        protected void UpdateRange(double zoomTo)
+        protected override void UpdateRange(double zoomTo, bool skipRangeTrigger = false)
         {
             //check from didn't pass left edge
             //maintain width if so.
@@ -83,8 +83,11 @@ namespace Prime.Ui.Wpf
             RaisePropertyChanged(nameof(ZoomFrom));
             RaisePropertyChanged(nameof(ZoomTo));
 
-            if (IsMouseOver && CanRangeEvent())
-                OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+            if (!skipRangeTrigger)
+                if (ForceOneRangeUpdate || (IsMouseOver && CanRangeEvent()))
+                    OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+
+            ForceOneRangeUpdate = false;
         }
 
         public bool CanHourly => GetTimeRange().ToTimeSpan() <= TimeResolution.Hour.MaxTimeSpanRange();

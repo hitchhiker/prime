@@ -38,6 +38,8 @@ namespace Prime.Ui.Wpf.ViewModel
         public readonly TimeResolution OverviewDefaultResolution = TimeResolution.Day;
         public readonly TimeResolution ReceiverDefaultResolution = TimeResolution.Day;
 
+        public EventHandler OnDataUpdate;
+
         public EventHandler OnRangeChange;
 
         public PriceChartPaneModel() { }
@@ -144,24 +146,39 @@ namespace Prime.Ui.Wpf.ViewModel
 
             IsGraphReady = true;
 
-            ChartGroupViewModel.PropertyChanged += delegate(object o, PropertyChangedEventArgs args)
+            ChartGroupViewModel.PropertyChanged += delegate (object o, PropertyChangedEventArgs args)
             {
                 if (args.PropertyName == nameof(ChartGroupViewModel.ResolutionSelected))
                     QueueWork(UpdateFromResolutionChange);
             };
 
-            var timer = new Timer {Interval = 1000 * 10};
-            timer.Elapsed += UpdateElapsed;
+            var timer = new Timer { Interval = 1000 };
+            timer.Elapsed += delegate (object o, ElapsedEventArgs args)
+            {
+                LiveUpdateElapsed(o, args);
+                timer.Start();
+            };
+            timer.AutoReset = false;
             timer.Enabled = true;
+
         }
 
-        private void UpdateElapsed(object sender, ElapsedEventArgs e)
+        private DateTime _lastDataUpdate = DateTime.UtcNow;
+
+        private void LiveUpdateElapsed(object sender, ElapsedEventArgs e)
         {
             if (!AllowLive)
                 return;
 
-            _chartZooms.FirstOrDefault()?.Update();
+            var datastale = _lastDataUpdate.IsBeforeTheLast(TimeSpan.FromSeconds(10));
+
+            _chartZooms.FirstOrDefault()?.Update(datastale);
+
+            if (!datastale)
+                return;
+
             UpdateData();
+            _lastDataUpdate = DateTime.UtcNow;
         }
 
         private void SetupZoomEvents()
@@ -234,6 +251,8 @@ namespace Prime.Ui.Wpf.ViewModel
                 ChartGroupViewModel.Charts.Add(priceChart);
 
                 OverviewZoom.SetStartFrom(overView.MinOrDefault(x=>x.DateTimeUtc, DateTime.MinValue));
+
+                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(sourceData, _pair.Asset2));
             }
         }
 
@@ -309,6 +328,8 @@ namespace Prime.Ui.Wpf.ViewModel
                     }
 
                     IsGraphReady = true;
+
+                    OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(nPriceData, _pair.Asset2));
                 });
             }
         }
@@ -334,6 +355,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
                 SetDataStatus();
                 _dispatcher.Invoke(() => MergeData(nPriceData));
+                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(nPriceData, _pair.Asset2));
             }
         }
 

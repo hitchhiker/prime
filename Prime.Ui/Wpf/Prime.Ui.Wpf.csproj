@@ -347,11 +347,13 @@
     <Compile Include="Components\Converters\BoolToDoubleConverter.cs" />
     <Compile Include="Components\Converters\DateTimeHumanConverter.cs" />
     <Compile Include="Components\Converters\InvertableBooleanToVisibilityConverter.cs" />
+    <Compile Include="Components\Converters\PropertyValueStringConverter.cs" />
     <Compile Include="Components\ILayoutManager.cs" />
     <Compile Include="Components\Layout\LayoutManager.cs" />
     <Compile Include="Components\Layout\LayoutUpdateStrategy.cs" />
     <Compile Include="Components\LiveCharts\CartesianMapperBase.cs" />
     <Compile Include="Components\LiveCharts\DateAxis\PrimeDateAxisWindow.cs" />
+    <Compile Include="Components\LiveCharts\OhclDataUpdatedEvent.cs" />
     <Compile Include="Components\LiveCharts\Point\FinancialMapperBase.cs" />
     <Compile Include="Components\LiveCharts\Point\IInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Point\InstantChartPoint.cs" />
@@ -372,7 +374,9 @@
     <Compile Include="Components\AppRegistry.cs" />
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="ViewModel\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
+    <Compile Include="ViewModel\ExchangeConvertViewModel.cs" />
     <Compile Include="ViewModel\ExchangeRateViewModel.cs" />
     <Compile Include="ViewModel\Logging\DispatchedPropertyChangedBase.cs" />
     <Compile Include="ViewModel\Logging\LogEntry.cs" />
