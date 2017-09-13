@@ -14,6 +14,7 @@ using Prime.Radiant.Components;
 using Prime.Utility;
 using Prime.Radiant;
 using Prime.Radiant.Components.IPFS.Messenging;
+using Prime.TestConsole;
 
 namespace TestConsole
 {
@@ -21,11 +22,14 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var logger = new Logger(Console.WriteLine);
-            var radiant = new Radiant(logger);
-            Logging.I.OnNewMessage += I_OnNewMessage;
+            Worker worker = new Worker();
+            worker.Run();
 
-            IpfsName(radiant);
+            //var logger = new Logger(Console.WriteLine);
+            //var radiant = new Radiant(logger);
+            //Logging.I.OnNewMessage += I_OnNewMessage;
+
+            //IpfsName(radiant);
 
             /*Task.Run(async () =>
             {
