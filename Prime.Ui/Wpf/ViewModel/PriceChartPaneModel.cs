@@ -358,8 +358,10 @@ namespace Prime.Ui.Wpf.ViewModel
             var ov = oldData.Values.OfType<T>().ToList();
             foreach (var nd in newData.Values.OfType<T>())
             {
-                if (ov.All(x => x.X != nd.X))
-                    oldData.Values.Add(nd);
+                var e = ov.FirstOrDefault(x => x.X == nd.X);
+                if (e!=null)
+                    oldData.Values.Remove(e);
+                oldData.Values.Add(nd);
             }
         }
 
