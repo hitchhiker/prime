@@ -5,83 +5,61 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewModel:WalletViewModel}"
+             d:DataContext="{d:DesignInstance viewModel:BuySellViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel Margin="20" Orientation="Vertical">
-
-            <StackPanel Margin="0,0,0,30" Orientation="Horizontal">
-
-                <Grid Margin="0,0,20,0" Width="300">
-                    <Grid.Effect>
-                        <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
-                    </Grid.Effect>
-                    <Grid.OpacityMask>
-                        <VisualBrush Visual="{Binding ElementName=Border1}" />
-                    </Grid.OpacityMask>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height=".50*"></RowDefinition>
-                        <RowDefinition Height=".5*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Border x:Name="Border1" Grid.Row="0" Grid.RowSpan="4" CornerRadius="5" Background="White" />
-                    <Border Grid.Row="0" Grid.RowSpan="3" Background="#CE2156" ></Border>
-                    <TextBlock Grid.Row="0" TextAlignment="Center" Padding="10, 10, 0, 5" Foreground="White" FontSize="18">
-                Live Asset Report
-                    </TextBlock>
-                    <TextBlock Grid.Row="2" TextAlignment="Center" Foreground="#CCFFFFFF" Padding="0,0,0,20" Text="{Binding TotalConverted.Display}" FontSize="30"/>
-                    <Border BorderThickness="0" Grid.Row="3" VerticalAlignment="Center" Margin="25">
-                        <TextBlock FontSize="13" Text="{Binding Information}" Foreground="#aaa" TextWrapping="Wrap"/>
-                    </Border>
-                </Grid>
-            </StackPanel>
-
-            <TabControl Background="Transparent" BorderThickness="0" ItemsSource="{Binding}">
-                <TabItem Header="Summary">
-                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding SummaryObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+            <TextBlock>Order Book</TextBlock>
+            <TabControl Margin="0,20,0,0" Background="Transparent" BorderThickness="0" ItemsSource="{Binding}">
+                <TabItem Header="Buy">
+                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ListOrderBookBuy, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Available Balance" Binding="{Binding AvailableBalance.Display}" Width="150" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Pending" Binding="{Binding PendingBalance.Display}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Reserved" Binding="{Binding ReservedBalance.Display}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Total" Binding="{Binding Total.Display}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Converted" Binding="{Binding Converted.Display}" Width="120" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Change %" Binding="{Binding ChangePercentage, StringFormat='0.00%'}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}" />
+                            <DataGridTextColumn Header="Ask (USDT)" Binding="{Binding Bid, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Sum" Binding="{Binding Sum, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
-                <TabItem Header="Assets">
-                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding PortfolioObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <TabItem Header="Sell">
+                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ListOrderBookSell, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Asset" Binding="{Binding Asset}" Width="70" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Network" Binding="{Binding Network}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Available Balance" Binding="{Binding AvailableBalance.Display}" Width="150" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Pending" Binding="{Binding PendingBalance.Display}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Reserved" Binding="{Binding ReservedBalance.Display}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Total" Binding="{Binding Total.Display}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Converted" Binding="{Binding Converted.Display}" Width="120" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Change %" Binding="{Binding ChangePercentage, StringFormat='0.00%'}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
-                <TabItem Header="Networks">
-                    <DataGrid Width="Auto" Margin="0,0,0,20" ItemsSource="{Binding PortfolioInfoObservable, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Network" Binding="{Binding Network}" CanUserSort="False" CanUserResize="False"/>
-                            <DataGridTextColumn Binding="{Binding ConnectReport}" CanUserSort="False" CanUserResize="False"/>
-                            <DataGridTextColumn Binding="{Binding StateReport}" CanUserSort="False" CanUserResize="False"/>
-                            <DataGridTemplateColumn CanUserSort="False" CanUserResize="False">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Binding="{Binding TotalConvertedAssetValue.Display}" CanUserSort="False" CanUserResize="False"/>
+                            <DataGridTextColumn Header="Bid (USDT)" Binding="{Binding Bid, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Sum" Binding="{Binding Sum, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
             </TabControl>
+            <TextBlock>Open Orders</TextBlock>
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListOpenOrders, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Amount (USDT)" Binding="{Binding Amount, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBlock>Market History</TextBlock>
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListMarketHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Buy/Sell" Binding="{Binding BuySell}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Total Units (BTC)" Binding="{Binding TotalUnits, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Total Cost (USDT)" Binding="{Binding TotalCost, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBlock>My Order History</TextBlock>
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListMyOrderHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Amount (USDT)" Binding="{Binding Amount, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Sum" Binding="{Binding Sum, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
