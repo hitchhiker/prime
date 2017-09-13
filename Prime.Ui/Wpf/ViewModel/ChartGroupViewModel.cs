@@ -30,6 +30,7 @@ namespace Prime.Ui.Wpf.ViewModel
             OverviewZoom = zoom;
             ZoomResetCommand = new RelayCommand(OverviewZoom.ZoomToDefault);
             _resolutionSelected = zoom.Resolution;
+            ChartHeaderViewModel = new ChartHeaderViewModel(parentModel);
             ParentModel.OnRangeChange += (s, e) => InvalidateRangeProperties();
         }
 
@@ -41,6 +42,8 @@ namespace Prime.Ui.Wpf.ViewModel
         private bool _isPositionLocked;
         private ObservableCollection<ChartViewModel> _chartViewModels = new ObservableCollection<ChartViewModel>();
         private SeriesCollection _scrollSeriesCollection = new SeriesCollection();
+
+        public ChartHeaderViewModel ChartHeaderViewModel { get; }
 
         /// <inheritdoc />
         public bool IsPositionLocked

@@ -25,11 +25,7 @@ namespace Prime.Ui.Wpf
         public override double ZoomTo
         {
             get => _zoomTo;
-            set
-            {
-                _zoomTo = LockToRightEdge(value);
-                BothExtentsUpdated();
-            }
+            set => UpdateRange(value);
         }
 
         public double LockToRightEdge(double newValue)
@@ -49,10 +45,12 @@ namespace Prime.Ui.Wpf
 
         private readonly object _lockExtentUpdate = new object();
 
-        private void BothExtentsUpdated()
+        protected override void UpdateRange(double zoomTo, bool skipRangeTrigger = false)
         {
             lock (_lockExtentUpdate)
             {
+                _zoomTo = LockToRightEdge(zoomTo);
+
                 var finalFrom = Math.Max(ZoomFromLimit, _lastSentFrom);
                 var finalTo = Math.Min(ZoomToLimit, _zoomTo);
 
@@ -76,8 +74,9 @@ namespace Prime.Ui.Wpf
                 if (LastFrom != _zoomFrom)
                     RaisePropertyChanged(nameof(ZoomFrom));
 
-                if (ForceOneRangeUpdate || (IsMouseOver && CanRangeEvent() && (LastTo != _zoomTo || LastFrom != _zoomFrom)))
-                    OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+                if (!skipRangeTrigger)
+                    if (ForceOneRangeUpdate || (IsMouseOver && CanRangeEvent() && (LastTo != _zoomTo || LastFrom != _zoomFrom)))
+                            OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
 
                 ForceOneRangeUpdate = false;
 

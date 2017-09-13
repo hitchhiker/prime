@@ -5,6 +5,7 @@
                     xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro">
 
     <local:BoolToDoubleConverter x:Key="BoolToDoubleConverter"/>
+    <local:PropertyValueStringConverter x:Key="PropertyValueStringConverter"/>
     <BooleanToVisibilityConverter x:Key="BoolToHiddenConverter"/>
     <local:InvertableBooleanToVisibilityConverter x:Key="BoolToVisibilityConverterExtra"/>
     <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>

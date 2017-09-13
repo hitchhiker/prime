@@ -81,16 +81,24 @@ namespace Prime.Ui.Wpf
             return isclose;
         }
 
-        public void Update()
+        public void Update(bool withRangeUpdate = false)
         {
             if (!IsNearRightEdge())
                 return;
 
             var adjust = ZoomToLimit - _zoomTo;
             ZoomFrom += adjust;
-            ForceOneRangeUpdate = true;
-            ZoomTo += adjust;
+
+            if (withRangeUpdate)
+                ZoomTo += adjust;
+            else
+            {
+                UpdateRange(_zoomTo + adjust, true);
+                this.RaisePropertyChanged(nameof(ZoomTo));
+            }
         }
+
+        protected abstract void UpdateRange(double zoomTo, bool skipRangeTrigger = false);
 
         protected bool ForceOneRangeUpdate { get; set; }
 

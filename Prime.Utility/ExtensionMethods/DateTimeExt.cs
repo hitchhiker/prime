@@ -140,6 +140,9 @@ namespace Prime.Utility
 
         public static bool IsWithinTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
         {
+            if (dateTime == DateTime.MinValue)
+                return false;
+
             if (dateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(IsWithinTheLast) + " only accepts UTC DateTime");
 
@@ -148,6 +151,9 @@ namespace Prime.Utility
 
         public static bool IsBeforeTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
         {
+            if (dateTime == DateTime.MinValue)
+                return true;
+
             if (dateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(IsBeforeTheLast) + " only accepts UTC DateTime");
 
