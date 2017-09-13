@@ -45,7 +45,7 @@ namespace plugins.Services.BitMex
         internal class UserInfo
         {
             public int id { get; set; }
-            public int ownerId { get; set; }
+            public int? ownerId { get; set; }
             public string firstname { get; set; }
             public string lastname { get; set; }
             public string username { get; set; }

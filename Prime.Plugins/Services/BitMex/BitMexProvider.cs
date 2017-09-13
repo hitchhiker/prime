@@ -86,6 +86,8 @@ namespace plugins
             var addresses = new WalletAddresses();
 
             IBitMexApi api = GetApi<IBitMexApi>(context);
+
+            // BUG: Where to store curremcy names?
             String depositAddress = AsyncContext.Run(() => api.GetUserDepositAddress("XBt"));
 
             WalletAddress walletAddress = new WalletAddress(this, context.Asset);
@@ -107,6 +109,7 @@ namespace plugins
             {
                 IBitMexApi api = GetApi<IBitMexApi>(context);
 
+                // BUG: Where to store curremcy names?
                 var r = AsyncContext.Run(() => api.GetUserWalletInfo("XBt"));
                 
                 var results = new BalanceResults(this);

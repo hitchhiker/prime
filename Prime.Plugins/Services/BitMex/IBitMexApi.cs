@@ -10,15 +10,6 @@ namespace plugins
 {
     internal interface IBitMexApi
     {
-        //[Header("api-key")]
-        //String ApiKey { get; set; }
-
-        //[Header("api-signature")]
-        //String ApiSignature { get; set; }
-
-        //[Header("api-nonce")]
-        //String ApiNonce { get; set; }
-
         [Get("api/v1/user/depositAddress?currency={currency}")]
         // TODO: Change String to custom class in BitMexProvider.
         Task<String> GetUserDepositAddress([Path]String currency);

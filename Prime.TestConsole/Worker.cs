@@ -14,12 +14,17 @@ namespace Prime.TestConsole
         public void Run()
         {
             UserContext userContext = new UserContext(ObjectId.NewObjectId(), "Alex");
-            ApiTestContext testContext = new ApiTestContext(new ApiKey("", "", ""));
+
+            #region Secrets
+
+            ApiTestContext testContext = new ApiTestContext(new ApiKey("Key", "KEY", "SECRET"));
+
+            #endregion
 
             NetworkProviderPrivateContext providerPrivateContext = new NetworkProviderPrivateContext(userContext);
 
             IWalletService walletService = new BitMexProvider();
-            var results = walletService.GetBalance(providerPrivateContext);
+            //var results = walletService.GetBalance(providerPrivateContext);
             walletService.TestApi(testContext).RunSynchronously();
         }
     }

@@ -11,15 +11,6 @@ namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexAuthenticator : BaseAuthenticator
     {
-        #region Secrets
-
-        // TODO: remove!
-        [Obsolete]
-        public const String ApiKey = "";
-        [Obsolete]
-        public const String ApiSecret = "";
-
-        #endregion
 
         public BitMexAuthenticator(ApiKey apiKey) : base(apiKey)
         {
@@ -33,9 +24,9 @@ namespace Prime.Plugins.Services.BitMex
 
             string nonce = GetNonce().ToString();
             string message = $"GET{path}{nonce}";
-            string signature = HashHMACSHA256Hex(message, ApiSecret);
+            string signature = HashHMACSHA256Hex(message, ApiKey.Secret);
 
-            headers.Add("api-key", ApiKey);
+            headers.Add("api-key", ApiKey.Key);
             headers.Add("api-signature", signature);
             headers.Add("api-nonce", nonce);
         }
