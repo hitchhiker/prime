@@ -163,14 +163,14 @@ namespace Prime.Ui.Wpf.ViewModel
 
         }
 
-        private DateTime _lastDataUpdate = DateTime.UtcNow;
+        private DateTime _lastLiveDataUpdate = DateTime.UtcNow;
 
         private void LiveUpdateElapsed(object sender, ElapsedEventArgs e)
         {
             if (!AllowLive)
                 return;
 
-            var datastale = _lastDataUpdate.IsBeforeTheLast(TimeSpan.FromSeconds(10));
+            var datastale = _lastLiveDataUpdate.IsBeforeTheLast(TimeSpan.FromSeconds(10));
 
             _chartZooms.FirstOrDefault()?.Update(datastale);
 
@@ -178,7 +178,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 return;
 
             UpdateData();
-            _lastDataUpdate = DateTime.UtcNow;
+            _lastLiveDataUpdate = DateTime.UtcNow;
         }
 
         private void SetupZoomEvents()

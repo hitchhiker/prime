@@ -30,12 +30,20 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _lastestSoFar = l.DateTimeUtc;
             LastPrice = new Money((decimal)l.Close, oe.Asset);
-            LastHigh = new Money((decimal)l.High, oe.Asset);
-            LastLow = new Money((decimal)l.Low, oe.Asset);
+            LastHigh = new Money(Math.Max((decimal)l.High, LastPrice), oe.Asset);
+            LastLow = new Money(Math.Min((decimal)l.Low, LastPrice), oe.Asset);
             LastVolume = l.VolumeTo;
+            IsVisible = true;
         }
 
         private DateTime _lastestSoFar;
+
+        private bool _isVisible;
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set => Set(ref _isVisible, value);
+        }
 
         private Money _lastPrice;
         public Money LastPrice

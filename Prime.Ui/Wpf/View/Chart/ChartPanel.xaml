@@ -27,12 +27,12 @@
                 <CheckBox Content="Hour" IsChecked="{Binding Path=IsHourly, Mode=TwoWay}" IsEnabled="{Binding Path=CanHourly}"/>
                 <CheckBox Content="Minute" IsChecked="{Binding Path=IsMinute, Mode=TwoWay}" IsEnabled="{Binding Path=CanMinute}"/>
                 <Separator Margin="10,0"/>
-                <StackPanel Orientation="Horizontal"  DataContext="{Binding Path=ChartHeaderViewModel}" Margin="0,3,0,0">
+                <StackPanel Orientation="Horizontal"  DataContext="{Binding Path=ChartHeaderViewModel}" Margin="0,3,0,0" Visibility="{Binding Path= IsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock Text="{Binding Path=LastPrice, Converter={StaticResource PropertyValueStringConverter}}" Margin="0,0,10,0" FontWeight="Bold"/>
                     <TextBlock Text="("/>
-                    <TextBlock Text="{Binding Path=LastHigh}"/>
-                    <TextBlock Text=" - "/>
                     <TextBlock Text="{Binding Path=LastLow}"/>
+                    <TextBlock Text=" - "/>
+                    <TextBlock Text="{Binding Path=LastHigh}"/>
                     <TextBlock Text=") Volume: "/>
                     <TextBlock Text="{Binding Path=LastVolume}"/>
                 </StackPanel>
