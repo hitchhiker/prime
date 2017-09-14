@@ -38,7 +38,7 @@ namespace plugins
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-            return null;
+            return new BitMexCodeConverter();
         }
 
         public Task<Money> GetLastPrice(PublicPriceContext context)
@@ -87,8 +87,7 @@ namespace plugins
 
             IBitMexApi api = GetApi<IBitMexApi>(context);
 
-            // BUG: Where to store curremcy names?
-            String depositAddress = AsyncContext.Run(() => api.GetUserDepositAddress("XBt"));
+            String depositAddress = AsyncContext.Run(() => api.GetUserDepositAddress(context.Asset.ToRemoteCode(this)));
 
             WalletAddress walletAddress = new WalletAddress(this, context.Asset);
             walletAddress.Address = depositAddress;
