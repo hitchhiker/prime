@@ -374,6 +374,7 @@
     <Compile Include="Components\AppRegistry.cs" />
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="ViewModel\BuySellViewModel.cs" />
     <Compile Include="ViewModel\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
     <Compile Include="ViewModel\ExchangeConvertViewModel.cs" />
@@ -408,6 +409,9 @@
     </Compile>
     <Compile Include="View\Sidebar\SidebarFlyoutBar.xaml.cs">
       <DependentUpon>SidebarFlyoutBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\BuySell.xaml.cs">
+      <DependentUpon>BuySell.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window\Screen.xaml.cs">
       <DependentUpon>Screen.xaml</DependentUpon>
@@ -510,6 +514,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Sidebar\SidebarFlyoutBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\BuySell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -700,7 +708,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="View\Asset\" />
-    <Folder Include="View\Trade\" />
     <Folder Include="Window\Test\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

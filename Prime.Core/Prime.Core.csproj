@@ -282,6 +282,10 @@
     <Compile Include="System\Apis\ApiConfiguration.cs" />
     <Compile Include="Page\Bookmark\BookmarkedCommands.cs" />
     <Compile Include="Page\Bookmark\ICanGenerateCommand.cs" />
+    <Compile Include="Trade\MarketHistoryModel.cs" />
+    <Compile Include="Trade\MyOrderHistoryModel.cs" />
+    <Compile Include="Trade\OpenOrdersModel.cs" />
+    <Compile Include="Trade\OrderBookModel.cs" />
     <Compile Include="User\WindowManager\IWindowManager.cs" />
     <Compile Include="User\UserSetting.cs" />
     <Compile Include="Public\PublicData.cs" />
