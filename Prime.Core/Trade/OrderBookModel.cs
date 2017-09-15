@@ -8,12 +8,12 @@ namespace Prime.Core.Trade
 {
     public class OrderBookModel
     {
-        public decimal Bid { get; }
-        public decimal Size { get; }
-        public decimal Total { get; }
-        public decimal Sum { get; }
+        public Money Bid { get; }
+        public Money Size { get; }
+        public Money Total { get; }
+        public Money Sum { get; }
         
-        public OrderBookModel(decimal bid, decimal size, decimal total, decimal sum)
+        public OrderBookModel(Money bid, Money size, Money total, Money sum)
         {
             this.Bid = bid;
             this.Size = size;

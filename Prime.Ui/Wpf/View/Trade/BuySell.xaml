@@ -9,6 +9,90 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel Margin="20" Orientation="Vertical">
+            <TextBlock>Trade</TextBlock>
+            <TabControl Margin="0,20,0,20" Background="#242424" BorderThickness="0" ItemsSource="{Binding}">
+                <TabItem Header="Buy">
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,20">
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Orientation" Value="Horizontal" />
+                            </Style>
+                            <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                                <Setter Property="Width" Value="150" />
+                            </Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Width" Value="400" />
+                                <Setter Property="BorderBrush" Value="White" />
+                            </Style>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="Width" Value="400" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Units" Target="{Binding ElementName=txtBuyUnits}"/>
+                            <TextBox x:Name="txtBuyUnits" Text="{Binding Units, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Bid" Target="{Binding ElementName=txtBuyBid}"/>
+                            <TextBox x:Name="txtBuyBid" Text="{Binding BidAsk, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Type" Target="{Binding ElementName=cmbBuyType}"/>
+                            <ComboBox  x:Name="cmbBuyType" ItemsSource="{Binding Path=ListTradeTypes}" DisplayMemberPath="TradeTypeName" SelectedValue="{Binding Path=TradeTypeModel}" Loaded="CmbBuyType_Loaded"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Time in Force" Target="{Binding ElementName=cmbBuyTimeInForce}"/>
+                            <ComboBox x:Name="cmbBuyTimeInForce" ItemsSource="{Binding Path=ListTimeInForce}" DisplayMemberPath="TimeInForceName" SelectedValuePath="Key" SelectedValue="{Binding Path=TimeInForceModel}" Loaded="CmbBuyTimeInForce_Loaded" />
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Total" Target="{Binding ElementName=txtBuyTotal}"/>
+                            <TextBox x:Name="txtBuyTotal" Text="{Binding Total, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,15,0,0">
+                            <Button x:Name="btnBuy" Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Buy</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <!--<TabItem Header="Sell">
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,20">
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Orientation" Value="Horizontal" />
+                            </Style>
+                            <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                                <Setter Property="Width" Value="150" />
+                            </Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Width" Value="400" />
+                                <Setter Property="BorderBrush" Value="White" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Units" Target="{Binding ElementName=txtSellUnits}"/>
+                            <TextBox x:Name="txtSellUnits" Text="{Binding Units, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Ask" Target="{Binding ElementName=txtSellBid}"/>
+                            <TextBox x:Name="txtSellBid" Text="{Binding Bid, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Type" Target="{Binding ElementName=txtSellType}"/>
+                            <TextBox x:Name="txtSellType" Text="{Binding Type, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Time in Force" Target="{Binding ElementName=txtSellTimeInForce}"/>
+                            <TextBox x:Name="txtSellTimeInForce" Text="{Binding Type, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0">
+                            <Label Content="Total" Target="{Binding ElementName=txtSellTotal}"/>
+                            <TextBox x:Name="txtSellTotal" Text="{Binding Total, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,15,0,0">
+                            <Button Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Sell</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>-->
+            </TabControl>
             <TextBlock>Order Book</TextBlock>
             <TabControl Margin="0,20,0,0" Background="Transparent" BorderThickness="0" ItemsSource="{Binding}">
                 <TabItem Header="Buy">
@@ -35,10 +119,13 @@
             <TextBlock>Open Orders</TextBlock>
             <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListOpenOrders, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Amount (USDT)" Binding="{Binding Amount, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Units Filled (BTC)" Binding="{Binding UnitsFilled, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Units Total (BTC)" Binding="{Binding UnitsTotal, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Actual Rate" Binding="{Binding ActualRate, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Estimated Total (USDT)" Binding="{Binding EstimatedTotal, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                 </DataGrid.Columns>
             </DataGrid>
             <TextBlock>Market History</TextBlock>
@@ -54,10 +141,14 @@
             <TextBlock>My Order History</TextBlock>
             <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListMyOrderHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Amount (USDT)" Binding="{Binding Amount, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="Sum" Binding="{Binding Sum, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Closed Date" Binding="{Binding ClosedDate, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Opened Date" Binding="{Binding OpenedDate, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Units Filled (BTC)" Binding="{Binding UnitsFilled, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Units Total (BTC)" Binding="{Binding UnitsTotal, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Actual Rate" Binding="{Binding ActualRate, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Cost/Proceeds" Binding="{Binding CostProceeds, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>

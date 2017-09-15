@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prime.Ui.Wpf.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,16 @@ namespace Prime.Ui.Wpf.View.Trade
         public BuySell()
         {
             InitializeComponent();
+        }
+
+        private void CmbBuyType_Loaded(object sender, RoutedEventArgs e)
+        {
+            cmbBuyType.SelectedIndex = 0;
+        }
+
+        private void CmbBuyTimeInForce_Loaded(object sender, RoutedEventArgs e)
+        {
+            cmbBuyTimeInForce.SelectedIndex = 0;
         }
     }
 }

@@ -8,17 +8,25 @@ namespace Prime.Core.Trade
 {
     public class MyOrderHistoryModel
     {
-        public decimal Amount { get; }
-        public decimal Size { get; }
-        public decimal Total { get; }
-        public decimal Sum { get; }
+        public string Type { get; }
+        public string BidAsk { get; }
+        public DateTime ClosedDate { get; }
+        public DateTime OpenedDate { get; }
+        public Money UnitsFilled { get; }
+        public Money UnitsTotal { get; }
+        public Money ActualRate { get; }
+        public Money CostProceeds { get; }
 
-        public MyOrderHistoryModel(decimal amount, decimal size, decimal total, decimal sum)
+        public MyOrderHistoryModel(string type, string bidAsk, DateTime closedDate, DateTime openedDate, Money unitsFilled, Money unitsTotal, Money actualRate, Money costProceeds)
         {
-            this.Amount = amount;
-            this.Size = size;
-            this.Total = total;
-            this.Sum = sum;
+            this.Type = type;
+            this.BidAsk = bidAsk;
+            this.ClosedDate = closedDate;
+            this.OpenedDate = openedDate;
+            this.UnitsFilled = unitsFilled;
+            this.UnitsTotal = unitsTotal;
+            this.ActualRate = actualRate;
+            this.CostProceeds = costProceeds;
         }
     }
 }
