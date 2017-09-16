@@ -96,7 +96,7 @@
             <TextBlock>Order Book</TextBlock>
             <TabControl Margin="0,20,0,0" Background="Transparent" BorderThickness="0" ItemsSource="{Binding}">
                 <TabItem Header="Buy">
-                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ListOrderBookBuy, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" DataContext="{Binding OrderBookViewModel}" ItemsSource="{Binding ListOrderBookBuy, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Ask (USDT)" Binding="{Binding Bid, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                             <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
@@ -106,7 +106,7 @@
                     </DataGrid>
                 </TabItem>
                 <TabItem Header="Sell">
-                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ListOrderBookSell, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,0,0,20" DataContext="{Binding OrderBookViewModel}" ItemsSource="{Binding ListOrderBookSell, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Bid (USDT)" Binding="{Binding Bid, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                             <DataGridTextColumn Header="Size (BTC)" Binding="{Binding Size, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
@@ -117,7 +117,7 @@
                 </TabItem>
             </TabControl>
             <TextBlock>Open Orders</TextBlock>
-            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListOpenOrders, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" DataContext="{Binding OpenOrdersViewModel}" ItemsSource="{Binding ListOpenOrders, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
@@ -129,7 +129,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <TextBlock>Market History</TextBlock>
-            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListMarketHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" DataContext="{Binding MarketHistoryViewModel}" ItemsSource="{Binding ListMarketHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Buy/Sell" Binding="{Binding BuySell}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
@@ -139,7 +139,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <TextBlock>My Order History</TextBlock>
-            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" ItemsSource="{Binding ListMyOrderHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+            <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" DataContext="{Binding MyOrderHistoryViewModel}" ItemsSource="{Binding ListMyOrderHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Closed Date" Binding="{Binding ClosedDate, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Opened Date" Binding="{Binding OpenedDate, StringFormat=yyyy-MM-dd}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>

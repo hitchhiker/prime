@@ -383,6 +383,10 @@
     <Compile Include="ViewModel\Logging\LogEntry.cs" />
     <Compile Include="PageUri\AssetPageUriProvider.cs" />
     <Compile Include="PageUri\SimplePageUriProvider.cs" />
+    <Compile Include="ViewModel\MarketHistoryViewModel.cs" />
+    <Compile Include="ViewModel\MyOrderHistoryViewModel.cs" />
+    <Compile Include="ViewModel\OpenOrdersViewModel.cs" />
+    <Compile Include="ViewModel\OrderBookViewModel.cs" />
     <Compile Include="ViewModel\PanelFlyoutViewModelBase.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
     <Compile Include="ViewModel\PriceChartPaneModel.cs" />
