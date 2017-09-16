@@ -49,7 +49,7 @@
                             <TextBox x:Name="txtBuyTotal" Text="{Binding Total, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
                         </StackPanel>
                         <StackPanel Margin="0,15,0,0">
-                            <Button x:Name="btnBuy" Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Buy</Button>
+                            <Button x:Name="btnBuy" Command="{Binding BuyCommand}" Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Buy</Button>
                         </StackPanel>
                     </StackPanel>
                 </TabItem>

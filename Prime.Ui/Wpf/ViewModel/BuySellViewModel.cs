@@ -24,12 +24,19 @@ namespace Prime.Ui.Wpf.ViewModel
         public ObservableCollection<MyOrderHistoryModel> ListMyOrderHistory { get; private set; }
         public ObservableCollection<TradeTypeModel> ListTradeTypes { get; private set; }
         public ObservableCollection<TimeInForceModel> ListTimeInForce { get; private set; }
-        
+
+        public RelayCommand BuyCommand { get; private set; }
+
         public BuySellViewModel(ScreenViewModel model)
         {
             _model = model;
             new Task(PopulateDataStructures).Start();
+            BuyCommand = new RelayCommand(() =>
+            {
+                // do vmodel stuff here (in method) for when the button is clicked.
+            });
         }
+
         private void PopulateDataStructures()
         {
             ListOrderBookBuy = new ObservableCollection<OrderBookModel>();
