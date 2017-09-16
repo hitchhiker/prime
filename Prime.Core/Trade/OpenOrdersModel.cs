@@ -8,17 +8,23 @@ namespace Prime.Core.Trade
 {
     public class OpenOrdersModel
     {
-        public decimal Amount { get; }
-        public decimal Size { get; }
-        public decimal Total { get; }
-        public string Status { get; }
+        public DateTime Date { get; }
+        public string Type { get; }
+        public string BidAsk { get; }
+        public Money UnitsFilled { get; }
+        public Money UnitsTotal { get; }
+        public Money ActualRate { get; }
+        public Money EstimatedTotal { get; }
 
-        public OpenOrdersModel(decimal amount, decimal size, decimal total, string status)
+        public OpenOrdersModel(DateTime date, string type, string bidAsk, Money unitsFilled, Money unitsTotal, Money actualRate, Money estimatedTotal)
         {
-            this.Amount = amount;
-            this.Size = size;
-            this.Total = total;
-            this.Status = status;
+            this.Date = date;
+            this.Type = type;
+            this.BidAsk = bidAsk;
+            this.UnitsFilled = unitsFilled;
+            this.UnitsTotal = unitsTotal;
+            this.ActualRate = actualRate;
+            this.EstimatedTotal = estimatedTotal;
         }
     }
 }

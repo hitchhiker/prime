@@ -8,13 +8,13 @@ namespace Prime.Core.Trade
 {
     public class MarketHistoryModel
     {
-        public decimal TotalUnits { get; }
-        public decimal TotalCost { get; }
         public string BuySell { get; }
         public string BidAsk { get; }
         public DateTime Date { get; }
+        public Money TotalUnits { get; }
+        public Money TotalCost { get; }
 
-        public MarketHistoryModel(DateTime date, decimal totalUnits, decimal totalCost, string buySell, string bidAsk)
+        public MarketHistoryModel(DateTime date, Money totalUnits, Money totalCost, string buySell, string bidAsk)
         {
             this.Date = date;
             this.TotalUnits = totalUnits;
