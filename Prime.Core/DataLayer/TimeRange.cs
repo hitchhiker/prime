@@ -81,6 +81,17 @@ namespace Prime.Core
 
         public static TimeRange Empty => new TimeRange(DateTime.MinValue, DateTime.MinValue, TimeResolution.None);
 
+        public static TimeRange LiveRange(TimeResolution resolution)
+        {
+            //we extend beyond 'now' incase the client clock is not accurate.
+
+            var units = resolution.LiveTolerance();
+            var fromNow = DateTime.UtcNow.AddUnits(resolution, -units);
+            var toNow = DateTime.UtcNow.AddUnits(resolution, units);
+
+            return new TimeRange(fromNow, toNow, resolution); 
+        }
+
         public TimeSpan ToTimeSpan()
         {
             return UtcTo-UtcFrom;

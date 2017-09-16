@@ -51,6 +51,7 @@ namespace Prime.Core
 
             Ctx.Status("Requesting @" + Ctx.PrimaryApiProvider.Title);
             var r = Ctx.PrimaryApiProvider.GetOhlc(new OhlcContext(Ctx.Pair, Ctx.TimeResolution, timeRange, L));
+            r.ForEach(x => x.CollectedNearLive = x.DateTimeUtc.IsLive(Ctx.TimeResolution));
             Ctx.Status(r == null ? "Data missing" : "Received data");
             return r;
         }

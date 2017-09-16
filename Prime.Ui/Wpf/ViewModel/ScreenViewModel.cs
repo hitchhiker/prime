@@ -43,6 +43,12 @@ namespace Prime.Ui.Wpf.ViewModel
             RaisePropertyChanged(nameof(Documents));
         }
 
+        public void RemoveDocument(DocumentPaneViewModel viewModel)
+        {
+            Documents.Add(viewModel);
+            RaisePropertyChanged(nameof(Documents));
+        }
+
         public IEnumerable<ToolPaneViewModel> Tools
         {
             get

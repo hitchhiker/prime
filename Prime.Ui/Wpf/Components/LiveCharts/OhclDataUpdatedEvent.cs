@@ -11,11 +11,13 @@ namespace Prime.Ui.Wpf
     {
         public readonly OhclData NewData;
         public readonly Asset Asset;
+        public bool IsLive;
 
-        public OhclDataUpdatedEvent(OhclData newData, Asset asset)
+        public OhclDataUpdatedEvent(OhclData newData, Asset asset, bool isLive)
         {
             NewData = newData;
             Asset = asset;
+            IsLive = isLive;
         }
     }
 }

@@ -17,6 +17,8 @@ namespace Prime.Ui.Wpf
             using (var stream = asm.GetManifestResourceStream("Prime.Ui.Wpf.Resources.Layout.default.xml"))
                 serializer.Deserialize(stream);
 
+            manager.DocumentClosed += Manager_DocumentClosed;
+
             /*
             if (File.Exists(LayoutFileName))
             {
@@ -26,6 +28,14 @@ namespace Prime.Ui.Wpf
             {
             }
             ResetLayout(manager);*/
+        }
+
+        private void Manager_DocumentClosed(object sender, DocumentClosedEventArgs e)
+        {
+            if (!(e.Document?.Content is PaneViewModel doc))
+                return;
+
+            doc.OnClosed();
         }
 
         private static void LoadLayout(DockingManager manager, string xml, bool ok)

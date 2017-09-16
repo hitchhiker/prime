@@ -40,5 +40,7 @@ namespace Prime.Ui.Wpf
                 ((ObservableObject) this).RaisePropertyChanged();
             }
         }
+
+        public abstract void OnClosed();
     }
 }

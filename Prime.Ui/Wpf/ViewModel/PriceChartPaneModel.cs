@@ -33,6 +33,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly List<ZoomBaseComponent> _chartZooms = new List<ZoomBaseComponent>();
         private readonly List<ZoomBaseComponent> _allZooms = new List<ZoomBaseComponent>();
         public readonly OverviewZoomComponent OverviewZoom;
+        public readonly ReceiverZoomComponent ReceiverZoom;
         private ResolutionSourceProvider _chartResolutionProvider;
 
         public readonly TimeResolution OverviewDefaultResolution = TimeResolution.Day;
@@ -68,6 +69,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _adapter = new OhlcDataAdapter(ctx);
 
             OverviewZoom = new OverviewZoomComponent(OverviewDefaultResolution, _dispatcher);
+            ReceiverZoom = new ReceiverZoomComponent(ReceiverDefaultResolution, _dispatcher);
 
             _allZooms.Add(OverviewZoom);
 
@@ -114,37 +116,26 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void InitDataThread()
         {
-            SetDataStatus("Requesting Data");
+            SetDataStatus("Discovering Data");
             _adapter.Init();
             SetDataStatus();
 
-            var range = new TimeRange(-ReceiverDefaultResolution.GetDefaultTimeSpan(), ReceiverDefaultResolution);
+            var range = new TimeRange(-ReceiverDefaultResolution.GetDefaultTimeSpan(), ReceiverDefaultResolution).RemoveLiveRange();
 
             // Get the data for the chart from the datasource
 
-            SetDataStatus("Requesting Data");
-
-            var priceDataNative = _adapter.Request(range);
-            if (priceDataNative == null)
-            {
-                SetDataStatus("Data missing", false);
+            var priceData = RequestData(range);
+            if (priceData.IsEmpty())
                 return;
-            }
-
-            _renderedCoverage.Include(range, priceDataNative);
-
-            SetDataStatus();
 
             SetDataStatus("Initialising chart");
 
             _dispatcher.Invoke(delegate
             {
-                CreateCharts(priceDataNative);
+                CreateCharts(priceData);
                 SetupZoomEvents();
                 SetDataStatus();
             });
-
-            IsGraphReady = true;
 
             ChartGroupViewModel.PropertyChanged += delegate (object o, PropertyChangedEventArgs args)
             {
@@ -152,33 +143,40 @@ namespace Prime.Ui.Wpf.ViewModel
                     QueueWork(UpdateFromResolutionChange);
             };
 
-            var timer = new Timer { Interval = 1000 };
+            var timer = new Timer
+            {
+                Interval = 1000,
+                AutoReset = false
+            };
+
             timer.Elapsed += delegate (object o, ElapsedEventArgs args)
             {
                 LiveUpdateElapsed(o, args);
                 timer.Start();
             };
-            timer.AutoReset = false;
-            timer.Enabled = true;
 
+            timer.Enabled = true;
         }
 
-        private DateTime _lastLiveDataUpdate = DateTime.UtcNow;
+        private DateTime _lastLiveDataUpdate = DateTime.MinValue;
 
         private void LiveUpdateElapsed(object sender, ElapsedEventArgs e)
         {
-            if (!AllowLive)
-                return;
+            lock (_lock)
+            {
+                if (!AllowLive)
+                    return;
 
-            var datastale = _lastLiveDataUpdate.IsBeforeTheLast(TimeSpan.FromSeconds(10));
+                var datastale = _lastLiveDataUpdate.IsBeforeTheLast(TimeSpan.FromSeconds(10));
 
-            _chartZooms.FirstOrDefault()?.Update(datastale);
+                _chartZooms.FirstOrDefault()?.Update(datastale);
 
-            if (!datastale)
-                return;
+                if (!datastale)
+                    return;
 
-            UpdateData();
-            _lastLiveDataUpdate = DateTime.UtcNow;
+                UpdateData(true);
+                _lastLiveDataUpdate = DateTime.UtcNow;
+            }
         }
 
         private void SetupZoomEvents()
@@ -190,7 +188,7 @@ namespace Prime.Ui.Wpf.ViewModel
                     _debouncer.Debounce(25, _ =>
                     {
                         OnRangeChange?.Invoke(this, EventArgs.Empty);
-                        QueueWork(UpdateData);
+                        QueueWork(() => UpdateData());
                     });
 
                     var sender = s as ZoomBaseComponent;
@@ -214,10 +212,8 @@ namespace Prime.Ui.Wpf.ViewModel
             lock (_lock)
             {
                 var overView = _adapter.OverviewOhcl;
-
-                var receiverZoom = new ReceiverZoomComponent(ReceiverDefaultResolution, _dispatcher);
-
-                _chartZooms.Add(receiverZoom);
+                
+                _chartZooms.Add(ReceiverZoom);
                 _allZooms.AddRange(_chartZooms);
 
                 var startpoint = Instant.FromDateTimeUtc(overView.Min(x => x.DateTimeUtc));
@@ -229,17 +225,17 @@ namespace Prime.Ui.Wpf.ViewModel
                     z.ZoomToRange(range);
                 }
 
-                var resolver = _chartResolutionProvider = new ResolutionSourceProvider(() => receiverZoom.Resolution);
+                var resolver = _chartResolutionProvider = new ResolutionSourceProvider(() => ReceiverZoom.Resolution);
 
                 // volume 
 
-                var volchart = _volumeChart = new ChartViewModel(ChartGroupViewModel, receiverZoom, false);
+                var volchart = _volumeChart = new ChartViewModel(ChartGroupViewModel, ReceiverZoom, false);
                 volchart.SeriesCollection.Add(sourceData.ToVolumeSeries(resolver, "Volume"));
                 volchart.YAxesCollection.Add(GetYAxis("Volume"));
 
                 // prices / scroller
 
-                var priceChart = _priceChart = new ChartViewModel(ChartGroupViewModel, receiverZoom);
+                var priceChart = _priceChart = new ChartViewModel(ChartGroupViewModel, ReceiverZoom);
                 priceChart.YAxesCollection.Add(GetYAxis("Price"));
                 
                 priceChart.SeriesCollection.Add(sourceData.ToGCandleSeries(resolver, "Prices"));
@@ -252,7 +248,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
                 OverviewZoom.SetStartFrom(overView.MinOrDefault(x=>x.DateTimeUtc, DateTime.MinValue));
 
-                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(sourceData, _pair.Asset2));
+                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(sourceData, _pair.Asset2, false));
             }
         }
 
@@ -282,7 +278,7 @@ namespace Prime.Ui.Wpf.ViewModel
                         ep = ep.AddHours(23).AddMinutes(59);
                         break;
                 }*/
-                    newRange = new TimeRange(ep, -ts, newres);
+                    newRange = new TimeRange(ep, -ts, newres).RemoveLiveRange();
                     resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
                 /*}
                 else
@@ -292,18 +288,9 @@ namespace Prime.Ui.Wpf.ViewModel
                     resetZoom = newRange;
                 }*/
 
-                SetDataStatus("Requesting Data");
-
-                var nPriceData = _adapter.Request(newRange);
-                if (nPriceData == null)
-                {
-                    SetDataStatus("Data missing", false);
+                var priceData = RequestData(newRange);
+                if (priceData.IsEmpty())
                     return;
-                }
-
-                _renderedCoverage.Clear();
-
-                SetDataStatus();
 
                 _dispatcher.Invoke(() =>
                 {
@@ -312,7 +299,7 @@ namespace Prime.Ui.Wpf.ViewModel
                     foreach (var cz in _chartZooms)
                         cz.Resolution = ChartGroupViewModel.ResolutionSelected;
 
-                    MergeData(nPriceData);
+                    MergeSeriesViews(priceData);
 
                     foreach (var cz in _chartZooms)
                     {
@@ -327,36 +314,48 @@ namespace Prime.Ui.Wpf.ViewModel
                         OverviewZoom.ZoomToRange(resetZoom);
                     }
 
-                    IsGraphReady = true;
+                    _lastLiveDataUpdate = DateTime.MinValue;
 
-                    OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(nPriceData, _pair.Asset2));
+                    OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(priceData, _pair.Asset2, false));
                 });
             }
         }
 
-        private void UpdateData()
+        private void UpdateData(bool isLive = false)
         {
-            lock (_lock)
+            var r = isLive ? TimeRange.LiveRange(ReceiverZoom.Resolution) : ReceiverZoom.GetTimeRange();
+
+            var nPriceData = RequestData(r);
+            if (nPriceData.IsEmpty())
+                return;
+
+            _dispatcher.Invoke(delegate
             {
-                var r = _chartZooms.FirstOrDefault().GetTimeRange();
+                MergeSeriesViews(nPriceData);
+                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(nPriceData, _pair.Asset2, isLive));
+                IsGraphReady = true;
+            });
 
-                if (_renderedCoverage.Covers(r))
-                    return;
+        }
 
-                SetDataStatus("Requesting Data");
-                var nPriceData = _adapter.Request(r);
-                if (nPriceData == null)
-                {
-                    SetDataStatus("Data missing", false);
-                    return;
-                }
+        private OhclData RequestData(TimeRange range)
+        {
+            if (_renderedCoverage.Covers(range))
+                return null;
 
-                _renderedCoverage.Include(r, nPriceData);
+            SetDataStatus("Requesting Data");
 
-                SetDataStatus();
-                _dispatcher.Invoke(() => MergeData(nPriceData));
-                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(nPriceData, _pair.Asset2));
+            var priceData = _adapter.Request(range);
+            if (priceData == null)
+            {
+                SetDataStatus("Data missing", false);
+                return null;
             }
+
+            _renderedCoverage.Include(range, priceData);
+
+            SetDataStatus();
+            return priceData;
         }
 
         private void ClearData()
@@ -368,7 +367,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _volumeChart.SeriesCollection[0].Values.Clear();
         }
 
-        private void MergeData(OhclData sourceData)
+        private void MergeSeriesViews(OhclData sourceData)
         {
             MergeSeriesViews<OhlcInstantChartPoint>(_priceChart.SeriesCollection[0], sourceData.ToGCandleSeries(_chartResolutionProvider, "Prices"));
             MergeSeriesViews<InstantChartPoint>(_volumeChart.SeriesCollection[0], sourceData.ToVolumeSeries(_chartResolutionProvider, "Volume"));
@@ -457,6 +456,11 @@ namespace Prime.Ui.Wpf.ViewModel
         public override CommandContent Create()
         {
             return new AssetGoCommand(_pair.Asset1);
+        }
+
+        public override void OnClosed()
+        {
+            _screenViewModel.RemoveDocument(this);
         }
     }
 }

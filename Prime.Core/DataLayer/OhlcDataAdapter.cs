@@ -68,7 +68,7 @@ namespace Prime.Core
         private void RequestFullDaily()
         {
             var range = TimeRange.EveryDayTillNow;
-            OverviewOhcl = Request(range);
+            OverviewOhcl = Request(range, true);
 
             if (OverviewOhcl.IsEmpty())
                 throw new Exception("Data range missing during " + nameof(Init));
@@ -76,25 +76,23 @@ namespace Prime.Core
             UtcDataStart = OverviewOhcl.Min(x => x.DateTimeUtc);
         }
 
-        public OhclData Request(TimeRange timeRange)
-        {
-            var d = RequestInternal(timeRange);
-            //d?.OffSet(Ctx.HourOffset);
-            return d;
-        }
+        private readonly object _requestLock = new object();
 
-        private OhclData RequestInternal(TimeRange timeRange)
+        public OhclData Request(TimeRange timeRange, bool allowStale = false)
         {
-            switch (timeRange.TimeResolution)
+            lock (_requestLock)
             {
-                case TimeResolution.Day:
-                    return _adapterDay.Request(timeRange);
-                case TimeResolution.Hour:
-                    return _adapterHour.Request(timeRange);
-                case TimeResolution.Minute:
-                    return  _adapterMinute.Request(timeRange);
-                default:
-                    return OhclData.Empty;
+                switch (timeRange.TimeResolution)
+                {
+                    case TimeResolution.Day:
+                        return _adapterDay.Request(timeRange, allowStale);
+                    case TimeResolution.Hour:
+                        return _adapterHour.Request(timeRange, allowStale);
+                    case TimeResolution.Minute:
+                        return _adapterMinute.Request(timeRange, allowStale);
+                    default:
+                        return OhclData.Empty;
+                }
             }
         }
     }

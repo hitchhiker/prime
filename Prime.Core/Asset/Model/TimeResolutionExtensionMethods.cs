@@ -121,6 +121,39 @@ namespace Prime.Core
             return DateTime.MinValue;
         }
 
+        public static DateTime AddUnits(this DateTime current, TimeResolution timeResolution, int units)
+        {
+            switch (timeResolution)
+            {
+                case TimeResolution.Day:
+                    return current.AddDays(units);
+                case TimeResolution.Hour:
+                    return current.AddHours(units);
+                case TimeResolution.Minute:
+                    return current.AddMinutes(units);
+            }
+            return current;
+        }
+
+        /// <summary>
+        /// This method determines how much variation in the client clock is reasonable to allow for each resolution.
+        /// </summary>
+        /// <param name="timeResolution"></param>
+        /// <returns></returns>
+        public static int LiveTolerance(this TimeResolution timeResolution)
+        {
+            switch (timeResolution)
+            {
+                case TimeResolution.Day:
+                    return 2;
+                case TimeResolution.Hour:
+                    return 10;
+                case TimeResolution.Minute:
+                    return 30;
+            }
+            return 1;
+        }
+
         public static bool IsLive(this DateTime time, TimeResolution timeResolution)
         {
             if (time.IsBeforeTheLast(TimeSpan.FromHours(30)))

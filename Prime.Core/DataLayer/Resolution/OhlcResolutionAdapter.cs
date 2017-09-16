@@ -76,14 +76,14 @@ namespace Prime.Core
             return GetHash(Pair, TimeResolution, network);
         }
 
-        public OhclData Request(TimeRange timeRange)
+        public OhclData Request(TimeRange timeRange, bool allowLive = false)
         {
-            var data = RequestInternal(timeRange);
+            var data = RequestInternal(timeRange, allowLive);
             IsDataConverted = data?.WasConverted == true;
             return data;
         }
 
-        private OhclData RequestInternal(TimeRange timeRange)
+        private OhclData RequestInternal(TimeRange timeRange, bool allowLive = false)
         {
             if (!_apiAdapters.Any() && !_storageAdapters.Any())
                 return null;
@@ -96,7 +96,7 @@ namespace Prime.Core
                 OhclData results = null;
 
                 if (StorageEnabled)
-                    results = ContinuousOrMergedStorage(timeRange);
+                    results = ContinuousOrMergedStorage(timeRange, allowLive);
                 
                 var hasRemaining = results.IsEmpty() ? null : results.Remaining(timeRange);
 
@@ -106,12 +106,8 @@ namespace Prime.Core
                 Ctx.Status(results.IsNotEmpty() ? "Data received, processing." : "No data received.");
 
                 if (StorageEnabled && results.IsNotEmpty())
-                {
-                    var clone = new OhclData(results); // ienumerable modifications during storage process.
-                    clone.RemoveAll(x => x.DateTimeUtc.IsLive(timeRange.TimeResolution));
-                    ThreadPool.QueueUserWorkItem(w=> StoreResults(clone, timeRange));
-                }
-
+                    StoreResults(timeRange, results);
+                
                 return results;
             }
         }
@@ -125,7 +121,7 @@ namespace Prime.Core
             return results;
         }
 
-        private OhclData ContinuousOrMergedStorage(TimeRange timeRange)
+        private OhclData ContinuousOrMergedStorage(TimeRange timeRange, bool allowLive = false)
         {
             var partials = new List<OhclData>();
 
@@ -133,6 +129,9 @@ namespace Prime.Core
             {
                 if (r.IsEmpty())
                     continue;
+
+                if (!allowLive)
+                    r.RemoveAll(x => x.CollectedNearLive);
 
                 if (r.IsCovering(timeRange))
                     return r.HasGap() ? null : r;
@@ -155,10 +154,18 @@ namespace Prime.Core
             return mergedData;
         }
 
-        private void StoreResults(OhclData clone, TimeRange timeRange)
+        private void StoreResults(TimeRange timeRange, OhclData results)
         {
-            lock (_storageLock)
-                Parallel.ForEach(StorageAdapters, a => a.StoreRange(clone, timeRange));
+            var clone = new OhclData(results); // ienumerable modifications during storage process.
+
+            if (timeRange.TimeResolution != TimeResolution.Day)
+                clone.RemoveAll(x => x.DateTimeUtc.IsLive(timeRange.TimeResolution));
+
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                lock (_storageLock)
+                    Parallel.ForEach(StorageAdapters, a => a.StoreRange(clone, timeRange));
+            });
         }
     }
 }

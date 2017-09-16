@@ -79,6 +79,9 @@ namespace Prime.Core
             set { } //deserialisation only
         }
 
+        [Bson]
+        public bool CollectedNearLive { get; set; }
+
         public bool IsEmpty()
         {
             return Open == 0 && Close == 0 && High == 0 && Low == 0 && WeightedAverage == 00 &&
