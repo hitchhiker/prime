@@ -12,7 +12,6 @@ namespace Prime.Ui.Wpf.ViewModel
     public class BuySellViewModel : DocumentPaneViewModel
     {
         private readonly ScreenViewModel _model;
-        private Random random = new Random();
         public Money BidAsk { get; }
         public Money Units { get; }
         public Money Total { get; }

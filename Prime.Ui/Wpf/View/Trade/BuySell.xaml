@@ -53,7 +53,7 @@
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
-                <!--<TabItem Header="Sell">
+                <TabItem Header="Sell">
                     <StackPanel Orientation="Vertical" Margin="0,0,0,20">
                         <StackPanel.Resources>
                             <Style TargetType="StackPanel">
@@ -66,32 +66,35 @@
                                 <Setter Property="Width" Value="400" />
                                 <Setter Property="BorderBrush" Value="White" />
                             </Style>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="Width" Value="400" />
+                            </Style>
                         </StackPanel.Resources>
                         <StackPanel Margin="0,10,0,0">
                             <Label Content="Units" Target="{Binding ElementName=txtSellUnits}"/>
                             <TextBox x:Name="txtSellUnits" Text="{Binding Units, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0">
-                            <Label Content="Ask" Target="{Binding ElementName=txtSellBid}"/>
-                            <TextBox x:Name="txtSellBid" Text="{Binding Bid, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <Label Content="Ask" Target="{Binding ElementName=txtSellAsk}"/>
+                            <TextBox x:Name="txtSellAsk" Text="{Binding BidAsk, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0">
-                            <Label Content="Type" Target="{Binding ElementName=txtSellType}"/>
-                            <TextBox x:Name="txtSellType" Text="{Binding Type, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <Label Content="Type" Target="{Binding ElementName=cmbSellType}"/>
+                            <ComboBox  x:Name="cmbSellType" ItemsSource="{Binding Path=ListTradeTypes}" DisplayMemberPath="TradeTypeName" SelectedValue="{Binding Path=TradeTypeModel}" Loaded="CmbSellType_Loaded"/>
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0">
-                            <Label Content="Time in Force" Target="{Binding ElementName=txtSellTimeInForce}"/>
-                            <TextBox x:Name="txtSellTimeInForce" Text="{Binding Type, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <Label Content="Time in Force" Target="{Binding ElementName=cmbSellTimeInForce}"/>
+                            <ComboBox x:Name="cmbSellTimeInForce" ItemsSource="{Binding Path=ListTimeInForce}" DisplayMemberPath="TimeInForceName" SelectedValuePath="Key" SelectedValue="{Binding Path=TimeInForceModel}" Loaded="CmbSellTimeInForce_Loaded" />
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0">
                             <Label Content="Total" Target="{Binding ElementName=txtSellTotal}"/>
                             <TextBox x:Name="txtSellTotal" Text="{Binding Total, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
                         </StackPanel>
                         <StackPanel Margin="0,15,0,0">
-                            <Button Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Sell</Button>
+                            <Button x:Name="btnSell" Command="{Binding SellCommand}" Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Sell</Button>
                         </StackPanel>
                     </StackPanel>
-                </TabItem>-->
+                </TabItem>
             </TabControl>
             <TextBlock>Order Book</TextBlock>
             <TabControl Margin="0,20,0,0" Background="Transparent" BorderThickness="0" ItemsSource="{Binding}">

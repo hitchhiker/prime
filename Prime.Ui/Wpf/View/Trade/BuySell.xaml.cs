@@ -35,5 +35,15 @@ namespace Prime.Ui.Wpf.View.Trade
         {
             cmbBuyTimeInForce.SelectedIndex = 0;
         }
+
+        private void CmbSellTimeInForce_Loaded(object sender, RoutedEventArgs e)
+        {
+            cmbSellTimeInForce.SelectedIndex = 0;
+        }
+
+        private void CmbSellType_Loaded(object sender, RoutedEventArgs e)
+        {
+            cmbSellType.SelectedIndex = 0;
+        }
     }
 }
