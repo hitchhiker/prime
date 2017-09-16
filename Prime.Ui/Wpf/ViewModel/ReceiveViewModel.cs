@@ -78,5 +78,11 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             return new SimpleContentCommand("receive");
         }
+
+        public override void Dispose()
+        {
+            PropertyChanged -= ReceiveViewModel_PropertyChanged;
+            base.Dispose();
+        }
     }
 }

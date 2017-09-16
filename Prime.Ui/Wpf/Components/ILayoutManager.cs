@@ -1,4 +1,5 @@
 
+using System;
 using Xceed.Wpf.AvalonDock;
 
 namespace Prime.Ui.Wpf

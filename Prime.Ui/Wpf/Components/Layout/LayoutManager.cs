@@ -21,26 +21,17 @@ namespace Prime.Ui.Wpf
 
             /*
             if (File.Exists(LayoutFileName))
-            {
-                //LoadLayout(manager, LayoutFileName);
-            }
+                LoadLayout(manager, LayoutFileName);
             else
-            {
-            }
-            ResetLayout(manager);*/
+                ResetLayout(manager);*/
         }
 
         private void Manager_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
-            if (!(e.Document?.Content is PaneViewModel doc))
+            if (!(e.Document?.Content is IDisposable doc))
                 return;
 
-            doc.OnClosed();
-        }
-
-        private static void LoadLayout(DockingManager manager, string xml, bool ok)
-        {
-
+            doc.Dispose();
         }
 
         private static void LoadLayout(DockingManager manager, string fileName)
@@ -58,20 +49,15 @@ namespace Prime.Ui.Wpf
 
         public void SaveLayout(DockingManager manager)
         {
+            /*
             // Craete the folder if it does not exist yet
             if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
             if (File.Exists(LayoutFileName)) File.Delete(LayoutFileName);
 
             // Serialize the layout
             var serializer = new XmlLayoutSerializer(manager);
-            serializer.Serialize(LayoutFileName);
+            serializer.Serialize(LayoutFileName);*/
         }
 
-
-        private static string DataFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + "Lean" + Path.DirectorySeparatorChar + "Monitor";
-
-        private static string LayoutFileName => DataFolder + Path.DirectorySeparatorChar + "layout.xml";
-
-        private static string DefaultLayoutFileName => "layout.default.xml";
     }
 }

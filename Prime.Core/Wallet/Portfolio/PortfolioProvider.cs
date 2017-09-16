@@ -20,7 +20,6 @@ namespace Prime.Core.Wallet
             context.PropertyChanged += Context_PropertyChanged;
         }
 
-        public IReadOnlyList<PortfolioProviderScanner> Scanners => _scanners;
         private readonly List<PortfolioProviderScanner> _scanners;
         private readonly int TimerFrequency = 15000;
         public readonly UserContext Context;
@@ -33,6 +32,7 @@ namespace Prime.Core.Wallet
         public DateTime UtcLastUpdated { get; private set; }
 
         public event EventHandler OnChanged;
+
         private void Context_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             lock (_lock)
@@ -47,27 +47,33 @@ namespace Prime.Core.Wallet
 
         private void StartScanners(UserContext context)
         {
-            var providers = Networks.I.WalletProviders;
-            _scanners.Clear();
-            _scanners.AddRange(providers.Select(x => new PortfolioProviderScanner(new PortfolioProviderScannerContext(this.Context, x, context.BaseAsset, TimerFrequency))).ToList());
-            _scanners.ForEach(x => x.OnChanged += ScannerChanged);
+            lock (_lock)
+            {
+                var providers = Networks.I.WalletProviders;
+                _scanners.Clear();
+                _scanners.AddRange(providers.Select(x => new PortfolioProviderScanner(new PortfolioProviderScannerContext(this.Context, x, context.BaseAsset, TimerFrequency))).ToList());
+                _scanners.ForEach(x => x.OnChanged += ScannerChanged);
+            }
         }
 
         private void StopScanners()
         {
-            _scanners.ForEach(delegate (PortfolioProviderScanner x)
+            lock (_lock)
             {
-                x.OnChanged -= ScannerChanged;
-                x.Dispose();
-            });
+                _scanners.ForEach(delegate(PortfolioProviderScanner x)
+                {
+                    x.OnChanged -= ScannerChanged;
+                    x.Dispose();
+                });
 
-            this.Clear();
-            PortfolioInfoItems.Clear();
-            FailingProviders.Clear();
-            WorkingProviders.Clear();
-            QueryingProviders.Clear();
-            UtcLastUpdated = DateTime.MinValue;
-            OnChanged?.Invoke(this, EventArgs.Empty);
+                this.Clear();
+                PortfolioInfoItems.Clear();
+                FailingProviders.Clear();
+                WorkingProviders.Clear();
+                QueryingProviders.Clear();
+                UtcLastUpdated = DateTime.MinValue;
+                OnChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void ScannerChanged(object sender, EventArgs e)
@@ -112,14 +118,17 @@ namespace Prime.Core.Wallet
         
         private void UpdateScanningStatuses()
         {
-            WorkingProviders.Clear();
-            WorkingProviders.AddRange(Scanners.Where(x => x.IsConnected).Select(x => x.Provider));
+            lock (_lock)
+            {
+                WorkingProviders.Clear();
+                WorkingProviders.AddRange(_scanners.Where(x => x.IsConnected).Select(x => x.Provider));
 
-            FailingProviders.Clear();
-            FailingProviders.AddRange(Scanners.Where(x => x.IsFailing).Select(x => x.Provider));
+                FailingProviders.Clear();
+                FailingProviders.AddRange(_scanners.Where(x => x.IsFailing).Select(x => x.Provider));
 
-            QueryingProviders.Clear();
-            QueryingProviders.AddRange(Scanners.Where(x => x.IsQuerying).Select(x => x.Provider));
+                QueryingProviders.Clear();
+                QueryingProviders.AddRange(_scanners.Where(x => x.IsQuerying).Select(x => x.Provider));
+            }
         }
     }
 }

@@ -63,7 +63,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public SideBarViewModel SideBarViewModel { get; }
 
-        public ScreenViewModel(IMessenger messenger, ILayoutManager layoutManager)
+        public ScreenViewModel(IMessenger messenger, ILayoutManager layoutManager, DockingManager dockingManager)
         {
             CommandManager = new CommandManager();
             CommandManager.CommandAccepted.SubscribePermanent(a => OnCommandAccepted(a?.Command));
@@ -75,6 +75,8 @@ namespace Prime.Ui.Wpf.ViewModel
             _messenger = messenger;
             
             LogPane = new LogPanelViewModel(messenger);
+
+            dockingManager.DocumentClosed += DockingManager_DocumentClosed;
             
             ExitCommand = new RelayCommand(() => Application.Current.Shutdown());
           
@@ -82,6 +84,15 @@ namespace Prime.Ui.Wpf.ViewModel
             RestoreLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.LoadLayout(manager));
             ResetLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.ResetLayout(manager));
             SettingsCommand = new RelayCommand(() => { SideBarViewModel.SettingsClickedCommand.Execute(null); });
+        }
+
+        private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
+        {
+            if (!(e.Document?.Content is DocumentPaneViewModel doc))
+                return;
+
+            if (Documents.Contains(doc))
+                Documents.Remove(doc);
         }
 
         private void OnCommandAccepted(CommandBase c)

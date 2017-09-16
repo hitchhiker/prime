@@ -1,3 +1,4 @@
+using System;
 using GalaSoft.MvvmLight;
 using Prime.Ui.Wpf.ViewModel;
 
@@ -6,7 +7,7 @@ namespace Prime.Ui.Wpf
     /// <summary>
     /// View model for a docking pane
     /// </summary>
-    public abstract class PaneViewModel : VmBase
+    public abstract class PaneViewModel : VmBase, IDisposable
     {
         private bool _isSelected;
         private bool _isActive;
@@ -41,6 +42,8 @@ namespace Prime.Ui.Wpf
             }
         }
 
-        public abstract void OnClosed();
+        public virtual void Dispose()
+        {
+        }
     }
 }

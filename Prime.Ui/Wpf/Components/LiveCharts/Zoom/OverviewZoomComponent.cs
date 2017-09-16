@@ -85,7 +85,7 @@ namespace Prime.Ui.Wpf
 
             if (!skipRangeTrigger)
                 if (ForceOneRangeUpdate || (IsMouseOver && CanRangeEvent()))
-                    OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+                    RangePreviewChanged();
 
             ForceOneRangeUpdate = false;
         }

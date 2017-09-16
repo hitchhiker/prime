@@ -27,6 +27,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly AssetPair _pair;
         private ChartViewModel _volumeChart;
         private ChartViewModel _priceChart;
+        private Timer _liveTimer;
         private readonly object _lock = new object();
         private CoverageMapMemory _renderedCoverage = new CoverageMapMemory();
 
@@ -137,25 +138,15 @@ namespace Prime.Ui.Wpf.ViewModel
                 SetDataStatus();
             });
 
-            ChartGroupViewModel.PropertyChanged += delegate (object o, PropertyChangedEventArgs args)
-            {
-                if (args.PropertyName == nameof(ChartGroupViewModel.ResolutionSelected))
-                    QueueWork(UpdateFromResolutionChange);
-            };
+            ChartGroupViewModel.PropertyChanged += OnChartGroupViewModelOnPropertyChanged;
 
-            var timer = new Timer
-            {
-                Interval = 1000,
-                AutoReset = false
-            };
+            InitLiveTimer();
+        }
 
-            timer.Elapsed += delegate (object o, ElapsedEventArgs args)
-            {
-                LiveUpdateElapsed(o, args);
-                timer.Start();
-            };
-
-            timer.Enabled = true;
+        private void OnChartGroupViewModelOnPropertyChanged(object o, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == nameof(ChartGroupViewModel.ResolutionSelected))
+                QueueWork(UpdateFromResolutionChange);
         }
 
         private DateTime _lastLiveDataUpdate = DateTime.MinValue;
@@ -182,25 +173,25 @@ namespace Prime.Ui.Wpf.ViewModel
         private void SetupZoomEvents()
         {
             foreach (var zoom in _allZooms)
+                zoom.OnRangePreviewChange += OnZoomOnRangePreviewChange;
+        }
+
+        private void OnZoomOnRangePreviewChange(object s, EventArgs e)
+        {
+            _debouncer.Debounce(25, _ =>
             {
-                zoom.OnRangePreviewChange += (s, e) =>
-                {
-                    _debouncer.Debounce(25, _ =>
-                    {
-                        OnRangeChange?.Invoke(this, EventArgs.Empty);
-                        QueueWork(() => UpdateData());
-                    });
+                OnRangeChange?.Invoke(this, EventArgs.Empty);
+                QueueWork(() => UpdateData());
+            });
 
-                    var sender = s as ZoomBaseComponent;
-                    foreach (var oz in _allZooms)
-                    {
-                        if (oz == sender)
-                            continue;
+            var sender = s as ZoomBaseComponent;
+            foreach (var oz in _allZooms)
+            {
+                if (oz == sender)
+                    continue;
 
-                        oz.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
-                        oz.ZoomToRange(sender.GetTimeRange(oz.Resolution));
-                    }
-                };
+                oz.SuspendRangeEventTill = DateTime.UtcNow.AddMilliseconds(200);
+                oz.ZoomToRange(sender.GetTimeRange(oz.Resolution));
             }
         }
 
@@ -319,6 +310,23 @@ namespace Prime.Ui.Wpf.ViewModel
                     OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(priceData, _pair.Asset2, false));
                 });
             }
+        }
+
+        private void InitLiveTimer()
+        {
+            _liveTimer = new Timer
+            {
+                Interval = 1000,
+                AutoReset = false
+            };
+
+            _liveTimer.Elapsed += delegate (object o, ElapsedEventArgs args)
+            {
+                LiveUpdateElapsed(o, args);
+                _liveTimer?.Start();
+            };
+
+            _liveTimer.Enabled = true;
         }
 
         private void UpdateData(bool isLive = false)
@@ -458,9 +466,16 @@ namespace Prime.Ui.Wpf.ViewModel
             return new AssetGoCommand(_pair.Asset1);
         }
 
-        public override void OnClosed()
+        public override void Dispose()
         {
-            _screenViewModel.RemoveDocument(this);
+            _liveTimer = null;
+
+            ChartGroupViewModel.PropertyChanged -= OnChartGroupViewModelOnPropertyChanged;
+
+            foreach (var zoom in _allZooms)
+                zoom.OnRangePreviewChange -= OnZoomOnRangePreviewChange;
+
+            base.Dispose();
         }
     }
 }

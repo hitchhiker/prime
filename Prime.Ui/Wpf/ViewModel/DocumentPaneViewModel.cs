@@ -20,5 +20,7 @@ namespace Prime.Ui.Wpf
         }
 
         public abstract CommandContent Create();
+
+        public override void Dispose() { }
     }
 }

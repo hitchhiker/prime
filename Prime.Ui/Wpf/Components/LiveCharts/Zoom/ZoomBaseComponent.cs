@@ -58,7 +58,12 @@ namespace Prime.Ui.Wpf
             _debounceDispatcher = new DebounceDispatcher(uiDispatcher);
         }
 
-        public EventHandler OnRangePreviewChange;
+        public event EventHandler OnRangePreviewChange;
+
+        public void RangePreviewChanged()
+        {
+            OnRangePreviewChange?.Invoke(this, EventArgs.Empty);
+        }
 
         protected double LastFrom;
         protected double LastTo;

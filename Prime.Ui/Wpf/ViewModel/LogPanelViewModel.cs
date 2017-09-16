@@ -62,5 +62,11 @@ namespace Prime.Ui.Wpf.ViewModel
                 });
             }
         }
+
+        public override void Dispose()
+        {
+            _messenger.Unregister<LogEntryReceivedMessage>(this, AddEntry);
+            base.Dispose();
+        }
     }
 }

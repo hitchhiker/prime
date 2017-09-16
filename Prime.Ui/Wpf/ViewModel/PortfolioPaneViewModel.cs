@@ -119,5 +119,11 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             return new SimpleContentCommand("portfolio");
         }
+
+        public override void Dispose()
+        {
+            Provider.OnChanged += Portfolio_OnChanged;
+            base.Dispose();
+        }
     }
 }
