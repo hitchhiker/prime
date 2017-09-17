@@ -92,5 +92,109 @@ namespace plugins.Services.BitMex
         {
             
         }
+
+        internal class InstrumentsActiveResponse : List<Instrument>
+        {
+        }
+
+        internal class Instrument
+        {
+            public string symbol;
+            public string rootSymbol;
+            public string state;
+            public string typ;
+            public string listing;
+            public string front;
+            public string expiry;
+            public string settle;
+            public string relistInterval;
+            public string inverseLeg;
+            public string sellLeg;
+            public string buyLeg;
+            public string positionCurrency;
+            public string underlying;
+            public string quoteCurrency;
+            public string underlyingSymbol;
+            public string reference;
+            public string referenceSymbol;
+            public string calcInterval;
+            public string publishInterval;
+            public string publishTime;
+            public string maxOrderQty;
+            public string maxPrice;
+            public string lotSize;
+            public string tickSize;
+            public string multiplier;
+            public string settlCurrency;
+            public string underlyingToPositionMultiplier;
+            public string underlyingToSettleMultiplier;
+            public string quoteToSettleMultiplier;
+            public string isQuanto;
+            public string isInverse;
+            public string initMargin;
+            public string maintMargin;
+            public string riskLimit;
+            public string riskStep;
+            public string limit;
+            public string capped;
+            public string taxed;
+            public string deleverage;
+            public string makerFee;
+            public string takerFee;
+            public string settlementFee;
+            public string insuranceFee;
+            public string fundingBaseSymbol;
+            public string fundingQuoteSymbol;
+            public string fundingPremiumSymbol;
+            public string fundingTimestamp;
+            public string fundingInterval;
+            public string fundingRate;
+            public string indicativeFundingRate;
+            public string rebalanceTimestamp;
+            public string rebalanceInterval;
+            public string openingTimestamp;
+            public string closingTimestamp;
+            public string sessionInterval;
+            public string prevClosePrice;
+            public string limitDownPrice;
+            public string limitUpPrice;
+            public string bankruptLimitDownPrice;
+            public string bankruptLimitUpPrice;
+            public string prevTotalVolume;
+            public string totalVolume;
+            public string volume;
+            public string volume24h;
+            public string prevTotalTurnover;
+            public string totalTurnover;
+            public string turnover;
+            public string turnover24h;
+            public string prevPrice24h;
+            public string vwap;
+            public string highPrice;
+            public string lowPrice;
+            public string lastPrice;
+            public string lastPriceProtected;
+            public string lastTickDirection;
+            public string lastChangePcnt;
+            public string bidPrice;
+            public string midPrice;
+            public string askPrice;
+            public string impactBidPrice;
+            public string impactMidPrice;
+            public string impactAskPrice;
+            public string hasLiquidity;
+            public string openInterest;
+            public string openValue;
+            public string fairMethod;
+            public string fairBasisRate;
+            public string fairBasis;
+            public string fairPrice;
+            public string markMethod;
+            public string markPrice;
+            public string indicativeTaxRate;
+            public string indicativeSettlePrice;
+            public string settledPrice;
+            public string timestamp;
+        }
     }
 }

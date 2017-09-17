@@ -30,10 +30,11 @@ namespace Prime.Core
                 if (IsFresh(ignoreFreshState))
                     return;
 
-                var t = exchange.GetAssetPairs(new NetworkProviderContext());
+                var r = ApiCoordinator.GetAssetPairs(exchange);
+                if (r.IsFailed)
+                    return;
 
-                t.Wait();
-                AssetPairs = t.Result;
+                AssetPairs = r.Response;
                 AssetPairs.UtcLastUpdated = DateTime.UtcNow;
 
                 Assets = AssetPairs.Select(x => x.Asset1).Union(AssetPairs.Select(x => x.Asset2)).OrderBy(x=>x.ShortCode).ToUniqueList();

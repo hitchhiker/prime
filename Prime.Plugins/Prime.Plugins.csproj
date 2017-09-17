@@ -268,6 +268,7 @@
     <Compile Include="Services\BitMex\BitMexAuthenticator.cs" />
     <Compile Include="Services\BitMex\BitMexProvider.cs" />
     <Compile Include="Services\BitMex\BitMexSchema.cs" />
+    <Compile Include="Services\BitMex\BitMexSchemaGenerated.cs" />
     <Compile Include="Services\BitMex\IBitMexApi.cs" />
     <Compile Include="Services\BitMex\BitMexCodeConverter.cs" />
     <Compile Include="Services\BitStamp\3rdParty\BitstampClient.cs" />

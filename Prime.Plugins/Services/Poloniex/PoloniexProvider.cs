@@ -42,29 +42,16 @@ namespace plugins
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<string> TestApi(ApiTestContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<string>(delegate
-            {
-                try
-                {
-                    var api = GetApi<PoloniexClient>(context);
-                    AsyncContext.Run(api.Wallet.GetBalancesAsync);
-                    return null;
-                }
-                catch
-                {
-                    return "BAD";
-                }
-            });
-            return t;
+            var api = GetApi<PoloniexClient>(context);
+            var r = await api.Wallet.GetBalancesAsync();
+            return r != null;
         }
 
-        public Task<Money> GetLastPrice(PublicPriceContext context)
+        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var t = new Task<Money>(() => Money.Zero);
-            t.RunSynchronously();
-            return t;
+            return null;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -101,29 +88,25 @@ namespace plugins
         public bool CanMultiDepositAddress { get; }
         public bool CanGenerateDepositAddress { get; }
 
-        public WalletAddresses FetchAllDepositAddresses(WalletAddressContext context)
+        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
 
-        public BalanceResults GetBalance(NetworkProviderPrivateContext context)
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            return context.L.Trace("Getting balance from " + Title, () =>
+            var api = this.GetApi<PoloniexClient>(context);
+            var r = await api.Wallet.GetBalancesAsync();
+
+            var results = new BalanceResults(this);
+            foreach (var balance in r)
             {
-                var api = this.GetApi<PoloniexClient>(context);
-                var dat = api.Wallet.GetBalancesAsync();
-                dat.Wait();
-                var r = dat.Result;
-                var results = new BalanceResults(this);
-                foreach (var balance in r)
-                {
-                    var c = balance.Key.ToAsset(this);
-                    results.AddBalance(c, (decimal) balance.Value.QuoteAvailable);
-                    results.AddAvailable(c, (decimal) balance.Value.QuoteAvailable);
-                    results.AddReserved(c, (decimal) balance.Value.QuoteOnOrders);
-                }
-                return results;
-            });
+                var c = balance.Key.ToAsset(this);
+                results.AddBalance(c, (decimal) balance.Value.QuoteAvailable);
+                results.AddAvailable(c, (decimal) balance.Value.QuoteAvailable);
+                results.AddReserved(c, (decimal) balance.Value.QuoteOnOrders);
+            }
+            return results;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -131,22 +114,22 @@ namespace plugins
             return null;
         }
 
-        public WalletAddresses FetchDepositAddresses(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var api = GetApi<PoloniexClient>(context);
-            var dat = api.Wallet.GetDepositAddressesAsync();
-            dat.Wait();
+            var r = await api.Wallet.GetDepositAddressesAsync();
+
             var addresses = new WalletAddresses();
-            foreach (var r in dat.Result.Where(x=>Equals(x.Key.ToAsset(this), context.Asset)))
+            foreach (var i in r.Where(x=>Equals(x.Key.ToAsset(this), context.Asset)))
             {
-                if (string.IsNullOrWhiteSpace(r.Value))
+                if (string.IsNullOrWhiteSpace(i.Value))
                     continue;
-                addresses.Add(new WalletAddress(this, r.Key.ToAsset(this)) { Address = r.Value});
+                addresses.Add(new WalletAddress(this, i.Key.ToAsset(this)) { Address = i.Value});
             }
             return addresses;
         }
 
-        public OhclData GetOhlc(OhlcContext context)
+        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
         {
             var pair = context.Pair;
             var market = context.Market;
@@ -156,7 +139,7 @@ namespace plugins
             var mp = MarketPeriod.Hours2;
             var ds = DateTime.UtcNow.AddDays(-10);
             var de = DateTime.UtcNow;
-            var apir = AsyncContext.Run(()=> api.Markets.GetChartDataAsync(cpair, mp, ds, de));
+            var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
             var r = new OhclData(market);
             var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
             foreach (var i in apir)

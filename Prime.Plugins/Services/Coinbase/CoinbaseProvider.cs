@@ -50,11 +50,9 @@ namespace plugins
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<Money> GetLastPrice(PublicPriceContext context)
+        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var t = new Task<Money>(() => Money.Zero);
-            t.RunSynchronously();
-            return t;
+            return null;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -74,14 +72,14 @@ namespace plugins
             return t;
         }
 
-        public OhclData GetOhlc(OhlcContext context)
+        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
         {
             var api = GetApi<PoloniexClient>(null);
             var cpair = new CurrencyPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
             var mp = MarketPeriod.Hours2;
             var ds = DateTime.UtcNow.AddDays(-10);
             var de = DateTime.UtcNow;
-            var apir = AsyncContext.Run(() => api.Markets.GetChartDataAsync(cpair, mp, ds, de));
+            var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
             var r = new OhclData(context.Market);
             var seriesid = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
             foreach (var i in apir)
@@ -100,56 +98,41 @@ namespace plugins
             return r;
         }
 
-        public Task<string> TestApi(ApiTestContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<string>(delegate
-            {
-                try
-                {
-                    var api = GetApi<ICoinbaseApi>(context);
-                    var r = AsyncContext.Run(api.GetAccountsAsync);
-                    return r != null ? null : "BAD";
-                }
-                catch (Exception e)
-                {
-                    return e.Message;
-                }
-            });
-            return t;
+            var api = GetApi<ICoinbaseApi>(context);
+            var r = await api.GetAccountsAsync();
+            return r != null;
         }
 
         public bool CanMultiDepositAddress { get; } = true;
 
         public bool CanGenerateDepositAddress { get; } = true;
 
-
-        public WalletAddresses FetchAllDepositAddresses(WalletAddressContext context)
+        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
 
-        public BalanceResults GetBalance(NetworkProviderPrivateContext context)
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            return context.L.Trace("Getting balance from " + Title, () =>
+            var api = GetApi<ICoinbaseApi>(context);
+            var r = await api.GetAccountsAsync();
+
+            var results = new BalanceResults(this);
+
+            foreach (var a in r.data)
             {
-                var api = GetApi<ICoinbaseApi>(context);
-                var r = AsyncContext.Run(api.GetAccountsAsync);
+                if (a.balance == null)
+                    continue;
 
-                var results = new BalanceResults(this);
+                var c = a.balance.currency.ToAsset(this);
+                results.AddBalance(c, a.balance.amount);
+                results.AddAvailable(c, a.balance.amount);
+                results.AddReserved(c, a.balance.amount);
+            }
 
-                foreach (var a in r.data)
-                {
-                    if (a.balance == null)
-                        continue;
-
-                    var c = a.balance.currency.ToAsset(this);
-                    results.AddBalance(c, a.balance.amount);
-                    results.AddAvailable(c, a.balance.amount);
-                    results.AddReserved(c, a.balance.amount);
-                }
-
-                return results;
-            });
+            return results;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -157,32 +140,29 @@ namespace plugins
             return null;
         }
 
-        public WalletAddresses FetchDepositAddresses(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var api = GetApi<ICoinbaseApi>(context);
 
             var accid = "";
 
-            var r = AsyncContext.Run(async delegate
-            {
-                var accs = await api.GetAccounts();
-                var ast = context.Asset.ToRemoteCode(this);
+            var accs = await api.GetAccounts();
+            var ast = context.Asset.ToRemoteCode(this);
 
-                var acc = accs.data.FirstOrDefault(x=> string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
-                if (acc == null)
-                    return null;
+            var acc = accs.data.FirstOrDefault(x=> string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
+            if (acc == null)
+                return null;
 
-                accid = acc.id;
-
-                return await api.GetAddressesAsync(acc.id);
-            });
+            accid = acc.id;
 
             if (accid == null)
                 return null;
 
+            var r = await api.GetAddressesAsync(acc.id);
+
             if (r.data.Count == 0 && context.CanGenerateAddress)
             {
-                var cr = AsyncContext.Run(() => api.CreateAddressAsync(accid));
+                var cr = await api.CreateAddressAsync(accid);
                 if (cr != null)
                     r.data.AddRange(cr.data);
             }

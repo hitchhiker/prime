@@ -9,10 +9,17 @@ namespace Prime.Core
 
         public Money Price { get; set; }
 
+        public bool IsMissing { get; set; }
+
         public DateTime UtcEntered { get; set; }
 
-        public bool Match(AssetPair pair)
+        public IPublicPriceProvider Provider { get; set; }
+
+        public bool Match(IPublicPriceProvider provider, AssetPair pair)
         {
+            if (provider.Id != Provider.Id)
+                return false;
+
             return UtcEntered.IsWithinTheLast(TimeSpan.FromMinutes(-1)) && pair.Equals(Pair);
         }
     }

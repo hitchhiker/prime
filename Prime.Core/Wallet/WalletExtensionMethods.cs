@@ -5,6 +5,13 @@ namespace Prime.Core
 {
     public static class WalletExtensionMethods
     {
+        /// <summary>
+        /// This is broken, needs a review -> get all address, or just the latest?
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="provider"></param>
+        /// <param name="asset"></param>
+        /// <returns></returns>
         public static WalletAddress GetLatestDepositAddress(this UserContext context, IWalletService provider, Asset asset)
         {
             var wd = context.Data(provider);
@@ -12,15 +19,22 @@ namespace Prime.Core
             if (w != null && w.IsFresh())
                 return w;
 
-            var ws = provider.FetchDepositAddresses(new WalletAddressAssetContext(asset, false, context));
+            WalletAddress address = null;
 
-            if (ws?.Count==0)
-                ws = provider.FetchDepositAddresses(new WalletAddressAssetContext(asset, true, context));
+            var r = ApiCoordinator.FetchDepositAddresses(provider, new WalletAddressAssetContext(asset, false, context));
+            if (!r.IsNull && r.Response.Count != 0)
+                address = r.Response.OrderByDescending(x=>x.UtcCreated).FirstOrDefault();
 
-            if (ws?.Count == 0)
-                return null;
+            if (address == null)
+            {
+                var r2 = ApiCoordinator.FetchDepositAddresses(provider, new WalletAddressAssetContext(asset, true, context));
+                if (r2.IsNull || r2.Response.Count == 0)
+                    return null;
 
-            wd.AddRange(ws);
+                address = r2.Response.OrderByDescending(x => x.UtcCreated).FirstOrDefault();
+            }
+
+            wd.Add(address);
             wd.Save(context);
             return wd.GetLatest(asset);
         }

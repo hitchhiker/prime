@@ -29,8 +29,12 @@ namespace Prime.Core
         private void DoRefresh()
         {
             var cc = Networks.I.CoinListProviders.FirstProvider();
+            var r = ApiCoordinator.GetCoinInfo(cc);
+            if (r.IsNull)
+                return;
+
             Items.Clear();
-            Items.AddRange(cc.GetCoinList());
+            Items.AddRange(r.Response);
             Items.Add(new AssetInfo() {Asset = Assets.I.GetRaw("EUR"), FullName = "Euro", SortOrder = 1});
             Items.Add(new AssetInfo() {Asset = Assets.I.GetRaw("USD"), FullName = "U.S. dollar", SortOrder = 1});
         }

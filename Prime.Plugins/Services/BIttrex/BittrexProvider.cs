@@ -40,31 +40,24 @@ namespace plugins
             client.Initialise(new ExchangeContext() { ApiKey = key.Key, Secret = key.Secret, QuoteCurrency = "USD" });
             return client as T;
         }
-        public Task<string> TestApi(ApiTestContext context)
+
+        public Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<string>(delegate
+            var t = new Task<bool>(() =>
             {
-                try
-                {
-                    var api = GetApi<Bittrex.Exchange>(context);
-                    var d = api.GetBalance("btc");
-                    return d != null ? null : "BAD";
-                }
-                catch
-                {
-                    return "BAD";
-                }
+                var api = GetApi<Bittrex.Exchange>(context);
+                var r = api.GetBalance("btc");
+                return r != null;
             });
+            t.Start();
             return t;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<Money> GetLastPrice(PublicPriceContext context)
+        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var t=  new Task<Money>(()=> Money.Zero);
-            t.RunSynchronously();
-            return t;
+            return null;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -96,14 +89,14 @@ namespace plugins
                 return aps;
             });
 
-            t.RunSynchronously();
+            t.Start();
             return t;
         }
 
 
-        public BalanceResults GetBalance(NetworkProviderPrivateContext context)
+        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            return context.L.Trace("Getting balance from " + Title, () =>
+            var t = new Task<BalanceResults>(() =>
             {
                 var api = GetApi<Exchange>(context);
                 var market = api.GetBalances();
@@ -117,6 +110,8 @@ namespace plugins
                 }
                 return results;
             });
+            t.Start();
+            return t;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -128,12 +123,12 @@ namespace plugins
 
         public bool CanGenerateDepositAddress => true;
 
-        public WalletAddresses FetchAllDepositAddresses(WalletAddressContext context)
+        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
 
-        public WalletAddresses FetchDepositAddresses(WalletAddressAssetContext context)
+        public Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
         {
             if (!this.ExchangeHas(context.Asset))
                 return null;

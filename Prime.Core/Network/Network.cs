@@ -59,8 +59,8 @@ namespace Prime.Core
         private IReadOnlyList<IPublicPriceProvider> _ppProviders;
         public IReadOnlyList<IPublicPriceProvider> PublicPriceProviders => _ppProviders ?? (_ppProviders = Providers.OfList<IPublicPriceProvider>());
 
-        private IReadOnlyList<ICoinListProvider> _coinListProviders;
-        public IReadOnlyList<ICoinListProvider> CoinListProviders => _coinListProviders ?? (_coinListProviders = Providers.OfList<ICoinListProvider>());
+        private IReadOnlyList<ICoinInformationProvider> _coinListProviders;
+        public IReadOnlyList<ICoinInformationProvider> CoinListProviders => _coinListProviders ?? (_coinListProviders = Providers.OfList<ICoinInformationProvider>());
 
         private IReadOnlyList<IOhlcProvider> _ohlcProviders;
         public IReadOnlyList<IOhlcProvider> OhlcProviders => _ohlcProviders ?? (_ohlcProviders = Providers.OfList<IOhlcProvider>());

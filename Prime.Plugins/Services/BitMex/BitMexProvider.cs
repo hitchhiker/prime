@@ -31,7 +31,7 @@ namespace plugins
             CanMultiDepositAddress = false;
         }
 
-        public OhclData GetOhlc(OhlcContext context)
+        public Task<OhclData> GetOhlcAsync(OhlcContext context)
         {
             throw new NotImplementedException();
         }
@@ -41,7 +41,12 @@ namespace plugins
             return new BitMexCodeConverter();
         }
 
-        public Task<Money> GetLastPrice(PublicPriceContext context)
+        public Task<LatestPrices> GetLatestPricesAsync(Asset asset, List<Asset> assets)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
             throw new NotImplementedException();
         }
@@ -56,70 +61,59 @@ namespace plugins
             throw new NotImplementedException();
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> TestApi(ApiTestContext context)
-        {
-            var task = new Task<string>(delegate
+            var api = GetApi<IBitMexApi>(context);
+            var r = await api.GetInstrumentsActive();
+            var aps = new AssetPairs();
+            foreach (var i in r)
             {
-                try
-                {
-                    IBitMexApi api = GetApi<IBitMexApi>(context);
-                    var r = AsyncContext.Run(api.GetUserInfo);
-
-                    return r != null ? null : "BAD";
-                }
-                catch (Exception e)
-                {
-                    return e.Message;
-                }
-            });
-
-            return task;
+                var ap = new AssetPair(i.underlying.ToAsset(this), i.quoteCurrency.ToAsset(this));
+                aps.Add(ap);
+            }
+            return aps;
         }
 
-        public WalletAddresses FetchDepositAddresses(WalletAddressAssetContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
+        {
+            var api = GetApi<IBitMexApi>(context);
+            var r = await api.GetUserInfo();
+            return r != null;
+        }
+
+        public async Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var addresses = new WalletAddresses();
 
-            IBitMexApi api = GetApi<IBitMexApi>(context);
+            var api = GetApi<IBitMexApi>(context);
 
-            String depositAddress = AsyncContext.Run(() => api.GetUserDepositAddress(context.Asset.ToRemoteCode(this)));
+            var depositAddress = await  api.GetUserDepositAddress(context.Asset.ToRemoteCode(this));
 
-            WalletAddress walletAddress = new WalletAddress(this, context.Asset);
-            walletAddress.Address = depositAddress;
+            var walletAddress = new WalletAddress(this, context.Asset) {Address = depositAddress};
 
             addresses.Add(walletAddress);
 
             return addresses;
         }
 
-        public WalletAddresses FetchAllDepositAddresses(WalletAddressContext context)
+        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public BalanceResults GetBalance(NetworkProviderPrivateContext context)
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            return context.L.Trace($"Getting balance from {Title}", () =>
-            {
-                IBitMexApi api = GetApi<IBitMexApi>(context);
-
-                // BUG: Where to store curremcy names?
-                var r = AsyncContext.Run(() => api.GetUserWalletInfo("XBt"));
+            var api = GetApi<IBitMexApi>(context);
+            var r = await api.GetUserWalletInfo("XBt");
                 
-                var results = new BalanceResults(this);
+            var results = new BalanceResults(this);
 
-                var c = r.currency.ToAsset(this);
-                results.AddBalance(c, r.amount);
-                results.AddAvailable(c, r.amount);
-                results.AddReserved(c, r.amount);
+            var c = r.currency.ToAsset(this);
+            results.AddBalance(c, r.amount);
+            results.AddAvailable(c, r.amount);
+            results.AddReserved(c, r.amount);
 
-                return results;
-            });
+            return results;
         }
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
@@ -150,5 +144,6 @@ namespace plugins
         public string AggregatorName { get; }
 
         public string Title { get; }
+
     }
 }

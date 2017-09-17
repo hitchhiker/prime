@@ -60,22 +60,23 @@ namespace Prime.Core.Wallet
 
             try
             {
-                BalanceResults apir = null;
+                BalanceResults results = null;
                 try
                 {
-                    apir = Provider.GetBalance(_providerContext);
-                    IsConnected = true;
+                    var ar = ApiCoordinator.GetBalances(Provider, _providerContext);
+                    results = ar.Response;
+                    IsConnected = !ar.IsNull;
                     UpdateInfo();
                 }
+
                 catch (Exception e)
                 {
-                    L.Error(e, $"in {nameof(Update)} @ {nameof(Provider.GetBalance)}");
-
+                    L.Error(e, $"in {nameof(Update)} @ {nameof(Provider.GetBalancesAsync)}");
                     IsConnected = false;
                     UpdateInfo();
                 }
 
-                if (apir == null)
+                if (results == null)
                 {
                     IsQuerying = false;
                     IsFailing = true;
@@ -83,9 +84,9 @@ namespace Prime.Core.Wallet
                     return;
                 }
 
-                foreach (var br in apir)
+                foreach (var br in results)
                 {
-                    var li = GetLineItem(br, BaseAsset, Provider.Network);
+                    var li = GetLineItem(br, BaseAsset, Provider);
                     if (li?.Asset == null)
                         continue;
                     
@@ -153,17 +154,17 @@ namespace Prime.Core.Wallet
             public bool Finished { get; set; }
         }
 
-        private PortfolioLineItem GetLineItem(BalanceResult balance, Asset bAsset, Network i)
+        private PortfolioLineItem GetLineItem(BalanceResult balance, Asset bAsset, IWalletService provider)
         {
             try
             {
                 var pair = new AssetPair(balance.Available.Asset, bAsset);
-                var fx = pair.Fx() ?? Money.Zero;
+                var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
 
                 var pli = new PortfolioLineItem()
                 {
                     Asset = balance.Asset,
-                    Network = i,
+                    Network = provider.Network,
                     AvailableBalance = balance.Available,
                     PendingBalance = balance.Reserved,
                     ReservedBalance = balance.Reserved,

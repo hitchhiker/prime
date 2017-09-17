@@ -82,6 +82,11 @@ namespace Prime.Utility
             Log(message, LoggingLevel.Panic, parameters);
         }
 
+        public void Error(Exception e)
+        {
+            Log(e.Message);
+        }
+
         public void Error(Exception e, string message)
         {
             Log(e.Message + ": " + message);

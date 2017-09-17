@@ -50,10 +50,16 @@ namespace Prime.Core
             }
 
             Ctx.Status("Requesting @" + Ctx.PrimaryApiProvider.Title);
-            var r = Ctx.PrimaryApiProvider.GetOhlc(new OhlcContext(Ctx.Pair, Ctx.TimeResolution, timeRange, L));
-            r.ForEach(x => x.CollectedNearLive = x.DateTimeUtc.IsLive(Ctx.TimeResolution));
-            Ctx.Status(r == null ? "Data missing" : "Received data");
-            return r;
+            var r = ApiCoordinator.GetOhlc(Ctx.PrimaryApiProvider, new OhlcContext(Ctx.Pair, Ctx.TimeResolution, timeRange, L));
+            if (r.IsNull)
+            {
+                Ctx.Status("Data missing");
+                return null;
+            }
+            
+            r.Response.ForEach(x => x.CollectedNearLive = x.DateTimeUtc.IsLive(Ctx.TimeResolution));
+            Ctx.Status("Received data");
+            return r.Response;
         }
 
         private OhclData Convert(TimeRange range)
@@ -61,12 +67,21 @@ namespace Prime.Core
             Ctx.Status("Converting @" + Ctx.PrimaryApiProvider.Title + " " + Ctx.CurrencyConversionApiProvider.Title + " [1]");
 
             var pc = new OhlcContext(new AssetPair(Ctx.Pair.Asset1, Ctx.AssetIntermediary), Ctx.TimeResolution, range, L);
-            var d1 = Ctx.PrimaryApiProvider.GetOhlc(pc);
+            var r1 = ApiCoordinator.GetOhlc(Ctx.PrimaryApiProvider, pc);
+            if (r1.IsNull)
+                return null;
+
+            var d1 = r1.Response;
 
             Ctx.Status("Converting @" + Ctx.PrimaryApiProvider.Title + " " + Ctx.CurrencyConversionApiProvider.Title + " [2]");
 
             var pc2 = new OhlcContext(new AssetPair(Ctx.AssetIntermediary, Ctx.Pair.Asset2), Ctx.TimeResolution, range, L);
-            var d2 = Ctx.CurrencyConversionApiProvider.GetOhlc(pc2);
+
+            var r2 = ApiCoordinator.GetOhlc(Ctx.CurrencyConversionApiProvider, pc2);
+            if (r2.IsNull)
+                return null;
+
+            var d2 = r2.Response;
 
             if (d1.IsEmpty() || d2.IsEmpty())
                 return null;

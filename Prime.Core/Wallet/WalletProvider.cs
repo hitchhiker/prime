@@ -17,7 +17,11 @@ namespace Prime.Core
 
         public void AddAddress(IWalletService service, Asset asset, Action after)
         {
-            var wa = service.FetchDepositAddresses(new WalletAddressAssetContext(asset, true, _context));
+            var r = ApiCoordinator.FetchDepositAddresses(service, new WalletAddressAssetContext(asset, true, _context));
+            if (r.IsNull)
+                return;
+
+            var wa = r.Response;
             if (wa == null)
                 return;
 

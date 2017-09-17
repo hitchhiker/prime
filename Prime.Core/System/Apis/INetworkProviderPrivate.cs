@@ -6,6 +6,6 @@ namespace Prime.Core
     {
         ApiConfiguration GetApiConfiguration { get; }
 
-        Task<string> TestApi(ApiTestContext context);
+        Task<bool> TestApiAsync(ApiTestContext context);
     }
 }

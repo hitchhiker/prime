@@ -6,12 +6,7 @@ namespace Prime.Core
     {
         public readonly AssetPair Pair;
 
-        public PublicPriceContext(AssetPair pair)
-        {
-            Pair = pair;
-        }
-
-        public PublicPriceContext(AssetPair pair, Logger logger) : base(logger)
+        public PublicPriceContext(AssetPair pair, Logger logger = null) : base(logger)
         {
             Pair = pair;
         }

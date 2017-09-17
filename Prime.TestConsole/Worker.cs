@@ -25,7 +25,7 @@ namespace Prime.TestConsole
 
             IWalletService walletService = new BitMexProvider();
             //var results = walletService.GetBalance(providerPrivateContext);
-            walletService.TestApi(testContext).RunSynchronously();
+            walletService.TestApiAsync(testContext).RunSynchronously();
         }
     }
 }

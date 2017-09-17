@@ -3,6 +3,7 @@ using Prime.Core;
 using Prime.Utility;
 using Rokolab.BitstampClient;
 using LiteDB;
+using Nito.AsyncEx;
 
 namespace plugins
 {
@@ -34,21 +35,15 @@ namespace plugins
             return new BitstampClient(context, ra) as T;
         }
 
-        public Task<string> TestApi(ApiTestContext context)
+        public Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<string>(delegate
+            var t = new Task<bool>(() =>
             {
-                try
-                {
-                    var api = GetApi<IBitstampClient>(context);
-                    var d = api.GetBalance();
-                    return d != null && d.Get("status")!="error" ? null : "BAD";
-                }
-                catch
-                {
-                    return "BAD";
-                }
+                var api = GetApi<IBitstampClient>(context);
+                var r = api.GetBalance();
+                return r != null && r.Get("status") != "error";
             });
+            t.Start();
             return t;
         }
 
@@ -59,11 +54,9 @@ namespace plugins
             ApiExtraName = "Customer Number"
         };
 
-        public Task<Money> GetLastPrice(PublicPriceContext context)
+        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var t=  new Task<Money>(()=> Money.Zero);
-            t.RunSynchronously();
-            return t;
+            return null;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -87,11 +80,9 @@ namespace plugins
             return t;
         }
 
-        public BalanceResults GetBalance(NetworkProviderPrivateContext context)
+        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            return context.L.Trace("Getting balance from " + Title, () =>
-            {
-
+            var t = new Task<BalanceResults>(() => { 
                 var api = GetApi<IBitstampClient>(context);
 
                 var market = api.GetBalance();
@@ -114,10 +105,11 @@ namespace plugins
                         results.AddBalance(crc.ToAsset(this), kvp.Value.ToDecimal());
                     }
                 }
-                context.L.Trace("Completed balance from " + Title);
 
                 return results;
             });
+            t.Start();
+            return t;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -129,28 +121,32 @@ namespace plugins
 
         public bool CanGenerateDepositAddress => false;
 
-        public WalletAddresses FetchAllDepositAddresses(WalletAddressContext context)
+        public async Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
             var addresses = new WalletAddresses();
-
             var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.CanGenerateAddress, context.UserContext, context.L);
-            addresses.AddRange(FetchDepositAddresses(wac));
+            addresses.AddRange(await FetchDepositAddressesAsync(wac));
             wac.Asset = "BTC".ToAsset(this);
-            addresses.AddRange(FetchDepositAddresses(wac));
+            addresses.AddRange(await FetchDepositAddressesAsync(wac));
             wac.Asset = "XRP".ToAsset(this);
-            addresses.AddRange(FetchDepositAddresses(wac));
+            addresses.AddRange(await FetchDepositAddressesAsync(wac));
             wac.Asset = "LTC".ToAsset(this);
-            addresses.AddRange(FetchDepositAddresses(wac));
-
+            addresses.AddRange(await FetchDepositAddressesAsync(wac));
             return addresses;
         }
 
-        public WalletAddresses FetchDepositAddresses(WalletAddressAssetContext context)
+        public Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
         {
-            if (!this.ExchangeHas(context.Asset))
-                return null;
+            var t = new Task<WalletAddresses>(() =>
+            {
+                if (!this.ExchangeHas(context.Asset))
+                    return null;
 
-            return new WalletAddresses(GetApi<IBitstampClient>(context).GetDepositAddress(this, context.Asset));
+                return new WalletAddresses(GetApi<IBitstampClient>(context).GetDepositAddress(this, context.Asset));
+            });
+
+            t.Start();
+            return t;
         }
 
         public OhclData GetOhlc(OhlcContext context)

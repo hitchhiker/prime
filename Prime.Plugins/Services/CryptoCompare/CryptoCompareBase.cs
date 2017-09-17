@@ -20,7 +20,7 @@ using vtortola.WebSockets.Rfc6455;
 
 namespace plugins
 {
-    public abstract class CryptoCompareBase : ICoinListProvider, IOhlcProvider, IPriceSocketProvider, IDisposable, IPublicPricesProvider
+    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IPriceSocketProvider, IDisposable, IPublicPricesProvider
     {
         public static string CoinListEndpoint = "https://www.cryptocompare.com/api/data/";
         public static string CoinListEndpoint2 = "https://min-api.cryptocompare.com/data";
@@ -58,13 +58,25 @@ namespace plugins
             return null;
         }
 
-        public async Task<PriceLatest> GetLatestPrices(Asset asset, List<Asset> assets)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
+            var r = await GetLatestPricesAsync(new PublicPricesContext(context.Pair.Asset1, new List<Asset>() {context.Pair.Asset2}));
+            if (r == null || r.Prices?.Any() != true)
+                return null;
+
+            return new LatestPrice(r.Prices.First());
+        }
+
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        {
+            var asset = context.Asset;
+            var assets = context.Assets;
+
             var api = new RestClient(CoinListEndpoint2).For<ICryptoCompareApi>();
 
             var apir = await api.GetPrice(asset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
             
-            var r = new PriceLatest() {UtcCreated = DateTime.UtcNow, Asset = asset};
+            var r = new LatestPrices() {UtcCreated = DateTime.UtcNow, Asset = asset};
             if (apir == null)
                 return r;
 
@@ -79,18 +91,13 @@ namespace plugins
             return r;
         }
 
-        public Task<PriceLatest> GetLatestPrice(AssetPair asset)
-        {
-            return GetLatestPrices(asset.Asset1, new List<Asset>() {asset.Asset2});
-        }
-
-        public List<AssetInfo> GetCoinList()
+        public async Task<List<AssetInfo>> GetCoinInfoAsync(NetworkProviderContext context)
         {
             var api = RestClient.For<ICryptoCompareApi>(CoinListEndpoint);
-            var apir = AsyncContext.Run(api.GetCoinListAsync);
+            var apir = await api.GetCoinListAsync();
 
             if (apir.IsError())
-                return null;
+                throw new ApiResponseException(apir.Response);
 
             var u = new UniqueList<AssetInfo>();
             foreach (var ce in apir.Data)
@@ -117,9 +124,7 @@ namespace plugins
             return u.ToList();
         }
 
-
-
-        public OhclData GetOhlc(OhlcContext context)
+        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
         {
             var range = context.Range;
             var market = context.Market;
@@ -129,21 +134,20 @@ namespace plugins
             var toTs = range.UtcTo.GetSecondsSinceUnixEpoch();
 
             var api = RestClient.For<ICryptoCompareApi>(CoinListEndpoint2);
-            var apir = AsyncContext.Run(
-                delegate
-                {
-                    switch (market)
-                    {
-                        case TimeResolution.Hour:
-                            return api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
-                        case TimeResolution.Day:
-                            return api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false");
-                        case TimeResolution.Minute:
-                            return api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
-                        default:
-                            return null;
-                    }
-                });
+            HistoricListResult apir = null;
+
+            switch (market)
+            {
+                case TimeResolution.Hour:
+                    apir = await api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
+                    break;
+                case TimeResolution.Day:
+                    apir = await api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false");
+                    break;
+                case TimeResolution.Minute:
+                    apir = await api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
+                    break;
+            }
 
             if (apir.IsError())
                 return null;

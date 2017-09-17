@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace Prime.Core
 {
     public interface IOhlcProvider : INetworkProvider
     {
-        OhclData GetOhlc(OhlcContext context);
+        Task<OhclData> GetOhlcAsync(OhlcContext context);
     }
 }

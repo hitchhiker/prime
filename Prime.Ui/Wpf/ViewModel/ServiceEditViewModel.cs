@@ -69,14 +69,14 @@ namespace Prime.Ui.Wpf.ViewModel
             StatusText = "Checking the keys now...";
 
             var apikey = new ApiKey(_apiName, _apiKey, _apiSecret, _apiExtra1);
-            var t = Service.TestApi(new ApiTestContext(apikey));
+            var t = ApiCoordinator.TestApiAsync(Service, new ApiTestContext(apikey));
             t.ContinueWith(task => ApiKeyCheckResult(task, apikey));
             t.Start();
         }
 
-        private void ApiKeyCheckResult(Task<string> x, ApiKey key)
+        private void ApiKeyCheckResult(Task<ApiResponse<bool>> x, ApiKey key)
         {
-            var ok = x.Result == null;
+            var ok = x.Result.Response;
             StatusText = ok ? "Successfully connected, the keys have been saved." : "Unable to connect, check you've entered the information correctly.";
             StatusResult = ok;
             if (!ok)

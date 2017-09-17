@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Prime.Core
 {
-    public class PriceLatest
+    public class LatestPrices
     {
         [Bson]
         public DateTime UtcCreated { get; set; }

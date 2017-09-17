@@ -4,6 +4,6 @@ namespace Prime.Core
 {
     public interface IPublicPriceProvider : INetworkProvider
     {
-        Task<Money> GetLastPrice(PublicPriceContext context);
+        Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context);
     }
 }

@@ -23,66 +23,29 @@ namespace Prime.Core
             return PublicContext.I.Data(provider).AssetPairs.Any(x => pair.Equals(x, true));
         }
 
-        public static IOhlcProvider GetOhlcProvider(this AssetPair pair)
-        {
-            var provs = Networks.I.OhlcProviders.OrderByDescending(x => x.Priority).ToList();
-            return null;
-        }
-
-        public static Money? GetLatestPrice(this IExchangeProvider provider, AssetPair pair)
-        {
-            lock (PriceCacheLock)
-            {
-                var e = PriceCache.FirstOrDefault(x => x.Match(pair));
-                if (e != null)
-                    return e.Price;
-
-                var r = AsyncContext.Run(() => provider.GetLastPrice(new PublicPriceContext(pair)));
-                if (r == Money.Zero)
-                    return null;
-
-                PriceCache.Add(new PriceCacheItem() {Pair = pair, Price = r, UtcEntered = DateTime.UtcNow});
-                return r;
-            }
-        }
-
-        public static Money? GetLatestPrice(this IPublicPricesProvider provider, AssetPair pair)
-        {
-            lock (PriceCacheLock)
-            {
-                var e = PriceCache.FirstOrDefault(x => x.Match(pair));
-                if (e != null)
-                    return e.Price;
-
-                var r = AsyncContext.Run(() => provider.GetLatestPrice(pair) ?? new Task<PriceLatest>(() => null));
-                if (r != null)
-                    PriceCache.Add(new PriceCacheItem() { Pair = pair, Price = r.Prices.FirstOrDefault(), UtcEntered = DateTime.UtcNow });
-
-                return r?.Prices?.FirstOrDefault() ?? Money.Zero;
-            }
-        }
-
-        public static Money? Fx(this AssetPair pair, INetworkProvider providerPreferred = null)
+        public static Money? Fx(this AssetPair pair, IPublicPriceProvider providerPreferred = null)
         {
             if (pair.Asset1.Equals(pair.Asset2))
                 return new Money(1, pair.Asset1);
 
-            var m = GetLatestPrice(providerPreferred, pair);
-            if (m != null)
-                return m.Value;
-
-            var exs = Networks.I.ExchangeProviders;
-            foreach (var e in exs.Where(x => x.ExchangeHas(pair)))
-            {
-                m = GetLatestPrice(e, pair);
+            if (providerPreferred!=null) { 
+                var m = GetLatestPrice(providerPreferred, pair);
                 if (m != null)
                     return m.Value;
             }
 
-            var ppps = Networks.I.Providers.OfType<ILatestPriceAggregationProvider>().ToList();
+            var exs = Networks.I.ExchangeProviders;
+            foreach (var e in exs.Where(x => x.ExchangeHas(pair)))
+            {
+                var m = GetLatestPrice(e, pair);
+                if (m != null)
+                    return m.Value;
+            }
+
+            var ppps = Networks.I.Providers.OfType<ILatestPriceAggregationProvider>().OfType<IPublicPriceProvider>();
             foreach (var e in ppps)
             {
-                m = GetLatestPrice(e, pair);
+                var m = GetLatestPrice(e, pair);
                 if (m != null)
                     return m.Value;
             }
@@ -90,34 +53,28 @@ namespace Prime.Core
             return null;
         }
 
-        private static Money? GetLatestPrice(INetworkProvider provider, AssetPair pair)
+        public static Money? GetLatestPrice(this IPublicPriceProvider provider, AssetPair pair)
         {
             if (provider == null)
-                return null;
+                throw new ArgumentException(nameof(provider) + " cannot be null for " + nameof(GetLatestPrice));
 
-            Money? m;
-
-            if (provider is IPublicPricesProvider ppp)
+            lock (PriceCacheLock)
             {
-                try
+                var e = PriceCache.FirstOrDefault(x => x.Match(provider, pair));
+                if (e != null)
+                    return e.IsMissing ? (Money?)null : e.Price;
+
+                var m = ApiCoordinator.GetLatestPrice(provider, new PublicPriceContext(pair)).Response?.Price;
+
+                if (m == null || m == Money.Zero)
                 {
-                    var p = AsyncContext.Run(() => ppp.GetLatestPrice(pair));
-                    m = p?.Prices.FirstOrDefault(x => pair.Asset2.Equals(x.Asset));
-                    return m;
+                    PriceCache.Add(new PriceCacheItem() {Provider = provider, Pair = pair, IsMissing = true, UtcEntered = DateTime.UtcNow });
+                    return null;
                 }
-                catch { }
-                return null;
-            }
 
-            if (!(provider is IExchangeProvider ep))
-                return null;
-
-            try { 
-                m = AsyncContext.Run(() => ep.GetLatestPrice(pair));
+                PriceCache.Add(new PriceCacheItem() { Provider = provider, Pair = pair, Price = m.Value, UtcEntered = DateTime.UtcNow });
                 return m;
             }
-            catch { }
-            return null;
         }
     }
 }

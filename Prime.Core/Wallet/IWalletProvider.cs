@@ -12,10 +12,10 @@ namespace Prime.Core
 
         bool CanGenerateDepositAddress { get; }
 
-        WalletAddresses FetchDepositAddresses(WalletAddressAssetContext context);
+        Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context);
 
-        WalletAddresses FetchAllDepositAddresses(WalletAddressContext context);
+        Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context);
 
-        BalanceResults GetBalance(NetworkProviderPrivateContext context);
+        Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context);
     }
 }

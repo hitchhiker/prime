@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Prime.Core
 {
-    public interface ICoinListProvider : INetworkProvider, IDescribesAssets
+    public interface ICoinInformationProvider : INetworkProvider, IDescribesAssets
     {
-        List<AssetInfo> GetCoinList();
+        Task<List<AssetInfo>> GetCoinInfoAsync(NetworkProviderContext context);
     }
 }

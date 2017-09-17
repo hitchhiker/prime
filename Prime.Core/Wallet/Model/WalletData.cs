@@ -43,8 +43,11 @@ namespace Prime.Core
 
             lock (Lock)
             {
-                var wallets1 = provider.FetchDepositAddresses(new WalletAddressAssetContext(asset, false, context));
-                AddRange(wallets1);
+                var r = ApiCoordinator.FetchAllDepositAddresses(provider, new WalletAddressAssetContext(asset, false, context));
+                if (r.IsNull)
+                    return;
+
+                AddRange(r.Response);
                 this.Save(context);
             }
         }

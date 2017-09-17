@@ -19,5 +19,8 @@ namespace plugins
 
         [Get("api/v1/user")]
         Task<BitMexSchema.UserInfo> GetUserInfo();
+
+        [Get("api/v1/instrument/active")]
+        Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActive();
     }
 }
