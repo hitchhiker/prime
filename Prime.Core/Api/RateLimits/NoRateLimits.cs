@@ -1,8 +1,10 @@
 namespace Prime.Core
 {
-    public class NoRateLimits : RateLimitBase
+    public class NoRateLimits : IRateLimiter
     {
-        public override bool IsSafe()
+        public void Limit() { }
+
+        public bool IsSafe(NetworkProviderContext context)
         {
             return true;
         }

@@ -2,8 +2,8 @@
 {
     public interface IRateLimiter
     {
-        void Hit();
+        void Limit();
 
-        bool IsSafe();
+        bool IsSafe(NetworkProviderContext context);
     }
 }

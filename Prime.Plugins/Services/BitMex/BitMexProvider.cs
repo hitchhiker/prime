@@ -31,7 +31,7 @@ namespace plugins
             CanMultiDepositAddress = false;
         }
 
-        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
         public IRateLimiter RateLimiter => Limiter;
 
         public Task<OhclData> GetOhlcAsync(OhlcContext context)

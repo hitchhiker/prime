@@ -38,7 +38,7 @@ namespace plugins
         private string _title;
         public virtual string Title => _title ?? (_title = Name + " (" + AggregatorName + ")");
 
-        private static readonly CryptoCompareRateLimiter Limiter = new CryptoCompareRateLimiter();
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(4000, 60);
         public IRateLimiter RateLimiter => Limiter;
 
         public abstract string Name { get; }

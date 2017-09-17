@@ -44,9 +44,9 @@ namespace Prime.Ui.Wpf.ViewModel
             if (Key != null && !Key.Equals(message.Key, StringComparison.OrdinalIgnoreCase))
                 return;
 
-            lock (_lock)
+            _dispatcher.Invoke(() =>
             {
-                _dispatcher.Invoke(() =>
+                lock (_lock)
                 {
                     if (message.SameLine && LogEntries.Count > 0)
                         LogEntries.RemoveAt(LogEntries.Count - 1);
@@ -59,8 +59,8 @@ namespace Prime.Ui.Wpf.ViewModel
                     });
 
                     Count = LogEntries.Count;
-                });
-            }
+                }
+            });
         }
 
         public override void Dispose()

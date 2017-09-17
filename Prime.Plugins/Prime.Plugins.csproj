@@ -298,7 +298,6 @@
     <Compile Include="Services\Coinbase\CoinbaseProvider.cs" />
     <Compile Include="Services\Coinbase\ICoinbaseApi.cs" />
     <Compile Include="Services\CryptoCompare\CryptoCompareBase.cs" />
-    <Compile Include="Services\CryptoCompare\CryptoCompareRateLimiter.cs" />
     <Compile Include="Services\DebugDeserialiser.cs" />
     <Compile Include="Services\CryptoCompare\CryptoCompareProvider.cs" />
     <Compile Include="Services\CryptoCompare\Generator\_generated.cs" />

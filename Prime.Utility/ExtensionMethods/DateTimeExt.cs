@@ -140,24 +140,34 @@ namespace Prime.Utility
 
         public static bool IsWithinTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
         {
+            return dateTime.IsAfterOrEqualTo(DateTime.UtcNow.Add(-withinTimeSpan));
+        }
+
+        public static bool IsBeforeTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
+        {
+            return dateTime.IsBeforeOrEqualTo(DateTime.UtcNow.Add(-withinTimeSpan));
+        }
+
+        public static bool IsAfterOrEqualTo(this DateTime dateTime, DateTime limit)
+        {
             if (dateTime == DateTime.MinValue)
                 return false;
 
             if (dateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(IsWithinTheLast) + " only accepts UTC DateTime");
 
-            return dateTime >= DateTime.UtcNow.Add(-withinTimeSpan);
+            return dateTime >= limit; //yes i realise these are kind of pointless.
         }
 
-        public static bool IsBeforeTheLast(this DateTime dateTime, TimeSpan withinTimeSpan)
+        public static bool IsBeforeOrEqualTo(this DateTime dateTime, DateTime limit)
         {
             if (dateTime == DateTime.MinValue)
                 return true;
 
             if (dateTime.Kind != DateTimeKind.Utc)
-                throw new ArgumentException(nameof(IsBeforeTheLast) + " only accepts UTC DateTime");
+                throw new ArgumentException(nameof(IsBeforeOrEqualTo) + " only accepts UTC DateTime");
 
-            return dateTime <= DateTime.UtcNow.Add(-withinTimeSpan);
+            return dateTime <= limit; //yes i realise these are kind of pointless.
         }
 
         /// <summary>
