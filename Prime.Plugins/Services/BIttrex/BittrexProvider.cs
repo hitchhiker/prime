@@ -128,7 +128,7 @@ namespace plugins
             throw new NotImplementedException();
         }
 
-        public Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
+        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
             if (!this.ExchangeHas(context.Asset))
                 return null;

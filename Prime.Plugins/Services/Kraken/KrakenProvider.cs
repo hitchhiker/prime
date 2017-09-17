@@ -147,7 +147,7 @@ namespace plugins
             return d[0].Method;
         }
 
-        public Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
+        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var t = new Task<WalletAddresses>(() =>
             {

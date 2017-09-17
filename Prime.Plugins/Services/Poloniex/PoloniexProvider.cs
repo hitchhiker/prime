@@ -114,7 +114,7 @@ namespace plugins
             return null;
         }
 
-        public async Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var api = GetApi<PoloniexClient>(context);
             var r = await api.Wallet.GetDepositAddressesAsync();

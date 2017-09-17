@@ -30,7 +30,7 @@
         <ItemsControl ItemsSource="{Binding Path=LogEntries, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" FontSize="11">
             <ItemsControl.Template>
                 <ControlTemplate>
-                    <ScrollViewer CanContentScroll="True" ScrollChanged="ScrollViewer_ScrollChanged" Padding="5,10">
+                    <ScrollViewer CanContentScroll="True" ScrollChanged="ScrollViewer_ScrollChanged" Padding="0,3">
                         <ItemsPresenter/>
                     </ScrollViewer>
                 </ControlTemplate>

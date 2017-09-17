@@ -125,17 +125,17 @@ namespace plugins
         {
             var addresses = new WalletAddresses();
             var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.CanGenerateAddress, context.UserContext, context.L);
-            addresses.AddRange(await FetchDepositAddressesAsync(wac));
+            addresses.AddRange(await GetDepositAddressesAsync(wac));
             wac.Asset = "BTC".ToAsset(this);
-            addresses.AddRange(await FetchDepositAddressesAsync(wac));
+            addresses.AddRange(await GetDepositAddressesAsync(wac));
             wac.Asset = "XRP".ToAsset(this);
-            addresses.AddRange(await FetchDepositAddressesAsync(wac));
+            addresses.AddRange(await GetDepositAddressesAsync(wac));
             wac.Asset = "LTC".ToAsset(this);
-            addresses.AddRange(await FetchDepositAddressesAsync(wac));
+            addresses.AddRange(await GetDepositAddressesAsync(wac));
             return addresses;
         }
 
-        public Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
+        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var t = new Task<WalletAddresses>(() =>
             {

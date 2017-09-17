@@ -25,7 +25,7 @@ namespace Prime.Ui.Wpf.ViewModel
             var wac = new WalletAddressAssetContext(Asset.Btc, false, UserContext.Current);
             foreach (var network in Networks.I.WalletProviders)
             {
-                var r = ApiCoordinator.FetchDepositAddresses(network, wac);
+                var r = ApiCoordinator.GetDepositAddresses(network, wac);
                 if (r.IsNull)
                     continue;
 

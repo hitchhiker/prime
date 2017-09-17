@@ -81,7 +81,7 @@ namespace plugins
             return r != null;
         }
 
-        public async Task<WalletAddresses> FetchDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
             var addresses = new WalletAddresses();
 
@@ -108,10 +108,12 @@ namespace plugins
                 
             var results = new BalanceResults(this);
 
+            var btcAmount = (decimal)0.00000001 * r.amount;
+
             var c = r.currency.ToAsset(this);
-            results.AddBalance(c, r.amount);
-            results.AddAvailable(c, r.amount);
-            results.AddReserved(c, r.amount);
+            results.AddBalance(c, btcAmount);
+            results.AddAvailable(c, btcAmount);
+            results.AddReserved(c, 0);
 
             return results;
         }

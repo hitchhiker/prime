@@ -21,13 +21,13 @@ namespace Prime.Core
 
             WalletAddress address = null;
 
-            var r = ApiCoordinator.FetchDepositAddresses(provider, new WalletAddressAssetContext(asset, false, context));
+            var r = ApiCoordinator.GetDepositAddresses(provider, new WalletAddressAssetContext(asset, false, context));
             if (!r.IsNull && r.Response.Count != 0)
                 address = r.Response.OrderByDescending(x=>x.UtcCreated).FirstOrDefault();
 
             if (address == null)
             {
-                var r2 = ApiCoordinator.FetchDepositAddresses(provider, new WalletAddressAssetContext(asset, true, context));
+                var r2 = ApiCoordinator.GetDepositAddresses(provider, new WalletAddressAssetContext(asset, true, context));
                 if (r2.IsNull || r2.Response.Count == 0)
                     return null;
 
