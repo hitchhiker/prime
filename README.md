@@ -4,9 +4,9 @@ https://getprime.org
 
 Project status: PRE-ALPHA - not production ready.
 
-Open source decentralised **(ODC)** crypto-asset trading application, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
+Open source decentralised **(ODC)** crypto asset trading application, browser, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
 
-..or more simply "an app for multi-exchange crypto trading."
+..or more simply "a crypto browser."
 
 **The gold rush.**
 
