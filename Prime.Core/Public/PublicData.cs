@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +31,11 @@ namespace Prime.Core
         {
             var data = AssetPairs.GetOrAdd(pair, k =>
             {
-                var d = Networks.I.AssetPairAggregationProviders.FirstProvider().GetCoinInfo(new AggregatedCoinInfoContext(k));
-                this.Save(PublicContext.I);
-                return d;
+                var prov = Networks.I.AssetPairAggregationProviders.FirstProvider();
+                var r = ApiCoordinator.GetCoinInfo(prov, new AggregatedCoinInfoContext(k));
+                if (!r.IsNull)
+                    this.Save(PublicContext.I);
+                return r.Response ?? new AssetExchangeData(k, prov) {UtcUpdated = DateTime.UtcNow};
             });
 
             data.Refresh(PublicContext.I);

@@ -71,7 +71,6 @@ namespace Prime.Ui.Wpf.ViewModel
             var apikey = new ApiKey(_apiName, _apiKey, _apiSecret, _apiExtra1);
             var t = ApiCoordinator.TestApiAsync(Service, new ApiTestContext(apikey));
             t.ContinueWith(task => ApiKeyCheckResult(task, apikey));
-            t.Start();
         }
 
         private void ApiKeyCheckResult(Task<ApiResponse<bool>> x, ApiKey key)

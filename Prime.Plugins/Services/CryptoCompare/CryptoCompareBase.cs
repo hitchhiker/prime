@@ -22,8 +22,8 @@ namespace plugins
 {
     public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IPriceSocketProvider, IDisposable, IPublicPricesProvider
     {
-        public static string CoinListEndpoint = "https://www.cryptocompare.com/api/data/";
-        public static string CoinListEndpoint2 = "https://min-api.cryptocompare.com/data";
+        public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
+        public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
 
         private Network _network;
 
@@ -42,6 +42,11 @@ namespace plugins
         public IRateLimiter RateLimiter => Limiter;
 
         public abstract string Name { get; }
+
+        public T GetApi<T>(bool legacyEndpoint = false) where T : class
+        {
+            return RestClient.For<ICryptoCompareApi>(legacyEndpoint ? EndpointLegacy : EndpointMinApi) as T;
+        }
 
         private Network GetNetwork()
         {
@@ -75,7 +80,7 @@ namespace plugins
             var asset = context.Asset;
             var assets = context.Assets;
 
-            var api = new RestClient(CoinListEndpoint2).For<ICryptoCompareApi>();
+            var api = GetApi<ICryptoCompareApi>();
 
             var apir = await api.GetPrice(asset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
             
@@ -96,7 +101,7 @@ namespace plugins
 
         public async Task<List<AssetInfo>> GetCoinInfoAsync(NetworkProviderContext context)
         {
-            var api = RestClient.For<ICryptoCompareApi>(CoinListEndpoint);
+            var api = GetApi<ICryptoCompareApi>(true);
             var apir = await api.GetCoinListAsync();
 
             if (apir.IsError())
@@ -136,7 +141,7 @@ namespace plugins
             var limit = range.GetDistanceInResolutionTicks();
             var toTs = range.UtcTo.GetSecondsSinceUnixEpoch();
 
-            var api = RestClient.For<ICryptoCompareApi>(CoinListEndpoint2);
+            var api = GetApi<ICryptoCompareApi>();
             HistoricListResult apir = null;
 
             switch (market)

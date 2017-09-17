@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ApiCoordinator.cs" />
+    <Compile Include="Api\ApiHelpers.cs" />
     <Compile Include="Api\ApiResponseException.cs" />
     <Compile Include="Api\ApiResponse.cs" />
     <Compile Include="Api\BaseAuthenticator.cs" />

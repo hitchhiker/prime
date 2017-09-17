@@ -23,8 +23,9 @@ namespace Prime.Core
 
             if (Provider != null)
             {
-                Provider.RefreshCoinInfo(this);
-                this.Save(context);
+                var r = ApiCoordinator.RefreshCoinInfo(Provider, this);
+                if (!r.IsNull && r.Response)
+                    this.Save(context);
             }
         }
 

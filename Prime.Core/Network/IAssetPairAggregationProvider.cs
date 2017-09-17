@@ -1,9 +1,11 @@
-﻿namespace Prime.Core
+﻿using System.Threading.Tasks;
+
+namespace Prime.Core
 {
     public interface IAssetPairAggregationProvider : INetworkProvider
     {
-        AssetExchangeData GetCoinInfo(AggregatedCoinInfoContext context);
+        Task<AssetExchangeData> GetCoinInfoAsync(AggregatedCoinInfoContext context);
 
-        void RefreshCoinInfo(AssetExchangeData assetData);
+        Task<bool> RefreshCoinInfoAsync(AssetExchangeData assetData);
     }
 }
