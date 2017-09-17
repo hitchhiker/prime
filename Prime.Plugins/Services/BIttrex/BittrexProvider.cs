@@ -26,6 +26,9 @@ namespace plugins
             //3d3bdcb685a3455f965f0e78ead0cbba
         public ObjectId Id => IdHash;
 
+        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        public IRateLimiter RateLimiter => Limiter;
+
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
             var client = new Bittrex.Exchange();

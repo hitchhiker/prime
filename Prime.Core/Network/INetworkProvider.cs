@@ -15,5 +15,7 @@ namespace Prime.Core
         string AggregatorName { get; }
 
         string Title { get; }
+
+        IRateLimiter RateLimiter { get; }
     }
 }

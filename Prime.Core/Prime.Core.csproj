@@ -200,11 +200,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ApiCoordinator.cs" />
-    <Compile Include="Api\ApiException.cs" />
+    <Compile Include="Api\ApiResponseException.cs" />
     <Compile Include="Api\ApiResponse.cs" />
     <Compile Include="Api\BaseAuthenticator.cs" />
     <Compile Include="Api\ApiTestContext.cs" />
     <Compile Include="Api\ApiContext.cs" />
+    <Compile Include="Api\RateLimits\CommonRateLimiter.cs" />
+    <Compile Include="Api\RateLimits\IRateLimiter.cs" />
+    <Compile Include="Api\RateLimits\NoRateLimits.cs" />
+    <Compile Include="Api\RateLimits\RateLimitBase.cs" />
     <Compile Include="Asset\AssetEventArgs.cs" />
     <Compile Include="Asset\AssetGoCommand.cs" />
     <Compile Include="Asset\AssetUtility.cs" />

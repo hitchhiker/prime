@@ -23,6 +23,9 @@ namespace plugins
 
         public string Title => Network.Name;
 
+        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        public IRateLimiter RateLimiter => Limiter;
+
         public T GetApi<T>(ApiKey key = null) where T : class
         {
             if (key==null)

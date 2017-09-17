@@ -38,6 +38,9 @@ namespace plugins
         private string _title;
         public virtual string Title => _title ?? (_title = Name + " (" + AggregatorName + ")");
 
+        private static readonly CryptoCompareRateLimiter Limiter = new CryptoCompareRateLimiter();
+        public IRateLimiter RateLimiter => Limiter;
+
         public abstract string Name { get; }
 
         private Network GetNetwork()

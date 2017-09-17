@@ -36,7 +36,10 @@ namespace plugins
         public string Title => Network.Name;
 
         public ObjectId Id => IdHash;
-        
+
+        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        public IRateLimiter RateLimiter => Limiter;
+
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
             return RestClient.For<ICoinbaseApi>("https://api.coinbase.com/v2/") as T;
