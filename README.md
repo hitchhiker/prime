@@ -18,6 +18,7 @@ None of these tools would be appropriate in our community, they are centralised,
 ```
 Note: Prime lives on your machine, is ODC, requires no connection with the core developers or anyone else. 
 It is yours, and under your sole control.
+Your keys NEVER leave your machine.
 ```
 
 ## Proposed Features ##
