@@ -52,17 +52,6 @@ namespace prime
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-
-            Logging.I.OnNewMessage += I_OnNewMessage;
-        }
-
-        private void I_OnNewMessage(object sender, EventArgs e)
-        {
-            var me = e as LoggerMessageEvent;
-            if (me == null)
-                return;
-
-            PrimeWpf.I.Messenger.Send(new LogEntryReceivedMessage(me));
         }
 
         protected override void OnExit(ExitEventArgs e)

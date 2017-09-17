@@ -6,7 +6,7 @@ namespace Prime.Core
     {
         public readonly ApiKey ApiTestKey;
 
-        public ApiTestContext(ApiKey apiTestKey, Logger logger = null) : base(null, logger)
+        public ApiTestContext(ApiKey apiTestKey, ILogger logger = null) : base(null, logger)
         {
             ApiTestKey = apiTestKey;
         }

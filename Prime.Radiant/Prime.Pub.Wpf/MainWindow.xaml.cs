@@ -31,15 +31,12 @@ namespace Prime.Radiant
 
             Action<string> nativeLogger = (Terminal.DataContext as TerminalViewModel).AddItem;
 
-            var logger = new Logger();
+            var logger = Logging.I.DefaultLogger;
 
-            Logging.I.OnNewMessage += delegate (object o, EventArgs args)
+            DefaultMessenger.I.Default.Register<NewLogMessage>(this, m =>
             {
-                if (!(args is LoggerMessageEvent lme))
-                    return;
-
-                dispatcher.Invoke(() => nativeLogger.Invoke(LanguageCorrection(lme.Message)));
-            };
+                dispatcher.Invoke(() => nativeLogger.Invoke(LanguageCorrection(m.Message)));
+            });
 
             var pc = PublishManagerContext.LoadDefault(Dispatcher.CurrentDispatcher);
             if (pc == null)
@@ -52,7 +49,7 @@ namespace Prime.Radiant
             var dom = AppDomain.CurrentDomain;
 
             dom.UnhandledException +=
-                (o, args) => dispatcher.Invoke(() => nativeLogger.Invoke("Fatal (dom): " + (args.ExceptionObject as Exception)?.Message));
+                (o, args) => dispatcher.Invoke(() => nativeLogger.Invoke("Fatal (app domain): " + (args.ExceptionObject as Exception)?.Message));
 
             Application.Current.DispatcherUnhandledException +=
                 (o, args) => dispatcher.Invoke(() => nativeLogger.Invoke("Fatal (app): " + args.Exception.Message));

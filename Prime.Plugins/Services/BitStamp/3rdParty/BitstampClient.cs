@@ -13,7 +13,7 @@ namespace Rokolab.BitstampClient
         private readonly NetworkProviderContext _context;
         private readonly IRequestAuthenticator _requestAuthenticator;
         private const string ApiBase = "https://www.bitstamp.net/api/";
-        private Logger L;
+        private ILogger L;
 
         private readonly string _tickerRoute = ApiBase + "ticker/";
         private readonly string _balanceRoute = ApiBase + "v2/balance/";

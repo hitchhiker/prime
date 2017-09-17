@@ -34,19 +34,19 @@ namespace Prime.Ui.Wpf.PageUri
             switch (command.Command)
             {
                 case "exchange rates":
-                    return new ExchangeRateViewModel(model) { Key = command.Command, Name = command.Title };
+                    return new ExchangeRateViewModel(model) { Key = command.Command, Title = command.Title };
                 case "portfolio":
-                    return new PortfolioPaneViewModel(model) { Key = command.Command, Name = command.Title };
+                    return new PortfolioPaneViewModel(model) { Key = command.Command, Title = command.Title };
                 case "buy sell":
-                    return new BuySellViewModel(model) { Key = command.Command, Name = command.Title };
+                    return new BuySellViewModel(model) { Key = command.Command, Title = command.Title };
                 case "wallet":
-                    return new WalletViewModel(model) { Key = command.Command, Name = command.Title };
+                    return new WalletViewModel(model) { Key = command.Command, Title = command.Title };
                 case "services":
-                    return new ServicesPaneViewModel(messenger, model) { Key = command.Command, Name = command.Title };
+                    return new ServicesPaneViewModel(messenger, model) { Key = command.Command, Title = command.Title };
                 case "send":
                     return null;
                 case "receive":
-                    return new ReceiveViewModel(model) { Key = command.Command, Name = command.Title };
+                    return new ReceiveViewModel(model) { Key = command.Command, Title = command.Title };
                 default:
                     return null;
             }

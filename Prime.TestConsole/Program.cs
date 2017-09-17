@@ -58,12 +58,6 @@ namespace TestConsole
             Console.WriteLine(usr.Retrieve("QmVyJYeEugVn9HrKnTufWwPiWSq7v234YYSvYeENvFj8iM").Result);
         }
 
-        private static void I_OnNewMessage(object sender, EventArgs e)
-        {
-            var ev = e as LoggerMessageEvent;
-            Console.WriteLine(ev.Level + ": " + ev.Message);
-        }
-
         /*
         private static async Task<string> Go()
         {

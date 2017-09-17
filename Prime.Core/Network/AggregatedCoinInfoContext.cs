@@ -6,7 +6,7 @@ namespace Prime.Core
     {
         public readonly AssetPair Pair;
 
-        public AggregatedCoinInfoContext(AssetPair pair, Logger logger = null) : base(logger)
+        public AggregatedCoinInfoContext(AssetPair pair, ILogger logger = null) : base(logger)
         {
             Pair = pair;
         }

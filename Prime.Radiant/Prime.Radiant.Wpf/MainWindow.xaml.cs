@@ -31,15 +31,12 @@ namespace Prime.Radiant
 
             Action<string> nativeLogger = (Terminal.DataContext as TerminalViewModel).AddItem;
 
-            var logger = new Logger();
+            var logger = Logging.I.DefaultLogger;
 
-            Logging.I.OnNewMessage += delegate(object o, EventArgs args)
+            DefaultMessenger.I.Default.Register<NewLogMessage>(this, m =>
             {
-                if (!(args is LoggerMessageEvent lme))
-                    return;
-
-                dispatcher.Invoke(() => nativeLogger.Invoke(LanguageCorrection(lme.Message)));
-            };
+                dispatcher.Invoke(() => nativeLogger.Invoke(LanguageCorrection(m.Message)));
+            });
 
             var manager = new DeploymentManager(dispatcher, logger, () => { dispatcher.Invoke(() => WindowState = WindowState.Normal); });
             

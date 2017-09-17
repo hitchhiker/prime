@@ -13,7 +13,7 @@ namespace Prime.Radiant.Components
 
         public string SourcePath { get; set; }
         
-        public Logger L { get; set; }
+        public ILogger L { get; set; }
 
         public string SshUri { get; set; }
 

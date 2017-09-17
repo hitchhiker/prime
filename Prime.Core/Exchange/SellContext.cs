@@ -4,7 +4,7 @@ namespace Prime.Core
 {
     public class SellContext : NetworkProviderPrivateContext {
 
-        public SellContext(UserContext userContext, Logger logger = null) : base(userContext, logger)
+        public SellContext(UserContext userContext, ILogger logger = null) : base(userContext, logger)
         {
         }
     }

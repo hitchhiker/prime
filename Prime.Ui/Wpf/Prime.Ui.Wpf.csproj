@@ -423,7 +423,6 @@
     <Compile Include="ViewModel\ChartGroupViewModel.cs" />
     <Compile Include="ViewModel\ChartViewModel.cs" />
     <Compile Include="Components\LiveCharts\Point\InstantChartPointMapper.cs" />
-    <Compile Include="Messages\LogEntryReceivedMessage.cs" />
     <Compile Include="ViewModel\LogPanelItemViewModel.cs" />
     <Compile Include="ViewModel\LogPanelViewModel.cs" />
     <Compile Include="ViewModel\ScreenViewModel.cs" />
@@ -711,6 +710,7 @@
     <Resource Include="prime-17.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Messages\" />
     <Folder Include="View\Asset\" />
     <Folder Include="Window\Test\" />
   </ItemGroup>

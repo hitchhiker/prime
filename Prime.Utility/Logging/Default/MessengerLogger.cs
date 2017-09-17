@@ -4,20 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Prime.Utility
 {
-    public class Logger
+    public class MessengerLogger : ILogger
     {
         public readonly string Key;
         public readonly Action<string> StatusConsumer;
+        public readonly IMessenger Messenger = DefaultMessenger.I.Default;
 
-        public Logger(string key = null)
+        public MessengerLogger(string key = null)
         {
-            Key = key ?? "system";
+            Key = key;
         }
 
-        public Logger(Action<string> statusConsumer, string key = null) : this(key)
+        public MessengerLogger(Action<string> statusConsumer, string key = null) : this(key)
         {
             StatusConsumer = statusConsumer;
         }
@@ -34,27 +36,27 @@ namespace Prime.Utility
 
         public void Trace(string message)
         {
-            Logging.I.SendMessage(this, LoggingLevel.Trace, message);
+            Log(LoggingLevel.Trace, message);
         }
 
         public void Info(string message)
         {
-            Logging.I.SendMessage(this, LoggingLevel.Status, message);
+            Log(LoggingLevel.Status, message);
         }
 
         public void Warn(string message)
         {
-            Logging.I.SendMessage(this, LoggingLevel.Warning, message);
+            Log(LoggingLevel.Warning, message);
         }
 
         public void Error(string message)
         {
-            Logging.I.SendMessage(this, LoggingLevel.Error, message);
+            Log(LoggingLevel.Error, message);
         }
 
         public void Fatal(string message)
         {
-            Logging.I.SendMessage(this, LoggingLevel.Panic, message);
+            Log(LoggingLevel.Panic, message);
         }
 
         public void Trace(string message, params object[] parameters)
@@ -105,6 +107,11 @@ namespace Prime.Utility
             var r= action();
             Trace("End: " + messagePrefix + ": " + sw.ToElapsed());
             return r;
+        }
+
+        public void Log(LoggingLevel level, string message)
+        {
+            Messenger.Send(new NewLogMessage(DateTime.UtcNow, message, level), Key);
         }
     }
 }

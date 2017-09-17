@@ -24,11 +24,11 @@ namespace Prime.Ui.Wpf
             }
         }
 
-        private string _name;
-        public string Name
+        private string _title;
+        public virtual string Title
         {
-            get => _name;
-            set => Set(ref _name, value);
+            get => _title;
+            set => Set(ref _title, value);
         }
 
         public bool IsActive

@@ -4,9 +4,9 @@ namespace Prime.Core
 {
     public class ApiContext
     {
-        public readonly Logger L;
+        public readonly ILogger L;
 
-        public ApiContext(Logger logger)
+        public ApiContext(ILogger logger)
         {
             L = logger;
         }

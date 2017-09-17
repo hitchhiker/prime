@@ -6,7 +6,7 @@ namespace Prime.Core
     {
         public readonly bool CanGenerateAddress;
 
-        public WalletAddressContext(bool canGenerateAddress, UserContext userContext, Logger logger = null) : base(userContext, logger)
+        public WalletAddressContext(bool canGenerateAddress, UserContext userContext, ILogger logger = null) : base(userContext, logger)
         {
             CanGenerateAddress = canGenerateAddress;
         }

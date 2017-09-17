@@ -6,7 +6,7 @@ namespace Prime.Core
     {
         public readonly UserContext UserContext;
 
-        public NetworkProviderPrivateContext(UserContext userContext, Logger logger = null) : base(logger)
+        public NetworkProviderPrivateContext(UserContext userContext, ILogger logger = null) : base(logger)
         {
             UserContext = userContext;
         }

@@ -21,7 +21,6 @@ namespace Prime.Ui.Wpf
         private List<IPaneProvider> _panelProviders;
         public IReadOnlyList<IPaneProvider> PanelProviders => _panelProviders ?? (_panelProviders = TypeCatalogue.I.ImplementInstances<IPaneProvider>().ToList());
 
-
         private SmartThreadPool _sTaThreadPool;
         public SmartThreadPool STAThreadPool => _sTaThreadPool ?? (_sTaThreadPool = GetStaThreadPool());
 
@@ -30,8 +29,5 @@ namespace Prime.Ui.Wpf
             var stpStartInfo = new STPStartInfo {ApartmentState = ApartmentState.STA};
             return new SmartThreadPool(stpStartInfo);
         }
-
-        private IMessenger _messenger;
-        public IMessenger Messenger => _messenger ?? (_messenger = GalaSoft.MvvmLight.Messaging.Messenger.Default);
     }
 }

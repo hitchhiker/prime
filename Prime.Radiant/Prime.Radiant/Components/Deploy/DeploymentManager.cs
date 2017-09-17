@@ -19,13 +19,13 @@ namespace Prime.Radiant
         public readonly IpFsDaemon Daemon;
         public readonly IpFsApi Api;
         public readonly Dispatcher Dispatcher;
-        public readonly Logger L;
+        public readonly ILogger L;
         public DeploymentProvider Deployer;
 
         private readonly Action _raiseUi;
         private bool _raisedUi;
 
-        public DeploymentManager(Dispatcher dispatcher, Logger logger, Action raiseUi)
+        public DeploymentManager(Dispatcher dispatcher, ILogger logger, Action raiseUi)
         {
             Dispatcher = dispatcher;
             L = logger;

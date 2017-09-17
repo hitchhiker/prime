@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -18,8 +19,8 @@ namespace Prime.Ui.Wpf.ViewModel
             Key = key;
             _dispatcher = Application.Current.Dispatcher;
             _messenger = messenger;
-            _messenger.Register<LogEntryReceivedMessage>(this, AddEntry);
-            Name = "Event log";
+            _messenger.Register<NewLogMessage>(this, Key, AddEntry);
+            base.Title = "Event log";
         }
 
         private void Clear()
@@ -34,16 +35,13 @@ namespace Prime.Ui.Wpf.ViewModel
         public int Count
         {
             get => _count;
-            set => SetAfter(ref _count, value, c=> Name = ("Event Log (" + c + ")"));
+            set => SetAfter(ref _count, value, c=> Title = ("Event Log (" + c + ")"));
         }
         
         private readonly object _lock = new object();
 
-        private void AddEntry(LogEntryReceivedMessage message)
+        private void AddEntry(NewLogMessage message)
         {
-            if (Key != null && !Key.Equals(message.Key, StringComparison.OrdinalIgnoreCase))
-                return;
-
             _dispatcher.Invoke(() =>
             {
                 lock (_lock)
@@ -65,7 +63,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            _messenger.Unregister<LogEntryReceivedMessage>(this, AddEntry);
+            _messenger.Unregister<NewLogMessage>(this, AddEntry);
             base.Dispose();
         }
     }

@@ -8,7 +8,7 @@ namespace Prime.Core
         public readonly TimeResolution Market;
         public readonly TimeRange Range;
 
-        public OhlcContext(AssetPair pair, TimeResolution market, TimeRange range, Logger logger) : base(logger)
+        public OhlcContext(AssetPair pair, TimeResolution market, TimeRange range, ILogger logger) : base(logger)
         {
             Pair = pair;
             Market = market;

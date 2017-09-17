@@ -12,14 +12,14 @@ namespace Prime.Core
         {
             _adapter = adapter;
             Ctx = adapter.Ctx;
-            L = new Utility.Logger(Ctx.Status);
+            L = new MessengerLogger(Ctx.Status);
         }
 
         private readonly OhlcResolutionAdapter _adapter;
 
         public readonly OhlcResolutionAdapterContext Ctx;
 
-        public readonly Utility.Logger L;
+        public readonly Utility.ILogger L;
 
         public OhlcResolutionAdapter Adapter => _adapter;
 

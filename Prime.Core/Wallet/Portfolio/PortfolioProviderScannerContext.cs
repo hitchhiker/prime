@@ -16,6 +16,6 @@ namespace Prime.Core.Wallet
         public IWalletService Provider { get; set; }
         public Asset BaseAsset { get; set; }
         public int Frequency { get; set; }
-        public Logger L { get; set; } = Logging.I.Common;
+        public ILogger L { get; set; } = Logging.I.DefaultLogger;
     }
 }

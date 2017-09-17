@@ -19,7 +19,7 @@ namespace Prime.Radiant
     public class IpFsApi
     {
         private readonly IpFsDaemon _daemon;
-        private readonly Logger L;
+        private readonly ILogger L;
         private readonly IpfsClient _client;
 
         public IpFsApi(IpFsDaemon daemon)

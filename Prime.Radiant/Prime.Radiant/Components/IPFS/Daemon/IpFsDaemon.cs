@@ -17,7 +17,7 @@ namespace Prime.Radiant
     public class IpFsDaemon
     {
         private readonly Dispatcher _dispatcher;
-        public readonly Logger L;
+        public readonly ILogger L;
 
         public event EventHandler OnStateChanged;
 
@@ -34,10 +34,10 @@ namespace Prime.Radiant
 
         public readonly IpfsClient Client;
 
-        public IpFsDaemon(Logger logger = null, Dispatcher dispatcher = null)
+        public IpFsDaemon(ILogger logger = null, Dispatcher dispatcher = null)
         {
             _dispatcher = dispatcher;
-            L = logger ?? Logging.I.Common;
+            L = logger ?? Logging.I.DefaultLogger;
             State = IpFsDaemonState.Stopped;
             Client = new IpfsClient();
         }

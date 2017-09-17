@@ -12,7 +12,7 @@ namespace Prime.Radiant.Components
     {
         public readonly IpFsDaemon IpfsDaemon;
         public readonly PublishManagerContext Context;
-        public readonly Logger L;
+        public readonly ILogger L;
         private readonly PackageFiller _packageFiller;
         public string IpFsPeerId { get; private set; }
 

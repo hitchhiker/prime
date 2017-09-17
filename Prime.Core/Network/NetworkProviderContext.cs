@@ -4,11 +4,11 @@ namespace Prime.Core
 {
     public class NetworkProviderContext
     {
-        public readonly Logger L;
+        public readonly ILogger L;
 
-        public NetworkProviderContext(Logger logger = null)
+        public NetworkProviderContext(ILogger logger = null)
         {
-            L = logger ?? Logging.I.Common;
+            L = logger ?? Logging.I.DefaultLogger;
         }
 
         public virtual bool IsPublic => true;

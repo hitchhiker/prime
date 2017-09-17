@@ -1,4 +1,5 @@
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Utility;
 using StructureMap;
 
 namespace Prime.Ui.Wpf
@@ -10,7 +11,7 @@ namespace Prime.Ui.Wpf
             Model();
 
             // Messaging
-            For<IMessenger>().Use(PrimeWpf.I.Messenger);
+            For<IMessenger>().Use(DefaultMessenger.I.Default);
 
             // Model
         }

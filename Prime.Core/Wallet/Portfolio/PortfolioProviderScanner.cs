@@ -29,7 +29,7 @@ namespace Prime.Core.Wallet
         public readonly IWalletService Provider;
         public readonly Asset BaseAsset;
         private readonly int _timerFrequency;
-        public readonly Logger L;
+        public readonly ILogger L;
         private Timer _timer;
 
         public bool IsConnected { get; private set; }

@@ -71,16 +71,13 @@ namespace Prime.Core
         public IpfsMessenger IpfsMessenger => _ipfsMessenger ?? (_ipfsMessenger = new IpfsMessenger(Radiant, Id.ToString(), Crypt));
 
         private Radiant.Radiant _radiant;
-        public Radiant.Radiant Radiant => _radiant ?? (_radiant = new Radiant.Radiant(Logging.I.Common));
+        public Radiant.Radiant Radiant => _radiant ?? (_radiant = new Radiant.Radiant(Logging.I.DefaultLogger));
 
         private PortfolioProvider _portfolioProvider;
         public PortfolioProvider PortfolioProvider => _portfolioProvider ?? (_portfolioProvider = new PortfolioProvider(this));
 
         private WalletProvider _walletProvider;
         public WalletProvider WalletProvider => _walletProvider ?? (_walletProvider = new WalletProvider(this));
-
-        private Utility.Logger _logger;
-        public Utility.Logger Logger => _logger ?? (_logger = new Utility.Logger("user:" + Username));
 
         public ApiKey GetApiKey(INetworkProvider provider)
         {

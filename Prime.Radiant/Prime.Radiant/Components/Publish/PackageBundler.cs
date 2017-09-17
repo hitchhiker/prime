@@ -13,7 +13,7 @@ namespace Prime.Radiant.Components
         public readonly string ProjectKey;
         public readonly string ProjectPath;
         private readonly PublishManagerContext _context;
-        public readonly Logger L;
+        public readonly ILogger L;
         public readonly DirectoryInfo SourceDirectory;
         public readonly IReadOnlyList<FileInfo> Files;
         private readonly List<Package> _packed = new List<Package>();

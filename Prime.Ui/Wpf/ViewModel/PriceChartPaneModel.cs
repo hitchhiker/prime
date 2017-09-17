@@ -55,7 +55,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _pair = pair;
 
             Key = _pair.ToString();
-            Name = _pair.ToString();
+            Title = _pair.ToString();
             CanClose = true;
             IsActive = true;
             IsSelected = true;

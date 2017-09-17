@@ -14,7 +14,7 @@ namespace Prime.Radiant
 {
     public class DeploymentProvider
     {
-        public DeploymentProvider(string projectKey, string hash, Logger logger)
+        public DeploymentProvider(string projectKey, string hash, ILogger logger)
         {
             SevenZipNativeLibrary.Install();
 
@@ -46,7 +46,7 @@ namespace Prime.Radiant
 
         public readonly string Hash;
 
-        private readonly Logger L;
+        private readonly ILogger L;
 
         public readonly DirectoryInfo AssetDirectory;
 

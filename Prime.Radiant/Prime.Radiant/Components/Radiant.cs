@@ -6,9 +6,9 @@ namespace Prime.Radiant
     {
         public static string DnsVersion = "v2";
 
-        public readonly Logger L;
+        public readonly ILogger L;
 
-        public Radiant(Logger logger)
+        public Radiant(ILogger logger)
         {
             L = logger;
             IpfsDaemon = new IpFsDaemon(logger);

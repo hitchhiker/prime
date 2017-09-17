@@ -9,7 +9,7 @@ namespace Prime.Core
 
         public readonly List<Asset> Assets;
 
-        public PublicPricesContext(Asset asset, List<Asset> assets, Logger logger = null) : base(logger)
+        public PublicPricesContext(Asset asset, List<Asset> assets, ILogger logger = null) : base(logger)
         {
             Asset = asset;
             Assets = assets;

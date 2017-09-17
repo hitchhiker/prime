@@ -7,7 +7,7 @@ namespace Prime.Utility.Encrypt
 {
     public abstract class CryptBase
     {
-        protected Logger L => Logging.I.Common;
+        protected ILogger L => Logging.I.DefaultLogger;
 
         protected byte[] ReadFile(string filename)
         {
