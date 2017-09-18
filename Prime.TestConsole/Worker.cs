@@ -15,7 +15,7 @@ namespace Prime.TestConsole
         public void Run()
         {
             UserContext userContext = new UserContext(ObjectId.NewObjectId(), "Alex");
-            ApiTestContext testContext = new ApiTestContext(new ApiKey("Key", BitMexAuthenticator.Key, BitMexAuthenticator.Secret));
+            //ApiTestContext testContext = new ApiTestContext(new ApiKey("Key", BitMexAuthenticator.Key, BitMexAuthenticator.Secret));
 
             NetworkProviderPrivateContext providerPrivateContext = new NetworkProviderPrivateContext(userContext);
 
