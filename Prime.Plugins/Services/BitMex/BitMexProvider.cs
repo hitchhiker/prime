@@ -54,11 +54,15 @@ namespace plugins
             var api = GetApi<IBitMexApi>(context);
             var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
 
-            var latestPrice = new LatestPrice();
+            if (r == null)
+                throw new ApiResponseException("No price found", this);
 
-            latestPrice.Asset = context.Pair.Asset1;
-            latestPrice.Price = new Money(r.lastPrice, context.Pair.Asset2);
-            latestPrice.UtcCreated = r.timestamp;
+            var latestPrice = new LatestPrice
+            {
+                BaseAsset = context.Pair.Asset1,
+                Price = new Money(r.lastPrice, context.Pair.Asset2),
+                UtcCreated = r.timestamp
+            };
 
             return latestPrice;
         }

@@ -26,6 +26,7 @@ namespace Prime.Ui.Wpf.ViewModel
             return true;
         }
 
+        [NotifyPropertyChangedInvocator]
         protected virtual bool SetAfter<T>(ref T value, T newValue, Action<T> after, [CallerMemberName] string propertyName = null)
         {
             if (object.Equals(value, newValue))

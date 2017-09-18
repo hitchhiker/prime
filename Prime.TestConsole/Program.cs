@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
+using Nito.AsyncEx;
 using Prime.Core;
 using plugins;
 using Prime.Core.Wallet;
@@ -22,8 +23,10 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            Worker worker = new Worker();
-            worker.Run();
+            LatestPriceTest();
+
+            //Worker worker = new Worker();
+            //worker.Run();
 
             //var logger = new Logger(Console.WriteLine);
             //var radiant = new Radiant(logger);
@@ -73,6 +76,22 @@ namespace TestConsole
             var pub = new PublishManager(pc);
 
             pub.Start();
+        }
+
+        private static void LatestPriceTest()
+        {
+            var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
+            var ctx = new PublicPriceContext(new AssetPair("XBT".ToAsset(provider), "USD".ToAsset(provider)));
+
+            try
+            {
+                var c = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+                Console.WriteLine(c.Price.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private static void BalanceTest()

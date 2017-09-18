@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Prime.Core
 {
@@ -8,6 +9,13 @@ namespace Prime.Core
         {
             Response = default(T);
             FailReason = e.Message;
+            Success = false;
+        }
+
+        public ApiResponse(string message, INetworkProvider provider, [CallerMemberName] string method = "Unknown")
+        {
+            Response = default(T);
+            FailReason = message + " - " + method + " in " + provider.Title + " provider.";
             Success = false;
         }
 

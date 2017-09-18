@@ -234,7 +234,7 @@
     <Compile Include="Asset\Model\OhclDataExtensionMethods.cs" />
     <Compile Include="Asset\Model\OhclEntry.cs" />
     <Compile Include="Asset\Model\TimeResolution.cs" />
-    <Compile Include="Asset\Model\PriceLatest.cs" />
+    <Compile Include="Asset\Model\LatestPrices.cs" />
     <Compile Include="Asset\Model\TimeResolutionExtensionMethods.cs" />
     <Compile Include="Network\AggregatedCoinInfoContext.cs" />
     <Compile Include="Network\PublicPricesContext.cs" />
