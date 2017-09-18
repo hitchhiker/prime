@@ -102,6 +102,18 @@ namespace plugins.Services.BitMex
             
         }
 
+        internal class InstrumentLatestPricesResponse : List<InstrumentLatestPriceResponse>
+        {
+            
+        }
+
+        internal class InstrumentLatestPriceResponse
+        {
+            public string symbol;
+            public DateTime timestamp;
+            public decimal lastPrice;
+        }
+
         internal class InstrumentResponse
         {
             public string symbol;
@@ -177,7 +189,7 @@ namespace plugins.Services.BitMex
             public string vwap;
             public string highPrice;
             public string lowPrice;
-            public long lastPrice;
+            public decimal lastPrice;
             public string lastPriceProtected;
             public string lastTickDirection;
             public string lastChangePcnt;

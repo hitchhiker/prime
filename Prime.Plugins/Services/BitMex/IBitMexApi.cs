@@ -23,7 +23,12 @@ namespace plugins
         [Get("api/v1/instrument/active")]
         Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActive();
 
-        [Get("api/v1/instrument?symbol={currencySymbol}&reverse=true")]
-        Task<BitMexSchema.InstrumentsResponse> GetLatestPriceAsync([Path]String currencySymbol);
+        /// <summary>
+        /// Select only lastPrice, timestamp and symbol columns.
+        /// </summary>
+        /// <param name="currencySymbol"></param>
+        /// <returns></returns>
+        [Get("api/v1/instrument?symbol={currencySymbol}&columns=%5B%22lastPrice%22%2C%20%22timestamp%22%2C%20%22symbol%22%5D&reverse=true")]
+        Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPriceAsync([Path]String currencySymbol);
     }
 }
