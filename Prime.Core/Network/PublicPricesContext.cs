@@ -5,13 +5,13 @@ namespace Prime.Core
 {
     public class PublicPricesContext : NetworkProviderContext
     {
-        public readonly Asset Asset;
+        public readonly Asset BaseAsset;
 
         public readonly List<Asset> Assets;
 
-        public PublicPricesContext(Asset asset, List<Asset> assets, ILogger logger = null) : base(logger)
+        public PublicPricesContext(Asset baseAsset, List<Asset> assets, ILogger logger = null) : base(logger)
         {
-            Asset = asset;
+            BaseAsset = baseAsset;
             Assets = assets;
         }
     }

@@ -89,7 +89,7 @@ namespace plugins
             var addresses = new WalletAddresses();
 
             var api = GetApi<IBitMexApi>(context);
-
+            
             var depositAddress = await  api.GetUserDepositAddress(context.Asset.ToRemoteCode(this));
 
             var walletAddress = new WalletAddress(this, context.Asset) {Address = depositAddress};

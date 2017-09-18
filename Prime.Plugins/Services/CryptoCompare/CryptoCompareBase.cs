@@ -77,7 +77,7 @@ namespace plugins
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            var asset = context.Asset;
+            var asset = context.BaseAsset;
             var assets = context.Assets;
 
             var api = GetApi<ICryptoCompareApi>();
