@@ -16,7 +16,7 @@ namespace Prime.Core
         public DateTime UtcCreated { get; set; }
 
         [Bson]
-        public Asset Asset { get; set; }
+        public Asset BaseAsset { get; set; }
 
         [Bson]
         public Money Price { get; set; }

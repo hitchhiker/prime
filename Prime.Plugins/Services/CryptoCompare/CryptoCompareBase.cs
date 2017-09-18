@@ -77,14 +77,14 @@ namespace plugins
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            var asset = context.BaseAsset;
+            var baseAsset = context.BaseAsset;
             var assets = context.Assets;
 
             var api = GetApi<ICryptoCompareApi>();
 
-            var apir = await api.GetPrice(asset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
+            var apir = await api.GetPrice(baseAsset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
             
-            var r = new LatestPrices() {UtcCreated = DateTime.UtcNow, Asset = asset};
+            var r = new LatestPrices() {UtcCreated = DateTime.UtcNow, BaseAsset = baseAsset};
             if (apir == null)
                 return r;
 
