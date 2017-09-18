@@ -28,6 +28,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public MyOrderHistoryViewModel MyOrderHistoryViewModel { get; }
 
         public RelayCommand BuyCommand { get; private set; }
+        public RelayCommand SellCommand { get; private set; }
 
         public BuySellViewModel(ScreenViewModel model)
         {
@@ -51,6 +52,11 @@ namespace Prime.Ui.Wpf.ViewModel
             };
 
             BuyCommand = new RelayCommand(() =>
+            {
+                // do vmodel stuff here (in method) for when the button is clicked.
+            });
+
+            SellCommand = new RelayCommand(() =>
             {
                 // do vmodel stuff here (in method) for when the button is clicked.
             });
