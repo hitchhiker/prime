@@ -50,6 +50,6 @@ Global
 		{DED1038D-B3C8-4BB2-868D-AD3A00535F8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		HideSolutionNode = FALSE 
 	EndGlobalSection
 EndGlobal

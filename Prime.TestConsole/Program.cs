@@ -77,7 +77,10 @@ namespace TestConsole
 
         private static void BalanceTest()
         {
-            var provider = Networks.I.WalletProviders.OfType<PoloniexProvider>().FirstProvider();
+            var provider = Networks.I.OfType<BitMexProvider>().FirstProvider();
+            //provider.GetAssetPairs
+
+
             var c = new PortfolioProviderScannerContext(UserContext.Current, provider, UserContext.Current.BaseAsset, 0);
             var scanner = new PortfolioProviderScanner(c);
             try

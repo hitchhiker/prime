@@ -4,9 +4,9 @@ https://getprime.org
 
 Project status: PRE-ALPHA - not production ready.
 
-Open source decentralised **(ODC)** crypto-asset trading application, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
+Open source decentralised **(ODC)** crypto asset trading application, browser, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
 
-..or more simply "an app for multi-exchange crypto trading."
+..or more simply "a crypto browser."
 
 **The gold rush.**
 
@@ -18,6 +18,7 @@ None of these tools would be appropriate in our community, they are centralised,
 ```
 Note: Prime lives on your machine, is ODC, requires no connection with the core developers or anyone else. 
 It is yours, and under your sole control.
+Your keys NEVER leave your machine.
 ```
 
 ## Proposed Features ##

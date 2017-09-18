@@ -22,19 +22,14 @@ namespace Prime.Plugins.Services.BitMex
 
             var headers = request.Headers;
 
-            string nonce = GetNonce().ToString();
-            string message = $"GET{path}{nonce}";
-            string signature = HashHMACSHA256Hex(message, ApiKey.Secret);
+            var nonce = GetNonce().ToString(); 
+            var message = $"GET{path}{nonce}";
+            var signature = HashHMACSHA256Hex(message, ApiKey.Secret);
 
             headers.Add("api-key", ApiKey.Key);
             headers.Add("api-signature", signature);
             headers.Add("api-nonce", nonce);
         }
 
-        private long GetNonce()
-        {
-            DateTime yearBegin = new DateTime(1990, 1, 1);
-            return DateTime.UtcNow.Ticks - yearBegin.Ticks;
-        }
     }
 }
