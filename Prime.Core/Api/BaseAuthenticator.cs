@@ -18,6 +18,13 @@ namespace Prime.Core
 
         public readonly ApiKey ApiKey;
 
+        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+
+        protected long GetNonce()
+        {
+            return DateTime.UtcNow.Ticks - ArbTickEpoch;
+        }
+
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512(string message, string secret)
         {

@@ -25,10 +25,12 @@ namespace Prime.Core
             }
             catch (ApiResponseException ae)
             {
+                context.L.Error("Api Error: " + provider.Network + " " + name + ": " + ae.Message);
                 return new ApiResponse<T>(ae.Message);
             }
             catch (Exception e)
             {
+                context.L.Error("Api Error: " + provider.Network + " " + name + ": " + e.Message);
                 return new ApiResponse<T>(e);
             }
         }

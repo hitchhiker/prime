@@ -25,7 +25,7 @@ namespace Prime.Core
         public static Task<ApiResponse<AssetPairs>> GetAssetPairsAsync(IExchangeProvider provider, NetworkProviderContext context = null)
         {
             context = context ?? new NetworkProviderContext();
-            return ApiHelpers.WrapException(()=> provider.GetAssetPairs(context), "GetAssetPairs", provider, context);
+            return ApiHelpers.WrapException(()=> provider.GetAssetPairs(context), nameof(GetAssetPairs), provider, context);
         }
 
         public static ApiResponse<AssetPairs> GetAssetPairs(IExchangeProvider provider, NetworkProviderContext context = null)
