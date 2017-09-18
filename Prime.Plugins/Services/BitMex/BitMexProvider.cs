@@ -49,9 +49,18 @@ namespace plugins
             throw new NotImplementedException();
         }
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IBitMexApi>(context);
+            var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
+
+            var latestPrice = new LatestPrice();
+
+            latestPrice.Asset = context.Pair.Asset1;
+            latestPrice.Price = new Money(r.lastPrice, context.Pair.Asset2);
+            latestPrice.UtcCreated = r.timestamp;
+
+            return latestPrice;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -80,7 +89,7 @@ namespace plugins
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
             var api = GetApi<IBitMexApi>(context);
-            var r = await api.GetUserInfo();
+            var r = await api.GetUserInfoAsync();
             return r != null;
         }
 
@@ -90,7 +99,7 @@ namespace plugins
 
             var api = GetApi<IBitMexApi>(context);
 
-            var depositAddress = await  api.GetUserDepositAddress(context.Asset.ToRemoteCode(this));
+            var depositAddress = await  api.GetUserDepositAddressAsync(context.Asset.ToRemoteCode(this));
 
             var walletAddress = new WalletAddress(this, context.Asset) {Address = depositAddress};
 
@@ -107,8 +116,8 @@ namespace plugins
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = GetApi<IBitMexApi>(context);
-            var r = await api.GetUserWalletInfo("XBt");
-                
+            var r = await api.GetUserWalletInfoAsync("XBt");
+
             var results = new BalanceResults(this);
 
             var btcAmount = (decimal)0.00000001 * r.amount;
@@ -129,6 +138,7 @@ namespace plugins
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
+
             return RestClient.For<IBitMexApi>("https://www.bitmex.com", new BitMexAuthenticator(key).GetRequestModifier) as T;
         }
 

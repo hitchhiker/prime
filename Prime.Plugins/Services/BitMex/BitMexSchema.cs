@@ -93,11 +93,16 @@ namespace plugins.Services.BitMex
             
         }
 
-        internal class InstrumentsActiveResponse : List<Instrument>
+        internal class InstrumentsActiveResponse : List<InstrumentResponse>
         {
         }
 
-        internal class Instrument
+        internal class InstrumentsResponse : List<InstrumentResponse>
+        {
+            
+        }
+
+        internal class InstrumentResponse
         {
             public string symbol;
             public string rootSymbol;
@@ -172,7 +177,7 @@ namespace plugins.Services.BitMex
             public string vwap;
             public string highPrice;
             public string lowPrice;
-            public string lastPrice;
+            public long lastPrice;
             public string lastPriceProtected;
             public string lastTickDirection;
             public string lastChangePcnt;
@@ -194,7 +199,7 @@ namespace plugins.Services.BitMex
             public string indicativeTaxRate;
             public string indicativeSettlePrice;
             public string settledPrice;
-            public string timestamp;
+            public DateTime timestamp;
         }
     }
 }
