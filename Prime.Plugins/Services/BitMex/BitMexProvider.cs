@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,27 +45,76 @@ namespace plugins
             return new BitMexCodeConverter();
         }
 
-        public Task<LatestPrices> GetLatestPricesAsync(Asset asset, List<Asset> assets)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
             var api = GetApi<IBitMexApi>(context);
             var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
 
             if (r == null)
-                throw new ApiResponseException("No price found", this);
+                throw new ApiResponseException("No price data found", this);
+
+            if (r.timestamp.Kind != DateTimeKind.Utc)
+                throw new ApiResponseException("Time is not in UTC format", this);
+
+            // TODO: Check this. How to handle NULL in last price value?
+            if (r.lastPrice.HasValue == false)
+                throw new ApiResponseException("No last price for currency", this);
 
             var latestPrice = new LatestPrice
             {
                 BaseAsset = context.Pair.Asset1,
-                Price = new Money(r.lastPrice, context.Pair.Asset2),
+                Price = new Money(r.lastPrice.Value, context.Pair.Asset2),
                 UtcCreated = r.timestamp
             };
 
             return latestPrice;
+        }
+
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        {
+            var api = GetApi<IBitMexApi>(context);
+            var r = await api.GetLatestPricesAsync();
+
+            if(r == null || r.Count < 1)
+                throw new ApiResponseException("No prices data found", this);
+
+            // TODO: Will filter currencies and select only those which are not NULL.
+            // BUG: There are a lot of pairs (e.g. XBT->ETH) with different symbol names, how to collapse them? User wants to see only XBT->ETH...
+            var selectedData = r.Where(x => x.lastPrice.HasValue && x.quoteCurrency.ToAsset(this).Equals(context.BaseAsset) &&
+                                             context.Assets.Contains(x.underlying.ToAsset(this)))
+                                             .OrderByDescending(x => x.timestamp)
+                                             .ToList();
+
+            // BUG: Filtered by combination of quote + underlying.
+            var filteredData = selectedData.DistinctBy(x => x.quoteCurrency + x.underlying).ToList();
+
+#if FALSE
+            // TODO: Remove from production.
+
+            Console.WriteLine("Selected data:");
+            foreach (var response in selectedData)
+            {
+                Console.WriteLine($"{response.timestamp}: {response.underlying} -> {response.quoteCurrency}, Symbol: {response.symbol}, Last Price: {response.lastPrice}");
+            }
+
+            Console.WriteLine("Filtered data:");
+            foreach (var response in filteredData)
+            {
+                Console.WriteLine($"{response.timestamp}: {response.underlying} -> {response.quoteCurrency}, Symbol: {response.symbol}, Last Price: {response.lastPrice}");
+            }
+#endif
+
+            var latestMoneyList = filteredData.Select(x => new Money(x.lastPrice.Value, x.underlying.ToAsset(this))).ToList();
+
+            // BUG: What UTC Created to set if different currencies have different last price time?
+            var latestPrices = new LatestPrices()
+            {
+                BaseAsset = context.BaseAsset,
+                UtcCreated = DateTime.UtcNow,
+                Prices = latestMoneyList
+            };
+
+            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)

@@ -111,7 +111,9 @@ namespace plugins.Services.BitMex
         {
             public string symbol;
             public DateTime timestamp;
-            public decimal lastPrice;
+            public decimal? lastPrice;
+            public string underlying;
+            public string quoteCurrency;
         }
 
         internal class InstrumentResponse

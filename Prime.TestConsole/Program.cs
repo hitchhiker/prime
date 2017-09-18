@@ -23,7 +23,8 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            LatestPriceTest();
+            LatestPricesTest();
+            //LatestPriceTest();
 
             //Worker worker = new Worker();
             //worker.Run();
@@ -76,6 +77,41 @@ namespace TestConsole
             var pub = new PublishManager(pc);
 
             pub.Start();
+        }
+
+        private static void LatestPricesTest()
+        {
+            var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
+
+            var ctx = new PublicPricesContext("XBT".ToAsset(provider), new List<Asset>()
+            {
+                "ETH".ToAsset(provider),
+                "ETC".ToAsset(provider),
+                "DASH".ToAsset(provider),
+                "LTC".ToAsset(provider),
+                "QTUM".ToAsset(provider),
+                "XMR".ToAsset(provider),
+                "XRP".ToAsset(provider),
+                "XTZ".ToAsset(provider),
+                "ZEC".ToAsset(provider),
+            });
+
+            try
+            {
+                var c = AsyncContext.Run(() => provider.GetLatestPricesAsync(ctx));
+
+                Console.WriteLine($"Base asset: {ctx.BaseAsset}\n");
+
+                foreach (Money price in c.Prices)
+                {
+                    Console.WriteLine(price.Display);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         private static void LatestPriceTest()

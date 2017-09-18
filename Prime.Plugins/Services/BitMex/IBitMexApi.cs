@@ -26,7 +26,7 @@ namespace plugins
         [Get("api/v1/instrument?symbol={currencySymbol}&columns=[\"lastPrice\",\"timestamp\",\"symbol\"]&reverse=true")]
         Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPriceAsync([Path]String currencySymbol);
 
-        [Get("api/v1/instrument?columns=[\"lastPrice\",\"timestamp\",\"symbol\",\"underlying\",\"quoteCurrency\"]&reverse=true")]
+        [Get("api/v1/instrument?columns=[\"lastPrice\",\"timestamp\",\"symbol\",\"underlying\",\"quoteCurrency\"]&reverse=true&count=500")]
         Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPricesAsync();
     }
 }
