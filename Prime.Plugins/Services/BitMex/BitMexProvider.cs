@@ -18,6 +18,8 @@ namespace plugins
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
+        private const String BitMaxApiUrl = "https://www.bitmex.com";
+
         public BitMexProvider()
         {
             Network = new Network("BitMex");
@@ -186,14 +188,14 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return RestClient.For<IBitMexApi>("https://www.bitmex.com") as T;
+            return RestClient.For<IBitMexApi>(BitMaxApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
 
-            return RestClient.For<IBitMexApi>("https://www.bitmex.com", new BitMexAuthenticator(key).GetRequestModifier) as T;
+            return RestClient.For<IBitMexApi>(BitMaxApiUrl, new BitMexAuthenticator(key).GetRequestModifier) as T;
         }
 
         public ApiConfiguration GetApiConfiguration { get; }
