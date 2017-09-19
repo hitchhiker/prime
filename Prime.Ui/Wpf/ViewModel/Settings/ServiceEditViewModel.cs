@@ -68,7 +68,7 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             StatusText = "Checking the keys now...";
 
-            var apikey = new ApiKey(_apiName, _apiKey, _apiSecret, _apiExtra1);
+            var apikey = new ApiKey(Service.Network, _apiName, _apiKey, _apiSecret, _apiExtra1);
             var t = ApiCoordinator.TestApiAsync(Service, new ApiTestContext(apikey));
             t.ContinueWith(task => ApiKeyCheckResult(task, apikey));
         }
@@ -83,12 +83,15 @@ namespace Prime.Ui.Wpf.ViewModel
                 return;
             }
 
+            var keys = UserContext.Current.ApiKeys;
+
             if (UserKey != null)
-                ProviderData.ApiKeys.Remove(UserKey);
+                keys.Remove(UserKey);
 
             UserKey = key;
-            ProviderData.ApiKeys.Add(key);
-            ProviderData.Save(UserContext.Current);
+
+            keys.Add(key);
+            keys.Save();
         }
 
         private string _apiName;
@@ -171,7 +174,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 return "Required";
 
             name = name.Trim();
-            var exists = ProviderData.ApiKeys.Any(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && UserKey?.Id != x.Id);
+            var exists = UserContext.Current.ApiKeys.Any(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && UserKey?.Id != x.Id);
             return exists ? "Name already exists" : null;
         }
 

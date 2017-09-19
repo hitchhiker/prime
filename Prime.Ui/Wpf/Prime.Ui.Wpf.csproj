@@ -374,8 +374,8 @@
     <Compile Include="Components\AppRegistry.cs" />
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
-    <Compile Include="ViewModel\BuySellViewModel.cs" />
-    <Compile Include="ViewModel\ChartHeaderViewModel.cs" />
+    <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
+    <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
     <Compile Include="ViewModel\ExchangeConvertViewModel.cs" />
     <Compile Include="ViewModel\ExchangeRateViewModel.cs" />
@@ -383,25 +383,25 @@
     <Compile Include="ViewModel\Logging\LogEntry.cs" />
     <Compile Include="PageUri\AssetPageUriProvider.cs" />
     <Compile Include="PageUri\SimplePageUriProvider.cs" />
-    <Compile Include="ViewModel\MarketHistoryViewModel.cs" />
-    <Compile Include="ViewModel\MyOrderHistoryViewModel.cs" />
-    <Compile Include="ViewModel\OpenOrdersViewModel.cs" />
-    <Compile Include="ViewModel\OrderBookViewModel.cs" />
-    <Compile Include="ViewModel\PanelFlyoutViewModelBase.cs" />
+    <Compile Include="ViewModel\Trading\MarketHistoryViewModel.cs" />
+    <Compile Include="ViewModel\Trading\MyOrderHistoryViewModel.cs" />
+    <Compile Include="ViewModel\Trading\OpenOrdersViewModel.cs" />
+    <Compile Include="ViewModel\Trading\OrderBookViewModel.cs" />
+    <Compile Include="ViewModel\SideBar\PanelFlyoutViewModelBase.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
-    <Compile Include="ViewModel\PriceChartPaneModel.cs" />
+    <Compile Include="ViewModel\Charts\PriceChartPaneModel.cs" />
     <Compile Include="Components\Providers\SimplePagePaneProvider.cs" />
-    <Compile Include="ViewModel\ReceiveViewModel.cs" />
+    <Compile Include="ViewModel\Wallet\ReceiveViewModel.cs" />
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
-    <Compile Include="ViewModel\WalletViewModel.cs" />
+    <Compile Include="ViewModel\Wallet\WalletViewModel.cs" />
     <Compile Include="View\Exchange\ExchangeRates.xaml.cs">
       <DependentUpon>ExchangeRates.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Misc\LogPanel.xaml.cs">
       <DependentUpon>LogPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\AddressBarModel.cs" />
-    <Compile Include="ViewModel\SideBarViewModel.cs" />
+    <Compile Include="ViewModel\AddressBar\AddressBarModel.cs" />
+    <Compile Include="ViewModel\SideBar\SideBarViewModel.cs" />
     <Compile Include="View\Misc\AddressBar.xaml.cs">
       <DependentUpon>AddressBar.xaml</DependentUpon>
     </Compile>
@@ -420,11 +420,11 @@
     <Compile Include="Window\Screen.xaml.cs">
       <DependentUpon>Screen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ChartGroupViewModel.cs" />
-    <Compile Include="ViewModel\ChartViewModel.cs" />
+    <Compile Include="ViewModel\Charts\ChartGroupViewModel.cs" />
+    <Compile Include="ViewModel\Charts\ChartViewModel.cs" />
     <Compile Include="Components\LiveCharts\Point\InstantChartPointMapper.cs" />
-    <Compile Include="ViewModel\LogPanelItemViewModel.cs" />
-    <Compile Include="ViewModel\LogPanelViewModel.cs" />
+    <Compile Include="ViewModel\Logging\LogPanelItemViewModel.cs" />
+    <Compile Include="ViewModel\Logging\LogPanelViewModel.cs" />
     <Compile Include="ViewModel\ScreenViewModel.cs" />
     <Compile Include="Components\LiveCharts\Point\OhlcInstantChartPointMapper.cs" />
     <Compile Include="Components\Converters\ResolutionConverter.cs" />
@@ -471,19 +471,19 @@
     <Compile Include="View\Services\ServiceEdit.xaml.cs">
       <DependentUpon>ServiceEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ServiceEditViewModel.cs" />
+    <Compile Include="ViewModel\Settings\ServiceEditViewModel.cs" />
     <Compile Include="View\Services\Services.xaml.cs">
       <DependentUpon>Services.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ServicesPaneViewModel.cs" />
+    <Compile Include="ViewModel\Settings\ServicesPaneViewModel.cs" />
     <Compile Include="View\Sidebar\BookmarksSideBar.cs">
       <DependentUpon>BookmarksSideBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\BookmarksSideBarViewModel.cs" />
+    <Compile Include="ViewModel\SideBar\BookmarksSideBarViewModel.cs" />
     <Compile Include="View\Misc\AddressBox.cs">
       <DependentUpon>AddressBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\AddressBoxModel.cs" />
+    <Compile Include="ViewModel\AddressBar\AddressBoxModel.cs" />
     <Compile Include="Components\CommandSuggestionProvider.cs" />
     <Compile Include="Components\CommandValidationRule.cs" />
     <Compile Include="ViewModel\VmBase.cs" />
@@ -563,7 +563,7 @@
     <Compile Include="View\SettingsAppearance.xaml.cs">
       <DependentUpon>SettingsAppearance.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\SettingsAppearanceViewModel.cs" />
+    <Compile Include="ViewModel\Settings\SettingsAppearanceViewModel.cs" />
     <Compile Include="Components\Control\TextBoxBehaviour.cs" />
     <Compile Include="Components\Control\TextBoxStreamWriter.cs" />
     <Page Include="Window\Blank.xaml">

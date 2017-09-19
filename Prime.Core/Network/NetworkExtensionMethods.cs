@@ -9,5 +9,10 @@ namespace Prime.Core
         {
             return providers == null ? default(T) : providers.OrderByDescending(x => x.Priority).FirstOrDefault();
         }
+
+        public static IEnumerable<T> Active<T>(this IEnumerable<T> providers) where T : INetworkProvider
+        {
+            return null;
+        }
     }
 }

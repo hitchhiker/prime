@@ -11,6 +11,7 @@ using Prime.Core;
 using Prime.Core.Wallet;
 using GalaSoft.MvvmLight.Command;
 using Humanizer;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -22,8 +23,8 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             _context = UserContext.Current;
             Provider = _context.PortfolioProvider;
-            Provider.OnChanged += Portfolio_OnChanged;
             Dispatcher = Application.Current.Dispatcher;
+            Provider.Register(this, PortfolioChanged);
         }
 
 #pragma warning disable 169
@@ -62,7 +63,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public ObservableCollection<PortfolioInfoItem> PortfolioInfoObservable { get; private set; } = new ObservableCollection<PortfolioInfoItem>();
 
-        private void Portfolio_OnChanged(object sender, System.EventArgs e)
+        private void PortfolioChanged(PortfolioChangedMessage m)
         {
             Dispatcher.Invoke(() =>
             {
@@ -70,7 +71,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
                 PortfolioObservable.Clear();
 
-                foreach (var i in p.OrderBy(x => x.Asset?.ShortCode ?? "ZZZ").ThenBy(x => x.Network?.Name ?? "ZZZ"))
+                foreach (var i in p.Items.OrderBy(x => x.Asset?.ShortCode ?? "ZZZ").ThenBy(x => x.Network?.Name ?? "ZZZ"))
                     PortfolioObservable.Add(i);
 
                 PortfolioInfoObservable.Clear();
@@ -84,7 +85,7 @@ namespace Prime.Ui.Wpf.ViewModel
                     i.Percentage = r * i.TotalConvertedAssetValue;
 
                 var gi = new List<PortfolioGroupedItem>();
-                foreach (var i in p.GroupBy(x => x.Asset))
+                foreach (var i in p.Items.GroupBy(x => x.Asset))
                     gi.Add(PortfolioGroupedItem.Create(i.Key, i.ToList()));
 
                 SummaryObservable.Clear();
@@ -99,9 +100,9 @@ namespace Prime.Ui.Wpf.ViewModel
                 if (p.FailingProviders.Any())
                     Information += " | Failed: " + string.Join(", ", p.FailingProviders.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
 
-                TotalConverted = p.FirstOrDefault(x => x.IsTotalLine)?.Converted ?? Money.Zero;
+                TotalConverted = p.Items.FirstOrDefault(x => x.IsTotalLine)?.Converted ?? Money.Zero;
 
-                if (p.Any(x=>x.ConversionFailed))
+                if (p.Items.Any(x=>x.ConversionFailed))
                     Information += " Warning: Some currencies could not be converted, and so are not included in this total.";
 
                 OnChanged?.Invoke(this, EventArgs.Empty);
@@ -122,7 +123,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            Provider.OnChanged += Portfolio_OnChanged;
+            Provider.Unregister(this, PortfolioChanged);
             base.Dispose();
         }
     }

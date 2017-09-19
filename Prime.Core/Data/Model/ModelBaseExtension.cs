@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using LiteDB;
+using System.Linq;
 
 namespace Prime.Core
 {
@@ -35,6 +37,11 @@ namespace Prime.Core
         {
             var doc = BsonMapper.Global.ToDocument(model.GetType(), model);
             return BsonMapper.Global.ToObject<T>(doc);
+        }
+
+        public static OpResult SaveAll<T>(this IEnumerable<T> doc, IDataContext context) where T : IModelBase
+        {
+            return doc.Select(x => x.Save(context)).FirstOrDefault(x => !x.IsSuccess);
         }
     }
 }

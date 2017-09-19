@@ -6,21 +6,22 @@ using LiteDB;
 
 namespace Prime.Core
 {
-    public class ApiKey : IEquatable<ApiKey>
+    public class ApiKey : ModelBase, IEquatable<ApiKey>
     {
         private ApiKey() { }
 
-        public ApiKey(string name, string key, string secret, string extra = null)
+        public ApiKey(Network network, string name, string key, string secret, string extra = null)
         {
+            Network = network;
             Name = name;
             Secret = secret;
             Key = key;
             Extra = extra;
-            Id = $"prime:api:{key ?? "key"}:{secret ?? "secret"}:{extra ?? "ex"}".GetObjectIdHashCode(true, true);
+            Id = $"prime:net:{Network.NameLowered}:api:{key ?? "key"}:{secret ?? "secret"}:{extra ?? "ex"}".GetObjectIdHashCode(true, true);
         }
-
+        
         [BsonId]
-        public ObjectId Id { get; private set; }
+        public Network Network { get; private set; }
 
         [Bson]
         public string Name { get; private set; }
@@ -43,24 +44,23 @@ namespace Prime.Core
         [Bson]
         public string Extra { get; private set; }
 
-        public static ApiKey FromFile(FileInfo file)
+        public static ApiKey FromFile(Network network, FileInfo file)
         {
             if (!file.Exists)
                 return null;
 
-            var net = file.Name.Replace(".api.txt", "").ToLower().Trim();
             var p = File.ReadAllLines(file.FullName);
             if (p.Length < 2)
                 return null;
 
-            return new ApiKey(net + " imported", p[0], p[1], p.Length > 2 ? p[2] : null);
+            return new ApiKey(network, network.Name + " imported", p[0], p[1], p.Length > 2 ? p[2] : null);
         }
 
         public bool Equals(ApiKey other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Id, other.Id);
+            return Equals(Network, other.Network) && string.Equals(Key, other.Key);
         }
 
         public override bool Equals(object obj)
@@ -73,7 +73,10 @@ namespace Prime.Core
 
         public override int GetHashCode()
         {
-            return (Id != null ? Id.GetHashCode() : 0);
+            unchecked
+            {
+                return ((Network != null ? Network.GetHashCode() : 0) * 397) ^ (Key != null ? Key.GetHashCode() : 0);
+            }
         }
     }
 }

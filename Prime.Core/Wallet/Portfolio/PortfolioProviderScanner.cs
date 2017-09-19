@@ -43,7 +43,7 @@ namespace Prime.Core.Wallet
 
         private void SetTimer(int frequency)
         {
-            if (frequency == 0)
+            if (frequency == 0 || _isDisposed)
                 return;
 
             _timer = new Timer(frequency) { AutoReset = false };
@@ -183,8 +183,10 @@ namespace Prime.Core.Wallet
             return null;
         }
 
+        private bool _isDisposed;
         public void Dispose()
         {
+            _isDisposed = true;
             _timer?.Dispose();
         }
     }

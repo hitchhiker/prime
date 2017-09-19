@@ -37,10 +37,14 @@ namespace Prime.Core
         public bool IsPublic => false;
 
         private Asset _baseAsset;
+
         public Asset BaseAsset
         {
             get => _baseAsset ?? (_baseAsset = "USD".ToAssetRaw());
-            set => Set(ref _baseAsset, value);
+            set => SetAfter(ref _baseAsset, value, a =>
+            {
+                Messenger.Send(new BaseAssetChangedMessage(a));
+            });
         }
 
         DirectoryInfo IDataContext.StorageDirectory => StorageDirectoryUsr;
@@ -79,10 +83,10 @@ namespace Prime.Core
         private WalletProvider _walletProvider;
         public WalletProvider WalletProvider => _walletProvider ?? (_walletProvider = new WalletProvider(this));
 
-        public ApiKey GetApiKey(INetworkProvider provider)
-        {
-            return Data(provider).ApiKeys.GetFirst(provider);
-        }
+        private ApiKeys _apiKeys;
+        public ApiKeys ApiKeys => _apiKeys ?? (_apiKeys = new ApiKeys(this));
+
+        public ApiKey GetApiKey(INetworkProvider provider) => ApiKeys.GetFirst(provider);
 
         private DirectoryInfo GetDirInfo()
         {
