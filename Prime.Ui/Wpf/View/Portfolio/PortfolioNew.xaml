@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Portfolio.PortfolioNew"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModel:PortfolioViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
+        <StackPanel>
+            <DataGrid Width="Auto" ColumnWidth="*" ItemsSource="{Binding ListPortfolioItems, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="" Width="45" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding IconPath}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Market" Binding="{Binding Market}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Units" Binding="{Binding Units, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Avg. Open" Binding="{Binding AvgOpen, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Invested" Binding="{Binding Invested, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="P/L ($)" Binding="{Binding ProfitLoss, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="P/L (%)" Binding="{Binding ProfitLossPerc, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Sell" Binding="{Binding Sell, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Buy" Binding="{Binding Buy, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
