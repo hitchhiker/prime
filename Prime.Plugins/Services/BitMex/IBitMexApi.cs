@@ -10,23 +10,23 @@ namespace plugins
 {
     internal interface IBitMexApi
     {
-        [Get("api/v1/user/depositAddress?currency={currency}")]
+        [Get("/user/depositAddress?currency={currency}")]
         // TODO: Change String to custom class in BitMexProvider.
         Task<String> GetUserDepositAddressAsync([Path]String currency);
 
-        [Get("api/v1/user/wallet?currency={currency}")]
+        [Get("/user/wallet?currency={currency}")]
         Task<BitMexSchema.WalletInfo> GetUserWalletInfoAsync([Path]String currency);
 
-        [Get("api/v1/user")]
+        [Get("/user")]
         Task<BitMexSchema.UserInfo> GetUserInfoAsync();
 
-        [Get("api/v1/instrument/active")]
+        [Get("/instrument/active")]
         Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActive();
 
-        [Get("api/v1/instrument?symbol={currencySymbol}&columns=[\"lastPrice\",\"timestamp\",\"symbol\"]&reverse=true")]
+        [Get("/instrument?symbol={currencySymbol}&columns=[\"lastPrice\",\"timestamp\",\"symbol\"]&reverse=true")]
         Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPriceAsync([Path]String currencySymbol);
 
-        [Get("api/v1/instrument?columns=[\"lastPrice\",\"timestamp\",\"symbol\",\"underlying\",\"quoteCurrency\"]&reverse=true&count=500")]
+        [Get("/instrument?columns=[\"lastPrice\",\"timestamp\",\"symbol\",\"underlying\",\"quoteCurrency\"]&reverse=true&count=500")]
         Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPricesAsync();
     }
 }

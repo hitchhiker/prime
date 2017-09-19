@@ -18,7 +18,7 @@ namespace plugins
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
-        private const String BitMaxApiUrl = "https://www.bitmex.com";
+        private const String BitMaxApiUrl = "https://www.bitmex.com/api/v1";
 
         public BitMexProvider()
         {
