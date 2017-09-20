@@ -4,7 +4,7 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OhlcPairProviders
+    public class AssetPairProviders
     {
         private IReadOnlyList<IOhlcProvider> _providers;
 
@@ -25,5 +25,7 @@ namespace Prime.Core
                 Provider = _providers.FirstProvider();
             }
         }
+
+        public AssetPairProviders Via { get; set; }
     }
 }

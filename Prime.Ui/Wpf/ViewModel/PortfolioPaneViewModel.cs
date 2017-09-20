@@ -22,9 +22,9 @@ namespace Prime.Ui.Wpf.ViewModel
         public PortfolioPaneViewModel(ScreenViewModel screenViewModel)
         {
             _context = UserContext.Current;
-            Provider = _context.PortfolioProvider;
+            Coordinator = _context.PortfolioCoordinator;
             Dispatcher = Application.Current.Dispatcher;
-            Provider.Register(this, PortfolioChanged);
+            Coordinator.Register<PortfolioChangedMessage>(this, PortfolioChanged);
         }
 
 #pragma warning disable 169
@@ -32,7 +32,7 @@ namespace Prime.Ui.Wpf.ViewModel
 #pragma warning restore 169
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
-        public readonly PortfolioProvider Provider;
+        public readonly PortfolioCoordinator Coordinator;
         private DateTime _utcLastUpdated;
         private string _information;
         private Money _totalConverted;
@@ -67,7 +67,7 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             Dispatcher.Invoke(() =>
             {
-                var p = Provider;
+                var p = Coordinator;
 
                 PortfolioObservable.Clear();
 
@@ -123,7 +123,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            Provider.Unregister(this, PortfolioChanged);
+            Coordinator.Unregister<PortfolioChangedMessage>(this, PortfolioChanged);
             base.Dispose();
         }
     }

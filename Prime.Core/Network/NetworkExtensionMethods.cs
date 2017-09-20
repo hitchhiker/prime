@@ -10,9 +10,10 @@ namespace Prime.Core
             return providers == null ? default(T) : providers.OrderByDescending(x => x.Priority).FirstOrDefault();
         }
 
-        public static IEnumerable<T> Active<T>(this IEnumerable<T> providers) where T : INetworkProvider
+        public static IList<T> WithApi<T>(this IEnumerable<T> providers) where T : INetworkProvider
         {
-            return null;
+            var networks = UserContext.Current.ApiKeys.Select(x => x.Network);
+            return providers.Where(x => networks.Any(n => x.Network.Equals(n))).ToList();
         }
     }
 }

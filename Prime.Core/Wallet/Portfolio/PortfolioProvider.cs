@@ -1,175 +1,193 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Timers;
-using GalaSoft.MvvmLight.Messaging;
-using Nito.AsyncEx;
 using Prime.Utility;
 
 namespace Prime.Core.Wallet
 {
-
-    public class PortfolioProvider
+    public class PortfolioProvider : IDisposable
     {
-        public PortfolioProvider(UserContext context)
+        public PortfolioProvider(PortfolioProviderContext context)
         {
-            TimerFrequency = 15000;
-            Context = context;
-            _scanners = new List<PortfolioProviderScanner>();
-            StartScanners(Context);
-            _messenger.Register<BaseAssetChangedMessage>(this, BaseAssetChanged);
+            L = context.L;
+            _context = context.Context;
+            Provider = context.Provider;
+            BaseAsset = context.BaseAsset;
+            _timerFrequency = context.Frequency;
+            Info = new PortfolioInfoItem(Provider.Network);
+            _providerContext = new NetworkProviderPrivateContext(_context, L);
+
+            if (context.Frequency!=0)
+                SetTimer(1);
         }
 
-        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
-        private readonly List<PortfolioProviderScanner> _scanners;
-        public readonly UserContext Context;
-        private readonly object _lock = new object();
-        protected int TimerFrequency { get; set; }
+        public event EventHandler OnChanged;
 
-        public UniqueList<PortfolioLineItem> Items { get; } = new UniqueList<PortfolioLineItem>();
-        public List<IWalletService> FailingProviders { get; } = new List<IWalletService>();
-        public List<IWalletService> WorkingProviders { get; } = new List<IWalletService>();
-        public List<IWalletService> QueryingProviders { get; } = new List<IWalletService>();
-        public UniqueList<PortfolioInfoItem> PortfolioInfoItems { get; } = new UniqueList<PortfolioInfoItem>();
+        private readonly NetworkProviderPrivateContext _providerContext;
+        private readonly UserContext _context;
+        public readonly IWalletService Provider;
+        public readonly Asset BaseAsset;
+        private readonly int _timerFrequency;
+        public readonly ILogger L;
+        private Timer _timer;
+
+        public bool IsConnected { get; private set; }
+        public bool IsQuerying { get; private set; }
+        public bool IsFailing { get; private set; }
         public DateTime UtcLastUpdated { get; private set; }
 
-        public int RegisteredCount { get; private set; } = 0;
-        public bool IsScanning { get; private set; }
+        public List<PortfolioLineItem> Items { get; } = new List<PortfolioLineItem>();
 
-        public void Register(object subscriber, Action<PortfolioChangedMessage> action)
+        public PortfolioInfoItem Info { get; }
+
+        private void SetTimer(int frequency)
         {
-            RegisteredCount++;
-            _messenger.Register(subscriber, action);
-            new Task(RegistrationChanged).Start();
+            if (frequency == 0 || _isDisposed)
+                return;
+
+            _timer = new Timer(frequency) { AutoReset = false };
+            _timer.Elapsed += (o, args) => Update();
+            _timer.Start();
         }
 
-        public void Unregister(object subscriber, Action<PortfolioChangedMessage> action)
+        public void Update()
         {
-            RegisteredCount--;
-            _messenger.Unregister(subscriber, action);
-            new Task(RegistrationChanged).Start();
-        }
+            IsQuerying = true;
+            UpdateInfo();
 
-        private void RegistrationChanged()
-        {
-            lock (_lock)
+            var r = new List<PortfolioLineItem>();
+
+            try
             {
-                if (RegisteredCount < 1)
+                BalanceResults results = null;
+                try
                 {
-                    RegisteredCount = 0;
-                    StopScanners();
+                    var ar = ApiCoordinator.GetBalances(Provider, _providerContext);
+                    results = ar.Response;
+                    IsConnected = !ar.IsNull;
+                    UpdateInfo();
                 }
-                else
+
+                catch (Exception e)
                 {
-                    StartScanners(Context);
+                    L.Error(e, $"in {nameof(Update)} @ {nameof(Provider.GetBalancesAsync)}");
+                    IsConnected = false;
+                    UpdateInfo();
                 }
-            }
-        }
 
-        private void BaseAssetChanged(BaseAssetChangedMessage m)
-        {
-            lock (_lock)
-            {
-                StopScanners();
-                StartScanners(Context);
-            }
-        }
-
-        private void StartScanners(UserContext context)
-        {
-            lock (_lock)
-            {
-                if (TimerFrequency == 0 || IsScanning)
-                    return;
-
-                var providers = Networks.I.WalletProviders;
-                _scanners.Clear();
-                _scanners.AddRange(providers.Select(x => new PortfolioProviderScanner(new PortfolioProviderScannerContext(this.Context, x, context.BaseAsset, TimerFrequency))).ToList());
-                _scanners.ForEach(x => x.OnChanged += ScannerChanged);
-
-                IsScanning = true;
-            }
-        }
-
-        private void StopScanners()
-        {
-            lock (_lock)
-            {
-                if (!IsScanning)
-                    return;
-
-                _scanners.ForEach(delegate(PortfolioProviderScanner x)
+                if (results == null)
                 {
-                    x.OnChanged -= ScannerChanged;
-                    x.Dispose();
-                });
+                    IsQuerying = false;
+                    IsFailing = true;
+                    UpdateInfo();
+                    return;
+                }
 
+                foreach (var br in results)
+                {
+                    var li = GetLineItem(br, BaseAsset, Provider);
+                    if (li?.Asset == null)
+                        continue;
+                    
+                    r.Add(li);
+                    Update(r, false, li);
+                }
+
+                IsFailing = false;
+                IsQuerying = false;
+            }
+            catch (Exception e)
+            {
+                L.Error(e, $"in {nameof(Update)}");
+                IsFailing = true;
+                IsQuerying = false;
+            }
+
+            Update(r, true);
+
+            SetTimer(_timerFrequency);
+        }
+
+        private void UpdateInfo()
+        {
+            var q = Items.Where(x => !x.IsTotalLine);
+
+            Info.IsConnected = IsConnected;
+            Info.IsFailed = IsFailing;
+            Info.IsQuerying = IsQuerying;
+            Info.Assets = q.Select(x => x.Asset).ToUniqueList();
+            Info.UtcLastConnect = DateTime.UtcNow;
+            Info.TotalConvertedAssetValue = new Money(q.Sum(x => x.Converted), BaseAsset);
+        }
+
+        private void Update(List<PortfolioLineItem> r, bool finished, PortfolioLineItem li = null)
+        {
+            UtcLastUpdated = DateTime.UtcNow;
+
+            if (li != null)
+            {
+                Items.RemoveAll(x => Equals(x.Asset, li.Asset));
+                Items.Add(li);
+            }
+            else
+            {
                 Items.Clear();
-                PortfolioInfoItems.Clear();
-                FailingProviders.Clear();
-                WorkingProviders.Clear();
-                QueryingProviders.Clear();
-                UtcLastUpdated = DateTime.MinValue;
-                IsScanning = false;
-                _messenger.Send(new PortfolioChangedMessage());
+                foreach (var i in r)
+                    Items.Add(i);
             }
+
+            UpdateInfo();
+
+            OnChanged?.Invoke(this, new PortfolioChangedLineEvent(li) {Finished = finished});
         }
 
-        private void ScannerChanged(object sender, EventArgs e)
+        public class PortfolioChangedLineEvent : EventArgs
         {
-            lock (_lock)
+            public PortfolioChangedLineEvent(PortfolioLineItem li)
             {
-                var ev = e as PortfolioProviderScanner.PortfolioChangedLineEvent;
-                var li = ev?.Item;
-                var scanner = sender as PortfolioProviderScanner;
-
-                UpdateScanningStatuses();
-
-                var prov = scanner.Provider;
-                UtcLastUpdated = scanner.UtcLastUpdated;
-
-                if (li != null)
-                {
-                    Items.RemoveAll(x => Equals(x.Network, prov.Network) && Equals(x.Asset, li.Asset));
-                    Items.Add(li);
-                }
-                else
-                {
-                    Items.RemoveAll(x => Equals(x.Network, prov.Network));
-                    foreach (var i in scanner.Items)
-                        Items.Add(i);
-                }
-
-                PortfolioInfoItems.Add(scanner.Info, true);
-
-                DoTotal(scanner.BaseAsset);
-
-                _messenger.Send(new PortfolioChangedMessage());
+                Item = li;
             }
+
+            public PortfolioLineItem Item { get; set; }
+
+            public bool Finished { get; set; }
         }
 
-        private void DoTotal(Asset bAsset)
+        private PortfolioLineItem GetLineItem(BalanceResult balance, Asset bAsset, IWalletService provider)
         {
-            Items.RemoveAll(x => x.IsTotalLine);
-            if (Items.Any())
-                Items.Add(new PortfolioLineItem() { IsTotalLine = true, Converted = new Money(this.Items.Sum(x=>(decimal)x.Converted), bAsset) });
-        }
-        
-        private void UpdateScanningStatuses()
-        {
-            lock (_lock)
+            try
             {
-                WorkingProviders.Clear();
-                WorkingProviders.AddRange(_scanners.Where(x => x.IsConnected).Select(x => x.Provider));
+                var pair = new AssetPair(balance.Available.Asset, bAsset);
+                var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
 
-                FailingProviders.Clear();
-                FailingProviders.AddRange(_scanners.Where(x => x.IsFailing).Select(x => x.Provider));
-
-                QueryingProviders.Clear();
-                QueryingProviders.AddRange(_scanners.Where(x => x.IsQuerying).Select(x => x.Provider));
+                var pli = new PortfolioLineItem()
+                {
+                    Asset = balance.Asset,
+                    Network = provider.Network,
+                    AvailableBalance = balance.Available,
+                    PendingBalance = balance.Reserved,
+                    ReservedBalance = balance.Reserved,
+                    Total =
+                        new Money((decimal) balance.Available + (decimal) balance.Reserved, balance.Available.Asset),
+                    Converted = new Money((decimal) balance.Available * (decimal) fx, pair.Asset2),
+                    ConversionFailed = fx == Money.Zero,
+                    ChangePercentage = 0
+                };
+                return pli;
             }
+            catch (Exception e)
+            {
+                L.Error(e, $"in {GetType()} @ {nameof(GetLineItem)}");
+            }
+            return null;
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            _isDisposed = true;
+            _timer?.Dispose();
         }
     }
 }

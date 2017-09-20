@@ -77,8 +77,8 @@ namespace Prime.Core
         private Radiant.Radiant _radiant;
         public Radiant.Radiant Radiant => _radiant ?? (_radiant = new Radiant.Radiant(Logging.I.DefaultLogger));
 
-        private PortfolioProvider _portfolioProvider;
-        public PortfolioProvider PortfolioProvider => _portfolioProvider ?? (_portfolioProvider = new PortfolioProvider(this));
+        private PortfolioCoordinator _portfolioCoordinator;
+        public PortfolioCoordinator PortfolioCoordinator => _portfolioCoordinator ?? (_portfolioCoordinator = new PortfolioCoordinator(this));
 
         private WalletProvider _walletProvider;
         public WalletProvider WalletProvider => _walletProvider ?? (_walletProvider = new WalletProvider(this));

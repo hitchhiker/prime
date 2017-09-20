@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Prime.Core
 {
-    public class OhlcResolutionAdapterContext : OhlcProviderFinderContext
+    public class OhlcResolutionAdapterContext : PairProviderDiscoveryContext
     {
         public OhlcResolutionAdapterContext() { }
 
@@ -37,9 +37,7 @@ namespace Prime.Core
 
         public bool CanDiscoverApiProviders { get; set; } = true;
 
-        public Func<(OhlcPairProviders direct, OhlcPairProviders via)> ApiDiscoveryFunction { get; set; }
-
-        public Network Network { get; set; }
+        public Func<AssetPairProviders> ApiDiscoveryFunction { get; set; }
 
         public TimeResolution TimeResolution { get; set; }
 
@@ -51,9 +49,9 @@ namespace Prime.Core
 
         public IOhlcProvider CurrencyConversionApiProvider { get; set; }
 
-        public OhlcPairProviders ProvidersForDirect { get; set; }
+        public AssetPairProviders ProvidersForDirect { get; set; }
 
-        public OhlcPairProviders ProvidersForConversion { get; set; }
+        public AssetPairProviders ProvidersForConversion { get; set; }
 
         public bool IsDataConverted { get; private set; }
 
@@ -72,10 +70,11 @@ namespace Prime.Core
 
         public void DiscoverAndApplyApiProviders(bool overwrite = false)
         {
-            var provs = ApiDiscoveryFunction?.Invoke() ?? new OhlcApiProviderFinder(this).FindProvider();
+            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairProviderDiscovery(this).FindProviders();
 
-            ProvidersForConversion = provs.via;
-            ProvidersForDirect = provs.direct;
+            ProvidersForDirect = provs;
+            ProvidersForConversion = provs.Via;
+
             if (!overwrite)
             {
                 PrimaryApiProvider = PrimaryApiProvider ?? ProvidersForDirect?.Provider;
@@ -87,19 +86,19 @@ namespace Prime.Core
                 CurrencyConversionApiProvider = ProvidersForConversion?.Provider;
             }
 
-            if (provs.via != null)
-                DoIntermediary(provs.direct, provs.via);
+            if (provs.Via != null)
+                DoIntermediary(provs);
 
             if (PrimaryApiProvider == null)
                 throw new Exception("Cannot locate an api " + nameof(IOhlcProvider) + " for " + Pair);
         }
 
-        private void DoIntermediary(OhlcPairProviders primary, OhlcPairProviders via)
+        private void DoIntermediary(AssetPairProviders providers)
         {
-            if (primary.IsPegged)
-                AssetPegged = primary.Pair.Asset2;
-            else if (via != null && via.IsIntermediary)
-                AssetIntermediary = primary.Pair.Asset2;
+            if (providers.IsPegged)
+                AssetPegged = providers.Pair.Asset2;
+            else if (providers.Via != null && providers.Via.IsIntermediary)
+                AssetIntermediary = providers.Pair.Asset2;
         }
 
         public IOhlcProvider GetDefaultAggregationProvider()

@@ -1,7 +1,6 @@
 using System;
 using LiteDB;
 using Prime.Utility;
-using System.Collections.Generic;
 
 namespace Prime.Core
 {
@@ -14,6 +13,9 @@ namespace Prime.Core
 
         [Bson]
         public UniqueList<WalletAddress> Addresses { get; private set; } = new UniqueList<WalletAddress>();
+
+        [Bson]
+        public UniqueList<AssetPair> FavouritePairs { get; set; } = new UniqueList<AssetPair>();
 
         public void AfterCreation(IDataContext context, IUniqueIdentifier<ObjectId> parentObject)
         {

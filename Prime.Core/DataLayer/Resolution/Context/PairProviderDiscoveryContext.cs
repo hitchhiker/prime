@@ -1,16 +1,18 @@
 ﻿namespace Prime.Core
 {
-    public class OhlcProviderFinderContext
+    public class PairProviderDiscoveryContext
     {
-        public OhlcProviderFinderContext() { }
+        public PairProviderDiscoveryContext() { }
 
-        public OhlcProviderFinderContext(OhlcProviderFinderContext context)
+        public PairProviderDiscoveryContext(PairProviderDiscoveryContext context)
         {
             Pair = context.Pair;
             PeggedEnabled = context.PeggedEnabled;
             ConversionEnabled = context.ConversionEnabled;
         }
 
+        public Network Network { get; set; }
+        
         public AssetPair Pair { get; set; }
 
         public bool PeggedEnabled { get; set; }

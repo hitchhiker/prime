@@ -10,17 +10,12 @@ namespace Prime.Core
 
         public AssetPair(Asset asset1, Asset asset2)
         {
-            if (asset1 == null)
-                throw new ArgumentException($"{nameof(asset1)} is null.");
+            Asset1 = asset1 ?? throw new ArgumentException($"{nameof(asset1)} is null.");
+            Asset2 = asset2 ?? throw new ArgumentException($"{nameof(asset2)} is null.");
+        }
 
-            if (asset2 == null)
-                throw new ArgumentException($"{nameof(asset2)} is null.");
-
-            //if (asset1.ShortCode == asset2.ShortCode)
-            //    throw new ArgumentException($"{nameof(asset1)} {nameof(asset2)} are identical.");
-
-            Asset1 = asset1;
-            Asset2 = asset2;
+        public AssetPair(string asset1, string asset2) : this(asset1.ToAssetRaw(), asset2.ToAssetRaw())
+        {
         }
 
         public AssetPair(string asset1, string asset2, IDescribesAssets provider) : this(Assets.I.Get(asset1, provider), Assets.I.Get(asset2, provider))

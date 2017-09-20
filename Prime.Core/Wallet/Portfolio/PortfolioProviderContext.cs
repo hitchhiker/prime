@@ -2,9 +2,9 @@ using Prime.Utility;
 
 namespace Prime.Core.Wallet
 {
-    public class PortfolioProviderScannerContext
+    public class PortfolioProviderContext
     {
-        public PortfolioProviderScannerContext(UserContext context, IWalletService provider, Asset baseAsset, int frequency = 15000)
+        public PortfolioProviderContext(UserContext context, IWalletService provider, Asset baseAsset, int frequency = 15000)
         {
             Context = context;
             Provider = provider;

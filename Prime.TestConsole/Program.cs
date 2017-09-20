@@ -19,11 +19,14 @@ using Prime.TestConsole;
 
 namespace TestConsole
 {
-    public class Program
+    public partial class Program
     {
         static void Main(string[] args)
         {
-            LatestPricesTest();
+            
+            new ExchangeRateTest().Test();
+
+            //LatestPricesTest();
             //LatestPriceTest();
 
             //Worker worker = new Worker();
@@ -83,7 +86,7 @@ namespace TestConsole
         {
             var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-            var ctx = new PublicPricesContext("XBT".ToAsset(provider), new List<Asset>()
+            var ctx = new PublicPricesContext("BTC".ToAssetRaw(), new List<Asset>()
             {
                 "ETH".ToAsset(provider),
                 "ETC".ToAsset(provider),
@@ -136,8 +139,8 @@ namespace TestConsole
             //provider.GetAssetPairs
 
 
-            var c = new PortfolioProviderScannerContext(UserContext.Current, provider, UserContext.Current.BaseAsset, 0);
-            var scanner = new PortfolioProviderScanner(c);
+            var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.BaseAsset, 0);
+            var scanner = new PortfolioProvider(c);
             try
             {
                 scanner.Update();
