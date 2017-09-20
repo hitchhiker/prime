@@ -1,5 +1,4 @@
-﻿using Prime.Ui.Wpf.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Prime.Ui.Wpf.View.Trade
+namespace Prime.Ui.Wpf.View.Portfolio
 {
     /// <summary>
-    /// Interaction logic for BuySell.xaml
+    /// Interaction logic for PortfolioNew.xaml
     /// </summary>
-    public partial class BuySell : UserControl
+    public partial class PortfolioNew : UserControl
     {
-        public BuySell()
+        public PortfolioNew()
         {
             InitializeComponent();
             SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
@@ -32,26 +31,6 @@ namespace Prime.Ui.Wpf.View.Trade
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
-        }
-
-        private void CmbBuyType_Loaded(object sender, RoutedEventArgs e)
-        {
-            cmbBuyType.SelectedIndex = 0;
-        }
-
-        private void CmbBuyTimeInForce_Loaded(object sender, RoutedEventArgs e)
-        {
-            cmbBuyTimeInForce.SelectedIndex = 0;
-        }
-
-        private void CmbSellTimeInForce_Loaded(object sender, RoutedEventArgs e)
-        {
-            cmbSellTimeInForce.SelectedIndex = 0;
-        }
-
-        private void CmbSellType_Loaded(object sender, RoutedEventArgs e)
-        {
-            cmbSellType.SelectedIndex = 0;
         }
     }
 }

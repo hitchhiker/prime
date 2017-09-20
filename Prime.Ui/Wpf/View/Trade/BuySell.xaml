@@ -139,16 +139,6 @@
             </TabItem>
             <TabItem Header="History">
                 <StackPanel Orientation="Vertical" Margin="0,20,0,0">
-                    <TextBlock>Market History</TextBlock>
-                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" DataContext="{Binding MarketHistoryViewModel}" ItemsSource="{Binding ListMarketHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Buy/Sell" Binding="{Binding BuySell}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Total Units (BTC)" Binding="{Binding TotalUnits, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                            <DataGridTextColumn Header="Total Cost (USDT)" Binding="{Binding TotalCost, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
                     <TextBlock>My Order History</TextBlock>
                     <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" DataContext="{Binding MyOrderHistoryViewModel}" ItemsSource="{Binding ListMyOrderHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                         <DataGrid.Columns>
@@ -160,6 +150,16 @@
                             <DataGridTextColumn Header="Units Total (BTC)" Binding="{Binding UnitsTotal, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                             <DataGridTextColumn Header="Actual Rate" Binding="{Binding ActualRate, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                             <DataGridTextColumn Header="Cost/Proceeds" Binding="{Binding CostProceeds, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <TextBlock>Market History</TextBlock>
+                    <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,20" DataContext="{Binding MarketHistoryViewModel}" ItemsSource="{Binding ListMarketHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Buy/Sell" Binding="{Binding BuySell}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Total Units (BTC)" Binding="{Binding TotalUnits, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                            <DataGridTextColumn Header="Total Cost (USDT)" Binding="{Binding TotalCost, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

@@ -73,10 +73,10 @@
                         <wpf:ChartPanel/>
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type viewmodel:PortfolioPaneViewModel}">
-                        <wpf:Portfolio/>
+                    <DataTemplate DataType="{x:Type viewmodel:PortfolioViewModel}">
+                        <portfolio:PortfolioNew/>
                     </DataTemplate>
-
+                    
                     <DataTemplate DataType="{x:Type viewmodel:BuySellViewModel}">
                         <trade:BuySell/>
                     </DataTemplate>

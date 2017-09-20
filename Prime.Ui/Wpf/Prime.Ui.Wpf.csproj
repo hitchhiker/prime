@@ -374,6 +374,7 @@
     <Compile Include="Components\AppRegistry.cs" />
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="ViewModel\PortfolioViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
     <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
@@ -404,6 +405,9 @@
     <Compile Include="ViewModel\SideBar\SideBarViewModel.cs" />
     <Compile Include="View\Misc\AddressBar.xaml.cs">
       <DependentUpon>AddressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Portfolio\PortfolioNew.xaml.cs">
+      <DependentUpon>PortfolioNew.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Portfolio\Receive.xaml.cs">
       <DependentUpon>Receive.xaml</DependentUpon>
@@ -505,6 +509,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Misc\AddressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Portfolio\PortfolioNew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -713,6 +721,10 @@
     <Folder Include="Messages\" />
     <Folder Include="View\Asset\" />
     <Folder Include="Window\Test\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\img\Apple.png" />
+    <Resource Include="Asset\img\CAT.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

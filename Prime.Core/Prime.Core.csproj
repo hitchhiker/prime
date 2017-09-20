@@ -248,6 +248,7 @@
     <Compile Include="Exchange\Rates\ExchangeRateUpdatedMessage.cs" />
     <Compile Include="Network\AggregatedCoinInfoContext.cs" />
     <Compile Include="Network\PublicPricesContext.cs" />
+    <Compile Include="Portfolio\PortfolioItemModel.cs" />
     <Compile Include="Provider\DataCache\ProviderDataCacheBase.cs" />
     <Compile Include="Network\NetworkProviderContext.cs" />
     <Compile Include="Network\NetworkProviderPrivateContext.cs" />
