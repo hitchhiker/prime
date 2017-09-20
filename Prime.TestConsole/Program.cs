@@ -7,10 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
+using Jojatekok.PoloniexAPI;
+using LiteDB;
 using Nito.AsyncEx;
 using Prime.Core;
 using plugins;
 using Prime.Core.Wallet;
+using Prime.Plugins.Services.Poloniex;
 using Prime.Radiant.Components;
 using Prime.Utility;
 using Prime.Radiant;
@@ -23,8 +26,10 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
+            //LatestPricesTest();
+            PoloniexGetBalancesTest();
             
-            new ExchangeRateTest().Test();
+            //new ExchangeRateTest().Test();
 
             //LatestPricesTest();
             //LatestPriceTest();
@@ -50,6 +55,26 @@ namespace TestConsole
 
             //DataTest();
             //OhclTest();
+        }
+
+        private static void PoloniexGetBalancesTest()
+        {
+            IWalletService service = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
+
+            var userCtx = new UserContext(ObjectId.NewObjectId(), "Alex");
+
+            var ctx = new NetworkProviderPrivateContext(userCtx);
+
+            service.GetBalancesAsync(ctx);
+
+            //PoloniexClient c = new PoloniexClient(PoloniexAuthenticator.Key, PoloniexAuthenticator.Secret);
+            //var balances = c.Wallet.GetBalancesAsync().Result;
+
+            //foreach (var balance in balances)
+            //{
+            //    Console.WriteLine($"{balance.Key}: {balance.Value}");
+            //}
+
         }
 
         private static void IpfsName(Radiant radiant)

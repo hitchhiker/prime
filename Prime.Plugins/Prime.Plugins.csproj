@@ -388,6 +388,9 @@
     <Compile Include="Services\CryptoCompare\Model\CoinEntry.cs" />
     <Compile Include="Services\CryptoCompare\Model\CoinListResult.cs" />
     <Compile Include="Services\Kraken\KrakenCodeConverter.cs" />
+    <Compile Include="Services\Poloniex\IPoloniexApi.cs" />
+    <Compile Include="Services\Poloniex\PoloniexAuthenticator.cs" />
+    <Compile Include="Services\Poloniex\PoloniexSchema.cs" />
     <Compile Include="Services\Test\Model\HistoryLine.cs" />
     <Compile Include="Services\Test\Model\HistoryResponse.cs" />
     <Compile Include="Services\Test\ICryptoFacilitiesApi.cs" />

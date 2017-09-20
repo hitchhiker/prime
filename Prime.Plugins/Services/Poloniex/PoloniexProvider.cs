@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Prime.Core;
 using Jojatekok.PoloniexAPI;
@@ -9,12 +11,17 @@ using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
 using Newtonsoft.Json.Linq;
 using Nito.AsyncEx;
+using Prime.Plugins.Services.Base;
+using Prime.Plugins.Services.Poloniex;
 using Prime.Utility;
+using RestEase;
 
 namespace plugins
 {
-    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider
+    public class PoloniexProvider : BaseAuthenticator, IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {
+        private const String PoloniexApiUrl = "https://poloniex.com";
+
         public Network Network { get; } = new Network("Poloniex");
 
         public bool Disabled => false;
@@ -34,13 +41,14 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return new PoloniexClient() as T;
+            return RestClient.For<IPoloniexApi>(PoloniexApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
-            return new PoloniexClient(key.Key, key.Secret) as T;
+
+            return RestClient.For<IPoloniexApi>(PoloniexApiUrl, new PoloniexAuthenticator(key).GetRequestModifier) as T;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -98,22 +106,69 @@ namespace plugins
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = this.GetApi<PoloniexClient>(context);
-            var r = await api.Wallet.GetBalancesAsync();
+            var api = this.GetApi<IPoloniexApi>(context);
+
+            long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+
+            String nonce = (DateTime.UtcNow.Ticks - ArbTickEpoch).ToString();
+
+            ///////
+
+            try
+            {
+
+                var values = new Dictionary<string, string>
+                {
+                    { "nonce", nonce },
+                };
+
+                string strContent = values.Aggregate("", (s, pair) => s += $"{pair.Key}={pair.Value}&").TrimEnd("&");
+
+                String hash = HashHMACSHA512(strContent, PoloniexAuthenticator.Secret);
+                //String hash = HashHMACSHA512Hex("1", "2");
+
+                var content = new FormUrlEncodedContent(values);
+                
+                HttpClient client = new HttpClient();
+                client.DefaultRequestHeaders.Add("Key", PoloniexAuthenticator.Key);
+                client.DefaultRequestHeaders.Add("Sign", hash);
+                
+                var response = client.PostAsync($"{PoloniexApiUrl}/tradingApi?command=returnBalances", content).Result;
+
+                var responseString = response.Content.ReadAsStringAsync().Result;
+
+
+
+                ///////////
+
+
+
+                //var r = api.GetBalancesAsync(nonce, hash).Result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
 
             var results = new BalanceResults(this);
-            foreach (var balance in r)
-            {
-                var c = balance.Key.ToAsset(this);
-                results.AddBalance(c, (decimal) balance.Value.QuoteAvailable);
-                results.AddAvailable(c, (decimal) balance.Value.QuoteAvailable);
-                results.AddReserved(c, (decimal) balance.Value.QuoteOnOrders);
-            }
+
+
+            //foreach (var balance in r)
+            //{
+            //    var c = balance.Key.ToAsset(this);
+            //    results.AddBalance(c, (decimal) balance.Value.QuoteAvailable);
+            //    results.AddAvailable(c, (decimal) balance.Value.QuoteAvailable);
+            //    results.AddReserved(c, (decimal) balance.Value.QuoteOnOrders);
+            //}
             return results;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
+
+
             return null;
         }
 
@@ -123,11 +178,11 @@ namespace plugins
             var r = await api.Wallet.GetDepositAddressesAsync();
 
             var addresses = new WalletAddresses();
-            foreach (var i in r.Where(x=>Equals(x.Key.ToAsset(this), context.Asset)))
+            foreach (var i in r.Where(x => Equals(x.Key.ToAsset(this), context.Asset)))
             {
                 if (string.IsNullOrWhiteSpace(i.Value))
                     continue;
-                addresses.Add(new WalletAddress(this, i.Key.ToAsset(this)) { Address = i.Value});
+                addresses.Add(new WalletAddress(this, i.Key.ToAsset(this)) { Address = i.Value });
             }
             return addresses;
         }
@@ -159,6 +214,21 @@ namespace plugins
                 });
             }
             return r;
+        }
+
+        public PoloniexProvider()
+        {
+            // TODO: DELETE ME
+        }
+
+        public PoloniexProvider(ApiKey apiKey) : base(apiKey)
+        {
+            // TODO: DELETE ME
+        }
+
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            // TODO: DELETE ME
         }
     }
 }
