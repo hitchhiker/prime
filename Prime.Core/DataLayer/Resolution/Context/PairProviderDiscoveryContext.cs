@@ -18,5 +18,7 @@
         public bool PeggedEnabled { get; set; }
 
         public bool ConversionEnabled { get; set; } = true;
+
+        public bool AllowNormalisation { get; set; } = false;
     }
 }

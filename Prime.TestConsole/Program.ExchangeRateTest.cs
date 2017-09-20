@@ -20,10 +20,18 @@ namespace TestConsole
                 var exch = ExchangeRatesCoordinator.I;
                 exch.AddRequest(new AssetPair("btc", "usd"));
                 exch.AddRequest(new AssetPair("usd", "btc"));
-                exch.Register<ExchangeRateResult>(this, m =>
+
+                /*exch.Register<ExchangeRateCollected>(this, m =>
                 {
                     Console.WriteLine(m.UtcCreated.ToLongTimeString() + ": " + m.Pair + " = " + m.Price.ToString());
+                });*/
+
+                exch.Register<ExchangeRatesUpdatedMessage>(this, m =>
+                {
+                    foreach (var r in exch.Results())
+                        Console.WriteLine(r.UtcCreated.ToLongTimeString() + ": " + r.Pair + " = " + r.Price.ToString());
                 });
+
                 do
                 {
                     Thread.Sleep(1);

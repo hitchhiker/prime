@@ -14,7 +14,6 @@ namespace Prime.Core.Exchange.Rates
         private readonly IPublicPriceProvider _provider;
         private readonly UniqueList<ExchangeRateRequest> _requesting = new UniqueList<ExchangeRateRequest>();
         private readonly List<AssetPairNormalised> _pairs = new List<AssetPairNormalised>();
-        private readonly List<ExchangeRateResult> _results = new List<ExchangeRateResult>();
         private readonly ExchangeRatesCoordinator _coordinator;
         private readonly IMessenger _messenger;
         private readonly Timer _timer;
@@ -38,7 +37,7 @@ namespace Prime.Core.Exchange.Rates
         {
             lock (_timerLock)
             {
-                if (!_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
+                if (_pairs.Count!=0 && !_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
                 {
                     _utcLastUpdate = DateTime.UtcNow;
                     Update();
@@ -97,8 +96,8 @@ namespace Prime.Core.Exchange.Rates
                 if (_isDisposed)
                     return;
 
-                AddResult(pair, r.Response);
                 hasresult = true;
+                AddResult(pair, r.Response);
             }
 
             if (hasresult && !_isDisposed)
@@ -110,14 +109,8 @@ namespace Prime.Core.Exchange.Rates
             var pairs = _pairs.Where(x => x.OriginalPair.Equals(pair));
 
             foreach (var npair in pairs)
-            {
-                var result = new ExchangeRateResult(npair, response);
-                _results.Add(result);
-                _messenger.Send(result);
-            }
+                _messenger.Send(new ExchangeRateCollected(_provider, npair, response));
         }
-
-        public IReadOnlyList<ExchangeRateResult> Results => _results;
 
         private bool _isDisposed;
         public void Dispose()

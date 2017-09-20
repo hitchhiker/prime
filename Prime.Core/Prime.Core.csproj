@@ -237,15 +237,13 @@
     <Compile Include="Asset\Model\LatestPrices.cs" />
     <Compile Include="Asset\Model\TimeResolutionExtensionMethods.cs" />
     <Compile Include="Asset\Pair\AssetPairNormalised.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRate.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateProvider.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateProviderContext.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateRequest.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateRequestVerified.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateResult.cs" />
+    <Compile Include="Exchange\Rates\ExchangeRateRequestVerifiedMessage.cs" />
+    <Compile Include="Exchange\Rates\ExchangeRateCollected.cs" />
     <Compile Include="Exchange\Rates\ExchangeRatesUpdatedMessage.cs" />
     <Compile Include="Exchange\Rates\ExchangeRatesCoordinator.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateUpdatedMessage.cs" />
     <Compile Include="Network\AggregatedCoinInfoContext.cs" />
     <Compile Include="Network\PublicPricesContext.cs" />
     <Compile Include="Portfolio\PortfolioItemModel.cs" />
@@ -278,7 +276,7 @@
     <Compile Include="DataLayer\Resolution\OhlcResolutionAdapter.cs" />
     <Compile Include="DataLayer\Resolution\Adapters\OhlcResolutionDataAdapterApi.cs" />
     <Compile Include="DataLayer\Resolution\Adapters\OhlcResolutionDataAdapterDb.cs" />
-    <Compile Include="Asset\Pair\Discovery\AssetPairProviders.cs" />
+    <Compile Include="Asset\Pair\Discovery\AssetPairKnownProviders.cs" />
     <Compile Include="DataLayer\TimeExtensionMethods.cs" />
     <Compile Include="DataLayer\TimeRange.cs" />
     <Compile Include="DataLayer\TimeRanges.cs" />

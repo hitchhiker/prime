@@ -22,7 +22,7 @@ namespace Prime.Core.Exchange.Rates
 
         public bool IsVerified { get; private set; }
 
-        public AssetPairProviders Providers { get; private set; }
+        public AssetPairKnownProviders Providers { get; private set; }
 
         public Network Network { get; private set; }
 
@@ -36,7 +36,7 @@ namespace Prime.Core.Exchange.Rates
             Providers = r;
             Network = r.Provider.Network;
             IsVerified = true;
-            _messenger.Send(new ExchangeRateRequestVerifiedMessage(this), _coordinator);
+            _messenger.Send(new ExchangeRateRequestVerifiedMessage(this));
         }
     }
 

@@ -11,13 +11,8 @@ namespace Prime.Core.Exchange.Rates
         public AssetPairNormalised(AssetPair originalPair)
         {
             OriginalPair = originalPair;
-            if (string.CompareOrdinal(originalPair.Asset1.ShortCode, originalPair.Asset2.ShortCode)>0)
-            {
-                Normalised = new AssetPair(originalPair.Asset2, originalPair.Asset1);
-                IsNormalised = true;
-            }
-            else
-                Normalised = originalPair;
+            Normalised = originalPair.Normalised;
+            IsNormalised = originalPair.IsNormalised;
         }
     }
 }

@@ -30,6 +30,14 @@ namespace Prime.Core
 
         public bool IsEmpty => Asset1 == Asset.None || Asset2 == Asset.None;
 
+        private bool? _isNormalised;
+        public bool IsNormalised => _isNormalised ?? (bool)(_isNormalised = string.CompareOrdinal(Asset1.ShortCode, Asset2.ShortCode) < 0);
+
+        private AssetPair _normalised;
+        public AssetPair Normalised => _normalised ?? (_normalised = IsNormalised ? this : Reverse());
+
+        public AssetPair Reverse() => new AssetPair(Asset2, Asset1);
+
         public static AssetPair Empty => new AssetPair(Asset.None, Asset.None);
 
         public string TickerUnderslash()

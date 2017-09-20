@@ -15,7 +15,7 @@ namespace Prime.Core
             _pair = context.Pair;
         }
 
-        public AssetPairProviders FindProviders()
+        public AssetPairKnownProviders FindProviders()
         {
             if (_pair == null)
                 return null;
@@ -28,14 +28,14 @@ namespace Prime.Core
             {
                 var provs = GetProviders(_pair).Where(x => x.Network.Equals(_context.Network)).ToList();
                 if (provs.Any())
-                    return new AssetPairProviders() { Providers = provs, Pair = _pair };
+                    return new AssetPairKnownProviders() { Providers = provs, Pair = _pair };
             }
 
             // Find direct / no conversion provider
 
             var provsd = GetProviders(pub, _pair);
             if (provsd.Any())
-                return new AssetPairProviders { Providers = provsd, Pair = _pair };
+                return new AssetPairKnownProviders { Providers = provsd, Pair = _pair };
 
             // Find direct via pegged
 
@@ -52,7 +52,7 @@ namespace Prime.Core
             return null;
         }
 
-        private AssetPairProviders DiscoverPegged(PublicData pub)
+        private AssetPairKnownProviders DiscoverPegged(PublicData pub)
         {
             // Try alternate / pegged variation
 
@@ -60,7 +60,7 @@ namespace Prime.Core
             {
                 var p = GetProvider(pub, ap);
                 if (p != null)
-                    return new AssetPairProviders() {Provider = p, Pair = ap, IsPegged = true};
+                    return new AssetPairKnownProviders() {Provider = p, Pair = ap, IsPegged = true};
             }
 
             return null;
@@ -69,12 +69,12 @@ namespace Prime.Core
         private const string IntermediariesCsv = "USD,BTC,EUR,LTC,USDT";
         private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
 
-        private AssetPairProviders DiscoverConverter(PublicData pub)
+        private AssetPairKnownProviders DiscoverConverter(PublicData pub)
         {
             return Intermediaries.Select(a => DiscoverConverter(pub, a)).FirstOrDefault(provs => provs != null);
         }
 
-        private AssetPairProviders DiscoverConverter(PublicData pub, Asset viaAsset)
+        private AssetPairKnownProviders DiscoverConverter(PublicData pub, Asset viaAsset)
         {
             var pair = new AssetPair(_pair.Asset1, viaAsset);
             var p1 = GetProviders(pub, pair);
@@ -88,11 +88,11 @@ namespace Prime.Core
             if (!p2.Any())
                 return null;
 
-            return new AssetPairProviders
+            return new AssetPairKnownProviders
             {
                 Providers = p1,
                 Pair = pair,
-                Via = new AssetPairProviders {Providers = p2, Pair = pair2, IsIntermediary = true}
+                Via = new AssetPairKnownProviders {Providers = p2, Pair = pair2, IsIntermediary = true}
             };
         }
 
