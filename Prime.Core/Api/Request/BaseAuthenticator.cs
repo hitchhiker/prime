@@ -26,6 +26,15 @@ namespace Prime.Core
         }
 
         // ReSharper disable once InconsistentNaming
+        public string HashSHA256(string message)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                return ToHex(sha256.ComputeHash(FromUtf8(message)));
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512(string message, string secret)
         {
             return Convert.ToBase64String(HashHMACSHA512Raw(message, secret));
