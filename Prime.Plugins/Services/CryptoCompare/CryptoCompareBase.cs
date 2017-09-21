@@ -82,7 +82,7 @@ namespace plugins
 
             var api = GetApi<ICryptoCompareApi>();
 
-            var apir = await api.GetPrice(baseAsset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
+            var apir = await api.GetPricesAsync(baseAsset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
             
             var r = new LatestPrices() {UtcCreated = DateTime.UtcNow, BaseAsset = baseAsset};
             if (apir == null)

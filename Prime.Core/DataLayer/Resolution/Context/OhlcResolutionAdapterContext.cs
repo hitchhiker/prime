@@ -70,7 +70,7 @@ namespace Prime.Core
 
         public void DiscoverAndApplyApiProviders(bool overwrite = false)
         {
-            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairProviderDiscovery(this).FindProviders();
+            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairProviderDiscovery(this).Discover();
 
             ProvidersForDirect = provs;
             ProvidersForConversion = provs.Via;

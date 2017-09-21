@@ -8,6 +8,8 @@ namespace Prime.Core
     {
         private readonly PairProviderDiscoveryContext _context;
         private readonly AssetPair _pair;
+        private const string IntermediariesCsv = "USD,BTC,EUR,LTC,USDT";
+        private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
 
         public AssetPairProviderDiscovery(PairProviderDiscoveryContext context)
         {
@@ -15,75 +17,84 @@ namespace Prime.Core
             _pair = context.Pair;
         }
 
-        public AssetPairKnownProviders FindProviders()
+        public AssetPairKnownProviders Discover()
         {
             if (_pair == null)
                 return null;
 
-            var pub = PublicContext.I.PubData;
-
-            // Return supplied network if valid
-
-            if (_context.Network != null)
-            {
-                var provs = GetProviders(_pair).Where(x => x.Network.Equals(_context.Network)).ToList();
-                if (provs.Any())
-                    return new AssetPairKnownProviders() { Providers = provs, Pair = _pair };
-            }
-
-            // Find direct / no conversion provider
-
-            var provsd = GetProviders(pub, _pair);
-            if (provsd.Any())
-                return new AssetPairKnownProviders { Providers = provsd, Pair = _pair };
-
-            // Find direct via pegged
-
-            if (_context.PeggedEnabled)
-            {
-                var provs = DiscoverPegged(pub);
-                if (provs != null)
-                    return provs;
-            }
-
-            if (_context.ConversionEnabled)
-                return DiscoverConverter(pub);
-            
-            return null;
+            return DiscoverSpecified() ?? DiscoverDirect() ?? DiscoverPegged() ?? DiscoverConverter();
         }
 
-        private AssetPairKnownProviders DiscoverPegged(PublicData pub)
+        private AssetPairKnownProviders DiscoverSpecified()
+        {
+            if (_context.Network == null)
+                return null;
+
+            return DiscoverSpecified(_pair, _context.Network, false) ?? (_context.ReversalEnabled ? DiscoverSpecified(_pair.Reverse(), _context.Network, true) : null);
+        }
+
+        private static AssetPairKnownProviders DiscoverSpecified(AssetPair pair, Network network, bool isReversed)
+        {
+            var provs = GetProviders(pair).Where(x => x.Network.Equals(network)).ToList();
+            return provs.Any() ? new AssetPairKnownProviders() {Providers = provs, Pair = pair, IsReversed = isReversed} : null;
+        }
+
+        private AssetPairKnownProviders DiscoverDirect()
+        {
+            return DiscoverDirect(_pair, false) ?? (_context.ReversalEnabled ? DiscoverDirect(_pair.Reverse(), true) : null);
+        }
+
+        private static AssetPairKnownProviders DiscoverDirect(AssetPair pair, bool isReversed)
+        {
+            var provs = GetProviders(pair);
+            return provs.Any() ? new AssetPairKnownProviders() { Providers = provs, Pair = pair, IsReversed = isReversed } : null;
+        }
+
+        private AssetPairKnownProviders DiscoverPegged()
+        {
+            if (!_context.PeggedEnabled)
+                return null;
+
+            return DiscoverPegged(_pair, false) ?? (_context.ReversalEnabled ? DiscoverPegged(_pair.Reverse(), true) : null);
+        }
+
+        private static AssetPairKnownProviders DiscoverPegged(AssetPair pair, bool isReversed)
         {
             // Try alternate / pegged variation
 
-            foreach (var ap in _pair.PeggedPairs)
+            foreach (var ap in pair.PeggedPairs)
             {
-                var p = GetProvider(pub, ap);
-                if (p != null)
-                    return new AssetPairKnownProviders() {Provider = p, Pair = ap, IsPegged = true};
+                var provs = GetProviders(ap);
+                if (provs.Any())
+                    return new AssetPairKnownProviders() {Providers = provs, Pair = ap, IsPegged = true, IsReversed = isReversed};
             }
 
             return null;
         }
-
-        private const string IntermediariesCsv = "USD,BTC,EUR,LTC,USDT";
-        private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
-
-        private AssetPairKnownProviders DiscoverConverter(PublicData pub)
+        
+        private AssetPairKnownProviders DiscoverConverter()
         {
-            return Intermediaries.Select(a => DiscoverConverter(pub, a)).FirstOrDefault(provs => provs != null);
+            if (!_context.ConversionEnabled)
+                return null;
+
+            return DiscoverConverter(_pair, false) ?? (_context.ReversalEnabled ? DiscoverConverter(_pair.Reverse(), true) : null);
         }
 
-        private AssetPairKnownProviders DiscoverConverter(PublicData pub, Asset viaAsset)
+        private static AssetPairKnownProviders DiscoverConverter(AssetPair pair, bool isReversed)
         {
-            var pair = new AssetPair(_pair.Asset1, viaAsset);
-            var p1 = GetProviders(pub, pair);
+            return Intermediaries.Select(a => DiscoverConverter(pair, a, isReversed)).FirstOrDefault(provs => provs != null);
+        }
+
+        private static AssetPairKnownProviders DiscoverConverter(AssetPair opair, Asset viaAsset, bool isReversed)
+        {
+            var pair = new AssetPair(opair.Asset1, viaAsset);
+            var p1 = GetProviders(pair);
 
             if (!p1.Any())
                 return null;
 
-            var pair2 = new AssetPair(viaAsset, _pair.Asset2);
-            var p2 = GetProviders(pub, pair2);
+            var pair2 = new AssetPair(viaAsset, opair.Asset2);
+            var p2 = GetProviders(pair2);
 
             if (!p2.Any())
                 return null;
@@ -92,18 +103,13 @@ namespace Prime.Core
             {
                 Providers = p1,
                 Pair = pair,
-                Via = new AssetPairKnownProviders {Providers = p2, Pair = pair2, IsIntermediary = true}
+                Via = new AssetPairKnownProviders {Providers = p2, Pair = pair2, IsIntermediary = true, IsReversed = isReversed}
             };
         }
 
-        public static IList<IOhlcProvider> GetProviders(AssetPair pair)
+        public static List<IOhlcProvider> GetProviders(AssetPair pair)
         {
             return GetProviders(PublicContext.I.PubData, pair);
-        }
-
-        private static IOhlcProvider GetProvider(PublicData pub, AssetPair pair)
-        {
-            return GetProviders(pub, pair).FirstProvider();
         }
 
         private static List<IOhlcProvider> GetProviders(PublicData pub, AssetPair pair)

@@ -19,6 +19,6 @@
 
         public bool ConversionEnabled { get; set; } = true;
 
-        public bool AllowNormalisation { get; set; } = false;
+        public bool ReversalEnabled { get; set; } = false;
     }
 }
