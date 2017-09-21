@@ -85,6 +85,7 @@
       <HintPath>..\packages\NodaTime.2.2.0\lib\net45\NodaTime.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="RestEase, Version=1.4.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestEase.1.4.3\lib\net45\RestEase.dll</HintPath>
     </Reference>
@@ -244,6 +245,7 @@
     <Compile Include="Exchange\Rates\ExchangeRateCollected.cs" />
     <Compile Include="Exchange\Rates\ExchangeRatesUpdatedMessage.cs" />
     <Compile Include="Exchange\Rates\ExchangeRatesCoordinator.cs" />
+    <Compile Include="Misc\GridValueColourConverter.cs" />
     <Compile Include="Network\AggregatedCoinInfoContext.cs" />
     <Compile Include="Network\PublicPricesContext.cs" />
     <Compile Include="Portfolio\PortfolioItemModel.cs" />
@@ -402,6 +404,7 @@
     <Compile Include="Wallet\WalletAddress.cs" />
     <Compile Include="Wallet\WalletExtensionMethods.cs" />
     <Compile Include="Wallet\WalletProvider.cs" />
+    <Compile Include="Watchlist\WatchlistItemModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

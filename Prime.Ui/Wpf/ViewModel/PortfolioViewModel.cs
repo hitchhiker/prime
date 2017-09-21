@@ -27,13 +27,13 @@ namespace Prime.Ui.Wpf.ViewModel
         private void PopulateGrid()
         {
             ListPortfolioItems = new BindingList<PortfolioItemModel>();
-            
+
             for (int i = 0; i < 5; i++)
             {
-                ListPortfolioItems.Add(new PortfolioItemModel((decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (100 - 0.1) + 0.1), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (i % 2 == 0 ? "../../Asset/img/CAT.png" : "../../Asset/img/Apple.png"), (i % 2 == 0 ? "CAT" : "AAPL"), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000)), new Money((decimal)(random.NextDouble() * (10000 + 10000) - 10000)), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000))));
+                ListPortfolioItems.Add(new PortfolioItemModel((decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1 + 1) - 1), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (i % 2 == 0 ? "../../Asset/img/CAT.png" : "../../Asset/img/Apple.png"), (i % 2 == 0 ? "CAT" : "AAPL"), (i % 2 == 0 ? "" : "Apple"), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000)), new Money((decimal)(random.NextDouble() * (10000 + 10000) - 10000)), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000))));
             }
         }
-       
+
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
 

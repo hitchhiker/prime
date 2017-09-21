@@ -395,6 +395,7 @@
     <Compile Include="ViewModel\Wallet\ReceiveViewModel.cs" />
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
     <Compile Include="ViewModel\Wallet\WalletViewModel.cs" />
+    <Compile Include="ViewModel\WatchlistViewModel.cs" />
     <Compile Include="View\Exchange\ExchangeRates.xaml.cs">
       <DependentUpon>ExchangeRates.xaml</DependentUpon>
     </Compile>
@@ -420,6 +421,9 @@
     </Compile>
     <Compile Include="View\Trade\BuySell.xaml.cs">
       <DependentUpon>BuySell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Watchlist\Watchlist.xaml.cs">
+      <DependentUpon>Watchlist.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window\Screen.xaml.cs">
       <DependentUpon>Screen.xaml</DependentUpon>
@@ -529,6 +533,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Trade\BuySell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Watchlist\Watchlist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
