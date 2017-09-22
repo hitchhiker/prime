@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Prime.Ui.Wpf.View.Watchlist
+namespace Prime.Ui.Wpf.View.Misc
 {
     /// <summary>
-    /// Interaction logic for Watchlist.xaml
+    /// Interaction logic for Coins.xaml
     /// </summary>
-    public partial class Watchlist : UserControl
+    public partial class Coins : UserControl
     {
-        public Watchlist()
+        public Coins()
         {
             InitializeComponent();
             SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;

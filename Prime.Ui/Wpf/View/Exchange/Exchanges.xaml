@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Exchange.Exchanges"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel:ExchangesViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
+        <StackPanel>
+            <DataGrid Width="Auto" ColumnWidth="*" ItemsSource="{Binding ListExchangeItems, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Exchange" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="90" Source="{Binding IconPath}" />
+                                    <StackPanel Orientation="Vertical" Margin="20,0,0,0" >
+                                        <TextBlock FontWeight="Bold" Text="{Binding Name}"/>
+                                        <TextBlock Margin="0,10,0,0" Text="{Binding Description}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Country" Binding="{Binding Country}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

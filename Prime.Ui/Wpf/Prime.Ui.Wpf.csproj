@@ -374,6 +374,9 @@
     <Compile Include="Components\AppRegistry.cs" />
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="ViewModel\CoinsViewModel.cs" />
+    <Compile Include="ViewModel\ExchangesViewModel.cs" />
+    <Compile Include="ViewModel\MarketsDiscoveryViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
     <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
@@ -398,6 +401,15 @@
     <Compile Include="ViewModel\WatchlistViewModel.cs" />
     <Compile Include="View\Exchange\ExchangeRates.xaml.cs">
       <DependentUpon>ExchangeRates.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Exchange\Exchanges.xaml.cs">
+      <DependentUpon>Exchanges.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Markets\MarketsDiscovery.xaml.cs">
+      <DependentUpon>MarketsDiscovery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Misc\Coins.xaml.cs">
+      <DependentUpon>Coins.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Misc\LogPanel.xaml.cs">
       <DependentUpon>LogPanel.xaml</DependentUpon>
@@ -501,6 +513,18 @@
     <Compile Include="Components\Converters\RatioConverter.cs" />
     <Compile Include="Components\MetroWindowInstance.cs" />
     <Page Include="View\Exchange\ExchangeRates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Exchange\Exchanges.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Markets\MarketsDiscovery.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Misc\Coins.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -733,6 +757,20 @@
   <ItemGroup>
     <Resource Include="Asset\img\Apple.png" />
     <Resource Include="Asset\img\CAT.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\img\BitSquare.png" />
+    <Resource Include="Asset\img\Bittrex.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\img\Cryptopia.png" />
+    <Resource Include="Asset\img\Gatecoin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\img\ETH.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Asset\img\BTC.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

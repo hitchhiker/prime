@@ -30,7 +30,10 @@ namespace Prime.Core
             "services",
             "wallet",
             "receive",
-            "send"
+            "send",
+            "coins",
+            "exchanges",
+            "markets discovery"
         };
 
         public override CommandBase Parse(string scmd)

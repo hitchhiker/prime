@@ -21,7 +21,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="45" Source="{Binding IconPath}" />
                                     <StackPanel Orientation="Vertical" Margin="20,0,0,0" >
-                                        <TextBlock Text="{Binding Market}"/>
+                                        <TextBlock FontWeight="Bold" Text="{Binding Market}"/>
                                         <TextBlock Text="{Binding MarketDescription}"/>
                                     </StackPanel>
                                 </StackPanel>

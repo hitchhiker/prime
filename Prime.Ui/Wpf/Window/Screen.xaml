@@ -13,7 +13,10 @@
         xmlns:portfolio="clr-namespace:Prime.Ui.Wpf.View.Portfolio"
         xmlns:watchlist="clr-namespace:Prime.Ui.Wpf.View.Watchlist"
         xmlns:trade="clr-namespace:Prime.Ui.Wpf.View.Trade"
-        mc:Ignorable="d"
+                      xmlns:exchange="clr-namespace:Prime.Ui.Wpf.View.Exchange"
+                      xmlns:misc="clr-namespace:Prime.Ui.Wpf.View.Misc"
+                      xmlns:markets="clr-namespace:Prime.Ui.Wpf.View.Markets"
+                      mc:Ignorable="d"
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
         WindowStartupLocation="CenterOwner"
@@ -100,6 +103,18 @@
 
                     <DataTemplate DataType="{x:Type viewmodel:ReceiveViewModel}">
                         <portfolio:Receive/>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type viewmodel:ExchangesViewModel}">
+                        <exchange:Exchanges/>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type viewmodel:CoinsViewModel}">
+                        <misc:Coins/>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type viewmodel:MarketsDiscoveryViewModel}">
+                        <markets:MarketsDiscovery/>
                     </DataTemplate>
 
                     <DataTemplate x:Key="DockingWindowTitleDataTemplate" DataType="{x:Type xcad:LayoutContent}">

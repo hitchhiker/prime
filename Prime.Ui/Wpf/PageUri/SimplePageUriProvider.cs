@@ -26,7 +26,10 @@ namespace Prime.Ui.Wpf.PageUri
             {"buy sell", "/View/Trade/BuySell.xaml"},
             {"send", "/View/Portfolio/Send.xaml"},
             {"receive", "/View/Portfolio/Receive.xaml"},
-            {"watchlist", "/View/Watchlist/Watchlist.xaml"}
+            {"watchlist", "/View/Watchlist/Watchlist.xaml"},
+            {"coins", "/View/Misc/Coins.xaml"},
+            {"exchanges", "/View/Exchange/Exchanges.xaml"},
+            {"markets discovery", "/View/Markets/MarketsDiscovery.xaml"}
         };
 
 
@@ -48,6 +51,12 @@ namespace Prime.Ui.Wpf.PageUri
                     return new ServicesPaneViewModel(messenger, model) { Key = command.Command, Title = command.Title };
                 case "send":
                     return null;
+                case "exchanges":
+                    return new ExchangesViewModel(model) { Key = command.Command, Title = command.Title };
+                case "coins":
+                    return new CoinsViewModel(model) { Key = command.Command, Title = command.Title };
+                case "markets discovery":
+                    return new MarketsDiscoveryViewModel(model) { Key = command.Command, Title = command.Title };
                 case "receive":
                     return new ReceiveViewModel(model) { Key = command.Command, Title = command.Title };
                 default:
