@@ -33,6 +33,7 @@ namespace plugins
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
 
+        [Obsolete]
         public T GetApi<T>(ApiKey key = null) where T : class
         {
             if (key==null)
@@ -55,36 +56,43 @@ namespace plugins
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<bool>(() =>
-            {
-                var api = GetApi<Kraken>(context);
-                var r = api.GetAccountBalance();
-                return r != null;
-            });
-            t.Start();
-            return t;
+            var api = GetApi<IKrakenApi>(context);
+            var body = CreateKrakenBody();
+
+            var r = await api.GetBalancesAsync(body);
+
+            CheckResponseErrors(r);
+
+            return r != null;
         }
 
         private static readonly ObjectId IdHash = "prime:kraken".GetObjectIdHashCode();
 
         public ObjectId Id => IdHash;
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var t = new Task<LatestPrice>(() =>
-            {
-                var kraken = GetApi<Kraken>();
-                var ticker = context.Pair.TickerSimple();
-                var result = kraken.GetOHLC(ticker, 1440);
-                var i = result.Pairs.FirstOrDefault(x => x.Key == ticker);
-                var m = new Money(i.Value.OrderBy(x => x.Time).Last().Open, context.Pair.Asset1);
-                return new LatestPrice(m);
-            });
+            var api = GetApi<IKrakenApi>(context);
 
-            t.RunSynchronously();
-            return t;
+            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToString());
+            var remoteCode = pair.TickerKraken();
+
+            var r = await api.GetTicketInformationAsync(remoteCode);
+
+            CheckResponseErrors(r);
+
+            // TODO: Check, price is taken from "last trade closed array(<price>, <lot volume>)".
+            var money = new Money(r.result.FirstOrDefault().Value.c[0], context.Pair.Asset2);
+            var price = new LatestPrice()
+            {
+                Price = money,
+                BaseAsset = context.Pair.Asset1,
+                UtcCreated = DateTime.Now
+            };
+
+            return price;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -97,25 +105,26 @@ namespace plugins
             throw new System.NotImplementedException();
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() =>
-            {
-                var kraken = GetApi<Kraken>(context);
-                var d = kraken.GetAssetPairs();
-                var aps = new AssetPairs();
-                foreach (var assetPair in d)
-                {
-                    var ticker = assetPair.Key;
-                    var first = assetPair.Value.Base;
-                    var second = ticker.Replace(first, "");
-                    aps.Add(new AssetPair(first, second, this));
-                }
-                return aps;
-            });
+            var api = GetApi<IKrakenApi>(context);
 
-            t.RunSynchronously();
-            return t;
+            var r = await api.GetAssetPairsAsync();
+
+            CheckResponseErrors(r);
+
+            var assetPairs = new AssetPairs();
+
+            foreach (var assetPair in r.result)
+            {
+                var ticker = assetPair.Key;
+                var first = assetPair.Value.base_c;
+                var second = ticker.Replace(first, "");
+
+                assetPairs.Add(new AssetPair(first, second, this));   
+            }
+
+            return assetPairs;
         }
 
         public bool CanMultiDepositAddress { get; } 
@@ -123,6 +132,8 @@ namespace plugins
 
         public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
+            // TODO: re-implement.
+
             throw new System.NotImplementedException();
         }
 
@@ -136,6 +147,12 @@ namespace plugins
             return body;
         }
 
+        private void CheckResponseErrors(KrakenSchema.ErrorResponse response)
+        {
+            if (response.error.Length > 0)
+                throw new ApiResponseException(response.error[0], this);
+        }
+
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = GetApi<IKrakenApi>(context);
@@ -144,8 +161,7 @@ namespace plugins
 
             var r = await api.GetBalancesAsync(body);
 
-            if (r.error.Length != 0)
-                throw new ApiResponseException(r.error[0], this);
+            CheckResponseErrors(r);
 
             var results = new BalanceResults(this);
 
@@ -162,22 +178,31 @@ namespace plugins
             return KrakenCodeConverterBase.I;
         }
 
-        public string GetFundingMethod(NetworkProviderPrivateContext context, Asset asset)
+        public async Task<string> GetFundingMethod(NetworkProviderPrivateContext context, Asset asset)
         {
-            var kraken = GetApi<Kraken>(context);
-            var d = kraken.GetDepositMethods(null, asset.ToRemoteCode(this));
-            if (d == null || d.Length == 0)
+            var api = GetApi<IKrakenApi>(context);
+
+            var body = CreateKrakenBody();
+            body.Add("asset", asset.ToRemoteCode(this));
+
+            var r = await api.GetDepositMethodsAsync(body);
+
+            CheckResponseErrors(r);
+
+            if (r == null || r.result.Count == 0)
                 return null;
 
-            return d[0].Method;
+            return r.result.FirstOrDefault().Value.method;
         }
 
         public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
+            // TODO: re-implement.
+
             var t = new Task<WalletAddresses>(() =>
             {
                 var asset = context.Asset;
-                var fm = GetFundingMethod(context, asset);
+                var fm = GetFundingMethod(context, asset).Result;
                 if (fm == null)
                     return null;
 
@@ -200,6 +225,8 @@ namespace plugins
 
         public OhclData GetOhlc(AssetPair pair, TimeResolution market)
         {
+            // TODO: re-implement.
+
             return null;
         }
     }
