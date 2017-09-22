@@ -33,6 +33,7 @@ namespace plugins
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
 
+        [Obsolete]
         public T GetApi<T>(ApiKey key = null) where T : class
         {
             if (key==null)
@@ -71,20 +72,27 @@ namespace plugins
 
         public ObjectId Id => IdHash;
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var t = new Task<LatestPrice>(() =>
-            {
-                var kraken = GetApi<Kraken>();
-                var ticker = context.Pair.TickerSimple();
-                var result = kraken.GetOHLC(ticker, 1440);
-                var i = result.Pairs.FirstOrDefault(x => x.Key == ticker);
-                var m = new Money(i.Value.OrderBy(x => x.Time).Last().Open, context.Pair.Asset1);
-                return new LatestPrice(m);
-            });
+            var api = GetApi<IKrakenApi>(context);
 
-            t.RunSynchronously();
-            return t;
+            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToString());
+            var remoteCode = pair.TickerKraken();
+
+            var r = await api.GetTicketInformationAsync(remoteCode);
+
+            CheckResponseErrors(r);
+
+            // TODO: Check, price is taken from "last trade closed array(<price>, <lot volume>)".
+            var money = new Money(r.result.FirstOrDefault().Value.c[0], context.Pair.Asset2);
+            var price = new LatestPrice()
+            {
+                Price = money,
+                BaseAsset = context.Pair.Asset1,
+                UtcCreated = DateTime.Now
+            };
+
+            return price;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -137,7 +145,7 @@ namespace plugins
             return body;
         }
 
-        private void CheckResponseErrors(KrakenSchema.BaseResponse response)
+        private void CheckResponseErrors(KrakenSchema.ErrorResponse response)
         {
             if (response.error.Length > 0)
                 throw new ApiResponseException(response.error[0], this);

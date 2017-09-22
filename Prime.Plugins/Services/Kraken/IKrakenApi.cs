@@ -15,5 +15,8 @@ namespace plugins
 
         [Get("/public/AssetPairs")]
         Task<KrakenSchema.AssetPairsResponse> GetAssetPairsAsync();
+
+        [Get("/public/Ticker?pair={pair}")]
+        Task<KrakenSchema.TickersInformationResponse> GetTicketInformationAsync([Path] string pair);
     }
 }

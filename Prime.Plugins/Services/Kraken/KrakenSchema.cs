@@ -9,20 +9,21 @@ namespace Prime.Plugins.Services.Kraken
 {
     internal class KrakenSchema
     {
-        internal class BaseResponse
+        internal class ErrorResponse
         {
             public string[] error;
         }
 
-        internal class BalancesResponse : BaseResponse
+        internal class BaseResponse<TResultKey, TResultObject> : ErrorResponse
         {
-            public Dictionary<string, decimal> result;
+            public Dictionary<TResultKey, TResultObject> result;
         }
 
-        internal class AssetPairsResponse : BaseResponse
-        {
-            public Dictionary<string, AssetPairResponse> result;
-        }
+        internal class BalancesResponse : BaseResponse<string, decimal> { }
+
+        internal class AssetPairsResponse : BaseResponse<string, AssetPairResponse> { }
+
+        internal class TickersInformationResponse : BaseResponse<string, TickerInformationResponse> { }
 
         internal class AssetPairResponse
         {
@@ -49,6 +50,22 @@ namespace Prime.Plugins.Services.Kraken
 
             public int margin_call;
             public int margin_stop;
+        }
+
+        internal class TickerInformationResponse
+        {
+            public decimal[] a;
+            public decimal[] b;
+            public decimal[] c;
+            public decimal[] v;
+            public decimal[] p;
+
+            public int[] t;
+
+            public decimal[] l;
+            public decimal[] h;
+
+            public decimal o;
         }
     }
 }

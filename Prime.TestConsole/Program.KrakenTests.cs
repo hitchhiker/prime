@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KrakenApi;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Core;
@@ -14,6 +13,24 @@ namespace Prime.TestConsole
     {
         public class KrakenTests
         {
+            public void GetLatestPrice()
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+                var ctx = new PublicPriceContext(new AssetPair("BTC", "USD"));
+
+                var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+
+                try
+                {
+                    Console.WriteLine($"Latest {ctx.Pair} value is {price.Price}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
+
             public void GetAssetPairs()
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();

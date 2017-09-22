@@ -29,7 +29,8 @@ namespace TestConsole
         static void Main(string[] args)
         {
             // new Prime.TestConsole.Program.KrakenTests().GetBalances();
-            new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
+            // new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
+            new Prime.TestConsole.Program.KrakenTests().GetLatestPrice();
 
             //Sha256Test();
             //new ExchangeRateTest().Test();
