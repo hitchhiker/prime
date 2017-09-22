@@ -25,6 +25,8 @@ namespace Prime.Plugins.Services.Kraken
 
         internal class TickersInformationResponse : BaseResponse<string, TickerInformationResponse> { }
 
+        internal class DepositMethodsResponse : BaseResponse<string, DepositMethodResponse> { }
+
         internal class AssetPairResponse
         {
             public string altname;
@@ -66,6 +68,16 @@ namespace Prime.Plugins.Services.Kraken
             public decimal[] h;
 
             public decimal o;
+        }
+
+        internal class DepositMethodResponse
+        {
+            public string method;
+            public string limit;
+            public decimal fee;
+
+            [JsonProperty("address-setup-fee")]
+            public bool? address_setup_fee;
         }
     }
 }

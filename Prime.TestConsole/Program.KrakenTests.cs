@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KrakenApi;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Core;
+using AssetPair = Prime.Core.AssetPair;
 
 namespace Prime.TestConsole
 {
@@ -23,6 +25,35 @@ namespace Prime.TestConsole
                 try
                 {
                     Console.WriteLine($"Latest {ctx.Pair} value is {price.Price}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
+
+            public void GetFundingMethod()
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+
+                if (false)
+                {
+					// BUG: this code throws exception "EGeneral: Internal error".
+
+                    var apiKey = UserContext.Current.ApiKeys.GetFirst(provider);
+                    var kraken = new Kraken(apiKey.Key, apiKey.Secret);
+                    var m = kraken.GetDepositMethods(null, "XBT");
+                }
+
+                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+
+                // BUG: this code also throws exception "EGeneral: Internal error". Needs to be checked with other keys.
+                var method = AsyncContext.Run(() => provider.GetFundingMethod(ctx, Asset.Btc));
+
+                try
+                {
+                    Console.WriteLine($"Funding method: {method}");
                 }
                 catch (Exception e)
                 {

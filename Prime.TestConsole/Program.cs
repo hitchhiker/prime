@@ -30,7 +30,8 @@ namespace TestConsole
         {
             // new Prime.TestConsole.Program.KrakenTests().GetBalances();
             // new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
-            new Prime.TestConsole.Program.KrakenTests().GetLatestPrice();
+            // new Prime.TestConsole.Program.KrakenTests().GetLatestPrice();
+             new Prime.TestConsole.Program.KrakenTests().GetFundingMethod();
 
             //Sha256Test();
             //new ExchangeRateTest().Test();

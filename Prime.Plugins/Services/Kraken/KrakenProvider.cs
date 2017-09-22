@@ -132,6 +132,8 @@ namespace plugins
 
         public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
+            // TODO: re-implement.
+
             throw new System.NotImplementedException();
         }
 
@@ -176,22 +178,31 @@ namespace plugins
             return KrakenCodeConverterBase.I;
         }
 
-        public string GetFundingMethod(NetworkProviderPrivateContext context, Asset asset)
+        public async Task<string> GetFundingMethod(NetworkProviderPrivateContext context, Asset asset)
         {
-            var kraken = GetApi<Kraken>(context);
-            var d = kraken.GetDepositMethods(null, asset.ToRemoteCode(this));
-            if (d == null || d.Length == 0)
+            var api = GetApi<IKrakenApi>(context);
+
+            var body = CreateKrakenBody();
+            body.Add("asset", asset.ToRemoteCode(this));
+
+            var r = await api.GetDepositMethodsAsync(body);
+
+            CheckResponseErrors(r);
+
+            if (r == null || r.result.Count == 0)
                 return null;
 
-            return d[0].Method;
+            return r.result.FirstOrDefault().Value.method;
         }
 
         public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
+            // TODO: re-implement.
+
             var t = new Task<WalletAddresses>(() =>
             {
                 var asset = context.Asset;
-                var fm = GetFundingMethod(context, asset);
+                var fm = GetFundingMethod(context, asset).Result;
                 if (fm == null)
                     return null;
 
@@ -214,6 +225,8 @@ namespace plugins
 
         public OhclData GetOhlc(AssetPair pair, TimeResolution market)
         {
+            // TODO: re-implement.
+
             return null;
         }
     }
