@@ -55,16 +55,17 @@ namespace plugins
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<bool>(() =>
-            {
-                var api = GetApi<Kraken>(context);
-                var r = api.GetAccountBalance();
-                return r != null;
-            });
-            t.Start();
-            return t;
+            var api = GetApi<IKrakenApi>(context);
+
+            var body = CreateKrakenBody();
+
+            var r = await api.GetBalancesAsync(body);
+
+            CheckResponseErrors(r);
+
+            return r != null;
         }
 
         private static readonly ObjectId IdHash = "prime:kraken".GetObjectIdHashCode();
@@ -136,6 +137,12 @@ namespace plugins
             return body;
         }
 
+        private void CheckResponseErrors(KrakenSchema.BaseResponse response)
+        {
+            if (response.error.Length > 0)
+                throw new ApiResponseException(response.error[0], this);
+        }
+
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = GetApi<IKrakenApi>(context);
@@ -144,8 +151,7 @@ namespace plugins
 
             var r = await api.GetBalancesAsync(body);
 
-            if (r.error.Length != 0)
-                throw new ApiResponseException(r.error[0], this);
+            CheckResponseErrors(r);
 
             var results = new BalanceResults(this);
 
