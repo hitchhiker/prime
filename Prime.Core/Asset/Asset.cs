@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using Newtonsoft.Json;
 using Prime.Utility;
 
 namespace Prime.Core
@@ -33,7 +34,6 @@ namespace Prime.Core
 
         public Asset FromCurrentCulture() { return None; }
 
-        
         public object GetFormat(Type formatType)
         {
             return CultureInfo.InvariantCulture.NumberFormat;
@@ -49,7 +49,9 @@ namespace Prime.Core
             return ShortCode;
         }
 
+        [JsonIgnore]
         private AssetInfo _assetInfo;
+        [JsonIgnore]
         public AssetInfo AssetInfo => _assetInfo ?? (_assetInfo = PublicContext.I.AssetInfos.FirstOrDefault(this));
 
         public bool Equals(Asset other)

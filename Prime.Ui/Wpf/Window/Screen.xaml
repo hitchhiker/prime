@@ -11,8 +11,9 @@
         xmlns:viewmodel="clr-namespace:Prime.Ui.Wpf.ViewModel"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:portfolio="clr-namespace:Prime.Ui.Wpf.View.Portfolio"
-                      xmlns:trade="clr-namespace:Prime.Ui.Wpf.View.Trade"
-                      mc:Ignorable="d"
+        xmlns:watchlist="clr-namespace:Prime.Ui.Wpf.View.Watchlist"
+        xmlns:trade="clr-namespace:Prime.Ui.Wpf.View.Trade"
+        mc:Ignorable="d"
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
         WindowStartupLocation="CenterOwner"
@@ -30,11 +31,11 @@
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
-    
+
     <Window.Resources>
         <wpf:LayoutUpdateStrategy x:Key="LayoutUpdateStrategy"/>
     </Window.Resources>
-    
+
     <Window.InputBindings>
         <KeyBinding Command="{Binding ExitCommand}" Key="F4" Modifiers="Alt"/>
     </Window.InputBindings>
@@ -64,11 +65,11 @@
                 BorderThickness="0">
 
                 <xcad:DockingManager.Resources>
-                    
+
                     <DataTemplate DataType="{x:Type viewmodel:ExchangeRateViewModel}">
                         <wpf:ExchangeRates/>
                     </DataTemplate>
-                    
+
                     <DataTemplate DataType="{x:Type viewmodel:PriceChartPaneModel}">
                         <wpf:ChartPanel/>
                     </DataTemplate>
@@ -76,7 +77,11 @@
                     <DataTemplate DataType="{x:Type viewmodel:PortfolioViewModel}">
                         <portfolio:PortfolioNew/>
                     </DataTemplate>
-                    
+
+                    <DataTemplate DataType="{x:Type viewmodel:WatchlistViewModel}">
+                        <watchlist:Watchlist/>
+                    </DataTemplate>
+
                     <DataTemplate DataType="{x:Type viewmodel:BuySellViewModel}">
                         <trade:BuySell/>
                     </DataTemplate>
@@ -92,7 +97,7 @@
                     <DataTemplate DataType="{x:Type viewmodel:ServicesPaneViewModel}">
                         <wpf:Services/>
                     </DataTemplate>
-                    
+
                     <DataTemplate DataType="{x:Type viewmodel:ReceiveViewModel}">
                         <portfolio:Receive/>
                     </DataTemplate>

@@ -12,8 +12,8 @@ namespace Prime.Core.Exchange.Rates
     {
         private readonly ExchangeRateProviderContext _context;
         private readonly IPublicPriceProvider _provider;
-        private readonly UniqueList<ExchangeRateRequest> _requesting = new UniqueList<ExchangeRateRequest>();
-        private readonly List<AssetPairNormalised> _pairs = new List<AssetPairNormalised>();
+        private readonly UniqueList<ExchangeRateRequest> _verifiedRequests = new UniqueList<ExchangeRateRequest>();
+        private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly ExchangeRatesCoordinator _coordinator;
         private readonly IMessenger _messenger;
         private readonly Timer _timer;
@@ -37,7 +37,7 @@ namespace Prime.Core.Exchange.Rates
         {
             lock (_timerLock)
             {
-                if (_pairs.Count!=0 && !_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
+                if (_pairRequests.Count != 0 && !_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
                 {
                     _utcLastUpdate = DateTime.UtcNow;
                     Update();
@@ -59,19 +59,36 @@ namespace Prime.Core.Exchange.Rates
 
         public bool IsFailing { get; private set; }
 
+        public void SyncVerifiedRequests(IEnumerable<ExchangeRateRequest> requests)
+        {
+            lock (_timerLock)
+            {
+                _verifiedRequests.Clear();
+                _pairRequests.Clear();
+
+                foreach (var req in requests)
+                    AddVerifiedRequest(req);
+            }
+        }
+
         public void AddVerifiedRequest(ExchangeRateRequest request)
         {
-            if (!request.IsVerified)
-                throw new ArgumentException($"You cant add an un-verified {request.GetType()} to {GetType()}");
+            lock (_timerLock)
+            {
+                if (!request.IsVerified)
+                    throw new ArgumentException($"You cant add an un-verified {request.GetType()} to {GetType()}");
 
-            _requesting.Add(request);
+                _verifiedRequests.Add(request);
+                _pairRequests.Add(request.PairRequestable);
+            }
+        }
 
-            // we need to keep all pairs (un-normalised), but we only need one of each.
-
-            var normalised = new AssetPairNormalised(request.Pair);
-
-            if (!_pairs.Any(x=>x.OriginalPair.Equals(normalised.OriginalPair)))
-                _pairs.Add(normalised);
+        public bool HasRequests()
+        {
+            lock (_timerLock)
+            {
+                return _pairRequests.Any();
+            }
         }
 
         private void Update()
@@ -81,7 +98,7 @@ namespace Prime.Core.Exchange.Rates
 
             var hasresult = false;
 
-            foreach (var pair in _pairs.Select(x=>x.OriginalPair).Distinct())
+            foreach (var pair in _pairRequests)
             {
                 if (_isDisposed)
                     return;
@@ -106,10 +123,26 @@ namespace Prime.Core.Exchange.Rates
 
         private void AddResult(AssetPair pair, LatestPrice response)
         {
-            var pairs = _pairs.Where(x => x.OriginalPair.Equals(pair));
+            var requests = _verifiedRequests.Where(x => x.PairRequestable.Equals(pair));
 
-            foreach (var npair in pairs)
-                _messenger.Send(new ExchangeRateCollected(_provider, npair, response));
+            foreach (var request in requests)
+                Collect(response, request);
+        }
+
+        private void Collect(LatestPrice response, ExchangeRateRequest request)
+        {
+            var collected = request.LastCollected = new ExchangeRateCollected(_provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
+
+            _messenger.Send(collected);
+
+            if (request.IsConverted)
+                SendConverted(request, collected, request.ConvertedOther?.LastCollected);
+        }
+
+        private void SendConverted(ExchangeRateRequest request, ExchangeRateCollected recent, ExchangeRateCollected other)
+        {
+            if (other != null)
+                _messenger.Send(new ExchangeRateCollected(request, recent, other));
         }
 
         private bool _isDisposed;

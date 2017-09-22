@@ -15,11 +15,12 @@ namespace Prime.Core.Portfolio
         public decimal Buy { get; }
         public string IconPath { get; }
         public string Market { get; }
+        public string MarketDescription { get; }
         public Money Invested { get; }
         public Money ProfitLoss { get; }
         public Money Value { get; }
 
-        public PortfolioItemModel(decimal units, decimal avgOpen, decimal profitLossPerc, decimal sell, decimal buy, string iconPath, string market, Money invested, Money profitLoss, Money value)
+        public PortfolioItemModel(decimal units, decimal avgOpen, decimal profitLossPerc, decimal sell, decimal buy, string iconPath, string market, string marketDescription, Money invested, Money profitLoss, Money value)
         {
             this.Units = units;
             this.AvgOpen = avgOpen;
@@ -28,6 +29,7 @@ namespace Prime.Core.Portfolio
             this.Buy = buy;
             this.IconPath = iconPath;
             this.Market = market;
+            this.MarketDescription = marketDescription;
             this.Invested = invested;
             this.ProfitLoss = profitLoss;
             this.Value = value;

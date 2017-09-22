@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Prime.Core;
 using Prime.Core.Exchange.Rates;
 using Prime.Utility;
@@ -10,26 +11,81 @@ namespace TestConsole
     {
         public class ExchangeRateTest
         {
+            private object _lock = new object();
+
             public void Test()
             {
-                DefaultMessenger.I.Default.Register<NewLogMessage>(this, m =>
+                var messenger = DefaultMessenger.I.Default;
+                messenger.Register<NewLogMessage>(this, m =>
                 {
                     Console.WriteLine(m.Message);
                 });
 
                 var exch = ExchangeRatesCoordinator.I;
-                exch.AddRequest(new AssetPair("btc", "usd"));
-                exch.AddRequest(new AssetPair("usd", "btc"));
+                exch.AddRequest(new AssetPair("cann", "btc"));
+                //exch.AddRequest(new AssetPair("btc", "usd"));
+                //exch.AddRequest(new AssetPair("usd", "btc"));
 
-                /*exch.Register<ExchangeRateCollected>(this, m =>
+                void AddRequest3()
                 {
-                    Console.WriteLine(m.UtcCreated.ToLongTimeString() + ": " + m.Pair + " = " + m.Price.ToString());
+                    exch.AddRequest(new AssetPair("cann", "eur"));
+                }
+
+                void RemoveRequest1()
+                {
+                    exch.RemoveRequest(new AssetPair("cann", "eur"));
+                }
+
+                void RemoveRequest2()
+                {
+                    exch.RemoveRequest(new AssetPair("usd", "btc"));
+                }
+
+                var once = false;
+                void RunOnce()
+                {
+                    if (once)
+                        return;
+
+                    once = true;
+
+                    new Task(() =>
+                    {
+                        Thread.Sleep(2000);
+                        RemoveRequest2();
+                    }).Start();
+
+                    new Task(() =>
+                    {
+                        Thread.Sleep(8000);
+                        RemoveRequest1();
+                    }).Start();
+
+                    new Task(() =>
+                    {
+                        Thread.Sleep(1000);
+                        AddRequest3();
+                    }).Start();
+                }
+
+                /*messenger.Register<ExchangeRateCollected>(this, m =>
+                {
+                    Console.WriteLine(m.UtcCreated.ToLongTimeString() + ": " + m.Pair + " = " + m.Price.Asset + " " + m.Price.ToDecimalPointString(10));
+                    RunOnce();
                 });*/
-
-                exch.Register<ExchangeRatesUpdatedMessage>(this, m =>
+                
+                messenger.Register<ExchangeRatesUpdatedMessage>(this, re =>
                 {
-                    foreach (var r in exch.Results())
-                        Console.WriteLine(r.UtcCreated.ToLongTimeString() + ": " + r.Pair + " = " + r.Price.ToString());
+                    lock (_lock)
+                    {
+                        Console.WriteLine("--------- RESULTS ------------");
+                        foreach (var m in exch.Results())
+                            Console.WriteLine(m.UtcCreated.ToLongTimeString() + ": " + m.Pair + " = " + m.Price.Asset +
+                                              " " + m.Price.ToDecimalPointString(10));
+
+                        Console.WriteLine("--------- END ------------");
+                        RunOnce();
+                    }
                 });
 
                 do
