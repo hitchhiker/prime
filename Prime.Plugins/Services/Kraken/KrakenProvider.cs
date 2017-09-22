@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Prime.Core;
 using Jojatekok.PoloniexAPI;
 using KrakenApi;
 using LiteDB;
+using Prime.Plugins.Services.Base;
+using Prime.Plugins.Services.Kraken;
 using Prime.Utility;
+using RestEase;
 using AssetPair = Prime.Core.AssetPair;
 
 namespace plugins
 {
-    public class KrakenProvider : IExchangeProvider, IWalletService
+    public class KrakenProvider : IExchangeProvider, IWalletService, IApiProvider
     {
+        private const String KrakenApiUrl = "https://api.kraken.com/0";
+
         public Network Network { get; } = new Network("Kraken");
 
         public bool Disabled => false;
@@ -36,13 +43,14 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return new KrakenApi.Kraken() as T;
+            return RestClient.For<IKrakenApi>(KrakenApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
-            return new KrakenApi.Kraken(key.Key, key.Secret) as T;
+
+            return RestClient.For<IKrakenApi>(KrakenApiUrl, new KrakenAuthenticator(key).GetRequestModifier) as T;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -110,7 +118,7 @@ namespace plugins
             return t;
         }
 
-        public bool CanMultiDepositAddress { get; }
+        public bool CanMultiDepositAddress { get; } 
         public bool CanGenerateDepositAddress { get; }
 
         public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
@@ -118,21 +126,35 @@ namespace plugins
             throw new System.NotImplementedException();
         }
 
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        private Dictionary<string, object> CreateKrakenBody()
         {
-            var t = new Task<BalanceResults>(() =>
+            var body = new Dictionary<string, object>();
+            var nonce = BaseAuthenticator.GetNonce();
+
+            body.Add("nonce", nonce);
+
+            return body;
+        }
+
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        {
+            var api = GetApi<IKrakenApi>(context);
+
+            var body = CreateKrakenBody();
+
+            var r = await api.GetBalancesAsync(body);
+
+            if (r.error.Length != 0)
+                throw new ApiResponseException(r.error[0], this);
+
+            var results = new BalanceResults(this);
+
+            foreach (var pair in r.result)
             {
-                var kraken = GetApi<Kraken>(context);
-                var d = kraken.GetAccountBalance();
-                var results = new BalanceResults(this);
+                results.AddAvailable(pair.Key.ToAsset(this), pair.Value);
+            }
 
-                foreach (var kv in d)
-                    results.AddAvailable(kv.Key.ToAsset(this), kv.Value);
-
-                return results;
-            });
-            t.Start();
-            return t;
+            return results;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

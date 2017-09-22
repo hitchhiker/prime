@@ -7,15 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
+using KrakenApi;
+using LiteDB;
 using Nito.AsyncEx;
 using Prime.Core;
 using plugins;
 using Prime.Core.Wallet;
+using Prime.Plugins.Services.BitMex;
+using Prime.Plugins.Services.Kraken;
 using Prime.Radiant.Components;
 using Prime.Utility;
 using Prime.Radiant;
 using Prime.Radiant.Components.IPFS.Messenging;
 using Prime.TestConsole;
+using AssetPair = Prime.Core.AssetPair;
 
 namespace TestConsole
 {
@@ -23,8 +28,9 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            
-            new ExchangeRateTest().Test();
+            KrakenGetBalances();
+            //Sha256Test();
+            //new ExchangeRateTest().Test();
 
             //LatestPricesTest();
             //LatestPriceTest();
@@ -50,6 +56,44 @@ namespace TestConsole
 
             //DataTest();
             //OhclTest();
+        }
+
+        private static void Sha256Test()
+        {
+            var auth = new KrakenAuthenticator(null);
+            var sha = auth.HashSHA256("test");
+        }
+
+        private static void KrakenGetBalances()
+        {
+            try
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+
+                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+
+                var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
+
+                if (balances.Count == 0)
+                {
+                    Console.WriteLine("No balances.");
+                }
+                else
+                {
+                    foreach (var balance in balances)
+                    {
+                        Console.WriteLine(
+                            $"{balance.Asset}: {balance.Available}, {balance.Balance}, {balance.Reserved}");
+                    }
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         private static void IpfsName(Radiant radiant)
