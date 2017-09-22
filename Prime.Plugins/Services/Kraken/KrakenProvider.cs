@@ -58,7 +58,6 @@ namespace plugins
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
             var api = GetApi<IKrakenApi>(context);
-
             var body = CreateKrakenBody();
 
             var r = await api.GetBalancesAsync(body);
@@ -98,25 +97,26 @@ namespace plugins
             throw new System.NotImplementedException();
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() =>
-            {
-                var kraken = GetApi<Kraken>(context);
-                var d = kraken.GetAssetPairs();
-                var aps = new AssetPairs();
-                foreach (var assetPair in d)
-                {
-                    var ticker = assetPair.Key;
-                    var first = assetPair.Value.Base;
-                    var second = ticker.Replace(first, "");
-                    aps.Add(new AssetPair(first, second, this));
-                }
-                return aps;
-            });
+            var api = GetApi<IKrakenApi>(context);
 
-            t.RunSynchronously();
-            return t;
+            var r = await api.GetAssetPairsAsync();
+
+            CheckResponseErrors(r);
+
+            var assetPairs = new AssetPairs();
+
+            foreach (var assetPair in r.result)
+            {
+                var ticker = assetPair.Key;
+                var first = assetPair.Value.base_c;
+                var second = ticker.Replace(first, "");
+
+                assetPairs.Add(new AssetPair(first, second, this));   
+            }
+
+            return assetPairs;
         }
 
         public bool CanMultiDepositAddress { get; } 

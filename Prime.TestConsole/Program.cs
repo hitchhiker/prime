@@ -28,7 +28,9 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            KrakenGetBalances();
+            // new Prime.TestConsole.Program.KrakenTests().GetBalances();
+            new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
+
             //Sha256Test();
             //new ExchangeRateTest().Test();
 
@@ -64,37 +66,7 @@ namespace TestConsole
             var sha = auth.HashSHA256("test");
         }
 
-        private static void KrakenGetBalances()
-        {
-            try
-            {
-                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
-
-                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
-
-                var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
-
-                if (balances.Count == 0)
-                {
-                    Console.WriteLine("No balances.");
-                }
-                else
-                {
-                    foreach (var balance in balances)
-                    {
-                        Console.WriteLine(
-                            $"{balance.Asset}: {balance.Available}, {balance.Balance}, {balance.Reserved}");
-                    }
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
-        }
+        
 
         private static void IpfsName(Radiant radiant)
         {

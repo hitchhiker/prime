@@ -10,8 +10,10 @@ namespace plugins
 {
     internal interface IKrakenApi
     {
-        
         [Post("/private/Balance")]
         Task<KrakenSchema.BalancesResponse> GetBalancesAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Get("/public/AssetPairs")]
+        Task<KrakenSchema.AssetPairsResponse> GetAssetPairsAsync();
     }
 }
