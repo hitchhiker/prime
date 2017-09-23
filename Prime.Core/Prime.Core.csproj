@@ -249,7 +249,7 @@
     <Compile Include="Exchange\Rates\ExchangeRatesCoordinator.cs" />
     <Compile Include="Misc\CoinsItemModel.cs" />
     <Compile Include="Misc\GridValueColourConverter.cs" />
-    <Compile Include="Misc\TimeOperation.cs" />
+    <Compile Include="Misc\TimeValueConverter.cs" />
     <Compile Include="Network\AggregatedCoinInfoContext.cs" />
     <Compile Include="Network\PublicPricesContext.cs" />
     <Compile Include="Portfolio\PortfolioItemModel.cs" />

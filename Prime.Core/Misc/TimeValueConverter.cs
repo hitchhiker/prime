@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Prime.Core.Misc
 {
-    public class TimeOperation
+    public class TimeValueConverter : IValueConverter
     {
-        public static string TimeAgo(DateTime dt)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            TimeSpan span = DateTime.Now - dt;
+            TimeSpan span = DateTime.Now - (DateTime)value;
             if (span.Days > 365)
             {
                 int years = (span.Days / 365);
@@ -41,6 +44,11 @@ namespace Prime.Core.Misc
             if (span.Seconds <= 5)
                 return "just now";
             return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

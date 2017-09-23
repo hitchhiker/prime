@@ -10,6 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <local:GridValueColourConverter x:Key="GridValueColourConverter"/>
+        <local:TimeValueConverter x:Key="TimeValueConverter"/>
     </UserControl.Resources>
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel>
@@ -37,7 +38,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical" >
-                                    <TextBlock Text="{Binding LastTradeTime}"/>
+                                    <TextBlock Text="{Binding LastTradeTime, Converter={StaticResource TimeValueConverter}}"/>
                                     <TextBlock Text="{Binding LastTradeDescription}"/>
                                 </StackPanel>
                             </DataTemplate>
