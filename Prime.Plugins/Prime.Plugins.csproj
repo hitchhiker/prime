@@ -391,7 +391,6 @@
     <Compile Include="Services\Kraken\IKrakenApi.cs" />
     <Compile Include="Services\Kraken\KrakenAuthenticator.cs" />
     <Compile Include="Services\Kraken\KrakenCodeConverter.cs" />
-    <Compile Include="Services\Kraken\KrakenOhlcDeserealizer.cs" />
     <Compile Include="Services\Kraken\KrakenSchema.cs" />
     <Compile Include="Services\Kraken\KrakenTimeInterval.cs" />
     <Compile Include="Services\Test\Model\HistoryLine.cs" />
