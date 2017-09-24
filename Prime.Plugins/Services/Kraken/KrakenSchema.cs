@@ -27,6 +27,29 @@ namespace Prime.Plugins.Services.Kraken
 
         internal class DepositMethodsResponse : BaseResponse<string, DepositMethodResponse> { }
 
+        internal class OhlcResponse : ErrorResponse
+        {
+            public OhlcResultResponse result;
+        }
+
+        internal class OhlcResultResponse
+        {
+            public Dictionary<string, OhlcDataRespose[]> pairs;
+            public long last;
+        }
+
+        internal class OhlcDataRespose
+        {
+            public decimal time;
+            public decimal open;
+            public decimal high;
+            public decimal low;
+            public decimal close;
+            public decimal vwap;
+            public decimal volume;
+            public decimal count;
+        }
+
         internal class AssetPairResponse
         {
             public string altname;

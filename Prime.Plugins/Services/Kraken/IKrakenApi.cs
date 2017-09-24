@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NodaTime;
 using Prime.Plugins.Services.Kraken;
 using RestEase;
 
@@ -21,5 +22,8 @@ namespace plugins
 
         [Get("/public/Ticker?pair={pair}")]
         Task<KrakenSchema.TickersInformationResponse> GetTicketInformationAsync([Path] string pair);
+
+        [Get("/public/OHLC?pair={pair}&interval={interval}")]
+        Task<KrakenSchema.OhlcResponse> GetOhlcDataAsync([Path] string pair, [Path(Format = "D")] KrakenTimeInterval interval);
     }
 }

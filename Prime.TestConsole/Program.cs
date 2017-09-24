@@ -31,7 +31,8 @@ namespace TestConsole
             // new Prime.TestConsole.Program.KrakenTests().GetBalances();
             // new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
             // new Prime.TestConsole.Program.KrakenTests().GetLatestPrice();
-             new Prime.TestConsole.Program.KrakenTests().GetFundingMethod();
+            //new Prime.TestConsole.Program.KrakenTests().GetFundingMethod();
+            new Prime.TestConsole.Program.KrakenTests().GetOhlc();
 
             //Sha256Test();
             //new ExchangeRateTest().Test();
@@ -68,11 +69,11 @@ namespace TestConsole
             var sha = auth.HashSHA256("test");
         }
 
-        
+
 
         private static void IpfsName(Radiant radiant)
         {
-            var n = new FileSystemNode {Hash = "ABCDE"};
+            var n = new FileSystemNode { Hash = "ABCDE" };
 
             var usr = UserContext.Current.IpfsMessenger;
 
@@ -178,7 +179,7 @@ namespace TestConsole
             var a2 = "USD".ToAssetRaw();
             var pair = new AssetPair(a1, a2);
 
-            var ohcl = new OhlcDataAdapter(new OhlcResolutionContext() {Pair = pair});
+            var ohcl = new OhlcDataAdapter(new OhlcResolutionContext() { Pair = pair });
 
             ohcl.Init();
 
