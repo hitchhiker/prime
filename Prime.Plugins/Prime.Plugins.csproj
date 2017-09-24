@@ -387,10 +387,13 @@
     <Compile Include="Services\CryptoCompare\ICryptoCompareApi.cs" />
     <Compile Include="Services\CryptoCompare\Model\CoinEntry.cs" />
     <Compile Include="Services\CryptoCompare\Model\CoinListResult.cs" />
+    <Compile Include="Services\Kraken\Converters\OhlcJsonConverter.cs" />
     <Compile Include="Services\Kraken\IKrakenApi.cs" />
     <Compile Include="Services\Kraken\KrakenAuthenticator.cs" />
     <Compile Include="Services\Kraken\KrakenCodeConverter.cs" />
+    <Compile Include="Services\Kraken\KrakenOhlcDeserealizer.cs" />
     <Compile Include="Services\Kraken\KrakenSchema.cs" />
+    <Compile Include="Services\Kraken\KrakenTimeInterval.cs" />
     <Compile Include="Services\Test\Model\HistoryLine.cs" />
     <Compile Include="Services\Test\Model\HistoryResponse.cs" />
     <Compile Include="Services\Test\ICryptoFacilitiesApi.cs" />

@@ -113,6 +113,28 @@ namespace Prime.TestConsole
                     throw;
                 }
             }
+
+            public void GetOhlc()
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+
+                var ctx = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, null, null);
+
+                var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
+
+                try
+                {
+                    foreach (var data in ohlc)
+                    {
+                        Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ using Prime.Core;
 using Jojatekok.PoloniexAPI;
 using KrakenApi;
 using LiteDB;
+using Newtonsoft.Json;
 using Prime.Plugins.Services.Base;
 using Prime.Plugins.Services.Kraken;
 using Prime.Utility;
@@ -16,7 +17,7 @@ using AssetPair = Prime.Core.AssetPair;
 
 namespace plugins
 {
-    public class KrakenProvider : IExchangeProvider, IWalletService, IApiProvider
+    public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -42,16 +43,30 @@ namespace plugins
             return new KrakenApi.Kraken(key.Key, key.Secret) as T;
         }
 
+        private JsonSerializerSettings CreateJsonSerializerSettings()
+        {
+            return new JsonSerializerSettings()
+            {
+                Converters = { new OhlcJsonConverter() }
+            };
+        }
+
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return RestClient.For<IKrakenApi>(KrakenApiUrl) as T;
+            return new RestClient(KrakenApiUrl)
+            {
+                JsonSerializerSettings = CreateJsonSerializerSettings()
+            }.For<IKrakenApi>() as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
 
-            return RestClient.For<IKrakenApi>(KrakenApiUrl, new KrakenAuthenticator(key).GetRequestModifier) as T;
+            return new RestClient(KrakenApiUrl, new KrakenAuthenticator(key).GetRequestModifier)
+            {
+                JsonSerializerSettings = CreateJsonSerializerSettings()
+            }.For<IKrakenApi>() as T;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -223,11 +238,64 @@ namespace plugins
             return t;
         }
 
-        public OhclData GetOhlc(AssetPair pair, TimeResolution market)
+        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
         {
-            // TODO: re-implement.
+            var api = GetApi<IKrakenApi>(context);
 
-            return null;
+            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToString());
+
+            var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
+
+            // BUG: "since" is not implemented. Need to be checked.
+            var r = await api.GetOhlcDataAsync(pair.TickerKraken(), krakenTimeInterval);
+
+            CheckResponseErrors(r);
+
+            var ohlc = new OhclData(context.Market);
+            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+
+            if (r.result.pairs.Count != 0)
+            {
+                foreach (var ohlcResponse in r.result.pairs.FirstOrDefault().Value)
+                {
+                    var time = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+                    time = time.AddSeconds((double) ohlcResponse.time);
+
+                    // BUG: ohlcResponse.volume is double ~0.2..10.2, why do we cast to long?
+                    ohlc.Add(new OhclEntry(seriesId, time, this)
+                    {
+                        Open = (double) ohlcResponse.open,
+                        Close = (double) ohlcResponse.close,
+                        Low = (double) ohlcResponse.low,
+                        High = (double) ohlcResponse.high,
+                        VolumeTo = (long) ohlcResponse.volume, // BUG: cast to long.
+                        VolumeFrom = (long) ohlcResponse.volume,
+                        WeightedAverage = 0 // BUG: what is it?
+                    });
+                }
+            }
+            else
+            {
+                throw new ApiResponseException("No OHLC data received", this);
+            }
+
+            return ohlc;
+        }
+
+        private KrakenTimeInterval ConvertToKrakenInterval(TimeResolution resolution)
+        {
+            // BUG: Kraken does not support None, MS, S. At this moment it will throw ArgumentOutOfRangeException.
+            switch (resolution)
+            {
+                case TimeResolution.Minute:
+                    return KrakenTimeInterval.Minute1;
+                case TimeResolution.Hour:
+                    return KrakenTimeInterval.Hours1;
+                case TimeResolution.Day:
+                    return KrakenTimeInterval.Day1;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
+            }
         }
     }
 }
