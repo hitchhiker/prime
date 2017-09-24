@@ -17,6 +17,9 @@ namespace plugins
         [Post("/private/DepositMethods")]
         Task<KrakenSchema.DepositMethodsResponse> GetDepositMethodsAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
+        [Post("/private/DepositAddresses")]
+        Task<KrakenSchema.DepositAddressesResponse> GetDepositAddresses([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
         [Get("/public/AssetPairs")]
         Task<KrakenSchema.AssetPairsResponse> GetAssetPairsAsync();
 
@@ -25,5 +28,6 @@ namespace plugins
 
         [Get("/public/OHLC?pair={pair}&interval={interval}")]
         Task<KrakenSchema.OhlcResponse> GetOhlcDataAsync([Path] string pair, [Path(Format = "D")] KrakenTimeInterval interval);
+
     }
 }

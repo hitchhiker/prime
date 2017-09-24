@@ -27,6 +27,17 @@ namespace Prime.Plugins.Services.Kraken
 
         internal class DepositMethodsResponse : BaseResponse<string, DepositMethodResponse> { }
 
+        internal class DepositAddressesResponse : BaseResponse<string, DepositAddressResponse> { }
+
+        internal class DepositAddressResponse
+        {
+            public string address;
+            public long expiretm;
+
+            [JsonProperty("new")]
+            public bool new_address;
+        }
+
         internal class OhlcResponse : ErrorResponse
         {
             public OhlcResultResponse result;

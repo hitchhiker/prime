@@ -142,8 +142,8 @@ namespace plugins
             return assetPairs;
         }
 
-        public bool CanMultiDepositAddress { get; } 
-        public bool CanGenerateDepositAddress { get; }
+        public bool CanMultiDepositAddress { get; } = false;
+        public bool CanGenerateDepositAddress { get; } = true;
 
         public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
@@ -165,7 +165,9 @@ namespace plugins
         private void CheckResponseErrors(KrakenSchema.ErrorResponse response)
         {
             if (response.error.Length > 0)
+            {
                 throw new ApiResponseException(response.error[0], this);
+            }       
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -200,42 +202,73 @@ namespace plugins
             var body = CreateKrakenBody();
             body.Add("asset", asset.ToRemoteCode(this));
 
-            var r = await api.GetDepositMethodsAsync(body);
+            try
+            {
+                var r = await api.GetDepositMethodsAsync(body);
 
-            CheckResponseErrors(r);
+                CheckResponseErrors(r);
 
-            if (r == null || r.result.Count == 0)
-                return null;
+                if (r == null || r.result.Count == 0)
+                    return null;
 
-            return r.result.FirstOrDefault().Value.method;
+                return r.result.FirstOrDefault().Value.method;
+            }
+            catch (ApiResponseException e)
+            {
+                if (e.Message.ToLower().Contains("internal error"))
+                {
+                    throw new ApiResponseException(
+                        "Kraken internal error. Possible reason is unverified account (Tier 1 is required).");
+                }
+            }
+
+            return null;
         }
 
-        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
             // TODO: re-implement.
 
-            var t = new Task<WalletAddresses>(() =>
+            var api = GetApi<IKrakenApi>(context);
+
+            var fundingMethod = await GetFundingMethod(context, context.Asset);
+
+            if(fundingMethod == null)
+                throw new NullReferenceException("No funding method is found");
+
+            var body = CreateKrakenBody();
+
+            // BUG: do we need "aclass"?
+            // body.Add("aclass", context.Asset.ToRemoteCode(this));
+            body.Add("asset", context.Asset.ToRemoteCode(this));
+            body.Add("method", fundingMethod);
+            body.Add("new", false);
+
+            // TODO: waiting for verification.
+
+            var r = await api.GetDepositAddresses(body);
+
+            CheckResponseErrors(r);
+
+            var walletAddresses = new WalletAddresses();
+
+            foreach (var addr in r.result)
             {
-                var asset = context.Asset;
-                var fm = GetFundingMethod(context, asset).Result;
-                if (fm == null)
-                    return null;
-
-                var addresses = new WalletAddresses();
-                var kraken = this.GetApi<Kraken>(context);
-                var d = kraken.GetDepositAddresses(asset.ToRemoteCode(this), fm, null, context.CanGenerateAddress);
-
-                foreach (var r in d)
+                var walletAddress = new WalletAddress(this, context.Asset)
                 {
-                    if (string.IsNullOrWhiteSpace(r.Address))
-                        continue;
-                    addresses.Add(new WalletAddress(this, asset) {Address = r.Address, Tag = r.Tag});
+                    Address = addr.Value.address
+                };
+
+                if (addr.Value.expiretm != 0)
+                {
+                    var time = addr.Value.expiretm.ToUtcDateTime();
+                    walletAddress.ExpiresUtc = time;
                 }
 
-                return addresses;
-            });
-            t.Start();
-            return t;
+                walletAddresses.Add(new WalletAddress(this, context.Asset) { Address = addr.Value.address });
+            }
+
+            return walletAddresses;
         }
 
         public async Task<OhclData> GetOhlcAsync(OhlcContext context)
@@ -258,8 +291,7 @@ namespace plugins
             {
                 foreach (var ohlcResponse in r.result.pairs.FirstOrDefault().Value)
                 {
-                    var time = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-                    time = time.AddSeconds((double) ohlcResponse.time);
+                    var time = ((long)ohlcResponse.time).ToUtcDateTime();
 
                     // BUG: ohlcResponse.volume is double ~0.2..10.2, why do we cast to long?
                     ohlc.Add(new OhclEntry(seriesId, time, this)

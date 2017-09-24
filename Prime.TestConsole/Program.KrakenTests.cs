@@ -15,6 +15,31 @@ namespace Prime.TestConsole
     {
         public class KrakenTests
         {
+            public void GetDepositAddresses()
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+                var privateProvider = new NetworkProviderPrivateContext(UserContext.Current);
+
+                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
+
+                var userCtx = UserContext.Current;
+                var apiKey = userCtx.GetApiKey(provider);
+
+                // BUG: this always returns EInternal Error.
+                // var kraken = new Kraken(apiKey.Key, apiKey.Secret);
+                // var methods = kraken.GetDepositMethods(null, "XBT");
+
+                try
+                {
+                    var addresses = AsyncContext.Run(() => provider.GetDepositAddressesAsync(ctx));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
+
             public void GetLatestPrice()
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();

@@ -41,6 +41,19 @@ namespace Prime.Utility
             return utcDateTime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
 
+        /// <summary>
+        /// Convert Unix timestamp to DateTime.
+        /// </summary>
+        /// <param name="timestamp">Unix timestamp to be converted.</param>
+        /// <returns></returns>
+        public static DateTime ToUtcDateTime(this long timestamp)
+        {
+            var time = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            time = time.AddSeconds((double)timestamp);
+
+            return time;
+        }
+
         #endregion
 
         #region parsing definitions
