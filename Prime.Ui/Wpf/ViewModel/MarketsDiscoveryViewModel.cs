@@ -26,12 +26,14 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void PopulateGrid()
         {
-            ListMarketsDiscoveryItems = new BindingList<MarketsDiscoveryItemModel>();
-
-            for (int i = 0; i < 5; i++)
-            {
-                //ListExchangeItems.Add(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (1 + 1) - 1), new Money((decimal)(random.NextDouble() * (10000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), (i % 2 == 0 ? "../../Asset/img/CAT.png" : "../../Asset/img/Apple.png"), (i % 2 == 0 ? "CAT" : "AAPL"), (i % 2 == 0 ? "" : "Apple")));
-            }
+            ListMarketsDiscoveryItems = new BindingList<MarketsDiscoveryItemModel>() {
+                new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/BTC.png", "BTC"),
+                new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/DASH.png", "DASH"),
+                new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/ETC.png", "ETC"),
+                new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/ETH.png", "ETHEREUM"),
+                new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/LTC.png", "LTC"),
+                new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/XRP.png", "XRP")
+            };
         }
 
         public readonly Dispatcher Dispatcher;
