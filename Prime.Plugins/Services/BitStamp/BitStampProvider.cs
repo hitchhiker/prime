@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prime.Core;
 using Prime.Utility;
@@ -11,7 +13,8 @@ namespace plugins
 {
     public class BitStampProvider : IExchangeProvider, IWalletService, IApiProvider
     {
-        private const string BitStampApiUrl = "https://www.bitstamp.net/api/v2";
+        private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
+        public const string BitStampApiVersion = "v2";
 
         public Network Network { get; } = new Network("BitStamp");
 
@@ -38,7 +41,7 @@ namespace plugins
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
-            var ra = new RequestAuthenticator(key.Key, key.Secret, key.Extra);
+
             return RestClient.For<IBitStampApi>(BitStampApiUrl, new BitStampAuthenticator(key).GetRequestModifier) as T;
         }
 
@@ -98,37 +101,31 @@ namespace plugins
             return t;
         }
 
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var t = new Task<BalanceResults>(() =>
-            {
-                var api = GetApi<IBitstampClient>(context);
+            var api = GetApi<IBitStampApi>(context);
 
-                var market = api.GetBalance();
-                var results = new BalanceResults(this);
-                foreach (var kvp in market)
-                {
-                    if (kvp.Key.EndsWith("_available"))
-                    {
-                        var crc = kvp.Key.Replace("_available", "");
-                        results.AddAvailable(crc.ToAsset(this), kvp.Value.ToDecimal());
-                    }
-                    else if (kvp.Key.EndsWith("_reserved"))
-                    {
-                        var crc = kvp.Key.Replace("_reserved", "");
-                        results.AddReserved(crc.ToAsset(this), kvp.Value.ToDecimal());
-                    }
-                    else if (kvp.Key.EndsWith("_balance"))
-                    {
-                        var crc = kvp.Key.Replace("_balance", "");
-                        results.AddBalance(crc.ToAsset(this), kvp.Value.ToDecimal());
-                    }
-                }
+            var r = await api.GetAccountBalances();
 
-                return results;
-            });
-            t.Start();
-            return t;
+            var balances = new BalanceResults(this);
+
+            var btcAsset = "btc".ToAsset(this);
+            var usdAsset = "usd".ToAsset(this);
+            var eurAsset = "eur".ToAsset(this);
+
+            balances.AddAvailable(btcAsset, r.btc_available);
+            balances.AddReserved(btcAsset, r.btc_reserved);
+            balances.AddBalance(btcAsset, r.btc_balance);
+
+            balances.AddAvailable(usdAsset, r.usd_available);
+            balances.AddReserved(usdAsset, r.usd_reserved);
+            balances.AddBalance(usdAsset, r.usd_balance);
+
+            balances.AddAvailable(eurAsset, r.eur_available);
+            balances.AddReserved(eurAsset, r.eur_reserved);
+            balances.AddBalance(eurAsset, r.eur_balance);
+
+            return balances;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -154,18 +151,41 @@ namespace plugins
             return addresses;
         }
 
-        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
-            var t = new Task<WalletAddresses>(() =>
+            var api = GetApi<IBitStampApi>(context);
+            var currencyPath = GetCurrencyPath(context.Asset);
+
+            var r = await api.GetDepositAddress(currencyPath);
+
+            if (!this.ExchangeHas(context.Asset))
+                return null;
+
+            var walletAddress = new WalletAddress(this, context.Asset)
             {
-                if (!this.ExchangeHas(context.Asset))
-                    return null;
+                Address = r
+            };
 
-                return new WalletAddresses(GetApi<IBitstampClient>(context).GetDepositAddress(this, context.Asset));
-            });
+            var addresses = new WalletAddresses(walletAddress);
 
-            t.Start();
-            return t;
+            return addresses;
+        }
+
+        private string GetCurrencyPath(Asset asset)
+        {
+            switch (asset.ShortCode)
+            {
+                case "LTC":
+                    return BitStampApiVersion + "/ltc_address";
+                case "ETH":
+                    return BitStampApiVersion + "/eth_address";
+                case "BTC":
+                    return "bitcoin_deposit_address";
+                case "XRP":
+                    return "ripple_address";
+                default:
+                    throw new NullReferenceException("No deposit address for specified currency");
+            }
         }
     }
 }

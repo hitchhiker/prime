@@ -43,7 +43,8 @@ namespace TestConsole
 
             // BitStamp.
 
-            new Prime.TestConsole.Program.BitStampTests().GetTicker();
+            // new Prime.TestConsole.Program.BitStampTests().GetTicker();
+            new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
 
 
             //Sha256Test();
