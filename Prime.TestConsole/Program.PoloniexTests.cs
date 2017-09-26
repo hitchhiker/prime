@@ -33,6 +33,24 @@ namespace Prime.TestConsole
                     throw;
                 }
             }
+
+            public void ApiTest()
+            {
+                var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
+                var apiTestCtx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+
+                try
+                {
+                    var ok = AsyncContext.Run(() => provider.TestApiAsync(apiTestCtx));
+
+                    Console.WriteLine($"Api test OK: {ok}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
         }
     }
 }

@@ -56,13 +56,11 @@ namespace plugins
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
             var api = GetApi<IPoloniexApi>(context);
-
-            var body = CreatePoloniexBody();
-            body.Add("command", "returnBalances");
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnBalances);
 
             var r = await api.GetBalancesAsync(body);
 
-            return r != null;
+            return r != null && r.Count > 0;
         }
 
         public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
@@ -113,9 +111,7 @@ namespace plugins
         {
             var api = this.GetApi<IPoloniexApi>(context);
 
-            var body = CreatePoloniexBody();
-
-            body.Add("command", "returnCompleteBalances");
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnCompleteBalances);
 
             var r = await api.GetBalancesDetailedAsync(body);
 
@@ -136,11 +132,23 @@ namespace plugins
             return results;
         }
 
-        private Dictionary<string, object> CreatePoloniexBody()
+        private Dictionary<string, object> CreatePoloniexBody(PoloniexBodyType bodyType)
         {
             var body = new Dictionary<string, object>();
 
             body.Add("nonce", BaseAuthenticator.GetNonce());
+
+            switch (bodyType)
+            {
+                case PoloniexBodyType.ReturnBalances:
+                    body.Add("command", "returnBalances");
+                    break;
+                case PoloniexBodyType.ReturnCompleteBalances:
+                    body.Add("command", "returnCompleteBalances");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);
+            }
 
             return body;
         }
