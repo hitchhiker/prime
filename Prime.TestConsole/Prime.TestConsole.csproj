@@ -214,6 +214,7 @@
     <None Include="packages.config" />
     <Compile Include="Program.KrakenTests.cs" />
     <Compile Include="Program.BitMexTests.cs" />
+    <Compile Include="Program.BitStampTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj">

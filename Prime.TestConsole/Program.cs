@@ -39,7 +39,11 @@ namespace TestConsole
 
             // BitMex.
 
-            new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+            // new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+
+            // BitStamp.
+
+            new Prime.TestConsole.Program.BitStampTests().GetTicker();
 
 
             //Sha256Test();

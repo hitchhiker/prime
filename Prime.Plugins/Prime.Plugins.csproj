@@ -307,6 +307,9 @@
     <Compile Include="Services\3rdParty\CryptoFacilitiesApi\Order.cs" />
     <Compile Include="Services\3rdParty\CryptoFacilitiesApi\OrderInfo.cs" />
     <Compile Include="Services\3rdParty\CryptoFacilitiesApi\TradeInfo.cs" />
+    <Compile Include="Services\BitStamp\BitStampAuthenticator.cs" />
+    <Compile Include="Services\BitStamp\BitStampSchema.cs" />
+    <Compile Include="Services\BitStamp\IBitStampApi.cs" />
     <Compile Include="Services\BIttrex\BittrexProvider.cs" />
     <Compile Include="Services\Coinbase\CoinbaseAuthenticator.cs" />
     <Compile Include="Services\Coinbase\CoinBaseSchema.cs" />

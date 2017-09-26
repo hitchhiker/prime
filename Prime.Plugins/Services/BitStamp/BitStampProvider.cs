@@ -4,11 +4,15 @@ using Prime.Utility;
 using Rokolab.BitstampClient;
 using LiteDB;
 using Nito.AsyncEx;
+using Prime.Plugins.Services.Base;
+using RestEase;
 
 namespace plugins
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService
+    public class BitStampProvider : IExchangeProvider, IWalletService, IApiProvider
     {
+        private const string BitStampApiUrl = "https://www.bitstamp.net/api/v2";
+
         public Network Network { get; } = new Network("BitStamp");
 
         public bool Disabled => false;
@@ -28,14 +32,14 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return new BitstampClient(context) as T;
+            return RestClient.For<IBitStampApi>(BitStampApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
             var ra = new RequestAuthenticator(key.Key, key.Secret, key.Extra);
-            return new BitstampClient(context, ra) as T;
+            return RestClient.For<IBitStampApi>(BitStampApiUrl, new BitStampAuthenticator(key).GetRequestModifier) as T;
         }
 
         public Task<bool> TestApiAsync(ApiTestContext context)
@@ -57,9 +61,20 @@ namespace plugins
             ApiExtraName = "Customer Number"
         };
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            return null;
+            var api = GetApi<IBitStampApi>(context);
+
+            var r = await api.GetTicker(context.Pair.TickerSimple());
+
+            var latestPrice = new LatestPrice()
+            {
+                Price = new Money(r.last, context.Pair.Asset2),
+                BaseAsset = context.Pair.Asset1,
+                UtcCreated = r.timestamp.ToUtcDateTime()
+            };
+            
+            return latestPrice;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -85,7 +100,8 @@ namespace plugins
 
         public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var t = new Task<BalanceResults>(() => { 
+            var t = new Task<BalanceResults>(() =>
+            {
                 var api = GetApi<IBitstampClient>(context);
 
                 var market = api.GetBalance();
@@ -150,11 +166,6 @@ namespace plugins
 
             t.Start();
             return t;
-        }
-
-        public OhclData GetOhlc(OhlcContext context)
-        {
-            return null;
         }
     }
 }

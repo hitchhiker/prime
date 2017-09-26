@@ -147,8 +147,6 @@ namespace plugins
 
         public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
-            // TODO: re-implement.
-
             throw new System.NotImplementedException();
         }
 
