@@ -18,7 +18,7 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             _sideBarWidth = 40;
             MenuClickedCommand = new RelayCommand(ToggleMenu);
-            BookmarkClickedCommand = new RelayCommand(delegate()
+            BookmarkClickedCommand = new RelayCommand(delegate ()
             {
                 IsBookmarksOpen = !IsBookmarksOpen;
                 ClickMenuItem<BookmarksSideBarViewModel>();
@@ -27,6 +27,10 @@ namespace Prime.Ui.Wpf.ViewModel
             PortfolioClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "portfolio"); });
             SettingsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "services"); });
             BuySellClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "buy sell"); });
+            WatchlistClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "watchlist"); });
+            ExchangesClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "exchanges"); });
+            CoinsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "coins"); });
+            MarketsDiscoveryClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "markets discovery"); });
         }
 
         public SideBarViewModel(ScreenViewModel screenVm) : this()
@@ -39,6 +43,10 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand PortfolioClickedCommand { get; private set; }
         public RelayCommand SettingsClickedCommand { get; private set; }
         public RelayCommand BuySellClickedCommand { get; private set; }
+        public RelayCommand WatchlistClickedCommand { get; private set; }
+        public RelayCommand ExchangesClickedCommand { get; private set; }
+        public RelayCommand CoinsClickedCommand { get; private set; }
+        public RelayCommand MarketsDiscoveryClickedCommand { get; private set; }
 
         private bool _isMenuOpen;
         public bool IsMenuOpen
@@ -102,7 +110,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 return;
             }
 
-            CurrentExpandedModel = _usedModels.GetOrAdd(typeof(T), t => new T {ScreenViewModel = _screenVm});
+            CurrentExpandedModel = _usedModels.GetOrAdd(typeof(T), t => new T { ScreenViewModel = _screenVm });
             IsMenuOpen = true;
         }
     }

@@ -25,18 +25,22 @@ namespace Prime.Core
         {
             "exchange rates",
             "portfolio",
+            "watchlist",
             "buy sell",
             "services",
             "wallet",
             "receive",
-            "send"
+            "send",
+            "coins",
+            "exchanges",
+            "markets discovery"
         };
-        
+
         public override CommandBase Parse(string scmd)
         {
             if (Commands.Contains(scmd))
                 return new SimpleContentCommand(scmd);
-            
+
             if (scmd.Length <= 3)
                 return null;
 

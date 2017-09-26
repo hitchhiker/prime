@@ -13,8 +13,8 @@ namespace plugins
         Task<CoinListResult> GetCoinListAsync();
 
         [Get("price")]
-        Task<Dictionary<string,double>> GetPrice(string fsym, string tsyms, string e, string extraParams, string sign, string tryConversion);
-
+        Task<Dictionary<string,double>> GetPricesAsync(string fsym, string tsyms, string e, string extraParams, string sign, string tryConversion);
+        
         [Get("coinsnapshot")]
         Task<CoinSnapshotResult> GetCoinSnapshotAsync(string fsym, string tsym);
 

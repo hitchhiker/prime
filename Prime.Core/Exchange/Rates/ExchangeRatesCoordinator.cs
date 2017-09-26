@@ -6,77 +6,113 @@ using Prime.Utility;
 
 namespace Prime.Core.Exchange.Rates
 {
-    public class ExchangeRatesCoordinator : CoordinatorBase
+    public class ExchangeRatesCoordinator
     {
+        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         private readonly UniqueList<ExchangeRateRequest> _requested = new UniqueList<ExchangeRateRequest>();
-        private readonly List<ExchangeRateProvider> _runningProviders = new List<ExchangeRateProvider>();
+        private readonly List<ExchangeRateProvider> _providers = new List<ExchangeRateProvider>();
+        private readonly List<ExchangeRateCollected> _results = new List<ExchangeRateCollected>();
+        private readonly object _resultsLock = new object();
+        private readonly object _commonLock = new object();
         private static readonly Lazy<ExchangeRatesCoordinator> Lazy = new Lazy<ExchangeRatesCoordinator>(() => new ExchangeRatesCoordinator());
         public static ExchangeRatesCoordinator I => Lazy.Value; //there can be only one.
+        private readonly int _timerInterval = 5000;
 
         private ExchangeRatesCoordinator()
         {
-            TimerInterval = 5000;
-            _messenger.Register<ExchangeRateRequestVerifiedMessage>(this, this, ExchangeRateRequestVerified);
+            _messenger.Register<ExchangeRateRequestVerifiedMessage>(this, ExchangeRateRequestVerified);
+            _messenger.Register<ExchangeRateCollected>(this, ExchangeRateResultCollect);
         }
         
         public IMessenger Messenger => _messenger;
 
         private void ExchangeRateRequestVerified(ExchangeRateRequestVerifiedMessage m)
         {
-            Start(UserContext.Current);
-        }
-
-        protected override void OnStart(UserContext context)
-        {
+            lock (_commonLock)
+                _requested.Add(m.Request);
+            
             SyncProviders();
         }
 
-        protected override void OnStop()
+        private void ExchangeRateResultCollect(ExchangeRateCollected result)
         {
-            lock (StateLock)
+            lock (_resultsLock)
             {
-                _runningProviders.ForEach(x => x.Dispose());
-                _runningProviders.Clear();
+                var e = _results.FirstOrDefault(x => x.Pair.Equals(result.Pair) && (x.Provider.Id == result.Provider.Id || x.ProviderConversion?.Id == result.Provider.Id));
+                if (e != null)
+                    _results.Remove(e);
+                _results.Add(result);
             }
         }
 
-        protected override void OnSubscribersChanged() { }
+        public IReadOnlyList<ExchangeRateCollected> Results()
+        {
+            lock (_resultsLock)
+                return _results.ToList();
+        }
 
         private void SyncProviders()
         {
-            lock (StateLock)
+            lock (_commonLock)
             {
                 var grouped = _requested.Where(x => x.IsVerified).GroupBy(x => x.Network).ToList();
+
+                var inuse = new List<ExchangeRateProvider>();
                 foreach (var g in grouped)
                 {
-                    var prov = _runningProviders.FirstOrDefault(x => x.Network.Equals(g.Key)) ?? CreateProvider(g.Key);
-                    foreach (var r in g)
-                        prov.AddVerifiedRequest(r);
+                    var prov = _providers.FirstOrDefault(x => x.Network.Equals(g.Key)) ?? CreateProvider(g.Key);
+                    prov.SyncVerifiedRequests(g);
+                    inuse.Add(prov);
+                }
+
+                //remove unused
+
+                var unused = _providers.Except(inuse).ToList();
+                foreach (var prov in unused)
+                {
+                    prov.Dispose();
+                    _providers.Remove(prov);
                 }
             }
         }
 
         private ExchangeRateProvider CreateProvider(Network network)
         {
-            lock (StateLock)
+            lock (_commonLock)
             {
                 var prov = network.PublicPriceProviders.FirstProvider();
-                var erprov = new ExchangeRateProvider(new ExchangeRateProviderContext(prov, this) {PollingSpan = TimeSpan.FromMilliseconds(TimerInterval)});
-                _runningProviders.Add(erprov);
+                var erprov = new ExchangeRateProvider(new ExchangeRateProviderContext(prov, this) {PollingSpan = TimeSpan.FromMilliseconds(_timerInterval)});
+                _providers.Add(erprov);
                 return erprov;
             }
         }
 
         public void AddRequest(AssetPair pair, Network network = null)
         {
-            if (_requested.Any(x => x.Pair.Equals(pair) && Equals(network, x.Network)))
-                return;
-
-            _requested.Add(new ExchangeRateRequest(this, pair, network));
+            lock (_commonLock)
+            {
+                new ExchangeRateRequest(this, pair, network);
+            }
         }
 
+        public void RemoveRequest(AssetPair pair, Network network = null)
+        {
+            lock (_commonLock)
+            {
+                var e = _requested.FirstOrDefault(x => x.Pair.Equals(pair) && (Equals(network, x.NetworkSuggested) || (network == null && x.NetworkSuggested == null)));
+                if (e == null)
+                    return;
 
-        public IReadOnlyList<ExchangeRate> Rates { get; set; }
+                _requested.Remove(e);
+
+                if (e.IsConverted && e.ConvertedOther != null)
+                    _requested.Remove(e.ConvertedOther);
+
+                SyncProviders();
+            }
+        }
+
+        public IReadOnlyList<ExchangeRateCollected> Rates { get; set; }
 
         public IReadOnlyList<ExchangeRateRequest> Requested => _requested;
     }

@@ -307,6 +307,9 @@
     <Compile Include="Services\3rdParty\CryptoFacilitiesApi\Order.cs" />
     <Compile Include="Services\3rdParty\CryptoFacilitiesApi\OrderInfo.cs" />
     <Compile Include="Services\3rdParty\CryptoFacilitiesApi\TradeInfo.cs" />
+    <Compile Include="Services\BitStamp\BitStampAuthenticator.cs" />
+    <Compile Include="Services\BitStamp\BitStampSchema.cs" />
+    <Compile Include="Services\BitStamp\IBitStampApi.cs" />
     <Compile Include="Services\BIttrex\BittrexProvider.cs" />
     <Compile Include="Services\Coinbase\CoinbaseAuthenticator.cs" />
     <Compile Include="Services\Coinbase\CoinBaseSchema.cs" />
@@ -387,10 +390,15 @@
     <Compile Include="Services\CryptoCompare\ICryptoCompareApi.cs" />
     <Compile Include="Services\CryptoCompare\Model\CoinEntry.cs" />
     <Compile Include="Services\CryptoCompare\Model\CoinListResult.cs" />
+    <Compile Include="Services\Kraken\Converters\OhlcJsonConverter.cs" />
+    <Compile Include="Services\Kraken\IKrakenApi.cs" />
+    <Compile Include="Services\Kraken\KrakenAuthenticator.cs" />
     <Compile Include="Services\Kraken\KrakenCodeConverter.cs" />
     <Compile Include="Services\Poloniex\IPoloniexApi.cs" />
     <Compile Include="Services\Poloniex\PoloniexAuthenticator.cs" />
     <Compile Include="Services\Poloniex\PoloniexSchema.cs" />
+    <Compile Include="Services\Kraken\KrakenSchema.cs" />
+    <Compile Include="Services\Kraken\KrakenTimeInterval.cs" />
     <Compile Include="Services\Test\Model\HistoryLine.cs" />
     <Compile Include="Services\Test\Model\HistoryResponse.cs" />
     <Compile Include="Services\Test\ICryptoFacilitiesApi.cs" />

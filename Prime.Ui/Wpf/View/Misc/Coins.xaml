@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Misc.Coins"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             xmlns:local="clr-namespace:Prime.Core.Misc;assembly=Prime.Core"
+             d:DataContext="{d:DesignInstance viewModel:CoinsViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:GridValueColourConverter x:Key="GridValueColourConverter"/>
+        <local:TimeValueConverter x:Key="TimeValueConverter"/>
+    </UserControl.Resources>
+    <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
+        <StackPanel>
+            <DataGrid Width="Auto" ColumnWidth="*" ItemsSource="{Binding ListCoinItems, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Coin" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="45" Source="{Binding IconPath}" />
+                                    <StackPanel Orientation="Vertical" Margin="20,0,0,0" >
+                                        <TextBlock FontWeight="Bold" Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Description}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat=N4}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Volume" Binding="{Binding Volume, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Algorithm" Binding="{Binding Algorithm}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Proof Type" Binding="{Binding ProofType}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="Market Cap" Binding="{Binding MarketCap}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTemplateColumn Header="Last Trade" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical" >
+                                    <TextBlock Text="{Binding LastTradeTime, Converter={StaticResource TimeValueConverter}}"/>
+                                    <TextBlock Text="{Binding LastTradeDescription}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Change (%)" Binding="{Binding ChangePerc, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Foreground" Value="{Binding ChangePerc, Converter={StaticResource GridValueColourConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

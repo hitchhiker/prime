@@ -4,26 +4,41 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             xmlns:local="clr-namespace:Prime.Core.Misc;assembly=Prime.Core"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PortfolioViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:GridValueColourConverter x:Key="GridValueColourConverter"/>
+    </UserControl.Resources>
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel>
             <DataGrid Width="Auto" ColumnWidth="*" ItemsSource="{Binding ListPortfolioItems, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="" Width="45" IsReadOnly="True">
+                    <DataGridTemplateColumn Header="Market" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding IconPath}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="45" Source="{Binding IconPath}" />
+                                    <StackPanel Orientation="Vertical" Margin="20,0,0,0" >
+                                        <TextBlock FontWeight="Bold" Text="{Binding Market}"/>
+                                        <TextBlock Text="{Binding MarketDescription}"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Market" Binding="{Binding Market}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Units" Binding="{Binding Units, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Avg. Open" Binding="{Binding AvgOpen, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Invested" Binding="{Binding Invested, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="P/L ($)" Binding="{Binding ProfitLoss, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
-                    <DataGridTextColumn Header="P/L (%)" Binding="{Binding ProfitLossPerc, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                    <DataGridTextColumn Header="P/L (%)" HeaderStyle="{DynamicResource HeaderLeft}" Width="*"  CanUserSort="False"  Binding="{Binding ProfitLossPerc, StringFormat=N2}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Foreground" Value="{Binding ProfitLossPerc, Converter={StaticResource GridValueColourConverter}}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Value" Binding="{Binding Value, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Sell" Binding="{Binding Sell, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
                     <DataGridTextColumn Header="Buy" Binding="{Binding Buy, StringFormat=N2}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>

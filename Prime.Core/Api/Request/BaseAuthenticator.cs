@@ -23,17 +23,40 @@ namespace Prime.Core
 
         public readonly ApiKey ApiKey;
 
-        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
-
-        protected long GetNonce()
+        public static long GetNonce()
         {
-            return DateTime.UtcNow.Ticks - ArbTickEpoch;
+            return DateTime.UtcNow.Ticks;
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashSHA256(string message)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                return ToHex(sha256.ComputeHash(FromUtf8(message)));
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public byte[] HashSHA256Raw(string message)
+        {
+            using (SHA256 hash = SHA256.Create())
+            {
+                return hash.ComputeHash(FromUtf8(message));
+            }
         }
 
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512(string message, string secret)
         {
             return Convert.ToBase64String(HashHMACSHA512Raw(message, secret));
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashHMACSHA512(byte[] message, byte[] secret)
+        {
+            using (var hmacsha512 = new HMACSHA512(secret))
+                return Convert.ToBase64String(hmacsha512.ComputeHash(message));
         }
 
         // ReSharper disable once InconsistentNaming
@@ -83,6 +106,11 @@ namespace Prime.Core
         public byte[] FromUtf8(string data)
         {
             return Encoding.UTF8.GetBytes(data);
+        }
+
+        public byte[] FromBase64(string data)
+        {
+            return Convert.FromBase64String(data);
         }
 
         public abstract void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken);

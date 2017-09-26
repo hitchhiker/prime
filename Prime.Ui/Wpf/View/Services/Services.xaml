@@ -20,26 +20,16 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        
-        <ListBox Grid.Row="1" ItemsSource="{Binding Path=ServicesObservable}" Padding="10">
+
+        <ListBox Name="x" Grid.Row="1" ItemsSource="{Binding Path=ServicesObservable}" HorizontalAlignment="Stretch" Padding="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="10,10,0,10" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Path=Title}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Cursor="Hand"/>
-                        <TextBlock Text="{Binding Path=Description}"/>
+                    <StackPanel Width="{Binding ActualWidth, ElementName=x}" Cursor="Hand" Margin="10,10,0,10" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Path=Title}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" />
+                        <TextBlock Text="{Binding Path=Description}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <!--<ItemsControl Grid.Row="1" ItemsSource="{Binding Path=ServicesObservable}" Padding="10">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="0,0,0,10">
-                        <TextBlock Text="{Binding Path=Title}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Cursor="Hand"/>
-                        <TextBlock Text="{Binding Path=Description}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
     </Grid>
 </UserControl>

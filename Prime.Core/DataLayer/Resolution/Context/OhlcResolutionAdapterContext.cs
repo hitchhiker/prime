@@ -37,7 +37,7 @@ namespace Prime.Core
 
         public bool CanDiscoverApiProviders { get; set; } = true;
 
-        public Func<AssetPairProviders> ApiDiscoveryFunction { get; set; }
+        public Func<AssetPairKnownProviders> ApiDiscoveryFunction { get; set; }
 
         public TimeResolution TimeResolution { get; set; }
 
@@ -49,9 +49,9 @@ namespace Prime.Core
 
         public IOhlcProvider CurrencyConversionApiProvider { get; set; }
 
-        public AssetPairProviders ProvidersForDirect { get; set; }
+        public AssetPairKnownProviders ProvidersForDirect { get; set; }
 
-        public AssetPairProviders ProvidersForConversion { get; set; }
+        public AssetPairKnownProviders ProvidersForConversion { get; set; }
 
         public bool IsDataConverted { get; private set; }
 
@@ -70,7 +70,7 @@ namespace Prime.Core
 
         public void DiscoverAndApplyApiProviders(bool overwrite = false)
         {
-            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairProviderDiscovery(this).FindProviders();
+            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairProviderDiscovery(this).Discover();
 
             ProvidersForDirect = provs;
             ProvidersForConversion = provs.Via;
@@ -93,7 +93,7 @@ namespace Prime.Core
                 throw new Exception("Cannot locate an api " + nameof(IOhlcProvider) + " for " + Pair);
         }
 
-        private void DoIntermediary(AssetPairProviders providers)
+        private void DoIntermediary(AssetPairKnownProviders providers)
         {
             if (providers.IsPegged)
                 AssetPegged = providers.Pair.Asset2;

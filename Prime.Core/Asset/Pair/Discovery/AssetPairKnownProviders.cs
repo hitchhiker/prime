@@ -4,7 +4,7 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class AssetPairProviders
+    public class AssetPairKnownProviders
     {
         private IReadOnlyList<IOhlcProvider> _providers;
 
@@ -16,6 +16,8 @@ namespace Prime.Core
 
         public bool IsIntermediary { get; set; }
 
+        public bool IsReversed { get; set; }
+
         public IReadOnlyList<IOhlcProvider> Providers
         {
             get => _providers;
@@ -26,6 +28,6 @@ namespace Prime.Core
             }
         }
 
-        public AssetPairProviders Via { get; set; }
+        public AssetPairKnownProviders Via { get; set; }
     }
 }

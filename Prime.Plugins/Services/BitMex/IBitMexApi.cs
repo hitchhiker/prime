@@ -20,6 +20,9 @@ namespace plugins
         [Get("/user")]
         Task<BitMexSchema.UserInfo> GetUserInfoAsync();
 
+        [Get("/trade/bucketed?binSize={binSize}&partial=false&symbol={currencySymbol}&count={count}&reverse=true")]
+        Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistory([Path] string currencySymbol, [Path] string binSize, [Path] int count);
+
         [Get("/instrument/active")]
         Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActive();
 

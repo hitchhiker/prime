@@ -7,18 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
-using Jojatekok.PoloniexAPI;
+using KrakenApi;
 using LiteDB;
 using Nito.AsyncEx;
 using Prime.Core;
 using plugins;
 using Prime.Core.Wallet;
-using Prime.Plugins.Services.Poloniex;
+using Prime.Plugins.Services.BitMex;
+using Prime.Plugins.Services.Kraken;
 using Prime.Radiant.Components;
 using Prime.Utility;
 using Prime.Radiant;
 using Prime.Radiant.Components.IPFS.Messenging;
 using Prime.TestConsole;
+using AssetPair = Prime.Core.AssetPair;
 
 namespace TestConsole
 {
@@ -26,9 +28,25 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            //LatestPricesTest();
-            PoloniexGetBalancesTest();
-            
+            // Kraken.
+
+            // new Prime.TestConsole.Program.KrakenTests().GetBalances();
+            // new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
+            // new Prime.TestConsole.Program.KrakenTests().GetLatestPrice();
+            // new Prime.TestConsole.Program.KrakenTests().GetFundingMethod();
+            // new Prime.TestConsole.Program.KrakenTests().GetOhlc();
+            // new Prime.TestConsole.Program.KrakenTests().GetDepositAddresses();
+
+            // BitMex.
+
+            // new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+
+            // BitStamp.
+
+            new Prime.TestConsole.Program.BitStampTests().GetTicker();
+
+
+            //Sha256Test();
             //new ExchangeRateTest().Test();
 
             //LatestPricesTest();
@@ -57,29 +75,17 @@ namespace TestConsole
             //OhclTest();
         }
 
-        private static void PoloniexGetBalancesTest()
+        private static void Sha256Test()
         {
-            IWalletService service = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
-
-            var userCtx = new UserContext(ObjectId.NewObjectId(), "Alex");
-
-            var ctx = new NetworkProviderPrivateContext(userCtx);
-
-            service.GetBalancesAsync(ctx);
-
-            //PoloniexClient c = new PoloniexClient(PoloniexAuthenticator.Key, PoloniexAuthenticator.Secret);
-            //var balances = c.Wallet.GetBalancesAsync().Result;
-
-            //foreach (var balance in balances)
-            //{
-            //    Console.WriteLine($"{balance.Key}: {balance.Value}");
-            //}
-
+            var auth = new KrakenAuthenticator(null);
+            var sha = auth.HashSHA256("test");
         }
+
+
 
         private static void IpfsName(Radiant radiant)
         {
-            var n = new FileSystemNode {Hash = "ABCDE"};
+            var n = new FileSystemNode { Hash = "ABCDE" };
 
             var usr = UserContext.Current.IpfsMessenger;
 
@@ -185,7 +191,7 @@ namespace TestConsole
             var a2 = "USD".ToAssetRaw();
             var pair = new AssetPair(a1, a2);
 
-            var ohcl = new OhlcDataAdapter(new OhlcResolutionContext() {Pair = pair});
+            var ohcl = new OhlcDataAdapter(new OhlcResolutionContext() { Pair = pair });
 
             ohcl.Init();
 
