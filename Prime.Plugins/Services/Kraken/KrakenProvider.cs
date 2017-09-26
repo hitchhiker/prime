@@ -300,9 +300,9 @@ namespace plugins
                         Close = (double) ohlcResponse.close,
                         Low = (double) ohlcResponse.low,
                         High = (double) ohlcResponse.high,
-                        VolumeTo = (long) ohlcResponse.volume, // BUG: cast to long.
+                        VolumeTo = (long) ohlcResponse.volume, // Cast to long should be revised.
                         VolumeFrom = (long) ohlcResponse.volume,
-                        WeightedAverage = 0 // BUG: what is it?
+                        WeightedAverage = (double)ohlcResponse.vwap // Should be checked.
                     });
                 }
             }

@@ -37,9 +37,48 @@ namespace plugins
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
         public IRateLimiter RateLimiter => Limiter;
 
-        public Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IBitMexApi>(context);
+
+            string resolution = "";
+
+            switch (context.Market)
+            {
+                case TimeResolution.Minute:
+                    resolution = "1m";
+                    break;
+                case TimeResolution.Hour:
+                    resolution = "1h";
+                    break;
+                case TimeResolution.Day:
+                    resolution = "1d";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("BitMex does not support specified time resolution");
+            }
+
+            // BUG: how to properly select number of records to receive? Hardcoded default is 100.
+            var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, 100);
+
+            var ohlc = new OhclData(context.Market);
+            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+
+            foreach (var instrActive in r)
+            {
+                ohlc.Add(new OhclEntry(seriesId, instrActive.timestamp, this)
+                {
+                    Open = (double)instrActive.open,
+                    Close = (double)instrActive.close,
+                    Low = (double)instrActive.low,
+                    High = (double)instrActive.high,
+                    VolumeTo = (long)instrActive.volume,
+                    VolumeFrom = (long)instrActive.volume,
+                    WeightedAverage = (double)instrActive.vwap // Should be checked.
+                });
+            }
+
+            return ohlc;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

@@ -13,6 +13,28 @@ namespace plugins.Services.BitMex
             public string address;
         }
 
+        internal class BucketedTradeEntriesResponse : List<BucketedTradeEntryResponse>
+        {
+            
+        }
+
+        internal class BucketedTradeEntryResponse
+        {
+            public DateTime timestamp;
+            public string symbol;
+            public decimal open;
+            public decimal high;
+            public decimal low;
+            public decimal close;
+            public decimal trades;
+            public decimal volume;
+            public decimal vwap;
+            public decimal lastSize;
+            public decimal turnover;
+            public decimal homeNotional;
+            public decimal foreignNotional;
+        }
+
         internal class WalletInfo
         {
             public int account;
@@ -181,16 +203,16 @@ namespace plugins.Services.BitMex
             public string bankruptLimitUpPrice;
             public string prevTotalVolume;
             public string totalVolume;
-            public string volume;
+            public double volume;
             public string volume24h;
             public string prevTotalTurnover;
             public string totalTurnover;
             public string turnover;
             public string turnover24h;
             public string prevPrice24h;
-            public string vwap;
-            public string highPrice;
-            public string lowPrice;
+            public double vwap;
+            public double highPrice;
+            public double lowPrice;
             public decimal lastPrice;
             public string lastPriceProtected;
             public string lastTickDirection;
@@ -203,7 +225,7 @@ namespace plugins.Services.BitMex
             public string impactAskPrice;
             public string hasLiquidity;
             public string openInterest;
-            public string openValue;
+            public double openValue;
             public string fairMethod;
             public string fairBasisRate;
             public string fairBasis;
