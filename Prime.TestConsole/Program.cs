@@ -43,8 +43,11 @@ namespace TestConsole
 
             // BitStamp.
 
-            new Prime.TestConsole.Program.BitStampTests().GetTicker();
+            // new Prime.TestConsole.Program.BitStampTests().GetTicker();
 
+            // Poloniex.
+
+            new Prime.TestConsole.Program.PoloniexTests().GetBalances();
 
             //Sha256Test();
             //new ExchangeRateTest().Test();

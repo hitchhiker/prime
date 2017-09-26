@@ -210,6 +210,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Program.ExchangeRateTest.cs" />
+    <Compile Include="Program.PoloniexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>

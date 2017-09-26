@@ -8,9 +8,12 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public interface IPoloniexApi
+    internal interface IPoloniexApi
     {
-        [Post("/tradingApi?command=returnBalances")]
-        Task<IEnumerable> GetBalancesAsync([Body] String nonce, [Header("Sign")] String sign);
+        [Post("/tradingApi")]
+        Task<Dictionary<string, decimal>> GetBalancesAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
+        [Post("/tradingApi")]
+        Task<PoloniexSchema.BalancesDetailedResponse> GetBalancesDetailedAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
     }
 }

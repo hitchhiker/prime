@@ -18,7 +18,7 @@ using RestEase;
 
 namespace plugins
 {
-    public class PoloniexProvider : BaseAuthenticator, IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
+    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -55,8 +55,13 @@ namespace plugins
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<PoloniexClient>(context);
-            var r = await api.Wallet.GetBalancesAsync();
+            var api = GetApi<IPoloniexApi>(context);
+
+            var body = CreatePoloniexBody();
+            body.Add("command", "returnBalances");
+
+            var r = await api.GetBalancesAsync(body);
+
             return r != null;
         }
 
@@ -96,8 +101,8 @@ namespace plugins
             return t;
         }
 
-        public bool CanMultiDepositAddress { get; }
-        public bool CanGenerateDepositAddress { get; }
+        public bool CanMultiDepositAddress { get; } = true;
+        public bool CanGenerateDepositAddress { get; } = true;
 
         public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
@@ -108,61 +113,36 @@ namespace plugins
         {
             var api = this.GetApi<IPoloniexApi>(context);
 
-            long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+            var body = CreatePoloniexBody();
 
-            String nonce = (DateTime.UtcNow.Ticks - ArbTickEpoch).ToString();
+            body.Add("command", "returnCompleteBalances");
 
-            ///////
-
-            try
-            {
-
-                var values = new Dictionary<string, string>
-                {
-                    { "nonce", nonce },
-                };
-
-                string strContent = values.Aggregate("", (s, pair) => s += $"{pair.Key}={pair.Value}&").TrimEnd("&");
-
-                String hash = HashHMACSHA512(strContent, PoloniexAuthenticator.Secret);
-                //String hash = HashHMACSHA512Hex("1", "2");
-
-                var content = new FormUrlEncodedContent(values);
-                
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Add("Key", PoloniexAuthenticator.Key);
-                client.DefaultRequestHeaders.Add("Sign", hash);
-                
-                var response = client.PostAsync($"{PoloniexApiUrl}/tradingApi?command=returnBalances", content).Result;
-
-                var responseString = response.Content.ReadAsStringAsync().Result;
-
-
-
-                ///////////
-
-
-
-                //var r = api.GetBalancesAsync(nonce, hash).Result;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
+            var r = await api.GetBalancesDetailedAsync(body);
 
             var results = new BalanceResults(this);
 
+            foreach (var kvp in r)
+            {
+                var c = kvp.Key.ToAsset(this);
 
-            //foreach (var balance in r)
-            //{
-            //    var c = balance.Key.ToAsset(this);
-            //    results.AddBalance(c, (decimal) balance.Value.QuoteAvailable);
-            //    results.AddAvailable(c, (decimal) balance.Value.QuoteAvailable);
-            //    results.AddReserved(c, (decimal) balance.Value.QuoteOnOrders);
-            //}
+                results.Add(new BalanceResult(c)
+                {
+                    Available = kvp.Value.available,
+                    Reserved = kvp.Value.onOrders,
+                    Balance = kvp.Value.available
+                });
+            }
+
             return results;
+        }
+
+        private Dictionary<string, object> CreatePoloniexBody()
+        {
+            var body = new Dictionary<string, object>();
+
+            body.Add("nonce", BaseAuthenticator.GetNonce());
+
+            return body;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -214,21 +194,6 @@ namespace plugins
                 });
             }
             return r;
-        }
-
-        public PoloniexProvider()
-        {
-            // TODO: DELETE ME
-        }
-
-        public PoloniexProvider(ApiKey apiKey) : base(apiKey)
-        {
-            // TODO: DELETE ME
-        }
-
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            // TODO: DELETE ME
         }
     }
 }
