@@ -99,12 +99,21 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
 
                 var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
+                var ctxAll = new WalletAddressContext(false, UserContext.Current);
 
                 try
                 {
                     var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
+                    var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
 
+                    Console.WriteLine("Addresses for 1 asset");
                     foreach (var address in addresses)
+                    {
+                        Console.WriteLine($"{address.Asset} : {address.Address}");
+                    }
+
+                    Console.WriteLine("Addresses for all assets");
+                    foreach (var address in addressesAll)
                     {
                         Console.WriteLine($"{address.Asset} : {address.Address}");
                     }
