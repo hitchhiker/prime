@@ -3,6 +3,7 @@
     internal enum PoloniexBodyType
     {
         ReturnBalances,
-        ReturnCompleteBalances
+        ReturnCompleteBalances,
+        ReturnDepositAddresses
     }
 }

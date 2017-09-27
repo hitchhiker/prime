@@ -14,6 +14,11 @@ namespace Prime.Plugins.Services.Poloniex
             
         }
 
+        internal class DepositAddressesResponse : Dictionary<string, string>
+        {
+            
+        }
+
         internal class TickerEntryResponse
         {
             public int id;

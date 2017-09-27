@@ -49,7 +49,8 @@ namespace TestConsole
             // new Prime.TestConsole.Program.PoloniexTests().GetBalances();
             // new Prime.TestConsole.Program.PoloniexTests().ApiTest();
             // new Prime.TestConsole.Program.PoloniexTests().AssetsTest();
-            new Prime.TestConsole.Program.PoloniexTests().LatestPrices();
+            // new Prime.TestConsole.Program.PoloniexTests().LatestPrices();
+            new Prime.TestConsole.Program.PoloniexTests().GetDepositAddresses();
 
 
             //Sha256Test();

@@ -117,14 +117,14 @@ namespace Prime.Plugins.Services.Poloniex
         public bool CanMultiDepositAddress { get; } = true;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = this.GetApi<IPoloniexApi>(context);
+            var api = GetApi<IPoloniexApi>(context);
 
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnCompleteBalances);
 
@@ -161,6 +161,9 @@ namespace Prime.Plugins.Services.Poloniex
                 case PoloniexBodyType.ReturnCompleteBalances:
                     body.Add("command", "returnCompleteBalances");
                     break;
+                case PoloniexBodyType.ReturnDepositAddresses:
+                    body.Add("command", "returnDepositAddresses");
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);
             }
@@ -175,16 +178,30 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<PoloniexClient>(context);
-            var r = await api.Wallet.GetDepositAddressesAsync();
+            var api = GetApi<IPoloniexApi>(context);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
             var addresses = new WalletAddresses();
-            foreach (var i in r.Where(x => Equals(x.Key.ToAsset(this), context.Asset)))
+
+            // TODO: check using verified account.
+            try
             {
-                if (string.IsNullOrWhiteSpace(i.Value))
-                    continue;
-                addresses.Add(new WalletAddress(this, i.Key.ToAsset(this)) { Address = i.Value });
+                var r = await api.GetDepositAddresses(body);
+                var assetBalances = r.Where(x => Equals(x.Key.ToAsset(this), context.Asset)).ToArray();
+
+                foreach (var balance in assetBalances)
+                {
+                    if (string.IsNullOrWhiteSpace(balance.Value))
+                        continue;
+
+                    addresses.Add(new WalletAddress(this, balance.Key.ToAsset(this)) { Address = balance.Value });
+                }
             }
+            catch (Exception e)
+            {
+                throw new ApiResponseException("Unable to get deposit addresses, please check if your account is verified", this);
+            }
+
             return addresses;
         }
 

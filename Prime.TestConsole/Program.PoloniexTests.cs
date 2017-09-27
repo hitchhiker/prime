@@ -81,11 +81,33 @@ namespace Prime.TestConsole
 
                 var ctx = new PublicPriceContext(pair);
 
-                var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+                try
+                {
+                    var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+
+                    Console.WriteLine($"Latest price for {pair} is {price.Price}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            public void GetDepositAddresses()
+            {
+                var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
+
+                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
 
                 try
                 {
-                    Console.WriteLine($"Latest price for {pair} is {price.Price}");
+                    var addresses = AsyncContext.Run(() => provider.GetDepositAddressesAsync(ctx));
+
+                    foreach (var address in addresses)
+                    {
+                        Console.WriteLine($"{address.Asset} : {address.Address}");
+                    }
                 }
                 catch (Exception e)
                 {
