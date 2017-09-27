@@ -115,6 +115,29 @@ namespace Prime.TestConsole
                     throw;
                 }
             }
+
+            public void GetChartData()
+            {
+                var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
+                var pair = new AssetPair("BTC", "ETH", provider);
+
+                var ctx = new OhlcContext(pair, TimeResolution.Day, new TimeRange(DateTime.UtcNow.AddDays(-5), DateTime.UtcNow, TimeResolution.Day), null);
+
+                try
+                {
+                    var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
+
+                    foreach (var entry in ohlc)
+                    {
+                        Console.WriteLine($"{entry.DateTimeUtc}: {entry.High}, {entry.Low}, {entry.Open}, {entry.Close}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
         }
     }
 }

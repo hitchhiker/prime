@@ -186,7 +186,7 @@ namespace Prime.Plugins.Services.Poloniex
             // TODO: check using verified account.
             try
             {
-                var r = await api.GetDepositAddresses(body);
+                var r = await api.GetDepositAddressesAsync(body);
                 var assetBalances = r.Where(x => Equals(x.Key.ToAsset(this), context.Asset)).ToArray();
 
                 foreach (var balance in assetBalances)
@@ -210,28 +210,43 @@ namespace Prime.Plugins.Services.Poloniex
             var pair = context.Pair;
             var market = context.Market;
 
-            var api = GetApi<PoloniexClient>(context);
-            var cpair = new CurrencyPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-            var mp = MarketPeriod.Hours2;
-            var ds = DateTime.UtcNow.AddDays(-10);
-            var de = DateTime.UtcNow;
-            var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
-            var r = new OhlcData(market);
+            var timeStampStart = (long)context.Range.UtcFrom.ToUnixTimeStamp();
+            var timeStampEnd = (long)context.Range.UtcTo.ToUnixTimeStamp();
+
+            var period = ConvertToPoloniexInterval(market);
+
+            var api = GetApi<IPoloniexApi>(context);
+            var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period);
+
+            var ohlc = new OhlcData(market);
             var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
-            foreach (var i in apir)
+
+            foreach (var ohlcEntry in r)
             {
-                r.Add(new OhlcEntry(seriesid, i.Time, this)
+                ohlc.Add(new OhlcEntry(seriesid, ohlcEntry.date.ToUtcDateTime(), this)
                 {
-                    Open = i.Open,
-                    Close = i.Close,
-                    Low = i.Low,
-                    High = i.High,
-                    VolumeTo = (long)i.VolumeQuote,
-                    VolumeFrom = (long)i.VolumeBase,
-                    WeightedAverage = i.WeightedAverage
+                    Open = ohlcEntry.open,
+                    Close = ohlcEntry.close,
+                    Low = ohlcEntry.low,
+                    High = ohlcEntry.high,
+                    VolumeTo = ohlcEntry.quoteVolume, // BUG: volumes are stored in long, but API returns doubles. Is it a bug?
+                    VolumeFrom = ohlcEntry.volume,
+                    WeightedAverage = ohlcEntry.weightedAverage
                 });
             }
-            return r;
+
+            return ohlc;
+        }
+
+        private PoloniexTimeInterval ConvertToPoloniexInterval(TimeResolution resolution)
+        {
+            switch (resolution)
+            {
+                case TimeResolution.Day:
+                    return PoloniexTimeInterval.Day1;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
+            }
         }
     }
 }

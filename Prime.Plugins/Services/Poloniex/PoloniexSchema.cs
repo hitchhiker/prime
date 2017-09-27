@@ -19,6 +19,23 @@ namespace Prime.Plugins.Services.Poloniex
             
         }
 
+        internal class ChartEntriesResponse : List<ChartEntryResponse>
+        {
+            
+        }
+
+        internal class ChartEntryResponse
+        {
+            public long date;
+            public double high;
+            public double low;
+            public double open;
+            public double close;
+            public long volume;
+            public long quoteVolume;
+            public double weightedAverage;
+        }
+
         internal class TickerEntryResponse
         {
             public int id;
