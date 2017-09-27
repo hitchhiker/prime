@@ -405,6 +405,9 @@
     <Compile Include="View\Exchange\Exchanges.xaml.cs">
       <DependentUpon>Exchanges.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Markets\MarketControl.xaml.cs">
+      <DependentUpon>MarketControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Markets\MarketsDiscovery.xaml.cs">
       <DependentUpon>MarketsDiscovery.xaml</DependentUpon>
     </Compile>
@@ -517,6 +520,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Exchange\Exchanges.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Markets\MarketControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -771,9 +778,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Asset\img\BTC.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Asset\img\Chart.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Asset\img\Dash.png" />
