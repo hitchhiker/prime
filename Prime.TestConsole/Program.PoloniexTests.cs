@@ -73,6 +73,26 @@ namespace Prime.TestConsole
                     throw;
                 }
             }
+
+            public void LatestPrices()
+            {
+                var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
+                var pair = new AssetPair("BTC", "ETH");
+
+                var ctx = new PublicPriceContext(pair);
+
+                var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+
+                try
+                {
+                    Console.WriteLine($"Latest price for {pair} is {price.Price}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
         }
     }
 }

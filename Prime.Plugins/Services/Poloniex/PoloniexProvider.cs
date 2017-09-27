@@ -52,14 +52,38 @@ namespace Prime.Plugins.Services.Poloniex
             var api = GetApi<IPoloniexApi>(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnBalances);
 
-            var r = await api.GetBalancesAsync(body);
+            try
+            {
+                var r = await api.GetBalancesAsync(body);
 
-            return r != null && r.Count > 0;
+                return r != null && r.Count > 0;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            return null;
+            var api = GetApi<IPoloniexApi>(context);
+
+            var r = await api.GetTickerAsync();
+
+            var assetPairsInfo = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair)).ToList();
+
+            if (assetPairsInfo.Count < 1)
+                throw new ApiResponseException("Specified asset pair is not supported by this API", this);
+
+            var selectedPair = assetPairsInfo[0];
+
+            var price = new LatestPrice()
+            {
+                BaseAsset = context.Pair.Asset1,
+                Price = new Money(selectedPair.Value.last)
+            };
+
+            return price;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -82,12 +106,9 @@ namespace Prime.Plugins.Services.Poloniex
 
             foreach (var rPair in r)
             {
-                var assets = rPair.Key.Split(new char[] {'_'});
+                var pair = rPair.Key.ToAssetPair(this);
 
-                if(assets.Length != 2)
-                    throw new ApiResponseException("Invalid asset pair format", this);
-
-                pairs.Add(new AssetPair(assets[0], assets[1], this));
+                pairs.Add(pair);
             }
 
             return pairs;
@@ -149,8 +170,6 @@ namespace Prime.Plugins.Services.Poloniex
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-
-
             return null;
         }
 
