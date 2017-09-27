@@ -4,6 +4,6 @@ namespace Prime.Core
 {
     public interface IOhlcProvider : INetworkProvider
     {
-        Task<OhclData> GetOhlcAsync(OhlcContext context);
+        Task<OhlcData> GetOhlcAsync(OhlcContext context);
     }
 }

@@ -34,7 +34,7 @@ namespace Prime.Core
             return Found.Covers(range) || Unavailable.Covers(range) || Requested.Covers(range);
         }
 
-        public virtual OhclData Include(TimeRange rangeAttempted, OhclData data, bool acceptLiveRange = false)
+        public virtual OhlcData Include(TimeRange rangeAttempted, OhlcData data, bool acceptLiveRange = false)
         {
             var range  = data.GetTimeRange(rangeAttempted.TimeResolution);
 

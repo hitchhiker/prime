@@ -256,7 +256,7 @@ namespace Prime.Plugins.Services.Kraken
             return walletAddresses;
         }
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = GetApi<IKrakenApi>(context);
 
@@ -269,7 +269,7 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            var ohlc = new OhclData(context.Market);
+            var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
 
             if (r.result.pairs.Count != 0)
@@ -279,7 +279,7 @@ namespace Prime.Plugins.Services.Kraken
                     var time = ((long)ohlcResponse.time).ToUtcDateTime();
 
                     // BUG: ohlcResponse.volume is double ~0.2..10.2, why do we cast to long?
-                    ohlc.Add(new OhclEntry(seriesId, time, this)
+                    ohlc.Add(new OhlcEntry(seriesId, time, this)
                     {
                         Open = (double) ohlcResponse.open,
                         Close = (double) ohlcResponse.close,

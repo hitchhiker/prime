@@ -132,7 +132,7 @@ namespace plugins
             return u.ToList();
         }
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var range = context.Range;
             var market = context.Market;
@@ -160,7 +160,7 @@ namespace plugins
             if (apir.IsError())
                 return null;
 
-            var r = new OhclData(market);
+            var r = new OhlcData(market);
             var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
             var from = apir.TimeFrom;
             var to = apir.TimeTo;
@@ -168,7 +168,7 @@ namespace plugins
             {
                 var t = ((double) i.time).UnixTimestampToDateTime();
 
-                r.Add(new OhclEntry(seriesid, t, this)
+                r.Add(new OhlcEntry(seriesid, t, this)
                 {
                     Open = i.open,
                     Close = i.close,

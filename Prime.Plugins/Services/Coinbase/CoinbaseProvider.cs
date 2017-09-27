@@ -75,7 +75,7 @@ namespace plugins
             return t;
         }
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             // BUG: usage of Poliniex in Coinbase.
             var api = GetApi<PoloniexClient>(null);
@@ -84,11 +84,11 @@ namespace plugins
             var ds = DateTime.UtcNow.AddDays(-10);
             var de = DateTime.UtcNow;
             var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
-            var r = new OhclData(context.Market);
+            var r = new OhlcData(context.Market);
             var seriesid = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
             foreach (var i in apir)
             {
-                r.Add(new OhclEntry(seriesid, i.Time, this)
+                r.Add(new OhlcEntry(seriesid, i.Time, this)
                 {
                     Open = i.Open,
                     Close = i.Close,

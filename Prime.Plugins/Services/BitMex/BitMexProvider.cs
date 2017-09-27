@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
         public IRateLimiter RateLimiter => Limiter;
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = GetApi<IBitMexApi>(context);
 
@@ -56,12 +56,12 @@ namespace Prime.Plugins.Services.BitMex
             // BUG: how to properly select number of records to receive? Hardcoded default is 100.
             var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, 100);
 
-            var ohlc = new OhclData(context.Market);
+            var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
 
             foreach (var instrActive in r)
             {
-                ohlc.Add(new OhclEntry(seriesId, instrActive.timestamp, this)
+                ohlc.Add(new OhlcEntry(seriesId, instrActive.timestamp, this)
                 {
                     Open = (double)instrActive.open,
                     Close = (double)instrActive.close,

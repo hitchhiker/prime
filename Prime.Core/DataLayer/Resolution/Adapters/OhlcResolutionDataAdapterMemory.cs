@@ -15,7 +15,7 @@ namespace Prime.Core
             _adapter = adapter;
         }
 
-        private static readonly UniqueList<OhclEntry> MemoryCache = new UniqueList<OhclEntry>();
+        private static readonly UniqueList<OhlcEntry> MemoryCache = new UniqueList<OhlcEntry>();
         private static readonly UniqueList<CoverageMapMemory> CoverageMapsCache = new UniqueList<CoverageMapMemory>();
 
         private static readonly object Lock = new object();
@@ -27,7 +27,7 @@ namespace Prime.Core
 
         public OhlcResolutionAdapter Adapter => _adapter;
 
-        public OhclData GetRange(TimeRange timeRange)
+        public OhlcData GetRange(TimeRange timeRange)
         {
             lock (Lock) { 
 
@@ -39,13 +39,13 @@ namespace Prime.Core
                     return null;
 
                 var r = MemoryCache.Where(x => x.SeriesId == seriesId && x.DateTimeUtc >= timeRange.UtcFrom && x.DateTimeUtc <= timeRange.UtcTo).ToList();
-                var d = new OhclData(timeRange.TimeResolution);
+                var d = new OhlcData(timeRange.TimeResolution);
                 d.AddRange(r);
                 return d;
             }
         }
 
-        public void StoreRange(OhclData data, TimeRange rangeAttempted)
+        public void StoreRange(OhlcData data, TimeRange rangeAttempted)
         {
             lock (Lock)
             {

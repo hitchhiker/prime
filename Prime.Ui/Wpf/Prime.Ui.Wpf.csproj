@@ -353,7 +353,7 @@
     <Compile Include="Components\Layout\LayoutUpdateStrategy.cs" />
     <Compile Include="Components\LiveCharts\CartesianMapperBase.cs" />
     <Compile Include="Components\LiveCharts\DateAxis\PrimeDateAxisWindow.cs" />
-    <Compile Include="Components\LiveCharts\OhclDataUpdatedEvent.cs" />
+    <Compile Include="Components\LiveCharts\OhlcDataUpdatedEvent.cs" />
     <Compile Include="Components\LiveCharts\Point\FinancialMapperBase.cs" />
     <Compile Include="Components\LiveCharts\Point\IInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Point\InstantChartPoint.cs" />

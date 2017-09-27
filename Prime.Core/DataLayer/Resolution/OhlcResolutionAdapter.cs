@@ -58,13 +58,13 @@ namespace Prime.Core
 
         public bool StorageEnabled => Ctx.StorageEnabled;
 
-        private readonly Dictionary<int, IOhclResolutionApi> _apiAdapters = new Dictionary<int, IOhclResolutionApi>();
+        private readonly Dictionary<int, IOhlcResolutionApi> _apiAdapters = new Dictionary<int, IOhlcResolutionApi>();
 
         private readonly Dictionary<int, IOhlcResolutionAdapterStorage> _storageAdapters = new Dictionary<int, IOhlcResolutionAdapterStorage>();
 
         public IReadOnlyList<IOhlcResolutionAdapterStorage> StorageAdapters => _storageAdapters.OrderBy(x => x.Key).Select(x => x.Value).ToList();
 
-        public IReadOnlyList<IOhclResolutionApi> ApiAdapters => _apiAdapters.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+        public IReadOnlyList<IOhlcResolutionApi> ApiAdapters => _apiAdapters.OrderBy(x => x.Key).Select(x => x.Value).ToList();
 
         public static ObjectId GetHash(AssetPair pair, TimeResolution market, Network network)
         {
@@ -76,14 +76,14 @@ namespace Prime.Core
             return GetHash(Pair, TimeResolution, network);
         }
 
-        public OhclData Request(TimeRange timeRange, bool allowLive = false)
+        public OhlcData Request(TimeRange timeRange, bool allowLive = false)
         {
             var data = RequestInternal(timeRange, allowLive);
             IsDataConverted = data?.WasConverted == true;
             return data;
         }
 
-        private OhclData RequestInternal(TimeRange timeRange, bool allowLive = false)
+        private OhlcData RequestInternal(TimeRange timeRange, bool allowLive = false)
         {
             if (!_apiAdapters.Any() && !_storageAdapters.Any())
                 return null;
@@ -93,7 +93,7 @@ namespace Prime.Core
 
             lock (_lock)
             {
-                OhclData results = null;
+                OhlcData results = null;
 
                 if (StorageEnabled)
                     results = ContinuousOrMergedStorage(timeRange, allowLive);
@@ -112,18 +112,18 @@ namespace Prime.Core
             }
         }
 
-        private OhclData CollectApi(TimeRange range, OhclData results)
+        private OhlcData CollectApi(TimeRange range, OhlcData results)
         {
             var apiresults = ApiAdapters.Select(x => x.GetRange(range)).FirstOrDefault(o => o.IsNotEmpty());
 
-            results = results ?? new OhclData(range.TimeResolution);
+            results = results ?? new OhlcData(range.TimeResolution);
             results.Merge(apiresults);
             return results;
         }
 
-        private OhclData ContinuousOrMergedStorage(TimeRange timeRange, bool allowLive = false)
+        private OhlcData ContinuousOrMergedStorage(TimeRange timeRange, bool allowLive = false)
         {
-            var partials = new List<OhclData>();
+            var partials = new List<OhlcData>();
 
             foreach (var r in StorageAdapters.Select(x => x.GetRange(timeRange)))
             {
@@ -142,7 +142,7 @@ namespace Prime.Core
             if (!partials.Any())
                 return null;
 
-            var mergedData = new OhclData(partials.First());
+            var mergedData = new OhlcData(partials.First());
             mergedData.ConvertedFrom = partials.Select(x => x.ConvertedFrom).FirstOrDefault(x=>x!=null) ?? mergedData.ConvertedFrom;
 
             foreach (var i in partials)
@@ -154,9 +154,9 @@ namespace Prime.Core
             return mergedData;
         }
 
-        private void StoreResults(TimeRange timeRange, OhclData results)
+        private void StoreResults(TimeRange timeRange, OhlcData results)
         {
-            var clone = new OhclData(results); // ienumerable modifications during storage process.
+            var clone = new OhlcData(results); // ienumerable modifications during storage process.
 
             if (timeRange.TimeResolution != TimeResolution.Day)
                 clone.RemoveAll(x => x.DateTimeUtc.IsLive(timeRange.TimeResolution));

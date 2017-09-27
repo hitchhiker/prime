@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.Poloniex
 
                 return r != null && r.Count > 0;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Poloniex
         public bool CanMultiDepositAddress { get; } = true;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
@@ -205,7 +205,7 @@ namespace Prime.Plugins.Services.Poloniex
             return addresses;
         }
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var pair = context.Pair;
             var market = context.Market;
@@ -216,11 +216,11 @@ namespace Prime.Plugins.Services.Poloniex
             var ds = DateTime.UtcNow.AddDays(-10);
             var de = DateTime.UtcNow;
             var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
-            var r = new OhclData(market);
+            var r = new OhlcData(market);
             var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
             foreach (var i in apir)
             {
-                r.Add(new OhclEntry(seriesid, i.Time, this)
+                r.Add(new OhlcEntry(seriesid, i.Time, this)
                 {
                     Open = i.Open,
                     Close = i.Close,

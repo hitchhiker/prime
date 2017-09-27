@@ -11,7 +11,7 @@ namespace Prime.Ui.Wpf
 
         public decimal Y { get; set; }
 
-        public InstantChartPoint(OhclEntry i)
+        public InstantChartPoint(OhlcEntry i)
         {
             X = i.DateTimeUtc.ToInstant();
             Y = (decimal) i.Close;

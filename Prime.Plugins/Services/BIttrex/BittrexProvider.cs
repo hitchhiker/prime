@@ -139,7 +139,7 @@ namespace plugins
             return null;
         }
 
-        public OhclData GetOhlc(AssetPair pair, TimeResolution market)
+        public OhlcData GetOhlc(AssetPair pair, TimeResolution market)
         {
             return null;
         }

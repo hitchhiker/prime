@@ -17,7 +17,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void OnParentModelOnDataUpdate(object s, EventArgs e)
         {
-            if (!(e is OhclDataUpdatedEvent oe) || !oe.IsLive)
+            if (!(e is OhlcDataUpdatedEvent oe) || !oe.IsLive)
                 return;
 
             var d = oe.NewData;

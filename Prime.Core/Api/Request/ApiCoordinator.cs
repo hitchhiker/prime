@@ -64,12 +64,12 @@ namespace Prime.Core
             return AsyncContext.Run(() => GetCoinInfoAsync(provider, context));
         }
 
-        public static Task<ApiResponse<OhclData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
+        public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
             return ApiHelpers.WrapException(() => provider.GetOhlcAsync(context), "GetOhlc", provider, context);
         }
 
-        public static ApiResponse<OhclData> GetOhlc(IOhlcProvider provider, OhlcContext context)
+        public static ApiResponse<OhlcData> GetOhlc(IOhlcProvider provider, OhlcContext context)
         {
             return AsyncContext.Run(() => GetOhlcAsync(provider, context));
         }
