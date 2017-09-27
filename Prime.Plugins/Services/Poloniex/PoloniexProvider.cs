@@ -117,9 +117,32 @@ namespace Prime.Plugins.Services.Poloniex
         public bool CanMultiDepositAddress { get; } = true;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IPoloniexApi>(context);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
+
+            var addresses = new WalletAddresses();
+
+            // TODO: check using verified account.
+            try
+            {
+                var r = await api.GetDepositAddressesAsync(body);
+
+                foreach (var balance in r)
+                {
+                    if (string.IsNullOrWhiteSpace(balance.Value))
+                        continue;
+
+                    addresses.Add(new WalletAddress(this, balance.Key.ToAsset(this)) { Address = balance.Value });
+                }
+            }
+            catch
+            {
+                throw new ApiResponseException("Unable to get deposit addresses, please check that your account is verified", this);
+            }
+
+            return addresses;
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -240,6 +263,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         private PoloniexTimeInterval ConvertToPoloniexInterval(TimeResolution resolution)
         {
+            // TODO: implement all TimeResolution cases.
             switch (resolution)
             {
                 case TimeResolution.Day:
