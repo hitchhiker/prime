@@ -23,6 +23,11 @@ namespace Prime.Core
             return OpResult.From(context.GetDb().Upsert(doc));
         }
 
+        public static OpResult SaveAll<T>(this IEnumerable<T> docs, IDataContext context) where T : IModelBase
+        {
+            return OpResult.From(context.GetDb().Upsert(docs));
+        }
+
         public static OpResult Delete<T>(this T doc, IDataContext context) where T : IModelBase
         {
             return OpResult.From(context.GetDb().Delete<T>(doc.Id));
@@ -37,11 +42,6 @@ namespace Prime.Core
         {
             var doc = BsonMapper.Global.ToDocument(model.GetType(), model);
             return BsonMapper.Global.ToObject<T>(doc);
-        }
-
-        public static OpResult SaveAll<T>(this IEnumerable<T> doc, IDataContext context) where T : IModelBase
-        {
-            return doc.Select(x => x.Save(context)).FirstOrDefault(x => !x.IsSuccess);
         }
     }
 }
