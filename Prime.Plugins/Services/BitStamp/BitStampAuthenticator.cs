@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Prime.Core;
 
-namespace plugins
+namespace Prime.Plugins.Services.BitStamp
 {
     public class BitStampAuthenticator : BaseAuthenticator
     {

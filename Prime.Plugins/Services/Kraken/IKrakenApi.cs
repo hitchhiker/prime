@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using NodaTime;
-using Prime.Plugins.Services.Kraken;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.Kraken
 {
     internal interface IKrakenApi
     {

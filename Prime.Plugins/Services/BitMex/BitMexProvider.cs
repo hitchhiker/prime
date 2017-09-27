@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
-using Nito.AsyncEx;
 using Prime.Core;
 using Prime.Plugins.Services.Base;
-using Prime.Plugins.Services.BitMex;
 using Prime.Utility;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {

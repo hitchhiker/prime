@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Prime.Core;
 using Jojatekok.PoloniexAPI;
 using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
-using Newtonsoft.Json.Linq;
-using Nito.AsyncEx;
+using Prime.Core;
 using Prime.Plugins.Services.Base;
-using Prime.Plugins.Services.Poloniex;
 using Prime.Utility;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.Poloniex
 {
     public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {

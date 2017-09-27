@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace plugins.Services.BitStamp
+namespace Prime.Plugins.Services.BitStamp
 {
     internal class BitStampSchema
     {

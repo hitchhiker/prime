@@ -7,6 +7,7 @@ using KrakenApi;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Core;
+using Prime.Plugins.Services.Kraken;
 using AssetPair = Prime.Core.AssetPair;
 
 namespace Prime.TestConsole

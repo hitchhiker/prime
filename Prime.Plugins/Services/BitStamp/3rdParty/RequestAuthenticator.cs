@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Prime.Core;
-using plugins;
+using Prime.Plugins.Services.BitStamp;
 
 namespace Rokolab.BitstampClient
 {

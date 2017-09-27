@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using plugins.Services.BitMex;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.BitMex
 {
     internal interface IBitMexApi
     {

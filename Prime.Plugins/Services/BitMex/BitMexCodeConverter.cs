@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Prime.Core;
 
-namespace plugins
+namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexCodeConverter: AssetCodeConverterBase
     {

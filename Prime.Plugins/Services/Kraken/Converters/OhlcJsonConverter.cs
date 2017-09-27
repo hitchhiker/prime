@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Prime.Plugins.Services.Kraken;
 
-namespace plugins
+namespace Prime.Plugins.Services.Kraken.Converters
 {
     internal class OhlcJsonConverter : JsonConverter
     {

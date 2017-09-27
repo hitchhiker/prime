@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
-using KrakenApi;
 using LiteDB;
 using Nito.AsyncEx;
 using Prime.Core;

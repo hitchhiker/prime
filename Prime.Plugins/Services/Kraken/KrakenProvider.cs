@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Prime.Core;
-using Jojatekok.PoloniexAPI;
-using KrakenApi;
 using LiteDB;
 using Newtonsoft.Json;
+using Prime.Core;
 using Prime.Plugins.Services.Base;
-using Prime.Plugins.Services.Kraken;
+using Prime.Plugins.Services.Kraken.Converters;
 using Prime.Utility;
 using RestEase;
 using AssetPair = Prime.Core.AssetPair;
 
-namespace plugins
+namespace Prime.Plugins.Services.Kraken
 {
     public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {
@@ -33,15 +29,6 @@ namespace plugins
 
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
-
-        [Obsolete]
-        public T GetApi<T>(ApiKey key = null) where T : class
-        {
-            if (key==null)
-                return new KrakenApi.Kraken() as T;
-
-            return new KrakenApi.Kraken(key.Key, key.Secret) as T;
-        }
 
         private JsonSerializerSettings CreateJsonSerializerSettings()
         {

@@ -3,11 +3,10 @@ using Prime.Core;
 using Prime.Utility;
 using Rokolab.BitstampClient;
 using LiteDB;
-using Nito.AsyncEx;
 using Prime.Plugins.Services.Base;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.BitStamp
 {
     public class BitStampProvider : IExchangeProvider, IWalletService, IApiProvider
     {

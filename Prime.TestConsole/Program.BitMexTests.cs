@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Core;
+using Prime.Plugins.Services.BitMex;
 
 namespace Prime.TestConsole
 {
