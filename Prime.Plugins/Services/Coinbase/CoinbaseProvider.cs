@@ -113,7 +113,7 @@ namespace plugins
 
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
@@ -144,7 +144,7 @@ namespace plugins
             return null;
         }
 
-        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = GetApi<ICoinbaseApi>(context);
 

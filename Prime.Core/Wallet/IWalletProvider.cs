@@ -6,16 +6,8 @@ using System.Threading.Tasks;
 
 namespace Prime.Core
 {
-    public interface IWalletService : INetworkProvider, IDescribesAssets, INetworkProviderPrivate
+    public interface IWalletService : IDepositService, IDescribesAssets, INetworkProviderPrivate
     {
-        bool CanMultiDepositAddress { get; }
-
-        bool CanGenerateDepositAddress { get; }
-
-        Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context);
-
-        Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context);
-
         Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context);
     }
 }

@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Poloniex
         public bool CanMultiDepositAddress { get; } = true;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public async Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
@@ -176,7 +176,7 @@ namespace Prime.Plugins.Services.Poloniex
             return null;
         }
 
-        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = GetApi<IPoloniexApi>(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
@@ -197,9 +197,9 @@ namespace Prime.Plugins.Services.Poloniex
                     addresses.Add(new WalletAddress(this, balance.Key.ToAsset(this)) { Address = balance.Value });
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw new ApiResponseException("Unable to get deposit addresses, please check if your account is verified", this);
+                throw new ApiResponseException("Unable to get deposit addresses, please check that your account is verified", this);
             }
 
             return addresses;

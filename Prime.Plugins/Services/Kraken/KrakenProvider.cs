@@ -132,7 +132,7 @@ namespace Prime.Plugins.Services.Kraken
         public bool CanMultiDepositAddress { get; } = false;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new System.NotImplementedException();
         }
@@ -210,7 +210,7 @@ namespace Prime.Plugins.Services.Kraken
             return null;
         }
 
-        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             // TODO: re-implement.
 

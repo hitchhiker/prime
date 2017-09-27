@@ -76,7 +76,7 @@ namespace Prime.Core
 
         public static Task<ApiResponse<WalletAddresses>> GetDepositAddressesAsync(IWalletService provider, WalletAddressAssetContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetDepositAddressesAsync(context), "GetDepositAddresses", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetAddressesForAssetAsync(context), "GetDepositAddresses", provider, context);
         }
 
         public static ApiResponse<WalletAddresses> GetDepositAddresses(IWalletService provider, WalletAddressAssetContext context)
@@ -86,7 +86,7 @@ namespace Prime.Core
 
         public static Task<ApiResponse<WalletAddresses>> GetAllDepositAddressesAsync(IWalletService provider, WalletAddressContext context)
         {
-            return ApiHelpers.WrapException(() => provider.FetchAllDepositAddressesAsync(context), "GetDepositAddresses", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetAddressesAsync(context), "GetDepositAddresses", provider, context);
         }
 
         public static ApiResponse<WalletAddresses> FetchAllDepositAddresses(IWalletService provider, WalletAddressContext context)

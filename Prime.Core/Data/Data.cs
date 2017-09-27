@@ -9,8 +9,37 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
+    class Test
+    {
+        public string Something { get; set; }
+    }
+
     public class Data : IDisposable
     {
+        private static void MemoryStreamTest()
+        {
+            var path = @"C:\test\litedb\db";
+            var bytes = File.Exists(path) ? File.ReadAllBytes(path) : new byte[0];
+
+            var mem = bytes.Length == 0 ? new MemoryStream() : new MemoryStream(bytes);
+
+            using (var db = new LiteDatabase(mem))
+            {
+                var col = db.GetCollection<Test>();
+                col.Insert(new Test()
+                {
+                    Something = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString()
+                });
+                var r = col.FindAll();
+                foreach (var i in r)
+                    Console.WriteLine(i.Something);
+            }
+
+            // Get database as binary array
+            var bytesb = mem.ToArray();
+            File.WriteAllBytes(path, bytesb);
+        }
+
         private Data()
         {
             var g = BsonMapper.Global;

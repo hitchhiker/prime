@@ -32,7 +32,7 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var addresses = AsyncContext.Run(() => provider.GetDepositAddressesAsync(ctx));
+                    var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
                 }
                 catch (Exception e)
                 {

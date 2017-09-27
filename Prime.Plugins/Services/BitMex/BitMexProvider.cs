@@ -183,7 +183,7 @@ namespace Prime.Plugins.Services.BitMex
             return r != null;
         }
 
-        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var addresses = new WalletAddresses();
 
@@ -198,7 +198,7 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             return null;
         }

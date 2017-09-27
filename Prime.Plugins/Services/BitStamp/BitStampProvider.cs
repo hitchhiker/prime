@@ -139,21 +139,21 @@ namespace Prime.Plugins.Services.BitStamp
 
         public bool CanGenerateDepositAddress => false;
 
-        public async Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var addresses = new WalletAddresses();
             var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.CanGenerateAddress, context.UserContext, context.L);
-            addresses.AddRange(await GetDepositAddressesAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac));
             wac.Asset = "BTC".ToAsset(this);
-            addresses.AddRange(await GetDepositAddressesAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac));
             wac.Asset = "XRP".ToAsset(this);
-            addresses.AddRange(await GetDepositAddressesAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac));
             wac.Asset = "LTC".ToAsset(this);
-            addresses.AddRange(await GetDepositAddressesAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac));
             return addresses;
         }
 
-        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var t = new Task<WalletAddresses>(() =>
             {

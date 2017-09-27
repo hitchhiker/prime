@@ -102,7 +102,7 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var addresses = AsyncContext.Run(() => provider.GetDepositAddressesAsync(ctx));
+                    var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
 
                     foreach (var address in addresses)
                     {

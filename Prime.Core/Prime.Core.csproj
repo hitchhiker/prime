@@ -390,6 +390,7 @@
     <Compile Include="User\WindowManager\WindowOpenState.cs" />
     <Compile Include="Asset\BaseAssetChangedMessage.cs" />
     <Compile Include="System\CoordinatorBase.cs" />
+    <Compile Include="Wallet\IDepositService.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioChangedMessage.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioInfoItem.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioGroupedItem.cs" />
