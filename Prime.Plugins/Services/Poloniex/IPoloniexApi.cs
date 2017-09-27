@@ -15,5 +15,8 @@ namespace Prime.Plugins.Services.Poloniex
 
         [Post("/tradingApi")]
         Task<PoloniexSchema.BalancesDetailedResponse> GetBalancesDetailedAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
+        [Get("/public?command=returnTicker")]
+        Task<PoloniexSchema.TickerResponse> GetTickerAsync();
     }
 }

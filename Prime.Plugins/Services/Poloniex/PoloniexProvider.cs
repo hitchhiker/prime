@@ -78,25 +78,25 @@ namespace plugins
             return null;
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() =>
+            var api = GetApi<IPoloniexApi>(context);
+
+            var r = await api.GetTickerAsync();
+
+            var pairs = new AssetPairs();
+
+            foreach (var rPair in r)
             {
-                var api = this.GetApi<PoloniexClient>(context);
-                var da = api.Markets.GetSummaryAsync();
-                da.Wait();
-                var aps = new AssetPairs();
-                foreach (var assetPair in da.Result)
-                {
-                    var pair = assetPair.Key;
-                    aps.Add(new AssetPair(pair.BaseCurrency, pair.QuoteCurrency, this));
-                }
+                var assets = rPair.Key.Split(new char[] {'_'});
 
-                return aps;
-            });
+                if(assets.Length != 2)
+                    throw new ApiResponseException("Invalid asset pair format", this);
 
-            t.RunSynchronously();
-            return t;
+                pairs.Add(new AssetPair(assets[0], assets[1], this));
+            }
+
+            return pairs;
         }
 
         public bool CanMultiDepositAddress { get; } = true;
