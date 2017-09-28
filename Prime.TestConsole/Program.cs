@@ -38,7 +38,10 @@ namespace TestConsole
 
             // BitMex.
 
-            new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+            // new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+            new Prime.TestConsole.Program.BitMexTests().GetLatestPrice();
+            // new Prime.TestConsole.Program.BitMexTests().GetAssetPairs();
+
 
             // BitStamp.
 
@@ -123,37 +126,7 @@ namespace TestConsole
 
         private static void LatestPricesTest()
         {
-            var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-
-            var ctx = new PublicPricesContext("BTC".ToAssetRaw(), new List<Asset>()
-            {
-                "ETH".ToAsset(provider),
-                "ETC".ToAsset(provider),
-                "DASH".ToAsset(provider),
-                "LTC".ToAsset(provider),
-                "QTUM".ToAsset(provider),
-                "XMR".ToAsset(provider),
-                "XRP".ToAsset(provider),
-                "XTZ".ToAsset(provider),
-                "ZEC".ToAsset(provider),
-            });
-
-            try
-            {
-                var c = AsyncContext.Run(() => provider.GetLatestPricesAsync(ctx));
-
-                Console.WriteLine($"Base asset: {ctx.BaseAsset}\n");
-
-                foreach (Money price in c.Prices)
-                {
-                    Console.WriteLine(price.Display);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
+            
         }
 
         private static void LatestPriceTest()

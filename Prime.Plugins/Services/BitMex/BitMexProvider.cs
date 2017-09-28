@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
@@ -14,6 +15,10 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMaxApiUrl = "https://www.bitmex.com/api/v1";
+
+        private static readonly string _pairs = "xbtusd";
+
+        public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
 
         public BitMexProvider()
         {
@@ -109,46 +114,34 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
+            if(context.Assets.Count < 1) 
+                throw new ArgumentException("The number of target assets should be greater than 0");
+
             var api = GetApi<IBitMexApi>(context);
             var r = await api.GetLatestPricesAsync();
 
             if(r == null || r.Count < 1)
                 throw new ApiResponseException("No prices data found", this);
 
-            // TODO: Will filter currencies and select only those which are not NULL.
-            // BUG: There are a lot of pairs (e.g. XBT->ETH) with different symbol names, how to collapse them? User wants to see only XBT->ETH...
-            var selectedData = r.Where(x => x.lastPrice.HasValue && x.quoteCurrency.ToAsset(this).Equals(context.BaseAsset) &&
-                                             context.Assets.Contains(x.underlying.ToAsset(this)))
-                                             .OrderByDescending(x => x.timestamp)
-                                             .ToList();
+            var remote = context.BaseAsset.ToRemoteCode(this);
+            var pairCode = (remote + context.Assets.First().ToRemoteCode(this)).ToLower();
 
-            // BUG: Filtered by combination of quote + underlying.
-            var filteredData = selectedData.DistinctBy(x => x.quoteCurrency + x.underlying).ToList();
+            var data = r.FirstOrDefault(x =>
+                x.symbol.ToLower().Equals(pairCode)
+            );
 
-#if FALSE
-            // TODO: Remove from production.
+            if (data == null || data.lastPrice.HasValue == false)
+                throw new ApiResponseException("No price returned for selected currency");
 
-            Console.WriteLine("Selected data:");
-            foreach (var response in selectedData)
-            {
-                Console.WriteLine($"{response.timestamp}: {response.underlying} -> {response.quoteCurrency}, Symbol: {response.symbol}, Last Price: {response.lastPrice}");
-            }
-
-            Console.WriteLine("Filtered data:");
-            foreach (var response in filteredData)
-            {
-                Console.WriteLine($"{response.timestamp}: {response.underlying} -> {response.quoteCurrency}, Symbol: {response.symbol}, Last Price: {response.lastPrice}");
-            }
-#endif
-
-            var latestMoneyList = filteredData.Select(x => new Money(x.lastPrice.Value, x.underlying.ToAsset(this))).ToList();
+            var pricesList = new List<Money>();
+            pricesList.Add(new Money(data.lastPrice.Value, data.quoteCurrency.ToAsset(this)));
 
             // BUG: What UTC Created to set if different currencies have different last price time?
             var latestPrices = new LatestPrices()
             {
                 BaseAsset = context.BaseAsset,
                 UtcCreated = DateTime.UtcNow,
-                Prices = latestMoneyList
+                Prices = pricesList
             };
 
             return latestPrices;
@@ -164,17 +157,22 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var t = new Task<AssetPairs>(() => Pairs);
+            t.RunSynchronously();
+
+            return t;
+
+            // This code fetches all pairs including futures which are not supported for this moment.
+            /* var api = GetApi<IBitMexApi>(context);
             var r = await api.GetInstrumentsActive();
             var aps = new AssetPairs();
             foreach (var i in r)
             {
                 var ap = new AssetPair(i.underlying.ToAsset(this), i.quoteCurrency.ToAsset(this));
                 aps.Add(ap);
-            }
-            return aps;
+            } */
         }
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
