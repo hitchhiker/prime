@@ -32,29 +32,30 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
         public IRateLimiter RateLimiter => Limiter;
 
+        private string ConvertToBitMexInterval(TimeResolution market)
+        {
+            switch (market)
+            {
+                case TimeResolution.Minute:
+                    return "1m";
+                case TimeResolution.Hour:
+                    return "1h";
+                case TimeResolution.Day:
+                    return "1d";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(market), market, null);
+            }
+        }
+
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = GetApi<IBitMexApi>(context);
 
-            string resolution = "";
+            var resolution = ConvertToBitMexInterval(context.Market);
+            var startDate = context.Range.UtcFrom;
+            var endDate = context.Range.UtcTo;
 
-            switch (context.Market)
-            {
-                case TimeResolution.Minute:
-                    resolution = "1m";
-                    break;
-                case TimeResolution.Hour:
-                    resolution = "1h";
-                    break;
-                case TimeResolution.Day:
-                    resolution = "1d";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("BitMex does not support specified time resolution");
-            }
-
-            // BUG: how to properly select number of records to receive? Hardcoded default is 100.
-            var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, 100);
+            var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate);
 
             var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);

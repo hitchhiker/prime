@@ -38,7 +38,7 @@ namespace TestConsole
 
             // BitMex.
 
-            // new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+            new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
 
             // BitStamp.
 
@@ -50,7 +50,7 @@ namespace TestConsole
             // new Prime.TestConsole.Program.PoloniexTests().ApiTest();
             // new Prime.TestConsole.Program.PoloniexTests().AssetsTest();
             // new Prime.TestConsole.Program.PoloniexTests().LatestPrices();
-            new Prime.TestConsole.Program.PoloniexTests().GetDepositAddresses();
+            // new Prime.TestConsole.Program.PoloniexTests().GetDepositAddresses();
             // new Prime.TestConsole.Program.PoloniexTests().GetChartData();
 
 

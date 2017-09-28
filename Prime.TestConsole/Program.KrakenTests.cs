@@ -146,10 +146,10 @@ namespace Prime.TestConsole
 
                 var ctx = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, null, null);
 
-                var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
-
                 try
                 {
+                    var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
+
                     foreach (var data in ohlc)
                     {
                         Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low}");
