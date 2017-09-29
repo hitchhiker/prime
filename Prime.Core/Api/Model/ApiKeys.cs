@@ -24,6 +24,17 @@ namespace Prime.Core
 
         public IReadOnlyList<ApiKey> Keys => _keys;
 
+        public LiteCollection<ApiKey> Collection()
+        {
+            return _context.GetCollection<ApiKey>();
+        }
+
+        public void Clear()
+        {
+            var col = Collection();
+            col.Delete(x => true);
+        }
+
         public ApiKey GetFirst(INetworkProvider provider)
         {
             return GetFirst(provider.Network);

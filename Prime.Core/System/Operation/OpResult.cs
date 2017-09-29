@@ -13,11 +13,11 @@ namespace Prime.Core
             return new OpResult() {IsSuccess = isSuccess};
         }
 
-        public static OpResult From(int insertedCount)
+        public static OpResult From(int count)
         {
-            return new OpResult() {IsSuccess = true, InsertCount = insertedCount };
+            return new OpResult() {IsSuccess = true, ReturnedCount = count };
         }
 
-        public int InsertCount { get; private set; }
+        public int ReturnedCount { get; private set; }
     }
 }

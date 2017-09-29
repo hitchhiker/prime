@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight.Command;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -14,12 +15,11 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly DebounceDispatcher _debounceDispatcher;
         private bool _initialCheck = true;
 
-        public ServiceEditViewModel() : this(Networks.I.Providers.OfType<INetworkProviderPrivate>().Skip(1).FirstOrDefault())
-        {
-        }
+        public ServiceEditViewModel() : this(Networks.I.Providers.OfType<INetworkProviderPrivate>().Skip(1).FirstOrDefault()) { }
 
         public ServiceEditViewModel(INetworkProviderPrivate provider)
         {
+            DeleteCommand = new RelayCommand(Delete);
             _debounceDispatcher = new DebounceDispatcher();
             Service = provider;
             Configuration = Service.GetApiConfiguration;
@@ -38,7 +38,10 @@ namespace Prime.Ui.Wpf.ViewModel
                 DecideTest(0);
             }
             else
+            {
                 _apiName = Service.Title;
+                _initialCheck = false;
+            }
 
             this.PropertyChanged += ServiceEditViewModel_PropertyChanged;
         }
@@ -74,6 +77,31 @@ namespace Prime.Ui.Wpf.ViewModel
             t.ContinueWith(task => ApiKeyCheckResult(task, apikey));
         }
 
+
+        private void Delete()
+        {
+            var keys = UserContext.Current.ApiKeys;
+            if (UserKey == null)
+                return;
+
+            if (!UserKey.Delete(UserContext.Current).IsSuccess)
+            {
+                StatusText = "Unable to remove this key.";
+                StatusResult = false;
+                return;
+            }
+
+            keys.Remove(UserKey);
+
+            UserKey = null;
+            ApiKey = null;
+            ApiSecret = null;
+            ApiExtra1 = null;
+            ApiName = null;
+
+            StatusText = "Key removed.";
+            StatusResult = true;
+        }
 
         private void ApiKeyCheckResult(Task<ApiResponse<bool>> x, ApiKey key)
         {
@@ -115,6 +143,10 @@ namespace Prime.Ui.Wpf.ViewModel
         public ApiKey UserKey { get; private set; }
 
         public ApiConfiguration Configuration { get; private set; }
+
+        public RelayCommand DeleteCommand { get;  }
+
+        public bool IsDeleteVisible => UserKey != null;
 
         private ProviderData _providerData;
         public ProviderData ProviderData => _providerData ?? (_providerData = UserContext.Current.Data(Service));

@@ -20,7 +20,7 @@ namespace Prime.Core
             Id = $"prime:net:{Network.NameLowered}:api:{key ?? "key"}:{secret ?? "secret"}:{extra ?? "ex"}".GetObjectIdHashCode(true, true);
         }
         
-        [BsonId]
+        [Bson]
         public Network Network { get; private set; }
 
         [Bson]
