@@ -8,19 +8,19 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OhclData : UniqueList<OhclEntry>
+    public class OhlcData : UniqueList<OhlcEntry>
     {
-        public OhclData(TimeResolution resolution)
+        public OhlcData(TimeResolution resolution)
         {
             Resolution = resolution;
         }
 
-        public OhclData(TimeResolution resolution, IEnumerable<OhclEntry> entries) : this(resolution)
+        public OhlcData(TimeResolution resolution, IEnumerable<OhlcEntry> entries) : this(resolution)
         {
             base.AddRange(entries);
         }
 
-        public OhclData(OhclData data) : this(data.Resolution, data)
+        public OhlcData(OhlcData data) : this(data.Resolution, data)
         {
             Resolution = data.Resolution;
             ConvertedFrom = data.ConvertedFrom;
@@ -51,7 +51,7 @@ namespace Prime.Core
         /// <summary>
         /// Trim's empty data from both ends of this collection/
         /// </summary>
-        public OhclData Trim()
+        public OhlcData Trim()
         {
             if (Count == 0)
                 return this;
@@ -96,8 +96,8 @@ namespace Prime.Core
             var ord = this.OrderBy(x => x.DateTimeUtc).ToList();
 
             var previous = ord.FirstOrDefault();
-            var bad = new List<OhclEntry>();
-            var add = new List<OhclEntry>();
+            var bad = new List<OhlcEntry>();
+            var add = new List<OhlcEntry>();
 
             foreach (var i in ord.Skip(1))
             {
@@ -128,7 +128,7 @@ namespace Prime.Core
             AddRange(add);
         }
 
-        public void Merge(OhclData data)
+        public void Merge(OhlcData data)
         {
             foreach (var i in data)
             {
@@ -157,6 +157,6 @@ namespace Prime.Core
                 i.DateTimeUtc= i.DateTimeUtc.AddHours(hours);
         }
 
-        public static OhclData Empty => new OhclData(TimeResolution.None);
+        public static OhlcData Empty => new OhlcData(TimeResolution.None);
     }
 }

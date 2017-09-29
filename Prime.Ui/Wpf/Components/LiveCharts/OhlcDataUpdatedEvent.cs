@@ -7,13 +7,13 @@ using Prime.Core;
 
 namespace Prime.Ui.Wpf
 {
-    public class OhclDataUpdatedEvent : EventArgs
+    public class OhlcDataUpdatedEvent : EventArgs
     {
-        public readonly OhclData NewData;
+        public readonly OhlcData NewData;
         public readonly Asset Asset;
         public bool IsLive;
 
-        public OhclDataUpdatedEvent(OhclData newData, Asset asset, bool isLive)
+        public OhlcDataUpdatedEvent(OhlcData newData, Asset asset, bool isLive)
         {
             NewData = newData;
             Asset = asset;

@@ -12,6 +12,7 @@ namespace Prime.Ui.Wpf.ViewModel
     public class ServiceEditViewModel : VmBase, IDataErrorInfo
     {
         private readonly DebounceDispatcher _debounceDispatcher;
+        private bool _initialCheck = true;
 
         public ServiceEditViewModel() : this(Networks.I.Providers.OfType<INetworkProviderPrivate>().Skip(1).FirstOrDefault())
         {
@@ -73,16 +74,24 @@ namespace Prime.Ui.Wpf.ViewModel
             t.ContinueWith(task => ApiKeyCheckResult(task, apikey));
         }
 
+
         private void ApiKeyCheckResult(Task<ApiResponse<bool>> x, ApiKey key)
         {
             var ok = x.Result.Response;
-            StatusText = ok ? "Successfully connected, the keys have been saved." : "Unable to connect, check you've entered the information correctly.";
             StatusResult = ok;
-            if (!ok)
+
+            if (ok && _initialCheck)
             {
+                StatusText = ok ? "Successfully connected, these keys are working." : "Unable to connect, check you've entered the information correctly.";
+                _initialCheck = false;
                 return;
             }
 
+            StatusText = ok ? "Successfully connected, the keys have been saved." : "Unable to connect, check you've entered the information correctly.";
+            
+            if (!ok)
+                return;
+            
             var keys = UserContext.Current.ApiKeys;
 
             if (UserKey != null)

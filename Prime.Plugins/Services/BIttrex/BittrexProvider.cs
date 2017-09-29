@@ -126,12 +126,12 @@ namespace plugins
 
         public bool CanGenerateDepositAddress => true;
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             if (!this.ExchangeHas(context.Asset))
                 return null;
@@ -139,7 +139,7 @@ namespace plugins
             return null;
         }
 
-        public OhclData GetOhlc(AssetPair pair, TimeResolution market)
+        public OhlcData GetOhlc(AssetPair pair, TimeResolution market)
         {
             return null;
         }

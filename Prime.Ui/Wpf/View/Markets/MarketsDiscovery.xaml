@@ -4,13 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
-             xmlns:local="clr-namespace:Prime.Core.Misc;assembly=Prime.Core"
+             xmlns:wpf="clr-namespace:Prime.Ui.Wpf.View.Markets"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:MarketsDiscoveryViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <local:GridValueColourConverter x:Key="GridValueColourConverter"/>
-    </UserControl.Resources>
+
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel>
             <ItemsControl ItemsSource="{Binding ListMarketsDiscoveryItems}">
@@ -22,35 +20,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical" Background="White" Width="215" Margin="20">
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <Image Width="25" Source="{Binding IconPath}"/>
-                                <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Foreground="Black" FontWeight="Bold" Text="{Binding Name}"/> 
-                            </StackPanel>
-                            <Separator/>
-                            <TextBlock TextAlignment="Right" Padding="0,0,5,0" Text="{Binding ChangePerc, StringFormat=N2}">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Foreground" Value="{Binding ChangePerc, Converter={StaticResource GridValueColourConverter}}"/>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <Image Width="Auto" Source="../../Asset/img/Chart.png" />
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <Border BorderThickness="1" BorderBrush="LightGray">
-                                    <StackPanel Orientation="Vertical" Width="90">
-                                        <TextBlock Foreground="White" Background="Gray" FontWeight="Bold" Padding="5,0,0,0">SELL</TextBlock>
-                                        <TextBlock Foreground="Black" Padding="5" Text="{Binding Sell, StringFormat=N2}"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border BorderThickness="1" BorderBrush="LightGray" Margin="10,0,0,0">
-                                    <StackPanel Orientation="Vertical" Width="90">
-                                        <TextBlock Foreground="White" Background="Gray" FontWeight="Bold" Padding="5,0,0,0">BUY</TextBlock>
-                                        <TextBlock Foreground="Black" Padding="5" Text="{Binding Buy, StringFormat=N2}"/>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </StackPanel>
+                        <wpf:MarketControl MarketName="{Binding Name}" Buy="{Binding Buy}" Sell="{Binding Sell}" ChangePerc="{Binding ChangePerc}" IconPath="{Binding IconPath}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Prime.Core;
 using Jojatekok.PoloniexAPI;
 using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
-using Newtonsoft.Json.Linq;
-using Nito.AsyncEx;
+using Prime.Core;
+using Prime.Plugins.Services.Base;
 using Prime.Utility;
+using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider
+    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {
+        private const String PoloniexApiUrl = "https://poloniex.com";
+
         public Network Network { get; } = new Network("Poloniex");
 
         public bool Disabled => false;
@@ -34,27 +35,55 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return new PoloniexClient() as T;
+            return RestClient.For<IPoloniexApi>(PoloniexApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
-            return new PoloniexClient(key.Key, key.Secret) as T;
+
+            return RestClient.For<IPoloniexApi>(PoloniexApiUrl, new PoloniexAuthenticator(key).GetRequestModifier) as T;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<PoloniexClient>(context);
-            var r = await api.Wallet.GetBalancesAsync();
-            return r != null;
+            var api = GetApi<IPoloniexApi>(context);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnBalances);
+
+            try
+            {
+                var r = await api.GetBalancesAsync(body);
+
+                return r != null && r.Count > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            return null;
+            var api = GetApi<IPoloniexApi>(context);
+
+            var r = await api.GetTickerAsync();
+
+            var assetPairsInfo = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair)).ToList();
+
+            if (assetPairsInfo.Count < 1)
+                throw new ApiResponseException("Specified asset pair is not supported by this API", this);
+
+            var selectedPair = assetPairsInfo[0];
+
+            var price = new LatestPrice()
+            {
+                BaseAsset = context.Pair.Asset1,
+                Price = new Money(selectedPair.Value.last)
+            };
+
+            return price;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -67,49 +96,102 @@ namespace plugins
             return null;
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() =>
+            var api = GetApi<IPoloniexApi>(context);
+
+            var r = await api.GetTickerAsync();
+
+            var pairs = new AssetPairs();
+
+            foreach (var rPair in r)
             {
-                var api = this.GetApi<PoloniexClient>(context);
-                var da = api.Markets.GetSummaryAsync();
-                da.Wait();
-                var aps = new AssetPairs();
-                foreach (var assetPair in da.Result)
-                {
-                    var pair = assetPair.Key;
-                    aps.Add(new AssetPair(pair.BaseCurrency, pair.QuoteCurrency, this));
-                }
+                var pair = rPair.Key.ToAssetPair(this);
 
-                return aps;
-            });
+                pairs.Add(pair);
+            }
 
-            t.RunSynchronously();
-            return t;
+            return pairs;
         }
 
-        public bool CanMultiDepositAddress { get; }
-        public bool CanGenerateDepositAddress { get; }
+        public bool CanMultiDepositAddress { get; } = true;
+        public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IPoloniexApi>(context);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
+
+            var addresses = new WalletAddresses();
+
+            // TODO: check using verified account.
+            try
+            {
+                var r = await api.GetDepositAddressesAsync(body);
+
+                foreach (var balance in r)
+                {
+                    if (string.IsNullOrWhiteSpace(balance.Value))
+                        continue;
+
+                    addresses.Add(new WalletAddress(this, balance.Key.ToAsset(this)) { Address = balance.Value });
+                }
+            }
+            catch
+            {
+                throw new ApiResponseException("Unable to get deposit addresses, please check that your account is verified", this);
+            }
+
+            return addresses;
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = this.GetApi<PoloniexClient>(context);
-            var r = await api.Wallet.GetBalancesAsync();
+            var api = GetApi<IPoloniexApi>(context);
+
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnCompleteBalances);
+
+            var r = await api.GetBalancesDetailedAsync(body);
 
             var results = new BalanceResults(this);
-            foreach (var balance in r)
+
+            foreach (var kvp in r)
             {
-                var c = balance.Key.ToAsset(this);
-                results.AddBalance(c, (decimal) balance.Value.QuoteAvailable);
-                results.AddAvailable(c, (decimal) balance.Value.QuoteAvailable);
-                results.AddReserved(c, (decimal) balance.Value.QuoteOnOrders);
+                var c = kvp.Key.ToAsset(this);
+
+                results.Add(new BalanceResult(c)
+                {
+                    Available = kvp.Value.available,
+                    Reserved = kvp.Value.onOrders,
+                    Balance = kvp.Value.available
+                });
             }
+
             return results;
+        }
+
+        private Dictionary<string, object> CreatePoloniexBody(PoloniexBodyType bodyType)
+        {
+            var body = new Dictionary<string, object>();
+
+            body.Add("nonce", BaseAuthenticator.GetLongNonce());
+
+            switch (bodyType)
+            {
+                case PoloniexBodyType.ReturnBalances:
+                    body.Add("command", "returnBalances");
+                    break;
+                case PoloniexBodyType.ReturnCompleteBalances:
+                    body.Add("command", "returnCompleteBalances");
+                    break;
+                case PoloniexBodyType.ReturnDepositAddresses:
+                    body.Add("command", "returnDepositAddresses");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);
+            }
+
+            return body;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -117,48 +199,78 @@ namespace plugins
             return null;
         }
 
-        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<PoloniexClient>(context);
-            var r = await api.Wallet.GetDepositAddressesAsync();
+            var api = GetApi<IPoloniexApi>(context);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
             var addresses = new WalletAddresses();
-            foreach (var i in r.Where(x=>Equals(x.Key.ToAsset(this), context.Asset)))
+
+            // TODO: check using verified account.
+            try
             {
-                if (string.IsNullOrWhiteSpace(i.Value))
-                    continue;
-                addresses.Add(new WalletAddress(this, i.Key.ToAsset(this)) { Address = i.Value});
+                var r = await api.GetDepositAddressesAsync(body);
+                var assetBalances = r.Where(x => Equals(x.Key.ToAsset(this), context.Asset)).ToArray();
+
+                foreach (var balance in assetBalances)
+                {
+                    if (string.IsNullOrWhiteSpace(balance.Value))
+                        continue;
+
+                    addresses.Add(new WalletAddress(this, balance.Key.ToAsset(this)) { Address = balance.Value });
+                }
             }
+            catch
+            {
+                throw new ApiResponseException("Unable to get deposit addresses, please check that your account is verified", this);
+            }
+
             return addresses;
         }
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var pair = context.Pair;
             var market = context.Market;
 
-            var api = GetApi<PoloniexClient>(context);
-            var cpair = new CurrencyPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-            var mp = MarketPeriod.Hours2;
-            var ds = DateTime.UtcNow.AddDays(-10);
-            var de = DateTime.UtcNow;
-            var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
-            var r = new OhclData(market);
+            var timeStampStart = (long)context.Range.UtcFrom.ToUnixTimeStamp();
+            var timeStampEnd = (long)context.Range.UtcTo.ToUnixTimeStamp();
+
+            var period = ConvertToPoloniexInterval(market);
+
+            var api = GetApi<IPoloniexApi>(context);
+            var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period);
+
+            var ohlc = new OhlcData(market);
             var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
-            foreach (var i in apir)
+
+            foreach (var ohlcEntry in r)
             {
-                r.Add(new OhclEntry(seriesid, i.Time, this)
+                ohlc.Add(new OhlcEntry(seriesid, ohlcEntry.date.ToUtcDateTime(), this)
                 {
-                    Open = i.Open,
-                    Close = i.Close,
-                    Low = i.Low,
-                    High = i.High,
-                    VolumeTo = (long)i.VolumeQuote,
-                    VolumeFrom = (long)i.VolumeBase,
-                    WeightedAverage = i.WeightedAverage
+                    Open = ohlcEntry.open,
+                    Close = ohlcEntry.close,
+                    Low = ohlcEntry.low,
+                    High = ohlcEntry.high,
+                    VolumeTo = ohlcEntry.quoteVolume, // BUG: volumes are stored in long, but API returns doubles. Is it a bug?
+                    VolumeFrom = ohlcEntry.volume,
+                    WeightedAverage = ohlcEntry.weightedAverage
                 });
             }
-            return r;
+
+            return ohlc;
+        }
+
+        private PoloniexTimeInterval ConvertToPoloniexInterval(TimeResolution resolution)
+        {
+            // TODO: implement all TimeResolution cases.
+            switch (resolution)
+            {
+                case TimeResolution.Day:
+                    return PoloniexTimeInterval.Day1;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
+            }
         }
     }
 }

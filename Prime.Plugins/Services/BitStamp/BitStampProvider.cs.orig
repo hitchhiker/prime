@@ -141,20 +141,20 @@ namespace Prime.Plugins.Services.BitStamp
             var addresses = new WalletAddresses();
             var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.CanGenerateAddress, context.UserContext, context.L);
             addresses.AddRange(await GetAddressesForAssetAsync(wac));
-
             wac.Asset = "BTC".ToAsset(this);
             addresses.AddRange(await GetAddressesForAssetAsync(wac));
-
             wac.Asset = "XRP".ToAsset(this);
             addresses.AddRange(await GetAddressesForAssetAsync(wac));
-
             wac.Asset = "LTC".ToAsset(this);
             addresses.AddRange(await GetAddressesForAssetAsync(wac));
-
             return addresses;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+<<<<<<< HEAD
+        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+=======
+        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+>>>>>>> master
         {
             var api = GetApi<IBitStampApi>(context);
             var currencyPath = GetCurrencyPath(context.Asset);

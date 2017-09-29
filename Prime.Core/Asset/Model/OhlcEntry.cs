@@ -4,13 +4,13 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OhclEntry : IEquatable<OhclEntry>
+    public class OhlcEntry : IEquatable<OhlcEntry>
     {
-        private OhclEntry()
+        private OhlcEntry()
         {
         }
 
-        public OhclEntry(ObjectId seriesId, DateTime utcDateTime, IOhlcProvider provider)
+        public OhlcEntry(ObjectId seriesId, DateTime utcDateTime, IOhlcProvider provider)
         {
             DateTimeUtc = utcDateTime;
             SeriesId = seriesId;
@@ -18,7 +18,7 @@ namespace Prime.Core
             Id = (SeriesId + ":" + utcDateTime).GetObjectIdHashCode();
         }
 
-        public OhclEntry(ObjectId seriesId, DateTime utcDateTime, OhlcResolutionAdapterContext context) : this(seriesId, utcDateTime, context.PrimaryApiProvider)
+        public OhlcEntry(ObjectId seriesId, DateTime utcDateTime, OhlcResolutionAdapterContext context) : this(seriesId, utcDateTime, context.PrimaryApiProvider)
         {
             ConvertedProvider = context.CurrencyConversionApiProvider;
             ConvertedVia = context.AssetIntermediary;
@@ -93,7 +93,7 @@ namespace Prime.Core
             return Open == 0 && Close == 0 && High == 0 && Low == 0;
         }
 
-        public bool Equals(OhclEntry other)
+        public bool Equals(OhlcEntry other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -105,7 +105,7 @@ namespace Prime.Core
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((OhclEntry) obj);
+            return Equals((OhlcEntry) obj);
         }
 
         public override int GetHashCode()

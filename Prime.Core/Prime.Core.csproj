@@ -231,9 +231,9 @@
     <Compile Include="Asset\Model\AssetExchangeEntry.cs" />
     <Compile Include="Asset\Model\AssetExchangeData.cs" />
     <Compile Include="Asset\Model\LatestPrice.cs" />
-    <Compile Include="Asset\Model\OhclData.cs" />
-    <Compile Include="Asset\Model\OhclDataExtensionMethods.cs" />
-    <Compile Include="Asset\Model\OhclEntry.cs" />
+    <Compile Include="Asset\Model\OhlcData.cs" />
+    <Compile Include="Asset\Model\OhlcDataExtensionMethods.cs" />
+    <Compile Include="Asset\Model\OhlcEntry.cs" />
     <Compile Include="Asset\Model\TimeResolution.cs" />
     <Compile Include="Asset\Model\LatestPrices.cs" />
     <Compile Include="Asset\Model\TimeResolutionExtensionMethods.cs" />
@@ -274,7 +274,7 @@
     <Compile Include="DataLayer\Resolution\Adapters\OhlcResolutionDataAdapterMemory.cs" />
     <Compile Include="DataLayer\Resolution\IOhlcResolutionAdapter.cs" />
     <Compile Include="DataLayer\Resolution\IOhlcResolutionAdapterStorage.cs" />
-    <Compile Include="DataLayer\Resolution\IOhclResolutionApi.cs" />
+    <Compile Include="DataLayer\Resolution\IOhlcResolutionApi.cs" />
     <Compile Include="DataLayer\Resolution\Context\OhlcResolutionContext.cs" />
     <Compile Include="DataLayer\Resolution\Context\OhlcResolutionAdapterContext.cs" />
     <Compile Include="Asset\Pair\Discovery\AssetPairProviderDiscovery.cs" />
@@ -390,6 +390,7 @@
     <Compile Include="User\WindowManager\WindowOpenState.cs" />
     <Compile Include="Asset\BaseAssetChangedMessage.cs" />
     <Compile Include="System\CoordinatorBase.cs" />
+    <Compile Include="Wallet\IDepositService.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioChangedMessage.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioInfoItem.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioGroupedItem.cs" />

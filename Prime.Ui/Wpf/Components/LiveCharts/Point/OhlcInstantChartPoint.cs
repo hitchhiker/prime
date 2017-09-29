@@ -6,7 +6,7 @@ namespace Prime.Ui.Wpf
 {
     public class OhlcInstantChartPoint : IInstantChartPoint
     {
-        public OhlcInstantChartPoint(OhclEntry i)
+        public OhlcInstantChartPoint(OhlcEntry i)
         {
             X = i.DateTimeUtc.ToInstant();
             Open = i.Open;

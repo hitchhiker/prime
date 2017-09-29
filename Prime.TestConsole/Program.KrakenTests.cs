@@ -7,6 +7,7 @@ using KrakenApi;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Core;
+using Prime.Plugins.Services.Kraken;
 using AssetPair = Prime.Core.AssetPair;
 
 namespace Prime.TestConsole
@@ -31,7 +32,7 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var addresses = AsyncContext.Run(() => provider.GetDepositAddressesAsync(ctx));
+                    var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
                 }
                 catch (Exception e)
                 {
@@ -145,10 +146,10 @@ namespace Prime.TestConsole
 
                 var ctx = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, null, null);
 
-                var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
-
                 try
                 {
+                    var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
+
                     foreach (var data in ohlc)
                     {
                         Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low}");

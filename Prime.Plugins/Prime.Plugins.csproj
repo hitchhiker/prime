@@ -394,8 +394,13 @@
     <Compile Include="Services\Kraken\IKrakenApi.cs" />
     <Compile Include="Services\Kraken\KrakenAuthenticator.cs" />
     <Compile Include="Services\Kraken\KrakenCodeConverter.cs" />
+    <Compile Include="Services\Poloniex\IPoloniexApi.cs" />
+    <Compile Include="Services\Poloniex\PoloniexAuthenticator.cs" />
+    <Compile Include="Services\Poloniex\PoloniexBodyType.cs" />
+    <Compile Include="Services\Poloniex\PoloniexSchema.cs" />
     <Compile Include="Services\Kraken\KrakenSchema.cs" />
     <Compile Include="Services\Kraken\KrakenTimeInterval.cs" />
+    <Compile Include="Services\Poloniex\PoloniexTimeInterval.cs" />
     <Compile Include="Services\Test\Model\HistoryLine.cs" />
     <Compile Include="Services\Test\Model\HistoryResponse.cs" />
     <Compile Include="Services\Test\ICryptoFacilitiesApi.cs" />

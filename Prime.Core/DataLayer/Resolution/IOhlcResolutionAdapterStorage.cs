@@ -2,7 +2,7 @@
 {
     public interface IOhlcResolutionAdapterStorage : IOhlcResolutionAdapter
     {
-        void StoreRange(OhclData data, TimeRange rangeAttempted);
+        void StoreRange(OhlcData data, TimeRange rangeAttempted);
 
         CoverageMapBase CoverageMap { get; }
     }

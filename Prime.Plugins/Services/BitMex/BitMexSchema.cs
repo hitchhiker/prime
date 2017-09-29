@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace plugins.Services.BitMex
+namespace Prime.Plugins.Services.BitMex
 {
     internal class BitMexSchema
     {
@@ -203,17 +200,17 @@ namespace plugins.Services.BitMex
             public string bankruptLimitUpPrice;
             public string prevTotalVolume;
             public string totalVolume;
-            public double volume;
+            public double? volume;
             public string volume24h;
             public string prevTotalTurnover;
             public string totalTurnover;
             public string turnover;
             public string turnover24h;
             public string prevPrice24h;
-            public double vwap;
-            public double highPrice;
-            public double lowPrice;
-            public decimal lastPrice;
+            public double? vwap;
+            public double? highPrice;
+            public double? lowPrice;
+            public decimal? lastPrice;
             public string lastPriceProtected;
             public string lastTickDirection;
             public string lastChangePcnt;
@@ -225,7 +222,7 @@ namespace plugins.Services.BitMex
             public string impactAskPrice;
             public string hasLiquidity;
             public string openInterest;
-            public double openValue;
+            public double? openValue;
             public string fairMethod;
             public string fairBasisRate;
             public string fairBasis;

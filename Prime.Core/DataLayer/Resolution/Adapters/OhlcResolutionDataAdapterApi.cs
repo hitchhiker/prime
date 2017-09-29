@@ -6,7 +6,7 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OhlcResolutionDataAdapterApi : IOhclResolutionApi
+    public class OhlcResolutionDataAdapterApi : IOhlcResolutionApi
     {
         public OhlcResolutionDataAdapterApi(OhlcResolutionAdapter adapter)
         {
@@ -23,7 +23,7 @@ namespace Prime.Core
 
         public OhlcResolutionAdapter Adapter => _adapter;
 
-        public OhclData GetRange(TimeRange timeRange)
+        public OhlcData GetRange(TimeRange timeRange)
         {
             var r = GetRangeInternal(timeRange);
             if (r.IsEmpty())
@@ -37,7 +37,7 @@ namespace Prime.Core
             return r;
         }
 
-        private OhclData GetRangeInternal(TimeRange timeRange)
+        private OhlcData GetRangeInternal(TimeRange timeRange)
         {
             if (Ctx.PrimaryApiProvider == null)
                 return null;
@@ -62,7 +62,7 @@ namespace Prime.Core
             return r.Response;
         }
 
-        private OhclData Convert(TimeRange range)
+        private OhlcData Convert(TimeRange range)
         {
             Ctx.Status("Converting @" + Ctx.PrimaryApiProvider.Title + " " + Ctx.CurrencyConversionApiProvider.Title + " [1]");
 
@@ -89,7 +89,7 @@ namespace Prime.Core
             if (d1.Count != d2.Count)
                 return null;
 
-            var ohcldata = new OhclData(_adapter.TimeResolution)
+            var ohcldata = new OhlcData(_adapter.TimeResolution)
             {
                 ConvertedFrom = Ctx.AssetIntermediary,
                 Network = Ctx.PrimaryApiProvider.Network
@@ -103,7 +103,7 @@ namespace Prime.Core
                 if (i2 == null)
                     return null;
 
-                ohcldata.Add(new OhclEntry(seriesid, i.DateTimeUtc, Ctx)
+                ohcldata.Add(new OhlcEntry(seriesid, i.DateTimeUtc, Ctx)
                 {
                     Open = i.Open * i2.Open,
                     Close = i.Close * i2.Close,

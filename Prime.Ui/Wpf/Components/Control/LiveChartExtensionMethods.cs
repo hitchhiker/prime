@@ -14,7 +14,7 @@ namespace Prime.Ui.Wpf
 {
     public static class LiveChartExtensionMethods
     {
-        public static GCandleSeries ToGCandleSeries(this OhclData data, ResolutionSourceProvider resolver = null, string title = "")
+        public static GCandleSeries ToGCandleSeries(this OhlcData data, ResolutionSourceProvider resolver = null, string title = "")
         {
             var ohlcChartPointEvaluator = new OhlcInstantChartPointMapper(resolver ?? new ResolutionSourceProvider(data.Resolution));
 
@@ -38,7 +38,7 @@ namespace Prime.Ui.Wpf
             return series;
         }
 
-        public static GLineSeries ToScrollSeries(this OhclData data, ResolutionSourceProvider resolver = null, string title = "")
+        public static GLineSeries ToScrollSeries(this OhlcData data, ResolutionSourceProvider resolver = null, string title = "")
         {
             var chartPointEvaluator = new InstantChartPointMapper(resolver ?? new ResolutionSourceProvider(data.Resolution));
 
@@ -59,7 +59,7 @@ namespace Prime.Ui.Wpf
             return series;
         }
 
-        public static GColumnSeries ToVolumeSeries(this OhclData data, ResolutionSourceProvider resolver = null, string title = "")
+        public static GColumnSeries ToVolumeSeries(this OhlcData data, ResolutionSourceProvider resolver = null, string title = "")
         {
             var chartPointEvaluator = new InstantChartPointMapper(resolver ?? new ResolutionSourceProvider(data.Resolution));
 
@@ -80,7 +80,7 @@ namespace Prime.Ui.Wpf
             return series;
         }
 
-        public static GLineSeries ToSmaSeries(this OhclData data, int length, ResolutionSourceProvider resolver = null, string title = null)
+        public static GLineSeries ToSmaSeries(this OhlcData data, int length, ResolutionSourceProvider resolver = null, string title = null)
         {
             title = title ?? length + " SMA";
 

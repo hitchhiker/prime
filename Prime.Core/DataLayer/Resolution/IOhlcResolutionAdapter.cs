@@ -3,7 +3,7 @@ using LiteDB;
 
 namespace Prime.Core
 {
-    public interface IOhlcResolutionAdapter : IOhclResolutionApi
+    public interface IOhlcResolutionAdapter : IOhlcResolutionApi
     {
     }
 }

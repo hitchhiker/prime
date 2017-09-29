@@ -12,5 +12,12 @@ namespace Prime.Core
         {
             return new OpResult() {IsSuccess = isSuccess};
         }
+
+        public static OpResult From(int insertedCount)
+        {
+            return new OpResult() {IsSuccess = true, InsertCount = insertedCount };
+        }
+
+        public int InsertCount { get; private set; }
     }
 }

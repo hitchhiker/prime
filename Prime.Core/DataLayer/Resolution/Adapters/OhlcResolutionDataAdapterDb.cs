@@ -23,7 +23,7 @@ namespace Prime.Core
 
         public OhlcResolutionAdapter Adapter => _adapter;
 
-        public OhclData GetRange(TimeRange timeRange)
+        public OhlcData GetRange(TimeRange timeRange)
         {
             lock (Lock) { 
                 Ctx.Status("Requesting local data @" + Ctx.Network.Name);
@@ -31,13 +31,13 @@ namespace Prime.Core
                 var seriesId = _adapter.SeriesId;
 
                 var r = GetDbCollection().Where(x => x.SeriesId == seriesId && x.DateTimeUtcTicks >= timeRange.UtcFrom.Ticks && x.DateTimeUtcTicks <= timeRange.UtcTo.Ticks).ToList();
-                var d = new OhclData(timeRange.TimeResolution);
+                var d = new OhlcData(timeRange.TimeResolution);
                 d.AddRange(r);
                 return d;
             }
         }
 
-        public void StoreRange(OhclData data, TimeRange rangeAttempted)
+        public void StoreRange(OhlcData data, TimeRange rangeAttempted)
         {
             lock (Lock)
             {
@@ -49,7 +49,7 @@ namespace Prime.Core
                     return;
 
                 var seriesId = _adapter.SeriesId;
-                var col = PublicContext.I.GetCollection<OhclEntry>();
+                var col = PublicContext.I.GetCollection<OhlcEntry>();
                 data.ForEach(x => x.SeriesId = seriesId);
 
                 col.Upsert(data);
@@ -59,16 +59,16 @@ namespace Prime.Core
         }
 
         private bool _indexed;
-        private LiteQueryable<OhclEntry> GetDbCollection()
+        private LiteQueryable<OhlcEntry> GetDbCollection()
         {
             if (!_indexed)
             {
-                var col = PublicContext.I.GetCollection<OhclEntry>();
+                var col = PublicContext.I.GetCollection<OhlcEntry>();
                 col.EnsureIndex(x => x.DateTimeUtcTicks);
                 col.EnsureIndex(x => x.SeriesId);
                 _indexed = true;
             }
-            return PublicContext.I.As<OhclEntry>();
+            return PublicContext.I.As<OhlcEntry>();
         }
 
         private CoverageMapModel _coverageMap;

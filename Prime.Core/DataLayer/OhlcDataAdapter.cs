@@ -26,7 +26,7 @@ namespace Prime.Core
 
         public DateTime UtcDataStart { get; set; }
 
-        public OhclData OverviewOhcl { get; set; }
+        public OhlcData OverviewOhlc { get; set; }
 
         public IReadOnlyList<OhlcResolutionAdapter> Adapters => _adapters;
 
@@ -68,17 +68,17 @@ namespace Prime.Core
         private void RequestFullDaily()
         {
             var range = TimeRange.EveryDayTillNow;
-            OverviewOhcl = Request(range, true);
+            OverviewOhlc = Request(range, true);
 
-            if (OverviewOhcl.IsEmpty())
+            if (OverviewOhlc.IsEmpty())
                 throw new Exception("Data range missing during " + nameof(Init));
 
-            UtcDataStart = OverviewOhcl.Min(x => x.DateTimeUtc);
+            UtcDataStart = OverviewOhlc.Min(x => x.DateTimeUtc);
         }
 
         private readonly object _requestLock = new object();
 
-        public OhclData Request(TimeRange timeRange, bool allowStale = false)
+        public OhlcData Request(TimeRange timeRange, bool allowStale = false)
         {
             lock (_requestLock)
             {
@@ -91,7 +91,7 @@ namespace Prime.Core
                     case TimeResolution.Minute:
                         return _adapterMinute.Request(timeRange, allowStale);
                     default:
-                        return OhclData.Empty;
+                        return OhlcData.Empty;
                 }
             }
         }

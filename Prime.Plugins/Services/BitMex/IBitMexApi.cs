@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using plugins.Services.BitMex;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.BitMex
 {
     internal interface IBitMexApi
     {
@@ -20,8 +16,8 @@ namespace plugins
         [Get("/user")]
         Task<BitMexSchema.UserInfo> GetUserInfoAsync();
 
-        [Get("/trade/bucketed?binSize={binSize}&partial=false&symbol={currencySymbol}&count={count}&reverse=true")]
-        Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistory([Path] string currencySymbol, [Path] string binSize, [Path] int count);
+        [Get("/trade/bucketed?binSize={binSize}&partial=false&count=500&symbol={currencySymbol}&reverse=true&startTime={startTime}&endTime={endTime}")]
+        Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistory([Path] string currencySymbol, [Path] string binSize, [Path(Format = "yyyy.MM.dd")] DateTime startTime, [Path(Format = "yyyy.MM.dd")] DateTime endTime);
 
         [Get("/instrument/active")]
         Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActive();

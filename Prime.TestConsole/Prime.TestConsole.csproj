@@ -102,6 +102,10 @@
     <Reference Include="Nito.Disposables, Version=1.2.2.0, Culture=neutral, PublicKeyToken=8c086a1508d5e0c5, processorArchitecture=MSIL">
       <HintPath>..\packages\Nito.Disposables.1.2.2\lib\netstandard1.0\Nito.Disposables.dll</HintPath>
     </Reference>
+    <Reference Include="PoloniexApi.Net, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\PoloniexApi.Net.dll</HintPath>
+    </Reference>
     <Reference Include="SHA3, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SHA3.0.9.2\lib\net40\SHA3.dll</HintPath>
     </Reference>
@@ -206,6 +210,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Program.ExchangeRateTest.cs" />
+    <Compile Include="Program.PoloniexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>

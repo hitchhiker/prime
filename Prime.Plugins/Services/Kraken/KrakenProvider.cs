@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Prime.Core;
-using Jojatekok.PoloniexAPI;
-using KrakenApi;
 using LiteDB;
 using Newtonsoft.Json;
+using Prime.Core;
 using Prime.Plugins.Services.Base;
-using Prime.Plugins.Services.Kraken;
+using Prime.Plugins.Services.Kraken.Converters;
 using Prime.Utility;
 using RestEase;
 using AssetPair = Prime.Core.AssetPair;
 
-namespace plugins
+namespace Prime.Plugins.Services.Kraken
 {
     public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
     {
@@ -33,15 +29,6 @@ namespace plugins
 
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
-
-        [Obsolete]
-        public T GetApi<T>(ApiKey key = null) where T : class
-        {
-            if (key==null)
-                return new KrakenApi.Kraken() as T;
-
-            return new KrakenApi.Kraken(key.Key, key.Secret) as T;
-        }
 
         private JsonSerializerSettings CreateJsonSerializerSettings()
         {
@@ -145,7 +132,7 @@ namespace plugins
         public bool CanMultiDepositAddress { get; } = false;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> FetchAllDepositAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new System.NotImplementedException();
         }
@@ -153,7 +140,7 @@ namespace plugins
         private Dictionary<string, object> CreateKrakenBody()
         {
             var body = new Dictionary<string, object>();
-            var nonce = BaseAuthenticator.GetNonce();
+            var nonce = BaseAuthenticator.GetLongNonce();
 
             body.Add("nonce", nonce);
 
@@ -223,7 +210,7 @@ namespace plugins
             return null;
         }
 
-        public async Task<WalletAddresses> GetDepositAddressesAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             // TODO: re-implement.
 
@@ -269,7 +256,7 @@ namespace plugins
             return walletAddresses;
         }
 
-        public async Task<OhclData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = GetApi<IKrakenApi>(context);
 
@@ -282,7 +269,7 @@ namespace plugins
 
             CheckResponseErrors(r);
 
-            var ohlc = new OhclData(context.Market);
+            var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
 
             if (r.result.pairs.Count != 0)
@@ -292,7 +279,7 @@ namespace plugins
                     var time = ((long)ohlcResponse.time).ToUtcDateTime();
 
                     // BUG: ohlcResponse.volume is double ~0.2..10.2, why do we cast to long?
-                    ohlc.Add(new OhclEntry(seriesId, time, this)
+                    ohlc.Add(new OhlcEntry(seriesId, time, this)
                     {
                         Open = (double) ohlcResponse.open,
                         Close = (double) ohlcResponse.close,

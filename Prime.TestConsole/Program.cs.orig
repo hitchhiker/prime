@@ -38,17 +38,17 @@ namespace TestConsole
 
             // BitMex.
 
-            //new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
-            // new Prime.TestConsole.Program.BitMexTests().GetLatestPrice();
+            // new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+            new Prime.TestConsole.Program.BitMexTests().GetLatestPrice();
             // new Prime.TestConsole.Program.BitMexTests().GetAssetPairs();
-             new Prime.TestConsole.Program.BitMexTests().GetDepositAddresses();
-            //new Prime.TestConsole.Program.BitMexTests().TestApi();
 
 
             // BitStamp.
 
             // new Prime.TestConsole.Program.BitStampTests().GetTicker();
-            // new Prime.TestConsole.Program.BitStampTests().GetTicker();
+<<<<<<< HEAD
+            new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
+=======
 
             // Poloniex.
 
@@ -58,6 +58,7 @@ namespace TestConsole
             // new Prime.TestConsole.Program.PoloniexTests().LatestPrices();
             // new Prime.TestConsole.Program.PoloniexTests().GetDepositAddresses();
             // new Prime.TestConsole.Program.PoloniexTests().GetChartData();
+>>>>>>> master
 
 
             //Sha256Test();
@@ -147,6 +148,27 @@ namespace TestConsole
                 Console.WriteLine(e.Message);
             }
         }
+
+        private static void BalanceTest()
+        {
+            var provider = Networks.I.OfType<BitMexProvider>().FirstProvider();
+            //provider.GetAssetPairs
+
+
+            var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.BaseAsset, 0);
+            var scanner = new PortfolioProvider(c);
+            try
+            {
+                scanner.Update();
+                foreach (var i in scanner.Items)
+                    Console.WriteLine(i.Asset.ShortCode + " " + i.AvailableBalance);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
 
         private static void DataTest()
         {

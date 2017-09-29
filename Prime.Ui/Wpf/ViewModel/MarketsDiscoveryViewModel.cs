@@ -1,17 +1,21 @@
-﻿using Prime.Core;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using Prime.Core;
 using Prime.Core.Exchange.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class MarketsDiscoveryViewModel : DocumentPaneViewModel
+    public class MarketsDiscoveryViewModel : DocumentPaneViewModel, INotifyPropertyChanged
     {
         public MarketsDiscoveryViewModel(ScreenViewModel screenViewModel)
         {
@@ -21,9 +25,11 @@ namespace Prime.Ui.Wpf.ViewModel
             new Task(PopulateGrid).Start();
         }
 
+        public readonly Dispatcher Dispatcher;
+        private readonly UserContext _context;
         private Random random = null;
         public BindingList<MarketsDiscoveryItemModel> ListMarketsDiscoveryItems { get; private set; }
-
+        
         private void PopulateGrid()
         {
             ListMarketsDiscoveryItems = new BindingList<MarketsDiscoveryItemModel>() {
@@ -35,9 +41,6 @@ namespace Prime.Ui.Wpf.ViewModel
                 new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/XRP.png", "XRP")
             };
         }
-
-        public readonly Dispatcher Dispatcher;
-        private readonly UserContext _context;
 
         public override CommandContent Create()
         {

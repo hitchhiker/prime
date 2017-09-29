@@ -195,14 +195,14 @@ namespace Prime.Ui.Wpf.ViewModel
             }
         }
 
-        private void CreateCharts(OhclData sourceData)
+        private void CreateCharts(OhlcData sourceData)
         {
             if (!sourceData.Any() && sourceData.Count<2)
                 return;
 
             lock (_lock)
             {
-                var overView = _adapter.OverviewOhcl;
+                var overView = _adapter.OverviewOhlc;
                 
                 _chartZooms.Add(ReceiverZoom);
                 _allZooms.AddRange(_chartZooms);
@@ -239,7 +239,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
                 OverviewZoom.SetStartFrom(overView.MinOrDefault(x=>x.DateTimeUtc, DateTime.MinValue));
 
-                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(sourceData, _pair.Asset2, false));
+                OnDataUpdate?.Invoke(this, new OhlcDataUpdatedEvent(sourceData, _pair.Asset2, false));
             }
         }
 
@@ -307,7 +307,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
                     _lastLiveDataUpdate = DateTime.MinValue;
 
-                    OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(priceData, _pair.Asset2, false));
+                    OnDataUpdate?.Invoke(this, new OhlcDataUpdatedEvent(priceData, _pair.Asset2, false));
                 });
             }
         }
@@ -340,13 +340,13 @@ namespace Prime.Ui.Wpf.ViewModel
             _dispatcher.Invoke(delegate
             {
                 MergeSeriesViews(nPriceData);
-                OnDataUpdate?.Invoke(this, new OhclDataUpdatedEvent(nPriceData, _pair.Asset2, isLive));
+                OnDataUpdate?.Invoke(this, new OhlcDataUpdatedEvent(nPriceData, _pair.Asset2, isLive));
                 IsGraphReady = true;
             });
 
         }
 
-        private OhclData RequestData(TimeRange range)
+        private OhlcData RequestData(TimeRange range)
         {
             if (_renderedCoverage.Covers(range))
                 return null;
@@ -375,7 +375,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _volumeChart.SeriesCollection[0].Values.Clear();
         }
 
-        private void MergeSeriesViews(OhclData sourceData)
+        private void MergeSeriesViews(OhlcData sourceData)
         {
             MergeSeriesViews<OhlcInstantChartPoint>(_priceChart.SeriesCollection[0], sourceData.ToGCandleSeries(_chartResolutionProvider, "Prices"));
             MergeSeriesViews<InstantChartPoint>(_volumeChart.SeriesCollection[0], sourceData.ToVolumeSeries(_chartResolutionProvider, "Volume"));

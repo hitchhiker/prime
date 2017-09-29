@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace plugins.Services.BitMex
+namespace Prime.Plugins.Services.BitMex
 {
     // Alex - I auto generated this from the API (see the comment below) - the names are wrong, but the structure is correct.
 
