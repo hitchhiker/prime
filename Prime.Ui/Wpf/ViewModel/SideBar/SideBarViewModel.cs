@@ -31,6 +31,8 @@ namespace Prime.Ui.Wpf.ViewModel
             ExchangesClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "exchanges"); });
             CoinsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "coins"); });
             MarketsDiscoveryClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "markets discovery"); });
+            ExchangeRatesClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "exchange rates"); });
+            ReceiveClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "receive"); });
         }
 
         public SideBarViewModel(ScreenViewModel screenVm) : this()
@@ -47,6 +49,8 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand ExchangesClickedCommand { get; private set; }
         public RelayCommand CoinsClickedCommand { get; private set; }
         public RelayCommand MarketsDiscoveryClickedCommand { get; private set; }
+        public RelayCommand ExchangeRatesClickedCommand { get; private set; }
+        public RelayCommand ReceiveClickedCommand { get; private set; }
 
         private bool _isMenuOpen;
         public bool IsMenuOpen

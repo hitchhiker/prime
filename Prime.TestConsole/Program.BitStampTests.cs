@@ -29,6 +29,28 @@ namespace Prime.TestConsole
                     throw;
                 }
             }
+
+		    public void GetAccountBalance()
+		    {
+		        var provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
+
+		        var privateContext = new NetworkProviderPrivateContext(UserContext.Current);
+
+		        try
+		        {
+		            var balance = AsyncContext.Run(() => provider.GetBalancesAsync(privateContext));
+
+		            foreach (var result in balance)
+		            {
+		                Console.WriteLine($"{result.Asset}: {result.Balance}, {result.Available}, {result.Reserved}");
+		            }
+		        }
+		        catch (Exception e)
+		        {
+		            Console.WriteLine(e.Message);
+		            throw;
+		        }
+            }
 		}
     }
 }

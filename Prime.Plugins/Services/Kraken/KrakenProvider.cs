@@ -140,7 +140,7 @@ namespace Prime.Plugins.Services.Kraken
         private Dictionary<string, object> CreateKrakenBody()
         {
             var body = new Dictionary<string, object>();
-            var nonce = BaseAuthenticator.GetNonce();
+            var nonce = BaseAuthenticator.GetLongNonce();
 
             body.Add("nonce", nonce);
 

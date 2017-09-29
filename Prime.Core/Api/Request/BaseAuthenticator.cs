@@ -11,11 +11,6 @@ namespace Prime.Core
 {
     public abstract class BaseAuthenticator
     {
-        public BaseAuthenticator()
-        {
-            // TODO: DELETE ME
-        }
-
         protected BaseAuthenticator(ApiKey apiKey)
         {
             ApiKey = apiKey;
@@ -23,9 +18,14 @@ namespace Prime.Core
 
         public readonly ApiKey ApiKey;
 
-        public static long GetNonce()
+        public static long GetLongNonce()
         {
             return DateTime.UtcNow.Ticks;
+        }
+
+        protected virtual long GetNonce()
+        {
+            return GetLongNonce();
         }
 
         // ReSharper disable once InconsistentNaming

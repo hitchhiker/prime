@@ -174,7 +174,7 @@ namespace Prime.Plugins.Services.Poloniex
         {
             var body = new Dictionary<string, object>();
 
-            body.Add("nonce", BaseAuthenticator.GetNonce());
+            body.Add("nonce", BaseAuthenticator.GetLongNonce());
 
             switch (bodyType)
             {

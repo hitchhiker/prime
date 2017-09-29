@@ -11,9 +11,15 @@ namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexAuthenticator : BaseAuthenticator
     {
-
         public BitMexAuthenticator(ApiKey apiKey) : base(apiKey)
         {
+        }
+
+        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+
+        protected override long GetNonce()
+        {
+            return DateTime.UtcNow.Ticks - ArbTickEpoch;
         }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
