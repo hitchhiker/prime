@@ -185,12 +185,12 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var addresses = new WalletAddresses();
-
             var api = GetApi<IBitMexApi>(context);
 
-            var depositAddress = await api.GetUserDepositAddressAsync(context.Asset.ToRemoteCode(this));
+            var remoteAssetCode = context.Asset.ToRemoteCode(this);
+            var depositAddress = await api.GetUserDepositAddressAsync(remoteAssetCode);
 
+            var addresses = new WalletAddresses();
             var walletAddress = new WalletAddress(this, context.Asset) {Address = depositAddress};
 
             addresses.Add(walletAddress);
@@ -198,24 +198,54 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            return null;
+            var api = GetApi<IBitMexApi>(context);
+            var addresses = new WalletAddresses();
+
+            foreach (var assetPair in Pairs)
+            {
+                var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);
+
+                var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode);
+
+                addresses.Add(new WalletAddress(this, assetPair.Asset1)
+                {
+                    Address = depositAddress
+                });
+            }
+
+            return addresses;
+        }
+
+        private string AdjustAssetCode(string input)
+        {
+            // TODO: should be refactored.
+            var config = new Dictionary<string, string>();
+
+            config.Add("XBT", "XBt");
+
+            return config.ContainsKey(input) ? config[input] : null;
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = GetApi<IBitMexApi>(context);
+
             var r = await api.GetUserWalletInfoAsync("XBt");
 
             var results = new BalanceResults(this);
 
             var btcAmount = (decimal)0.00000001 * r.amount;
 
-            var c = r.currency.ToAsset(this);
-            results.AddBalance(c, btcAmount);
-            results.AddAvailable(c, btcAmount);
-            results.AddReserved(c, 0);
+            var c = Asset.Btc;
+
+            var balance = new BalanceResult(c);
+            balance.Balance = new Money(btcAmount, c);
+            balance.Available = new Money(btcAmount, c);
+            balance.Reserved = new Money(0, c);
+
+            results.Add(balance);
 
             return results;
         }

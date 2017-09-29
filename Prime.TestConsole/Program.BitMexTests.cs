@@ -18,15 +18,14 @@ namespace Prime.TestConsole
             public void TestApi()
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-                //provider.GetAssetPairs
 
                 var ctx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
-
-                var r = provider.TestApiAsync(ctx).Result;
-
+  
                 try
                 {
+                    var r = AsyncContext.Run(() => provider.TestApiAsync(ctx));
 
+                    Console.WriteLine($"Api success: {r}");
                 }
                 catch (Exception e)
                 {
@@ -34,14 +33,9 @@ namespace Prime.TestConsole
                 }
             }
 
-            public void GetDepositAddresses()
+            public void TestPortfolioAccountBalances()
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-                //provider.GetAssetPairs
-
-                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
-
-                var r = provider.GetAddressesForAssetAsync(ctx).Result;
 
                 var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.BaseAsset, 0);
                 var scanner = new PortfolioProvider(c);
@@ -54,6 +48,31 @@ namespace Prime.TestConsole
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
+                }
+            }
+
+            public void GetDepositAddresses()
+            {
+                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
+
+                var asset = "BTC".ToAsset(provider);
+
+                var ctx = new WalletAddressAssetContext(asset, false, UserContext.Current);
+
+                try
+                {
+                    var r = provider.GetAddressesForAssetAsync(ctx).Result;
+
+                    Console.WriteLine("List of addresses: ");
+                    foreach (var walletAddress in r)
+                    {
+                        Console.WriteLine($"{walletAddress.Asset}: {walletAddress.Address}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
                 }
             }
 
@@ -134,11 +153,36 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
                 var ctx = new NetworkProviderPrivateContext(UserContext.Current);
 
-                var balance = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
+                try
+                {
+                    var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
+
+                    foreach (var balance in balances)
+                    {
+                        Console.WriteLine($"{balance.Asset} : {balance.Balance}, {balance.Available}, {balance.Reserved}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
+
+            public void GetAllDepositAddresses()
+            {
+                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
+                
+                var ctx = new WalletAddressContext(false, UserContext.Current);
 
                 try
                 {
-                    
+                    var addresses = AsyncContext.Run(() => provider.GetAddressesAsync(ctx));
+
+                    foreach (var address in addresses)
+                    {
+                        Console.WriteLine($"{address.Asset} : {address.Address}");
+                    }
                 }
                 catch (Exception e)
                 {

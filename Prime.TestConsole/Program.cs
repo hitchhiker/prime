@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Ipfs.Api;
@@ -27,7 +28,7 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            // Kraken.
+            // ----- Kraken -----
 
             // new Prime.TestConsole.Program.KrakenTests().GetBalances();
             // new Prime.TestConsole.Program.KrakenTests().GetAssetPairs();
@@ -36,23 +37,42 @@ namespace TestConsole
             // new Prime.TestConsole.Program.KrakenTests().GetOhlc();
             // new Prime.TestConsole.Program.KrakenTests().GetDepositAddresses();
 
-            // BitMex.
+            // ----- BitMex -----
 
-            //new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
+            // new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
             // new Prime.TestConsole.Program.BitMexTests().GetLatestPrice();
             // new Prime.TestConsole.Program.BitMexTests().GetAssetPairs();
             // new Prime.TestConsole.Program.BitMexTests().GetDepositAddresses();
             // new Prime.TestConsole.Program.BitMexTests().TestApi();
-            new Prime.TestConsole.Program.BitMexTests().GetBalances();
+            // new Prime.TestConsole.Program.BitMexTests().GetBalances();
+            // new Prime.TestConsole.Program.BitMexTests().GetAllDepositAddresses();
+            new Prime.TestConsole.Program.BitMexTests().TestPortfolioAccountBalances();
 
 
+            //var bitMexTests = new Prime.TestConsole.Program.BitMexTests();
+            //var actions = new Action[]
+            //{
+            //     bitMexTests.GetOhlcData,
+            //     bitMexTests.GetLatestPrice,
+            //     bitMexTests.GetAssetPairs,
+            //     bitMexTests.GetDepositAddresses,
+            //     bitMexTests.GetAllDepositAddresses,
+            //     bitMexTests.TestApi,
+            //     bitMexTests.GetBalances
+            //};
 
-            // BitStamp.
+            //foreach (var action in actions)
+            //{
+            //    action();
+            //    Thread.Sleep(1000);
+            //}
+
+            // ----- BitStamp -----
 
             // new Prime.TestConsole.Program.BitStampTests().GetTicker();
             // new Prime.TestConsole.Program.BitStampTests().GetTicker();
 
-            // Poloniex.
+            // ----- Poloniex -----
 
             // new Prime.TestConsole.Program.PoloniexTests().GetBalances();
             // new Prime.TestConsole.Program.PoloniexTests().ApiTest();
@@ -61,6 +81,7 @@ namespace TestConsole
             // new Prime.TestConsole.Program.PoloniexTests().GetDepositAddresses();
             // new Prime.TestConsole.Program.PoloniexTests().GetChartData();
 
+            // -----------
 
             //Sha256Test();
             //new ExchangeRateTest().Test();
