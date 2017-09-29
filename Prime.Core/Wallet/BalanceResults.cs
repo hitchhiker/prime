@@ -19,8 +19,9 @@ namespace Prime.Core
             if (value == 0)
                 return;
 
-            var i = GetCurrency(asset);
+            var i = GetOrCreateBalanceResult(asset);
             i.Reserved = new Money(value, asset);
+            Add(i);
         }
 
         public void AddBalance(Asset asset, decimal value)
@@ -28,8 +29,9 @@ namespace Prime.Core
             if (value == 0)
                 return;
 
-            var i = GetCurrency(asset);
+            var i = GetOrCreateBalanceResult(asset);
             i.Balance = new Money(value, asset);
+            Add(i);
         }
 
         public void AddAvailable(Asset asset, decimal value)
@@ -37,17 +39,17 @@ namespace Prime.Core
             if (value == 0)
                 return;
 
-            var i = GetCurrency(asset);
+            var i = GetOrCreateBalanceResult(asset);
             i.Available = new Money(value, asset);
+            Add(i);
         }
 
-        private BalanceResult GetCurrency(Asset asset)
+        private BalanceResult GetOrCreateBalanceResult(Asset asset)
         {
-            var i = this.FirstOrDefault(x => x.Asset == asset);
+            var i = this.FirstOrDefault(x => Equals(x.Asset, asset));
             if (i == null)
                 Add(i = new BalanceResult(asset));
             return i;
         }
-
     }
 }
