@@ -128,6 +128,24 @@ namespace Prime.TestConsole
                     throw;
                 }
             }
+
+            public void GetBalances()
+            {
+                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
+                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+
+                var balance = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
+
+                try
+                {
+                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+            }
         }
     }
 }

@@ -11,22 +11,15 @@ namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexAuthenticator : BaseAuthenticator
     {
-        #region Secrets
-
-        public const String Key = "ox6GznvJPLW3Op5SWUTtycfo";
-        public const String Secret = "2qGGyjRGJm7w8S0a5TQt42KSEq-EDqUv6SiOy9pwE793nHpr";
-
-        #endregion
-
         public BitMexAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
 
-        private static long _nonceReference = new DateTime(2015, 1, 1).Ticks;
+        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
 
         protected override long GetNonce()
         {
-            return DateTime.UtcNow.Ticks - _nonceReference;
+            return DateTime.UtcNow.Ticks - ArbTickEpoch;
         }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -37,9 +30,9 @@ namespace Prime.Plugins.Services.BitMex
 
             var nonce = GetNonce().ToString(); 
             var message = $"GET{path}{nonce}";
-            var signature = HashHMACSHA256Hex(message, Secret);
+            var signature = HashHMACSHA256Hex(message, ApiKey.Secret);
 
-            headers.Add("api-key", Key);
+            headers.Add("api-key", ApiKey.Key);
             headers.Add("api-signature", signature);
             headers.Add("api-nonce", nonce);
         }

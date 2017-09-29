@@ -11,11 +11,6 @@ namespace Prime.Core
 {
     public abstract class BaseAuthenticator
     {
-        public BaseAuthenticator()
-        {
-            // TODO: DELETE ME
-        }
-
         protected BaseAuthenticator(ApiKey apiKey)
         {
             ApiKey = apiKey;

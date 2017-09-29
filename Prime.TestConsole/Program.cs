@@ -41,8 +41,10 @@ namespace TestConsole
             //new Prime.TestConsole.Program.BitMexTests().GetOhlcData();
             // new Prime.TestConsole.Program.BitMexTests().GetLatestPrice();
             // new Prime.TestConsole.Program.BitMexTests().GetAssetPairs();
-             new Prime.TestConsole.Program.BitMexTests().GetDepositAddresses();
-            //new Prime.TestConsole.Program.BitMexTests().TestApi();
+            // new Prime.TestConsole.Program.BitMexTests().GetDepositAddresses();
+            // new Prime.TestConsole.Program.BitMexTests().TestApi();
+            new Prime.TestConsole.Program.BitMexTests().GetBalances();
+
 
 
             // BitStamp.
