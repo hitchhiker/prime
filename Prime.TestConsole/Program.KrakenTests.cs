@@ -19,20 +19,17 @@ namespace Prime.TestConsole
             public void GetDepositAddresses()
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
-                var privateProvider = new NetworkProviderPrivateContext(UserContext.Current);
 
                 var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
-
-                var userCtx = UserContext.Current;
-                var apiKey = userCtx.GetApiKey(provider);
-
-                // BUG: this always returns EInternal Error.
-                // var kraken = new Kraken(apiKey.Key, apiKey.Secret);
-                // var methods = kraken.GetDepositMethods(null, "XBT");
 
                 try
                 {
                     var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
+
+                    foreach (var walletAddress in addresses)
+                    {
+                        Console.WriteLine($"{walletAddress.Asset} : {walletAddress.Address}");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -46,10 +43,10 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
                 var ctx = new PublicPriceContext(new AssetPair("BTC", "USD"));
 
-                var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
-
                 try
                 {
+                    var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+
                     Console.WriteLine($"Latest {ctx.Pair} value is {price.Price}");
                 }
                 catch (Exception e)
@@ -63,28 +60,18 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                if (false)
-                {
-					// BUG: this code throws exception "EGeneral: Internal error".
-
-                    var apiKey = UserContext.Current.ApiKeys.GetFirst(provider);
-                    var kraken = new Kraken(apiKey.Key, apiKey.Secret);
-                    var m = kraken.GetDepositMethods(null, "XBT");
-                }
-
                 var ctx = new NetworkProviderPrivateContext(UserContext.Current);
-
-                // BUG: this code also throws exception "EGeneral: Internal error". Needs to be checked with other keys.
-                var method = AsyncContext.Run(() => provider.GetFundingMethod(ctx, Asset.Btc));
 
                 try
                 {
+                    var method = AsyncContext.Run(() => provider.GetFundingMethod(ctx, Asset.Btc));
+
                     Console.WriteLine($"Funding method: {method}");
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    throw;
+                    // throw;
                 }
             }
 
@@ -111,11 +98,11 @@ namespace Prime.TestConsole
 
             public void GetBalances()
             {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+
                 try
                 {
-                    var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
-                    var ctx = new NetworkProviderPrivateContext(UserContext.Current);
-
                     var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
 
                     if (balances.Count == 0)
@@ -130,8 +117,6 @@ namespace Prime.TestConsole
                                 $"{balance.Asset}: {balance.Available}, {balance.Balance}, {balance.Reserved}");
                         }
                     }
-
-
                 }
                 catch (Exception e)
                 {
@@ -159,6 +144,48 @@ namespace Prime.TestConsole
                 {
                     Console.WriteLine(e.Message);
                     throw;
+                }
+            }
+
+            public void TestApi()
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+
+                var ctx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+
+                try
+                {
+                    var result = AsyncContext.Run(() => provider.TestApiAsync(ctx));
+
+                    Console.WriteLine($"Api test ok: {result}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
+
+            }
+
+            public void GetAllAddressesAsync()
+            {
+                var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
+
+                var ctx = new WalletAddressContext(false, UserContext.Current);
+
+                try
+                {
+                    var addresses = AsyncContext.Run(() => provider.GetAddressesAsync(ctx));
+
+                    foreach (var walletAddress in addresses)
+                    {
+                        Console.WriteLine($"{walletAddress.Asset} : {walletAddress.Address}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    // throw;
                 }
             }
         }

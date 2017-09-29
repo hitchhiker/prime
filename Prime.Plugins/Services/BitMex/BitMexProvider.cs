@@ -209,7 +209,8 @@ namespace Prime.Plugins.Services.BitMex
 
                 var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode);
 
-                addresses.Add(new WalletAddress(this, assetPair.Asset1)
+                // BUG: how to convert XBt from Pairs to BTC?
+                addresses.Add(new WalletAddress(this, Asset.Btc)
                 {
                     Address = depositAddress
                 });
@@ -220,7 +221,7 @@ namespace Prime.Plugins.Services.BitMex
 
         private string AdjustAssetCode(string input)
         {
-            // TODO: should be refactored.
+            // TODO: should be re-factored.
             var config = new Dictionary<string, string>();
 
             config.Add("XBT", "XBt");
