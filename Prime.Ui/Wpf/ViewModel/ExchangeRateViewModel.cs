@@ -47,9 +47,20 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             _dispatcher.Invoke(() =>
             {
+                var results = _coord.Results();
                 ExchangeRates.Clear();
-                foreach (var er in _coord.Results())
+                foreach (var er in results)
                     ExchangeRates.Add(er);
+
+                if (AssetLeft.IsNone() || AssetRight.IsNone() || ConvertLeft == 0)
+                    return;
+
+                var ap = new AssetPair(AssetLeft, AssetRight);
+                var exr = results.FirstOrDefault(x => x.Pair.Equals(ap));
+                if (exr == null)
+                    return;
+
+                ConvertRight = (double)((decimal)exr.Price * (decimal)ConvertLeft);
             });
         }
 
