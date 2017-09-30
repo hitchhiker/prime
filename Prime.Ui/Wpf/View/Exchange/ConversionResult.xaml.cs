@@ -24,43 +24,6 @@ namespace Prime.Ui.Wpf.View.Exchange
         public ConversionResult()
         {
             InitializeComponent();
-            ResultArea.DataContext = this; //Very important
-        }
-
-        public static readonly DependencyProperty conversionDateTextProperty = DependencyProperty.Register("ConversionDate", typeof(string), typeof(ConversionResult), new FrameworkPropertyMetadata(""));
-        public static readonly DependencyProperty assetLeftTextProperty = DependencyProperty.Register("AssetLeft", typeof(Asset), typeof(ConversionResult), new FrameworkPropertyMetadata(Asset.None));
-        public static readonly DependencyProperty assetRightTextProperty = DependencyProperty.Register("AssetRight", typeof(Asset), typeof(ConversionResult), new FrameworkPropertyMetadata(Asset.None));
-        public static readonly DependencyProperty convertLeftTextProperty = DependencyProperty.Register("ConvertLeft", typeof(double), typeof(ConversionResult), new FrameworkPropertyMetadata(double.MinValue));
-        public static readonly DependencyProperty convertRightTextProperty = DependencyProperty.Register("ConvertRight", typeof(double), typeof(ConversionResult), new FrameworkPropertyMetadata(double.MinValue));
-
-        public string ConversionDate
-        {
-            get { return (string)GetValue(conversionDateTextProperty); }
-            set { SetValue(conversionDateTextProperty, value); }
-        }
-
-        public Asset AssetLeft
-        {
-            get { return (Asset)GetValue(assetLeftTextProperty); }
-            set { SetValue(assetLeftTextProperty, value); }
-        }
-
-        public Asset AssetRight
-        {
-            get { return (Asset)GetValue(assetRightTextProperty); }
-            set { SetValue(assetRightTextProperty, value); }
-        }
-
-        public double ConvertLeft
-        {
-            get { return (double)GetValue(convertLeftTextProperty); }
-            set { SetValue(convertLeftTextProperty, value); }
-        }
-
-        public double ConvertRight
-        {
-            get { return (double)GetValue(convertRightTextProperty); }
-            set { SetValue(convertRightTextProperty, value); }
         }
     }
 }

@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.Command;
 using Prime.Core;
 using Prime.Core.Exchange.Rates;
 using Prime.Utility;
+using Prime.Core.Exchange.Model;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -20,10 +21,12 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public ExchangeRateViewModel(ScreenViewModel model)
         {
+            _assetLeft = Assets.I.GetRaw("BTC");
             _assetRight = UserContext.Current.BaseAsset;
 
             _dispatcher = Dispatcher.CurrentDispatcher;
 
+            ScreenViewModel = model;
             AllAssetsViewModel = new AllAssetsViewModel(model);
 
             foreach (var i in UserContext.Current.UserSettings.FavouritePairs)
@@ -41,6 +44,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly List<ExchangeRateRequest> _requests = new List<ExchangeRateRequest>();
         private readonly ExchangeRatesCoordinator _coord = ExchangeRatesCoordinator.I;
 
+        public ScreenViewModel ScreenViewModel;
         public AllAssetsViewModel AllAssetsViewModel { get; }
 
         public RelayCommand GoCommand { get; }
@@ -71,8 +75,8 @@ namespace Prime.Ui.Wpf.ViewModel
             return new SimpleContentCommand("exchange rates");
         }
 
-        private string _conversionDate = "";
-        public string ConversionDate
+        private DateTime _conversionDate = DateTime.Now;
+        public DateTime ConversionDate
         {
             get => _conversionDate;
             set => Set(ref _conversionDate, value);
@@ -111,7 +115,7 @@ namespace Prime.Ui.Wpf.ViewModel
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
 
-            ConversionDate = DateTime.Now.ToString();
+            ConversionDate = DateTime.Now;
 
             _requests.Add(_coord.AddRequest(new AssetPair(AssetLeft, AssetRight)));
         }
