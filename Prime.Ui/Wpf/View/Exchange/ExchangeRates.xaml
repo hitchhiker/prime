@@ -7,35 +7,46 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=viewModel:ExchangeRateViewModel}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="800">
     <Grid>
-        <Border BorderBrush="Gray" Padding="10" Margin="10" DataContext="{Binding Path=ExchangeConvertViewModel}" VerticalAlignment="Top">
-            <StackPanel Orientation="Horizontal" Height="50">
-                <TextBox Margin="0,0,20,0" Text="{Binding Path=ConvertLeft}" Width="150"/>
-                <ComboBox  Margin="0,0,20,0" IsSynchronizedWithCurrentItem="True" DataContext="{Binding Path=AllAssetsViewModel}"
-                          IsEditable="True"
-                          DisplayMemberPath="ShortCode"
-                          ItemsSource="{Binding Path=Assets, UpdateSourceTrigger=LostFocus}" 
-                          SelectedItem="{Binding Path=SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction Command="{Binding }" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
-                <TextBox  Margin="0,0,20,0" Text="{Binding Path=ConvertRight}" Width="150"/>
-                <ComboBox IsSynchronizedWithCurrentItem="True" DataContext="{Binding Path=AllAssetsViewModel}"
-                          IsEditable="True"
-                          DisplayMemberPath="ShortCode"
-                          ItemsSource="{Binding Path=Assets, UpdateSourceTrigger=LostFocus}" 
-                          SelectedItem="{Binding Path=SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction Command="{Binding }" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border BorderBrush="Gray" Padding="10" Margin="10" VerticalAlignment="Top" Grid.Row="0">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Height="24" Margin="0,0,0,10">
+                    <TextBox Margin="0,0,20,0" Text="{Binding Path=ConvertLeft}" Width="150"/>
+                    <ComboBox Margin="0,0,20,0" 
+                              IsSynchronizedWithCurrentItem="False"
+                              IsEditable="True"
+                              DisplayMemberPath="ShortCode"
+                              ItemsSource="{Binding Path=AllAssetsViewModel.Assets, UpdateSourceTrigger=LostFocus}" 
+                              SelectedItem="{Binding Path=AssetLeft, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="LostFocus">
+                                <i:InvokeCommandAction Command="{Binding }" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="24">
+                    <TextBox  Margin="0,0,20,0" Text="{Binding Path=ConvertRight}" Width="150"/>
+                    <ComboBox IsSynchronizedWithCurrentItem="False"
+                              IsEditable="True"
+                              DisplayMemberPath="ShortCode"
+                              ItemsSource="{Binding Path=AllAssetsViewModel.Assets, UpdateSourceTrigger=LostFocus}" 
+                              SelectedItem="{Binding Path=AssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="LostFocus">
+                                <i:InvokeCommandAction Command="{Binding }" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+                    <Button Command="{Binding Path=GoCommand}" Content="Convert"/>
+                </StackPanel>
             </StackPanel>
         </Border>
+        <DataGrid Grid.Row="1" Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ExchangeRates, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="True" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}"/>
     </Grid>
 </UserControl>

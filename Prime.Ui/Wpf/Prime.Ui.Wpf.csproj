@@ -381,7 +381,6 @@
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
     <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
-    <Compile Include="ViewModel\ExchangeConvertViewModel.cs" />
     <Compile Include="ViewModel\ExchangeRateViewModel.cs" />
     <Compile Include="ViewModel\Logging\DispatchedPropertyChangedBase.cs" />
     <Compile Include="ViewModel\Logging\LogEntry.cs" />

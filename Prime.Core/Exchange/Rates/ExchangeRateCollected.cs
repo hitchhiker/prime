@@ -4,11 +4,13 @@ namespace Prime.Core.Exchange.Rates
 {
     public class ExchangeRateCollected
     {
-        public readonly AssetPair Pair;
-        public readonly Money Price;
-        public readonly DateTime UtcCreated;
         public readonly IPublicPriceProvider Provider;
         public readonly IPublicPriceProvider ProviderConversion;
+
+        public DateTime UtcCreated { get; }
+        public AssetPair Pair { get; }
+        public Money Price { get; }
+
         public bool IsConverted => ProviderConversion != null;
 
         public ExchangeRateCollected(IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)

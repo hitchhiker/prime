@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
             "EUR".ToAssetRaw();
 
             Context = UserContext.Current;
-            SelectedAsset = Context.BaseAsset;
+            SelectedBaseAsset = Context.BaseAsset;
 
             UpdateAssets();
 
@@ -51,18 +51,19 @@ namespace Prime.Ui.Wpf.ViewModel
         }
 
         public readonly UserContext Context;
-        private Asset _selectedAsset;
+        private Asset _selectedBaseAsset;
 
-        public Asset SelectedAsset
+        public Asset SelectedBaseAsset
         {
-            get => _selectedAsset;
-            set => Set(ref _selectedAsset, value, x =>
+            get => _selectedBaseAsset;
+            set => Set(ref _selectedBaseAsset, value, x =>
             {
                 if (SetAsDefault)
                     return Context.BaseAsset = x;
                 return x;
             });
         }
+
 
         public BindingList<Asset> Assets { get; private set; } = new BindingList<Asset>();
     }

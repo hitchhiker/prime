@@ -22,7 +22,7 @@
                   IsEditable="True"
                   DisplayMemberPath="ShortCode"
                   ItemsSource="{Binding Path=Assets, UpdateSourceTrigger=LostFocus}" 
-                  SelectedItem="{Binding Path=SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                  SelectedItem="{Binding Path=SelectedBaseAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="LostFocus">
                     <i:InvokeCommandAction Command="{Binding }" />

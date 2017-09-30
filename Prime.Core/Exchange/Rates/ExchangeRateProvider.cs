@@ -40,7 +40,9 @@ namespace Prime.Core.Exchange.Rates
                 if (_pairRequests.Count != 0 && !_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
                 {
                     _utcLastUpdate = DateTime.UtcNow;
-                    Update();
+                    
+                        Update();
+                        IsFailing = true;
                 }
 
                 if (!_isDisposed)

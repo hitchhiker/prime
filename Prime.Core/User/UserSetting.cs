@@ -17,6 +17,9 @@ namespace Prime.Core
         [Bson]
         public UniqueList<AssetPair> FavouritePairs { get; set; } = new UniqueList<AssetPair>();
 
+        [Bson]
+        public UniqueList<AssetPair> HistoricExchangeRates { get; set; } = new UniqueList<AssetPair>();
+
         public void AfterCreation(IDataContext context, IUniqueIdentifier<ObjectId> parentObject)
         {
             BookmarkedCommands.Defaults();

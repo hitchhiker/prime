@@ -87,11 +87,27 @@ namespace Prime.Core.Exchange.Rates
             }
         }
 
-        public void AddRequest(AssetPair pair, Network network = null)
+        public ExchangeRateRequest AddRequest(AssetPair pair, Network network = null)
         {
             lock (_commonLock)
             {
-                new ExchangeRateRequest(this, pair, network);
+                return new ExchangeRateRequest(this, pair, network);
+            }
+        }
+
+        public void RemoveRequest(ExchangeRateRequest request)
+        {
+            lock (_commonLock)
+            {
+               if (request == null)
+                    return;
+
+                _requested.Remove(request);
+
+                if (request.IsConverted && request.ConvertedOther != null)
+                    _requested.Remove(request.ConvertedOther);
+
+                SyncProviders();
             }
         }
 
@@ -103,12 +119,7 @@ namespace Prime.Core.Exchange.Rates
                 if (e == null)
                     return;
 
-                _requested.Remove(e);
-
-                if (e.IsConverted && e.ConvertedOther != null)
-                    _requested.Remove(e.ConvertedOther);
-
-                SyncProviders();
+                RemoveRequest(e);
             }
         }
 
