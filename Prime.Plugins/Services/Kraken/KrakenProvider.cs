@@ -132,11 +132,6 @@ namespace Prime.Plugins.Services.Kraken
         public bool CanMultiDepositAddress { get; } = false;
         public bool CanGenerateDepositAddress { get; } = true;
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
-        {
-            throw new System.NotImplementedException();
-        }
-
         private Dictionary<string, object> CreateKrakenBody()
         {
             var body = new Dictionary<string, object>();
@@ -210,16 +205,73 @@ namespace Prime.Plugins.Services.Kraken
             return null;
         }
 
+        private async Task<WalletAddresses> GetAddressesLocal(IKrakenApi api, string fundingMethod, Asset asset)
+        {
+            var body = CreateKrakenBody();
+
+            // BUG: do we need "aclass"?
+            // body.Add("aclass", context.Asset.ToRemoteCode(this));
+            body.Add("asset", asset.ToRemoteCode(this));
+            body.Add("method", fundingMethod);
+            body.Add("new", false);
+
+            var r = await api.GetDepositAddresses(body);
+
+            var walletAddresses = new WalletAddresses();
+
+            foreach (var addr in r.result)
+            {
+                var walletAddress = new WalletAddress(this, asset)
+                {
+                    Address = addr.Value.address
+                };
+
+                if (addr.Value.expiretm != 0)
+                {
+                    var time = addr.Value.expiretm.ToUtcDateTime();
+                    walletAddress.ExpiresUtc = time;
+                }
+
+                walletAddresses.Add(new WalletAddress(this, asset) { Address = addr.Value.address });
+            }
+
+            return walletAddresses;
+        }
+
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        {
+            var api = GetApi<IKrakenApi>(context);
+            var assets = await GetAssetPairs(context);
+
+            var addresses = new WalletAddresses();
+
+            foreach (var pair in assets)
+            {
+                var fundingMethod = await GetFundingMethod(context, pair.Asset1);
+
+                if (fundingMethod == null)
+                    throw new NullReferenceException("No funding method is found");
+
+                var localAddresses = await GetAddressesLocal(api, fundingMethod, pair.Asset1);
+
+                addresses.AddRange(localAddresses);
+            }
+
+            return addresses;
+        }
+
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            // TODO: re-implement.
-
             var api = GetApi<IKrakenApi>(context);
 
             var fundingMethod = await GetFundingMethod(context, context.Asset);
 
             if(fundingMethod == null)
                 throw new NullReferenceException("No funding method is found");
+
+            var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset);
+
+            return addresses;
 
             var body = CreateKrakenBody();
 
@@ -228,8 +280,6 @@ namespace Prime.Plugins.Services.Kraken
             body.Add("asset", context.Asset.ToRemoteCode(this));
             body.Add("method", fundingMethod);
             body.Add("new", false);
-
-            // TODO: waiting for verification.
 
             var r = await api.GetDepositAddresses(body);
 

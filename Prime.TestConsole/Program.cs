@@ -36,6 +36,28 @@ namespace TestConsole
             // new Prime.TestConsole.Program.KrakenTests().GetFundingMethod();
             // new Prime.TestConsole.Program.KrakenTests().GetOhlc();
             // new Prime.TestConsole.Program.KrakenTests().GetDepositAddresses();
+            // new Prime.TestConsole.Program.KrakenTests().TestApi();
+            // new Prime.TestConsole.Program.KrakenTests().GetAllAddressesAsync();
+
+            var krakenTests = new Prime.TestConsole.Program.KrakenTests();
+            var krakenActions = new Action[]
+            {
+                krakenTests.GetBalances,
+                krakenTests.GetAssetPairs,
+                krakenTests.GetLatestPrice,
+                krakenTests.GetDepositAddresses,
+                krakenTests.GetAllAddressesAsync,
+                krakenTests.GetFundingMethod,
+                krakenTests.GetOhlc,
+                krakenTests.TestApi
+            };
+
+            foreach (var action in krakenActions)
+            {
+                action();
+                Thread.Sleep(1000);
+            }
+
 
             // ----- BitMex -----
 
@@ -46,11 +68,10 @@ namespace TestConsole
             // new Prime.TestConsole.Program.BitMexTests().TestApi();
             // new Prime.TestConsole.Program.BitMexTests().GetBalances();
             // new Prime.TestConsole.Program.BitMexTests().GetAllDepositAddresses();
-            new Prime.TestConsole.Program.BitMexTests().TestPortfolioAccountBalances();
-
+            // new Prime.TestConsole.Program.BitMexTests().TestPortfolioAccountBalances();
 
             //var bitMexTests = new Prime.TestConsole.Program.BitMexTests();
-            //var actions = new Action[]
+            //var bitMexActions = new Action[]
             //{
             //     bitMexTests.GetOhlcData,
             //     bitMexTests.GetLatestPrice,
@@ -58,10 +79,11 @@ namespace TestConsole
             //     bitMexTests.GetDepositAddresses,
             //     bitMexTests.GetAllDepositAddresses,
             //     bitMexTests.TestApi,
-            //     bitMexTests.GetBalances
+            //     bitMexTests.GetBalances,
+            //     bitMexTests.TestPortfolioAccountBalances
             //};
 
-            //foreach (var action in actions)
+            //foreach (var action in bitMexActions)
             //{
             //    action();
             //    Thread.Sleep(1000);
@@ -152,7 +174,7 @@ namespace TestConsole
 
         private static void LatestPricesTest()
         {
-            
+
         }
 
         private static void LatestPriceTest()
