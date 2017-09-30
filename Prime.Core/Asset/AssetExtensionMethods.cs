@@ -6,7 +6,7 @@ namespace Prime.Core
     {
         public static AssetPair ToAssetPair(this string pair, IDescribesAssets provider, char delimiter = '_')
         {
-            if (string.IsNullOrWhiteSpace(pair) || pair.IndexOf(delimiter)==-1)
+            if (string.IsNullOrWhiteSpace(pair) || pair.IndexOf(delimiter) == -1)
                 return AssetPair.Empty;
 
             var p = pair.Split(delimiter);
@@ -54,6 +54,11 @@ namespace Prime.Core
                 throw new ArgumentException(nameof(converter));
 
             return converter.ToRemoteCode(asset);
+        }
+
+        public static bool IsNone(this Asset asset)
+        {
+            return asset == null || Equals(asset, Asset.None);
         }
     }
 }

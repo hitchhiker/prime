@@ -88,10 +88,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void Go()
         {
-            if (AssetRight == null || Equals(AssetRight, Asset.None))
-                return;
-
-            if (AssetLeft == null || Equals(AssetLeft, Asset.None))
+            if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
 
             _requests.Add(_coord.AddRequest(new AssetPair(AssetLeft, AssetRight)));
