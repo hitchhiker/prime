@@ -30,6 +30,8 @@ namespace Prime.Ui.Wpf.ViewModel
             foreach (var i in UserContext.Current.UserSettings.HistoricExchangeRates)
                 _requests.Add(_coord.AddRequest(i));
 
+            _coord.Messenger.Register<ExchangeRateCollected>(this, NewRate);
+
             GoCommand = new RelayCommand(Go);
         }
 
@@ -92,7 +94,6 @@ namespace Prime.Ui.Wpf.ViewModel
             if (AssetLeft == null || Equals(AssetLeft, Asset.None))
                 return;
 
-            _coord.Messenger.Register<ExchangeRateCollected>(this, NewRate);
             _requests.Add(_coord.AddRequest(new AssetPair(AssetLeft, AssetRight)));
         }
 
