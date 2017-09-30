@@ -14,7 +14,9 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class ExchangeRateViewModel : DocumentPaneViewModel
     {
-        public ExchangeRateViewModel() { }
+        public ExchangeRateViewModel()
+        {
+        }
 
         public ExchangeRateViewModel(ScreenViewModel model)
         {
@@ -69,6 +71,13 @@ namespace Prime.Ui.Wpf.ViewModel
             return new SimpleContentCommand("exchange rates");
         }
 
+        private string _conversionDate = "";
+        public string ConversionDate
+        {
+            get => _conversionDate;
+            set => Set(ref _conversionDate, value);
+        }
+
         private double _convertLeft;
         public double ConvertLeft
         {
@@ -101,6 +110,8 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
+
+            ConversionDate = DateTime.Now.ToString();
 
             _requests.Add(_coord.AddRequest(new AssetPair(AssetLeft, AssetRight)));
         }

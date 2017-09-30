@@ -398,6 +398,9 @@
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
     <Compile Include="ViewModel\Wallet\WalletViewModel.cs" />
     <Compile Include="ViewModel\WatchlistViewModel.cs" />
+    <Compile Include="View\Exchange\ConversionResult.xaml.cs">
+      <DependentUpon>ConversionResult.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Exchange\ExchangeRates.xaml.cs">
       <DependentUpon>ExchangeRates.xaml</DependentUpon>
     </Compile>
@@ -514,6 +517,10 @@
     <Compile Include="Components\MetroWindowManager.cs" />
     <Compile Include="Components\Converters\RatioConverter.cs" />
     <Compile Include="Components\MetroWindowInstance.cs" />
+    <Page Include="View\Exchange\ConversionResult.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Exchange\ExchangeRates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

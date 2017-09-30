@@ -9,8 +9,6 @@ namespace Prime.Core
 {
     public class Asset : IEquatable<Asset>, IFormatProvider
     {
-        private Asset() { }
-
         private Asset(string shortCode)
         {
             ShortCode = shortCode.ToUpper();

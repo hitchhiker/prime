@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Exchange.ConversionResult"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid x:Name="ResultArea">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding ConvertLeft}" />
+                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="{}{0} = "/>
+                <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding ConvertRight}"/>
+                <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding AssetRight.ShortCode}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock" >
+                        <Setter Property="FontSize" Value="14"/>
+                    </Style>
+                </StackPanel.Resources>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding AssetLeft.ShortCode}"/>
+                    <Label Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="1 {0} = 0.846337 CANN"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="40,0,0,0">
+                    <TextBlock HorizontalAlignment="Center">CANN</TextBlock>
+                    <Label Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="1 CANN = 0.846337 {0}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="40,0,0,0">
+                    <TextBlock HorizontalAlignment="Left" Text="{Binding AssetRight.ShortCode}"/>
+                    <Label Content="{Binding AssetRight.ShortCode}" ContentStringFormat="1 CANN = 0.846337 {0}"/>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Margin="0,10,0,0" HorizontalAlignment="Center" Text="{Binding ConversionDate}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
