@@ -11,7 +11,7 @@ namespace Prime.TestConsole
     {
 		public class BitStampTests
 		{
-		    public void GetTicker()
+		    public void GetLatestPrices()
 		    {
                 var provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
 		        var pair = new AssetPair("BTC", "USD");
@@ -37,7 +37,6 @@ namespace Prime.TestConsole
 
 		        var privateContext = new NetworkProviderPrivateContext(UserContext.Current);
 
-
                 try
                 {
                     var balances = AsyncContext.Run(() => provider.GetBalancesAsync(privateContext));
@@ -50,6 +49,27 @@ namespace Prime.TestConsole
 		        catch (Exception e)
 		        {
 		            Console.WriteLine(e.Message);
+		            throw;
+		        }
+            }
+
+		    public void GetAssetPairs()
+		    {
+		        var provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
+		        var ctx = new NetworkProviderContext();
+
+		        try
+		        {
+		            var pairs = AsyncContext.Run(() => provider.GetAssetPairs(ctx));
+
+		            foreach (var pair in pairs)
+		            {
+		                Console.WriteLine($"{pair}");
+		            }
+		        }
+		        catch (Exception e)
+		        {
+		            Console.WriteLine(e);
 		            throw;
 		        }
             }

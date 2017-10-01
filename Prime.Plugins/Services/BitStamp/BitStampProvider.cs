@@ -50,6 +50,7 @@ namespace Prime.Plugins.Services.BitStamp
             {
                 var api = GetApi<IBitStampApi>(context);
                 var r = api.GetAccountBalances().Result;
+
                 return r != null;
             });
             t.Start();
@@ -112,17 +113,26 @@ namespace Prime.Plugins.Services.BitStamp
             var usdAsset = "usd".ToAsset(this);
             var eurAsset = "eur".ToAsset(this);
 
-            balances.AddAvailable(btcAsset, r.btc_available);
-            balances.AddReserved(btcAsset, r.btc_reserved);
-            balances.AddBalance(btcAsset, r.btc_balance);
+            balances.Add(new BalanceResult(btcAsset)
+            {
+                Available = r.btc_available,
+                Balance = r.btc_balance,
+                Reserved = r.btc_reserved
+            });
 
-            balances.AddAvailable(usdAsset, r.usd_available);
-            balances.AddReserved(usdAsset, r.usd_reserved);
-            balances.AddBalance(usdAsset, r.usd_balance);
+            balances.Add(new BalanceResult(usdAsset)
+            {
+                Available = r.usd_available,
+                Balance = r.usd_balance,
+                Reserved = r.usd_reserved
+            });
 
-            balances.AddAvailable(eurAsset, r.eur_available);
-            balances.AddReserved(eurAsset, r.eur_reserved);
-            balances.AddBalance(eurAsset, r.eur_balance);
+            balances.Add(new BalanceResult(eurAsset)
+            {
+                Available = r.eur_available,
+                Balance = r.eur_reserved,
+                Reserved = r.eur_balance
+            });
 
             return balances;
         }
