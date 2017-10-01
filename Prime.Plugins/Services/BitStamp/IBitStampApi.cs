@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.BitStamp
         [Post(BitStampProvider.BitStampApiVersion + "/balance/")]
         Task<BitStampSchema.AccountBalancesResponse> GetAccountBalances();
 
-        [Get("{currency}/")]
-        Task<string> GetDepositAddress([Path] string currency);
+        [Post("{currency}/")]
+        Task<string> GetDepositAddress([Path(UrlEncode = false)] string currency);
     }
 }

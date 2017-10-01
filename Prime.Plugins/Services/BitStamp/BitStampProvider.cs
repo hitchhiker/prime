@@ -5,6 +5,7 @@ using Prime.Core;
 using Prime.Utility;
 using Rokolab.BitstampClient;
 using LiteDB;
+using Newtonsoft.Json;
 using Prime.Plugins.Services.Base;
 using RestEase;
 
@@ -76,7 +77,7 @@ namespace Prime.Plugins.Services.BitStamp
                 BaseAsset = context.Pair.Asset1,
                 UtcCreated = r.timestamp.ToUtcDateTime()
             };
-            
+
             return latestPrice;
         }
 
@@ -171,17 +172,39 @@ namespace Prime.Plugins.Services.BitStamp
 
             var r = await api.GetDepositAddress(currencyPath);
 
+            var processedAddress = ProcessAddressResponce(context.Asset, r);
+
             if (!this.ExchangeHas(context.Asset))
                 return null;
 
             var walletAddress = new WalletAddress(this, context.Asset)
             {
-                Address = r
+                Address = processedAddress
             };
 
             var addresses = new WalletAddresses(walletAddress);
 
             return addresses;
+        }
+
+        private string ProcessAddressResponce(Asset asset, string response)
+        {
+            switch (asset.ShortCode)
+            {
+                case "BTC":
+                    return response.Trim('\"');
+                case "XRP":
+                    var splitted = JsonConvert.DeserializeObject<BitStampSchema.AccountAddressResponse>(response).address.Split(new[] { "?dt" }, StringSplitOptions.RemoveEmptyEntries);
+                    if (splitted.Length < 1)
+                        throw new ApiResponseException("XRP address has incorrect format", this);
+                    return splitted[0];
+                case "ETH":
+                case "LTC":
+                    var addrr = JsonConvert.DeserializeObject<BitStampSchema.AccountAddressResponse>(response);
+                    return addrr.address;
+                default:
+                    throw new NullReferenceException("No deposit address for specified currency");
+            }
         }
 
         private string GetCurrencyPath(Asset asset)

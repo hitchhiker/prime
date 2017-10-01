@@ -21,6 +21,11 @@ namespace Prime.Plugins.Services.BitStamp
             public decimal open;
         }
 
+        internal class AccountAddressResponse
+        {
+            public string address;
+        }
+
         internal class AccountBalancesResponse
         {
             public decimal usd_balance;
