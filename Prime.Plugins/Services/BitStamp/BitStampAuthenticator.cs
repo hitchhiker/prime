@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using Prime.Core;
 using Prime.Utility;
@@ -13,20 +17,21 @@ namespace Prime.Plugins.Services.BitStamp
 
         }
 
-
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var headers = request.Headers;
             var nonce = GetLongNonce().ToString();
             var customerId = ApiKey.Extra;
 
-            var message = nonce + customerId + ApiKey.Secret;
+            var message = nonce + customerId + ApiKey.Key;
 
-            var signature = HashHMACSHA256Hex(message, ApiKey.Secret);
+            var signature = HashHMACSHA256Hex(message, ApiKey.Secret).ToUpper();
 
-            headers.Add("key", ApiKey.Key); // ApiKey.Key
-            headers.Add("nonce", nonce);
-            headers.Add("signature", signature);
+            request.Content = new FormUrlEncodedContent(new []
+            {
+                new KeyValuePair<string, string>("key", ApiKey.Key),
+                new KeyValuePair<string, string>("nonce", nonce),
+                new KeyValuePair<string, string>("signature", signature),
+            });
         }
     }
 }

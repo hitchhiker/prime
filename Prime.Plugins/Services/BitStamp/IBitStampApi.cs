@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
@@ -8,7 +9,7 @@ namespace Prime.Plugins.Services.BitStamp
         [Get(BitStampProvider.BitStampApiVersion + "/ticker/{currency_pair}/")]
         Task<BitStampSchema.TickerResponse> GetTicker([Path("currency_pair")] string currencyPair);
 
-        [Get(BitStampProvider.BitStampApiVersion + "/balance/")]
+        [Post(BitStampProvider.BitStampApiVersion + "/balance/")]
         Task<BitStampSchema.AccountBalancesResponse> GetAccountBalances();
 
         [Get("{currency}/")]

@@ -3,6 +3,7 @@ using System.Linq;
 using Nito.AsyncEx;
 using Prime.Core;
 using Prime.Plugins.Services.BitStamp;
+using Rokolab.BitstampClient;
 
 namespace Prime.TestConsole
 {
@@ -36,11 +37,12 @@ namespace Prime.TestConsole
 
 		        var privateContext = new NetworkProviderPrivateContext(UserContext.Current);
 
-		        try
-		        {
-		            var balance = AsyncContext.Run(() => provider.GetBalancesAsync(privateContext));
 
-		            foreach (var result in balance)
+                try
+                {
+                    var balances = AsyncContext.Run(() => provider.GetBalancesAsync(privateContext));
+
+                    foreach (var result in balances)
 		            {
 		                Console.WriteLine($"{result.Asset}: {result.Balance}, {result.Available}, {result.Reserved}");
 		            }

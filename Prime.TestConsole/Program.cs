@@ -39,24 +39,24 @@ namespace TestConsole
             // new Prime.TestConsole.Program.KrakenTests().TestApi();
             // new Prime.TestConsole.Program.KrakenTests().GetAllAddressesAsync();
 
-            var krakenTests = new Prime.TestConsole.Program.KrakenTests();
-            var krakenActions = new Action[]
-            {
-                krakenTests.GetBalances,
-                krakenTests.GetAssetPairs,
-                krakenTests.GetLatestPrice,
-                krakenTests.GetDepositAddresses,
-                krakenTests.GetAllAddressesAsync,
-                krakenTests.GetFundingMethod,
-                krakenTests.GetOhlc,
-                krakenTests.TestApi
-            };
+            //var krakenTests = new Prime.TestConsole.Program.KrakenTests();
+            //var krakenActions = new Action[]
+            //{
+            //    krakenTests.GetBalances,
+            //    krakenTests.GetAssetPairs,
+            //    krakenTests.GetLatestPrice,
+            //    krakenTests.GetDepositAddresses,
+            //    krakenTests.GetAllAddressesAsync,
+            //    krakenTests.GetFundingMethod,
+            //    krakenTests.GetOhlc,
+            //    krakenTests.TestApi
+            //};
 
-            foreach (var action in krakenActions)
-            {
-                action();
-                Thread.Sleep(1000);
-            }
+            //foreach (var action in krakenActions)
+            //{
+            //    action();
+            //    Thread.Sleep(1000);
+            //}
 
 
             // ----- BitMex -----
@@ -92,7 +92,7 @@ namespace TestConsole
             // ----- BitStamp -----
 
             // new Prime.TestConsole.Program.BitStampTests().GetTicker();
-            // new Prime.TestConsole.Program.BitStampTests().GetTicker();
+            new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
 
             // ----- Poloniex -----
 

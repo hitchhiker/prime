@@ -48,9 +48,9 @@ namespace Prime.Plugins.Services.BitStamp
         {
             var t = new Task<bool>(() =>
             {
-                var api = GetApi<IBitstampClient>(context);
-                var r = api.GetBalance();
-                return r != null && r.Get("status") != "error";
+                var api = GetApi<IBitStampApi>(context);
+                var r = api.GetAccountBalances().Result;
+                return r != null;
             });
             t.Start();
             return t;
