@@ -1,15 +1,18 @@
-﻿<UserControl x:Class="Prime.Ui.Wpf.View.Exchange.ConversionResult"
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Exchange.ExchangeRateResult"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             xmlns:prime="clr-namespace:prime"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance viewModel:ExchangeRateResultViewModel}">
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding ConvertLeft}" />
-                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="{}{0} = "/>
+                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding FinalPrice}" Margin="0,10,0,0"/>
+                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="{}{0} = " Margin="0,10,0,0"/>
                 <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding ConvertRight}"/>
                 <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding AssetRight.ShortCode}"/>
             </StackPanel>
@@ -21,18 +24,19 @@
                 </StackPanel.Resources>
                 <StackPanel Orientation="Vertical">
                     <TextBlock HorizontalAlignment="Right" Text="{Binding AssetLeft.ShortCode}"/>
-                    <Label Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="1 {0} = 0.846337 CANN"/>
+                    <Label Content="{Binding InfoLeft}"/>
+                    <Label Content="{Binding InfoConvertFinal}" Visibility="{Binding IsConverted, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="40,0,0,0">
-                    <TextBlock HorizontalAlignment="Center">CANN</TextBlock>
-                    <Label Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="1 CANN = 0.846337 {0}"/>
+                <StackPanel Orientation="Vertical" Margin="40,0,0,0" Visibility="{Binding IsConverted, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock HorizontalAlignment="Center" Text="{Binding AssetConvert.ShortCode}"/>
+                    <Label Content="{Binding InfoConvert}"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="40,0,0,0">
                     <TextBlock HorizontalAlignment="Left" Text="{Binding AssetRight.ShortCode}"/>
-                    <Label Content="{Binding AssetRight.ShortCode}" ContentStringFormat="1 CANN = 0.846337 {0}"/>
+                    <Label Content="{Binding InfoRight}"/>
                 </StackPanel>
             </StackPanel>
-            <TextBlock Margin="0,10,0,0" HorizontalAlignment="Center" Text="{Binding ConversionDate}"/>
+            <prime:HumanTime Margin="0,10,0,0" HorizontalAlignment="Center" DateTime="{Binding UtcCreated}"></prime:HumanTime>
         </StackPanel>
     </Grid>
 </UserControl>

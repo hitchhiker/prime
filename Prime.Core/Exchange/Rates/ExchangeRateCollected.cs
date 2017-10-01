@@ -9,7 +9,9 @@ namespace Prime.Core.Exchange.Rates
 
         public DateTime UtcCreated { get; }
         public AssetPair Pair { get; }
+        public Asset AssetConvert { get; }
         public Money Price { get; }
+        public Money PriceConvert { get; }
 
         public bool IsConverted => ProviderConversion != null;
 
@@ -31,6 +33,8 @@ namespace Prime.Core.Exchange.Rates
             Provider = p1.Provider;
             ProviderConversion = p2.Provider;
             Price = new Money(p1.Price * p2.Price, Pair.Asset2);
+            PriceConvert = p1.Price;
+            AssetConvert = p1.Pair.Asset2;
         }
     }
 }

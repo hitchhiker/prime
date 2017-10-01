@@ -65,8 +65,8 @@ namespace Prime.Ui.Wpf.ViewModel
                 var exr = results.FirstOrDefault(x => x.Pair.Equals(ap));
                 if (exr == null)
                     return;
-
-                ConvertRight = (double)((decimal)exr.Price * (decimal)ConvertLeft);
+                
+                 ResultViewModel = new ExchangeRateResultViewModel(this, exr);
             });
         }
 
@@ -110,13 +110,21 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _assetRight, value);
         }
 
+
+        private ExchangeRateResultViewModel _resultViewModel = new ExchangeRateResultViewModel();
+        public ExchangeRateResultViewModel ResultViewModel
+        {
+            get => _resultViewModel;
+            set => Set(ref _resultViewModel, value);
+        }
+
         private void Go()
         {
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
 
             ConversionDate = DateTime.Now;
-
+            ResultViewModel = new ExchangeRateResultViewModel();
             _requests.Add(_coord.AddRequest(new AssetPair(AssetLeft, AssetRight)));
         }
 

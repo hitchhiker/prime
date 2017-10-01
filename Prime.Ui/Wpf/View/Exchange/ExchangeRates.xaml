@@ -48,7 +48,7 @@
                         <Button Command="{Binding Path=GoCommand}" Content="Convert"/>
                     </StackPanel>
                 </StackPanel>
-                <exchange:ConversionResult Margin="50,0,0,0"/>
+                <exchange:ExchangeRateResult Margin="50,0,0,0" DataContext="{Binding Path=ResultViewModel, NotifyOnSourceUpdated=True}" Visibility="{Binding Path=IsVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </StackPanel>
         </Border>
         <DataGrid Grid.Row="1" Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ExchangeRates, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="True" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}"/>

@@ -19,9 +19,9 @@ namespace Prime.Ui.Wpf.View.Exchange
     /// <summary>
     /// Interaction logic for ConversionResult.xaml
     /// </summary>
-    public partial class ConversionResult : UserControl
+    public partial class ExchangeRateResult : UserControl
     {
-        public ConversionResult()
+        public ExchangeRateResult()
         {
             InitializeComponent();
         }

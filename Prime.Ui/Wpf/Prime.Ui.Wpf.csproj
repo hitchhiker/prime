@@ -375,13 +375,14 @@
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
     <Compile Include="ViewModel\CoinsViewModel.cs" />
-    <Compile Include="ViewModel\ExchangesViewModel.cs" />
+    <Compile Include="ViewModel\Exchange\ExchangeRateResultViewModel.cs" />
+    <Compile Include="ViewModel\Exchange\ExchangesViewModel.cs" />
     <Compile Include="ViewModel\MarketsDiscoveryViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
     <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
-    <Compile Include="ViewModel\ExchangeRateViewModel.cs" />
+    <Compile Include="ViewModel\Exchange\ExchangeRateViewModel.cs" />
     <Compile Include="ViewModel\Logging\DispatchedPropertyChangedBase.cs" />
     <Compile Include="ViewModel\Logging\LogEntry.cs" />
     <Compile Include="PageUri\AssetPageUriProvider.cs" />
@@ -398,8 +399,8 @@
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
     <Compile Include="ViewModel\Wallet\WalletViewModel.cs" />
     <Compile Include="ViewModel\WatchlistViewModel.cs" />
-    <Compile Include="View\Exchange\ConversionResult.xaml.cs">
-      <DependentUpon>ConversionResult.xaml</DependentUpon>
+    <Compile Include="View\Exchange\ExchangeRateResult.cs">
+      <DependentUpon>ExchangeRateResult.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Exchange\ExchangeRates.xaml.cs">
       <DependentUpon>ExchangeRates.xaml</DependentUpon>
@@ -517,7 +518,7 @@
     <Compile Include="Components\MetroWindowManager.cs" />
     <Compile Include="Components\Converters\RatioConverter.cs" />
     <Compile Include="Components\MetroWindowInstance.cs" />
-    <Page Include="View\Exchange\ConversionResult.xaml">
+    <Page Include="View\Exchange\ExchangeRateResult.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
