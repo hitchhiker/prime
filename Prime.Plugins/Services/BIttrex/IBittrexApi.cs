@@ -11,5 +11,13 @@ namespace Prime.Plugins.Services.Bittrex
     {
         [Get("/account/getbalances")]
         Task<BittrexSchema.BalancesResponse> GetAllBalances();
+
+        /// <summary>
+        /// Gets or generates new deposit address for specified currency.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        [Get("/account/getdepositaddress?currency={currency}")]
+        Task<BittrexSchema.DepositAddressResponse> GetDepositAddress([Path] string currency);
     }
 }

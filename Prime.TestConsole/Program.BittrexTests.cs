@@ -33,6 +33,39 @@ namespace Prime.TestConsole
 		            throw;
 		        }
             }
+
+		    public void GetDepositAddresses()
+		    {
+		        var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
+
+		        var ctx = new WalletAddressAssetContext("DOGE".ToAsset(provider), true, UserContext.Current);
+		        var ctxAll = new WalletAddressContext(false, UserContext.Current);
+
+		        var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
+
+                try
+		        {
+
+		            // var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
+
+		            Console.WriteLine("Addresses for 1 asset");
+		            foreach (var address in addresses)
+		            {
+		                Console.WriteLine($"{address.Asset} : {address.Address}");
+		            }
+
+		            //Console.WriteLine("Addresses for all assets");
+		            //foreach (var address in addressesAll)
+		            //{
+		            //    Console.WriteLine($"{address.Asset} : {address.Address}");
+		            //}
+		        }
+		        catch (Exception e)
+		        {
+		            Console.WriteLine(e);
+		            throw;
+		        }
+            }
 		}
     }
 }

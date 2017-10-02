@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Bittrex;
 using LiteDB;
@@ -15,6 +16,8 @@ namespace Prime.Plugins.Services.Bittrex
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
+
+        private const string ErrorText_AddressIsGenerating = "ADDRESS_GENERATING";
 
         public Network Network { get; } = new Network("Bittrex");
 
@@ -127,12 +130,50 @@ namespace Prime.Plugins.Services.Bittrex
             throw new NotImplementedException();
         }
 
-        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            if (!this.ExchangeHas(context.Asset))
-                return null;
+            var api = GetApi<IBittrexApi>(context);
 
-            return null;
+            if (context.CanGenerateAddress)
+            {
+                var r = await api.GetDepositAddress(context.Asset.ToRemoteCode(this));
+                var addresses = new WalletAddresses();
+
+                if (r.success)
+                {
+                    addresses.Add(new WalletAddress(this, context.Asset)
+                    {
+                        Address = r.result.Address
+                    });
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(r.message) == false && r.message.Contains(ErrorText_AddressIsGenerating) == false)
+                    {
+                        throw new ApiResponseException("Unexpected error during address generation", this);
+                    }
+                }
+
+                return addresses;
+            }
+            else
+            {
+                var r = await api.GetAllBalances();
+
+                var addresses = new WalletAddresses();
+
+                var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
+
+                if (address != null)
+                {
+                    addresses.Add(new WalletAddress(this, context.Asset)
+                    {
+                        Address = address.CryptoAddress
+                    });
+                }
+
+                return addresses;
+            }
         }
 
         public OhlcData GetOhlc(AssetPair pair, TimeResolution market)

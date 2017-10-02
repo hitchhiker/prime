@@ -15,10 +15,9 @@ namespace Prime.Plugins.Services.Bittrex
             public TResult result;
         }
 
-        internal class BalancesResponse : BaseResponse<IList<BalanceResponse>>
-        {
-            
-        }
+        internal class BalancesResponse : BaseResponse<IList<BalanceResponse>> { }
+
+        internal class DepositAddressResponse : BaseResponse<DepositAddressHolderResponse> { }
 
         internal class BalanceResponse
         {
@@ -29,6 +28,12 @@ namespace Prime.Plugins.Services.Bittrex
             public string CryptoAddress;
             public bool Requested;
             public string Uuid;
+        }
+
+        internal class DepositAddressHolderResponse
+        {
+            public string Currency;
+            public string Address;
         }
     }
 }

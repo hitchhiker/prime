@@ -27,7 +27,11 @@ namespace Prime.Plugins.Services.Bittrex
                 $"nonce={nonce}"
             };
 
-            var queryParams = properties.Aggregate("?", (s, cur) => s += cur + "&").TrimEnd('&');
+            var aggrInitialValue = String.IsNullOrEmpty(request.RequestUri.Query)
+                ? "?"
+                : request.RequestUri.Query + "&";
+
+            var queryParams = properties.Aggregate(aggrInitialValue, (s, cur) => s += cur + "&").TrimEnd('&');
             request.RequestUri = new Uri(request.RequestUri, queryParams);
 
             var sign = HashHMACSHA512Hex(request.RequestUri.OriginalString, ApiKey.Secret);
