@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prime.Core;
 using Prime.Utility;
-using Rokolab.BitstampClient;
 using LiteDB;
 using Newtonsoft.Json;
 using Prime.Plugins.Services.Base;

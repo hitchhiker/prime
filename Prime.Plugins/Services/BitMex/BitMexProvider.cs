@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.BitMex
 
         private const String BitMaxApiUrl = "https://www.bitmex.com/api/v1";
 
-        private static readonly string _pairs = "xbtusd";
+        private static readonly string _pairs = "btcusd";
 
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
 
@@ -136,11 +136,10 @@ namespace Prime.Plugins.Services.BitMex
             var pricesList = new List<Money>();
             pricesList.Add(new Money(data.lastPrice.Value, data.quoteCurrency.ToAsset(this)));
 
-            // BUG: What UTC Created to set if different currencies have different last price time?
             var latestPrices = new LatestPrices()
             {
                 BaseAsset = context.BaseAsset,
-                UtcCreated = DateTime.UtcNow,
+                UtcCreated = data.timestamp,
                 Prices = pricesList
             };
 
@@ -190,6 +189,8 @@ namespace Prime.Plugins.Services.BitMex
             var remoteAssetCode = context.Asset.ToRemoteCode(this);
             var depositAddress = await api.GetUserDepositAddressAsync(remoteAssetCode);
 
+            depositAddress = depositAddress.Trim('\"');
+
             var addresses = new WalletAddresses();
             var walletAddress = new WalletAddress(this, context.Asset) {Address = depositAddress};
 
@@ -208,6 +209,8 @@ namespace Prime.Plugins.Services.BitMex
                 var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);
 
                 var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode);
+
+                depositAddress = depositAddress.Trim('\"');
 
                 // BUG: how to convert XBt from Pairs to BTC?
                 addresses.Add(new WalletAddress(this, Asset.Btc)

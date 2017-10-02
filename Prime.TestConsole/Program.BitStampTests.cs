@@ -81,15 +81,12 @@ namespace Prime.TestConsole
 		        var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
 		        var ctxAll = new WalletAddressContext(false, UserContext.Current);
 
-		        var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
-		        var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
-
-
                 try
 		        {
-;
+		            var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
+		            var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
 
-		            Console.WriteLine("Addresses for 1 asset");
+                    Console.WriteLine("Addresses for 1 asset");
 		            foreach (var address in addresses)
 		            {
 		                Console.WriteLine($"{address.Asset} : {address.Address}");

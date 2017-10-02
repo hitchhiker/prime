@@ -92,9 +92,24 @@ namespace TestConsole
             // ----- BitStamp -----
 
             //new Prime.TestConsole.Program.BitStampTests().GetLatestPrices();
-            // new Prime.TestConsole.Program.BitStampTests().GetAssetPairs();
-             new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
-            //new Prime.TestConsole.Program.BitStampTests().GetDepositAddresses();
+            //new Prime.TestConsole.Program.BitStampTests().GetAssetPairs();
+            // new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
+            // new Prime.TestConsole.Program.BitStampTests().GetDepositAddresses();
+
+            //var bitStampTests = new Prime.TestConsole.Program.BitStampTests();
+            //var bitStampActions = new Action[]
+            //{
+            //    bitStampTests.GetLatestPrices,
+            //    bitStampTests.GetAssetPairs,
+            //    bitStampTests.GetAccountBalance,
+            //    bitStampTests.GetDepositAddresses,
+            //};
+
+            //foreach (var action in bitStampActions)
+            //{
+            //    action();
+            //    Thread.Sleep(1000);
+            //}
 
             // ----- Poloniex -----
 
@@ -104,6 +119,22 @@ namespace TestConsole
             // new Prime.TestConsole.Program.PoloniexTests().LatestPrices();
             // new Prime.TestConsole.Program.PoloniexTests().GetDepositAddresses();
             // new Prime.TestConsole.Program.PoloniexTests().GetChartData();
+
+            //var poloniexTests = new Prime.TestConsole.Program.PoloniexTests();
+            //var poloniexActions = new Action[]
+            //{
+            //    poloniexTests.GetBalances,
+            //    poloniexTests.ApiTest,
+            //    poloniexTests.AssetsTest,
+            //    poloniexTests.GetDepositAddresses,
+            //    poloniexTests.GetChartData,
+            //};
+
+            //foreach (var action in poloniexActions)
+            //{
+            //    action();
+            //    Thread.Sleep(1000);
+            //}
 
             // -----------
 

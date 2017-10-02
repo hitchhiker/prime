@@ -124,7 +124,6 @@ namespace Prime.Plugins.Services.Poloniex
 
             var addresses = new WalletAddresses();
 
-            // TODO: check using verified account.
             try
             {
                 var r = await api.GetDepositAddressesAsync(body);

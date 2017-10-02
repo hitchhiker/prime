@@ -179,9 +179,11 @@ namespace Prime.TestConsole
                 {
                     var addresses = AsyncContext.Run(() => provider.GetAddressesAsync(ctx));
 
+                    Console.WriteLine("All addresses:");
+
                     foreach (var address in addresses)
                     {
-                        Console.WriteLine($"{address.Asset} : {address.Address}");
+                        Console.WriteLine($"{address.Asset}: {address.Address}");
                     }
                 }
                 catch (Exception e)
