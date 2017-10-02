@@ -310,7 +310,10 @@
     <Compile Include="Services\BitStamp\BitStampAuthenticator.cs" />
     <Compile Include="Services\BitStamp\BitStampSchema.cs" />
     <Compile Include="Services\BitStamp\IBitStampApi.cs" />
-    <Compile Include="Services\BIttrex\BittrexProvider.cs" />
+    <Compile Include="Services\Bittrex\BittrexAuthenticator.cs" />
+    <Compile Include="Services\Bittrex\BittrexProvider.cs" />
+    <Compile Include="Services\Bittrex\BittrexSchema.cs" />
+    <Compile Include="Services\Bittrex\IBittrexApi.cs" />
     <Compile Include="Services\Coinbase\CoinbaseAuthenticator.cs" />
     <Compile Include="Services\Coinbase\CoinBaseSchema.cs" />
     <Compile Include="Services\Coinbase\CoinbaseProvider.cs" />

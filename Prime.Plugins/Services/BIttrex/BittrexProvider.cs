@@ -1,17 +1,21 @@
 using System;
-using System.Collections;
 using System.Threading.Tasks;
 using Bittrex;
-using Prime.Core;
-using Prime.Utility;
-using Rokolab.BitstampClient;
 using LiteDB;
 using Newtonsoft.Json.Linq;
+using Prime.Core;
+using Prime.Plugins.Services.Base;
+using Prime.Plugins.Services.BitMex;
+using Prime.Utility;
+using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService
+    public class BittrexProvider : IExchangeProvider, IWalletService, IApiProvider
     {
+        private const string BittrexApiVersion = "v1.1";
+        private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
+
         public Network Network { get; } = new Network("Bittrex");
 
         public bool Disabled => false;
@@ -23,7 +27,7 @@ namespace plugins
         public string Title => Network.Name;
 
         private static readonly ObjectId IdHash = "prime:bittrex".GetObjectIdHashCode();
-            //3d3bdcb685a3455f965f0e78ead0cbba
+        //3d3bdcb685a3455f965f0e78ead0cbba
         public ObjectId Id => IdHash;
 
         private static readonly NoRateLimits Limiter = new NoRateLimits();
@@ -31,29 +35,21 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            var client = new Bittrex.Exchange();
-            client.Initialise(new ExchangeContext());
-            return client as T;
+            return RestClient.For<IBittrexApi>(BittrexApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
-            var client = new Bittrex.Exchange();
-            client.Initialise(new ExchangeContext() { ApiKey = key.Key, Secret = key.Secret, QuoteCurrency = "USD" });
-            return client as T;
+            return RestClient.For<IBittrexApi>(BittrexApiUrl, new BittrexAuthenticator(key).GetRequestModifier) as T;
         }
 
-        public Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var t = new Task<bool>(() =>
-            {
-                var api = GetApi<Bittrex.Exchange>(context);
-                var r = api.GetBalance("btc");
-                return r != null;
-            });
-            t.Start();
-            return t;
+            var api = GetApi<IBittrexApi>(context);
+            var r = await api.GetAllBalances();
+
+            return r != null && r.success && r.result != null;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;

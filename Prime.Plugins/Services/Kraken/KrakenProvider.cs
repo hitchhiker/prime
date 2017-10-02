@@ -272,38 +272,6 @@ namespace Prime.Plugins.Services.Kraken
             var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset);
 
             return addresses;
-
-            var body = CreateKrakenBody();
-
-            // BUG: do we need "aclass"?
-            // body.Add("aclass", context.Asset.ToRemoteCode(this));
-            body.Add("asset", context.Asset.ToRemoteCode(this));
-            body.Add("method", fundingMethod);
-            body.Add("new", false);
-
-            var r = await api.GetDepositAddresses(body);
-
-            CheckResponseErrors(r);
-
-            var walletAddresses = new WalletAddresses();
-
-            foreach (var addr in r.result)
-            {
-                var walletAddress = new WalletAddress(this, context.Asset)
-                {
-                    Address = addr.Value.address
-                };
-
-                if (addr.Value.expiretm != 0)
-                {
-                    var time = addr.Value.expiretm.ToUtcDateTime();
-                    walletAddress.ExpiresUtc = time;
-                }
-
-                walletAddresses.Add(new WalletAddress(this, context.Asset) { Address = addr.Value.address });
-            }
-
-            return walletAddresses;
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)

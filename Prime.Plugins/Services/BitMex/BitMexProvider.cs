@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.BitMex
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
-        private const String BitMaxApiUrl = "https://www.bitmex.com/api/v1";
+        private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";
 
         private static readonly string _pairs = "btcusd";
 
@@ -256,14 +256,14 @@ namespace Prime.Plugins.Services.BitMex
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return RestClient.For<IBitMexApi>(BitMaxApiUrl) as T;
+            return RestClient.For<IBitMexApi>(BitMexApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
 
-            return RestClient.For<IBitMexApi>(BitMaxApiUrl, new BitMexAuthenticator(key).GetRequestModifier) as T;
+            return RestClient.For<IBitMexApi>(BitMexApiUrl, new BitMexAuthenticator(key).GetRequestModifier) as T;
         }
 
         public ApiConfiguration GetApiConfiguration { get; }

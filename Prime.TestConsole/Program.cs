@@ -136,6 +136,11 @@ namespace TestConsole
             //    Thread.Sleep(1000);
             //}
 
+
+            // ----- Bittrex -----
+
+            new Prime.TestConsole.Program.BittrexTests().ApiTest();
+
             // -----------
 
             //Sha256Test();
