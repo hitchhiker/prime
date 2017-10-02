@@ -159,6 +159,7 @@ namespace Prime.Core.Wallet
             try
             {
                 var pair = new AssetPair(balance.Available.Asset, bAsset);
+
                 var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
 
                 var pli = new PortfolioLineItem()

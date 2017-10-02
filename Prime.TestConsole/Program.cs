@@ -93,8 +93,8 @@ namespace TestConsole
 
             //new Prime.TestConsole.Program.BitStampTests().GetLatestPrices();
             // new Prime.TestConsole.Program.BitStampTests().GetAssetPairs();
-            // new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
-            new Prime.TestConsole.Program.BitStampTests().GetDepositAddresses();
+             new Prime.TestConsole.Program.BitStampTests().GetAccountBalance();
+            //new Prime.TestConsole.Program.BitStampTests().GetDepositAddresses();
 
             // ----- Poloniex -----
 

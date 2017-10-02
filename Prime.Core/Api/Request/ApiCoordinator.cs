@@ -94,9 +94,19 @@ namespace Prime.Core
             return AsyncContext.Run(() => GetAllDepositAddressesAsync(provider, context));
         }
 
+        private static async Task<BalanceResults> CheckedBalancesAsync(IWalletService provider, NetworkProviderPrivateContext context)
+        {
+            var r = await provider.GetBalancesAsync(context);
+            if (r == null)
+                return null;
+
+            r.RemoveAll(x => x.Balance == 0 && x.Available == 0 && x.Reserved == 0);
+            return r;
+        }
+
         public static Task<ApiResponse<BalanceResults>> GetBalancesAsync(IWalletService provider, NetworkProviderPrivateContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetBalancesAsync(context), "GetBalances", provider, context);
+            return ApiHelpers.WrapException(() => CheckedBalancesAsync(provider,context), "GetBalances", provider, context);
         }
 
         public static ApiResponse<BalanceResults> GetBalances(IWalletService provider, NetworkProviderPrivateContext context)

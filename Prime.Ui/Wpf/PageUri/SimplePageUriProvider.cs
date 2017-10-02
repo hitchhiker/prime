@@ -40,7 +40,7 @@ namespace Prime.Ui.Wpf.PageUri
                 case "exchange rates":
                     return new ExchangeRateViewModel(model) { Key = command.Command, Title = command.Title };
                 case "portfolio":
-                    return new PortfolioViewModel(model) { Key = command.Command, Title = command.Title };
+                    return new PortfolioPaneViewModel(model) { Key = command.Command, Title = command.Title };
                 case "watchlist":
                     return new WatchlistViewModel(model) { Key = command.Command, Title = command.Title };
                 case "buy sell":
