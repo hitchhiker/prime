@@ -40,6 +40,11 @@ namespace Prime.Core
 
         public static AssetPair Empty => new AssetPair(Asset.None, Asset.None);
 
+        public string TickerDash()
+        {
+            return $"{Asset1.ShortCode}-{Asset2.ShortCode}";
+        }
+
         public string TickerUnderslash()
         {
             return $"{Asset1.ShortCode}_{Asset2.ShortCode}";

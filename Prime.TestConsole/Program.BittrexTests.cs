@@ -108,6 +108,26 @@ namespace Prime.TestConsole
 		            throw;
 		        }
             }
+
+		    public void LatestPrices()
+		    {
+		        var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
+		        var pair = new AssetPair("BTC", "LTC");
+
+		        var ctx = new PublicPriceContext(pair);
+
+                try
+		        {
+		            var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+
+                    Console.WriteLine($"Latest price for {pair} is {price.Price}");
+		        }
+		        catch (Exception e)
+		        {
+		            Console.WriteLine(e);
+		            throw;
+		        }
+            }
 		}
     }
 }

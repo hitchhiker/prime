@@ -57,9 +57,20 @@ namespace Prime.Plugins.Services.Bittrex
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            return null;
+            var api = GetApi<IBittrexApi>(context);
+            var pairCode = context.Pair.TickerDash();
+            var r = await api.GetTicker(pairCode);
+
+            CheckResponseErrors(r);
+
+            var latestPrice = new LatestPrice(new Money(r.result.Last, context.Pair.Asset1))
+            {
+                BaseAsset = context.Pair.Asset2
+            };
+
+            return latestPrice;
         }
 
         public BuyResult Buy(BuyContext ctx)

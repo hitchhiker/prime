@@ -21,6 +21,15 @@ namespace Prime.Plugins.Services.Bittrex
 
         internal class MarketEntriesResponse : BaseResponse<IList<MarketEntryResponse>> { }
 
+        internal class TickerResponse : BaseResponse<TickerContainerResponse> { }
+
+        internal class TickerContainerResponse
+        {
+            public decimal Bid;
+            public decimal Ask;
+            public decimal Last;
+        }
+
         internal class MarketEntryResponse
         {
             public string MarketCurrency;
