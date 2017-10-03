@@ -1,3 +1,5 @@
+using Prime.Plugins.Services.CryptoCompare;
+
 namespace plugins
 {
     public class BTC38CryptoCompareProvider : CryptoCompareBase { public override string Name => "BTC38"; }

@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Security;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using System.Threading.Tasks;
-using Prime.Core;
-using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
-using Nito.AsyncEx;
-using plugins.Services.CryptoCompare.Model;
+using Prime.Core;
+using Prime.Utility;
 using Quobject.SocketIoClientDotNet.Client;
 using RestEase;
-using Prime.Utility;
-using vtortola.WebSockets;
-using vtortola.WebSockets.Rfc6455;
 
-namespace plugins
+namespace Prime.Plugins.Services.CryptoCompare
 {
     public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IPriceSocketProvider, IDisposable, IPublicPricesProvider
     {
@@ -142,7 +132,7 @@ namespace plugins
             var toTs = range.UtcTo.GetSecondsSinceUnixEpoch();
 
             var api = GetApi<ICryptoCompareApi>();
-            HistoricListResult apir = null;
+            CryptoCompareSchema.HistoricListResult apir = null;
 
             switch (market)
             {

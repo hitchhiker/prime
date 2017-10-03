@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
-using Nito.AsyncEx;
-using plugins.Services.CryptoCompare.Model;
-using RestEase;
+using Prime.Plugins.Services.CryptoCompare;
 using Prime.Utility;
 
+// BUG: unable to move to correct namespace because of dynamic assembly loading.
 namespace plugins
 {
     public class CryptoCompareProvider : CryptoCompareBase, IAssetPairAggregationProvider, ILatestPriceAggregationProvider
@@ -59,7 +56,7 @@ namespace plugins
             return true;
         }
 
-        private AssetExchangeEntry Convert(CoinSnapshotDataBlock r)
+        private AssetExchangeEntry Convert(CryptoCompareSchema.CoinSnapshotDataBlock r)
         {
             var n = Networks.I.FirstOrDefault(x => string.Equals(r.MARKET, x.Name, StringComparison.OrdinalIgnoreCase));
             var ce = new AssetExchangeEntry(n)

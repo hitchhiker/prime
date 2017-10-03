@@ -143,7 +143,12 @@ namespace TestConsole
             // new Prime.TestConsole.Program.BittrexTests().GetDepositAddresses();
             // new Prime.TestConsole.Program.BittrexTests().GetAssetPairs();
             // new Prime.TestConsole.Program.BittrexTests().GetBalances();
-            new Prime.TestConsole.Program.BittrexTests().LatestPrices();
+            // new Prime.TestConsole.Program.BittrexTests().LatestPrices();
+
+            // ----- Coinbase -----
+
+            new Prime.TestConsole.Program.CoinbaseTests().LatestPrice();
+
 
             // -----------
 
@@ -151,7 +156,7 @@ namespace TestConsole
             //new ExchangeRateTest().Test();
 
             //LatestPricesTest();
-            //LatestPriceTest();
+            //LatestPrice();
 
             //Worker worker = new Worker();
             //worker.Run();
