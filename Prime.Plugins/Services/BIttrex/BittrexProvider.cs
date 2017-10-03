@@ -91,24 +91,28 @@ namespace Prime.Plugins.Services.Bittrex
         }
 
 
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var t = new Task<BalanceResults>(() =>
+            var api = GetApi<IBittrexApi>(context);
+
+            var r = await api.GetAllBalances();
+            CheckResponseErrors(r);
+
+            var balances = new BalanceResults();
+
+            foreach (var rBalance in r.result)
             {
-                var api = GetApi<Exchange>(context);
-                var market = api.GetBalances();
-                var results = new BalanceResults(this);
-                foreach (var kvp in market)
+                var asset = rBalance.Currency.ToAsset(this);
+
+                balances.Add(new BalanceResult(asset)
                 {
-                    var asset = kvp.Currency.ToAsset(this);
-                    results.AddBalance(asset, kvp.Balance);
-                    results.AddAvailable(asset, kvp.Available);
-                    results.AddReserved(asset, kvp.Pending);
-                }
-                return results;
-            });
-            t.Start();
-            return t;
+                    Available = new Money(rBalance.Available, asset),
+                    Balance = new Money(rBalance.Balance, asset),
+                    Reserved = new Money(rBalance.Pending, asset)
+                });
+            }
+
+            return balances;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

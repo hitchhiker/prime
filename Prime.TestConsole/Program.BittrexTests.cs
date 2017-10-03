@@ -85,6 +85,29 @@ namespace Prime.TestConsole
 		            throw;
 		        }
             }
+
+		    public void GetBalances()
+		    {
+		        var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
+		        var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+
+		        var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
+
+                try
+		        {
+
+
+		            foreach (var balance in balances)
+		            {
+		                Console.WriteLine($"{balance.Asset} : {balance.Balance}, {balance.Available}, {balance.Reserved}");
+		            }
+		        }
+		        catch (Exception e)
+		        {
+		            Console.WriteLine(e.Message);
+		            throw;
+		        }
+            }
 		}
     }
 }
