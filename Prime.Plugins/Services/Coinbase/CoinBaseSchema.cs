@@ -18,7 +18,7 @@ namespace plugins.Services.Coinbase
             public string resource_path;
         }
 
-        internal class Pagination
+        internal class PaginationResponse
         {
             public string ending_before;
             public string starting_after;
@@ -28,43 +28,54 @@ namespace plugins.Services.Coinbase
             public string next_uri;
         }
 
-        internal class Accounts
+        internal class SpotPriceResponse
         {
-            public Pagination pagination;
-            public List<Account> data;
+            public PriceDataResponse data;
         }
 
-        internal class Account : BaseDocument
-        {
-            public string primary;
-            public string type;
-            public string currency;
-            public Balance balance;
-            public Balance native_balance;
-        }
-
-
-        internal class Balance
+        internal class PriceDataResponse
         {
             public decimal amount;
             public string currency;
         }
 
-        internal class WalletAddresses
+        internal class AccountsResponse
         {
-            public Pagination pagination;
-            public List<WalletAddress> data;
+            public PaginationResponse pagination;
+            public List<AccountResponse> data;
         }
 
-        internal class WalletAddress : BaseDocument
+        internal class AccountResponse : BaseDocument
+        {
+            public string primary;
+            public string type;
+            public string currency;
+            public BalanceResponse balance;
+            public BalanceResponse native_balance;
+        }
+
+
+        internal class BalanceResponse
+        {
+            public decimal amount;
+            public string currency;
+        }
+
+        internal class WalletAddressesResponse
+        {
+            public PaginationResponse pagination;
+            public List<WalletAddressResponse> data;
+        }
+
+        internal class WalletAddressResponse : BaseDocument
         {
             public string address;
             public string network;
         }
 
-        internal class CreateWalletAddress
+        internal class CreateWalletAddressResponse
         {
-            public List<WalletAddress> data;
+            public List<WalletAddressResponse> data;
         }
     }
 }

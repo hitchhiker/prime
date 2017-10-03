@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using plugins;
-using Prime.Core;
+﻿using Prime.Core;
 
 namespace Prime.Plugins.Services.Base
 {

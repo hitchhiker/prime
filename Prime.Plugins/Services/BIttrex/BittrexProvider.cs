@@ -1,12 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Bittrex;
 using LiteDB;
-using Newtonsoft.Json.Linq;
 using Prime.Core;
 using Prime.Plugins.Services.Base;
-using Prime.Plugins.Services.BitMex;
 using Prime.Utility;
 using RestEase;
 
@@ -199,11 +196,6 @@ namespace Prime.Plugins.Services.Bittrex
 
                 return addresses;
             }
-        }
-
-        public OhlcData GetOhlc(AssetPair pair, TimeResolution market)
-        {
-            return null;
         }
 
         private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response)

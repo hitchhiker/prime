@@ -2,15 +2,11 @@
 
 using System;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 using Prime.Core;
 using Jojatekok.PoloniexAPI;
 using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
-using Nito.AsyncEx;
 using RestEase;
 using Prime.Utility;
 
@@ -21,6 +17,9 @@ namespace plugins
     public class CoinbaseProvider : IExchangeProvider, IWalletService, IOhlcProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
+
+        private const string CoinbaseApiVersion = "v2";
+        private const string CoinbaseApiUrl = "https://api.coinbase.com/" + CoinbaseApiVersion + "/";
 
         private static readonly string _pairs = "btcusd,btceur,eurusd,ethusd,etheur,ethbtc,ltcusd,ltceur,ltcbtc";
 
@@ -42,20 +41,26 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return RestClient.For<ICoinbaseApi>("https://api.coinbase.com/v2/") as T;
+            return RestClient.For<ICoinbaseApi>(CoinbaseApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
             var key = context.GetKey(this);
-            return RestClient.For<ICoinbaseApi>("https://api.coinbase.com/v2/", new CoinbaseAuthenticator(key).GetRequestModifier) as T;
+            return RestClient.For<ICoinbaseApi>(CoinbaseApiUrl, new CoinbaseAuthenticator(key).GetRequestModifier) as T;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            return null;
+            var api = GetApi<ICoinbaseApi>(context);
+            var pairCode = context.Pair.TickerDash();
+            var r = await api.GetLatestPrice(pairCode);
+
+            var price = new LatestPrice(new Money(r.data.amount, r.data.currency.ToAsset(this)));
+
+            return price;
         }
 
         public BuyResult Buy(BuyContext ctx)
