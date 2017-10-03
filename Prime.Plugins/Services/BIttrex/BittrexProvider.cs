@@ -125,9 +125,24 @@ namespace Prime.Plugins.Services.Bittrex
 
         public bool CanGenerateDepositAddress => true;
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IBittrexApi>(context);
+
+            var r = await api.GetAllBalances();
+            CheckResponseErrors(r);
+
+            var addresses = new WalletAddresses();
+
+            foreach (var rBalance in r.result)
+            {
+                addresses.Add(new WalletAddress(this, rBalance.Currency.ToAsset(this))
+                {
+                    Address = rBalance.CryptoAddress
+                });
+            }
+
+            return addresses;
         }
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
@@ -179,6 +194,12 @@ namespace Prime.Plugins.Services.Bittrex
         public OhlcData GetOhlc(AssetPair pair, TimeResolution market)
         {
             return null;
+        }
+
+        private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response)
+        {
+            if(response.success == false)
+                throw new ApiResponseException($"API error: {response.message}", this);
         }
     }
 }
