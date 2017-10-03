@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Bittrex
         /// <returns></returns>
         [Get("/account/getdepositaddress?currency={currency}")]
         Task<BittrexSchema.DepositAddressResponse> GetDepositAddress([Path] string currency);
+
+        [Get("/public/getmarkets")]
+        Task<BittrexSchema.MarketEntriesResponse> GetMarkets();
     }
 }

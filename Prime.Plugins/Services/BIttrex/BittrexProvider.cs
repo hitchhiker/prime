@@ -72,27 +72,22 @@ namespace Prime.Plugins.Services.Bittrex
             return null;
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() =>
+            var api = GetApi<IBittrexApi>(context);
+            var r = await api.GetMarkets();
+
+            CheckResponseErrors(r);
+
+            var pairs = new AssetPairs();
+
+            foreach (var rEntry in r.result)
             {
-                var api = this.GetApi<Exchange>(context);
-                var da = api.GetMarkets();
-                var aps = new AssetPairs();
-                var results = (JArray)da;
+                var pair = new AssetPair(rEntry.BaseCurrency, rEntry.MarketCurrency);
+                pairs.Add(pair);
+            }
 
-                foreach (var mr in results)
-                {
-                    var m = mr["MarketCurrency"].ToString();
-                    var bc = mr["BaseCurrency"].ToString();
-                    var pair = new AssetPair(m.ToAsset(this), bc.ToAsset(this));
-                    aps.Add(pair);
-                }
-                return aps;
-            });
-
-            t.Start();
-            return t;
+            return pairs;
         }
 
 
@@ -198,7 +193,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response)
         {
-            if(response.success == false)
+            if (response.success == false)
                 throw new ApiResponseException($"API error: {response.message}", this);
         }
     }

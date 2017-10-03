@@ -17,7 +17,21 @@ namespace Prime.Plugins.Services.Bittrex
 
         internal class BalancesResponse : BaseResponse<IList<BalanceResponse>> { }
 
-        internal class DepositAddressResponse : BaseResponse<DepositAddressHolderResponse> { }
+        internal class DepositAddressResponse : BaseResponse<DepositAddressContainerResponse> { }
+
+        internal class MarketEntriesResponse : BaseResponse<IList<MarketEntryResponse>> { }
+
+        internal class MarketEntryResponse
+        {
+            public string MarketCurrency;
+            public string BaseCurrency;
+            public string Litecoin;
+            public string Bitcoin;
+            public decimal MinTradeSize;
+            public string MarketName;
+            public bool IsActive;
+            public DateTime Created;
+        }
 
         internal class BalanceResponse
         {
@@ -30,7 +44,7 @@ namespace Prime.Plugins.Services.Bittrex
             public string Uuid;
         }
 
-        internal class DepositAddressHolderResponse
+        internal class DepositAddressContainerResponse
         {
             public string Currency;
             public string Address;

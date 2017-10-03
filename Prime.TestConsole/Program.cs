@@ -140,7 +140,8 @@ namespace TestConsole
             // ----- Bittrex -----
 
             // new Prime.TestConsole.Program.BittrexTests().ApiTest();
-            new Prime.TestConsole.Program.BittrexTests().GetDepositAddresses();
+            // new Prime.TestConsole.Program.BittrexTests().GetDepositAddresses();
+            new Prime.TestConsole.Program.BittrexTests().GetAssetPairs();
 
             // -----------
 

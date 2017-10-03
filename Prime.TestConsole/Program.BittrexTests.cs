@@ -64,6 +64,27 @@ namespace Prime.TestConsole
 		            throw;
 		        }
             }
+
+		    public void GetAssetPairs()
+		    {
+		        var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
+		        var ctx = new NetworkProviderContext();
+
+		        try
+		        {
+		            var pairs = AsyncContext.Run(() => provider.GetAssetPairs(ctx));
+
+		            foreach (var pair in pairs)
+		            {
+		                Console.WriteLine($"{pair}");
+		            }
+		        }
+		        catch (Exception e)
+		        {
+		            Console.WriteLine(e.Message);
+		            throw;
+		        }
+            }
 		}
     }
 }
