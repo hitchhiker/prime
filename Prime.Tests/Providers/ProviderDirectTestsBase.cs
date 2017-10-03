@@ -73,7 +73,7 @@ namespace Prime.Tests
         #region Test methods
 
 
-        public async Task TestApiAsync(INetworkProviderPrivate provider)
+        public virtual async Task TestApiAsync(INetworkProviderPrivate provider)
         {
             var ctx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
 
@@ -88,7 +88,7 @@ namespace Prime.Tests
             }
         }
 
-        public async Task GetDepositAddressesAsync(IDepositService provider)
+        public virtual async Task GetDepositAddressesAsync(IDepositService provider)
         {
             var asset = "BTC".ToAsset(provider);
 
@@ -105,7 +105,7 @@ namespace Prime.Tests
             }
         }
 
-        public async Task GetOhlcAsync(IOhlcProvider provider)
+        public virtual async Task GetOhlcAsync(IOhlcProvider provider)
         {
             var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
 
@@ -121,7 +121,7 @@ namespace Prime.Tests
             }
         }
 
-        private async Task GetLatestPriceAsync(IPublicPriceProvider provider)
+        public virtual async Task GetLatestPriceAsync(IPublicPriceProvider provider)
         {
             var ctx = new PublicPriceContext(new AssetPair("BTC", "USD"));
 
@@ -140,7 +140,7 @@ namespace Prime.Tests
         }
 
 
-        public async Task GetAssetPairsAsync(IExchangeProvider provider)
+        public virtual async Task GetAssetPairsAsync(IExchangeProvider provider)
         {
             var ctx = new NetworkProviderContext();
 
@@ -157,7 +157,7 @@ namespace Prime.Tests
             }
         }
 
-        public async Task GetBalancesAsync(IWalletService provider)
+        public virtual async Task GetBalancesAsync(IWalletService provider)
         {
             var ctx = new NetworkProviderPrivateContext(UserContext.Current);
 
@@ -173,7 +173,7 @@ namespace Prime.Tests
             }
         }
 
-        public async Task GetAddressesAsync(IDepositService provider)
+        public virtual async Task GetAddressesAsync(IDepositService provider)
         {
             var ctx = new WalletAddressContext(false, UserContext.Current);
 
@@ -189,7 +189,7 @@ namespace Prime.Tests
             }
         }
 
-        public async Task GetAddressesForAssetAsync(IDepositService provider)
+        public virtual async Task GetAddressesForAssetAsync(IDepositService provider)
         {
             var asset = "BTC".ToAsset(provider);
 
