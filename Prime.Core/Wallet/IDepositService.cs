@@ -2,7 +2,7 @@
 
 namespace Prime.Core
 {
-    public interface IDepositService : INetworkProvider
+    public interface IDepositService : IDescribesAssets
     {
         bool CanMultiDepositAddress { get; }
 
