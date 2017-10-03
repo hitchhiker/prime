@@ -27,5 +27,35 @@ namespace Prime.Tests
         {
             await base.TestGetDepositAddressesAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetAddressesAsync()
+        {
+            await base.TestGetAddressesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAddressesForAssetAsync()
+        {
+            await base.TestGetAddressesForAssetAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPairsAsync()
+        {
+            await base.TestGetAssetPairsAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetBalancesAsync()
+        {
+            await base.TestGetBalancesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetLatestPriceAsync()
+        {
+            await base.TestGetLatestPriceAsync();
+        }
     }
 }
