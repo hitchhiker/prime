@@ -6,7 +6,7 @@ using Prime.Plugins.Services.BitMex;
 
 namespace Prime.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class BitMexTests : ProviderDirectTestsBase
     {
         public BitMexTests()
@@ -15,15 +15,51 @@ namespace Prime.Tests
         }
 
         [TestMethod]
-        public override async Task TestApisAsync()
+        public override async Task TestApiAsync()
         {
-            await base.TestApisAsync();
+            await base.TestApiAsync();
         }
 
         [TestMethod]
         public override async Task TestGetDepositAddressesAsync()
         {
             await base.TestGetDepositAddressesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetOhlcAsync()
+        {
+            await base.TestGetOhlcAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetLatestPriceAsync()
+        {
+            await base.TestGetLatestPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPairsAsync()
+        {
+            await base.TestGetAssetPairsAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetBalancesAsync()
+        {
+            await base.TestGetBalancesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAddressesAsync()
+        {
+            await base.TestGetAddressesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAddressesForAssetAsync()
+        {
+            await base.TestGetAddressesForAssetAsync();
         }
     }
 }

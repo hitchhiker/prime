@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
@@ -10,7 +10,9 @@ namespace Prime.Tests
     {
         public INetworkProvider Provider { get; protected set; }
 
-        public virtual async Task TestApisAsync()
+        #region Wrappers
+
+        public virtual async Task TestApiAsync()
         {
             var p = IsType<INetworkProviderPrivate>();
             if (p.Success)
@@ -23,6 +25,53 @@ namespace Prime.Tests
             if (p.Success)
                 await GetDepositAddressesAsync(p.Provider);
         }
+
+        public virtual async Task TestGetOhlcAsync()
+        {
+            var p = IsType<IOhlcProvider>();
+            if (p.Success)
+                await GetOhlcAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetLatestPriceAsync()
+        {
+            var p = IsType<IPublicPriceProvider>();
+            if (p.Success)
+                await GetLatestPriceAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetAssetPairsAsync()
+        {
+            var p = IsType<IExchangeProvider>();
+            if (p.Success)
+                await GetAssetPairsAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetBalancesAsync()
+        {
+            var p = IsType<IWalletService>();
+            if (p.Success)
+                await GetBalancesAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetAddressesAsync()
+        {
+            var p = IsType<IDepositService>();
+            if (p.Success)
+                await GetAddressesAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetAddressesForAssetAsync()
+        {
+            var p = IsType<IDepositService>();
+            if (p.Success)
+                await GetAddressesForAssetAsync(p.Provider);
+        }
+
+        #endregion
+
+        #region Test methods
+
 
         public async Task TestApiAsync(INetworkProviderPrivate provider)
         {
@@ -56,6 +105,122 @@ namespace Prime.Tests
             }
         }
 
+        public async Task GetOhlcAsync(IOhlcProvider provider)
+        {
+            var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
+
+            try
+            {
+                var ohlc = await provider.GetOhlcAsync(ohlcContext);
+
+                Assert.IsTrue(ohlc != null && ohlc.Count > 0);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        private async Task GetLatestPriceAsync(IPublicPriceProvider provider)
+        {
+            var ctx = new PublicPriceContext(new AssetPair("BTC", "USD"));
+
+            try
+            {
+                var c = await provider.GetLatestPriceAsync(ctx);
+
+                Assert.IsTrue(c != null);
+                Assert.IsTrue(c.BaseAsset.Equals(ctx.Pair.Asset1));
+                Assert.IsTrue(c.Price.Asset.Equals(ctx.Pair.Asset2));
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+
+        public async Task GetAssetPairsAsync(IExchangeProvider provider)
+        {
+            var ctx = new NetworkProviderContext();
+
+            try
+            {
+                var pairs = await provider.GetAssetPairs(ctx);
+
+                Assert.IsTrue(pairs != null);
+                Assert.IsTrue(pairs.Count > 0);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        public async Task GetBalancesAsync(IWalletService provider)
+        {
+            var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+
+            try
+            {
+                var balances = await provider.GetBalancesAsync(ctx);
+
+                Assert.IsTrue(balances != null);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        public async Task GetAddressesAsync(IDepositService provider)
+        {
+            var ctx = new WalletAddressContext(false, UserContext.Current);
+
+            try
+            {
+                var addresses = await provider.GetAddressesAsync(ctx);
+
+                Assert.IsTrue(addresses != null);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        public async Task GetAddressesForAssetAsync(IDepositService provider)
+        {
+            var asset = "BTC".ToAsset(provider);
+
+            var ctx = new WalletAddressAssetContext(asset, false, UserContext.Current);
+
+            try
+            {
+                var r = await provider.GetAddressesForAssetAsync(ctx);
+                Assert.IsTrue(r != null);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        #endregion
+
+        #region Utilities
+
+        protected (bool Success, T Provider) IsType<T>()
+        {
+            if (!(Provider is T tp))
+                Assert.Fail(Provider.Title + " is not of type " + nameof(INetworkProviderPrivate));
+            else
+                return (true, tp);
+            return (false, default(T));
+        }
+
+        #endregion
+
         /*
         public void TestPortfolioAccountBalances()
         {
@@ -73,135 +238,7 @@ namespace Prime.Tests
             {
                 Console.WriteLine(e.Message);
             }
-        }
-
-
-        
-
-            public async Task GetOhlcDataAsync()
-            {
-                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-
-                var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
-
-                try
-                {
-                    var ohlc = await provider.GetOhlcAsync(ohlcContext);
-
-                    foreach (var data in ohlc)
-                    {
-                        Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low} {data.Open} {data.Close}");
-                    }
-
-                    Console.WriteLine($"Entries count: {ohlc.Count}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-            }
-
-            public async Task GetLatestPriceAsync()
-            {
-                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-
-                var ctx = new PublicPricesContext("BTC".ToAssetRaw(), new List<Asset>()
-                {
-                    "USD".ToAsset(provider)
-                });
-
-                try
-                {
-                    var c = await provider.GetLatestPricesAsync(ctx);
-
-                    Console.WriteLine($"Base asset: {ctx.BaseAsset}\n");
-
-                    foreach (Money price in c.Prices)
-                    {
-                        Console.WriteLine(price.Display);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-            }
-
-            public async Task GetAssetPairsAsync()
-            {
-                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-                var ctx = new NetworkProviderContext();
-
-                try
-                {
-                    var pairs = await provider.GetAssetPairs(ctx);
-
-                    foreach (var pair in pairs)
-                    {
-                        Console.WriteLine($"{pair}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-            }
-
-            public async Task GetBalancesAsync()
-            {
-                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
-
-                try
-                {
-                    var balances = await provider.GetBalancesAsync(ctx);
-
-                    foreach (var balance in balances)
-                    {
-                        Console.WriteLine($"{balance.Asset} : {balance.Balance}, {balance.Available}, {balance.Reserved}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-            }
-
-            public async Task GetAllDepositAddressesAsync()
-            {
-                var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-
-                var ctx = new WalletAddressContext(false, UserContext.Current);
-
-                try
-                {
-                    var addresses = await provider.GetAddressesAsync(ctx);
-
-                    Console.WriteLine("All addresses:");
-
-                    foreach (var address in addresses)
-                    {
-                        Console.WriteLine($"{address.Asset}: {address.Address}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-            }*/
-
-        protected (bool Success, T Provider) IsType<T>()
-        {
-            if (!(Provider is T tp))
-                Assert.Fail(Provider.Title + " is not of type " + nameof(INetworkProviderPrivate));
-            else
-                return (true, tp);
-            return (false, default(T));
-        }
+        } 
+        */
     }
 }

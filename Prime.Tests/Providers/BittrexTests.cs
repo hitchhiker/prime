@@ -15,9 +15,9 @@ namespace Prime.Tests
         }
 
         [TestMethod]
-        public override async Task TestApisAsync()
+        public override async Task TestApiAsync()
         {
-            await base.TestApisAsync();
+            await base.TestApiAsync();
         }
 
         [TestMethod]

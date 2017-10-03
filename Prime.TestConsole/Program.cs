@@ -1,25 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using Ipfs.Api;
-using LiteDB;
 using Nito.AsyncEx;
 using Prime.Core;
-using plugins;
-using Prime.Core.Wallet;
 using Prime.Plugins.Services.BitMex;
 using Prime.Plugins.Services.Kraken;
 using Prime.Radiant.Components;
-using Prime.Utility;
 using Prime.Radiant;
-using Prime.Radiant.Components.IPFS.Messenging;
-using Prime.TestConsole;
 using AssetPair = Prime.Core.AssetPair;
 
 namespace TestConsole
