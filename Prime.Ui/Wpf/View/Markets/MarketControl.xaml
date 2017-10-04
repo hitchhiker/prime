@@ -4,17 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              xmlns:local1="clr-namespace:Prime.Core.Misc;assembly=Prime.Core"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModel:MarketControlViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <local1:GridValueColourConverter x:Key="GridValueColourConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="LayoutRoot">
+    <Grid>
         <StackPanel Orientation="Vertical" Background="White" Width="215" Margin="20">
             <StackPanel Orientation="Horizontal" Margin="10">
                 <Image Width="25" Source="{Binding IconPath}"/>
-                <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Foreground="Black" FontWeight="Bold" Text="{Binding MarketName}"/>
+                <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Foreground="Black" FontWeight="Bold" Text="{Binding Name}"/>
             </StackPanel>
             <Separator/>
             <TextBlock TextAlignment="Right" Padding="0,0,5,0" Text="{Binding ChangePerc, StringFormat=N2}">
@@ -24,7 +26,7 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            <Grid Width="500">
+            <Grid Width="500" x:Name="Chart">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>

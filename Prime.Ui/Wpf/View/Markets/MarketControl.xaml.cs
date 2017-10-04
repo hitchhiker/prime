@@ -30,49 +30,13 @@ namespace Prime.Ui.Wpf.View.Markets
         {
             InitializeComponent();
             InitialiseChart();
-            LayoutRoot.DataContext = this; //Very important
+            Chart.DataContext = this;
         }
 
         private double _lastBuySell;
         private double _trend;
         public SeriesCollection BuySellSeries { get; set; }
-
-        public static readonly DependencyProperty sellTextProperty = DependencyProperty.Register("Sell", typeof(Money), typeof(MarketControl), new FrameworkPropertyMetadata(Money.Zero));
-        public static readonly DependencyProperty buyTextProperty = DependencyProperty.Register("Buy", typeof(Money), typeof(MarketControl), new FrameworkPropertyMetadata(Money.Zero));
-        public static readonly DependencyProperty marketNameTextProperty = DependencyProperty.Register("MarketName", typeof(string), typeof(MarketControl), new FrameworkPropertyMetadata(string.Empty));
-        public static readonly DependencyProperty changePercTextProperty = DependencyProperty.Register("ChangePerc", typeof(decimal), typeof(MarketControl), new FrameworkPropertyMetadata(decimal.Zero));
-        public static readonly DependencyProperty iconPathTextProperty = DependencyProperty.Register("IconPath", typeof(string), typeof(MarketControl), new FrameworkPropertyMetadata(string.Empty));
-
-        public Money Sell
-        {
-            get { return (Money)GetValue(sellTextProperty); }
-            set { SetValue(sellTextProperty, value); }
-        }
-
-        public Money Buy
-        {
-            get { return (Money)GetValue(buyTextProperty); }
-            set { SetValue(buyTextProperty, value); }
-        }
-
-        public decimal ChangePerc
-        {
-            get { return (decimal)GetValue(changePercTextProperty); }
-            set { SetValue(changePercTextProperty, value); }
-        }
-
-        public string MarketName
-        {
-            get { return GetValue(marketNameTextProperty).ToString(); }
-            set { SetValue(marketNameTextProperty, value); }
-        }
-
-        public string IconPath
-        {
-            get { return GetValue(iconPathTextProperty).ToString(); }
-            set { SetValue(iconPathTextProperty, value); }
-        }
-
+        
         public double LastBuySell
         {
             get { return _lastBuySell; }

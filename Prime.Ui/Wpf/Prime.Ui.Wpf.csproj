@@ -377,6 +377,7 @@
     <Compile Include="ViewModel\CoinsViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangeRateResultViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangesViewModel.cs" />
+    <Compile Include="ViewModel\MarketControlViewModel.cs" />
     <Compile Include="ViewModel\MarketsDiscoveryViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
