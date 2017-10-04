@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -23,6 +24,9 @@ namespace Prime.Ui.Wpf
 
         private SmartThreadPool _sTaThreadPool;
         public SmartThreadPool STAThreadPool => _sTaThreadPool ?? (_sTaThreadPool = GetStaThreadPool());
+
+        private bool? _isDemo;
+        public bool IsDemo => _isDemo ?? (bool) (_isDemo = File.Exists(Path.Combine(CommonFs.I.UserConfigDirectory.FullName, "demo")));
 
         private SmartThreadPool GetStaThreadPool()
         {

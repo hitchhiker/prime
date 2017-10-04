@@ -52,6 +52,8 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand ExchangeRatesClickedCommand { get; private set; }
         public RelayCommand ReceiveClickedCommand { get; private set; }
 
+        public bool IsDemoVisible => PrimeWpf.I.IsDemo;
+
         private bool _isMenuOpen;
         public bool IsMenuOpen
         {
