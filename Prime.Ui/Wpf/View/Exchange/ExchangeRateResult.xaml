@@ -11,10 +11,8 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding FinalPrice}" Margin="0,10,0,0"/>
-                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding AssetLeft.ShortCode}" ContentStringFormat="{}{0} = " Margin="0,10,0,0"/>
-                <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding ConvertRight}"/>
-                <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding AssetRight.ShortCode}"/>
+                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding DisplayFinalPrice}" ContentStringFormat="{}{0} = " Margin="0,10,0,0"/>
+                <Label Margin="5,0,0,0" FontSize="50" FontWeight="Bold" Foreground="DarkGray" Padding="0,0,0,20" Content="{Binding DisplayConvertRight}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
@@ -36,7 +34,7 @@
                     <Label Content="{Binding InfoRight}"/>
                 </StackPanel>
             </StackPanel>
-            <prime:HumanTime Margin="0,10,0,0" HorizontalAlignment="Center" DateTime="{Binding UtcCreated}"></prime:HumanTime>
+            <prime:HumanTime Margin="150,10,0,0" DateTime="{Binding UtcCreated}"></prime:HumanTime>
         </StackPanel>
     </Grid>
 </UserControl>

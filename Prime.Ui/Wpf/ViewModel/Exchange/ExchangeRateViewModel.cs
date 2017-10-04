@@ -67,8 +67,10 @@ namespace Prime.Ui.Wpf.ViewModel
                 var exr = results.FirstOrDefault(x => x.Pair.Equals(ap));
                 if (exr == null)
                     return;
-                
-                 ResultViewModel = new ExchangeRateResultViewModel(this, exr);
+
+                _isConverted = exr.IsConverted;
+                ResultViewModel = new ExchangeRateResultViewModel(this, exr);
+                LoadingInfo = "";
             });
         }
 
@@ -82,6 +84,20 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             get => _conversionDate;
             set => Set(ref _conversionDate, value);
+        }
+
+        private string _loadingInfo;
+        public string LoadingInfo
+        {
+            get => _loadingInfo;
+            set => Set(ref _loadingInfo, value);
+        }
+
+        private bool _isConverted;
+        public bool IsConverted
+        {
+            get => _isConverted;
+            set => Set(ref _isConverted, value);
         }
 
         private double _convertLeft;
@@ -122,13 +138,22 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void AddRequestDebounced()
         {
-            _debounceDispatcher.Debounce(600, o => AddRequest());
+            _debounceDispatcher.Debounce(500, o => AddRequest());
         }
 
         private void AddRequest()
         {
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
+
+            if (ConvertLeft == 0)
+            {
+                LoadingInfo = "";
+            }
+            else
+            {
+                LoadingInfo = "Converting " + new Money((decimal)ConvertLeft, AssetLeft) + " to " + AssetRight.ShortCode + "...";
+            }
 
             ConversionDate = DateTime.Now;
             ResultViewModel = new ExchangeRateResultViewModel();

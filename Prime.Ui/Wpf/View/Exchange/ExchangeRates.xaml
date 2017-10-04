@@ -35,6 +35,9 @@
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
                                 </i:EventTrigger>
+                                <i:EventTrigger EventName="PropertyChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                     </StackPanel>
@@ -49,12 +52,16 @@
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
                                 </i:EventTrigger>
+                                <i:EventTrigger EventName="PropertyChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                     </StackPanel>
                 </StackPanel>
                 <Button Visibility="Hidden" Height="60" Padding="10" VerticalAlignment="Top" Cursor="Hand" Background="DarkGray" Command="{Binding Path=GoCommand}" Content="Convert"/>
-                <exchange:ExchangeRateResult Margin="50,0,0,0" DataContext="{Binding Path=ResultViewModel, NotifyOnSourceUpdated=True}" Visibility="{Binding Path=IsVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Label FontSize="28" FontWeight="Bold" Foreground="White" Content="{Binding LoadingInfo}"/>
+                <exchange:ExchangeRateResult x:Name="ExchangeRateResult" Margin="50,0,0,0" DataContext="{Binding Path=ResultViewModel, NotifyOnSourceUpdated=True}" Visibility="{Binding Path=IsVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </StackPanel>
         </Border>
         <DataGrid Grid.Row="1" Width="Auto" ColumnWidth="*" Margin="0,0,0,20" ItemsSource="{Binding ExchangeRates, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="True" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}"/>

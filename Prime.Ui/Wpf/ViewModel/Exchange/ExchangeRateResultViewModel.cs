@@ -9,12 +9,13 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly ExchangeRateViewModel _model;
         private readonly ExchangeRateCollected _collected;
 
-        public ExchangeRateResultViewModel(){}
+        public ExchangeRateResultViewModel() { }
 
         public ExchangeRateResultViewModel(ExchangeRateViewModel model, ExchangeRateCollected collected)
         {
             _model = model;
             _collected = collected;
+
             ConvertRight = (double)((decimal)collected.Price * (decimal)_model.ConvertLeft);
             FinalPrice = _model.ConvertLeft;
             AssetLeft = _model.AssetLeft;
@@ -22,18 +23,20 @@ namespace Prime.Ui.Wpf.ViewModel
             UtcCreated = collected.UtcCreated;
             IsConverted = collected.IsConverted;
 
+            _displayConvertRight = new Money((decimal)ConvertRight, AssetRight).ToString();
+            _displayFinalPrice = new Money((decimal)FinalPrice, AssetLeft).ToString();
 
             if (IsConverted)
             {
                 AssetConvert = collected.AssetConvert;
-                InfoConvert = $"1 {AssetConvert.ShortCode} = {collected.Price.ToString()}";
-                InfoLeft = $"1 {AssetLeft.ShortCode} = {collected.PriceConvert.ToString()}";
+                InfoConvert = $"1 {AssetConvert.ShortCode} = {new Money(collected.Price, AssetConvert).ToString()}";
+                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(collected.PriceConvert, AssetRight).ToString()}";
                 InfoRight = $"1 {AssetRight.ShortCode} = {new Money(collected.Price, AssetLeft).ToString()}";
                 InfoConvertFinal = $"1 {AssetLeft.ShortCode} = {new Money(collected.Price, AssetRight).ToString()}";
             }
             else
             {
-                InfoLeft = $"1 {AssetLeft.ShortCode} = {collected.Price.ToString()}";
+                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(collected.Price, AssetRight).ToString()}";
                 InfoRight = $"1 {AssetRight.ShortCode} = {new Money(1 / collected.Price, AssetLeft).ToString()}";
             }
 
@@ -59,6 +62,20 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             get => _convertRight;
             set => Set(ref _convertRight, value);
+        }
+
+        private string _displayConvertRight;
+        public string DisplayConvertRight
+        {
+            get => _displayConvertRight;
+            set => Set(ref _displayConvertRight, value);
+        }
+
+        private string _displayFinalPrice;
+        public string DisplayFinalPrice
+        {
+            get => _displayFinalPrice;
+            set => Set(ref _displayFinalPrice, value);
         }
 
         private double _convertMiddle;
@@ -102,6 +119,7 @@ namespace Prime.Ui.Wpf.ViewModel
             get => _infoConvert;
             set => Set(ref _infoConvert, value);
         }
+
         private string _infoConvertFinal;
         public string InfoConvertFinal
         {
