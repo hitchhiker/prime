@@ -18,7 +18,13 @@
             <StackPanel Orientation="Horizontal">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Height="24" Margin="0,0,0,10">
-                        <TextBox Margin="0,0,20,0" Text="{Binding Path=ConvertLeft}" Width="150"/>
+                        <TextBox Margin="0,0,20,0" Text="{Binding Path=ConvertLeft, UpdateSourceTrigger=PropertyChanged}"  Width="150">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="KeyUp">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
                         <ComboBox Margin="0,0,20,0" 
                               IsSynchronizedWithCurrentItem="False"
                               IsEditable="True"
@@ -27,7 +33,7 @@
                               SelectedItem="{Binding Path=AssetLeft, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding }" />
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
@@ -41,13 +47,13 @@
                               SelectedItem="{Binding Path=AssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding }" />
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                     </StackPanel>
                 </StackPanel>
-                <Button Height="60" Padding="10" VerticalAlignment="Top" Cursor="Hand" Background="DarkGray" Command="{Binding Path=GoCommand}" Content="Convert"/>
+                <Button Visibility="Hidden" Height="60" Padding="10" VerticalAlignment="Top" Cursor="Hand" Background="DarkGray" Command="{Binding Path=GoCommand}" Content="Convert"/>
                 <exchange:ExchangeRateResult Margin="50,0,0,0" DataContext="{Binding Path=ResultViewModel, NotifyOnSourceUpdated=True}" Visibility="{Binding Path=IsVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </StackPanel>
         </Border>
