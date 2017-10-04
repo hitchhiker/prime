@@ -11,7 +11,7 @@
 
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel>
-            <ItemsControl ItemsSource="{Binding ListMarketsDiscoveryItems}">
+            <ItemsControl ItemsSource="{Binding ListMarketControls}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel FlowDirection="LeftToRight">
@@ -20,7 +20,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <wpf:MarketControl MarketName="{Binding Name}" Buy="{Binding Buy}" Sell="{Binding Sell}" ChangePerc="{Binding ChangePerc}" IconPath="{Binding IconPath}"/>
+                        <wpf:MarketControl/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

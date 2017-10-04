@@ -45,9 +45,9 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-                        <Button Command="{Binding Path=GoCommand}" Content="Convert"/>
                     </StackPanel>
                 </StackPanel>
+                <Button Height="60" Padding="10" VerticalAlignment="Top" Cursor="Hand" Background="DarkGray" Command="{Binding Path=GoCommand}" Content="Convert"/>
                 <exchange:ExchangeRateResult Margin="50,0,0,0" DataContext="{Binding Path=ResultViewModel, NotifyOnSourceUpdated=True}" Visibility="{Binding Path=IsVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </StackPanel>
         </Border>
