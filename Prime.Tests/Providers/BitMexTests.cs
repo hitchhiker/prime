@@ -21,12 +21,6 @@ namespace Prime.Tests
         }
 
         [TestMethod]
-        public override async Task TestGetDepositAddressesAsync()
-        {
-            await base.TestGetDepositAddressesAsync();
-        }
-
-        [TestMethod]
         public override async Task TestGetOhlcAsync()
         {
             await base.TestGetOhlcAsync();

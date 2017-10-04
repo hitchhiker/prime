@@ -63,6 +63,11 @@ namespace plugins
             return price;
         }
 
+        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public BuyResult Buy(BuyContext ctx)
         {
             return null;

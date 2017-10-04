@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Prime.Core;
 namespace Prime.Core
 {
-    public interface IExchangeProvider : IPublicPriceProvider
+    public interface IExchangeProvider : IPublicPricesProvider
     {
         BuyResult Buy(BuyContext ctx);
 

@@ -68,6 +68,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
+    <Compile Include="Providers\KrakenTests.cs" />
+    <Compile Include="Providers\PoloniexTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj">

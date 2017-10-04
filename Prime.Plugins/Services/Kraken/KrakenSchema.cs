@@ -10,20 +10,25 @@ namespace Prime.Plugins.Services.Kraken
             public string[] error;
         }
 
-        internal class BaseResponse<TResultKey, TResultObject> : ErrorResponse
+        //internal class BaseResponse<TResultKey, TResultObject> : ErrorResponse
+        //{
+        //    public Dictionary<TResultKey, TResultObject> result;
+        //}
+
+        internal class BaseResponse<TObject> : ErrorResponse
         {
-            public Dictionary<TResultKey, TResultObject> result;
+            public TObject result;
         }
 
-        internal class BalancesResponse : BaseResponse<string, decimal> { }
+        internal class BalancesResponse : BaseResponse<Dictionary<string, decimal>> { }
 
-        internal class AssetPairsResponse : BaseResponse<string, AssetPairResponse> { }
+        internal class AssetPairsResponse : BaseResponse<Dictionary<string, AssetPairResponse>> { }
 
-        internal class TickersInformationResponse : BaseResponse<string, TickerInformationResponse> { }
+        internal class TickersInformationResponse : BaseResponse<Dictionary<string, TickerInformationResponse>> { }
 
-        internal class DepositMethodsResponse : BaseResponse<string, DepositMethodResponse> { }
+        internal class DepositMethodsResponse : BaseResponse<IList<DepositMethodResponse>> { }
 
-        internal class DepositAddressesResponse : BaseResponse<string, DepositAddressResponse> { }
+        internal class DepositAddressesResponse : BaseResponse<IList<DepositAddressResponse>> { }
 
         internal class DepositAddressResponse
         {
@@ -105,6 +110,9 @@ namespace Prime.Plugins.Services.Kraken
             public string method;
             public string limit;
             public decimal fee;
+
+            [JsonProperty("gen-address")]
+            public bool gen_address;
 
             [JsonProperty("address-setup-fee")]
             public bool? address_setup_fee;

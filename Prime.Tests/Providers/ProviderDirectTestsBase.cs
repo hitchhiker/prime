@@ -19,13 +19,6 @@ namespace Prime.Tests
                 await TestApiAsync(p.Provider);
         }
 
-        public virtual async Task TestGetDepositAddressesAsync()
-        {
-            var p = IsType<IDepositService>();
-            if (p.Success)
-                await GetDepositAddressesAsync(p.Provider);
-        }
-
         public virtual async Task TestGetOhlcAsync()
         {
             var p = IsType<IOhlcProvider>();
@@ -38,6 +31,13 @@ namespace Prime.Tests
             var p = IsType<IPublicPriceProvider>();
             if (p.Success)
                 await GetLatestPriceAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetLatestPricesAsync()
+        {
+            var p = IsType<IPublicPricesProvider>();
+            if (p.Success)
+                await GetLatestPricesAsync(p.Provider);
         }
 
         public virtual async Task TestGetAssetPairsAsync()
@@ -88,23 +88,6 @@ namespace Prime.Tests
             }
         }
 
-        public virtual async Task GetDepositAddressesAsync(IDepositService provider)
-        {
-            var asset = "BTC".ToAsset(provider);
-
-            var ctx = new WalletAddressAssetContext(asset, false, UserContext.Current);
-
-            try
-            {
-                var r = await provider.GetAddressesForAssetAsync(ctx);
-                Assert.IsTrue(r != null);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
         public virtual async Task GetOhlcAsync(IOhlcProvider provider)
         {
             var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
@@ -132,6 +115,28 @@ namespace Prime.Tests
                 Assert.IsTrue(c != null);
                 Assert.IsTrue(c.BaseAsset.Equals(ctx.Pair.Asset1));
                 Assert.IsTrue(c.Price.Asset.Equals(ctx.Pair.Asset2));
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        private async Task GetLatestPricesAsync(IPublicPricesProvider provider)
+        {
+            var ctx = new PublicPricesContext(Asset.Btc, new List<Asset>()
+            {
+                "USD".ToAssetRaw(),
+                "EUR".ToAssetRaw()
+            });
+
+            try
+            {
+                var c = await provider.GetLatestPricesAsync(ctx);
+
+                Assert.IsTrue(c != null);
+                Assert.IsTrue(c.BaseAsset.Equals(ctx.BaseAsset));
+                Assert.IsTrue(c.Prices.Count == ctx.Assets.Count);
             }
             catch (Exception e)
             {
