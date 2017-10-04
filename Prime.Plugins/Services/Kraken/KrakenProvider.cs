@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
@@ -78,10 +79,10 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = GetApi<IKrakenApi>(context);
 
-            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToString());
+            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
             var remoteCode = pair.TickerKraken();
 
-            var r = await api.GetTicketInformationAsync(remoteCode);
+            var r = await api.GetTickerInformationAsync(remoteCode);
 
             CheckResponseErrors(r);
 
@@ -95,6 +96,32 @@ namespace Prime.Plugins.Services.Kraken
             };
 
             return price;
+        }
+
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        {
+            var api = GetApi<IKrakenApi>(context);
+            var prices = new List<Money>();
+
+            foreach (var asset in context.Assets)
+            {
+                var pair = new AssetPair(context.BaseAsset.ToRemoteCode(this), asset.ToRemoteCode(this));
+                var remoteCode = pair.TickerKraken();
+
+                var r = await api.GetTickerInformationAsync(remoteCode);
+
+                CheckResponseErrors(r);
+
+                prices.Add(new Money(r.result.FirstOrDefault().Value.c[0], asset));
+            }
+
+            var latestPrices = new LatestPrices()
+            {
+                BaseAsset = context.BaseAsset,
+                Prices = prices
+            };
+
+            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -164,7 +191,15 @@ namespace Prime.Plugins.Services.Kraken
 
             foreach (var pair in r.result)
             {
-                results.AddAvailable(pair.Key.ToAsset(this), pair.Value);
+                var asset = pair.Key.ToAsset(this);
+                var money = new Money(pair.Value, asset);
+
+                results.Add(new BalanceResult(asset)
+                {
+                    Available = money,
+                    Balance = money,
+                    Reserved = 0
+                });
             }
 
             return results;
@@ -188,10 +223,7 @@ namespace Prime.Plugins.Services.Kraken
 
                 CheckResponseErrors(r);
 
-                if (r == null || r.result.Count == 0)
-                    return null;
-
-                return r.result.FirstOrDefault().Value.method;
+                return r?.result?.FirstOrDefault()?.method;
             }
             catch (ApiResponseException e)
             {
@@ -210,12 +242,13 @@ namespace Prime.Plugins.Services.Kraken
             var body = CreateKrakenBody();
 
             // BUG: do we need "aclass"?
-            // body.Add("aclass", context.Asset.ToRemoteCode(this));
+            //body.Add("aclass", asset.ToRemoteCode(this));
             body.Add("asset", asset.ToRemoteCode(this));
             body.Add("method", fundingMethod);
             body.Add("new", false);
 
             var r = await api.GetDepositAddresses(body);
+            CheckResponseErrors(r);
 
             var walletAddresses = new WalletAddresses();
 
@@ -223,16 +256,16 @@ namespace Prime.Plugins.Services.Kraken
             {
                 var walletAddress = new WalletAddress(this, asset)
                 {
-                    Address = addr.Value.address
+                    Address = addr.address
                 };
 
-                if (addr.Value.expiretm != 0)
+                if (addr.expiretm != 0)
                 {
-                    var time = addr.Value.expiretm.ToUtcDateTime();
+                    var time = addr.expiretm.ToUtcDateTime();
                     walletAddress.ExpiresUtc = time;
                 }
 
-                walletAddresses.Add(new WalletAddress(this, asset) { Address = addr.Value.address });
+                walletAddresses.Add(new WalletAddress(this, asset) { Address = addr.address });
             }
 
             return walletAddresses;

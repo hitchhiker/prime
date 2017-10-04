@@ -70,6 +70,11 @@ namespace Prime.Plugins.Services.Bittrex
             return latestPrice;
         }
 
+        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public BuyResult Buy(BuyContext ctx)
         {
             return null;

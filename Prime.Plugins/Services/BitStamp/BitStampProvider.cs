@@ -79,6 +79,11 @@ namespace Prime.Plugins.Services.BitStamp
             return latestPrice;
         }
 
+        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public BuyResult Buy(BuyContext ctx)
         {
             return null;

@@ -19,7 +19,7 @@ namespace Prime.Plugins.Services.Kraken
         Task<KrakenSchema.AssetPairsResponse> GetAssetPairsAsync();
 
         [Get("/public/Ticker?pair={pair}")]
-        Task<KrakenSchema.TickersInformationResponse> GetTicketInformationAsync([Path] string pair);
+        Task<KrakenSchema.TickersInformationResponse> GetTickerInformationAsync([Path] string pair);
 
         [Get("/public/OHLC?pair={pair}&interval={interval}")]
         Task<KrakenSchema.OhlcResponse> GetOhlcDataAsync([Path] string pair, [Path(Format = "D")] KrakenTimeInterval interval);
