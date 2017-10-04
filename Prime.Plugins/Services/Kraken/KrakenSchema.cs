@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.Kraken
             public bool gen_address;
 
             [JsonProperty("address-setup-fee")]
-            public bool? address_setup_fee;
+            public decimal address_setup_fee;
         }
     }
 }

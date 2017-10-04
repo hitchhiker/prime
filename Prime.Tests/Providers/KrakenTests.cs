@@ -40,10 +40,28 @@ namespace Prime.Tests.Providers
             await base.TestGetAddressesAsync();
         }
 
+
         [TestMethod]
         public override async Task TestGetAddressesForAssetAsync()
         {
             await base.TestGetAddressesForAssetAsync();
+        }
+
+        public override async Task GetAddressesForAssetAsync(IDepositService provider)
+        {
+            var asset = "XDG".ToAsset(provider);
+
+            var ctx = new WalletAddressAssetContext(asset, false, UserContext.Current);
+
+            try
+            {
+                var r = await provider.GetAddressesForAssetAsync(ctx);
+                Assert.IsTrue(r != null);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
         }
 
         [TestMethod]

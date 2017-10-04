@@ -33,6 +33,12 @@ namespace Prime.Tests
         }
 
         [TestMethod]
+        public override async Task TestGetLatestPricesAsync()
+        {
+            await base.TestGetLatestPricesAsync();
+        }
+
+        [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
             await base.TestGetAssetPairsAsync();
