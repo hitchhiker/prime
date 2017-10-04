@@ -25,6 +25,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _assetRight = UserContext.Current.BaseAsset;
 
             _dispatcher = Dispatcher.CurrentDispatcher;
+            _debounceDispatcher = new DebounceDispatcher();
 
             ScreenViewModel = model;
             AllAssetsViewModel = new AllAssetsViewModel(model);
@@ -43,6 +44,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly Dispatcher _dispatcher;
         private readonly List<ExchangeRateRequest> _requests = new List<ExchangeRateRequest>();
         private readonly ExchangeRatesCoordinator _coord = ExchangeRatesCoordinator.I;
+        private readonly DebounceDispatcher _debounceDispatcher;
 
         public ScreenViewModel ScreenViewModel;
         public AllAssetsViewModel AllAssetsViewModel { get; }
@@ -119,6 +121,11 @@ namespace Prime.Ui.Wpf.ViewModel
         }
 
         private void Go()
+        {
+            _debounceDispatcher.Debounce(600, o => Convert());
+        }
+
+        private void Convert()
         {
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
