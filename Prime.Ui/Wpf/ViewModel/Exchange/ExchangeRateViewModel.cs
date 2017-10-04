@@ -38,7 +38,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _coord.Messenger.Register<ExchangeRateCollected>(this, NewRate);
 
-            GoCommand = new RelayCommand(Go);
+            GoCommand = new RelayCommand(AddRequestDebounced);
         }
 
         private readonly Dispatcher _dispatcher;
@@ -120,12 +120,12 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _resultViewModel, value);
         }
 
-        private void Go()
+        private void AddRequestDebounced()
         {
-            _debounceDispatcher.Debounce(600, o => Convert());
+            _debounceDispatcher.Debounce(600, o => AddRequest());
         }
 
-        private void Convert()
+        private void AddRequest()
         {
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
