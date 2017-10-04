@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Prime.Utility;
 
 namespace Prime.Core
@@ -15,9 +15,9 @@ namespace Prime.Core
 
         private UniqueList<WalletAddress> Addresses => _context.UserSettings.Addresses;
 
-        public void AddAddress(IWalletService service, Asset asset, Action after)
+        public async Task AddAddressAsync(IWalletService service, Asset asset)
         {
-            var r = ApiCoordinator.GetDepositAddresses(service, new WalletAddressAssetContext(asset, true, _context));
+            var r = await ApiCoordinator.GetDepositAddressesAsync(service, new WalletAddressAssetContext(asset, true, _context));
             if (r.IsNull)
                 return;
 
@@ -27,7 +27,6 @@ namespace Prime.Core
 
             Addresses.AddRange(wa);
             _context.UserSettings.Save(_context);
-            after();
         }
 
         public IReadOnlyList<WalletAddress> GetAll()

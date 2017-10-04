@@ -44,7 +44,8 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void AddAddress()
         {
-            WalletProvider.AddAddress(ServiceSelected, AssetSelected, () =>
+            var t = WalletProvider.AddAddressAsync(ServiceSelected, AssetSelected);
+            t.ContinueWith(ta =>
             {
                 WalletAddresses.Clear();
                 foreach (var i in WalletProvider.GetAll())
