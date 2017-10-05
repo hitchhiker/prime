@@ -15,7 +15,7 @@ namespace Prime.Core.Wallet
             TimerInterval = 15000;
             Context = context;
             _scanners = new List<PortfolioProvider>();
-            _messenger.Register<BaseAssetChangedMessage>(this, BaseAssetChanged);
+            _messenger.Register<QuoteAssetChangedMessage>(this, BaseAssetChanged);
         }
 
         private readonly List<PortfolioProvider> _scanners;
@@ -29,7 +29,7 @@ namespace Prime.Core.Wallet
         public UniqueList<PortfolioInfoItem> PortfolioInfoItems { get; } = new UniqueList<PortfolioInfoItem>();
         public DateTime UtcLastUpdated { get; private set; }
 
-        private void BaseAssetChanged(BaseAssetChangedMessage m)
+        private void BaseAssetChanged(QuoteAssetChangedMessage m)
         {
             lock (_lock)
                 Restart(Context);
@@ -49,7 +49,7 @@ namespace Prime.Core.Wallet
             {
                 var providers = Networks.I.WalletProviders.WithApi();
                 _scanners.Clear();
-                _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, context.BaseAsset, TimerInterval))).ToList());
+                _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, context.QuoteAsset, TimerInterval))).ToList());
                 _scanners.ForEach(x => x.OnChanged += ScannerChanged);
             }
         }

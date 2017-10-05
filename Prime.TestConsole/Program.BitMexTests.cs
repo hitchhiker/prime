@@ -37,7 +37,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.BaseAsset, 0);
+                var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.QuoteAsset, 0);
                 var scanner = new PortfolioProvider(c);
                 try
                 {

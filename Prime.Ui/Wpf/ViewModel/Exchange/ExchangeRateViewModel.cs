@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public ExchangeRateViewModel(ScreenViewModel model)
         {
             _assetLeft = Assets.I.GetRaw("BTC");
-            _assetRight = UserContext.Current.BaseAsset;
+            _assetRight = UserContext.Current.QuoteAsset;
 
             _dispatcher = Dispatcher.CurrentDispatcher;
             _debounceDispatcher = new DebounceDispatcher();

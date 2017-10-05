@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
             "EUR".ToAssetRaw();
 
             Context = UserContext.Current;
-            SelectedBaseAsset = Context.BaseAsset;
+            SelectedBaseAsset = Context.QuoteAsset;
 
             UpdateAssets();
 
@@ -59,7 +59,7 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _selectedBaseAsset, value, x =>
             {
                 if (SetAsDefault)
-                    return Context.BaseAsset = x;
+                    return Context.QuoteAsset = x;
                 return x;
             });
         }

@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = GetApi<IKrakenApi>(context);
 
-            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2Quote.ToRemoteCode(this));
+            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
             var remoteCode = pair.TickerKraken();
 
             var r = await api.GetTickerInformationAsync(remoteCode);
@@ -87,7 +87,7 @@ namespace Prime.Plugins.Services.Kraken
             CheckResponseErrors(r);
 
             // TODO: Check, price is taken from "last trade closed array(<price>, <lot volume>)".
-            var money = new Money(r.result.FirstOrDefault().Value.c[0], context.Pair.Asset2Quote);
+            var money = new Money(r.result.FirstOrDefault().Value.c[0], context.Pair.Asset2);
             var price = new LatestPrice()
             {
                 Price = money,
@@ -311,7 +311,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = GetApi<IKrakenApi>(context);
 
-            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2Quote.ToString());
+            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToString());
 
             var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
 

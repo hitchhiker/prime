@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var r = await GetLatestPricesAsync(new PublicPricesContext(context.Pair.Asset1, new List<Asset>() {context.Pair.Asset2Quote}));
+            var r = await GetLatestPricesAsync(new PublicPricesContext(context.Pair.Asset1, new List<Asset>() {context.Pair.Asset2}));
             if (r == null || r.Prices?.Any() != true)
                 return null;
 
@@ -137,13 +137,13 @@ namespace Prime.Plugins.Services.CryptoCompare
             switch (market)
             {
                 case TimeResolution.Hour:
-                    apir = await api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2Quote.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
+                    apir = await api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
                     break;
                 case TimeResolution.Day:
-                    apir = await api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2Quote.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false");
+                    apir = await api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false");
                     break;
                 case TimeResolution.Minute:
-                    apir = await api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2Quote.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
+                    apir = await api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
                     break;
             }
 

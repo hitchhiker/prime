@@ -35,9 +35,9 @@ namespace Prime.Core.Exchange.Rates
             UtcCreated = recent.UtcCreated > other.UtcCreated ? other.UtcCreated : recent.UtcCreated;
             Provider = p1.Provider;
             ProviderConversion = p2.Provider;
-            Price = new Money(p1.Price * p2.Price, Pair.Asset2Quote);
+            Price = new Money(p1.Price * p2.Price, Pair.Asset2);
             PriceConvert = p1.Price;
-            AssetConvert = p1.Pair.Asset2Quote;
+            AssetConvert = p1.Pair.Asset2;
         }
     }
 }

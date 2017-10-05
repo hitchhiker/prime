@@ -171,7 +171,7 @@ namespace Prime.Core.Wallet
                     ReservedBalance = balance.Reserved,
                     Total =
                         new Money((decimal) balance.Available + (decimal) balance.Reserved, balance.Available.Asset),
-                    Converted = new Money((decimal) balance.Available * (decimal) fx, pair.Asset2Quote),
+                    Converted = new Money((decimal) balance.Available * (decimal) fx, pair.Asset2),
                     ConversionFailed = fx == Money.Zero,
                     ChangePercentage = 0
                 };
