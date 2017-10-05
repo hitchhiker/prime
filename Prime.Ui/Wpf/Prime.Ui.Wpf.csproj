@@ -299,6 +299,7 @@
       <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -388,6 +389,7 @@
     <Compile Include="ViewModel\Logging\LogEntry.cs" />
     <Compile Include="PageUri\AssetPageUriProvider.cs" />
     <Compile Include="PageUri\SimplePageUriProvider.cs" />
+    <Compile Include="ViewModel\Trading\BuyViewModel.cs" />
     <Compile Include="ViewModel\Trading\MarketHistoryViewModel.cs" />
     <Compile Include="ViewModel\Trading\MyOrderHistoryViewModel.cs" />
     <Compile Include="ViewModel\Trading\OpenOrdersViewModel.cs" />
@@ -396,6 +398,7 @@
     <Compile Include="ViewModel\PaneViewModel.cs" />
     <Compile Include="ViewModel\Charts\PriceChartPaneModel.cs" />
     <Compile Include="Components\Providers\SimplePagePaneProvider.cs" />
+    <Compile Include="ViewModel\Trading\SellViewModel.cs" />
     <Compile Include="ViewModel\Wallet\ReceiveViewModel.cs" />
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
     <Compile Include="ViewModel\Wallet\WalletViewModel.cs" />
@@ -438,8 +441,29 @@
     <Compile Include="View\Sidebar\SidebarFlyoutBar.xaml.cs">
       <DependentUpon>SidebarFlyoutBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Trade\BuyControl.xaml.cs">
+      <DependentUpon>BuyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Trade\BuySell.xaml.cs">
       <DependentUpon>BuySell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\MarketHistoryControl.xaml.cs">
+      <DependentUpon>MarketHistoryControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\OpenOrdersControl.xaml.cs">
+      <DependentUpon>OpenOrdersControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\OrderBookBuyControl.xaml.cs">
+      <DependentUpon>OrderBookBuyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\OrderBookSellControl.xaml.cs">
+      <DependentUpon>OrderBookSellControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\OrderHistoryControl.xaml.cs">
+      <DependentUpon>OrderHistoryControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Trade\SellControl.xaml.cs">
+      <DependentUpon>SellControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Watchlist\Watchlist.xaml.cs">
       <DependentUpon>Watchlist.xaml</DependentUpon>
@@ -571,7 +595,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Trade\BuyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Trade\BuySell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\MarketHistoryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\OpenOrdersControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\OrderBookBuyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\OrderBookSellControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\OrderHistoryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Trade\SellControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

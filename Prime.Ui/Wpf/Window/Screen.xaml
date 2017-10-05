@@ -16,6 +16,7 @@
                       xmlns:exchange="clr-namespace:Prime.Ui.Wpf.View.Exchange"
                       xmlns:misc="clr-namespace:Prime.Ui.Wpf.View.Misc"
                       xmlns:markets="clr-namespace:Prime.Ui.Wpf.View.Markets"
+                      xmlns:trading="clr-namespace:Prime.Ui.Wpf.ViewModel.Trading"
                       mc:Ignorable="d"
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
@@ -89,7 +90,7 @@
                         <watchlist:Watchlist/>
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type viewmodel:BuySellViewModel}">
+                    <DataTemplate DataType="{x:Type trading:BuySellViewModel}">
                         <trade:BuySell/>
                     </DataTemplate>
 

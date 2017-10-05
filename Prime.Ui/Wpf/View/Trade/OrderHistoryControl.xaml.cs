@@ -1,5 +1,4 @@
-﻿using Prime.Ui.Wpf.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,21 +16,13 @@ using System.Windows.Shapes;
 namespace Prime.Ui.Wpf.View.Trade
 {
     /// <summary>
-    /// Interaction logic for BuySell.xaml
+    /// Interaction logic for OrderHistoryControl.xaml
     /// </summary>
-    public partial class BuySell : UserControl
+    public partial class OrderHistoryControl : UserControl
     {
-        public BuySell()
+        public OrderHistoryControl()
         {
             InitializeComponent();
-            SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
-        }
-
-        private void SViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            ScrollViewer scv = (ScrollViewer)sender;
-            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
-            e.Handled = true;
         }
     }
 }

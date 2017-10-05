@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
 using Prime.Ui.Wpf.ViewModel;
 using Prime.Utility;
+using Prime.Ui.Wpf.ViewModel.Trading;
 
 namespace Prime.Ui.Wpf.PageUri
 {

@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Trade.MarketHistoryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel.Trading"
+             d:DataContext="{d:DesignInstance viewModel:MarketHistoryViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Orientation="Vertical">
+        <TextBlock>Market History</TextBlock>
+        <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,0" ItemsSource="{Binding ListMarketHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Buy/Sell" Binding="{Binding BuySell}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Total Units (BTC)" Binding="{Binding TotalUnits, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Total Cost (USDT)" Binding="{Binding TotalCost, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</UserControl>
