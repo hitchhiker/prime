@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
@@ -151,7 +152,7 @@ namespace Prime.Plugins.Services.Kraken
                 var first = assetPair.Value.base_c;
                 var second = ticker.Replace(first, "");
 
-                assetPairs.Add(new AssetPair(first, second, this));   
+                assetPairs.Add(new AssetPair(first, second, this));
             }
 
             return assetPairs;
@@ -175,7 +176,7 @@ namespace Prime.Plugins.Services.Kraken
             if (response.error.Length > 0)
             {
                 throw new ApiResponseException(response.error[0], this);
-            }       
+            }
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -300,7 +301,7 @@ namespace Prime.Plugins.Services.Kraken
 
             var fundingMethod = await GetFundingMethod(context, context.Asset);
 
-            if(fundingMethod == null)
+            if (fundingMethod == null)
                 throw new NullReferenceException("No funding method is found");
 
             var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset);
@@ -333,12 +334,12 @@ namespace Prime.Plugins.Services.Kraken
                     // BUG: ohlcResponse.volume is double ~0.2..10.2, why do we cast to long?
                     ohlc.Add(new OhlcEntry(seriesId, time, this)
                     {
-                        Open = (double) ohlcResponse.open,
-                        Close = (double) ohlcResponse.close,
-                        Low = (double) ohlcResponse.low,
-                        High = (double) ohlcResponse.high,
-                        VolumeTo = (long) ohlcResponse.volume, // Cast to long should be revised.
-                        VolumeFrom = (long) ohlcResponse.volume,
+                        Open = (double)ohlcResponse.open,
+                        Close = (double)ohlcResponse.close,
+                        Low = (double)ohlcResponse.low,
+                        High = (double)ohlcResponse.high,
+                        VolumeTo = (long)ohlcResponse.volume, // Cast to long should be revised.
+                        VolumeFrom = (long)ohlcResponse.volume,
                         WeightedAverage = (double)ohlcResponse.vwap // Should be checked.
                     });
                 }
@@ -372,7 +373,6 @@ namespace Prime.Plugins.Services.Kraken
             var api = GetApi<IKrakenApi>(context);
             var pair = context.Pair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-            var depth = context.Depth;
 
             var r = await api.GetOrderBook(remotePair.TickerSimple());
 
@@ -380,25 +380,42 @@ namespace Prime.Plugins.Services.Kraken
 
             var data = r.result.FirstOrDefault();
 
-            var askData = data.Value.asks;
-            var bidData = data.Value.bids;
+            var askData = GetBidAskData(data.Value.asks.FirstOrDefault());
+            var bidData = GetBidAskData(data.Value.bids.FirstOrDefault());
 
             var orderBook = new OrderBook();
+
             orderBook.Add(new OrderBookRecord()
             {
-                BidData = new BidAskData(new Money(), 0),
-                AskData = new BidAskData()
+                BidData = new BidAskData(new Money(askData.Price, context.Pair.Asset2), askData.Price, askData.TimeStamp),
+                AskData = new BidAskData(new Money(bidData.Price, context.Pair.Asset2), bidData.Price, bidData.TimeStamp)
             });
 
-            throw new NotImplementedException();
+            return orderBook;
         }
 
-        private BidAskData GetBidAskData(string[] dataArray)
+        private (decimal Price, decimal Volume, DateTime TimeStamp) GetBidAskData(string[] dataArray)
         {
-            var data = new BidAskData();
+            if(dataArray == null)
+                throw new ApiResponseException("Invalid order book data response", this);
 
+            decimal price;
+            decimal volume;
+            long timeStampUnix;
+            DateTime timeStamp;
 
-            return data;
+            if (!decimal.TryParse(dataArray[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price))
+                throw new ApiResponseException("Incorrect order book data format", this);
+
+            if (!decimal.TryParse(dataArray[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out volume))
+                throw new ApiResponseException("Incorrect order book data format", this);
+
+            if(!long.TryParse(dataArray[2], out timeStampUnix))
+                throw new ApiResponseException("Incorrect order book data format", this);
+
+            timeStamp = timeStampUnix.ToUtcDateTime();
+
+            return (price, volume, timeStamp);
         }
 
         public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
