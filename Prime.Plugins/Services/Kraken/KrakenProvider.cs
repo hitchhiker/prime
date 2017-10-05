@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Plugins.Services.Kraken.Converters;
 using Prime.Utility;
@@ -14,7 +15,7 @@ using AssetPair = Prime.Core.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
+    public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider, IOrderBookProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -364,6 +365,31 @@ namespace Prime.Plugins.Services.Kraken
                 default:
                     throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
             }
+        }
+
+        public async Task<OrderBook> GetOrderBookLive(OrderBookContext context)
+        {
+            var api = GetApi<IKrakenApi>(context);
+            var pair = context.Pair;
+            var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
+            var depth = context.Depth;
+
+            var r = await api.GetOrderBook(remotePair.TickerSimple());
+
+            CheckResponseErrors(r);
+
+            var orderBook = new OrderBook();
+            orderBook.Add(new OrderBookRecord()
+            {
+                
+            })
+
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

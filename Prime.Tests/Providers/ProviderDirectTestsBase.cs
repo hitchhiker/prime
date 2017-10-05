@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
+using Prime.Core.Exchange;
 
 namespace Prime.Tests
 {
@@ -66,6 +67,13 @@ namespace Prime.Tests
             var p = IsType<IDepositService>();
             if (p.Success)
                 await GetAddressesForAssetAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetOrderBookLiveAsync()
+        {
+            var p = IsType<IOrderBookProvider>();
+            if (p.Success)
+                await GetOrderBookLiveAsync(p.Provider);
         }
 
         #endregion
@@ -203,6 +211,21 @@ namespace Prime.Tests
             try
             {
                 var r = await provider.GetAddressesForAssetAsync(ctx);
+                Assert.IsTrue(r != null);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        public virtual async Task GetOrderBookLiveAsync(IOrderBookProvider provider)
+        {
+            var ctx = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 10);
+
+            try
+            {
+                var r = await provider.GetOrderBookLive(ctx);
                 Assert.IsTrue(r != null);
             }
             catch (Exception e)

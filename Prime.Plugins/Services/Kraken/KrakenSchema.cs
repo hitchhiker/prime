@@ -30,6 +30,14 @@ namespace Prime.Plugins.Services.Kraken
 
         internal class DepositAddressesResponse : BaseResponse<IList<DepositAddressResponse>> { }
 
+        internal class OrderBookResponse : BaseResponse<Dictionary<string, OrderBookRecordResponse>> { }
+
+        internal class OrderBookRecordResponse
+        {
+            public string[][] asks;
+            public string[][] bids;
+        }
+
         internal class DepositAddressResponse
         {
             public string address;

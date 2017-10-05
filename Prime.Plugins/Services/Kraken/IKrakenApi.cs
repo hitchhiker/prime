@@ -24,5 +24,8 @@ namespace Prime.Plugins.Services.Kraken
         [Get("/public/OHLC?pair={pair}&interval={interval}")]
         Task<KrakenSchema.OhlcResponse> GetOhlcDataAsync([Path] string pair, [Path(Format = "D")] KrakenTimeInterval interval);
 
+        [Get("/public/Depth?pair={currencyPair}&count={depth}")]
+        Task<KrakenSchema.OrderBookResponse> GetOrderBook([Path] string currencyPair, [Path] int depth = 1);
+
     }
 }

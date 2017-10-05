@@ -238,8 +238,12 @@
     <Compile Include="Asset\Model\LatestPrices.cs" />
     <Compile Include="Asset\Model\TimeResolutionExtensionMethods.cs" />
     <Compile Include="Asset\Pair\AssetPairNormalised.cs" />
+    <Compile Include="Exchange\IOrderBookProvider.cs" />
     <Compile Include="Exchange\Model\ConversionResultModel.cs" />
     <Compile Include="Exchange\Model\ExchangeItemModel.cs" />
+    <Compile Include="Exchange\OrderBook.cs" />
+    <Compile Include="Exchange\OrderBookContext.cs" />
+    <Compile Include="Exchange\OrderBookRecord.cs" />
     <Compile Include="Markets\MarketsDiscoveryItemModel.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateProvider.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateProviderContext.cs" />
