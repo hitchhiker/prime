@@ -378,13 +378,27 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
+            var data = r.result.FirstOrDefault();
+
+            var askData = data.Value.asks;
+            var bidData = data.Value.bids;
+
             var orderBook = new OrderBook();
             orderBook.Add(new OrderBookRecord()
             {
-                
-            })
+                BidData = new BidAskData(new Money(), 0),
+                AskData = new BidAskData()
+            });
 
             throw new NotImplementedException();
+        }
+
+        private BidAskData GetBidAskData(string[] dataArray)
+        {
+            var data = new BidAskData();
+
+
+            return data;
         }
 
         public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
