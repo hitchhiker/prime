@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             var latestPrice = new LatestPrice()
             {
-                Price = new Money(r.last, context.Pair.Asset2),
+                Price = new Money(r.last, context.Pair.Asset2Quote),
                 BaseAsset = context.Pair.Asset1,
                 UtcCreated = r.timestamp.ToUtcDateTime()
             };

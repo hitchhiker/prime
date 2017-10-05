@@ -133,7 +133,7 @@ namespace Prime.Core.Exchange.Rates
 
         private void Collect(LatestPrice response, ExchangeRateRequest request)
         {
-            var collected = request.LastCollected = new ExchangeRateCollected(_provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
+            var collected = request.LastCollected = new ExchangeRateCollected(request, _provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
 
             _messenger.Send(collected);
 

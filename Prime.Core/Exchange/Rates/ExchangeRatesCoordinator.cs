@@ -91,7 +91,18 @@ namespace Prime.Core.Exchange.Rates
         {
             lock (_commonLock)
             {
-                return new ExchangeRateRequest(this, pair, network);
+                var err = new ExchangeRateRequest(this, pair, network);
+                var exr = _requested.FirstOrDefault(x => x.Equals(err));
+                if (exr != null)
+                {
+                    var c = Results().FirstOrDefault(x => Equals(x.Request, exr));
+                    if (c != null)
+                        _messenger.Send(c);
+                    return exr;
+                }
+
+                err.Discover();
+                return err;
             }
         }
 

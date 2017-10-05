@@ -89,7 +89,7 @@ namespace plugins
         {
             // BUG: usage of Poliniex in Coinbase.
             var api = GetApi<PoloniexClient>(null);
-            var cpair = new CurrencyPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
+            var cpair = new CurrencyPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2Quote.ToRemoteCode(this));
             var mp = MarketPeriod.Hours2;
             var ds = DateTime.UtcNow.AddDays(-10);
             var de = DateTime.UtcNow;

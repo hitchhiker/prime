@@ -114,7 +114,7 @@ namespace Prime.Tests
 
                 Assert.IsTrue(c != null);
                 Assert.IsTrue(c.BaseAsset.Equals(ctx.Pair.Asset1));
-                Assert.IsTrue(c.Price.Asset.Equals(ctx.Pair.Asset2));
+                Assert.IsTrue(c.Price.Asset.Equals(ctx.Pair.Asset2Quote));
             }
             catch (Exception e)
             {

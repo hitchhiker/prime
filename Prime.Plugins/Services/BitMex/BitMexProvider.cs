@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.BitMex
             var latestPrice = new LatestPrice
             {
                 BaseAsset = context.Pair.Asset1,
-                Price = new Money(r.lastPrice.Value, context.Pair.Asset2),
+                Price = new Money(r.lastPrice.Value, context.Pair.Asset2Quote),
                 UtcCreated = r.timestamp
             };
 
