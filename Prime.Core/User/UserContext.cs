@@ -37,7 +37,7 @@ namespace Prime.Core
         public bool IsPublic => false;
 
         private Asset _quoteAsset;
-
+        
         public Asset QuoteAsset
         {
             get => _quoteAsset ?? (_quoteAsset = "USD".ToAssetRaw());

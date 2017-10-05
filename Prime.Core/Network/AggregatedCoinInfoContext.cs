@@ -2,13 +2,16 @@
 
 namespace Prime.Core
 {
-    public class AggregatedCoinInfoContext : NetworkProviderContext
+    public class AssetPairDataContext : NetworkProviderContext
     {
         public readonly AssetPair Pair;
 
-        public AggregatedCoinInfoContext(AssetPair pair, ILogger logger = null) : base(logger)
+        public readonly AssetPairData Document;
+
+        public AssetPairDataContext(AssetPairData data, ILogger logger = null) : base(logger)
         {
-            Pair = pair;
+            Pair = data.AssetPair;
+            Document = data;
         }
     }
 }

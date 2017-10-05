@@ -6,14 +6,20 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class AssetExchangeData : ModelBase
+    public class AssetPairData : ModelBase
     {
-        private AssetExchangeData() { }
+        private AssetPairData() { }
 
-        public AssetExchangeData(AssetPair pair, INetworkProvider provider)
+        internal AssetPairData(AssetPair pair, INetworkProvider provider)
         {
             ProviderId = provider.Id;
             AssetPair = pair;
+            Id = GetHash(pair);
+        }
+
+        public static ObjectId GetHash(AssetPair pair)
+        {
+            return ("assetpair:" + pair.Asset1.ShortCode + ":" + pair.Asset2.ShortCode).GetObjectIdHashCode(true, true);
         }
 
         public void Refresh(IDataContext context)
@@ -21,24 +27,27 @@ namespace Prime.Core
             if (IsFresh)
                 return;
 
-            if (Provider != null)
-            {
-                var r = ApiCoordinator.RefreshCoinInfo(Provider, this);
-                if (!r.IsNull && r.Response)
-                    this.Save(context);
-            }
+            if (AggregationProvider == null)
+                return;
+
+            var r = ApiCoordinator.GetCoinSnapshot(AggregationProvider, new AssetPairDataContext(this));
+            if (r.Success)
+                this.Save(context);
         }
 
-        private IAssetPairAggregationProvider _provider;
-        public IAssetPairAggregationProvider Provider
+        private IAssetPairAggregationProvider _aggregationProvider;
+        public IAssetPairAggregationProvider AggregationProvider
         {
-            get { return _provider ?? (_provider = Networks.I.AssetPairAggregationProviders.FirstOrDefault(x => x.Id == ProviderId)); }
+            get { return _aggregationProvider ?? (_aggregationProvider = Networks.I.AssetPairAggregationProviders.FirstOrDefault(x => x.Id == ProviderId)); }
         }
 
-        public bool IsFresh => UtcUpdated.IsWithinTheLast(TimeSpan.FromDays(3));
+        public bool IsFresh => UtcUpdated.IsWithinTheLast(TimeSpan.FromDays(30));
 
         [Bson]
         public DateTime UtcUpdated { get; set; }
+
+        [Bson]
+        public bool IsMissing { get; set; }
 
         [Bson]
         public ObjectId ProviderId { get; private set; }

@@ -6,27 +6,23 @@ namespace Prime.Core
 {
     public class AssetPairKnownProviders
     {
-        private IReadOnlyList<IOhlcProvider> _providers;
+        public readonly AssetPair Pair;
+        public readonly IReadOnlyList<IOhlcProvider> Providers;
+        public readonly bool IsReversed;
 
-        public AssetPair Pair { get; set; }
+        public AssetPairKnownProviders(AssetPair pair, IReadOnlyList<IOhlcProvider> providers, bool isReversed = false)
+        {
+            Pair = pair;
+            Providers = providers;
+            Provider = providers.FirstProviderByVolume(pair);
+            IsReversed = isReversed;
+        }
 
         public IOhlcProvider Provider { get; set; }
 
         public bool IsPegged { get; set; }
 
         public bool IsIntermediary { get; set; }
-
-        public bool IsReversed { get; set; }
-
-        public IReadOnlyList<IOhlcProvider> Providers
-        {
-            get => _providers;
-            set
-            {
-                _providers = value;
-                Provider = _providers.FirstProvider();
-            }
-        }
 
         public AssetPairKnownProviders Via { get; set; }
     }
