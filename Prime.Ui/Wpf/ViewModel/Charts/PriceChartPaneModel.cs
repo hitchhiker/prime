@@ -109,7 +109,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public DocumentPaneViewModel GetInstance(IMessenger messenger, ScreenViewModel model, CommandBase command)
         {
             var c = command as AssetGoCommand;
-            var pair = new AssetPair(c.Asset, UserContext.Current.BaseAsset);
+            var pair = new AssetPair(c.Asset, UserContext.Current.QuoteAsset);
             var pcp = new PriceChartPaneModel(messenger, model, pair);
             pcp.QueueWork(pcp.InitDataThread);
             return pcp;

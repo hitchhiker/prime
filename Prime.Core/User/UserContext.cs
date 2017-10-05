@@ -36,14 +36,14 @@ namespace Prime.Core
 
         public bool IsPublic => false;
 
-        private Asset _baseAsset;
+        private Asset _quoteAsset;
 
-        public Asset BaseAsset
+        public Asset QuoteAsset
         {
-            get => _baseAsset ?? (_baseAsset = "USD".ToAssetRaw());
-            set => SetAfter(ref _baseAsset, value, a =>
+            get => _quoteAsset ?? (_quoteAsset = "USD".ToAssetRaw());
+            set => SetAfter(ref _quoteAsset, value, a =>
             {
-                Messenger.Send(new BaseAssetChangedMessage(a));
+                Messenger.Send(new QuoteAssetChangedMessage(a));
             });
         }
 

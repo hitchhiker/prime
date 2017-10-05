@@ -1,10 +1,10 @@
 namespace Prime.Core.Wallet
 {
-    public class BaseAssetChangedMessage
+    public class QuoteAssetChangedMessage
     {
         public readonly Asset NewAsset;
 
-        public BaseAssetChangedMessage(Asset newAsset)
+        public QuoteAssetChangedMessage(Asset newAsset)
         {
             NewAsset = newAsset;
         }
