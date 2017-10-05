@@ -53,7 +53,7 @@ namespace Prime.Core
             return AsyncContext.Run(() => GetLatestPricesAsync(provider, context));
         }
 
-        public static Task<ApiResponse<List<AssetInfo>>> GetCoinInfoAsync(ICoinInformationProvider provider, NetworkProviderContext context = null)
+        public static Task<ApiResponse<List<AssetInfo>>> GetSnapshotAsync(ICoinInformationProvider provider, NetworkProviderContext context = null)
         {
             context = context ?? new NetworkProviderContext();
             return ApiHelpers.WrapException(() => provider.GetCoinInfoAsync(context), "GetCoinInfo", provider, context);
@@ -61,7 +61,7 @@ namespace Prime.Core
 
         public static ApiResponse<List<AssetInfo>> GetCoinInfo(ICoinInformationProvider provider, NetworkProviderContext context = null)
         {
-            return AsyncContext.Run(() => GetCoinInfoAsync(provider, context));
+            return AsyncContext.Run(() => GetSnapshotAsync(provider, context));
         }
 
         public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
@@ -114,24 +114,14 @@ namespace Prime.Core
             return AsyncContext.Run(() => GetBalancesAsync(provider, context));
         }
 
-        public static Task<ApiResponse<AssetExchangeData>> GetCoinInfoAsync(IAssetPairAggregationProvider provider, AggregatedCoinInfoContext context)
+        public static Task<ApiResponse<AssetPairData>> GetCoinSnapshotAsync(IAssetPairAggregationProvider provider, AssetPairDataContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetCoinInfoAsync(context), "GetCoinInfo", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetCoinSnapshotAsync(context), "GetCoinSnapshot", provider, context);
         }
 
-        public static ApiResponse<AssetExchangeData> GetCoinInfo(IAssetPairAggregationProvider provider, AggregatedCoinInfoContext context)
+        public static ApiResponse<AssetPairData> GetCoinSnapshot(IAssetPairAggregationProvider provider, AssetPairDataContext context)
         {
-            return AsyncContext.Run(() => GetCoinInfoAsync(provider, context));
-        }
-
-        public static Task<ApiResponse<bool>> RefreshCoinInfoAsync(IAssetPairAggregationProvider provider, AssetExchangeData context)
-        {
-            return ApiHelpers.WrapException(() => provider.RefreshCoinInfoAsync(context), "GetCoinInfo", provider, new NetworkProviderContext());
-        }
-
-        public static ApiResponse<bool> RefreshCoinInfo(IAssetPairAggregationProvider provider, AssetExchangeData context)
-        {
-            return AsyncContext.Run(() => RefreshCoinInfoAsync(provider, context));
+            return AsyncContext.Run(() => GetCoinSnapshotAsync(provider, context));
         }
     }
 }

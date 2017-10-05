@@ -10,39 +10,39 @@ namespace Prime.Plugins.Services.CryptoCompare
     {
         internal class CryptoCompareResponseBase
         {
-            public string Response { get; set; }
-            public string Message { get; set; }
+            public string Response;
+            public string Message;
 
             public bool IsError() => string.IsNullOrWhiteSpace(Response) || string.Equals(Response, "Error", System.StringComparison.OrdinalIgnoreCase);
         }
 
         internal class CoinEntry
         {
-            public string Id { get; set; }
-            public string Url { get; set; }
-            public string ImageUrl { get; set; }
-            public string Name { get; set; }
-            public string CoinName { get; set; }
-            public string FullName { get; set; }
-            public string Algorithm { get; set; }
-            public string ProofType { get; set; }
-            public string FullyPremined { get; set; }
-            public string TotalCoinSupply { get; set; }
-            public string PreMinedValue { get; set; }
-            public string TotalCoinsFreeFloat { get; set; }
-            public string SortOrder { get; set; }
+            public string Id;
+            public string Url;
+            public string ImageUrl;
+            public string Name;
+            public string CoinName;
+            public string FullName;
+            public string Algorithm;
+            public string ProofType;
+            public string FullyPremined;
+            public string TotalCoinSupply;
+            public string PreMinedValue;
+            public string TotalCoinsFreeFloat;
+            public string SortOrder;
         }
 
         internal class CoinSnapshotData
         {
-            public string Algorithm { get; set; }
-            public string ProofType { get; set; }
-            public string BlockNumber { get; set; }
-            public string NetHashesPerSecond { get; set; }
-            public string TotalCoinsMined { get; set; }
-            public string BlockReward { get; set; }
-            public CoinSnapshotDataBlock AggregatedData { get; set; }
-            public List<CoinSnapshotDataBlock> Exchanges { get; set; }
+            public string Algorithm;
+            public string ProofType;
+            public string BlockNumber;
+            public string NetHashesPerSecond;
+            public string TotalCoinsMined;
+            public string BlockReward;
+            public CoinSnapshotDataBlock AggregatedData;
+            public List<CoinSnapshotDataBlock> Exchanges;
         }
 
         internal class CoinSnapshotDataBlock
@@ -67,49 +67,48 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         internal class CoinListResult : CryptoCompareResponseBase
         {
-            public string BaseImageUrl { get; set; }
-            public string BaseLinkUrl { get; set; }
+            public string BaseImageUrl;
+            public string BaseLinkUrl;
 
-            public Dictionary<string, CoinEntry> Data { get; set; }
+            public Dictionary<string, CoinEntry> Data;
         }
 
         internal class HistoricListConversionType
         {
-            public string type { get; set; }
-            public string conversionSymbol { get; set; }
+            public string type;
+            public string conversionSymbol;
         }
 
         internal class HistoricEntry
         {
-            public long time { get; set; }
-            public double high { get; set; }
-            public double low { get; set; }
-            public double open { get; set; }
-            public double close { get; set; }
-            public double volumefrom { get; set; }
-            public double volumeto { get; set; }
+            public long time;
+            public double high;
+            public double low;
+            public double open;
+            public double close;
+            public double volumefrom;
+            public double volumeto;
         }
 
         internal class HistoricListResult : CryptoCompareResponseBase
         {
-            public string Type { get; set; }
-            public bool Aggregated { get; set; }
-            public long TimeTo { get; set; }
-            public long TimeFrom { get; set; }
-            public bool FirstValueInArray { get; set; }
-            public HistoricListConversionType ConversionType { get; set; }
+            public string Type;
+            public bool Aggregated;
+            public long TimeTo;
+            public long TimeFrom;
+            public bool FirstValueInArray;
+            public HistoricListConversionType ConversionType;
 
-            public List<HistoricEntry> Data { get; set; }
+            public List<HistoricEntry> Data;
         }
 
         internal class CoinSnapshotResult : CryptoCompareResponseBase
         {
-            public string Type { get; set; }
-            public bool Aggregated { get; set; }
+            public string Type;
+            public bool Aggregated;
 
-            public CoinSnapshotData Data { get; set; }
+            public CoinSnapshotData Data;
         }
-
     }
 }
 

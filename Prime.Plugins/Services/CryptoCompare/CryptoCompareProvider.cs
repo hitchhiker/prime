@@ -14,23 +14,18 @@ namespace plugins
 
         public override string AggregatorName => null;
 
-        public async Task<AssetExchangeData> GetCoinInfoAsync(AggregatedCoinInfoContext context)
+        public async Task<AssetPairData> GetCoinSnapshotAsync(AssetPairDataContext context)
         {
-            var cd = new AssetExchangeData(context.Pair, this);
-            await RefreshCoinInfoAsync(cd);
-            return cd;
-        }
+            var assetData = context.Document;
+            if (assetData == null)
+                throw new ArgumentException(nameof(context.Document) + " was null.");
 
-        public override string Title => "CryptoCompare Aggregator";
-
-        public async Task<bool> RefreshCoinInfoAsync(AssetExchangeData assetData)
-        {
-            var pair = assetData.AssetPair;
+            var pair = context.Pair;
             var api = GetApi<ICryptoCompareApi>(true);
             var apir = await api.GetCoinSnapshotAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
 
             if (apir.IsError() || apir.Data == null)
-                return false;
+                return null;
 
             var d = apir.Data;
 
@@ -53,8 +48,10 @@ namespace plugins
                 assetData.Exchanges.Add(nd);
             }
 
-            return true;
+            return assetData;
         }
+
+        public override string Title => "CryptoCompare Aggregator";
 
         private AssetExchangeEntry Convert(CryptoCompareSchema.CoinSnapshotDataBlock r)
         {
