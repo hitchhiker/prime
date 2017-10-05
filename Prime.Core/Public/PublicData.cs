@@ -8,34 +8,24 @@ namespace Prime.Core
 {
     public class PublicData : ModelBase
     {
-        [Bson]
-        private ConcurrentDictionary<AssetPair, AssetExchangeData> AssetPairs { get; set; } = new ConcurrentDictionary<AssetPair, AssetExchangeData>();
+        private readonly ConcurrentDictionary<AssetPair, AssetPairData> _assetPairs = new ConcurrentDictionary<AssetPair, AssetPairData>();
 
-        private ConcurrentDictionary<Asset, List<INetworkProvider>> _assetProviders;
-
-        public ConcurrentDictionary<Asset, List<INetworkProvider>> AssetProviders => _assetProviders ?? (_assetProviders = GetAssetProviders());
-
-        private ConcurrentDictionary<Asset, List<INetworkProvider>> GetAssetProviders()
+        public AssetPairData GetAssetPairData(AssetPair pair)
         {
-            var r = new ConcurrentDictionary<Asset, List<INetworkProvider>>();
-            foreach (var a in AssetPairs.Keys.Select(x => x.Asset1).Union(AssetPairs.Keys.Select(x => x.Asset2)).ToUniqueList())
+            var data = _assetPairs.GetOrAdd(pair, k =>
             {
-                var ms = AssetPairs.Where(x=>x.Key.Asset1.ShortCode == a.ShortCode || x.Key.Asset2.ShortCode == a.ShortCode).ToList();
-                var providers = ms.Select(x => x.Value).SelectMany(x => x.AllProviders).ToList();
-                r.Add(a, providers);
-            }
-            return r;
-        }
+                var id = AssetPairData.GetHash(k);
+                var apd = PublicContext.I.GetCollection<AssetPairData>().FindById(id);
+                if (apd != null)
+                    return apd;
 
-        public AssetExchangeData AssetExchangeData(AssetPair pair)
-        {
-            var data = AssetPairs.GetOrAdd(pair, k =>
-            {
                 var prov = Networks.I.AssetPairAggregationProviders.FirstProvider();
-                var r = ApiCoordinator.GetCoinInfo(prov, new AggregatedCoinInfoContext(k));
-                if (!r.IsNull)
-                    this.Save(PublicContext.I);
-                return r.Response ?? new AssetExchangeData(k, prov) {UtcUpdated = DateTime.UtcNow};
+                var r = ApiCoordinator.GetCoinSnapshot(prov, new AssetPairDataContext(new AssetPairData(k, prov)));
+
+                apd = r.IsNull ? new AssetPairData(k, prov) { UtcUpdated = DateTime.UtcNow, IsMissing = true } : r.Response;
+                apd.Save(PublicContext.I);
+
+                return apd;
             });
 
             data.Refresh(PublicContext.I);

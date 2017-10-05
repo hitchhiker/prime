@@ -8,6 +8,12 @@ namespace Prime.Core
     {
         private AssetPair() { }
 
+        /// <summary>
+        /// The first listed currency of a currency pair is called the base currency, and the second currency is called the quote currency.
+        /// The currency pair indicates how much of the quote currency is needed to purchase one unit of the base currency.
+        /// </summary>
+        /// <param name="asset1">Base Currency</param>
+        /// <param name="asset2">Quote Currency</param>
         public AssetPair(Asset asset1, Asset asset2)
         {
             Asset1 = asset1 ?? throw new ArgumentException($"{nameof(asset1)} is null.");
@@ -22,9 +28,15 @@ namespace Prime.Core
         {
         }
 
+        /// <summary>
+        /// Base currency
+        /// </summary>
         [Bson]
         public Asset Asset1 { get; private set; }
 
+        /// <summary>
+        /// Quote currency. 
+        /// </summary>
         [Bson]
         public Asset Asset2 { get; private set; }
 

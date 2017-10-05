@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Trade.OrderHistoryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             xmlns:trading="clr-namespace:Prime.Ui.Wpf.ViewModel.Trading"
+             d:DataContext="{d:DesignInstance trading:MyOrderHistoryViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Orientation="Vertical">
+        <TextBlock>My Order History</TextBlock>
+        <DataGrid Width="Auto" ColumnWidth="*" Margin="0,20,0,0" ItemsSource="{Binding ListMyOrderHistory, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Closed Date" Binding="{Binding ClosedDate, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Opened Date" Binding="{Binding OpenedDate, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Bid/Ask" Binding="{Binding BidAsk}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Units Filled (BTC)" Binding="{Binding UnitsFilled, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Units Total (BTC)" Binding="{Binding UnitsTotal, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Actual Rate" Binding="{Binding ActualRate, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+                <DataGridTextColumn Header="Cost/Proceeds" Binding="{Binding CostProceeds, StringFormat=N3}" Width="*" CanUserSort="False" HeaderStyle="{DynamicResource HeaderLeft}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</UserControl>

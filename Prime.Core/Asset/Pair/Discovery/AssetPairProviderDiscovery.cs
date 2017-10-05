@@ -36,7 +36,7 @@ namespace Prime.Core
         private static AssetPairKnownProviders DiscoverSpecified(AssetPair pair, Network network, bool isReversed)
         {
             var provs = GetProviders(pair).Where(x => x.Network.Equals(network)).ToList();
-            return provs.Any() ? new AssetPairKnownProviders() {Providers = provs, Pair = pair, IsReversed = isReversed} : null;
+            return provs.Any() ? new AssetPairKnownProviders(pair, provs, isReversed) : null;
         }
 
         private AssetPairKnownProviders DiscoverDirect()
@@ -47,7 +47,7 @@ namespace Prime.Core
         private static AssetPairKnownProviders DiscoverDirect(AssetPair pair, bool isReversed)
         {
             var provs = GetProviders(pair);
-            return provs.Any() ? new AssetPairKnownProviders() { Providers = provs, Pair = pair, IsReversed = isReversed } : null;
+            return provs.Any() ? new AssetPairKnownProviders(pair, provs, isReversed) : null;
         }
 
         private AssetPairKnownProviders DiscoverPegged()
@@ -66,7 +66,7 @@ namespace Prime.Core
             {
                 var provs = GetProviders(ap);
                 if (provs.Any())
-                    return new AssetPairKnownProviders() {Providers = provs, Pair = ap, IsPegged = true, IsReversed = isReversed};
+                    return new AssetPairKnownProviders(ap, provs, isReversed) {IsPegged = true};
             }
 
             return null;
@@ -99,23 +99,16 @@ namespace Prime.Core
             if (!p2.Any())
                 return null;
 
-            return new AssetPairKnownProviders
+            return new AssetPairKnownProviders(pair, p1)
             {
-                Providers = p1,
-                Pair = pair,
-                Via = new AssetPairKnownProviders {Providers = p2, Pair = pair2, IsIntermediary = true, IsReversed = isReversed}
+                Via = new AssetPairKnownProviders(pair2, p2, isReversed) {IsIntermediary = true}
             };
         }
 
-        public static List<IOhlcProvider> GetProviders(AssetPair pair)
+        private static List<IOhlcProvider> GetProviders(AssetPair pair)
         {
-            return GetProviders(PublicContext.I.PubData, pair);
-        }
-
-        private static List<IOhlcProvider> GetProviders(PublicData pub, AssetPair pair)
-        {
-            var who = pub.AssetExchangeData(pair);
-            return who.Exchanges.Count == 0 ? new List<IOhlcProvider>() : who.AllProviders.OfType<IOhlcProvider>().DistinctBy(x => x.Id).ToList();
+            var apd = PublicContext.I.PubData.GetAssetPairData(pair);
+            return apd.Exchanges.Count == 0 ? new List<IOhlcProvider>() : apd.AllProviders.OfType<IOhlcProvider>().DistinctBy(x => x.Id).ToList();
         }
     }
 }

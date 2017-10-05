@@ -228,8 +228,8 @@
     <Compile Include="Asset\AssetEventArgs.cs" />
     <Compile Include="Asset\AssetGoCommand.cs" />
     <Compile Include="Asset\AssetUtility.cs" />
-    <Compile Include="Asset\Model\AssetExchangeEntry.cs" />
-    <Compile Include="Asset\Model\AssetExchangeData.cs" />
+    <Compile Include="Asset\Pair\Data\AssetExchangeEntry.cs" />
+    <Compile Include="Asset\Pair\Data\AssetPairData.cs" />
     <Compile Include="Asset\Model\LatestPrice.cs" />
     <Compile Include="Asset\Model\OhlcData.cs" />
     <Compile Include="Asset\Model\OhlcDataExtensionMethods.cs" />

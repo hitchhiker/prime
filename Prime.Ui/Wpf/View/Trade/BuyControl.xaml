@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Trade.BuyControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel.Trading"
+             d:DataContext="{d:DesignInstance viewModel:BuyViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Orientation="Vertical" Margin="0,0,0,20">
+        <StackPanel.Resources>
+            <Style TargetType="StackPanel">
+                <Setter Property="Orientation" Value="Horizontal" />
+            </Style>
+            <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                <Setter Property="Width" Value="120" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Width" Value="400" />
+                <Setter Property="BorderBrush" Value="White" />
+            </Style>
+            <Style TargetType="ComboBox">
+                <Setter Property="Width" Value="400" />
+            </Style>
+        </StackPanel.Resources>
+        <StackPanel Margin="0,10,0,0">
+            <Label Content="Units" Target="{Binding ElementName=TxtBuyUnits}"/>
+            <TextBox x:Name="TxtBuyUnits" Text="{Binding Units, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+            <Label Margin="20,0,0,0" Content="Type" Target="{Binding ElementName=CmbBuyType}"/>
+            <ComboBox  x:Name="CmbBuyType" ItemsSource="{Binding Path=ListTradeTypes}" DisplayMemberPath="TradeTypeName" SelectedValue="{Binding Path=Type}" Loaded="CmbBuyType_Loaded"/>
+        </StackPanel>
+        <StackPanel Margin="0,10,0,0">
+            <Label Content="Bid" Target="{Binding ElementName=TxtBuyBid}"/>
+            <TextBox x:Name="TxtBuyBid" Text="{Binding Bid, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+            <Label Margin="20,0,0,0" Content="Time in Force" Target="{Binding ElementName=CmbBuyTimeInForce}"/>
+            <ComboBox x:Name="CmbBuyTimeInForce" ItemsSource="{Binding Path=ListTimeInForce}" DisplayMemberPath="TimeInForceName" SelectedValuePath="Key" SelectedValue="{Binding Path=TimeInForce}" Loaded="CmbBuyTimeInForce_Loaded" />
+        </StackPanel>
+        <StackPanel Margin="0,10,0,0">
+            <Label Content="Total" Target="{Binding ElementName=TxtBuyTotal}"/>
+            <TextBox x:Name="TxtBuyTotal" Text="{Binding Total, Mode=OneWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+        </StackPanel>
+        <StackPanel Margin="0,15,0,0">
+            <Button x:Name="BtnBuy" Command="{Binding BuyCommand}" Width="100" HorizontalAlignment="Left" Cursor="Hand" Background="#337AB7" Foreground="White">Buy</Button>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

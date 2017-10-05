@@ -11,15 +11,17 @@ namespace Prime.Core.Exchange.Rates
         private readonly ExchangeRatesCoordinator _coordinator;
         public readonly AssetPair Pair;
 
-        public ExchangeRateRequest(ExchangeRatesCoordinator coordinator, AssetPair pair, Network network = null, bool skipDiscovery = false)
+        public ExchangeRateRequest(ExchangeRatesCoordinator coordinator, AssetPair pair, Network network = null)
         {
             _coordinator = coordinator;
             _messenger = _coordinator.Messenger;
             Network = NetworkSuggested = network;
             Pair = pair;
+        }
 
-            if (!skipDiscovery)
-                new Task(Discovery).Start();
+        public void Discover()
+        {
+            new Task(Discovery).Start();
         }
 
         public AssetPair PairRequestable { get; private set; }
@@ -70,7 +72,7 @@ namespace Prime.Core.Exchange.Rates
 
         private void ProcessConvertedPart2(AssetPairKnownProviders provs)
         {
-            var request = new ExchangeRateRequest(_coordinator, Pair, provs.Provider.Network, true)
+            var request = new ExchangeRateRequest(_coordinator, Pair, provs.Provider.Network)
             {
                 ConvertedOther = this,
                 IsConvertedPart1 = false,

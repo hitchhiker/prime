@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prime.Ui.Wpf.ViewModel
+namespace Prime.Ui.Wpf.ViewModel.Trading
 {
     public class OrderBookViewModel
     {

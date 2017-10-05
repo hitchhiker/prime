@@ -1,5 +1,4 @@
-﻿using Prime.Ui.Wpf.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,21 +16,23 @@ using System.Windows.Shapes;
 namespace Prime.Ui.Wpf.View.Trade
 {
     /// <summary>
-    /// Interaction logic for BuySell.xaml
+    /// Interaction logic for BuyControl.xaml
     /// </summary>
-    public partial class BuySell : UserControl
+    public partial class BuyControl : UserControl
     {
-        public BuySell()
+        public BuyControl()
         {
             InitializeComponent();
-            SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
         }
 
-        private void SViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void CmbBuyType_Loaded(object sender, RoutedEventArgs e)
         {
-            ScrollViewer scv = (ScrollViewer)sender;
-            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
-            e.Handled = true;
+            CmbBuyType.SelectedIndex = 0;
+        }
+
+        private void CmbBuyTimeInForce_Loaded(object sender, RoutedEventArgs e)
+        {
+            CmbBuyTimeInForce.SelectedIndex = 0;
         }
     }
 }
