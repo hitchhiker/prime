@@ -76,6 +76,13 @@ namespace Prime.Tests
                 await GetOrderBookLiveAsync(p.Provider);
         }
 
+        public virtual async Task TestGetOrderBookHistoryAsync()
+        {
+            var p = IsType<IOrderBookProvider>();
+            if (p.Success)
+                await GetOrderBookHistoryAsync(p.Provider);
+        }
+
         #endregion
 
         #region Test methods
@@ -228,6 +235,22 @@ namespace Prime.Tests
                 var r = await provider.GetOrderBookLive(ctx);
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.Count == 1);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        public virtual async Task GetOrderBookHistoryAsync(IOrderBookProvider provider)
+        {
+            var ctx = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+
+            try
+            {
+                var r = await provider.GetOrderBookHistory(ctx);
+                Assert.IsTrue(r != null);
+                Assert.IsTrue(r.Count == ctx.Depth);
             }
             catch (Exception e)
             {

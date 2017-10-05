@@ -371,25 +371,7 @@ namespace Prime.Plugins.Services.Kraken
         public async Task<OrderBook> GetOrderBookLive(OrderBookContext context)
         {
             var api = GetApi<IKrakenApi>(context);
-            var pair = context.Pair;
-            var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-
-            var r = await api.GetOrderBook(remotePair.TickerSimple());
-
-            CheckResponseErrors(r);
-
-            var data = r.result.FirstOrDefault();
-
-            var askData = GetBidAskData(data.Value.asks.FirstOrDefault());
-            var bidData = GetBidAskData(data.Value.bids.FirstOrDefault());
-
-            var orderBook = new OrderBook();
-
-            orderBook.Add(new OrderBookRecord()
-            {
-                BidData = new BidAskData(new Money(askData.Price, context.Pair.Asset2), askData.Price, askData.TimeStamp),
-                AskData = new BidAskData(new Money(bidData.Price, context.Pair.Asset2), bidData.Price, bidData.TimeStamp)
-            });
+            var orderBook = await GetOrderBookLocal(api, context.Pair, 1);
 
             return orderBook;
         }
@@ -418,9 +400,42 @@ namespace Prime.Plugins.Services.Kraken
             return (price, volume, timeStamp);
         }
 
-        public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IKrakenApi>(context);
+            var orderBook = await GetOrderBookLocal(api, context.Pair, context.Depth);
+
+            return orderBook;
+        }
+
+        private async Task<OrderBook> GetOrderBookLocal(IKrakenApi api, AssetPair assetPair, int depth)
+        {
+            var pair = assetPair;
+            var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
+
+            var r = await api.GetOrderBook(remotePair.TickerSimple(), depth);
+
+            CheckResponseErrors(r);
+
+            var data = r.result.FirstOrDefault();
+            var orderBook = new OrderBook();
+
+            if (depth != data.Value.asks.Length || depth != data.Value.bids.Length)
+                throw new ApiResponseException("Incorrect number of Bid-Ask records returned from API server", this);
+
+            for (int i = 0; i < depth; i++)
+            {
+                var askData = GetBidAskData(data.Value.asks[i]);
+                var bidData = GetBidAskData(data.Value.bids[i]);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    BidData = new BidAskData(new Money(askData.Price, assetPair.Asset2), askData.Price, askData.TimeStamp),
+                    AskData = new BidAskData(new Money(bidData.Price, assetPair.Asset2), bidData.Price, bidData.TimeStamp)
+                });
+            }
+
+            return orderBook;
         }
     }
 }

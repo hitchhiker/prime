@@ -18,10 +18,22 @@ namespace Prime.Core
 
         public bool Equals(OrderBookRecord other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Equals(
+                BidData.Equals(other.BidData) &&
+                AskData.Equals(other.AskData) &&
+                BidData.Time.Equals(other.BidData.Time)
+            );
         }
 
         public BidAskData BidData { get; set; }
         public BidAskData AskData { get; set; }
+
+        public override string ToString()
+        {
+            return $"Bid: {BidData.Price.Display} Ask: {AskData.Price.Display}";
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Prime.Core.Exchange
 {
-    public class BidAskData
+    public class BidAskData : IEquatable<BidAskData>
     {
         public BidAskData()
         {
@@ -27,5 +27,36 @@ namespace Prime.Core.Exchange
         public Money Price { get; set; }
         public decimal Volume { get; set; }
         public DateTime Time { get; set; }
+
+        public bool Equals(BidAskData other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Price.Equals(other.Price) && Volume == other.Volume && Time.Equals(other.Time);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((BidAskData) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Price.GetHashCode();
+                hashCode = (hashCode * 397) ^ Volume.GetHashCode();
+                hashCode = (hashCode * 397) ^ Time.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"Price: {Price.Display} Volume: {Volume} Time: {Time}";
+        }
     }
 }
