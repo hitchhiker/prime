@@ -12,8 +12,6 @@ namespace Prime.Ui.Wpf.ViewModel.Trading
 {
     public class BuyViewModel
     {
-        private readonly BuySellViewModel _model;
-
         public Money Bid { get; set; }
         public Money Units { get; set; }
         public Money Total { get; set; }
@@ -25,10 +23,8 @@ namespace Prime.Ui.Wpf.ViewModel.Trading
 
         public RelayCommand BuyCommand { get; }
 
-        public BuyViewModel(BuySellViewModel model)
+        public BuyViewModel()
         {
-            _model = model;
-
             ListTradeTypes = new BindingList<TradeTypeModel>
             {
                 new TradeTypeModel(0, "Limit"),

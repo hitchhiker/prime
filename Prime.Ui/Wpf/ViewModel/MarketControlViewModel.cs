@@ -1,7 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using Prime.Core;
-using Prime.Core.Exchange.Rates;
+using FirstFloor.ModernUI.Windows.Controls;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Prime.Ui.Wpf.ViewModel;
+using Prime.Utility;
+using Prime.Ui.Wpf.ExtensionMethods;
+using GalaSoft.MvvmLight.Command;
 using Prime.Core.Exchange.Model;
+using Prime.Ui.Wpf.View.Trade;
+using Prime.Ui.Wpf.ViewModel.Trading;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -12,6 +33,9 @@ namespace Prime.Ui.Wpf.ViewModel
         public string Name { get; }
         public Money Buy { get ; }
         public Money Sell { get; }
+
+        public RelayCommand BuyCommand { get; }
+        public RelayCommand SellCommand { get; }
 
         public MarketControlViewModel()
         {

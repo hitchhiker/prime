@@ -13,5 +13,11 @@
     <dialogs:CustomDialog x:Key="ViewDialog">
         <Canvas x:Name="Content" IsHitTestVisible="True"/>
     </dialogs:CustomDialog>
+    <dialogs:CustomDialog x:Key="BuyDialog">
+        <Canvas x:Name="BuyContent" IsHitTestVisible="True"/>
+    </dialogs:CustomDialog>
+    <dialogs:CustomDialog x:Key="SellDialog">
+        <Canvas x:Name="SellContent" IsHitTestVisible="True"/>
+    </dialogs:CustomDialog>
     <local:ViewModelLocator x:Key="Locator" />
 </ResourceDictionary>

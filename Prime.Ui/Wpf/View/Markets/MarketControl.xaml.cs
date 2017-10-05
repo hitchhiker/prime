@@ -1,7 +1,11 @@
 ﻿using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Prime.Core;
+using Prime.Ui.Wpf.View.Trade;
+using Prime.Ui.Wpf.ViewModel.Trading;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,7 +40,7 @@ namespace Prime.Ui.Wpf.View.Markets
         private double _lastBuySell;
         private double _trend;
         public SeriesCollection BuySellSeries { get; set; }
-        
+
         public double LastBuySell
         {
             get { return _lastBuySell; }
@@ -119,6 +123,47 @@ namespace Prime.Ui.Wpf.View.Markets
                     });
                 }
             });
+        }
+
+        private async void LoadModalAsync(UserControl content, string dialogName, string contentName)
+        {
+            var mw = this.TryFindParent<MahApps.Metro.Controls.MetroWindow>();
+            if (mw == null)
+                return;
+
+            var dialog = Application.Current.Resources[dialogName] as BaseMetroDialog;
+            if (dialog == null)
+                return;
+
+            dialog.Height = 150;
+
+            await mw.ShowMetroDialogAsync(dialog, new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false });
+            
+            var c = dialog.FindChild<Canvas>(contentName);
+            c.Children.Clear();
+            c.Children.Add(content);
+
+            void DetectOutClick(object o, MouseButtonEventArgs args)
+            {
+                var hit = VisualTreeHelper.HitTest(dialog, Mouse.GetPosition(dialog)) != null;
+                if (hit)
+                    return;
+
+                mw.HideMetroDialogAsync(dialog).ContinueWith(x => { mw.PreviewMouseDown -= DetectOutClick; });
+                args.Handled = true;
+            }
+
+            mw.PreviewMouseDown += DetectOutClick;
+        }
+
+        private void BtnBuy_OnClick(object sender, RoutedEventArgs e)
+        {
+            LoadModalAsync(new BuyControl() { DataContext = new BuyViewModel() },"BuyDialog","BuyContent");
+        }
+
+        private void BtnSell_OnClick(object sender, RoutedEventArgs e)
+        {
+            LoadModalAsync(new SellControl() { DataContext = new SellViewModel() }, "SellDialog", "SellContent");
         }
     }
 }

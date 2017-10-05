@@ -26,8 +26,8 @@ namespace Prime.Ui.Wpf.ViewModel.Trading
         {
             _model = model;
 
-            BuyViewModel = new BuyViewModel(this);
-            SellViewModel = new SellViewModel(this);
+            BuyViewModel = new BuyViewModel();
+            SellViewModel = new SellViewModel();
             OrderBookBuyViewModel = new OrderBookViewModel(this);
             OrderBookSellViewModel = new OrderBookViewModel(this);
             OpenOrdersViewModel = new OpenOrdersViewModel(this);

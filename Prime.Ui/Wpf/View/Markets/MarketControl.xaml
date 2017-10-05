@@ -55,22 +55,44 @@
                 <lvc:CartesianChart Background="White" Grid.Row="1" Grid.Column="0" Series="{Binding BuySellSeries}" Hoverable="False" DataTooltip="{x:Null}">
                     <lvc:CartesianChart.AxisX>
                         <lvc:Axis MinValue="2"></lvc:Axis>
-                    </lvc:CartesianChart.AxisX> 
+                    </lvc:CartesianChart.AxisX>
                 </lvc:CartesianChart>
             </Grid>
             <StackPanel Orientation="Horizontal" Margin="10">
-                <Border BorderThickness="1" BorderBrush="LightGray">
-                    <StackPanel Orientation="Vertical" Width="90">
-                        <TextBlock Foreground="White" Background="Gray" FontWeight="Bold" Padding="5,0,0,0">SELL</TextBlock>
-                        <TextBlock Foreground="Black" Padding="5" Text="{Binding Sell, StringFormat=N2}"/>
-                    </StackPanel>
-                </Border>
-                <Border BorderThickness="1" BorderBrush="LightGray" Margin="10,0,0,0">
-                    <StackPanel Orientation="Vertical" Width="90">
-                        <TextBlock Foreground="White" Background="Gray" FontWeight="Bold" Padding="5,0,0,0">BUY</TextBlock>
-                        <TextBlock Foreground="Black" Padding="5" Text="{Binding Buy, StringFormat=N2}"/>
-                    </StackPanel>
-                </Border>
+                <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Click="BtnSell_OnClick">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <Trigger Property ="IsMouseOver" Value="True">
+                                    <Setter Property= "Background" Value="LightGray"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Border BorderThickness="1" BorderBrush="LightGray">
+                        <StackPanel Orientation="Vertical" Width="90">
+                            <TextBlock Foreground="White" Background="Gray" FontWeight="Bold" Padding="5,0,0,0">SELL</TextBlock>
+                            <TextBlock Foreground="Black" Padding="5" Text="{Binding Sell, StringFormat=N2}"/>
+                        </StackPanel>
+                    </Border>
+                </Button>
+                <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="10,0,0,0" Click="BtnBuy_OnClick">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <Trigger Property ="IsMouseOver" Value="True">
+                                    <Setter Property= "Background" Value="LightGray"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Border BorderThickness="1" BorderBrush="LightGray">
+                        <StackPanel Orientation="Vertical" Width="90">
+                            <TextBlock Foreground="White" Background="Gray" FontWeight="Bold" Padding="5,0,0,0">BUY</TextBlock>
+                            <TextBlock Foreground="Black" Padding="5" Text="{Binding Buy, StringFormat=N2}"/>
+                        </StackPanel>
+                    </Border>
+                </Button>
             </StackPanel>
         </StackPanel>
     </Grid>
