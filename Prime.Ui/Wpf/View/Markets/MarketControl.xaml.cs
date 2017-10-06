@@ -140,7 +140,7 @@ namespace Prime.Ui.Wpf.View.Markets
                 dialog.Height = 150;
 
                 await mw.ShowMetroDialogAsync(dialog,
-                    new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false });
+                    new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false, AnimateHide = false });
 
                 var c = dialog.FindChild<Canvas>(contentName);
                 c.Children.Clear();
@@ -151,8 +151,8 @@ namespace Prime.Ui.Wpf.View.Markets
                     var hit = VisualTreeHelper.HitTest(dialog, Mouse.GetPosition(dialog)) != null;
                     if (hit)
                         return;
-
-                    mw.HideMetroDialogAsync(dialog).ContinueWith(x => { mw.PreviewMouseDown -= DetectOutClick; });
+                    
+                    mw.HideMetroDialogAsync(dialog, new MetroDialogSettings { AnimateShow = false, AnimateHide = false }).ContinueWith(x => { mw.PreviewMouseDown -= DetectOutClick; });
                     args.Handled = true;
                 }
 
@@ -162,7 +162,7 @@ namespace Prime.Ui.Wpf.View.Markets
 
         private void BtnBuy_OnClick(object sender, RoutedEventArgs e)
         {
-            LoadModalAsync(new BuyControl() { DataContext = new BuyViewModel() },"BuyDialog","BuyContent");
+            LoadModalAsync(new BuyControl() { DataContext = new BuyViewModel() }, "BuyDialog", "BuyContent");
         }
 
         private void BtnSell_OnClick(object sender, RoutedEventArgs e)
