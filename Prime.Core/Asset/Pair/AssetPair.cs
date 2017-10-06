@@ -67,11 +67,6 @@ namespace Prime.Core
             return $"{Asset1.ShortCode}{Asset2.ShortCode}";
         }
 
-        public string TickerKraken()
-        {
-            return $"X{Asset1.ShortCode}Z{Asset2.ShortCode}";
-        }
-
         public bool Equals(AssetPair other)
         {
             return Asset1.Equals(other.Asset1) && Asset2.Equals(other.Asset2);

@@ -81,8 +81,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = GetApi<IKrakenApi>(context);
 
-            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
-            var remoteCode = pair.TickerKraken();
+            var remoteCode = TickerKraken(context.Pair);
 
             var r = await api.GetTickerInformationAsync(remoteCode);
 
@@ -107,8 +106,8 @@ namespace Prime.Plugins.Services.Kraken
 
             foreach (var asset in context.Assets)
             {
-                var pair = new AssetPair(context.BaseAsset.ToRemoteCode(this), asset.ToRemoteCode(this));
-                var remoteCode = pair.TickerKraken();
+                var pair = new AssetPair(context.BaseAsset, asset);
+                var remoteCode = TickerKraken(pair);
 
                 var r = await api.GetTickerInformationAsync(remoteCode);
 
@@ -313,12 +312,10 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = GetApi<IKrakenApi>(context);
 
-            var pair = new AssetPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToString());
-
             var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
 
             // BUG: "since" is not implemented. Need to be checked.
-            var r = await api.GetOhlcDataAsync(pair.TickerKraken(), krakenTimeInterval);
+            var r = await api.GetOhlcDataAsync(TickerKraken(context.Pair), krakenTimeInterval);
 
             CheckResponseErrors(r);
 
@@ -436,6 +433,11 @@ namespace Prime.Plugins.Services.Kraken
             }
 
             return orderBook;
+        }
+
+        public string TickerKraken(AssetPair pair)
+        {
+            return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}";
         }
     }
 }
