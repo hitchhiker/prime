@@ -108,7 +108,7 @@ namespace Prime.Ui.Wpf.View.Markets
             _trend = 8;
 
 
-            Task.Run(() =>
+            /*Task.Run(() =>
             {
                 var r = new Random();
                 while (true)
@@ -122,38 +122,42 @@ namespace Prime.Ui.Wpf.View.Markets
                         SetBuySell();
                     });
                 }
-            });
+            });*/
         }
 
         private async void LoadModalAsync(UserControl content, string dialogName, string contentName)
         {
-            var mw = this.TryFindParent<MahApps.Metro.Controls.MetroWindow>();
-            if (mw == null)
-                return;
-
-            var dialog = Application.Current.Resources[dialogName] as BaseMetroDialog;
-            if (dialog == null)
-                return;
-
-            dialog.Height = 150;
-
-            await mw.ShowMetroDialogAsync(dialog, new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false });
-            
-            var c = dialog.FindChild<Canvas>(contentName);
-            c.Children.Clear();
-            c.Children.Add(content);
-
-            void DetectOutClick(object o, MouseButtonEventArgs args)
+            await Dispatcher.Invoke(async () =>
             {
-                var hit = VisualTreeHelper.HitTest(dialog, Mouse.GetPosition(dialog)) != null;
-                if (hit)
+                var mw = this.TryFindParent<MahApps.Metro.Controls.MetroWindow>();
+                if (mw == null)
                     return;
 
-                mw.HideMetroDialogAsync(dialog).ContinueWith(x => { mw.PreviewMouseDown -= DetectOutClick; });
-                args.Handled = true;
-            }
+                var dialog = Application.Current.Resources[dialogName] as BaseMetroDialog;
+                if (dialog == null)
+                    return;
 
-            mw.PreviewMouseDown += DetectOutClick;
+                dialog.Height = 150;
+
+                await mw.ShowMetroDialogAsync(dialog,
+                    new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false });
+
+                var c = dialog.FindChild<Canvas>(contentName);
+                c.Children.Clear();
+                c.Children.Add(content);
+
+                void DetectOutClick(object o, MouseButtonEventArgs args)
+                {
+                    var hit = VisualTreeHelper.HitTest(dialog, Mouse.GetPosition(dialog)) != null;
+                    if (hit)
+                        return;
+
+                    mw.HideMetroDialogAsync(dialog).ContinueWith(x => { mw.PreviewMouseDown -= DetectOutClick; });
+                    args.Handled = true;
+                }
+
+                mw.PreviewMouseDown += DetectOutClick;
+            });
         }
 
         private void BtnBuy_OnClick(object sender, RoutedEventArgs e)
