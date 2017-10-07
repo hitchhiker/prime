@@ -48,25 +48,8 @@ namespace Prime.Tests
         [TestMethod]
         public override async Task TestGetLatestPriceAsync()
         {
+            PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "LTC"));
             await base.TestGetLatestPriceAsync();
-        }
-
-        public override async Task GetLatestPriceAsync(IPublicPriceProvider provider)
-        {
-            var ctx = new PublicPriceContext(new AssetPair("BTC", "LTC"));
-
-            try
-            {
-                var c = await provider.GetLatestPriceAsync(ctx);
-
-                Assert.IsTrue(c != null);
-                Assert.IsTrue(c.BaseAsset.Equals(ctx.Pair.Asset2));
-                Assert.IsTrue(c.Price.Asset.Equals(ctx.Pair.Asset1));
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
         }
     }
 }

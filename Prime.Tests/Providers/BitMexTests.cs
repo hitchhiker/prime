@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,6 +36,10 @@ namespace Prime.Tests
         [TestMethod]
         public override async Task TestGetLatestPricesAsync()
         {
+            PublicPricesContext = new PublicPricesContext(Asset.Btc, new List<Asset>()
+            {
+                "USD".ToAssetRaw()
+            });
             await base.TestGetLatestPricesAsync();
         }
 

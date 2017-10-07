@@ -25,8 +25,8 @@ namespace Prime.Plugins.Services.BitMex
             public decimal close;
             public decimal trades;
             public decimal volume;
-            public decimal vwap;
-            public decimal lastSize;
+            public decimal? vwap;
+            public decimal? lastSize;
             public decimal turnover;
             public decimal homeNotional;
             public decimal foreignNotional;

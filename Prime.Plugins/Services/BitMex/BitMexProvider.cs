@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.BitMex
                     High = (double)instrActive.high,
                     VolumeTo = (long)instrActive.volume,
                     VolumeFrom = (long)instrActive.volume,
-                    WeightedAverage = (double)instrActive.vwap // Should be checked.
+                    WeightedAverage = (double) (instrActive.vwap ?? 0) // BUG: what to set if vwap is NULL?
                 });
             }
 
@@ -123,23 +123,26 @@ namespace Prime.Plugins.Services.BitMex
             if(r == null || r.Count < 1)
                 throw new ApiResponseException("No prices data found", this);
 
-            var remote = context.BaseAsset.ToRemoteCode(this);
-            var pairCode = (remote + context.Assets.First().ToRemoteCode(this)).ToLower();
-
-            var data = r.FirstOrDefault(x =>
-                x.symbol.ToLower().Equals(pairCode)
-            );
-
-            if (data == null || data.lastPrice.HasValue == false)
-                throw new ApiResponseException("No price returned for selected currency");
-
             var pricesList = new List<Money>();
-            pricesList.Add(new Money(data.lastPrice.Value, data.quoteCurrency.ToAsset(this)));
+
+            foreach (var asset in context.Assets)
+            {
+                var remote = context.BaseAsset.ToRemoteCode(this);
+                var pairCode = (remote + asset.ToRemoteCode(this)).ToLower();
+
+                var data = r.FirstOrDefault(x =>
+                    x.symbol.ToLower().Equals(pairCode)
+                );
+
+                if (data == null || data.lastPrice.HasValue == false)
+                    throw new ApiResponseException("No price returned for selected currency");
+
+                pricesList.Add(new Money(data.lastPrice.Value, data.quoteCurrency.ToAsset(this)));
+            }
 
             var latestPrices = new LatestPrices()
             {
                 BaseAsset = context.BaseAsset,
-                UtcCreated = data.timestamp,
                 Prices = pricesList
             };
 
