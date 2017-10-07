@@ -4,19 +4,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
+    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider, IOrderBookProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";
 
         private static readonly string _pairs = "btcusd";
+        private const decimal ConversionRate = 0.00000001m;
 
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
 
@@ -243,7 +245,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var results = new BalanceResults(this);
 
-            var btcAmount = (decimal)0.00000001 * r.amount;
+            var btcAmount = (decimal)ConversionRate * r.amount;
 
             var c = Asset.Btc;
 
@@ -257,6 +259,88 @@ namespace Prime.Plugins.Services.BitMex
             return results;
         }
 
+        public async Task<OrderBook> GetOrderBookLive(OrderBookContext context)
+        {
+            var api = GetApi<IBitMexApi>(context);
+
+            var pairCode = GetBitMexTicker(context.Pair);
+
+            var r = await api.GetOrderBookAsync(pairCode, 1);
+
+            var buys = r.Where(x => x.side.ToLower().Equals("buy")).OrderBy(x => x.id).ToArray();
+            var sells = r.Where(x => x.side.ToLower().Equals("sell")).OrderBy(x => x.id).ToArray();
+
+            var buyEntry = buys.FirstOrDefault();
+            var sellEntry = sells.FirstOrDefault();
+
+            if (buys.Length != 1 || buys.Length != sells.Length)
+                throw new ApiResponseException("Incorrect number of order book records returned", this);
+
+            if (buyEntry == null || sellEntry == null)
+                throw new ApiResponseException("Order book data is empty", this);
+
+            var orderBook = new OrderBook();
+
+            orderBook.Add(new OrderBookRecord()
+            {
+                AskData = new BidAskData()
+                {
+                    Price = new Money(sellEntry.price, context.Pair.Asset2),
+                    Time = DateTime.Now,
+                    Volume = sellEntry.size
+                },
+                BidData = new BidAskData()
+                {
+                    Price = new Money(buyEntry.price, context.Pair.Asset2),
+                    Time = DateTime.Now,
+                    Volume = buyEntry.size
+                }
+            });
+
+            return orderBook;
+        }
+
+        public async Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
+        {
+            var api = GetApi<IBitMexApi>(context);
+
+            var pairCode = GetBitMexTicker(context.Pair);
+
+            var r = await api.GetOrderBookAsync(pairCode, context.Depth);
+
+            var buys = r.Where(x => x.side.ToLower().Equals("buy")).OrderBy(x => x.id).ToArray();
+            var sells = r.Where(x => x.side.ToLower().Equals("sell")).OrderBy(x => x.id).ToArray();
+
+            if (buys.Length != context.Depth || buys.Length != sells.Length)
+                throw new ApiResponseException("Incorrect number of order book records returned", this);
+
+            var orderBook = new OrderBook();
+
+            for (int i = 0; i < context.Depth; i++)
+            {
+                var buyEntry = buys[i];
+                var sellEntry = sells[i];
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    AskData = new BidAskData()
+                    {
+                        Price = new Money(sellEntry.price, context.Pair.Asset2),
+                        Time = DateTime.Now, // Since it returnes current state of OrderBook, date time is set to Now.
+                        Volume = sellEntry.size
+                    },
+                    BidData = new BidAskData()
+                    {
+                        Price = new Money(buyEntry.price, context.Pair.Asset2),
+                        Time = DateTime.Now,
+                        Volume = buyEntry.size
+                    }
+                });
+            }
+
+            return orderBook;
+        }
+
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
             return RestClient.For<IBitMexApi>(BitMexApiUrl) as T;
@@ -267,6 +351,11 @@ namespace Prime.Plugins.Services.BitMex
             var key = context.GetKey(this);
 
             return RestClient.For<IBitMexApi>(BitMexApiUrl, new BitMexAuthenticator(key).GetRequestModifier) as T;
+        }
+
+        private string GetBitMexTicker(AssetPair pair)
+        {
+            return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
         }
 
         public ApiConfiguration GetApiConfiguration { get; }
