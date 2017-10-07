@@ -13,17 +13,15 @@ namespace Prime.Core.Wallet
             Asset = asset;
         }
 
-        public static PortfolioGroupedItem Create(Asset asset, List<PortfolioLineItem> items)
+        public static PortfolioGroupedItem Create(Asset quoteAsset, Asset asset, List<PortfolioLineItem> items)
         {
-            var cva = items.FirstOrDefault()?.Converted.Asset ?? Asset.None;
-
             var g = new PortfolioGroupedItem(asset)
             {
-                AvailableBalance = new Money(items.Sum(x => x.AvailableBalance), asset),
-                PendingBalance = new Money(items.Sum(x => x.PendingBalance), asset),
-                ReservedBalance = new Money(items.Sum(x => x.ReservedBalance), asset),
-                Total = new Money(items.Sum(x => x.Total), asset),
-                Converted = new Money(items.Sum(x => x.Converted), cva),
+                AvailableBalance = items.Select(x=>x.AvailableBalance).Sum(),
+                PendingBalance = items.Select(x => x.PendingBalance).Sum(),
+                ReservedBalance = items.Select(x => x.ReservedBalance).Sum(),
+                Total = items.Select(x => x.Total).Sum(),
+                Converted = items.Select(x=>x.Converted).Sum(),
                 ConversionFailed = items.Any(x => x.ConversionFailed),
                 IsTotalLine = asset == null
             };

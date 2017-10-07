@@ -15,7 +15,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly DebounceDispatcher _debounceDispatcher;
         private bool _initialCheck = true;
 
-        public ServiceEditViewModel() : this(Networks.I.Providers.OfType<INetworkProviderPrivate>().Skip(1).FirstOrDefault()) { }
+        public ServiceEditViewModel() { }
 
         public ServiceEditViewModel(INetworkProviderPrivate provider)
         {

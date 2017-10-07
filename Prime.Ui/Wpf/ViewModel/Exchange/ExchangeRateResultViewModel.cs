@@ -16,15 +16,16 @@ namespace Prime.Ui.Wpf.ViewModel
             _model = model;
             _collected = collected;
 
-            ConvertRight = (double)((decimal)collected.Price * (decimal)_model.ConvertLeft);
-            FinalPrice = _model.ConvertLeft;
+            var userQuantity = _model.ConvertLeft;
+            var total = (double)((decimal)collected.Price * (decimal)userQuantity);
+
             AssetLeft = _model.AssetLeft;
             AssetRight = _model.AssetRight;
             UtcCreated = collected.UtcCreated;
             IsConverted = collected.IsConverted;
 
-            _displayConvertRight = new Money((decimal)ConvertRight, AssetRight).ToString();
-            _displayFinalPrice = new Money((decimal)FinalPrice, AssetLeft).ToString();
+            FinalPrice = new Money((decimal)total, AssetRight);
+            UserInputValue = new Money((decimal)userQuantity, AssetLeft);
 
             if (IsConverted)
             {
@@ -32,7 +33,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 InfoConvert = $"1 {AssetConvert.ShortCode} = {new Money(collected.Price, AssetConvert).ToString()}";
                 InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(collected.PriceConvert, AssetRight).ToString()}";
                 InfoRight = $"1 {AssetRight.ShortCode} = {new Money(collected.Price, AssetLeft).ToString()}";
-                InfoConvertFinal = $"1 {AssetLeft.ShortCode} = {new Money(collected.Price, AssetRight).ToString()}";
+                InfoLeftConvert = $"1 {AssetLeft.ShortCode} = {new Money(collected.Price, AssetRight).ToString()}";
             }
             else
             {
@@ -50,32 +51,18 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _isVisible, value);
         }
 
-        private double _finalPrice;
-        public double FinalPrice
+        private Money _finalPrice;
+        public Money FinalPrice
         {
             get => _finalPrice;
             set => Set(ref _finalPrice, value);
         }
 
-        private double _convertRight;
-        public double ConvertRight
+        private Money _userInputValue;
+        public Money UserInputValue
         {
-            get => _convertRight;
-            set => Set(ref _convertRight, value);
-        }
-
-        private string _displayConvertRight;
-        public string DisplayConvertRight
-        {
-            get => _displayConvertRight;
-            set => Set(ref _displayConvertRight, value);
-        }
-
-        private string _displayFinalPrice;
-        public string DisplayFinalPrice
-        {
-            get => _displayFinalPrice;
-            set => Set(ref _displayFinalPrice, value);
+            get => _userInputValue;
+            set => Set(ref _userInputValue, value);
         }
 
         private double _convertMiddle;
@@ -120,11 +107,11 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _infoConvert, value);
         }
 
-        private string _infoConvertFinal;
-        public string InfoConvertFinal
+        private string _infoLeftConvert;
+        public string InfoLeftConvert
         {
-            get => _infoConvertFinal;
-            set => Set(ref _infoConvertFinal, value);
+            get => _infoLeftConvert;
+            set => Set(ref _infoLeftConvert, value);
         }
 
         private string _infoRight;

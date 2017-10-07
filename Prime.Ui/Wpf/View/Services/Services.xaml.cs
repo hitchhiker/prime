@@ -34,16 +34,14 @@ namespace Prime.Ui.Wpf
 
         private async void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var li = (sender as TextBlock)?.DataContext as ServiceLineItem;
-            if (li == null)
+            if (!((sender as TextBlock)?.DataContext is ServiceLineItem li))
                 return;
 
             var mw = this.TryFindParent<MetroWindow>();
             if (mw == null)
                 return;
 
-            var dialog = Application.Current.Resources["ViewDialog"] as BaseMetroDialog;
-            if (dialog == null)
+            if (!(Application.Current.Resources["ViewDialog"] is BaseMetroDialog dialog))
                 return;
 
             dialog.Height = 500;

@@ -111,7 +111,7 @@ namespace Prime.Core.Wallet
         {
             Items.RemoveAll(x => x.IsTotalLine);
             if (Items.Any())
-                Items.Add(new PortfolioLineItem() { IsTotalLine = true, Converted = new Money(this.Items.Sum(x=>(decimal)x.Converted), bAsset) });
+                Items.Add(new PortfolioLineItem() { IsTotalLine = true, Converted = this.Items.Sum(x=>x.Converted) });
         }
         
         private void UpdateScanningStatuses()

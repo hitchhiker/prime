@@ -11,6 +11,7 @@ using Prime.Core;
 using Prime.Core.Wallet;
 using GalaSoft.MvvmLight.Command;
 using Humanizer;
+using Prime.Core.Exchange.Rates;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -22,17 +23,21 @@ namespace Prime.Ui.Wpf.ViewModel
         public PortfolioPaneViewModel(ScreenViewModel screenViewModel)
         {
             _context = UserContext.Current;
-            Coordinator = _context.PortfolioCoordinator;
+            PCoordinator = _context.PortfolioCoordinator;
+            ECoordinator = ExchangeRatesCoordinator.I;
             Dispatcher = Application.Current.Dispatcher;
-            Coordinator.Register<PortfolioChangedMessage>(this, PortfolioChanged);
+            PCoordinator.Register<PortfolioChangedMessage>(this, PortfolioChanged);
+            ECoordinator.Messenger.Register<ExchangeRateCollected>(this, ExchangeRateCollected);
         }
+
 
 #pragma warning disable 169
         private readonly ScreenViewModel _screenViewModel;
 #pragma warning restore 169
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
-        public readonly PortfolioCoordinator Coordinator;
+        public readonly PortfolioCoordinator PCoordinator;
+        public readonly ExchangeRatesCoordinator ECoordinator;
         private DateTime _utcLastUpdated;
         private string _information;
         private Money _totalConverted;
@@ -65,9 +70,20 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void PortfolioChanged(PortfolioChangedMessage m)
         {
+            try
+            {
+                PortfolioChangedCaught();
+            }
+            catch (Exception e)
+            { }
+        }
+
+        private void PortfolioChangedCaught()
+        {
             Dispatcher.Invoke(() =>
             {
-                var p = Coordinator;
+                var q = UserContext.Current.QuoteAsset;
+                var p = PCoordinator;
 
                 PortfolioObservable.Clear();
 
@@ -79,14 +95,14 @@ namespace Prime.Ui.Wpf.ViewModel
                 foreach (var i in p.PortfolioInfoItems.OrderBy(x => x.Network.NameLowered))
                     PortfolioInfoObservable.Add(i);
 
-                var t = PortfolioInfoObservable.Sum(x => x.TotalConvertedAssetValue);
+                var t = PortfolioInfoObservable.Select(x => x.TotalConvertedAssetValue).Sum();
                 var r = t==0 ? 0 : 100 / t;
                 foreach (var i in PortfolioInfoObservable)
                     i.Percentage = r * i.TotalConvertedAssetValue;
 
                 var gi = new List<PortfolioGroupedItem>();
                 foreach (var i in p.Items.GroupBy(x => x.Asset))
-                    gi.Add(PortfolioGroupedItem.Create(i.Key, i.ToList()));
+                    gi.Add(PortfolioGroupedItem.Create(q, i.Key, i.ToList()));
 
                 SummaryObservable.Clear();
                 foreach (var i in gi.OrderBy(x => x.IsTotalLine).ThenByDescending(x => x.Converted))
@@ -114,6 +130,31 @@ namespace Prime.Ui.Wpf.ViewModel
                 RaisePropertyChanged(nameof(PortfolioObservable));
                 RaisePropertyChanged(nameof(PortfolioInfoObservable));
             });
+
+            DoExchangeRates();
+        }
+
+        private void DoExchangeRates()
+        {
+            var items = PCoordinator.Items.ToList();
+
+            foreach (var i in items.Where(x=>!x.IsTotalLine && x.Asset!=null && !Equals(x.Asset, Asset.None)))
+                ECoordinator.AddRequest(new AssetPair(i.Asset, UserContext.Current.QuoteAsset), i.Network);
+        }
+
+        private void ExchangeRateCollected(ExchangeRateCollected m)
+        {
+            try
+            {
+                var q = UserContext.Current.QuoteAsset;
+                var items = PCoordinator.Items.ToList();
+                var ex = items.FirstOrDefault(x => Equals(x.Asset, m.Pair.Asset1) && Equals(q, m.Pair.Asset2));
+                if (ex == null)
+                    return;
+                ex.Converted = new Money(m.Price * ex.Total, q);
+                ex.ConversionFailed = false;
+            }
+            catch{}
         }
 
         public override CommandContent Create()
@@ -123,7 +164,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            Coordinator.Unregister<PortfolioChangedMessage>(this, PortfolioChanged);
+            PCoordinator.Unregister<PortfolioChangedMessage>(this, PortfolioChanged);
             base.Dispose();
         }
     }
