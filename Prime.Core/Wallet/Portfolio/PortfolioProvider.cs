@@ -64,11 +64,15 @@ namespace Prime.Core.Wallet
                 try
                 {
                     var ar = ApiCoordinator.GetBalances(Provider, _providerContext);
-                    results = ar.Response;
-                    IsConnected = !ar.IsNull;
+                    IsConnected = ar.Success;
+
+                    if (!IsConnected)
+                        L.Error(ar.FailReason ?? "Failed", $"in {nameof(Update)} @ {nameof(Provider.GetBalancesAsync)}");
+                    else
+                        results = ar.Response;
+                    
                     UpdateInfo();
                 }
-
                 catch (Exception e)
                 {
                     L.Error(e, $"in {nameof(Update)} @ {nameof(Provider.GetBalancesAsync)}");
@@ -86,7 +90,7 @@ namespace Prime.Core.Wallet
 
                 foreach (var br in results)
                 {
-                    var li = GetLineItem(br, BaseAsset, Provider);
+                    var li = CreateLineItem(br, Provider);
                     if (li?.Asset == null)
                         continue;
                     
@@ -118,7 +122,7 @@ namespace Prime.Core.Wallet
             Info.IsQuerying = IsQuerying;
             Info.Assets = q.Select(x => x.Asset).ToUniqueList();
             Info.UtcLastConnect = DateTime.UtcNow;
-            Info.TotalConvertedAssetValue = new Money(q.Sum(x => x.Converted), BaseAsset);
+            Info.TotalConvertedAssetValue = q.Select(x => x.Converted).Sum();
         }
 
         private void Update(List<PortfolioLineItem> r, bool finished, PortfolioLineItem li = null)
@@ -127,19 +131,26 @@ namespace Prime.Core.Wallet
 
             if (li != null)
             {
-                Items.RemoveAll(x => Equals(x.Asset, li.Asset));
-                Items.Add(li);
+                AddOrUpdate(li);
             }
             else
             {
-                Items.Clear();
                 foreach (var i in r)
-                    Items.Add(i);
+                    AddOrUpdate(i);
             }
 
             UpdateInfo();
 
             OnChanged?.Invoke(this, new PortfolioChangedLineEvent(li) {Finished = finished});
+        }
+
+        private void AddOrUpdate(PortfolioLineItem newItem)
+        {
+            var eli = Items.FirstOrDefault(x => Equals(x.Asset, newItem.Asset));
+            if (eli == null)
+                Items.Add(newItem);
+            else
+                eli.Update(newItem);
         }
 
         public class PortfolioChangedLineEvent : EventArgs
@@ -154,13 +165,13 @@ namespace Prime.Core.Wallet
             public bool Finished { get; set; }
         }
 
-        private PortfolioLineItem GetLineItem(BalanceResult balance, Asset bAsset, IWalletService provider)
+        private PortfolioLineItem CreateLineItem(BalanceResult balance, IWalletService provider)
         {
             try
             {
-                var pair = new AssetPair(balance.Available.Asset, bAsset);
+                //var pair = new AssetPair(balance.Available.Asset, bAsset);
 
-                var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
+                //var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
 
                 var pli = new PortfolioLineItem()
                 {
@@ -169,17 +180,16 @@ namespace Prime.Core.Wallet
                     AvailableBalance = balance.Available,
                     PendingBalance = balance.Reserved,
                     ReservedBalance = balance.Reserved,
-                    Total =
-                        new Money((decimal) balance.Available + (decimal) balance.Reserved, balance.Available.Asset),
-                    Converted = new Money((decimal) balance.Available * (decimal) fx, pair.Asset2),
-                    ConversionFailed = fx == Money.Zero,
+                    Total = new Money((decimal) balance.Available + (decimal) balance.Reserved, balance.Available.Asset),
+                    //Converted = new Money((decimal) balance.Available * (decimal) fx, pair.Asset2),
+                    //ConversionFailed = fx == Money.Zero,
                     ChangePercentage = 0
                 };
                 return pli;
             }
             catch (Exception e)
             {
-                L.Error(e, $"in {GetType()} @ {nameof(GetLineItem)}");
+                L.Error(e, $"in {GetType()} @ {nameof(CreateLineItem)}");
             }
             return null;
         }

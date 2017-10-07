@@ -22,11 +22,21 @@ namespace Prime.Core.Wallet
 
         public Money Total { get; set; }
 
-        public Money Converted { get; set; }
+        public Money? Converted { get; set; }
 
         public bool ConversionFailed { get; set; }
 
         public double ChangePercentage { get; set; }
+
+        public void Update(PortfolioLineItem p)
+        {
+            AvailableBalance = p.AvailableBalance;
+            PendingBalance = p.PendingBalance;
+            ReservedBalance = p.ReservedBalance;
+            Total = p.Total;
+            ChangePercentage = p.ChangePercentage;
+            Converted = null;
+        }
 
         public bool Equals(PortfolioLineItem other)
         {
