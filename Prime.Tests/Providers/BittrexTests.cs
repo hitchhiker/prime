@@ -51,5 +51,11 @@ namespace Prime.Tests
             PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "LTC"));
             await base.TestGetLatestPriceAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookLiveAsync()
+        {
+            await base.TestGetOrderBookLiveAsync();
+        }
     }
 }

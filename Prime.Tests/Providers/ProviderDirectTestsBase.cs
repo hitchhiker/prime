@@ -240,7 +240,7 @@ namespace Prime.Tests
 
         private async Task GetOrderBookLiveAsync(IOrderBookProvider provider)
         {
-            var ctx = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 10);
+            var ctx = new OrderBookLiveContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 10);
 
             try
             {

@@ -259,7 +259,7 @@ namespace Prime.Plugins.Services.BitMex
             return results;
         }
 
-        public async Task<OrderBook> GetOrderBookLive(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
         {
             var api = GetApi<IBitMexApi>(context);
 

@@ -365,7 +365,7 @@ namespace Prime.Plugins.Services.Kraken
             }
         }
 
-        public async Task<OrderBook> GetOrderBookLive(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
         {
             var api = GetApi<IKrakenApi>(context);
             var orderBook = await GetOrderBookLocal(api, context.Pair, 1);

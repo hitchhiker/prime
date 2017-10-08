@@ -7,15 +7,13 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OrderBookContext : NetworkProviderContext
+    public class OrderBookContext : OrderBookLiveContext
     {
-        public OrderBookContext(AssetPair pair, int depth, ILogger logger = null) : base(logger)
+        public OrderBookContext(AssetPair assetPair, int depth, ILogger logger = null) : base(assetPair, logger)
         {
-            Pair = pair;
             Depth = depth;
         }
 
-        public AssetPair Pair { get; set; }
         public int Depth { get; set; }
     }
 }
