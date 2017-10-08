@@ -57,5 +57,11 @@ namespace Prime.Tests
         {
             await base.TestGetOrderBookLiveAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookHistoryAsync()
+        {
+            await base.TestGetOrderBookHistoryAsync();
+        }
     }
 }

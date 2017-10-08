@@ -133,8 +133,8 @@ namespace Prime.Tests
                 var c = await provider.GetLatestPriceAsync(PublicPriceContext);
 
                 Assert.IsTrue(c != null);
-                //Assert.IsTrue(c.BaseAsset.Equals(PublicPriceContext.Pair.Asset1));
-                //Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
+                Assert.IsTrue(c.BaseAsset.Equals(PublicPriceContext.Pair.Asset1));
+                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
             }
             catch (Exception e)
             {

@@ -9,7 +9,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IApiProvider
+    public class BittrexProvider : IExchangeProvider, IWalletService, IApiProvider, IOrderBookProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -62,9 +62,11 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            var latestPrice = new LatestPrice(new Money(r.result.Last, context.Pair.Asset1))
+            var convertedPrice = 1 / r.result.Last;
+
+            var latestPrice = new LatestPrice(new Money(convertedPrice, context.Pair.Asset2))
             {
-                BaseAsset = context.Pair.Asset2
+                BaseAsset = context.Pair.Asset1
             };
 
             return latestPrice;
@@ -207,6 +209,16 @@ namespace Prime.Plugins.Services.Bittrex
         {
             if (response.success == false)
                 throw new ApiResponseException($"API error: {response.message}", this);
+        }
+
+        public Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
