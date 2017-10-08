@@ -280,21 +280,25 @@ namespace Prime.Plugins.Services.BitMex
                 throw new ApiResponseException("Order book data is empty", this);
 
             var orderBook = new OrderBook();
-
             orderBook.Add(new OrderBookRecord()
             {
-                AskData = new BidAskData()
+                Data = new BidAskData()
                 {
                     Price = new Money(sellEntry.price, context.Pair.Asset2),
                     Time = DateTime.Now,
                     Volume = sellEntry.size
                 },
-                BidData = new BidAskData()
+                Type = OrderBookType.Ask
+            });
+            orderBook.Add(new OrderBookRecord()
+            {
+                Data = new BidAskData()
                 {
                     Price = new Money(buyEntry.price, context.Pair.Asset2),
                     Time = DateTime.Now,
                     Volume = buyEntry.size
-                }
+                },
+                Type = OrderBookType.Bid
             });
 
             return orderBook;
@@ -311,29 +315,32 @@ namespace Prime.Plugins.Services.BitMex
             var buys = r.Where(x => x.side.ToLower().Equals("buy")).OrderBy(x => x.id).ToArray();
             var sells = r.Where(x => x.side.ToLower().Equals("sell")).OrderBy(x => x.id).ToArray();
 
-            if (buys.Length != context.Depth || buys.Length != sells.Length)
-                throw new ApiResponseException("Incorrect number of order book records returned", this);
-
             var orderBook = new OrderBook();
 
-            for (int i = 0; i < context.Depth; i++)
+            foreach (var buy in buys)
             {
-                var buyEntry = buys[i];
-                var sellEntry = sells[i];
-
                 orderBook.Add(new OrderBookRecord()
                 {
-                    AskData = new BidAskData()
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
                     {
-                        Price = new Money(sellEntry.price, context.Pair.Asset2),
+                        Price = new Money(buy.price, context.Pair.Asset2),
                         Time = DateTime.Now, // Since it returnes current state of OrderBook, date time is set to Now.
-                        Volume = sellEntry.size
-                    },
-                    BidData = new BidAskData()
+                        Volume = buy.size
+                    }
+                });
+            }
+
+            foreach (var sell in sells)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
                     {
-                        Price = new Money(buyEntry.price, context.Pair.Asset2),
+                        Price = new Money(sell.price, context.Pair.Asset2),
                         Time = DateTime.Now,
-                        Volume = buyEntry.size
+                        Volume = sell.size
                     }
                 });
             }

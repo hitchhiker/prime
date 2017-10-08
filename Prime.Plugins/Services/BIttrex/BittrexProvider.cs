@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
@@ -211,7 +212,7 @@ namespace Prime.Plugins.Services.Bittrex
                 throw new ApiResponseException($"API error: {response.message}", this);
         }
 
-        public Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
+        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
         {
             throw new NotImplementedException();
         }

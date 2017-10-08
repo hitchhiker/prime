@@ -246,6 +246,7 @@
     <Compile Include="Exchange\OrderBookContext.cs" />
     <Compile Include="Exchange\OrderBookLiveContext.cs" />
     <Compile Include="Exchange\OrderBookRecord.cs" />
+    <Compile Include="Exchange\OrderBookType.cs" />
     <Compile Include="Markets\MarketsDiscoveryItemModel.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateProvider.cs" />
     <Compile Include="Exchange\Rates\ExchangeRateProviderContext.cs" />

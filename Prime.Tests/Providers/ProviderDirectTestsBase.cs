@@ -246,7 +246,7 @@ namespace Prime.Tests
             {
                 var r = await provider.GetOrderBookLive(ctx);
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count == 1);
+                Assert.IsTrue(r.Count > 0);
             }
             catch (Exception e)
             {

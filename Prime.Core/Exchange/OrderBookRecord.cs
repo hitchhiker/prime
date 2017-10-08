@@ -10,30 +10,40 @@ namespace Prime.Core
             
         }
 
-        public OrderBookRecord(BidAskData bidData, BidAskData askData)
+        public OrderBookRecord(BidAskData data)
         {
-            BidData = bidData;
-            AskData = askData;
+            Data = data;
+        }
+
+        public BidAskData Data { get; set; }
+        public OrderBookType Type { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Enum.GetName(typeof(OrderBookType), Type)}: {Data.Price.Display}";
         }
 
         public bool Equals(OrderBookRecord other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-
-            return Equals(
-                BidData.Equals(other.BidData) &&
-                AskData.Equals(other.AskData) &&
-                BidData.Time.Equals(other.BidData.Time)
-            );
+            return Equals(Data, other.Data) && Type == other.Type;
         }
 
-        public BidAskData BidData { get; set; }
-        public BidAskData AskData { get; set; }
-
-        public override string ToString()
+        public override bool Equals(object obj)
         {
-            return $"Bid: {BidData.Price.Display} Ask: {AskData.Price.Display}";
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((OrderBookRecord) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Data != null ? Data.GetHashCode() : 0) * 397) ^ (int) Type;
+            }
         }
     }
 }

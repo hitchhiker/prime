@@ -420,15 +420,25 @@ namespace Prime.Plugins.Services.Kraken
             if (depth != data.Value.asks.Length || depth != data.Value.bids.Length)
                 throw new ApiResponseException("Incorrect number of Bid-Ask records returned from API server", this);
 
-            for (int i = 0; i < depth; i++)
+            foreach (var askArray in data.Value.asks)
             {
-                var askData = GetBidAskData(data.Value.asks[i]);
-                var bidData = GetBidAskData(data.Value.bids[i]);
+                var askData = GetBidAskData(askArray);
 
                 orderBook.Add(new OrderBookRecord()
                 {
-                    BidData = new BidAskData(new Money(askData.Price, assetPair.Asset2), askData.Price, askData.TimeStamp),
-                    AskData = new BidAskData(new Money(bidData.Price, assetPair.Asset2), bidData.Price, bidData.TimeStamp)
+                    Data = new BidAskData(new Money(askData.Price, assetPair.Asset2), askData.Price, askData.TimeStamp),
+                    Type = OrderBookType.Ask
+                });
+            }
+
+            foreach (var bidArray in data.Value.bids)
+            {
+                var bidData = GetBidAskData(bidArray);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData(new Money(bidData.Price, assetPair.Asset2), bidData.Price, bidData.TimeStamp),
+                    Type = OrderBookType.Bid
                 });
             }
 
