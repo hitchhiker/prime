@@ -67,6 +67,7 @@
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
+    <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
     <Compile Include="Providers\PoloniexTests.cs" />

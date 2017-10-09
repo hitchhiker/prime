@@ -115,6 +115,7 @@ namespace plugins
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             // BUG: usage of Poliniex in Coinbase.
+            // TODO: rewrite to RE.
             var api = GetApi<PoloniexClient>(null);
             var cpair = new CurrencyPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
             var mp = MarketPeriod.Hours2;
