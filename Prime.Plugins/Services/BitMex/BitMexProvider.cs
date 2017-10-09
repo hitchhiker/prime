@@ -77,7 +77,7 @@ namespace Prime.Plugins.Services.BitMex
                     High = (double)instrActive.high,
                     VolumeTo = (long)instrActive.volume,
                     VolumeFrom = (long)instrActive.volume,
-                    WeightedAverage = (double) (instrActive.vwap ?? 0) // BUG: what to set if vwap is NULL?
+                    WeightedAverage = (double)(instrActive.vwap ?? 0) // BUG: what to set if vwap is NULL?
                 });
             }
 
@@ -116,13 +116,13 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            if(context.Assets.Count < 1) 
+            if (context.Assets.Count < 1)
                 throw new ArgumentException("The number of target assets should be greater than 0");
 
             var api = GetApi<IBitMexApi>(context);
             var r = await api.GetLatestPricesAsync();
 
-            if(r == null || r.Count < 1)
+            if (r == null || r.Count < 1)
                 throw new ApiResponseException("No prices data found", this);
 
             var pricesList = new List<Money>();
@@ -197,7 +197,7 @@ namespace Prime.Plugins.Services.BitMex
             depositAddress = depositAddress.Trim('\"');
 
             var addresses = new WalletAddresses();
-            var walletAddress = new WalletAddress(this, context.Asset) {Address = depositAddress};
+            var walletAddress = new WalletAddress(this, context.Asset) { Address = depositAddress };
 
             addresses.Add(walletAddress);
 
@@ -259,61 +259,26 @@ namespace Prime.Plugins.Services.BitMex
             return results;
         }
 
-        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
             var api = GetApi<IBitMexApi>(context);
 
             var pairCode = GetBitMexTicker(context.Pair);
 
-            var r = await api.GetOrderBookAsync(pairCode, 1);
+            var r = context.MaxRecordsCount.HasValue ? 
+                await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value) : 
+                await api.GetOrderBookAsync(pairCode, 0);
 
-            var buys = r.Where(x => x.side.ToLower().Equals("buy")).OrderBy(x => x.id).ToArray();
-            var sells = r.Where(x => x.side.ToLower().Equals("sell")).OrderBy(x => x.id).ToArray();
+            var buyAction = "buy";
+            var sellAction = "sell";
 
-            var buyEntry = buys.FirstOrDefault();
-            var sellEntry = sells.FirstOrDefault();
+            var buys = context.MaxRecordsCount.HasValue ? 
+                r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).Take(context.MaxRecordsCount.Value / 2).ToList() :
+                r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList();
 
-            if (buys.Length != 1 || buys.Length != sells.Length)
-                throw new ApiResponseException("Incorrect number of order book records returned", this);
-
-            if (buyEntry == null || sellEntry == null)
-                throw new ApiResponseException("Order book data is empty", this);
-
-            var orderBook = new OrderBook();
-            orderBook.Add(new OrderBookRecord()
-            {
-                Data = new BidAskData()
-                {
-                    Price = new Money(sellEntry.price, context.Pair.Asset2),
-                    Time = DateTime.Now,
-                    Volume = sellEntry.size
-                },
-                Type = OrderBookType.Ask
-            });
-            orderBook.Add(new OrderBookRecord()
-            {
-                Data = new BidAskData()
-                {
-                    Price = new Money(buyEntry.price, context.Pair.Asset2),
-                    Time = DateTime.Now,
-                    Volume = buyEntry.size
-                },
-                Type = OrderBookType.Bid
-            });
-
-            return orderBook;
-        }
-
-        public async Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
-        {
-            var api = GetApi<IBitMexApi>(context);
-
-            var pairCode = GetBitMexTicker(context.Pair);
-
-            var r = await api.GetOrderBookAsync(pairCode, context.Depth);
-
-            var buys = r.Where(x => x.side.ToLower().Equals("buy")).OrderBy(x => x.id).ToArray();
-            var sells = r.Where(x => x.side.ToLower().Equals("sell")).OrderBy(x => x.id).ToArray();
+            var sells = context.MaxRecordsCount.HasValue ?
+                r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).Take(context.MaxRecordsCount.Value / 2).ToList():
+                r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
 
             var orderBook = new OrderBook();
 
