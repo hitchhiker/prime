@@ -23,6 +23,20 @@ namespace Prime.Plugins.Services.Bittrex
 
         internal class TickerResponse : BaseResponse<TickerContainerResponse> { }
 
+        internal class OrderBookResponse : BaseResponse<OrderBookDataResponse> { }
+
+        internal class OrderBookDataResponse
+        {
+            public OrderBookEntryResponse[] buy;
+            public OrderBookEntryResponse[] sell;
+        }
+
+        internal class OrderBookEntryResponse
+        {
+            public decimal Quantity;
+            public decimal Rate;
+        }
+
         internal class TickerContainerResponse
         {
             public decimal Bid;

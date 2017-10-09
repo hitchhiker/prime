@@ -55,13 +55,8 @@ namespace Prime.Tests
         [TestMethod]
         public override async Task TestGetOrderBookLiveAsync()
         {
+            OrderBookLiveContext = new OrderBookLiveContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()));
             await base.TestGetOrderBookLiveAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetOrderBookHistoryAsync()
-        {
-            await base.TestGetOrderBookHistoryAsync();
         }
     }
 }

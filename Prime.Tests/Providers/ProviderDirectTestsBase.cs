@@ -238,13 +238,16 @@ namespace Prime.Tests
             }
         }
 
+        protected OrderBookLiveContext OrderBookLiveContext { get; set; }
+
         private async Task GetOrderBookLiveAsync(IOrderBookProvider provider)
         {
-            var ctx = new OrderBookLiveContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
+            if(OrderBookLiveContext == null)
+                OrderBookLiveContext = new OrderBookLiveContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
 
             try
             {
-                var r = await provider.GetOrderBookLive(ctx);
+                var r = await provider.GetOrderBookLive(OrderBookLiveContext);
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.Count > 0);
             }
@@ -254,15 +257,18 @@ namespace Prime.Tests
             }
         }
 
+        protected OrderBookContext OrderBookContext { get; set; }
+
         private async Task GetOrderBookHistoryAsync(IOrderBookProvider provider)
         {
-            var ctx = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+            if(OrderBookContext == null)
+                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
 
             try
             {
-                var r = await provider.GetOrderBookHistory(ctx);
+                var r = await provider.GetOrderBookHistory(OrderBookContext);
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count == ctx.Depth);
+                Assert.IsTrue(r.Count == OrderBookContext.Depth);
             }
             catch (Exception e)
             {

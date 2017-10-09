@@ -212,9 +212,89 @@ namespace Prime.Plugins.Services.Bittrex
                 throw new ApiResponseException($"API error: {response.message}", this);
         }
 
+        [Obsolete]
+        private async Task<OrderBook> GetOrderBookLocal(IBittrexApi api, AssetPair assetPair, int depth)
+        {
+            var pairCode = assetPair.TickerDash();
+
+            var r = await api.GetOrderBook(pairCode);
+
+            CheckResponseErrors(r);
+
+            var orderBook = new OrderBook();
+
+            foreach (var rBuy in r.result.buy.Take(depth))
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rBuy.Rate, assetPair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rBuy.Quantity
+                    }
+                });
+            }
+
+            foreach (var rSell in r.result.sell.Take(depth))
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rSell.Rate, assetPair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rSell.Quantity
+                    }
+                });
+            }
+
+            return orderBook;
+        }
+
         public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IBittrexApi>(context);
+
+            var pairCode = context.Pair.TickerDash();
+
+            var r = await api.GetOrderBook(pairCode);
+
+            CheckResponseErrors(r);
+
+            var orderBook = new OrderBook();
+
+            foreach (var rBuy in r.result.buy)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rBuy.Rate, context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rBuy.Quantity
+                    }
+                });
+            }
+
+            foreach (var rSell in r.result.sell)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rSell.Rate, context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rSell.Quantity
+                    }
+                });
+            }
+
+            return orderBook;
         }
 
         public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
