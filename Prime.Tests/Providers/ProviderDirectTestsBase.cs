@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
-using Prime.Core.Exchange;
 
-namespace Prime.Tests
+namespace Prime.Tests.Providers
 {
     public abstract class ProviderDirectTestsBase
     {
@@ -127,7 +127,7 @@ namespace Prime.Tests
             {
                 PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "USD"));
             }
-            
+
             try
             {
                 var c = await provider.GetLatestPriceAsync(PublicPriceContext);
@@ -242,7 +242,7 @@ namespace Prime.Tests
 
         private async Task GetOrderBookLiveAsync(IOrderBookProvider provider)
         {
-            if(OrderBookLiveContext == null)
+            if (OrderBookLiveContext == null)
                 OrderBookLiveContext = new OrderBookLiveContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
 
             try
@@ -261,14 +261,14 @@ namespace Prime.Tests
 
         private async Task GetOrderBookHistoryAsync(IOrderBookProvider provider)
         {
-            if(OrderBookContext == null)
-                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
+            if (OrderBookContext == null)
+                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
 
             try
             {
                 var r = await provider.GetOrderBookHistory(OrderBookContext);
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count == OrderBookContext.Depth);
+                Assert.IsTrue(r.Count > 0);
             }
             catch (Exception e)
             {

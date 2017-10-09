@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
 using Prime.Plugins.Services.BitMex;
 
-namespace Prime.Tests
+namespace Prime.Tests.Providers
 {
     [TestClass]
     public class BitMexTests : ProviderDirectTestsBase
@@ -76,6 +76,7 @@ namespace Prime.Tests
         [TestMethod]
         public override async Task TestGetOrderBookHistoryAsync()
         {
+            OrderBookContext = new OrderBookContext(new AssetPair(Asset.Btc, "USD".ToAssetRaw()), 100);
             await base.TestGetOrderBookHistoryAsync();
         }
     }

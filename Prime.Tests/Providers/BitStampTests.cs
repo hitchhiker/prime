@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
-using Prime.Core.Wallet;
 using Prime.Plugins.Services.BitStamp;
 
-namespace Prime.Tests
+namespace Prime.Tests.Providers
 {
     [TestClass()]
     public class BitStampTests : ProviderDirectTestsBase
