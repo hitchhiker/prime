@@ -10,7 +10,7 @@ namespace Prime.Core.Exchange
     {
         public BidAskData()
         {
-            Time = DateTime.Now;
+            Time = DateTime.UtcNow;
         }
 
         public BidAskData(Money price, decimal volume)

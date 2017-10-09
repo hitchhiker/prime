@@ -14,5 +14,8 @@ namespace Prime.Plugins.Services.BitStamp
 
         [Post("{currency}/")]
         Task<string> GetDepositAddress([Path(UrlEncode = false)] string currency);
+
+        [Post(BitStampProvider.BitStampApiVersion + "/order_book/{currencyPair}/")]
+        Task<BitStampSchema.OrderBookResponse> GetOrderBook([Path] string currencyPair);
     }
 }

@@ -4,12 +4,13 @@ using Prime.Core;
 using Prime.Utility;
 using LiteDB;
 using Newtonsoft.Json;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService, IApiProvider
+    public class BitStampProvider : IExchangeProvider, IWalletService, IApiProvider, IOrderBookProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -208,6 +209,72 @@ namespace Prime.Plugins.Services.BitStamp
                 default:
                     throw new NullReferenceException("No deposit address for specified currency");
             }
+        }
+
+        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
+        {
+            var api = GetApi<IBitStampApi>(context);
+            var pairCode = GetBitStampTicker(context.Pair);
+
+            var r = await api.GetOrderBook(pairCode);
+            var orderBook = new OrderBook();
+
+            var date = r.timestamp.ToUtcDateTime();
+
+            foreach (var rAsk in r.asks)
+            {
+                var data = GetBidAskData(rAsk);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(data.Price, context.Pair.Asset2),
+                        Volume = data.Amount,
+                        Time = date
+                    },
+                    Type = OrderBookType.Ask
+                });
+            }
+
+            foreach (var rBid in r.bids)
+            {
+                var data = GetBidAskData(rBid);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(data.Price, context.Pair.Asset2),
+                        Volume = data.Amount,
+                        Time = date
+                    },
+                    Type = OrderBookType.Bid
+                });
+            }
+
+            return orderBook;
+        }
+
+        private (decimal Price, decimal Amount) GetBidAskData(decimal[] data)
+        {
+            decimal price = 0;
+            decimal amount = 0;
+
+            price = data[0];
+            amount = data[1];
+
+            return (price, amount);
+        }
+
+        public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string GetBitStampTicker(AssetPair pair)
+        {
+            return $"{pair.Asset1.ToRemoteCode(this).ToLower()}{pair.Asset2.ToRemoteCode(this).ToLower()}";
         }
 
         private string GetCurrencyPath(Asset asset)

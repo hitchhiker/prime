@@ -51,5 +51,11 @@ namespace Prime.Tests
         {
             await base.TestGetLatestPriceAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookLiveAsync()
+        {
+            await base.TestGetOrderBookLiveAsync();
+        }
     }
 }
