@@ -378,6 +378,7 @@
     <Compile Include="ViewModel\CoinsViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangeRateResultViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangesViewModel.cs" />
+    <Compile Include="ViewModel\ICanMore.cs" />
     <Compile Include="ViewModel\MarketControlViewModel.cs" />
     <Compile Include="ViewModel\MarketsDiscoveryViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
@@ -403,6 +404,9 @@
     <Compile Include="ViewModel\ToolPaneViewModel.cs" />
     <Compile Include="ViewModel\Wallet\WalletViewModel.cs" />
     <Compile Include="ViewModel\WatchlistViewModel.cs" />
+    <Compile Include="View\AfkMonitor.xaml.cs">
+      <DependentUpon>AfkMonitor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Exchange\ExchangeRateResult.cs">
       <DependentUpon>ExchangeRateResult.xaml</DependentUpon>
     </Compile>
@@ -543,6 +547,10 @@
     <Compile Include="Components\MetroWindowManager.cs" />
     <Compile Include="Components\Converters\RatioConverter.cs" />
     <Compile Include="Components\MetroWindowInstance.cs" />
+    <Page Include="View\AfkMonitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Exchange\ExchangeRateResult.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
