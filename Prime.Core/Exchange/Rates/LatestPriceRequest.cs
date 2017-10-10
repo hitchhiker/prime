@@ -5,15 +5,14 @@ using GalaSoft.MvvmLight.Messaging;
 
 namespace Prime.Core.Exchange.Rates
 {
-    public partial class ExchangeRateRequest : IEquatable<ExchangeRateRequest>
+    public partial class LatestPriceRequest : IEquatable<LatestPriceRequest>
     {
         private readonly IMessenger _messenger;
-        private readonly ExchangeRatesCoordinator _coordinator;
+        private readonly LatestPriceCoordinator _coordinator = LatestPriceCoordinator.I;
         public readonly AssetPair Pair;
 
-        public ExchangeRateRequest(ExchangeRatesCoordinator coordinator, AssetPair pair, Network network = null)
+        public LatestPriceRequest(AssetPair pair, Network network = null)
         {
-            _coordinator = coordinator;
             _messenger = _coordinator.Messenger;
             Network = NetworkSuggested = network;
             Pair = pair;
@@ -30,7 +29,7 @@ namespace Prime.Core.Exchange.Rates
 
         public AssetPairKnownProviders Providers { get; private set; }
 
-        public ExchangeRateRequest ConvertedOther { get; private set; }
+        public LatestPriceRequest ConvertedOther { get; private set; }
 
         public bool IsConvertedPart1 { get; private set; }
 
@@ -42,7 +41,7 @@ namespace Prime.Core.Exchange.Rates
 
         public Network NetworkSuggested { get; private set; }
 
-        public ExchangeRateCollected LastCollected { get; set; }
+        public LatestPriceResult LastResult { get; set; }
 
         private void Discovery()
         {
@@ -72,7 +71,7 @@ namespace Prime.Core.Exchange.Rates
 
         private void ProcessConvertedPart2(AssetPairKnownProviders provs)
         {
-            var request = new ExchangeRateRequest(_coordinator, Pair, provs.Provider.Network)
+            var request = new LatestPriceRequest(Pair, provs.Provider.Network)
             {
                 ConvertedOther = this,
                 IsConvertedPart1 = false,
@@ -84,14 +83,14 @@ namespace Prime.Core.Exchange.Rates
         }
     }
 
-    public partial class ExchangeRateRequest
+    public partial class LatestPriceRequest
     {
         public bool Equals(AssetPair pair, bool isConvertedPart1, bool isConvertedPart2, Network networkSuggested)
         {
             return Equals(Pair, pair) && IsConvertedPart1 == isConvertedPart1 && IsConvertedPart2 == isConvertedPart2 && (Equals(NetworkSuggested, networkSuggested) || NetworkSuggested == null && networkSuggested == null);
         }
 
-        public bool Equals(ExchangeRateRequest other)
+        public bool Equals(LatestPriceRequest other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -103,7 +102,7 @@ namespace Prime.Core.Exchange.Rates
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((ExchangeRateRequest)obj);
+            return Equals((LatestPriceRequest)obj);
         }
 
         public override int GetHashCode()

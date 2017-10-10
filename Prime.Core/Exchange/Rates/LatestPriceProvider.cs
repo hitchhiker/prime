@@ -8,19 +8,19 @@ using System.Linq;
 
 namespace Prime.Core.Exchange.Rates
 {
-    public class ExchangeRateProvider : IDisposable
+    public class LatestPriceProvider : IDisposable
     {
-        private readonly ExchangeRateProviderContext _context;
+        private readonly LatestPriceProviderContext _context;
         private readonly IPublicPriceProvider _provider;
-        private readonly UniqueList<ExchangeRateRequest> _verifiedRequests = new UniqueList<ExchangeRateRequest>();
+        private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
-        private readonly ExchangeRatesCoordinator _coordinator;
+        private readonly LatestPriceCoordinator _coordinator;
         private readonly IMessenger _messenger;
         private readonly Timer _timer;
         public readonly Network Network;
         private readonly object _timerLock = new object();
 
-        public ExchangeRateProvider(ExchangeRateProviderContext context)
+        public LatestPriceProvider(LatestPriceProviderContext context)
         {
             _context = context;
             _provider = context.Provider;
@@ -61,7 +61,7 @@ namespace Prime.Core.Exchange.Rates
 
         public bool IsFailing { get; private set; }
 
-        public void SyncVerifiedRequests(IEnumerable<ExchangeRateRequest> requests)
+        public void SyncVerifiedRequests(IEnumerable<LatestPriceRequest> requests)
         {
             lock (_timerLock)
             {
@@ -73,7 +73,7 @@ namespace Prime.Core.Exchange.Rates
             }
         }
 
-        public void AddVerifiedRequest(ExchangeRateRequest request)
+        public void AddVerifiedRequest(LatestPriceRequest request)
         {
             lock (_timerLock)
             {
@@ -131,20 +131,20 @@ namespace Prime.Core.Exchange.Rates
                 Collect(response, request);
         }
 
-        private void Collect(LatestPrice response, ExchangeRateRequest request)
+        private void Collect(LatestPrice response, LatestPriceRequest request)
         {
-            var collected = request.LastCollected = new ExchangeRateCollected(request, _provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
+            var collected = request.LastResult = new LatestPriceResult(request, _provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
 
             _messenger.Send(collected);
 
             if (request.IsConverted)
-                SendConverted(request, collected, request.ConvertedOther?.LastCollected);
+                SendConverted(request, collected, request.ConvertedOther?.LastResult);
         }
 
-        private void SendConverted(ExchangeRateRequest request, ExchangeRateCollected recent, ExchangeRateCollected other)
+        private void SendConverted(LatestPriceRequest request, LatestPriceResult recent, LatestPriceResult other)
         {
             if (other != null)
-                _messenger.Send(new ExchangeRateCollected(request, recent, other));
+                _messenger.Send(new LatestPriceResult(request, recent, other));
         }
 
         private bool _isDisposed;
