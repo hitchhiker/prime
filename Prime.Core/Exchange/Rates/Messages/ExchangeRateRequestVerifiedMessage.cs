@@ -2,9 +2,9 @@
 {
     public class ExchangeRateRequestVerifiedMessage
     {
-        public readonly ExchangeRateRequest Request;
+        public readonly LatestPriceRequest Request;
 
-        public ExchangeRateRequestVerifiedMessage(ExchangeRateRequest request)
+        public ExchangeRateRequestVerifiedMessage(LatestPriceRequest request)
         {
             Request = request;
         }

@@ -7,38 +7,38 @@ namespace Prime.Ui.Wpf.ViewModel
     public class ExchangeRateResultViewModel : VmBase
     {
         private readonly ExchangeRateViewModel _model;
-        private readonly ExchangeRateCollected _collected;
+        private readonly LatestPriceResult _result;
 
         public ExchangeRateResultViewModel() { }
 
-        public ExchangeRateResultViewModel(ExchangeRateViewModel model, ExchangeRateCollected collected)
+        public ExchangeRateResultViewModel(ExchangeRateViewModel model, LatestPriceResult result)
         {
             _model = model;
-            _collected = collected;
+            _result = result;
 
             var userQuantity = _model.ConvertLeft;
-            var total = (double)((decimal)collected.Price * (decimal)userQuantity);
+            var total = (double)((decimal)result.Price * (decimal)userQuantity);
 
             AssetLeft = _model.AssetLeft;
             AssetRight = _model.AssetRight;
-            UtcCreated = collected.UtcCreated;
-            IsConverted = collected.IsConverted;
+            UtcCreated = result.UtcCreated;
+            IsConverted = result.IsConverted;
 
             FinalPrice = new Money((decimal)total, AssetRight);
             UserInputValue = new Money((decimal)userQuantity, AssetLeft);
 
             if (IsConverted)
             {
-                AssetConvert = collected.AssetConvert;
-                InfoConvert = $"1 {AssetConvert.ShortCode} = {new Money(collected.Price, AssetConvert).ToString()}";
-                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(collected.PriceConvert, AssetRight).ToString()}";
-                InfoRight = $"1 {AssetRight.ShortCode} = {new Money(collected.Price, AssetLeft).ToString()}";
-                InfoLeftConvert = $"1 {AssetLeft.ShortCode} = {new Money(collected.Price, AssetRight).ToString()}";
+                AssetConvert = result.AssetConvert;
+                InfoConvert = $"1 {AssetConvert.ShortCode} = {new Money(result.Price, AssetConvert).ToString()}";
+                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(result.PriceConvert, AssetRight).ToString()}";
+                InfoRight = $"1 {AssetRight.ShortCode} = {new Money(result.Price, AssetLeft).ToString()}";
+                InfoLeftConvert = $"1 {AssetLeft.ShortCode} = {new Money(result.Price, AssetRight).ToString()}";
             }
             else
             {
-                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(collected.Price, AssetRight).ToString()}";
-                InfoRight = $"1 {AssetRight.ShortCode} = {new Money(1 / collected.Price, AssetLeft).ToString()}";
+                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(result.Price, AssetRight).ToString()}";
+                InfoRight = $"1 {AssetRight.ShortCode} = {new Money(1 / result.Price, AssetLeft).ToString()}";
             }
 
             IsVisible = true;

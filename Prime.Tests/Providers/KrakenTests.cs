@@ -5,6 +5,7 @@ using KrakenApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
 using Prime.Plugins.Services.Kraken;
+using AssetPair = Prime.Core.AssetPair;
 
 namespace Prime.Tests.Providers
 {
@@ -67,15 +68,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetOrderBookLiveAsync()
+        public override async Task TestGetOrderBookAsync()
         {
-            await base.TestGetOrderBookLiveAsync();
-        }
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
+            await base.TestGetOrderBookAsync();
 
-        [TestMethod]
-        public override async Task TestGetOrderBookHistoryAsync()
-        {
-            await base.TestGetOrderBookHistoryAsync();
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+            await base.TestGetOrderBookAsync();
         }
     }
 }

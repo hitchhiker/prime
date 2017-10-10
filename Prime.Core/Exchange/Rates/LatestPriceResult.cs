@@ -2,11 +2,11 @@
 
 namespace Prime.Core.Exchange.Rates
 {
-    public class ExchangeRateCollected
+    public class LatestPriceResult
     {
         public readonly IPublicPriceProvider Provider;
         public readonly IPublicPriceProvider ProviderConversion;
-        public readonly ExchangeRateRequest Request;
+        public readonly LatestPriceRequest Request;
 
         public DateTime UtcCreated { get; }
         public AssetPair Pair { get; }
@@ -16,7 +16,7 @@ namespace Prime.Core.Exchange.Rates
 
         public bool IsConverted => ProviderConversion != null;
 
-        public ExchangeRateCollected(ExchangeRateRequest request, IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
+        public LatestPriceResult(LatestPriceRequest request, IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
         {
             Request = request;
             UtcCreated = latestPrice.UtcCreated;
@@ -25,7 +25,7 @@ namespace Prime.Core.Exchange.Rates
             Price = isReversed ? new Money(1d / latestPrice.Price, pair.Asset1) : latestPrice.Price;
         }
 
-        public ExchangeRateCollected(ExchangeRateRequest request, ExchangeRateCollected recent, ExchangeRateCollected other)
+        public LatestPriceResult(LatestPriceRequest request, LatestPriceResult recent, LatestPriceResult other)
         {
             Request = request;
             Pair = request.Pair;

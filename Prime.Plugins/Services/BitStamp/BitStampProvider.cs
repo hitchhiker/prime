@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Prime.Core;
 using Prime.Utility;
@@ -211,7 +212,7 @@ namespace Prime.Plugins.Services.BitStamp
             }
         }
 
-        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
             var api = GetApi<IBitStampApi>(context);
             var pairCode = GetBitStampTicker(context.Pair);
@@ -221,7 +222,10 @@ namespace Prime.Plugins.Services.BitStamp
 
             var date = r.timestamp.ToUtcDateTime();
 
-            foreach (var rAsk in r.asks)
+            var asks = context.MaxRecordsCount.HasValue ? r.asks.Take(context.MaxRecordsCount.Value / 2) : r.asks;
+            var bids = context.MaxRecordsCount.HasValue ? r.bids.Take(context.MaxRecordsCount.Value / 2) : r.bids;
+
+            foreach (var rAsk in asks)
             {
                 var data = GetBidAskData(rAsk);
 
@@ -237,7 +241,7 @@ namespace Prime.Plugins.Services.BitStamp
                 });
             }
 
-            foreach (var rBid in r.bids)
+            foreach (var rBid in bids)
             {
                 var data = GetBidAskData(rBid);
 
@@ -265,11 +269,6 @@ namespace Prime.Plugins.Services.BitStamp
             amount = data[1];
 
             return (price, amount);
-        }
-
-        public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
-        {
-            throw new NotImplementedException();
         }
 
         private string GetBitStampTicker(AssetPair pair)

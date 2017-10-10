@@ -6,13 +6,15 @@ using Jojatekok.PoloniexAPI;
 using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
+using OrderBook = Prime.Core.OrderBook;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider
+    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider, IOrderBookProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -275,6 +277,49 @@ namespace Prime.Plugins.Services.Poloniex
                 default:
                     throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
             }
+        }
+
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        {
+            var api = GetApi<IPoloniexApi>(context);
+            var pairCode = context.Pair.TickerUnderslash();
+
+            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2) : await api.GetOrderBook(pairCode);
+
+            if (r.bids == null || r.asks == null)
+                throw new ApiResponseException("Specified currency is not supported", this);
+
+            var orderBook = new OrderBook();
+
+            foreach (var rBid in r.bids)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(rBid[0], context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rBid[1]
+                    },
+                    Type = OrderBookType.Bid
+                });
+            }
+
+            foreach (var rAsk in r.asks)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(rAsk[0], context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rAsk[1]
+                    },
+                    Type = OrderBookType.Ask
+                });
+            }
+
+            return orderBook;
         }
     }
 }

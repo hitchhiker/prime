@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <DependsOnNETStandard>netstandard1.5</DependsOnNETStandard>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A593F034-8FD1-4A22-9A83-98C204A6819B}</ProjectGuid>
@@ -246,15 +247,18 @@
     <Compile Include="Exchange\OrderBookContext.cs" />
     <Compile Include="Exchange\OrderBookLiveContext.cs" />
     <Compile Include="Exchange\OrderBookRecord.cs" />
+    <Compile Include="Exchange\Rates\Converter\ExchangeConversionCoordinator.cs" />
     <Compile Include="Exchange\OrderBookType.cs" />
+    <Compile Include="Exchange\Rates\Converter\ExchangeConversionRequest.cs" />
+    <Compile Include="Misc\SubscriberList.cs" />
     <Compile Include="Markets\MarketsDiscoveryItemModel.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateProvider.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateProviderContext.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateRequest.cs" />
+    <Compile Include="Exchange\Rates\LatestPriceProvider.cs" />
+    <Compile Include="Exchange\Rates\LatestPriceProviderContext.cs" />
+    <Compile Include="Exchange\Rates\LatestPriceRequest.cs" />
     <Compile Include="Exchange\Rates\Messages\ExchangeRateRequestVerifiedMessage.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRateCollected.cs" />
+    <Compile Include="Exchange\Rates\LatestPriceResult.cs" />
     <Compile Include="Exchange\Rates\Messages\ExchangeRatesUpdatedMessage.cs" />
-    <Compile Include="Exchange\Rates\ExchangeRatesCoordinator.cs" />
+    <Compile Include="Exchange\Rates\LatestPriceCoordinator.cs" />
     <Compile Include="Misc\CoinsItemModel.cs" />
     <Compile Include="Misc\GridValueColourConverter.cs" />
     <Compile Include="Misc\TimeValueConverter.cs" />

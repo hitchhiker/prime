@@ -24,10 +24,10 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             _context = UserContext.Current;
             PCoordinator = _context.PortfolioCoordinator;
-            ECoordinator = ExchangeRatesCoordinator.I;
+            ECoordinator = LatestPriceCoordinator.I;
             Dispatcher = Application.Current.Dispatcher;
             PCoordinator.Register<PortfolioChangedMessage>(this, PortfolioChanged);
-            ECoordinator.Messenger.Register<ExchangeRateCollected>(this, ExchangeRateCollected);
+            ECoordinator.Messenger.Register<LatestPriceResult>(this, ExchangeRateCollected);
         }
 
 
@@ -37,7 +37,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
         public readonly PortfolioCoordinator PCoordinator;
-        public readonly ExchangeRatesCoordinator ECoordinator;
+        public readonly LatestPriceCoordinator ECoordinator;
         private DateTime _utcLastUpdated;
         private string _information;
         private Money _totalConverted;
@@ -139,10 +139,10 @@ namespace Prime.Ui.Wpf.ViewModel
             var items = PCoordinator.Items.ToList();
 
             foreach (var i in items.Where(x=>!x.IsTotalLine && x.Asset!=null && !Equals(x.Asset, Asset.None)))
-                ECoordinator.AddRequest(new AssetPair(i.Asset, UserContext.Current.QuoteAsset), i.Network);
+                ECoordinator.AddRequest(this, new AssetPair(i.Asset, UserContext.Current.QuoteAsset), i.Network);
         }
 
-        private void ExchangeRateCollected(ExchangeRateCollected m)
+        private void ExchangeRateCollected(LatestPriceResult m)
         {
             try
             {

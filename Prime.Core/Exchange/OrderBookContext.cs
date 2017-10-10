@@ -7,13 +7,16 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OrderBookContext : OrderBookLiveContext
+    public class OrderBookContext : NetworkProviderContext
     {
-        public OrderBookContext(AssetPair assetPair, int depth, ILogger logger = null) : base(assetPair, logger)
+        public OrderBookContext(AssetPair assetPair, int? maxRecordsCount = null, ILogger logger = null) : base(logger)
         {
-            Depth = depth;
+            Pair = assetPair;
+            MaxRecordsCount = maxRecordsCount;
         }
 
-        public int Depth { get; set; }
+        public AssetPair Pair { get; set; }
+
+        public int? MaxRecordsCount { get; set; }
     }
 }

@@ -69,18 +69,11 @@ namespace Prime.Tests.Providers
                 await GetAddressesForAssetAsync(p.Provider);
         }
 
-        public virtual async Task TestGetOrderBookLiveAsync()
+        public virtual async Task TestGetOrderBookAsync()
         {
             var p = IsType<IOrderBookProvider>();
             if (p.Success)
-                await GetOrderBookLiveAsync(p.Provider);
-        }
-
-        public virtual async Task TestGetOrderBookHistoryAsync()
-        {
-            var p = IsType<IOrderBookProvider>();
-            if (p.Success)
-                await GetOrderBookHistoryAsync(p.Provider);
+                await GetOrderBookAsync(p.Provider);
         }
 
         #endregion
@@ -238,37 +231,22 @@ namespace Prime.Tests.Providers
             }
         }
 
-        protected OrderBookLiveContext OrderBookLiveContext { get; set; }
-
-        private async Task GetOrderBookLiveAsync(IOrderBookProvider provider)
-        {
-            if (OrderBookLiveContext == null)
-                OrderBookLiveContext = new OrderBookLiveContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
-
-            try
-            {
-                var r = await provider.GetOrderBookLive(OrderBookLiveContext);
-                Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count > 0);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
         protected OrderBookContext OrderBookContext { get; set; }
 
-        private async Task GetOrderBookHistoryAsync(IOrderBookProvider provider)
+        private async Task GetOrderBookAsync(IOrderBookProvider provider)
         {
             if (OrderBookContext == null)
-                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
 
             try
             {
-                var r = await provider.GetOrderBookHistory(OrderBookContext);
+                var r = await provider.GetOrderBook(OrderBookContext);
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count > 0);
+
+                if(OrderBookContext.MaxRecordsCount.HasValue)
+                    Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
+                else
+                    Assert.IsTrue(r.Count > 0);
             }
             catch (Exception e)
             {

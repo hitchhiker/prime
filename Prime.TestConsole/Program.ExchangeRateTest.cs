@@ -21,24 +21,24 @@ namespace TestConsole
                     Console.WriteLine(m.Message);
                 });
 
-                var exch = ExchangeRatesCoordinator.I;
-                exch.AddRequest(new AssetPair("cann", "btc"));
+                var exch = LatestPriceCoordinator.I;
+                exch.AddRequest(this, new AssetPair("cann", "btc"));
                 //exch.AddRequest(new AssetPair("btc", "usd"));
                 //exch.AddRequest(new AssetPair("usd", "btc"));
 
                 void AddRequest3()
                 {
-                    exch.AddRequest(new AssetPair("cann", "eur"));
+                    exch.AddRequest(this, new AssetPair("cann", "eur"));
                 }
 
                 void RemoveRequest1()
                 {
-                    exch.RemoveRequest(new AssetPair("cann", "eur"));
+                    exch.RemoveRequest(this, new AssetPair("cann", "eur"));
                 }
 
                 void RemoveRequest2()
                 {
-                    exch.RemoveRequest(new AssetPair("usd", "btc"));
+                    exch.RemoveRequest(this, new AssetPair("usd", "btc"));
                 }
 
                 var once = false;

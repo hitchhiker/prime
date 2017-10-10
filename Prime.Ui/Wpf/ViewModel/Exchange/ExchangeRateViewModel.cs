@@ -31,19 +31,19 @@ namespace Prime.Ui.Wpf.ViewModel
             AllAssetsViewModel = new AllAssetsViewModel(model);
 
             foreach (var i in UserContext.Current.UserSettings.FavouritePairs)
-                _requests.Add(_coord.AddRequest(i));
+                _requests.Add(_coord.AddRequest(this, i));
 
             foreach (var i in UserContext.Current.UserSettings.HistoricExchangeRates)
-                _requests.Add(_coord.AddRequest(i));
+                _requests.Add(_coord.AddRequest(this, i));
 
-            _coord.Messenger.Register<ExchangeRateCollected>(this, NewRate);
+            _coord.Messenger.Register<LatestPriceResult>(this, NewRate);
 
             GoCommand = new RelayCommand(AddRequestDebounced);
         }
 
         private readonly Dispatcher _dispatcher;
-        private readonly List<ExchangeRateRequest> _requests = new List<ExchangeRateRequest>();
-        private readonly ExchangeRatesCoordinator _coord = ExchangeRatesCoordinator.I;
+        private readonly List<LatestPriceRequest> _requests = new List<LatestPriceRequest>();
+        private readonly LatestPriceCoordinator _coord = LatestPriceCoordinator.I;
         private readonly DebounceDispatcher _debounceDispatcher;
 
         public ScreenViewModel ScreenViewModel;
@@ -51,7 +51,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public RelayCommand GoCommand { get; }
 
-        private void NewRate(ExchangeRateCollected obj)
+        private void NewRate(LatestPriceResult obj)
         {
             _dispatcher.Invoke(() =>
             {
@@ -157,17 +157,17 @@ namespace Prime.Ui.Wpf.ViewModel
 
             ConversionDate = DateTime.Now;
             ResultViewModel = new ExchangeRateResultViewModel();
-            _requests.Add(_coord.AddRequest(new AssetPair(AssetLeft, AssetRight)));
+            _requests.Add(_coord.AddRequest(this, new AssetPair(AssetLeft, AssetRight)));
         }
 
-        public BindingList<ExchangeRateCollected> ExchangeRates { get; } = new BindingList<ExchangeRateCollected>();
+        public BindingList<LatestPriceResult> ExchangeRates { get; } = new BindingList<LatestPriceResult>();
 
         public override void Dispose()
         {
             foreach (var r in _requests)
-                _coord.RemoveRequest(r);
+                _coord.RemoveRequest(this, r);
 
-            _coord.Messenger.Unregister<ExchangeRateCollected>(this, NewRate);
+            _coord.Messenger.Unregister<LatestPriceResult>(this, NewRate);
 
             base.Dispose();
         }

@@ -254,7 +254,7 @@ namespace Prime.Plugins.Services.Bittrex
             return orderBook;
         }
 
-        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
             var api = GetApi<IBittrexApi>(context);
 
@@ -266,7 +266,14 @@ namespace Prime.Plugins.Services.Bittrex
 
             var orderBook = new OrderBook();
 
-            foreach (var rBuy in r.result.buy)
+            var buys = context.MaxRecordsCount.HasValue
+                ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)
+                : r.result.buy;
+            var sells = context.MaxRecordsCount.HasValue
+                ? r.result.sell.Take(context.MaxRecordsCount.Value / 2)
+                : r.result.sell;
+
+            foreach (var rBuy in buys)
             {
                 orderBook.Add(new OrderBookRecord()
                 {
@@ -280,7 +287,7 @@ namespace Prime.Plugins.Services.Bittrex
                 });
             }
 
-            foreach (var rSell in r.result.sell)
+            foreach (var rSell in sells)
             {
                 orderBook.Add(new OrderBookRecord()
                 {
@@ -295,11 +302,6 @@ namespace Prime.Plugins.Services.Bittrex
             }
 
             return orderBook;
-        }
-
-        public Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -365,14 +365,6 @@ namespace Prime.Plugins.Services.Kraken
             }
         }
 
-        public async Task<OrderBook> GetOrderBookLive(OrderBookLiveContext context)
-        {
-            var api = GetApi<IKrakenApi>(context);
-            var orderBook = await GetOrderBookLocal(api, context.Pair, 1);
-
-            return orderBook;
-        }
-
         private (decimal Price, decimal Volume, DateTime TimeStamp) GetBidAskData(string[] dataArray)
         {
             if(dataArray == null)
@@ -397,30 +389,30 @@ namespace Prime.Plugins.Services.Kraken
             return (price, volume, timeStamp);
         }
 
-        public async Task<OrderBook> GetOrderBookHistory(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
             var api = GetApi<IKrakenApi>(context);
-            var orderBook = await GetOrderBookLocal(api, context.Pair, context.Depth);
+            var orderBook = await GetOrderBookLocal(api, context.Pair, context.MaxRecordsCount);
 
             return orderBook;
         }
 
-        private async Task<OrderBook> GetOrderBookLocal(IKrakenApi api, AssetPair assetPair, int depth)
+        private async Task<OrderBook> GetOrderBookLocal(IKrakenApi api, AssetPair assetPair, int? maxCount)
         {
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-
-            var r = await api.GetOrderBook(remotePair.TickerSimple(), depth);
+            
+            var r = await api.GetOrderBook(remotePair.TickerSimple(), maxCount ?? 0);
 
             CheckResponseErrors(r);
 
             var data = r.result.FirstOrDefault();
             var orderBook = new OrderBook();
 
-            if (depth != data.Value.asks.Length || depth != data.Value.bids.Length)
-                throw new ApiResponseException("Incorrect number of Bid-Ask records returned from API server", this);
+            var asks = maxCount.HasValue ? data.Value.asks.Take(maxCount.Value / 2).ToArray() : data.Value.asks;
+            var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray(): data.Value.bids;
 
-            foreach (var askArray in data.Value.asks)
+            foreach (var askArray in asks)
             {
                 var askData = GetBidAskData(askArray);
 
@@ -431,7 +423,7 @@ namespace Prime.Plugins.Services.Kraken
                 });
             }
 
-            foreach (var bidArray in data.Value.bids)
+            foreach (var bidArray in bids)
             {
                 var bidData = GetBidAskData(bidArray);
 
