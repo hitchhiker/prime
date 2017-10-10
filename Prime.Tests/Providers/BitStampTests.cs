@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
-using Prime.Core.Wallet;
 using Prime.Plugins.Services.BitStamp;
 
-namespace Prime.Tests
+namespace Prime.Tests.Providers
 {
     [TestClass()]
     public class BitStampTests : ProviderDirectTestsBase
@@ -50,6 +48,16 @@ namespace Prime.Tests
         public override async Task TestGetLatestPriceAsync()
         {
             await base.TestGetLatestPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookAsync()
+        {
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
+            await base.TestGetOrderBookAsync();
+
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+            await base.TestGetOrderBookAsync();
         }
     }
 }

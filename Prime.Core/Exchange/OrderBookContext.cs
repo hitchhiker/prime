@@ -9,13 +9,14 @@ namespace Prime.Core
 {
     public class OrderBookContext : NetworkProviderContext
     {
-        public OrderBookContext(AssetPair pair, int depth, ILogger logger = null) : base(logger)
+        public OrderBookContext(AssetPair assetPair, int? maxRecordsCount = null, ILogger logger = null) : base(logger)
         {
-            Pair = pair;
-            Depth = depth;
+            Pair = assetPair;
+            MaxRecordsCount = maxRecordsCount;
         }
 
         public AssetPair Pair { get; set; }
-        public int Depth { get; set; }
+
+        public int? MaxRecordsCount { get; set; }
     }
 }

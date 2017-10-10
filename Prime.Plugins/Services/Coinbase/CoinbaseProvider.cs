@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Prime.Core;
@@ -55,17 +56,43 @@ namespace plugins
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
             var api = GetApi<ICoinbaseApi>(context);
-            var pairCode = context.Pair.TickerDash();
+            var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
             var r = await api.GetLatestPrice(pairCode);
 
-            var price = new LatestPrice(new Money(r.data.amount, r.data.currency.ToAsset(this)));
+            var price = new LatestPrice(new Money(r.data.amount, r.data.currency.ToAsset(this)))
+            {
+                BaseAsset = context.Pair.Asset1
+            };
 
             return price;
         }
 
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<ICoinbaseApi>(context);
+
+            var prices = new List<Money>();
+
+            foreach (var asset in context.Assets)
+            {
+                var pairCode = GetCoinbaseTicker(context.BaseAsset, asset);
+                var r = await api.GetLatestPrice(pairCode);
+
+                prices.Add(new Money(r.data.amount, r.data.currency.ToAsset(this)));
+            }
+
+            var latestPrices = new LatestPrices()
+            {
+                BaseAsset = context.BaseAsset,
+                Prices = prices
+            };
+
+            return latestPrices;
+        }
+
+        private string GetCoinbaseTicker(Asset baseAsset, Asset asset)
+        {
+            return new AssetPair(baseAsset.ToRemoteCode(this), asset.ToRemoteCode(this)).TickerDash();
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -88,6 +115,7 @@ namespace plugins
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             // BUG: usage of Poliniex in Coinbase.
+            // TODO: rewrite to RE.
             var api = GetApi<PoloniexClient>(null);
             var cpair = new CurrencyPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
             var mp = MarketPeriod.Hours2;

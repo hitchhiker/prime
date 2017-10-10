@@ -8,6 +8,13 @@ namespace Prime.Plugins.Services.BitStamp
 {
     internal class BitStampSchema
     {
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
+
         internal class TickerResponse
         {
             public decimal last;

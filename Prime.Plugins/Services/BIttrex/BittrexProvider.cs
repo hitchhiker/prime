@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IApiProvider
+    public class BittrexProvider : IExchangeProvider, IWalletService, IApiProvider, IOrderBookProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -62,9 +63,11 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            var latestPrice = new LatestPrice(new Money(r.result.Last, context.Pair.Asset1))
+            var convertedPrice = 1 / r.result.Last;
+
+            var latestPrice = new LatestPrice(new Money(convertedPrice, context.Pair.Asset2))
             {
-                BaseAsset = context.Pair.Asset2
+                BaseAsset = context.Pair.Asset1
             };
 
             return latestPrice;
@@ -207,6 +210,98 @@ namespace Prime.Plugins.Services.Bittrex
         {
             if (response.success == false)
                 throw new ApiResponseException($"API error: {response.message}", this);
+        }
+
+        [Obsolete]
+        private async Task<OrderBook> GetOrderBookLocal(IBittrexApi api, AssetPair assetPair, int depth)
+        {
+            var pairCode = assetPair.TickerDash();
+
+            var r = await api.GetOrderBook(pairCode);
+
+            CheckResponseErrors(r);
+
+            var orderBook = new OrderBook();
+
+            foreach (var rBuy in r.result.buy.Take(depth))
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rBuy.Rate, assetPair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rBuy.Quantity
+                    }
+                });
+            }
+
+            foreach (var rSell in r.result.sell.Take(depth))
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rSell.Rate, assetPair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rSell.Quantity
+                    }
+                });
+            }
+
+            return orderBook;
+        }
+
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        {
+            var api = GetApi<IBittrexApi>(context);
+
+            var pairCode = context.Pair.TickerDash();
+
+            var r = await api.GetOrderBook(pairCode);
+
+            CheckResponseErrors(r);
+
+            var orderBook = new OrderBook();
+
+            var buys = context.MaxRecordsCount.HasValue
+                ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)
+                : r.result.buy;
+            var sells = context.MaxRecordsCount.HasValue
+                ? r.result.sell.Take(context.MaxRecordsCount.Value / 2)
+                : r.result.sell;
+
+            foreach (var rBuy in buys)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rBuy.Rate, context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rBuy.Quantity
+                    }
+                });
+            }
+
+            foreach (var rSell in sells)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(1 / rSell.Rate, context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = rSell.Quantity
+                    }
+                });
+            }
+
+            return orderBook;
         }
     }
 }

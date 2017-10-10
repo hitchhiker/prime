@@ -244,8 +244,10 @@
     <Compile Include="Exchange\Model\ExchangeItemModel.cs" />
     <Compile Include="Exchange\OrderBook.cs" />
     <Compile Include="Exchange\OrderBookContext.cs" />
+    <Compile Include="Exchange\OrderBookLiveContext.cs" />
     <Compile Include="Exchange\OrderBookRecord.cs" />
     <Compile Include="Exchange\Rates\Converter\ExchangeConversionCoordinator.cs" />
+    <Compile Include="Exchange\OrderBookType.cs" />
     <Compile Include="Exchange\Rates\Converter\ExchangeConversionRequest.cs" />
     <Compile Include="Misc\SubscriberList.cs" />
     <Compile Include="Markets\MarketsDiscoveryItemModel.cs" />

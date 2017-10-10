@@ -1,11 +1,10 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
 using Prime.Plugins.Services.Bittrex;
 
-namespace Prime.Tests
+namespace Prime.Tests.Providers
 {
     [TestClass()]
     public class BittrexTests : ProviderDirectTestsBase
@@ -50,6 +49,16 @@ namespace Prime.Tests
         {
             PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "LTC"));
             await base.TestGetLatestPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookAsync()
+        {
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()));
+            await base.TestGetOrderBookAsync();
+
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
+            await base.TestGetOrderBookAsync();
         }
     }
 }

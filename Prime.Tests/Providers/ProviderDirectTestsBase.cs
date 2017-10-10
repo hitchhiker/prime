@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
-using Prime.Core.Exchange;
 
-namespace Prime.Tests
+namespace Prime.Tests.Providers
 {
     public abstract class ProviderDirectTestsBase
     {
@@ -69,18 +69,11 @@ namespace Prime.Tests
                 await GetAddressesForAssetAsync(p.Provider);
         }
 
-        public virtual async Task TestGetOrderBookLiveAsync()
+        public virtual async Task TestGetOrderBookAsync()
         {
             var p = IsType<IOrderBookProvider>();
             if (p.Success)
-                await GetOrderBookLiveAsync(p.Provider);
-        }
-
-        public virtual async Task TestGetOrderBookHistoryAsync()
-        {
-            var p = IsType<IOrderBookProvider>();
-            if (p.Success)
-                await GetOrderBookHistoryAsync(p.Provider);
+                await GetOrderBookAsync(p.Provider);
         }
 
         #endregion
@@ -127,14 +120,14 @@ namespace Prime.Tests
             {
                 PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "USD"));
             }
-            
+
             try
             {
                 var c = await provider.GetLatestPriceAsync(PublicPriceContext);
 
                 Assert.IsTrue(c != null);
-                //Assert.IsTrue(c.BaseAsset.Equals(PublicPriceContext.Pair.Asset1));
-                //Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
+                Assert.IsTrue(c.BaseAsset.Equals(PublicPriceContext.Pair.Asset1));
+                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
             }
             catch (Exception e)
             {
@@ -238,31 +231,22 @@ namespace Prime.Tests
             }
         }
 
-        private async Task GetOrderBookLiveAsync(IOrderBookProvider provider)
+        protected OrderBookContext OrderBookContext { get; set; }
+
+        private async Task GetOrderBookAsync(IOrderBookProvider provider)
         {
-            var ctx = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 10);
+            if (OrderBookContext == null)
+                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
 
             try
             {
-                var r = await provider.GetOrderBookLive(ctx);
+                var r = await provider.GetOrderBook(OrderBookContext);
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count == 1);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
 
-        private async Task GetOrderBookHistoryAsync(IOrderBookProvider provider)
-        {
-            var ctx = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
-
-            try
-            {
-                var r = await provider.GetOrderBookHistory(ctx);
-                Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Count == ctx.Depth);
+                if(OrderBookContext.MaxRecordsCount.HasValue)
+                    Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
+                else
+                    Assert.IsTrue(r.Count > 0);
             }
             catch (Exception e)
             {
