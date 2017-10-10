@@ -284,18 +284,14 @@ namespace Prime.Plugins.Services.Poloniex
             var api = GetApi<IPoloniexApi>(context);
             var pairCode = context.Pair.TickerUnderslash();
 
-            var r = await api.GetOrderBook(pairCode);
+            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2) : await api.GetOrderBook(pairCode);
 
-            var bids = context.MaxRecordsCount.HasValue 
-                ? r.bids.Take(context.MaxRecordsCount.Value).ToArray() 
-                : r.bids.ToArray();
-            var asks = context.MaxRecordsCount.HasValue
-                ? r.asks.Take(context.MaxRecordsCount.Value).ToArray()
-                : r.asks.ToArray();
+            if (r.bids == null || r.asks == null)
+                throw new ApiResponseException("Specified currency is not supported", this);
 
             var orderBook = new OrderBook();
 
-            foreach (var rBid in bids)
+            foreach (var rBid in r.bids)
             {
                 orderBook.Add(new OrderBookRecord()
                 {
@@ -309,7 +305,7 @@ namespace Prime.Plugins.Services.Poloniex
                 });
             }
 
-            foreach (var rAsk in asks)
+            foreach (var rAsk in r.asks)
             {
                 orderBook.Add(new OrderBookRecord()
                 {

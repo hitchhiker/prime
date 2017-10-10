@@ -25,6 +25,10 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "NXT".ToAssetRaw()));
+            await base.TestGetOrderBookAsync();
+
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "NXT".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
         }
     }
