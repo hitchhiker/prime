@@ -20,5 +20,8 @@ namespace Prime.Plugins.Services.Poloniex
 
         [Get("/public?command=returnChartData&currencyPair={currencyPair}&start={timeStampStart}&end={timeStampEnd}&period={period}")]
         Task<PoloniexSchema.ChartEntriesResponse> GetChartDataAsync([Path] string currencyPair, [Path] long timeStampStart, [Path] long timeStampEnd, [Path(Format = "D")] PoloniexTimeInterval period);
+
+        [Get("/public?command=returnOrderBook&currencyPair={currencyPair}&depth={depth}")]
+        Task<PoloniexSchema.OrderBookResponse> GetOrderBook([Path] string currencyPair, [Path] int depth = 10000);
     }
 }

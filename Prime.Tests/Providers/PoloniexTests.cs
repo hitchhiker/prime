@@ -21,5 +21,11 @@ namespace Prime.Tests.Providers
         {
             await base.TestApiAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookAsync()
+        {
+            await base.TestGetOrderBookAsync();
+        }
     }
 }

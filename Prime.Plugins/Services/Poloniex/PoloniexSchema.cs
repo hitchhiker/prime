@@ -4,24 +4,20 @@ namespace Prime.Plugins.Services.Poloniex
 {
     internal class PoloniexSchema
     {
-        internal class BalancesDetailedResponse : Dictionary<string, BalanceDetailedResponse>
-        {
-            
-        }
+        internal class BalancesDetailedResponse : Dictionary<string, BalanceDetailedResponse> { }
 
-        internal class TickerResponse : Dictionary<string, TickerEntryResponse>
-        {
-            
-        }
+        internal class TickerResponse : Dictionary<string, TickerEntryResponse> { }
 
-        internal class DepositAddressesResponse : Dictionary<string, string>
-        {
-            
-        }
+        internal class DepositAddressesResponse : Dictionary<string, string> { }
 
-        internal class ChartEntriesResponse : List<ChartEntryResponse>
+        internal class ChartEntriesResponse : List<ChartEntryResponse> { }
+
+        internal class OrderBookResponse
         {
-            
+            public decimal[][] asks;
+            public decimal[][] bids;
+            public int isFrozen;
+            public int seq;
         }
 
         internal class ChartEntryResponse
