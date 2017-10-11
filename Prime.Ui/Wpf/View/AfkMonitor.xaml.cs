@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.View
         private bool _readyToShowAfkMessage;
         private readonly DispatcherTimer _timer = new DispatcherTimer();
 
-        public static readonly DependencyProperty idleLimitProperty = DependencyProperty.Register("IdleSecondsLimit", typeof(int), typeof(AfkMonitor), new FrameworkPropertyMetadata(int.MinValue));
+        public static readonly DependencyProperty idleLimitProperty = DependencyProperty.Register("PageIncrement", typeof(int), typeof(AfkMonitor), new FrameworkPropertyMetadata(int.MinValue));
 
         public int IdleSecondsLimit
         {

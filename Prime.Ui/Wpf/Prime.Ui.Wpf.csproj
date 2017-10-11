@@ -346,6 +346,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Components\Control\MoreScrollViewer.cs" />
     <Compile Include="Components\Converters\BoolToColorConverter.cs" />
     <Compile Include="Components\Converters\BoolToDoubleConverter.cs" />
     <Compile Include="Components\Converters\DateTimeHumanConverter.cs" />

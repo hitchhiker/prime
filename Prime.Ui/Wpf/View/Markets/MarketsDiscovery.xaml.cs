@@ -18,28 +18,6 @@ namespace Prime.Ui.Wpf.View.Markets
         public MarketsDiscovery()
         {
             InitializeComponent();
-            SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
-            SViewer.ScrollChanged += SViewerOnScrollChanged;
-        }
-
-        private static int _pageIncrement = 2;
-
-        private int _currentPageSize = 0;
-
-        private void SViewerOnScrollChanged(object sender, ScrollChangedEventArgs scrollChangedEventArgs)
-        {
-            if (SViewer.VerticalOffset >= (SViewer.ScrollableHeight - 1))
-            {
-                var vm = (ICanMore)this.DataContext;
-                vm?.AddRequest(_currentPageSize, _pageIncrement);
-            }
-        }
-
-        private void SViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            ScrollViewer scv = (ScrollViewer)sender;
-            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
-            e.Handled = true;
         }
     }
 }

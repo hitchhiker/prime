@@ -6,10 +6,11 @@
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              xmlns:wpf="clr-namespace:Prime.Ui.Wpf.View.Markets"
              xmlns:afk="clr-namespace:Prime.Ui.Wpf.View"
+             xmlns:control="clr-namespace:Prime.Ui.Wpf.Components.Control"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:MarketsDiscoveryViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
+    <control:MoreScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" PageIncrement="2">
         <ItemsControl ItemsSource="{Binding ListMarketControls}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -23,6 +24,5 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </ScrollViewer>
-    
+    </control:MoreScrollViewer>
 </UserControl>
