@@ -5,24 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              xmlns:wpf="clr-namespace:Prime.Ui.Wpf.View.Markets"
-             xmlns:afk="clr-namespace:Prime.Ui.Wpf.View"
              xmlns:control="clr-namespace:Prime.Ui.Wpf.Components.Control"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:MarketsDiscoveryViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <control:MoreScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" PageIncrement="2">
-        <ItemsControl ItemsSource="{Binding ListMarketControls}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel FlowDirection="LeftToRight">
-                    </WrapPanel>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <wpf:MarketControl/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label>Sort By</Label>
+                <ComboBox ItemsSource="{Binding ListSortBy}" SelectedIndex="0"></ComboBox>
+            </StackPanel>
+            <ItemsControl Margin="0,20,0,0" ItemsSource="{Binding ListMarketControls}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel FlowDirection="LeftToRight">
+                        </WrapPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <wpf:MarketControl/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
     </control:MoreScrollViewer>
 </UserControl>

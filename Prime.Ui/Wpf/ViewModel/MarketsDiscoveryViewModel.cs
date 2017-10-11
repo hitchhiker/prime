@@ -23,12 +23,14 @@ namespace Prime.Ui.Wpf.ViewModel
             _context = UserContext.Current;
             Dispatcher = Application.Current.Dispatcher;
             ListMarketControls = new BindingList<MarketControlViewModel>();
-            AddRequest(0,2);
+            ListSortBy = new BindingList<string>() { "Volume", "Popularity" };
+            AddRequest(0, 2);
         }
 
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
 
+        public BindingList<string> ListSortBy { get; private set; }
         public BindingList<MarketControlViewModel> ListMarketControls { get; private set; }
 
         public override CommandContent Create()
