@@ -418,6 +418,7 @@
     <Compile Include="Wallet\IWalletProvider.cs" />
     <Compile Include="Wallet\Model\WalletData.cs" />
     <Compile Include="Wallet\Model\WalletDatas.cs" />
+    <Compile Include="Wallet\Portfolio\PortfolioTotalLineItem.cs" />
     <Compile Include="Wallet\WalletAddresses.cs" />
     <Compile Include="Wallet\WalletAddress.cs" />
     <Compile Include="Wallet\WalletExtensionMethods.cs" />

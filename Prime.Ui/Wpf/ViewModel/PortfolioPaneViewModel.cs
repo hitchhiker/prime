@@ -27,7 +27,6 @@ namespace Prime.Ui.Wpf.ViewModel
             ECoordinator = LatestPriceCoordinator.I;
             Dispatcher = Application.Current.Dispatcher;
             PCoordinator.Register<PortfolioChangedMessage>(this, PortfolioChanged);
-            ECoordinator.Messenger.Register<LatestPriceResult>(this, ExchangeRateCollected);
         }
 
 
@@ -105,7 +104,7 @@ namespace Prime.Ui.Wpf.ViewModel
                     gi.Add(PortfolioGroupedItem.Create(q, i.Key, i.ToList()));
 
                 SummaryObservable.Clear();
-                foreach (var i in gi.OrderBy(x => x.IsTotalLine).ThenByDescending(x => x.Converted))
+                foreach (var i in gi.OrderBy(x => x.IsTotalLine).ThenByDescending(x => (decimal)x.Converted))
                     SummaryObservable.Add(i);
 
                 UtcLastUpdated = p.UtcLastUpdated;
@@ -130,31 +129,6 @@ namespace Prime.Ui.Wpf.ViewModel
                 RaisePropertyChanged(nameof(PortfolioObservable));
                 RaisePropertyChanged(nameof(PortfolioInfoObservable));
             });
-
-            DoExchangeRates();
-        }
-
-        private void DoExchangeRates()
-        {
-            var items = PCoordinator.Items.ToList();
-
-            foreach (var i in items.Where(x=>!x.IsTotalLine && x.Asset!=null && !Equals(x.Asset, Asset.None)))
-                ECoordinator.AddRequest(this, new AssetPair(i.Asset, UserContext.Current.QuoteAsset), i.Network);
-        }
-
-        private void ExchangeRateCollected(LatestPriceResult m)
-        {
-            try
-            {
-                var q = UserContext.Current.QuoteAsset;
-                var items = PCoordinator.Items.ToList();
-                var ex = items.FirstOrDefault(x => Equals(x.Asset, m.Pair.Asset1) && Equals(q, m.Pair.Asset2));
-                if (ex == null)
-                    return;
-                ex.Converted = new Money(m.Price * ex.Total, q);
-                ex.ConversionFailed = false;
-            }
-            catch{}
         }
 
         public override CommandContent Create()

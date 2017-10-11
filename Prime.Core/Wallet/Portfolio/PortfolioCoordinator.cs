@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Timers;
+using System.Web.UI;
 using Nito.AsyncEx;
+using Prime.Core.Exchange.Rates;
 using Prime.Utility;
 
 namespace Prime.Core.Wallet
@@ -101,19 +103,57 @@ namespace Prime.Core.Wallet
 
                 PortfolioInfoItems.Add(scanner.Info, true);
 
-                DoTotal(scanner.BaseAsset);
+                DoFinal();
 
                 _messenger.Send(new PortfolioChangedMessage());
             }
         }
 
-        private void DoTotal(Asset bAsset)
+        private void DoFinal()
         {
             Items.RemoveAll(x => x.IsTotalLine);
+
+            var lpc = LatestPriceCoordinator.I;
+            var pairs = new List<AssetPair>();
+
+            foreach (var i in Items)
+            {
+                if (Equals(i.Asset, UserContext.Current.QuoteAsset))
+                {
+                    i.Converted = i.Total;
+                    continue;
+                }
+
+                var pair = new AssetPair(i.Asset, UserContext.Current.QuoteAsset);
+
+                lpc.Messenger.Register<LatestPriceResult>(i, m =>
+                {
+                    if (!m.Pair.Equals(pair))
+                        return;
+                    DoConversion(i, m, pair);
+                });
+
+                var r = lpc.GetResult(pair);
+                if (r != null)
+                    DoConversion(i, r, pair);
+
+                if (pairs.Contains(pair))
+                    continue;
+
+                pairs.Add(pair);
+                lpc.AddRequest(this, pair);
+            }
+
             if (Items.Any())
-                Items.Add(new PortfolioLineItem() { IsTotalLine = true, Converted = this.Items.Sum(x=>x.Converted) });
+                Items.Add(new PortfolioTotalLineItem() { Items = Items });
         }
-        
+
+        private static void DoConversion(PortfolioLineItem i, LatestPriceResult m, AssetPair pair)
+        {
+            i.Converted = new Money((decimal) i.AvailableBalance * (decimal) m.Price, pair.Asset2);
+            i.ConversionFailed = false;
+        }
+
         private void UpdateScanningStatuses()
         {
             WorkingProviders.Clear();

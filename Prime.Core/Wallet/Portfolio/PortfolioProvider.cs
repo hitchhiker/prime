@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
+using Prime.Core.Exchange.Rates;
 using Prime.Utility;
 
 namespace Prime.Core.Wallet
@@ -169,7 +170,7 @@ namespace Prime.Core.Wallet
         {
             try
             {
-                //var pair = new AssetPair(balance.Available.Asset, bAsset);
+                var pair = new AssetPair(balance.Available.Asset, UserContext.Current.QuoteAsset);
 
                 //var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
 
@@ -185,6 +186,8 @@ namespace Prime.Core.Wallet
                     //ConversionFailed = fx == Money.Zero,
                     ChangePercentage = 0
                 };
+
+
                 return pli;
             }
             catch (Exception e)

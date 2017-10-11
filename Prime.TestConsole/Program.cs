@@ -134,13 +134,13 @@ namespace TestConsole
 
             // ----- Coinbase -----
 
-            new Prime.TestConsole.Program.CoinbaseTests().LatestPrice();
+            //new Prime.TestConsole.Program.CoinbaseTests().LatestPrice();
 
 
             // -----------
 
             //Sha256Test();
-            //new ExchangeRateTest().Test();
+            new ExchangeRateTest().Test();
 
             //LatestPricesTest();
             //LatestPrice();

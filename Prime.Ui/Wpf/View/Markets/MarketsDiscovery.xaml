@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:MarketsDiscoveryViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <control:MoreScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" PageIncrement="2">
+    <control:MoreScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" PageSize="20">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label>Sort By</Label>

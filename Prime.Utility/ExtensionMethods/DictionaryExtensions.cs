@@ -315,5 +315,14 @@ namespace Prime.Utility
 
             destination?.AddOrUpdate(destinationKey, (k) => source.Get(key));
         }
+
+        public static KeyValuePair<T1,T2> GetRandom<T1, T2>(this IDictionary<T1, T2> dict)
+        {
+            if (dict == null || dict.Count == 0)
+                return new KeyValuePair<T1,T2>();
+
+            var rnd = Rnd.I.Next(dict.Count);
+            return rnd == 0 ? dict.FirstOrDefault() : dict.Skip(rnd).FirstOrDefault();
+        }
     }
 }

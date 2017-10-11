@@ -18,28 +18,28 @@ namespace Prime.Ui.Wpf.Components.Control
             this.ScrollChanged += SViewerOnScrollChanged;
         }
         
-        private int _currentPageSize = 0;
+        private int _currentPageIndex;
 
-        public static readonly DependencyProperty pageIncrementProperty = DependencyProperty.Register("PageIncrement", typeof(int), typeof(MoreScrollViewer), new FrameworkPropertyMetadata(int.MinValue));
+        public static readonly DependencyProperty PageSizeProperty = DependencyProperty.Register(nameof(PageSize), typeof(int), typeof(MoreScrollViewer), new FrameworkPropertyMetadata(int.MinValue));
 
-        public int PageIncrement
+        public int PageSize
         {
-            get => (int)GetValue(pageIncrementProperty);
-            set => SetValue(pageIncrementProperty, value);
+            get => (int)GetValue(PageSizeProperty);
+            set => SetValue(PageSizeProperty, value);
         }
 
         private void SViewerOnScrollChanged(object sender, ScrollChangedEventArgs scrollChangedEventArgs)
         {
-            if (this.VerticalOffset >= (this.ScrollableHeight - 1))
-            {
-                var vm = (ICanMore)this.DataContext;
-                vm?.AddRequest(_currentPageSize, PageIncrement);
-            }
+            if (!(VerticalOffset >= ScrollableHeight - 1))
+                return;
+
+            var vm = DataContext as ICanMore;
+            vm?.AddRequest(_currentPageIndex++, PageSize);
         }
 
         private void SViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            this.ScrollToVerticalOffset(this.VerticalOffset - e.Delta);
+            ScrollToVerticalOffset(VerticalOffset - e.Delta);
             e.Handled = true;
         }
     }

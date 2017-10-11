@@ -8,7 +8,7 @@ namespace Prime.Core.Wallet
     {
         public string Id => Network.Id + ":" + Asset.ShortCode;
 
-        public bool IsTotalLine { get; set; }
+        public virtual bool IsTotalLine => false;
 
         public Network Network { get; set; }
 
@@ -22,7 +22,7 @@ namespace Prime.Core.Wallet
 
         public Money Total { get; set; }
 
-        public Money? Converted { get; set; }
+        public virtual Money? Converted { get; set; }
 
         public bool ConversionFailed { get; set; }
 

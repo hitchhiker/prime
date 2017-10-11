@@ -24,7 +24,7 @@ namespace Prime.Core.Exchange.Rates
         {
             _messenger.Register<ExchangeRateRequestVerifiedMessage>(this, ExchangeRateRequestVerified);
             _messenger.Register<LatestPriceResult>(this, ExchangeRateResultCollect);
-            _subscriptions = new SubscriberList<LatestPriceRequest>(OnExistingSubscription, OnAddedSubscription, OnRemovedSubscription);
+            _subscriptions = new SubscriberList<LatestPriceRequest>(OnAddedSubscription, OnExistingSubscription, OnRemovedSubscription);
         }
 
         private void OnRemovedSubscription(LatestPriceRequest request)
@@ -70,7 +70,11 @@ namespace Prime.Core.Exchange.Rates
         {
             lock (_commonLock)
             {
-                var grouped = _subscriptions.GetSubscriptions().Where(x => x.IsVerified).GroupBy(x => x.Network).ToList();
+                var subs = _subscriptions.GetSubscriptions().Where(x => x.IsVerified).ToList();
+                var sr = subs.Where(x => x.IsConverted).Select(x => x.ConvertedOther).ToList();
+                subs.AddRange(sr);
+               
+                var grouped = subs.GroupBy(x => x.Network).ToList();
 
                 var inuse = new List<LatestPriceProvider>();
                 foreach (var g in grouped)
@@ -130,5 +134,17 @@ namespace Prime.Core.Exchange.Rates
         }
 
         public IReadOnlyList<LatestPriceResult> Rates { get; set; }
+
+        public Money? ConvertExisting(Money money, Asset toCurrency)
+        {
+            var pair = new AssetPair(money.Asset, toCurrency);
+            var rate = Results().FirstOrDefault(x => x.Pair.Equals(pair));
+            return rate == null ? (Money?) null : new Money((decimal) money * rate.Price, toCurrency);
+        }
+
+        public LatestPriceResult GetResult(AssetPair pair)
+        {
+            return Results().FirstOrDefault(x => x.Pair.Equals(pair));
+        }
     }
 }

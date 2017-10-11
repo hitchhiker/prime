@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -38,18 +39,24 @@ namespace Prime.Ui.Wpf.ViewModel
             return new SimpleContentCommand("markets discovery");
         }
 
-        public void AddRequest(int currentPageIndex, int howManySets)
+        private static readonly Dictionary<string, string> TestItems = new Dictionary<string, string>()
+        {
+            {"../../Asset/img/BTC.png", "BTC"},
+            {"../../Asset/img/DASH.png", "DASH"},
+            {"../../Asset/img/ETC.png", "ETC"},
+            {"../../Asset/img/ETH.png", "ETHEREUM"},
+            {"../../Asset/img/LTC.png", "LTC"},
+            {"../../Asset/img/XRP.png", "XRP"}
+        };
+
+        public void AddRequest(int currentPageIndex, int pageSize)
         {
             Random random = new Random();
 
-            for (int i = 0; i < howManySets; i++)
+            for (var i = 0; i < pageSize; i++)
             {
-                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/BTC.png", "BTC")));
-                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/DASH.png", "DASH")));
-                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/ETC.png", "ETC")));
-                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/ETH.png", "ETHEREUM")));
-                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/LTC.png", "LTC")));
-                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), "../../Asset/img/XRP.png", "XRP")));
+                var ti = TestItems.GetRandom();
+                ListMarketControls.Add(new MarketControlViewModel(new MarketsDiscoveryItemModel((decimal)(random.NextDouble() * (2 + 2) - 2), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), new Money((decimal)(random.NextDouble() * (1000 - 100) + 100)), ti.Key, ti.Value)));
             }
         }
     }

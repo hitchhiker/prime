@@ -25,9 +25,6 @@ using System.Windows.Shapes;
 
 namespace Prime.Ui.Wpf.View.Markets
 {
-    /// <summary>
-    /// Interaction logic for MarketControl.xaml
-    /// </summary>
     public partial class MarketControl : UserControl, INotifyPropertyChanged
     {
         public MarketControl()
@@ -38,7 +35,7 @@ namespace Prime.Ui.Wpf.View.Markets
         }
 
         private double _lastBuySell;
-        private double _trend;
+        //private double _trend;
         public SeriesCollection BuySellSeries { get; set; }
 
         public double LastBuySell
@@ -105,10 +102,10 @@ namespace Prime.Ui.Wpf.View.Markets
                     }
                 }
             };
-            _trend = 8;
 
-
-            /*Task.Run(() =>
+            /*
+             _trend = 8;
+             Task.Run(() =>
             {
                 var r = new Random();
                 while (true)

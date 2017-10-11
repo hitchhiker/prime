@@ -22,7 +22,7 @@ namespace TestConsole
                 });
 
                 var exch = LatestPriceCoordinator.I;
-                exch.AddRequest(this, new AssetPair("cann", "btc"));
+                exch.AddRequest(this, new AssetPair("cann", "usd"));
                 //exch.AddRequest(new AssetPair("btc", "usd"));
                 //exch.AddRequest(new AssetPair("usd", "btc"));
 

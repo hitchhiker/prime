@@ -15,7 +15,7 @@ namespace Prime.Utility
         private static readonly Lazy<Rnd> Lazy = new Lazy<Rnd>(() => new Rnd());
 
         /// <summary>
-        /// Returns a random number between 0 and max
+        /// Returns a random number between 0 and max. This will NOT return the max value.
         /// </summary>
         /// <param name="max"></param>
         /// <returns></returns>

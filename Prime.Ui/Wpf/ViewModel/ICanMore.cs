@@ -9,6 +9,6 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public interface ICanMore
     {
-        void AddRequest(int currentPageIndex, int howManySets);
+        void AddRequest(int currentPageIndex, int pageSize);
     }
 }

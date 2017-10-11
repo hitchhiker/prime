@@ -8,27 +8,41 @@ namespace Prime.Core.Exchange.Rates
     public class ExchangeConversionCoordinator
     {
         private readonly LatestPriceCoordinator _c;
-        private readonly List<ExchangeConversionRequest> _requests = new List<ExchangeConversionRequest>();
+        private readonly SubscriberList<ExchangeConversionRequest> _requests;
+
+        public static ExchangeConversionCoordinator I => Lazy.Value;
+        private static readonly Lazy<ExchangeConversionCoordinator> Lazy = new Lazy<ExchangeConversionCoordinator>(() => new ExchangeConversionCoordinator());
 
         private ExchangeConversionCoordinator()
         {
             _c = LatestPriceCoordinator.I;
+            _requests = new SubscriberList<ExchangeConversionRequest>(OnAddedSubscription, OnExistingSubscription, OnRemovedSubscription);
         }
 
-        public static ExchangeConversionCoordinator I => Lazy.Value;
-        private static readonly Lazy<ExchangeConversionCoordinator> Lazy = new Lazy<ExchangeConversionCoordinator>(()=>new ExchangeConversionCoordinator());
-
-        public void Register(ExchangeConversionRequest request)
+        public void Register(object subscriber, ExchangeConversionRequest request)
         {
-            _requests.Add(request);
+            _requests.Subscribe(subscriber, request);
             request.Register();
         }
 
-        public void Unregister(ExchangeConversionRequest request)
+        public void Unregister(object subscriber, ExchangeConversionRequest request)
         {
-            var e = _requests.FirstOrDefault(x=>x.Match(request));
-            if (e != null)
-                _requests.Remove(e);
+            _requests.Unsubscribe(subscriber, request); 
+        }
+
+        private void OnRemovedSubscription(ExchangeConversionRequest request)
+        {
+            request.Unregister();
+        }
+
+        private void OnAddedSubscription(ExchangeConversionRequest request)
+        {
+
+        }
+
+        private void OnExistingSubscription(ExchangeConversionRequest request)
+        {
+
         }
     }
 }

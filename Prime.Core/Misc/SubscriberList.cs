@@ -11,7 +11,7 @@ namespace Prime.Core.Exchange.Rates
         private readonly Action<T> _onAdded;
         private readonly Action<T> _onRemoved;
 
-        public SubscriberList(Action<T> onExisting, Action<T> onAdded, Action<T> onRemoved)
+        public SubscriberList(Action<T> onAdded, Action<T> onExisting, Action<T> onRemoved)
         {
             _onExisting = onExisting;
             _onAdded = onAdded;
