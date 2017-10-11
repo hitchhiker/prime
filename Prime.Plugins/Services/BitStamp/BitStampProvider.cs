@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Prime.Core;
@@ -81,9 +82,28 @@ namespace Prime.Plugins.Services.BitStamp
             return latestPrice;
         }
 
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IBitStampApi>(context);
+
+            var moneyList = new List<Money>();
+
+            foreach (var asset in context.Assets)
+            {
+                var pairCode = context.BaseAsset.ToPair(asset).TickerSimple();
+                var r = await api.GetTicker(pairCode);
+
+                moneyList.Add(new Money(r.last, asset));
+            }
+
+            var latestPrices = new LatestPrices()
+            {
+                BaseAsset = context.BaseAsset,
+                Prices = moneyList,
+                UtcCreated = DateTime.UtcNow
+            };
+
+            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)

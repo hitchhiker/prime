@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
@@ -73,9 +74,30 @@ namespace Prime.Plugins.Services.Bittrex
             return latestPrice;
         }
 
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            throw new NotImplementedException();
+            var api = GetApi<IBittrexApi>(context);
+
+            var moneyList = new List<Money>();
+
+            foreach (var asset in context.Assets)
+            {
+                var pairCode = context.BaseAsset.ToPair(asset).TickerDash();
+                var r = await api.GetTicker(pairCode);
+
+                CheckResponseErrors(r);
+
+                moneyList.Add(new Money(1 / r.result.Last, asset));
+            }
+
+            var latestPrices = new LatestPrices()
+            {
+                BaseAsset = context.BaseAsset,
+                Prices = moneyList,
+                UtcCreated = DateTime.UtcNow
+            };
+
+            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)
