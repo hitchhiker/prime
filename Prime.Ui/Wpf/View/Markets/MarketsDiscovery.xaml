@@ -10,8 +10,6 @@
              d:DataContext="{d:DesignInstance viewModel:MarketsDiscoveryViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
-        <StackPanel>
-            <afk:AfkMonitor IdleSecondsLimit="60"/>
         <ItemsControl ItemsSource="{Binding ListMarketControls}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -25,7 +23,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </StackPanel>
     </ScrollViewer>
     
 </UserControl>

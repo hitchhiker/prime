@@ -17,6 +17,7 @@
                       xmlns:misc="clr-namespace:Prime.Ui.Wpf.View.Misc"
                       xmlns:markets="clr-namespace:Prime.Ui.Wpf.View.Markets"
                       xmlns:trading="clr-namespace:Prime.Ui.Wpf.ViewModel.Trading"
+                      xmlns:view="clr-namespace:Prime.Ui.Wpf.View"
                       mc:Ignorable="d"
         Background="{StaticResource WindowBackgroundBrush}"
         DataContext="{Binding Screen, Source={StaticResource Locator}}"
@@ -51,6 +52,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <view:AfkMonitor IdleSecondsLimit="60"/>
         <wpf:AddressBar Grid.Row="0" DataContext="{Binding AddressBarModel}" Height="28" Margin="0,5"/>
 
         <Grid Grid.Row="1">
