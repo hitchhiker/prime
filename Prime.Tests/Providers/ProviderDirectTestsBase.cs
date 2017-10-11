@@ -96,13 +96,19 @@ namespace Prime.Tests.Providers
             }
         }
 
+        protected OhlcContext OhlcContext { get; set; }
+
         private async Task GetOhlcAsync(IOhlcProvider provider)
         {
-            var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
+            if (OhlcContext == null)
+            {
+                OhlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute,
+                    new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
+            }
 
             try
             {
-                var ohlc = await provider.GetOhlcAsync(ohlcContext);
+                var ohlc = await provider.GetOhlcAsync(OhlcContext);
 
                 Assert.IsTrue(ohlc != null && ohlc.Count > 0);
             }
