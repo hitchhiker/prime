@@ -64,5 +64,15 @@ namespace Prime.Tests.Providers
         {
             await base.TestGetAddressesAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookAsync()
+        {
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
+            await base.TestGetOrderBookAsync();
+
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+            await base.TestGetOrderBookAsync();
+        }
     }
 }

@@ -229,6 +229,7 @@ namespace Prime.Tests.Providers
             try
             {
                 var r = await provider.GetAddressesForAssetAsync(WalletAddressAssetContext);
+
                 Assert.IsTrue(r != null);
             }
             catch (Exception e)
