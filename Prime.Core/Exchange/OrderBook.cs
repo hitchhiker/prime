@@ -1,8 +1,9 @@
-﻿using Prime.Utility;
+﻿using System.Collections.Generic;
+using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class OrderBook : UniqueList<OrderBookRecord>
+    public class OrderBook : List<OrderBookRecord>
     {
 
     }

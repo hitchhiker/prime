@@ -63,9 +63,11 @@ namespace Prime.Core
         [Bson]
         public double Low { get; set; }
 
+        [Obsolete("Consider type changing to decimal. A lot of volumes are provided in fractionals.")]
         [Bson]
         public long VolumeTo { get; set; }
 
+        [Obsolete("Consider type changing to decimal. A lot of volumes are provided in fractionals.")]
         [Bson]
         public long VolumeFrom { get; set; }
 

@@ -324,7 +324,7 @@ namespace Prime.Plugins.Services.Kraken
 
             if (r.result.pairs.Count != 0)
             {
-                foreach (var ohlcResponse in r.result.pairs.FirstOrDefault().Value)
+                foreach (var ohlcResponse in r.result.pairs.FirstOrDefault().Value.OrderByDescending(x => x.time))
                 {
                     var time = ((long)ohlcResponse.time).ToUtcDateTime();
 

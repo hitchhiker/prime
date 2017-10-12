@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Prime.Core;
 using Jojatekok.PoloniexAPI;
@@ -19,7 +20,7 @@ using OrderBook = Prime.Core.OrderBook;
 
 namespace plugins
 {
-    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider
+    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IOhlcProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -314,6 +315,74 @@ namespace plugins
                 throw new ApiResponseException("API returned incorrect format of price data", this);
 
             return (price, size);
+        }
+
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        {
+            var api = GetGdaxApi();
+            var currencyCode = context.Pair.TickerDash();
+
+            var ohlc = new OhlcData(context.Market);
+            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+
+            var granularitySeconds = GetSeconds(context.Market);
+            var maxNumberOfCandles = 200;
+
+            var tsFrom = (long)context.Range.UtcFrom.ToUnixTimeStamp();
+            var tsTo = (long)context.Range.UtcTo.ToUnixTimeStamp();
+            var tsStep = maxNumberOfCandles * granularitySeconds;
+
+            var currTsTo = tsTo;
+            var currTsFrom = tsTo - tsStep;
+
+            while (currTsTo > tsFrom)
+            {
+                var candles = await api.GetCandles(currencyCode, currTsFrom.ToUtcDateTime(), currTsTo.ToUtcDateTime(), granularitySeconds);
+
+                foreach (var candle in candles)
+                {
+                    var dateTime = ((long)candle[0]).ToUtcDateTime();
+                    ohlc.Add(new OhlcEntry(seriesId, dateTime, this)
+                    {
+                        Low = (double)candle[1],
+                        High = (double)candle[2],
+                        Open = (double)candle[3],
+                        Close = (double)candle[4],
+                        VolumeTo = (long)candle[5],
+                        VolumeFrom = (long)candle[5],
+                        WeightedAverage = 0 // Is not provided by API.
+                    });
+                }
+
+                currTsTo = currTsFrom;
+
+                if (currTsTo - tsStep >= tsFrom)
+                    currTsFrom -= tsStep;
+                else
+                    currTsFrom = tsFrom;
+
+                // TODO: do something to ged rid of Thread.Sleep.
+                Thread.Sleep(500);
+            }
+
+            return ohlc;
+        }
+
+        private int GetSeconds(TimeResolution market)
+        {
+            switch (market)
+            {
+                case TimeResolution.Second:
+                    return 1;
+                case TimeResolution.Minute:
+                    return 60;
+                case TimeResolution.Hour:
+                    return 3600;
+                case TimeResolution.Day:
+                    return 62400;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(market), market, null);
+            }
         }
     }
 }
