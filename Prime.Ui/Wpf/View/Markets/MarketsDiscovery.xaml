@@ -12,6 +12,9 @@
     <control:MoreScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" PageSize="20">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Command="{Binding StarCommand}" HorizontalAlignment="Left">
+                    <Image Width="25" Source="{Binding StarPath}"/>
+                </Button>
                 <Label>Sort By</Label>
                 <ComboBox ItemsSource="{Binding ListSortBy}" SelectedIndex="0"></ComboBox>
             </StackPanel>

@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Messaging;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -26,11 +27,22 @@ namespace Prime.Ui.Wpf.ViewModel
             ListMarketControls = new BindingList<MarketControlViewModel>();
             ListSortBy = new BindingList<string>() { "Volume", "Popularity" };
             AddRequest(0, 2);
+
+            _messenger.Register<BookmarkSetMessage>(this, _context.Token, UpdateStar);
+
+            StarCommand = new RelayCommand(() =>
+            {
+               // _messenger.Send(new BookmarkSetMessage(/*Not sure what goes here*/, isBookmarked), _context.Token);
+            });
         }
 
+        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
 
+        public RelayCommand StarCommand { get; }
+
+        public string StarPath { get; private set; }
         public BindingList<string> ListSortBy { get; private set; }
         public BindingList<MarketControlViewModel> ListMarketControls { get; private set; }
 
@@ -48,6 +60,21 @@ namespace Prime.Ui.Wpf.ViewModel
             {"../../Asset/img/LTC.png", "LTC"},
             {"../../Asset/img/XRP.png", "XRP"}
         };
+
+        private void UpdateStar(BookmarkSetMessage m)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (m.IsBookmarked)
+                {
+                    StarPath = "../../Asset/img/Star.png";
+                }
+                else
+                {
+                    StarPath = "../../Asset/img/Unstar.png";
+                }
+            });
+        }
 
         public void AddRequest(int currentPageIndex, int pageSize)
         {
