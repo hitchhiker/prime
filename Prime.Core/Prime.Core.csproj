@@ -347,7 +347,7 @@
     <Compile Include="Trade\OrderBookModel.cs" />
     <Compile Include="Trade\TimeInForceModel.cs" />
     <Compile Include="Trade\TradeTypeModel.cs" />
-    <Compile Include="Page\Bookmark\BookmarkController.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkMessenger.cs" />
     <Compile Include="User\WindowManager\IWindowManager.cs" />
     <Compile Include="User\UserSetting.cs" />
     <Compile Include="Public\PublicData.cs" />
