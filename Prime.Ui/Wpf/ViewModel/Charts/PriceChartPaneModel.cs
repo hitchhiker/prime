@@ -24,7 +24,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly ScreenViewModel _screenViewModel;
         public ChartGroupViewModel ChartGroupViewModel { get; private set; }
         private readonly AssetPair _pair;
-        private readonly Debouncer _debouncer;
+        private readonly DebouncerThread _debouncer;
         private ChartViewModel _volumeChart;
         private ChartViewModel _priceChart;
         private Timer _liveTimer;
@@ -49,7 +49,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public PriceChartPaneModel(IMessenger messenger, ScreenViewModel screenViewModel, AssetPair pair)
         {
             _dispatcher = PrimeWpf.I.UiDispatcher;
-            _debouncer = new Debouncer(Dispatcher.CurrentDispatcher);
+            _debouncer = new DebouncerThread(Dispatcher.CurrentDispatcher);
             _messenger = messenger;
             _screenViewModel = screenViewModel;
             _pair = pair;

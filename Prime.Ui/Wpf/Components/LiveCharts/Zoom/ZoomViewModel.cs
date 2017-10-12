@@ -14,7 +14,7 @@ namespace Prime.Ui.Wpf
     public abstract class ZoomViewModel : VmBase
     {
         protected readonly ZoomViewModel _zoomChart;
-        protected readonly Debouncer _debouncer;
+        protected readonly DebouncerThread _debouncer;
         protected readonly Dispatcher _uiDispatcher;
 
         protected double _zoomFrom;
@@ -55,7 +55,7 @@ namespace Prime.Ui.Wpf
         protected ZoomViewModel(TimeResolution resolution, Dispatcher uiDispatcher)
         {
             Resolution = resolution;
-            _debouncer = new Debouncer(uiDispatcher);
+            _debouncer = new DebouncerThread(uiDispatcher);
         }
 
         public event EventHandler OnRangePreviewChange;

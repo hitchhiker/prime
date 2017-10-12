@@ -21,10 +21,10 @@ namespace Prime.Core.Wallet
             _scanners = new List<PortfolioProvider>();
             _messenger.Register<QuoteAssetChangedMessage>(this, BaseAssetChanged);
             _dispatcher = Dispatcher.CurrentDispatcher;
-            _debouncer = new Debouncer(_dispatcher);
+            _debouncer = new DebouncerThread(_dispatcher);
         }
 
-        private readonly Debouncer _debouncer;
+        private readonly DebouncerThread _debouncer;
         private readonly Dispatcher _dispatcher;
         private readonly List<PortfolioProvider> _scanners;
         private readonly UniqueList<LatestPriceRequest> _requests = new UniqueList<LatestPriceRequest>();

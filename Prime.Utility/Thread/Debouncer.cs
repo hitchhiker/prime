@@ -19,11 +19,11 @@ namespace Prime.Utility
     /// in which no other pending event has fired. Only the last event in the
     /// sequence is fired.
     /// </summary>
-    public class Debouncer
+    public class DebouncerThread
     {
-        public Debouncer() : this(Dispatcher.CurrentDispatcher) { }
+        public DebouncerThread() : this(Dispatcher.CurrentDispatcher) { }
 
-        public Debouncer(Dispatcher dispatcher)
+        public DebouncerThread(Dispatcher dispatcher)
         {
             _dispatcher = dispatcher;
         }

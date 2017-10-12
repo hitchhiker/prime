@@ -18,7 +18,7 @@ namespace Prime.Ui.Wpf
 
         private readonly List<MetroWindowInstance> _instances = new List<MetroWindowInstance>();
 
-        private readonly Debouncer _debouncer = new Debouncer();
+        private readonly DebouncerThread _debouncer = new DebouncerThread();
 
         public void CreateNewWindow()
         {

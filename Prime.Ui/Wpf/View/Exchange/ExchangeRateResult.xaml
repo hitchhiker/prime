@@ -23,18 +23,19 @@
                 <StackPanel Orientation="Vertical">
                     <TextBlock HorizontalAlignment="Right" Text="{Binding AssetLeft.ShortCode}"/>
                     <Label Content="{Binding InfoLeft}"/>
-                    <Label Content="{Binding InfoLeftConvert}" Visibility="{Binding IsConverted, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    <Label Content="{Binding NetworkLeft}"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="40,0,0,0" Visibility="{Binding IsConverted, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock HorizontalAlignment="Center" Text="{Binding AssetConvert.ShortCode}"/>
                     <Label Content="{Binding InfoConvert}"/>
+                    <Label Content="{Binding NetworkMiddle}"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="40,0,0,0">
                     <TextBlock HorizontalAlignment="Left" Text="{Binding AssetRight.ShortCode}"/>
                     <Label Content="{Binding InfoRight}"/>
+                    <prime:HumanTime DateTime="{Binding UtcCreated}" TextAlignment="Left"/>
                 </StackPanel>
             </StackPanel>
-            <prime:HumanTime Margin="150,10,0,0" DateTime="{Binding UtcCreated}" TextAlignment="Center"></prime:HumanTime>
         </StackPanel>
     </Grid>
 </UserControl>

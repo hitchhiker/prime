@@ -25,7 +25,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _assetRight = UserContext.Current.QuoteAsset;
 
             _dispatcher = PrimeWpf.I.UiDispatcher;
-            _debouncer = new Debouncer(_dispatcher);
+            _debouncer = new DebouncerThread(_dispatcher);
 
             ScreenViewModel = model;
             AllAssetsViewModel = new AllAssetsViewModel(model);
@@ -44,32 +44,32 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly Dispatcher _dispatcher;
         private readonly List<LatestPriceRequest> _requests = new List<LatestPriceRequest>();
         private readonly LatestPriceCoordinator _coord = LatestPriceCoordinator.I;
-        private readonly Debouncer _debouncer;
+        private readonly DebouncerThread _debouncer;
 
         public ScreenViewModel ScreenViewModel;
         public AllAssetsViewModel AllAssetsViewModel { get; }
 
         public RelayCommand GoCommand { get; }
 
-        private void NewRate(LatestPriceResult obj)
+        private void NewRate(LatestPriceResult result)
         {
             _dispatcher.Invoke(() =>
             {
-                var results = _coord.Results();
-                ExchangeRates.Clear();
-                foreach (var er in results)
-                    ExchangeRates.Add(er);
+                var e = ExchangeRates.FirstOrDefault(x => x.IsMatch(result));
+                if (e != null)
+                    ExchangeRates.Remove(e);
+
+                ExchangeRates.Add(result);
 
                 if (AssetLeft.IsNone() || AssetRight.IsNone() || ConvertLeft == 0)
                     return;
 
                 var ap = new AssetPair(AssetLeft, AssetRight);
-                var exr = results.FirstOrDefault(x => x.Pair.Equals(ap));
-                if (exr == null)
+                if (!result.Pair.Equals(ap))
                     return;
 
-                _isConverted = exr.IsConverted;
-                ResultViewModel = new ExchangeRateResultViewModel(this, exr);
+                _isConverted = result.IsConverted;
+                ResultViewModel = new ExchangeRateResultViewModel(this, result);
                 LoadingInfo = "";
             });
         }

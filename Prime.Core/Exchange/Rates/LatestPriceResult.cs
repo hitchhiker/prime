@@ -12,7 +12,8 @@ namespace Prime.Core.Exchange.Rates
         public AssetPair Pair { get; }
         public Asset AssetConvert { get; }
         public Money Price { get; }
-        public Money PriceConvert { get; }
+        public Money PriceConvert1 { get; }
+        public Money PriceConvert2 { get; }
 
         public bool IsConverted => ProviderConversion != null;
 
@@ -36,8 +37,17 @@ namespace Prime.Core.Exchange.Rates
             Provider = p1.Provider;
             ProviderConversion = p2.Provider;
             Price = new Money(p1.Price * p2.Price, Pair.Asset2);
-            PriceConvert = p1.Price;
+            PriceConvert1 = p1.Price;
+            PriceConvert2 = p2.Price;
             AssetConvert = p1.Pair.Asset2;
+        }
+
+        public bool IsMatch(LatestPriceResult request)
+        {
+            if (request == null)
+                return false;
+
+            return Pair.Equals(request.Pair) && Provider == request.Provider && ProviderConversion == request.ProviderConversion;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public AllAssetsViewModel(ScreenViewModel screenViewModel)
         {
             _screenViewModel = screenViewModel;
-            _debouncer = new Debouncer();
+            _debouncer = new DebouncerThread();
             "USD".ToAssetRaw();
             "EUR".ToAssetRaw();
 
@@ -32,7 +32,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public bool SetAsDefault { get; set; }
 
         private readonly ScreenViewModel _screenViewModel;
-        private readonly Debouncer _debouncer;
+        private readonly DebouncerThread _debouncer;
 
         public AddressBoxModel AddressBoxModel { get; set; }
 

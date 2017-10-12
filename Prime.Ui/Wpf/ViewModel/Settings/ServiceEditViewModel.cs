@@ -12,7 +12,7 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class ServiceEditViewModel : VmBase, IDataErrorInfo
     {
-        private readonly Debouncer _debouncer;
+        private readonly DebouncerThread _debouncer;
         private bool _initialCheck = true;
 
         public ServiceEditViewModel() { }
@@ -20,7 +20,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public ServiceEditViewModel(INetworkProviderPrivate provider)
         {
             DeleteCommand = new RelayCommand(Delete);
-            _debouncer = new Debouncer();
+            _debouncer = new DebouncerThread();
             Service = provider;
             Configuration = Service.GetApiConfiguration;
 

@@ -26,14 +26,15 @@ namespace Prime.Ui.Wpf.ViewModel
 
             FinalPrice = new Money((decimal)total, AssetRight);
             UserInputValue = new Money((decimal)userQuantity, AssetLeft);
+            NetworkLeft = result.Provider?.Network;
 
             if (IsConverted)
             {
                 AssetConvert = result.AssetConvert;
-                InfoConvert = $"1 {AssetConvert.ShortCode} = {new Money(result.Price, AssetConvert).ToString()}";
-                InfoLeft = $"1 {AssetLeft.ShortCode} = {new Money(result.PriceConvert, AssetRight).ToString()}";
+                InfoLeft = $"1 {AssetLeft.ShortCode} = {result.PriceConvert1.ToString()}";
+                InfoConvert = $"1 {AssetConvert.ShortCode} = {result.PriceConvert2.ToString()}";
                 InfoRight = $"1 {AssetRight.ShortCode} = {new Money(result.Price, AssetLeft).ToString()}";
-                InfoLeftConvert = $"1 {AssetLeft.ShortCode} = {new Money(result.Price, AssetRight).ToString()}";
+                NetworkMiddle = result.ProviderConversion?.Network;
             }
             else
             {
@@ -107,13 +108,6 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _infoConvert, value);
         }
 
-        private string _infoLeftConvert;
-        public string InfoLeftConvert
-        {
-            get => _infoLeftConvert;
-            set => Set(ref _infoLeftConvert, value);
-        }
-
         private string _infoRight;
         public string InfoRight
         {
@@ -133,6 +127,20 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             get => _utcCreated;
             set => Set(ref _utcCreated, value);
+        }
+
+        private Network _networkLeft;
+        public Network NetworkLeft
+        {
+            get => _networkLeft;
+            set => Set(ref _networkLeft, value);
+        }
+
+        private Network _networkMiddle;
+        public Network NetworkMiddle
+        {
+            get => _networkMiddle;
+            set => Set(ref _networkMiddle, value);
         }
     }
 }
