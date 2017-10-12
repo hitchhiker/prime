@@ -110,6 +110,24 @@ namespace Prime.Tests.Providers
             {
                 var ohlc = await provider.GetOhlcAsync(OhlcContext);
 
+                bool success = true;
+                OhlcEntry ohlcEntryPrev = null;
+
+                foreach (var ohlcEntry in ohlc)
+                {
+                    if (ohlcEntryPrev != null)
+                    {
+                        if (ohlcEntry.DateTimeUtc >= ohlcEntryPrev.DateTimeUtc)
+                        {
+                            success = false;
+                            Assert.Fail("Time check is failed.");
+                            break;
+                        }
+                    }
+                    ohlcEntryPrev = ohlcEntry;
+                }
+
+                Assert.IsTrue(success);
                 Assert.IsTrue(ohlc != null && ohlc.Count > 0);
             }
             catch (Exception e)
