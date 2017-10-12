@@ -2,7 +2,6 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <DependsOnNETStandard>netstandard1.5</DependsOnNETStandard>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9C573AEB-88D5-49C6-89FA-307758EC2FD3}</ProjectGuid>
@@ -365,12 +364,12 @@
     <Compile Include="Components\LiveCharts\DateAxis\DateAxisWindows.cs" />
     <Compile Include="Components\LiveCharts\Point\OhlcInstantChartPoint.cs" />
     <Compile Include="Components\LiveCharts\Point\PointMapperHelpers.cs" />
-    <Compile Include="Components\LiveCharts\Zoom\OverviewZoomComponent.cs" />
+    <Compile Include="Components\LiveCharts\Zoom\OverviewZoomViewModel.cs" />
     <Compile Include="Components\LiveCharts\DateAxis\PrimeDateAxis.cs" />
     <Compile Include="Components\LiveCharts\DateAxis\PrimeDateAxisCore.cs" />
-    <Compile Include="Components\LiveCharts\Zoom\ReceiverZoomComponent.cs" />
+    <Compile Include="Components\LiveCharts\Zoom\ReceiverZoomViewModel.cs" />
     <Compile Include="Components\LiveCharts\ScatterMarkerSymbol.cs" />
-    <Compile Include="Components\LiveCharts\Zoom\ZoomBaseComponent.cs" />
+    <Compile Include="Components\LiveCharts\Zoom\ZoomViewModel.cs" />
     <Compile Include="Components\PaneStyleSelector.cs" />
     <Compile Include="Components\ResolutionSourceClass.cs" />
     <Compile Include="Components\PrimeWpf.cs" />

@@ -18,7 +18,7 @@ namespace Prime.Ui.Wpf
 
         private readonly List<MetroWindowInstance> _instances = new List<MetroWindowInstance>();
 
-        private readonly DebounceDispatcher _debounceDispatcher = new DebounceDispatcher();
+        private readonly Debouncer _debouncer = new Debouncer();
 
         public void CreateNewWindow()
         {
@@ -88,7 +88,7 @@ namespace Prime.Ui.Wpf
 
         public void Update()
         {
-            _debounceDispatcher.Debounce(500, o => UpdateDebounced());
+            _debouncer.Debounce(500, o => UpdateDebounced());
         }
 
         public void UpdateDebounced()

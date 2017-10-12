@@ -11,10 +11,10 @@ namespace Prime.Ui.Wpf
     /// <summary>
     /// Chart component responsible for the zoom state
     /// </summary>
-    public abstract class ZoomBaseComponent : VmBase
+    public abstract class ZoomViewModel : VmBase
     {
-        protected readonly ZoomBaseComponent _zoomChart;
-        protected readonly DebounceDispatcher _debounceDispatcher;
+        protected readonly ZoomViewModel _zoomChart;
+        protected readonly Debouncer _debouncer;
         protected readonly Dispatcher _uiDispatcher;
 
         protected double _zoomFrom;
@@ -52,10 +52,10 @@ namespace Prime.Ui.Wpf
 
         public bool IsMouseOver { get; set; }
 
-        protected ZoomBaseComponent(TimeResolution resolution, Dispatcher uiDispatcher)
+        protected ZoomViewModel(TimeResolution resolution, Dispatcher uiDispatcher)
         {
             Resolution = resolution;
-            _debounceDispatcher = new DebounceDispatcher(uiDispatcher);
+            _debouncer = new Debouncer(uiDispatcher);
         }
 
         public event EventHandler OnRangePreviewChange;

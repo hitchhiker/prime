@@ -31,12 +31,12 @@ namespace Prime.Ui.Wpf
     /// </summary>
     public partial class Portfolio
     {
-        private readonly DebounceDispatcher _debounceDispatcher;
+        private readonly Debouncer _debouncer;
 
         public Portfolio()
         {
             InitializeComponent();
-            _debounceDispatcher = new DebounceDispatcher(Dispatcher);
+            _debouncer = new Debouncer(Dispatcher);
             this.DataContextChanged += Portfolio_DataContextChanged;
             SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
         }

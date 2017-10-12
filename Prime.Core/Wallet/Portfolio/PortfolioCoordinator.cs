@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Timers;
 using System.Web.UI;
+using System.Windows;
+using System.Windows.Threading;
 using Nito.AsyncEx;
 using Prime.Core.Exchange.Rates;
 using Prime.Utility;
@@ -18,9 +20,14 @@ namespace Prime.Core.Wallet
             Context = context;
             _scanners = new List<PortfolioProvider>();
             _messenger.Register<QuoteAssetChangedMessage>(this, BaseAssetChanged);
+            _dispatcher = Dispatcher.CurrentDispatcher;
+            _debouncer = new Debouncer(_dispatcher);
         }
 
+        private readonly Debouncer _debouncer;
+        private readonly Dispatcher _dispatcher;
         private readonly List<PortfolioProvider> _scanners;
+        private readonly UniqueList<LatestPriceRequest> _requests = new UniqueList<LatestPriceRequest>();
         public readonly UserContext Context;
         private readonly object _lock = new object();
 
@@ -72,7 +79,12 @@ namespace Prime.Core.Wallet
                 WorkingProviders.Clear();
                 QueryingProviders.Clear();
                 UtcLastUpdated = DateTime.MinValue;
-                _messenger.Send(new PortfolioChangedMessage());
+                var lpc = LatestPriceCoordinator.I;
+
+                foreach (var r in _requests)
+                    lpc.RemoveRequest(this, r);
+
+                SendChangedMessageDebounced();
             }
         }
 
@@ -105,8 +117,18 @@ namespace Prime.Core.Wallet
 
                 DoFinal();
 
-                _messenger.Send(new PortfolioChangedMessage());
+                SendChangedMessageDebounced();
             }
+        }
+
+        private void SendChangedMessageDebounced()
+        {
+            _debouncer.Debounce(25, _ => SendChangedMessage());
+        }
+
+        private void SendChangedMessage()
+        {
+            _messenger.Send(new PortfolioChangedMessage());
         }
 
         private void DoFinal()
@@ -130,7 +152,8 @@ namespace Prime.Core.Wallet
                 {
                     if (!m.Pair.Equals(pair))
                         return;
-                    DoConversion(i, m, pair);
+                    if (DoConversion(i, m, pair))
+                        SendChangedMessageDebounced();
                 });
 
                 var r = lpc.GetResult(pair);
@@ -141,17 +164,22 @@ namespace Prime.Core.Wallet
                     continue;
 
                 pairs.Add(pair);
-                lpc.AddRequest(this, pair);
+                _requests.Add(lpc.AddRequest(this, pair));
             }
 
             if (Items.Any())
                 Items.Add(new PortfolioTotalLineItem() { Items = Items });
         }
 
-        private static void DoConversion(PortfolioLineItem i, LatestPriceResult m, AssetPair pair)
+        private static bool DoConversion(PortfolioLineItem i, LatestPriceResult m, AssetPair pair)
         {
-            i.Converted = new Money((decimal) i.AvailableBalance * (decimal) m.Price, pair.Asset2);
+            var mn = new Money((decimal) i.AvailableBalance * (decimal) m.Price, pair.Asset2);
+            if (i.Converted != null && mn.ToDecimalValue() == i.Converted.Value.ToDecimalValue())
+                return false;
+
+            i.Converted = mn;
             i.ConversionFailed = false;
+            return true;
         }
 
         private void UpdateScanningStatuses()

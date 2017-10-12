@@ -6,7 +6,7 @@ using Prime.Ui.Wpf.Annotations;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class VmBase : GalaSoft.MvvmLight.ViewModelBase
+    public class VmBase : ViewModelBase
     {
         public VmBase() : base() { }
 

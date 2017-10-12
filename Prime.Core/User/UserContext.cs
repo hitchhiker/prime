@@ -21,14 +21,20 @@ namespace Prime.Core
         public UserContext(ObjectId id, string username)
         {
             Id = id;
+            Token = id.ToString();
             Username = username;
+            BookmarkController = new BookmarkController(this);
         }
+
+        public readonly string Token;
 
         public readonly ObjectId Id;
 
         public readonly string Username;
 
         private readonly UserSettings _userdatas = new UserSettings();
+
+        public readonly BookmarkController BookmarkController;
 
         public static UserContext Current = new UserContext(new ObjectId("50709e6e210a18719ea877a2"), "test");
 

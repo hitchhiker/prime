@@ -25,6 +25,7 @@ namespace prime
         {
             //DispatcherUnhandledException += App_DispatcherUnhandledException;
             GlobalMisc.I.MainAssembly = Assembly.GetExecutingAssembly();
+            PrimeWpf.I.SetDispatcher();
 
             this.Startup += App_Startup;
         }

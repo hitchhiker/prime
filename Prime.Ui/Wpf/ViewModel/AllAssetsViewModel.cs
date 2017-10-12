@@ -17,7 +17,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public AllAssetsViewModel(ScreenViewModel screenViewModel)
         {
             _screenViewModel = screenViewModel;
-            _debounceDispatcher = new DebounceDispatcher();
+            _debouncer = new Debouncer();
             "USD".ToAssetRaw();
             "EUR".ToAssetRaw();
 
@@ -26,13 +26,13 @@ namespace Prime.Ui.Wpf.ViewModel
 
             UpdateAssets();
 
-            Core.Assets.I.OnAssetsUpdated += (_, e) => _debounceDispatcher.Debounce(100, o => UpdateAssets());
+            Core.Assets.I.OnAssetsUpdated += (_, e) => _debouncer.Debounce(100, o => UpdateAssets());
         }
 
         public bool SetAsDefault { get; set; }
 
         private readonly ScreenViewModel _screenViewModel;
-        private readonly DebounceDispatcher _debounceDispatcher;
+        private readonly Debouncer _debouncer;
 
         public AddressBoxModel AddressBoxModel { get; set; }
 

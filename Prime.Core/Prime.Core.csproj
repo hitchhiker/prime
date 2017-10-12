@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <DependsOnNETStandard>netstandard1.5</DependsOnNETStandard>
+    <!--<DependsOnNETStandard>netstandard1.5</DependsOnNETStandard>-->
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A593F034-8FD1-4A22-9A83-98C204A6819B}</ProjectGuid>
@@ -264,6 +264,13 @@
     <Compile Include="Misc\TimeValueConverter.cs" />
     <Compile Include="Network\AggregatedCoinInfoContext.cs" />
     <Compile Include="Network\PublicPricesContext.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkHasChangedMessage.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkMessageBase.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkStatusRequestMessage.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkStatusResponseMessage.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkAllRequestMessage.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkSetMessage.cs" />
+    <Compile Include="Page\Bookmark\Messages\BookmarkAllResponseMessage.cs" />
     <Compile Include="Portfolio\PortfolioItemModel.cs" />
     <Compile Include="Provider\DataCache\ProviderDataCacheBase.cs" />
     <Compile Include="Network\NetworkProviderContext.cs" />
@@ -340,6 +347,7 @@
     <Compile Include="Trade\OrderBookModel.cs" />
     <Compile Include="Trade\TimeInForceModel.cs" />
     <Compile Include="Trade\TradeTypeModel.cs" />
+    <Compile Include="Page\Bookmark\BookmarkController.cs" />
     <Compile Include="User\WindowManager\IWindowManager.cs" />
     <Compile Include="User\UserSetting.cs" />
     <Compile Include="Public\PublicData.cs" />

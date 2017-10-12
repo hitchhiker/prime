@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Amib.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
@@ -28,10 +29,17 @@ namespace Prime.Ui.Wpf
         private bool? _isDemo;
         public bool IsDemo => _isDemo ?? (bool) (_isDemo = File.Exists(Path.Combine(CommonFs.I.UserConfigDirectory.FullName, "demo")));
 
+        public Dispatcher UiDispatcher;
+
         private SmartThreadPool GetStaThreadPool()
         {
             var stpStartInfo = new STPStartInfo {ApartmentState = ApartmentState.STA};
             return new SmartThreadPool(stpStartInfo);
+        }
+
+        internal void SetDispatcher()
+        {
+            UiDispatcher = Dispatcher.CurrentDispatcher;
         }
     }
 }

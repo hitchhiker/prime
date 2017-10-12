@@ -24,8 +24,8 @@ namespace Prime.Ui.Wpf.ViewModel
             _assetLeft = Assets.I.GetRaw("BTC");
             _assetRight = UserContext.Current.QuoteAsset;
 
-            _dispatcher = Dispatcher.CurrentDispatcher;
-            _debounceDispatcher = new DebounceDispatcher();
+            _dispatcher = PrimeWpf.I.UiDispatcher;
+            _debouncer = new Debouncer(_dispatcher);
 
             ScreenViewModel = model;
             AllAssetsViewModel = new AllAssetsViewModel(model);
@@ -44,7 +44,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly Dispatcher _dispatcher;
         private readonly List<LatestPriceRequest> _requests = new List<LatestPriceRequest>();
         private readonly LatestPriceCoordinator _coord = LatestPriceCoordinator.I;
-        private readonly DebounceDispatcher _debounceDispatcher;
+        private readonly Debouncer _debouncer;
 
         public ScreenViewModel ScreenViewModel;
         public AllAssetsViewModel AllAssetsViewModel { get; }
@@ -138,7 +138,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void AddRequestDebounced()
         {
-            _debounceDispatcher.Debounce(500, o => AddRequest());
+            _debouncer.Debounce(500, o => AddRequest());
         }
 
         private void AddRequest()

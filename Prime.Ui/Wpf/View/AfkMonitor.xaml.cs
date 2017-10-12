@@ -58,7 +58,7 @@ namespace Prime.Ui.Wpf.View
                 if (idleTimeSeconds > IdleSecondsLimit && _readyToShowAfkMessage)
                 {
                     _readyToShowAfkMessage = false;
-                    MessageBox.Show("You are inactive!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    //MessageBox.Show("You are inactive!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 else if (idleTimeSeconds <= IdleSecondsLimit)
                 {

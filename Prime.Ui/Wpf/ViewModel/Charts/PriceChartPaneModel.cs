@@ -23,18 +23,18 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly IMessenger _messenger;
         private readonly ScreenViewModel _screenViewModel;
         public ChartGroupViewModel ChartGroupViewModel { get; private set; }
-        private readonly DebounceDispatcher _debouncer;
         private readonly AssetPair _pair;
+        private readonly Debouncer _debouncer;
         private ChartViewModel _volumeChart;
         private ChartViewModel _priceChart;
         private Timer _liveTimer;
         private readonly object _lock = new object();
         private CoverageMapMemory _renderedCoverage = new CoverageMapMemory();
 
-        private readonly List<ZoomBaseComponent> _chartZooms = new List<ZoomBaseComponent>();
-        private readonly List<ZoomBaseComponent> _allZooms = new List<ZoomBaseComponent>();
-        public readonly OverviewZoomComponent OverviewZoom;
-        public readonly ReceiverZoomComponent ReceiverZoom;
+        private readonly List<ZoomViewModel> _chartZooms = new List<ZoomViewModel>();
+        private readonly List<ZoomViewModel> _allZooms = new List<ZoomViewModel>();
+        public readonly OverviewZoomViewModel OverviewZoom;
+        public readonly ReceiverZoomViewModel ReceiverZoom;
         private ResolutionSourceProvider _chartResolutionProvider;
 
         public readonly TimeResolution OverviewDefaultResolution = TimeResolution.Day;
@@ -48,8 +48,8 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public PriceChartPaneModel(IMessenger messenger, ScreenViewModel screenViewModel, AssetPair pair)
         {
-            _dispatcher = Application.Current.Dispatcher;
-            _debouncer = new DebounceDispatcher(_dispatcher);
+            _dispatcher = PrimeWpf.I.UiDispatcher;
+            _debouncer = new Debouncer(Dispatcher.CurrentDispatcher);
             _messenger = messenger;
             _screenViewModel = screenViewModel;
             _pair = pair;
@@ -69,8 +69,8 @@ namespace Prime.Ui.Wpf.ViewModel
 
             _adapter = new OhlcDataAdapter(ctx);
 
-            OverviewZoom = new OverviewZoomComponent(OverviewDefaultResolution, _dispatcher);
-            ReceiverZoom = new ReceiverZoomComponent(ReceiverDefaultResolution, _dispatcher);
+            OverviewZoom = new OverviewZoomViewModel(OverviewDefaultResolution, _dispatcher);
+            ReceiverZoom = new ReceiverZoomViewModel(ReceiverDefaultResolution, _dispatcher);
 
             _allZooms.Add(OverviewZoom);
 
@@ -184,7 +184,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 QueueWork(() => UpdateData());
             });
 
-            var sender = s as ZoomBaseComponent;
+            var sender = s as ZoomViewModel;
             foreach (var oz in _allZooms)
             {
                 if (oz == sender)
