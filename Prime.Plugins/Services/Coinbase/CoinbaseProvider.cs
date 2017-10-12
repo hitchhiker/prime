@@ -3,28 +3,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
 using Jojatekok.PoloniexAPI;
 using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
+using Prime.Core.Exchange;
 using RestEase;
 using Prime.Utility;
+using OrderBook = Prime.Core.OrderBook;
 
 #endregion
 
 namespace plugins
 {
-    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOhlcProvider
+    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
         private const string CoinbaseApiVersion = "v2";
         private const string CoinbaseApiUrl = "https://api.coinbase.com/" + CoinbaseApiVersion + "/";
 
-        private static readonly string _pairs = "btcusd,btceur,eurusd,ethusd,etheur,ethbtc,ltcusd,ltceur,ltcbtc";
+        private const string GdaxApiUrl = "https://api.gdax.com";
 
-        public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
         public Network Network { get; } = new Network("Coinbase");
 
         public bool Disabled => false;
@@ -42,13 +45,21 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return RestClient.For<ICoinbaseApi>(CoinbaseApiUrl) as T;
+            return RestClient.For<T>(CoinbaseApiUrl) as T;
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
-            var key = context.GetKey(this);
-            return RestClient.For<ICoinbaseApi>(CoinbaseApiUrl, new CoinbaseAuthenticator(key).GetRequestModifier) as T;
+            // var key = context.GetKey(this);
+            // TODO: DELETE
+            var key = new ApiKey(Network, "", "", "");
+
+            return RestClient.For<T>(CoinbaseApiUrl, new CoinbaseAuthenticator(key).GetRequestModifier) as T;
+        }
+
+        private IGdaxApi GetGdaxApi()
+        {
+            return RestClient.For<IGdaxApi>(GdaxApiUrl);
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -105,39 +116,19 @@ namespace plugins
             return null;
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() => Pairs);
-            t.RunSynchronously();
-            return t;
-        }
+            var api = GetGdaxApi();
+            var r = await api.GetProducts();
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
-        {
-            // BUG: usage of Poliniex in Coinbase.
-            // TODO: rewrite to RE.
-            var api = GetApi<PoloniexClient>(null);
-            var cpair = new CurrencyPair(context.Pair.Asset1.ToRemoteCode(this), context.Pair.Asset2.ToRemoteCode(this));
-            var mp = MarketPeriod.Hours2;
-            var ds = DateTime.UtcNow.AddDays(-10);
-            var de = DateTime.UtcNow;
-            var apir = await api.Markets.GetChartDataAsync(cpair, mp, ds, de);
-            var r = new OhlcData(context.Market);
-            var seriesid = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
-            foreach (var i in apir)
+            var pairs = new AssetPairs();
+
+            foreach (var rProduct in r)
             {
-                r.Add(new OhlcEntry(seriesid, i.Time, this)
-                {
-                    Open = i.Open,
-                    Close = i.Close,
-                    Low = i.Low,
-                    High = i.High,
-                    VolumeTo = (long) i.VolumeQuote,
-                    VolumeFrom = (long) i.VolumeBase,
-                    WeightedAverage = i.WeightedAverage
-                });
+                pairs.Add(new AssetPair(rProduct.base_currency, rProduct.quote_currency));
             }
-            return r;
+
+            return pairs;
         }
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
@@ -150,11 +141,6 @@ namespace plugins
         public bool CanMultiDepositAddress { get; } = true;
 
         public bool CanGenerateDepositAddress { get; } = true;
-
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
@@ -191,7 +177,7 @@ namespace plugins
             var accs = await api.GetAccounts();
             var ast = context.Asset.ToRemoteCode(this);
 
-            var acc = accs.data.FirstOrDefault(x=> string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
+            var acc = accs.data.FirstOrDefault(x => string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
             if (acc == null)
                 return null;
 
@@ -215,12 +201,39 @@ namespace plugins
             {
                 if (string.IsNullOrWhiteSpace(a.address))
                     continue;
-                
+
                 var forasset = FromNetwork(a.network);
                 if (!context.Asset.Equals(forasset))
                     continue;
 
-                addresses.Add(new WalletAddress(this, context.Asset) {Address = a.address});
+                addresses.Add(new WalletAddress(this, context.Asset) { Address = a.address });
+            }
+
+            return addresses;
+        }
+
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        {
+            var api = GetApi<ICoinbaseApi>(context);
+            var accs = await api.GetAccounts();
+            var addresses = new WalletAddresses();
+
+            var accountIds = accs.data.Select(x => new KeyValuePair<string, string>(x.currency, x.id));
+
+            foreach (var kvp in accountIds)
+            {
+                var r = await api.GetAddressesAsync(kvp.Value);
+
+                foreach (var rAddress in r.data)
+                {
+                    if(string.IsNullOrWhiteSpace(rAddress.address))
+                        continue;
+
+                    addresses.Add(new WalletAddress(this, kvp.Key.ToAsset(this))
+                    {
+                        Address = rAddress.address
+                    });
+                }
             }
 
             return addresses;
@@ -239,6 +252,68 @@ namespace plugins
                 default:
                     return Asset.None;
             }
+        }
+
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        {
+            var api = GetGdaxApi();
+            var pairCode = context.Pair.TickerDash();
+
+            // TODO: Check this! Can we use limit when we query all records?
+            var recordsLimit = 1000;
+
+            var r = await api.GetProductOrderBook(pairCode, OrderBookDepthLevel.FullNonAggregated);
+
+            var bids = context.MaxRecordsCount.HasValue 
+                ? r.bids.Take(context.MaxRecordsCount.Value / 2).ToArray() 
+                : r.bids.Take(recordsLimit).ToArray();
+            var asks = context.MaxRecordsCount.HasValue
+                ? r.asks.Take(context.MaxRecordsCount.Value / 2).ToArray()
+                : r.asks.Take(recordsLimit).ToArray();
+
+            var orderBook = new OrderBook();
+
+            foreach (var rBid in bids)
+            {
+                var bid = ConvertToOrderBookRecord(rBid);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(bid.Price, context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = bid.Size
+                    },
+                    Type = OrderBookType.Bid
+                });
+            }
+
+            foreach (var rAsk in asks)
+            {
+                var ask = ConvertToOrderBookRecord(rAsk);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(ask.Price, context.Pair.Asset2),
+                        Time = DateTime.UtcNow,
+                        Volume = ask.Size
+                    },
+                    Type = OrderBookType.Ask
+                });
+            }
+
+            return orderBook;
+        }
+
+        private (decimal Price, decimal Size) ConvertToOrderBookRecord(string[] data)
+        {
+            if(!decimal.TryParse(data[0], out var price) || !decimal.TryParse(data[1], out var size))
+                throw new ApiResponseException("API returned incorrect format of price data", this);
+
+            return (price, size);
         }
     }
 }

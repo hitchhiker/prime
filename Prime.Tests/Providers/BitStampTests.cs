@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
@@ -9,6 +10,8 @@ namespace Prime.Tests.Providers
     [TestClass()]
     public class BitStampTests : ProviderDirectTestsBase
     {
+        // OHLC data is not provided by API.
+        
         public BitStampTests()
         {
             Provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
@@ -48,6 +51,12 @@ namespace Prime.Tests.Providers
         public override async Task TestGetLatestPriceAsync()
         {
             await base.TestGetLatestPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetLatestPricesAsync()
+        {
+            await base.TestGetLatestPricesAsync();
         }
 
         [TestMethod]

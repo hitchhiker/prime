@@ -317,7 +317,10 @@
     <Compile Include="Services\Coinbase\CoinbaseAuthenticator.cs" />
     <Compile Include="Services\Coinbase\CoinBaseSchema.cs" />
     <Compile Include="Services\Coinbase\CoinbaseProvider.cs" />
+    <Compile Include="Services\Coinbase\GdaxSchema.cs" />
     <Compile Include="Services\Coinbase\ICoinbaseApi.cs" />
+    <Compile Include="Services\Coinbase\IGdaxApi.cs" />
+    <Compile Include="Services\Coinbase\OrderBookDepthLevel.cs" />
     <Compile Include="Services\CryptoCompare\CryptoCompareBase.cs" />
     <Compile Include="Services\CryptoCompare\CryptoCompareSchema.cs" />
     <Compile Include="Services\DebugDeserialiser.cs" />

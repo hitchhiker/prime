@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,6 +31,60 @@ namespace Prime.Tests.Providers
 
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "NXT".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAddressesAsync()
+        {
+            await base.TestGetAddressesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPairsAsync()
+        {
+            await base.TestGetAssetPairsAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAddressesForAssetAsync()
+        {
+            await base.TestGetAddressesForAssetAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetBalancesAsync()
+        {
+            await base.TestGetBalancesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetLatestPriceAsync()
+        {
+            PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "LTC"));
+            await base.TestGetLatestPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetLatestPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext(Asset.Btc, new List<Asset>()
+            {
+                "LTC".ToAssetRaw(),
+                "NXT".ToAssetRaw(),
+                "ETH".ToAssetRaw()
+            });
+
+            await base.TestGetLatestPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetOhlcAsync()
+        {
+            // BUG: supports only 1 day.
+            OhlcContext = new OhlcContext(new AssetPair("BTC", "LTC"), TimeResolution.Day,
+                new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Hour), null);
+
+            await base.TestGetOhlcAsync();
         }
     }
 }
