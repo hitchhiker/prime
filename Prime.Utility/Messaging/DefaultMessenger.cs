@@ -14,5 +14,7 @@ namespace Prime.Utility
         private static readonly Lazy<DefaultMessenger> Lazy = new Lazy<DefaultMessenger>(()=>new DefaultMessenger());
 
         public IMessenger Default;
+
+        public readonly object Token = new object();
     }
 }
