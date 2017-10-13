@@ -7,6 +7,7 @@ using Nito.AsyncEx;
 using plugins;
 using Prime.Core;
 using Prime.Plugins.Services.Bittrex;
+using Prime.Plugins.Services.Coinbase;
 
 namespace Prime.TestConsole
 {

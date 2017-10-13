@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Prime.Plugins.Services.Coinbase;
+using plugins;
 using RestEase;
 
-namespace plugins
+namespace Prime.Plugins.Services.Coinbase
 {
     [Header("User-Agent", "RestEase")]
     internal interface IGdaxApi

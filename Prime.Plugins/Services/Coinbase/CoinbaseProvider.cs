@@ -1,24 +1,17 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Prime.Core;
-using Jojatekok.PoloniexAPI;
-using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
+using plugins;
+using Prime.Core;
 using Prime.Core.Exchange;
-using RestEase;
 using Prime.Utility;
+using RestEase;
 using OrderBook = Prime.Core.OrderBook;
 
-#endregion
-
-namespace plugins
+namespace Prime.Plugins.Services.Coinbase
 {
     public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IOhlcProvider
     {

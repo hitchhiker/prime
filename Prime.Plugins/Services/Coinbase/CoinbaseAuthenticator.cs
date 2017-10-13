@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
-using System.Threading.Tasks;
 using Prime.Core;
-using RestEase;
 using Prime.Utility;
 
-namespace plugins
+namespace Prime.Plugins.Services.Coinbase
 {
     public class CoinbaseAuthenticator : BaseAuthenticator
     {

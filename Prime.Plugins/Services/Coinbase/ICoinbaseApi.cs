@@ -1,12 +1,7 @@
-﻿#region
-
-using System.Threading.Tasks;
-using plugins.Services.Coinbase;
+﻿using System.Threading.Tasks;
 using RestEase;
 
-#endregion
-
-namespace plugins
+namespace Prime.Plugins.Services.Coinbase
 {
     internal interface ICoinbaseApi
     {

@@ -3,7 +3,6 @@ using System.Linq;
 using Nito.AsyncEx;
 using Prime.Core;
 using Prime.Plugins.Services.BitStamp;
-using Rokolab.BitstampClient;
 
 namespace Prime.TestConsole
 {
