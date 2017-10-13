@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Jojatekok.PoloniexAPI;
-using Jojatekok.PoloniexAPI.MarketTools;
 using LiteDB;
 using Prime.Core;
 using Prime.Core.Exchange;
