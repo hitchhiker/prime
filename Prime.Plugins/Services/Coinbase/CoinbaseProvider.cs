@@ -46,14 +46,12 @@ namespace plugins
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
         {
-            return RestClient.For<T>(CoinbaseApiUrl) as T;
+            return RestClient.For<T>(CoinbaseApiUrl);
         }
 
         public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
         {
-            // var key = context.GetKey(this);
-            // TODO: DELETE
-            var key = new ApiKey(Network, "", "", "");
+            var key = context.GetKey(this);
 
             return RestClient.For<T>(CoinbaseApiUrl, new CoinbaseAuthenticator(key).GetRequestModifier) as T;
         }
