@@ -35,7 +35,7 @@ namespace Prime.Ui.Wpf.ViewModel.Trading
             MyOrderHistoryViewModel = new MyOrderHistoryViewModel(this);
         }
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("buy sell");
         }

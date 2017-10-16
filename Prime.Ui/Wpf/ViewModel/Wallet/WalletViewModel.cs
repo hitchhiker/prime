@@ -36,7 +36,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public ObservableCollection<WalletAddress> Addresses { get; private set; }
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("wallet");
         }

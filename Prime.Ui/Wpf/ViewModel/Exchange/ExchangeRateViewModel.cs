@@ -74,7 +74,7 @@ namespace Prime.Ui.Wpf.ViewModel
             });
         }
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("exchange rates");
         }

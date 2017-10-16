@@ -33,7 +33,7 @@ namespace Prime.Core
 
         public void Add(ICanGenerateCommand doc)
         {
-            var b = doc.Create();
+            var b = doc.GetPageCommand();
             if (b != null)
                 Add(b);
         }

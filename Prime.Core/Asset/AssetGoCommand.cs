@@ -41,29 +41,9 @@ namespace Prime.Core
 
         public override string DefaultTitle => "Asset " + Asset.ShortCode;
 
-        public override bool Equals(CommandContent other)
-        {
-            return Equals(other as AssetGoCommand);
-        }
-
         public bool Equals(AssetGoCommand other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(Asset, other.Asset);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((AssetGoCommand) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Asset != null ? Asset.GetHashCode() : 0);
+            return base.Equals(this);
         }
     }
 }

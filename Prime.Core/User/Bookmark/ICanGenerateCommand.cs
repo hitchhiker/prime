@@ -4,6 +4,6 @@ namespace Prime.Core
 {
     public interface ICanGenerateCommand
     {
-        CommandContent Create();
+        CommandContent GetPageCommand();
     }
 }

@@ -35,7 +35,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 _apiSecret = UserKey.Secret;
                 _apiExtra1 = UserKey.Extra;
                 _apiName = UserKey.Name;
-                DecideTest(0);
+                DecideTest(1);
             }
             else
             {

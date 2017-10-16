@@ -37,7 +37,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("exchanges");
         }

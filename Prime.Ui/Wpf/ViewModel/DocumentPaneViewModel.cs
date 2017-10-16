@@ -19,7 +19,7 @@ namespace Prime.Ui.Wpf
             set => Set(ref _key, value);
         }
 
-        public abstract CommandContent Create();
+        public abstract CommandContent GetPageCommand();
 
         public override void Dispose() { }
     }

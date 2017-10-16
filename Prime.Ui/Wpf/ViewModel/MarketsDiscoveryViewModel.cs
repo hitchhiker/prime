@@ -28,25 +28,29 @@ namespace Prime.Ui.Wpf.ViewModel
             ListSortBy = new BindingList<string>() { "Volume", "Popularity" };
             AddRequest(0, 2);
 
-            _messenger.Register<BookmarkSetMessage>(this, _context.Token, UpdateStar);
+            _messenger.Register<BookmarkHasChangedMessage>(this, _context.Token, UpdateStar);
+            _messenger.Register<BookmarkStatusResponseMessage>(this, _context.Token, UpdateStar);
 
-            StarCommand = new RelayCommand(() =>
+            _messenger.Send<BookmarkStatusRequestMessage>(new BookmarkStatusRequestMessage(GetPageCommand()), _context.Token);
+
+            ClickBookmarkCommand = new RelayCommand(() =>
             {
-               // _messenger.Send(new BookmarkSetMessage(/*Not sure what goes here*/, isBookmarked), _context.Token);
+               _messenger.Send(new BookmarkSetMessage(GetPageCommand(), !isBookmarkSet), _context.Token);
             });
         }
 
         private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
+        private bool isBookmarkSet;
 
-        public RelayCommand StarCommand { get; }
+        public RelayCommand ClickBookmarkCommand { get; }
 
         public string StarPath { get; private set; }
         public BindingList<string> ListSortBy { get; private set; }
         public BindingList<MarketControlViewModel> ListMarketControls { get; private set; }
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("markets discovery");
         }
@@ -61,18 +65,15 @@ namespace Prime.Ui.Wpf.ViewModel
             {"../../Asset/img/XRP.png", "XRP"}
         };
 
-        private void UpdateStar(BookmarkSetMessage m)
+        private void UpdateStar(BookmarkMessageBase m)
         {
+            if (!m.Bookmark.Equals(GetPageCommand()))
+                return;
+
             Dispatcher.Invoke(() =>
             {
-                if (m.IsBookmarked)
-                {
-                    StarPath = "../../Asset/img/Star.png";
-                }
-                else
-                {
-                    StarPath = "../../Asset/img/Unstar.png";
-                }
+                isBookmarkSet = m.IsBookmarked;
+                StarPath = m.IsBookmarked ? "../../Asset/img/Star.png" : "../../Asset/img/Unstar.png";
             });
         }
 

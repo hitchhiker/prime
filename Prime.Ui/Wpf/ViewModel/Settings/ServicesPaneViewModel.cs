@@ -52,7 +52,7 @@ namespace Prime.Ui.Wpf.ViewModel
             return true;
         }
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("services");
         }

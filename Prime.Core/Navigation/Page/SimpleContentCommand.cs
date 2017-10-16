@@ -50,14 +50,9 @@ namespace Prime.Core
 
         public override string DefaultTitle => Command?.Capitalise();
 
-        public override bool Equals(CommandContent other)
-        {
-            return base.Equals(other as CommandBase);
-        }
-
         public bool Equals(SimpleContentCommand other)
         {
-            return base.Equals(other as CommandBase);
+            return base.Equals(this);
         }
     }
 }

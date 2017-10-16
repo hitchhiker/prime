@@ -21,6 +21,9 @@ namespace Prime.Core
             return PageUris.I.Providers.Select(x => x.GetUri(this)).FirstOrDefault(x => x != null) ?? GetUriResponse.TypeNotFound;
         }
 
-        public abstract bool Equals(CommandContent other);
+        public bool Equals(CommandContent other)
+        {
+            return base.Equals(this);
+        }
     }
 }

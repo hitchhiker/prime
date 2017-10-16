@@ -75,7 +75,7 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _assetSelected, value);
         }
 
-        public override CommandContent Create()
+        public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("receive");
         }
