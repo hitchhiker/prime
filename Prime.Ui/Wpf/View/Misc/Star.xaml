@@ -1,18 +1,19 @@
 ﻿<UserControl x:Class="prime.Star"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:prime="clr-namespace:prime"
-        Height="48" Width="48">
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModel:StarViewModel}" Height="20" Width="20">
 
     <UserControl.Resources>
         <BitmapImage x:Key="Star" UriSource="/Asset/img/star-closed.png" />
         <BitmapImage x:Key="StarEmpty" UriSource="/Asset/img/star-open.png" />
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="Transparent" Width="48" Height="48">
-        <ToggleButton Focusable="False" x:Name="Toggler" HorizontalAlignment="Left" Margin="0"  VerticalAlignment="Top" Width="48" Height="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsTabStop="False" >
+    <Grid x:Name="LayoutRoot" Background="Transparent" Width="20" Height="20">
+        <ToggleButton Focusable="False" x:Name="Toggler" Cursor="Hand" HorizontalAlignment="Left" Margin="0"  VerticalAlignment="Top" Width="20" Height="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsTabStop="False" Command="{Binding ClickBookmarkCommand}">
             <ToggleButton.Style>
                 <Style TargetType="{x:Type ToggleButton}">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -23,7 +24,6 @@
                                 <Border>
                                     <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" RecognizesAccessKey="True" HorizontalAlignment="Center"/>
                                 </Border>
-
                                 <ControlTemplate.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
