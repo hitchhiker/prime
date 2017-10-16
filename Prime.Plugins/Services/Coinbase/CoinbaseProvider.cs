@@ -354,7 +354,6 @@ namespace Prime.Plugins.Services.Coinbase
                 else
                     currTsFrom = tsFrom;
 
-                // TODO: do something to ged rid of Thread.Sleep.
                 ApiHelpers.EnterRate(this, context);
             }
 

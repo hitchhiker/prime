@@ -280,6 +280,7 @@
     <Compile Include="Services\3rdParty\Bittrex\ExchangeContext.cs" />
     <Compile Include="Services\3rdParty\Bittrex\IBittrexExchange.cs" />
     <Compile Include="Services\Base\IApiProvider.cs" />
+    <Compile Include="Services\Base\IRestApiProvider.cs" />
     <Compile Include="Services\BitMex\BitMexAuthenticator.cs" />
     <Compile Include="Services\BitMex\BitMexProvider.cs" />
     <Compile Include="Services\BitMex\BitMexSchema.cs" />
@@ -318,6 +319,10 @@
     <Compile Include="Services\CryptoCompare\Generator\CCCodeGenerator.cs" />
     <Compile Include="Services\BitStamp\BitStampProvider.cs" />
     <Compile Include="Services\CryptoCompare\ICryptoCompareApi.cs" />
+    <Compile Include="Services\Korbit\IKorbitApi.cs" />
+    <Compile Include="Services\Korbit\KorbitAuthenticator.cs" />
+    <Compile Include="Services\Korbit\KorbitProvider.cs" />
+    <Compile Include="Services\Korbit\KorbitSchema.cs" />
     <Compile Include="Services\Kraken\Converters\OhlcJsonConverter.cs" />
     <Compile Include="Services\Kraken\IKrakenApi.cs" />
     <Compile Include="Services\Kraken\KrakenAuthenticator.cs" />
@@ -329,6 +334,7 @@
     <Compile Include="Services\Kraken\KrakenSchema.cs" />
     <Compile Include="Services\Kraken\KrakenTimeInterval.cs" />
     <Compile Include="Services\Poloniex\PoloniexTimeInterval.cs" />
+    <Compile Include="Services\RestApiProvider.cs" />
     <Compile Include="Services\Test\Model\HistoryLine.cs" />
     <Compile Include="Services\Test\Model\HistoryResponse.cs" />
     <Compile Include="Services\Test\ICryptoFacilitiesApi.cs" />
