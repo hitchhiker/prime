@@ -20,20 +20,20 @@
                         <Setter Property="FontSize" Value="14"/>
                     </Style>
                 </StackPanel.Resources>
+                <StackPanel Orientation="Vertical" Margin="0,0,40,0" >
+                    <TextBlock Text="{Binding AssetLeft.ShortCode}" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding InfoLeft}"/>
+                    <TextBlock Text="{Binding NetworkLeft}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,0,40,0" Visibility="{Binding IsConverted, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="{Binding AssetConvert.ShortCode}" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding InfoConvert}"/>
+                    <TextBlock Text="{Binding NetworkMiddle}"/>
+                </StackPanel>
                 <StackPanel Orientation="Vertical">
-                    <TextBlock HorizontalAlignment="Right" Text="{Binding AssetLeft.ShortCode}"/>
-                    <Label Content="{Binding InfoLeft}"/>
-                    <Label Content="{Binding NetworkLeft}"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="40,0,0,0" Visibility="{Binding IsConverted, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock HorizontalAlignment="Center" Text="{Binding AssetConvert.ShortCode}"/>
-                    <Label Content="{Binding InfoConvert}"/>
-                    <Label Content="{Binding NetworkMiddle}"/>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="40,0,0,0">
-                    <TextBlock HorizontalAlignment="Left" Text="{Binding AssetRight.ShortCode}"/>
-                    <Label Content="{Binding InfoRight}"/>
-                    <prime:HumanTime DateTime="{Binding UtcCreated}" TextAlignment="Left"/>
+                    <TextBlock Text="{Binding AssetRight.ShortCode}" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding InfoRight}"/>
+                    <prime:HumanTime DateTime="{Binding UtcCreated}" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

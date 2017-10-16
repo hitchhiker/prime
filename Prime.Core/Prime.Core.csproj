@@ -229,6 +229,12 @@
     <Compile Include="Asset\AssetEventArgs.cs" />
     <Compile Include="Asset\AssetGoCommand.cs" />
     <Compile Include="Asset\AssetUtility.cs" />
+    <Compile Include="Asset\Messages\AssetAllRequestMessage.cs" />
+    <Compile Include="Asset\Messages\AssetAllResponseMessage.cs" />
+    <Compile Include="Asset\Messages\AssetFoundMessage.cs" />
+    <Compile Include="Asset\Messages\AssetMessenger.cs" />
+    <Compile Include="System\Messages\RequestorTokenMessageBase.cs" />
+    <Compile Include="System\Messages\IStartupMessenger.cs" />
     <Compile Include="Asset\Pair\Data\AssetExchangeEntry.cs" />
     <Compile Include="Asset\Pair\Data\AssetPairData.cs" />
     <Compile Include="Asset\Model\LatestPrice.cs" />

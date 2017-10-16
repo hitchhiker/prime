@@ -32,7 +32,7 @@ namespace Prime.Core
             var a = _cache.GetOrAdd(assetCode, Asset.InstanceRaw);
 
             if (!contains)
-                OnAssetsUpdated?.Invoke(this, new AssetEventArgs() {Added = a});
+                DefaultMessenger.I.Default.Send(new AssetFoundMessage(a));
             
             return a;
         }

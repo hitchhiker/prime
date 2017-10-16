@@ -25,7 +25,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </TextBox>
-                        <ComboBox Margin="0,0,20,0" 
+                        <ComboBox
                               IsSynchronizedWithCurrentItem="False"
                               IsEditable="True"
                               DisplayMemberPath="ShortCode"
@@ -40,14 +40,12 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Height="24">
-                        <TextBox  Margin="0,0,20,0" Text="{Binding Path=ConvertRight}" IsReadOnly="True" Width="150"/>
-                        <ComboBox IsSynchronizedWithCurrentItem="False"
-                              IsEditable="True"
-                              DisplayMemberPath="ShortCode"
-                              ItemsSource="{Binding Path=AllAssetsViewModel.Assets, UpdateSourceTrigger=LostFocus}" 
-                              SelectedItem="{Binding Path=AssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                        <ComboBox Margin="20,0,0,0" IsSynchronizedWithCurrentItem="False"
+                                  IsEditable="True"
+                                  DisplayMemberPath="ShortCode"
+                                  ItemsSource="{Binding Path=AllAssetsViewModel.Assets, UpdateSourceTrigger=LostFocus}" 
+                                  SelectedItem="{Binding Path=AssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />

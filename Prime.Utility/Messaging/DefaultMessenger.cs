@@ -7,7 +7,7 @@ namespace Prime.Utility
     {
         private DefaultMessenger()
         {
-            Default = new Messenger();
+            Default = Messenger.Default;
         }
 
         public static DefaultMessenger I => Lazy.Value;

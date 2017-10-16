@@ -18,15 +18,43 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             _screenViewModel = screenViewModel;
             _debouncer = new DebouncerThread();
-            "USD".ToAssetRaw();
-            "EUR".ToAssetRaw();
 
             Context = UserContext.Current;
             SelectedBaseAsset = Context.QuoteAsset;
+            var msg = DefaultMessenger.I.Default;
 
-            UpdateAssets();
+            msg.Register<AssetFoundMessage>(this, AssetFound);
 
-            Core.Assets.I.OnAssetsUpdated += (_, e) => _debouncer.Debounce(100, o => UpdateAssets());
+            msg.Register<AssetAllResponseMessage>(this, RetreiveAllAssets);
+
+            msg.Send(new AssetAllRequestMessage(RequesterTokenVm));
+        }
+
+        private void AssetFound(AssetFoundMessage m)
+        {
+            UiDispatcher.Invoke(() =>
+            {
+                Assets.Add(m.Asset);
+                _debouncer.Debounce(50, o => InvalidateProperties());
+            });
+        }
+
+        private void RetreiveAllAssets(AssetAllResponseMessage m)
+        {
+            if (m.RequesterToken != RequesterTokenVm)
+                return;
+
+            var msg = DefaultMessenger.I.Default;
+
+            UiDispatcher.Invoke(() =>
+            {
+                Assets.Clear();
+                foreach (var i in m.Assets)
+                    Assets.Add(i);
+
+                InvalidateProperties();
+                msg.Unregister<AssetAllResponseMessage>(this, RetreiveAllAssets);
+            });
         }
 
         public bool SetAsDefault { get; set; }
@@ -36,16 +64,8 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public AddressBoxModel AddressBoxModel { get; set; }
 
-        private void UpdateAssets()
+        private void InvalidateProperties()
         {
-            var currentAsssets = Core.Assets.I.Cached().Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
-
-            foreach (var i in Assets.Except(currentAsssets))
-                Assets.Remove(i);
-
-            foreach (var i in currentAsssets.Except(Assets))
-                Assets.Add(i);
-
             RaisePropertyChanged(nameof(Assets));
             CollectionViewSource.GetDefaultView(Assets).Refresh();
         }
@@ -63,7 +83,6 @@ namespace Prime.Ui.Wpf.ViewModel
                 return x;
             });
         }
-
 
         public BindingList<Asset> Assets { get; private set; } = new BindingList<Asset>();
     }
