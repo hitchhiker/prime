@@ -7,7 +7,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseAuthenticator : BaseAuthenticator
+    internal class CoinbaseAuthenticator : BaseAuthenticator
     {
         public CoinbaseAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
