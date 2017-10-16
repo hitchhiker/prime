@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using KrakenApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
 using Prime.Plugins.Services.Kraken;
