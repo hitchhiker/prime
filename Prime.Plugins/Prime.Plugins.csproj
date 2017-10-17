@@ -280,6 +280,10 @@
     <Compile Include="Services\3rdParty\Bittrex\ExchangeContext.cs" />
     <Compile Include="Services\3rdParty\Bittrex\IBittrexExchange.cs" />
     <Compile Include="Services\Base\IApiProvider.cs" />
+    <Compile Include="Services\BitFlyer\BitFlyerAuthenticator.cs" />
+    <Compile Include="Services\BitFlyer\BitFlyerProvider.cs" />
+    <Compile Include="Services\BitFlyer\BitFlyerSchema.cs" />
+    <Compile Include="Services\BitFlyer\IBitFlyerApi.cs" />
     <Compile Include="Services\BitMex\BitMexAuthenticator.cs" />
     <Compile Include="Services\BitMex\BitMexProvider.cs" />
     <Compile Include="Services\BitMex\BitMexSchema.cs" />
