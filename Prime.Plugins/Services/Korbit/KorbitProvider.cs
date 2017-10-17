@@ -62,9 +62,32 @@ namespace Prime.Plugins.Services.Korbit
             return latestPrice;
         }
 
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var moneyList = new List<Money>();
+
+            foreach (var asset in context.Assets)
+            {
+                var pair = new AssetPair(context.BaseAsset, asset);
+                var pairCode = GetKorbitTicker(pair);
+
+                var r = await api.GetTicker(pairCode);
+
+                moneyList.Add(new Money(r.last, asset));
+
+                ApiHelpers.EnterRate(this, context);
+            }
+
+            var latestPrices = new LatestPrices()
+            {
+                UtcCreated = DateTime.UtcNow,
+                BaseAsset = context.BaseAsset,
+                Prices = moneyList
+            };
+
+            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -162,7 +185,7 @@ namespace Prime.Plugins.Services.Korbit
 
         private string GetKorbitTicker(AssetPair pair)
         {
-            return pair.TickerUnderslash().ToLower();
+            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash().ToLower();
         }
     }
 }

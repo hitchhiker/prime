@@ -40,5 +40,15 @@ namespace Prime.Tests.Providers
             OrderBookContext = new OrderBookContext(new AssetPair("BTC", "KRW"));
             await base.TestGetOrderBookAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetLatestPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext("BTC".ToAssetRaw(), new List<Asset>()
+            {
+                "KRW".ToAssetRaw()
+            });
+            await base.TestGetLatestPricesAsync();
+        }
     }
 }
