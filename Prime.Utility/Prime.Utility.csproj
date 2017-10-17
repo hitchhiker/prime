@@ -275,6 +275,7 @@
     <Compile Include="Logging\LoggingLevel.cs" />
     <Compile Include="Logging\Default\NewLogMessage.cs" />
     <Compile Include="Logging\Logging.cs" />
+    <Compile Include="Messaging\MessengerExtensionMethods.cs" />
     <Compile Include="Misc\CommonFs.cs" />
     <Compile Include="Misc\NetworkMonitor.cs" />
     <Compile Include="Native\ExecuteDos.cs" />

@@ -23,7 +23,7 @@ namespace Prime.Core
             Id = id;
             Token = id.ToString();
             Username = username;
-            BookmarkMessenger = new BookmarkMessenger(this);
+            Messengers = TypeCatalogue.I.ImplementInstancesUninitialised<IUserContextMessenger>().Select(x=>x.GetInstance(this)).ToList();
         }
 
         public readonly string Token;
@@ -34,7 +34,7 @@ namespace Prime.Core
 
         private readonly UserSettings _userdatas = new UserSettings();
 
-        public readonly BookmarkMessenger BookmarkMessenger;
+        public readonly IList<IUserContextMessenger> Messengers;
 
         public static UserContext Current = new UserContext(new ObjectId("50709e6e210a18719ea877a2"), "test");
 

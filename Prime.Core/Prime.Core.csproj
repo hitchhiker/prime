@@ -284,8 +284,6 @@
     <Compile Include="Network\OhlcContext.cs" />
     <Compile Include="Provider\DataCache\ProviderDataCaches.cs" />
     <Compile Include="Network\PublicPriceContext.cs" />
-    <Compile Include="Network\WalletAddressAssetContext.cs" />
-    <Compile Include="Network\WalletAddressContext.cs" />
     <Compile Include="Navigation\Page\CommandContent.cs" />
     <Compile Include="Navigation\Page\GetUriResponse.cs" />
     <Compile Include="Navigation\Page\IPageUriProvider.cs" />
@@ -354,6 +352,7 @@
     <Compile Include="Trade\TimeInForceModel.cs" />
     <Compile Include="Trade\TradeTypeModel.cs" />
     <Compile Include="User\Bookmark\Messages\BookmarkMessenger.cs" />
+    <Compile Include="User\IUserContextMessenger.cs" />
     <Compile Include="User\WindowManager\IWindowManager.cs" />
     <Compile Include="User\UserSetting.cs" />
     <Compile Include="Public\PublicData.cs" />
@@ -417,6 +416,18 @@
     <Compile Include="User\WindowManager\WindowOpenState.cs" />
     <Compile Include="Asset\BaseAssetChangedMessage.cs" />
     <Compile Include="System\CoordinatorBase.cs" />
+    <Compile Include="Wallet\Address\Messages\WalletAddressRequestMessage.cs" />
+    <Compile Include="Wallet\Address\Messages\WalletAddressResponseMessage.cs" />
+    <Compile Include="Wallet\Address\Messages\WalletAllRequestMessage.cs" />
+    <Compile Include="Wallet\Address\Messages\WalletAllResponseMessage.cs" />
+    <Compile Include="Wallet\Address\WalletAddress.cs" />
+    <Compile Include="Wallet\Address\WalletAddresses.cs" />
+    <Compile Include="Wallet\Balance\BalanceResult.cs" />
+    <Compile Include="Wallet\Balance\BalanceResults.cs" />
+    <Compile Include="Wallet\Context\WalletAddressAssetContext.cs" />
+    <Compile Include="Wallet\Context\WalletAddressContext.cs" />
+    <Compile Include="Wallet\DEPREC\Model\WalletData.cs" />
+    <Compile Include="Wallet\DEPREC\Model\WalletDatas.cs" />
     <Compile Include="Wallet\IDepositService.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioChangedMessage.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioInfoItem.cs" />
@@ -425,17 +436,12 @@
     <Compile Include="Wallet\Portfolio\PortfolioLineItem.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioCoordinator.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioProviderContext.cs" />
-    <Compile Include="Wallet\BalanceResult.cs" />
-    <Compile Include="Wallet\BalanceResults.cs" />
     <Compile Include="Asset\IAssetCodeConverter.cs" />
     <Compile Include="Asset\IDescribesAssets.cs" />
     <Compile Include="Wallet\IWalletProvider.cs" />
-    <Compile Include="Wallet\Model\WalletData.cs" />
-    <Compile Include="Wallet\Model\WalletDatas.cs" />
     <Compile Include="Wallet\Portfolio\PortfolioTotalLineItem.cs" />
-    <Compile Include="Wallet\WalletAddresses.cs" />
-    <Compile Include="Wallet\WalletAddress.cs" />
     <Compile Include="Wallet\WalletExtensionMethods.cs" />
+    <Compile Include="Wallet\WalletMessenger.cs" />
     <Compile Include="Wallet\WalletProvider.cs" />
     <Compile Include="Watchlist\WatchlistItemModel.cs" />
   </ItemGroup>

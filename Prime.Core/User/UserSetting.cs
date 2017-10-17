@@ -9,7 +9,7 @@ namespace Prime.Core
         public static object Lock = new Object();
 
         [Bson]
-        public BookmarkedCommands BookmarkedCommands { get; private set; } = new BookmarkedCommands();
+        public BookmarkedCommands Bookmarks { get; private set; } = new BookmarkedCommands();
 
         [Bson]
         public UniqueList<WalletAddress> Addresses { get; private set; } = new UniqueList<WalletAddress>();
@@ -22,7 +22,7 @@ namespace Prime.Core
 
         public void AfterCreation(IDataContext context, IUniqueIdentifier<ObjectId> parentObject)
         {
-            BookmarkedCommands.Defaults();
+            Bookmarks.Defaults();
         }
     }
 }

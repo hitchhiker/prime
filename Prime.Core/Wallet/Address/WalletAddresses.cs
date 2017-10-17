@@ -15,7 +15,5 @@ namespace Prime.Core
         {
             base.Add(addr);
         }
-
-        public ObjectId NetworkId { get; set; }
     }
 }

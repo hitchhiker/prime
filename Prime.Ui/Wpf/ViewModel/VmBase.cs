@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Prime.Ui.Wpf.Annotations;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -23,6 +25,11 @@ namespace Prime.Ui.Wpf.ViewModel
         public string RequesterTokenVm => Id.ToString();
 
         public Dispatcher UiDispatcher => PrimeWpf.I.UiDispatcher;
+
+        /// <summary>
+        /// Shortcut to the current IMessenger instance.
+        ///  </summary>
+        public IMessenger M => MessengerInstance;
 
         [NotifyPropertyChangedInvocator]
         protected virtual bool Set<T>(ref T value, T newValue, Func<T, T> preFilter, [CallerMemberName] string propertyName = null)
@@ -46,7 +53,10 @@ namespace Prime.Ui.Wpf.ViewModel
 
             value = newValue;
             ((ObservableObject)this).RaisePropertyChanged(propertyName);
-            after.Invoke(newValue);
+            new Task(() =>
+            {
+                after.Invoke(newValue);
+            }).Start();
             return true;
         }
     }
