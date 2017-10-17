@@ -34,7 +34,9 @@ namespace Prime.Plugins.Services.Coinbase
 
         public ObjectId Id => IdHash;
 
-        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        // 10000 per hour.
+        // https://developers.coinbase.com/api/v2#rate-limiting
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(2, 1);
         public IRateLimiter RateLimiter => Limiter;
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
@@ -352,8 +354,7 @@ namespace Prime.Plugins.Services.Coinbase
                 else
                     currTsFrom = tsFrom;
 
-                // TODO: do something to ged rid of Thread.Sleep.
-                Thread.Sleep(500);
+                ApiHelpers.EnterRate(this, context);
             }
 
             return ohlc;

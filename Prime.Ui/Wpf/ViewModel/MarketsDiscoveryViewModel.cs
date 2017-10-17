@@ -1,20 +1,12 @@
-﻿using GalaSoft.MvvmLight.Command;
-using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
+﻿using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
 using Prime.Core.Exchange.Model;
+using Prime.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
-using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -27,26 +19,11 @@ namespace Prime.Ui.Wpf.ViewModel
             ListMarketControls = new BindingList<MarketControlViewModel>();
             ListSortBy = new BindingList<string>() { "Volume", "Popularity" };
             AddRequest(0, 2);
-
-            _messenger.Register<BookmarkHasChangedMessage>(this, _context.Token, UpdateStar);
-            _messenger.Register<BookmarkStatusResponseMessage>(this, _context.Token, UpdateStar);
-
-            _messenger.Send<BookmarkStatusRequestMessage>(new BookmarkStatusRequestMessage(GetPageCommand()), _context.Token);
-
-            ClickBookmarkCommand = new RelayCommand(() =>
-            {
-               _messenger.Send(new BookmarkSetMessage(GetPageCommand(), !isBookmarkSet), _context.Token);
-            });
         }
 
-        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
-        private bool isBookmarkSet;
-
-        public RelayCommand ClickBookmarkCommand { get; }
-
-        public string StarPath { get; private set; }
+        
         public BindingList<string> ListSortBy { get; private set; }
         public BindingList<MarketControlViewModel> ListMarketControls { get; private set; }
 
@@ -64,18 +41,6 @@ namespace Prime.Ui.Wpf.ViewModel
             {"../../Asset/img/LTC.png", "LTC"},
             {"../../Asset/img/XRP.png", "XRP"}
         };
-
-        private void UpdateStar(BookmarkMessageBase m)
-        {
-            if (!m.Bookmark.Equals(GetPageCommand()))
-                return;
-
-            Dispatcher.Invoke(() =>
-            {
-                isBookmarkSet = m.IsBookmarked;
-                StarPath = m.IsBookmarked ? "../../Asset/img/Star.png" : "../../Asset/img/Unstar.png";
-            });
-        }
 
         public void AddRequest(int currentPageIndex, int pageSize)
         {

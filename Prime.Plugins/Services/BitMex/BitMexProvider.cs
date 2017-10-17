@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider, IOrderBookProvider
+    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -22,6 +22,8 @@ namespace Prime.Plugins.Services.BitMex
 
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
 
+        private RestApiClientProvider<IBitMexApi> ApiProvider { get; }
+
         public BitMexProvider()
         {
             Network = new Network("BitMex");
@@ -31,6 +33,8 @@ namespace Prime.Plugins.Services.BitMex
             Id = IdHash;
             Priority = 100;
             GetApiConfiguration = ApiConfiguration.Standard2;
+
+            ApiProvider = RestApiClientProvider<IBitMexApi>.Create(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
 
             CanGenerateDepositAddress = false;
             CanMultiDepositAddress = false;
@@ -56,7 +60,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);//  GetApi<IBitMexApi>(context);
 
             var resolution = ConvertToBitMexInterval(context.Market);
             var startDate = context.Range.UtcFrom;
@@ -91,7 +95,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
 
             if (r == null)
@@ -119,7 +123,7 @@ namespace Prime.Plugins.Services.BitMex
             if (context.Assets.Count < 1)
                 throw new ArgumentException("The number of target assets should be greater than 0");
 
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync();
 
             if (r == null || r.Count < 1)
@@ -168,7 +172,7 @@ namespace Prime.Plugins.Services.BitMex
 
             return t;
 
-            // This code fetches all pairs including futures which are not supported for this moment.
+            // This code fetches all pairs including futures which are not supported at this moment.
 
             /* var api = GetApi<IBitMexApi>(context);
             var r = await api.GetInstrumentsActive();
@@ -182,14 +186,14 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetUserInfoAsync();
             return r != null;
         }
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var remoteAssetCode = context.Asset.ToRemoteCode(this);
             var depositAddress = await api.GetUserDepositAddressAsync(remoteAssetCode);
@@ -206,7 +210,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var addresses = new WalletAddresses();
 
             foreach (var assetPair in Pairs)
@@ -239,7 +243,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetUserWalletInfoAsync("XBt");
 
@@ -261,7 +265,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            var api = GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var pairCode = GetBitMexTicker(context.Pair);
 

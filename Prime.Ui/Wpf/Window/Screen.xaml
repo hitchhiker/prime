@@ -135,6 +135,15 @@
                     <StaticResource ResourceKey="DockingWindowTitleDataTemplate" />
                 </xcad:DockingManager.AnchorableTitleTemplate>
 
+                <xcad:DockingManager.DocumentHeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Height="20" Orientation="Horizontal" VerticalAlignment="Center">
+                            <prime:Star Margin="0,0,5,0"></prime:Star>
+                            <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Title}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </xcad:DockingManager.DocumentHeaderTemplate>
+
                 <xcad:DockingManager.LayoutUpdateStrategy>
                     <StaticResource ResourceKey="LayoutUpdateStrategy"/>
                 </xcad:DockingManager.LayoutUpdateStrategy>

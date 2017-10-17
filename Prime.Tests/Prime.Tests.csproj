@@ -63,11 +63,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Providers\BitFlyerTests.cs" />
     <Compile Include="Providers\BitMexTests.cs" />
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
+    <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
     <Compile Include="Providers\PoloniexTests.cs" />

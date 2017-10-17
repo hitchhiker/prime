@@ -384,6 +384,7 @@
     <Compile Include="ViewModel\MarketControlViewModel.cs" />
     <Compile Include="ViewModel\MarketsDiscoveryViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
+    <Compile Include="ViewModel\StarViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
     <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />
