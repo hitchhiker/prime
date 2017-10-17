@@ -280,7 +280,6 @@
     <Compile Include="Services\3rdParty\Bittrex\ExchangeContext.cs" />
     <Compile Include="Services\3rdParty\Bittrex\IBittrexExchange.cs" />
     <Compile Include="Services\Base\IApiProvider.cs" />
-    <Compile Include="Services\Base\IRestApiProvider.cs" />
     <Compile Include="Services\BitMex\BitMexAuthenticator.cs" />
     <Compile Include="Services\BitMex\BitMexProvider.cs" />
     <Compile Include="Services\BitMex\BitMexSchema.cs" />

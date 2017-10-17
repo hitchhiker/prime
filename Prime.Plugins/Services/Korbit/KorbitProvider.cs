@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 
@@ -32,7 +33,10 @@ namespace Prime.Plugins.Services.Korbit
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
-        public IRateLimiter RateLimiter { get; } = new NoRateLimits();
+
+        // https://apidocs.korbit.co.kr/#first_section
+        // ... Ticker calls are limited to 60 calls per 60 seconds. ...
+        public IRateLimiter RateLimiter { get; } = new PerMinuteRateLimiter(60, 1);
         public ApiConfiguration GetApiConfiguration { get; } = ApiConfiguration.Standard2;
 
         public bool CanMultiDepositAddress { get; } = false;
@@ -81,9 +85,54 @@ namespace Prime.Plugins.Services.Korbit
             return t;
         }
 
-        public Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var pairCode = GetKorbitTicker(context.Pair);
+
+            var r = await api.GetOrderBook(pairCode);
+
+            var bids = context.MaxRecordsCount.HasValue 
+                ? r.bids.Take(context.MaxRecordsCount.Value / 2) 
+                : r.bids;
+
+            var asks = context.MaxRecordsCount.HasValue
+                ? r.asks.Take(context.MaxRecordsCount.Value / 2)
+                : r.asks;
+
+            var orderBook = new OrderBook();
+
+            var dateTime = (r.timestamp / 1000).ToUtcDateTime();
+
+            foreach (var rBid in bids)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(rBid[0], context.Pair.Asset2),
+                        Time = dateTime,
+                        Volume = rBid[1]
+                    }
+                });
+            }
+
+            foreach (var rAsk in asks)
+            {
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
+                    {
+                        Price = new Money(rAsk[0], context.Pair.Asset2),
+                        Time = dateTime,
+                        Volume = rAsk[1]
+                    }
+                });
+            }
+
+            return orderBook;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

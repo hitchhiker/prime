@@ -13,5 +13,12 @@ namespace Prime.Plugins.Services.Korbit
             public long timestamp;
             public decimal last;
         }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

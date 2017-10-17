@@ -11,5 +11,8 @@ namespace Prime.Plugins.Services.Korbit
     {
         [Get("/ticker?currency_pair={currencyPair}")]
         Task<KorbitSchema.TickerResponse> GetTicker([Path] string currencyPair);
+
+        [Get("/orderbook?currency_pair={currencyPair}")]
+        Task<KorbitSchema.OrderBookResponse> GetOrderBook([Path] string currencyPair);
     }
 }
