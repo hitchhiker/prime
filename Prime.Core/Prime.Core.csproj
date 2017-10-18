@@ -264,12 +264,12 @@
     <Compile Include="Asset\Pair\Data\AssetExchangeEntry.cs" />
     <Compile Include="Asset\Pair\Data\AssetPairData.cs" />
     <Compile Include="Asset\Model\LatestPrice.cs" />
-    <Compile Include="Asset\Model\OhlcData.cs" />
-    <Compile Include="Asset\Model\OhlcDataExtensionMethods.cs" />
-    <Compile Include="Asset\Model\OhlcEntry.cs" />
-    <Compile Include="Asset\Model\TimeResolution.cs" />
+    <Compile Include="ChartData\OhlcData.cs" />
+    <Compile Include="ChartData\OhlcDataExtensionMethods.cs" />
+    <Compile Include="ChartData\OhlcEntry.cs" />
+    <Compile Include="ChartData\TimeResolution.cs" />
     <Compile Include="Asset\Model\LatestPrices.cs" />
-    <Compile Include="Asset\Model\TimeResolutionExtensionMethods.cs" />
+    <Compile Include="ChartData\TimeResolutionExtensionMethods.cs" />
     <Compile Include="Asset\Pair\AssetPairNormalised.cs" />
     <Compile Include="Exchange\BidAskData.cs" />
     <Compile Include="Exchange\IOrderBookProvider.cs" />
@@ -476,7 +476,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ChartData\" />
     <Folder Include="System\Apis\" />
   </ItemGroup>
   <ItemGroup>

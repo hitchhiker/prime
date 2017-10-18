@@ -8,9 +8,9 @@ namespace Prime.Core
 
         public static OpResult Fail => new OpResult();
 
-        public static OpResult From(bool isSuccess)
+        public static OpResult From()
         {
-            return new OpResult() {IsSuccess = isSuccess};
+            return new OpResult() {IsSuccess = true};
         }
 
         public static OpResult From(int count)

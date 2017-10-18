@@ -12,8 +12,8 @@
         <BitmapImage x:Key="StarEmpty" UriSource="/Asset/img/star-open.png" />
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="Transparent" Width="20" Height="20">
-        <ToggleButton Focusable="False" x:Name="Toggler" Cursor="Hand" HorizontalAlignment="Left" Margin="0"  VerticalAlignment="Top" Width="20" Height="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsTabStop="False" Command="{Binding ClickBookmarkCommand}">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Width="20" Height="20" Visibility="{Binding Path=IsEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
+        <ToggleButton Focusable="False" x:Name="Toggler" IsChecked="{Binding Path=IsBookmarked}" Cursor="Hand" HorizontalAlignment="Left" Margin="0"  VerticalAlignment="Top" Width="20" Height="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsTabStop="False" Command="{Binding ClickBookmarkCommand}">
             <ToggleButton.Style>
                 <Style TargetType="{x:Type ToggleButton}">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -25,21 +25,15 @@
                                     <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" RecognizesAccessKey="True" HorizontalAlignment="Center"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding = "{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsChecked}" Value="False" />
-                                            <Condition Binding = "{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-
+                                    <Trigger Property="IsChecked" Value="False">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <Image Source="{StaticResource StarEmpty}"/>
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="ToolTip" Value="Pin to sidebar"/>
-                                    </MultiDataTrigger>
-
-                                    <Trigger  Property="IsChecked" Value="True">
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <Image Source="{StaticResource Star}"/>
