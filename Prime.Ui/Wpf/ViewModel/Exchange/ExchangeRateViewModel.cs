@@ -17,18 +17,17 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public ExchangeRateViewModel()
         {
-        }
+            AllAssetsViewModel = new AllAssetsViewModel();
 
-        public ExchangeRateViewModel(ScreenViewModel model)
-        {
+            if (IsInDesignMode)
+                return;
+
             _assetLeft = Assets.I.GetRaw("BTC");
             _assetRight = UserContext.Current.QuoteAsset;
 
             _dispatcher = PrimeWpf.I.UiDispatcher;
             _debouncer = new DebouncerThread(_dispatcher);
-
-            ScreenViewModel = model;
-            AllAssetsViewModel = new AllAssetsViewModel(model);
+            
 
             foreach (var i in UserContext.Current.UserSettings.FavouritePairs)
                 _requests.Add(_coord.AddRequest(this, i));
@@ -45,8 +44,6 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly List<LatestPriceRequest> _requests = new List<LatestPriceRequest>();
         private readonly LatestPriceCoordinator _coord = LatestPriceCoordinator.I;
         private readonly DebouncerThread _debouncer;
-
-        public ScreenViewModel ScreenViewModel;
         public AllAssetsViewModel AllAssetsViewModel { get; }
 
         public RelayCommand GoCommand { get; }

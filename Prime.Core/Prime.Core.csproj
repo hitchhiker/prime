@@ -259,6 +259,13 @@
     <Compile Include="Asset\Messages\AssetAllResponseMessage.cs" />
     <Compile Include="Asset\Messages\AssetFoundMessage.cs" />
     <Compile Include="Asset\Messages\AssetMessenger.cs" />
+    <Compile Include="Asset\Messages\AssetNetworkRequestMessage.cs" />
+    <Compile Include="Asset\Messages\AssetNetworkResponseMessage.cs" />
+    <Compile Include="Asset\AssetProvider.cs" />
+    <Compile Include="Asset\Pair\Messages\AssetPairMessenger.cs" />
+    <Compile Include="Asset\Pair\Messages\AssetPairNetworkRequestMessage.cs" />
+    <Compile Include="Asset\Pair\Messages\AssetPairNetworkResponseMessage.cs" />
+    <Compile Include="Asset\Pair\AssetPairProvider.cs" />
     <Compile Include="System\Messages\RequestorTokenMessageBase.cs" />
     <Compile Include="System\Messages\IStartupMessenger.cs" />
     <Compile Include="Asset\Pair\Data\AssetExchangeEntry.cs" />
@@ -270,7 +277,6 @@
     <Compile Include="ChartData\TimeResolution.cs" />
     <Compile Include="Asset\Model\LatestPrices.cs" />
     <Compile Include="ChartData\TimeResolutionExtensionMethods.cs" />
-    <Compile Include="Asset\Pair\AssetPairNormalised.cs" />
     <Compile Include="Exchange\BidAskData.cs" />
     <Compile Include="Exchange\IOrderBookProvider.cs" />
     <Compile Include="Exchange\Model\ConversionResultModel.cs" />
@@ -326,8 +332,8 @@
     <Compile Include="DataLayer\Resolution\IOhlcResolutionApi.cs" />
     <Compile Include="DataLayer\Resolution\Context\OhlcResolutionContext.cs" />
     <Compile Include="DataLayer\Resolution\Context\OhlcResolutionAdapterContext.cs" />
-    <Compile Include="Asset\Pair\Discovery\AssetPairProviderDiscovery.cs" />
-    <Compile Include="DataLayer\Resolution\Context\PairProviderDiscoveryContext.cs" />
+    <Compile Include="Asset\Pair\Discovery\AssetPairDiscovery.cs" />
+    <Compile Include="Asset\Pair\Discovery\AssetPairDiscoveryContext.cs" />
     <Compile Include="DataLayer\Resolution\OhlcResolutionAdapter.cs" />
     <Compile Include="DataLayer\Resolution\Adapters\OhlcResolutionDataAdapterApi.cs" />
     <Compile Include="DataLayer\Resolution\Adapters\OhlcResolutionDataAdapterDb.cs" />

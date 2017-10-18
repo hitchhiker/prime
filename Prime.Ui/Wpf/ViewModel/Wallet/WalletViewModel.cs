@@ -11,12 +11,12 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class WalletViewModel : DocumentPaneViewModel
     {
-        private readonly ScreenViewModel _screenVm;
-
-        public WalletViewModel(ScreenViewModel screenVm)
+        public WalletViewModel()
         {
-            _screenVm = screenVm;
             Addresses = new ObservableCollection<WalletAddress>();
+            if (IsInDesignMode)
+                return;
+
             new Task(PullWallet).Start();
         }
 

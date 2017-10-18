@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Prime.Core
 {
-    public class OhlcResolutionAdapterContext : PairProviderDiscoveryContext
+    public class OhlcResolutionAdapterContext : AssetPairDiscoveryContext
     {
         public OhlcResolutionAdapterContext() { }
 
@@ -70,7 +70,7 @@ namespace Prime.Core
 
         public void DiscoverAndApplyApiProviders(bool overwrite = false)
         {
-            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairProviderDiscovery(this).Discover();
+            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairDiscovery(this).Discover();
 
             ProvidersForDirect = provs;
             ProvidersForConversion = provs.Via;

@@ -9,7 +9,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public AddressBarModel(IMessenger messenger, ScreenViewModel screenViewModel) : base(messenger)
         {
             _screenViewModel = screenViewModel;
-            AllAssetsViewModel = new AllAssetsViewModel(screenViewModel) {SetAsDefault = true};
+            AllAssetsViewModel = new AllAssetsViewModel() {SetAsDefault = true};
             AddressBoxModel = new AddressBoxModel(messenger, screenViewModel, this);
         }
 
