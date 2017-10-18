@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.TestConsole", "Prime.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Spark", "Prime.Radiant\Prime.Spark\Prime.Spark.csproj", "{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Tests", "Prime.Tests\Prime.Tests.csproj", "{36A24508-F6D8-4AC5-99CF-22F262EB9988}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Tests", "Prime.Tests\Prime.Tests.csproj", "{18167BC8-D838-442D-B6F0-C937C60401B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -202,36 +202,36 @@ Global
 		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Release|x64.Build.0 = Release|Any CPU
 		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Release|x86.ActiveCfg = Release|Any CPU
 		{2664AFFA-C342-46AB-AA68-2AF51EFD18F4}.Release|x86.Build.0 = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug_NoCache|Any CPU.ActiveCfg = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug_NoCache|Any CPU.Build.0 = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug_NoCache|x64.ActiveCfg = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug_NoCache|x64.Build.0 = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug_NoCache|x86.ActiveCfg = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug_NoCache|x86.Build.0 = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug|x64.Build.0 = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Debug|x86.Build.0 = Debug|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release (PDB)|Any CPU.ActiveCfg = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release (PDB)|Any CPU.Build.0 = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release (PDB)|x64.ActiveCfg = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release (PDB)|x64.Build.0 = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release (PDB)|x86.ActiveCfg = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release (PDB)|x86.Build.0 = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release|x64.ActiveCfg = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release|x64.Build.0 = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release|x86.ActiveCfg = Release|Any CPU
-		{36A24508-F6D8-4AC5-99CF-22F262EB9988}.Release|x86.Build.0 = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug_NoCache|Any CPU.ActiveCfg = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug_NoCache|Any CPU.Build.0 = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug_NoCache|x64.ActiveCfg = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug_NoCache|x64.Build.0 = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug_NoCache|x86.ActiveCfg = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug_NoCache|x86.Build.0 = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug|x64.Build.0 = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release (PDB)|Any CPU.ActiveCfg = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release (PDB)|Any CPU.Build.0 = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release (PDB)|x64.ActiveCfg = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release (PDB)|x64.Build.0 = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release (PDB)|x86.ActiveCfg = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release (PDB)|x86.Build.0 = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release|x64.ActiveCfg = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release|x64.Build.0 = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{18167BC8-D838-442D-B6F0-C937C60401B0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
 		SolutionGuid = {AB3338C3-8F2B-4EB7-A11D-BAE260973036}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 EndGlobal
