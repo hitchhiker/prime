@@ -152,6 +152,8 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(c != null);
                 Assert.IsTrue(c.BaseAsset.Equals(PublicPriceContext.Pair.Asset1));
                 Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
+
+                Trace.WriteLine($"Latest price for {c.BaseAsset}: {c.Price.Display}");
             }
             catch (Exception e)
             {
@@ -179,6 +181,12 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(c != null);
                 Assert.IsTrue(c.BaseAsset.Equals(PublicPricesContext.BaseAsset));
                 Assert.IsTrue(c.Prices.Count == PublicPricesContext.Assets.Count);
+
+                Console.WriteLine($"Latest prices for {c.BaseAsset}:");
+                foreach (var latestPrice in c.Prices)
+                {
+                    Console.WriteLine(latestPrice.Display);
+                }
             }
             catch (Exception e)
             {

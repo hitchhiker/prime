@@ -18,7 +18,6 @@ namespace Prime.Plugins.Services.Binance
 
         private RestApiClientProvider<IBinanceApi> ApiProvider { get; }
 
-
         public ObjectId Id => IdHash;
         public Network Network { get; } = new Network("Binance");
         public bool Disabled { get; } = false;
@@ -70,11 +69,33 @@ namespace Prime.Plugins.Services.Binance
             return latestPrice;
         }
 
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
+            var api = ApiProvider.GetApi(context);
 
+            var moneyList = new List<Money>();
 
-            throw new NotImplementedException();
+            var r = await api.GetSymbolPriceTicker();
+
+            foreach (var asset in context.Assets)
+            {
+                var currentAssetPair = new AssetPair(context.BaseAsset, asset);
+                var rPrice = r.FirstOrDefault(x => x.symbol.Equals(currentAssetPair.TickerSimple()));
+
+                if (rPrice == null)
+                    continue;
+
+                moneyList.Add(new Money(rPrice.price, asset));
+            }
+
+            var latestPrices = new LatestPrices()
+            {
+                BaseAsset = context.BaseAsset,
+                Prices = moneyList,
+                UtcCreated = DateTime.UtcNow
+            };
+
+            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)
