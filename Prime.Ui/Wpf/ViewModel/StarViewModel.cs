@@ -16,13 +16,12 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             _paneVm = paneVm;
             _context = UserContext.Current;
-
-            _messenger.RegisterAsync<BookmarkHasChangedMessage>(this, _context.Token, UpdateStar);
-            _messenger.RegisterAsync<BookmarkStatusResponseMessage>(this, _context.Token, UpdateStar);
-
             _paneCommand = _paneVm.GetPageCommand();
 
-            _messenger.Send<BookmarkStatusRequestMessage>(new BookmarkStatusRequestMessage(_paneCommand), _context.Token);
+            _messenger.RegisterAsync<BookmarkHasChangedMessage>(this, _context.Token, SetBookmarkedState);
+            _messenger.RegisterAsync<BookmarkStatusResponseMessage>(this, _context.Token, SetBookmarkedState);
+
+            _messenger.SendAsync<BookmarkStatusRequestMessage>(new BookmarkStatusRequestMessage(_paneCommand), _context.Token);
 
             ClickBookmarkCommand = new RelayCommand(() =>
             {
@@ -48,7 +47,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public RelayCommand ClickBookmarkCommand { get; }
 
-        private void UpdateStar(BookmarkMessageBase m)
+        private void SetBookmarkedState(BookmarkMessageBase m)
         {
             if (!m.Bookmark.Equals(_paneCommand))
                return;
