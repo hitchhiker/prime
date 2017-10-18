@@ -22,5 +22,33 @@ namespace Prime.Tests.Providers
         {
             await base.TestGetAssetPairsAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetLatestPriceAsync()
+        {
+            await base.TestGetLatestPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetLatestPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext(Asset.Btc, new List<Asset>()
+            {
+                "USD".ToAssetRaw(),
+                "JPY".ToAssetRaw()
+            });
+
+            await base.TestGetLatestPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetOrderBookAsync()
+        {
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()));
+            await base.TestGetOrderBookAsync();
+
+            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()), 20);
+            await base.TestGetOrderBookAsync();
+        }
     }
 }

@@ -30,7 +30,10 @@ namespace Prime.Plugins.Services.Kraken
 
         public string Title => Network.Name;
 
-        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        // 'Ledger/trade history calls increase the counter by 2. ... Tier 2 users have a maximum of 15 and their count gets reduced by 1 every 3 seconds.'
+        // Worst case scenario is considered here.
+        // https://www.kraken.com/help/api
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1);
         public IRateLimiter RateLimiter => Limiter;
 
         private JsonSerializerSettings CreateJsonSerializerSettings()
@@ -87,7 +90,6 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            // TODO: Check, price is taken from "last trade closed array(<price>, <lot volume>)".
             var money = new Money(r.result.FirstOrDefault().Value.c[0], context.Pair.Asset2);
             var price = new LatestPrice()
             {
@@ -114,6 +116,8 @@ namespace Prime.Plugins.Services.Kraken
                 CheckResponseErrors(r);
 
                 prices.Add(new Money(r.result.FirstOrDefault().Value.c[0], asset));
+
+                ApiHelpers.EnterRate(this, context);
             }
 
             var latestPrices = new LatestPrices()

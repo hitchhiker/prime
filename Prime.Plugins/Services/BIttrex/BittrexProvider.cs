@@ -32,7 +32,9 @@ namespace Prime.Plugins.Services.Bittrex
         //3d3bdcb685a3455f965f0e78ead0cbba
         public ObjectId Id => IdHash;
 
-        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        // No information in API documents.
+        // https://bitcoin.stackexchange.com/questions/53778/bittrex-api-rate-limit
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60, 1);
         public IRateLimiter RateLimiter => Limiter;
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
@@ -88,6 +90,8 @@ namespace Prime.Plugins.Services.Bittrex
                 CheckResponseErrors(r);
 
                 moneyList.Add(new Money(1 / r.result.Last, asset));
+
+                ApiHelpers.EnterRate(this, context);
             }
 
             var latestPrices = new LatestPrices()
