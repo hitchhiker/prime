@@ -63,6 +63,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Providers\BinanceTests.cs" />
     <Compile Include="Providers\BitFlyerTests.cs" />
     <Compile Include="Providers\BitMexTests.cs" />
     <Compile Include="Providers\BitStampTests.cs" />
