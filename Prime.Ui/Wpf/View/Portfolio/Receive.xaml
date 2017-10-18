@@ -19,9 +19,9 @@
                       SelectedItem="{Binding Path=ServiceSelected, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ComboBox>
 
-                    <ComboBox Height="30" IsEditable="False" Margin="0,0,10,0"
+                    <ComboBox Height="30" IsEditable="False" Margin="0,0,10,0" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                          DisplayMemberPath="FullName"
+                          DisplayMemberPath="ShortCode"
                           ItemsSource="{Binding Path=Assets, NotifyOnTargetUpdated=True}" 
                           SelectedItem="{Binding Path=AssetSelected, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ComboBox>

@@ -69,7 +69,6 @@
     <Compile Include="Providers\KrakenTests.cs" />
     <Compile Include="Providers\PoloniexTests.cs" />
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

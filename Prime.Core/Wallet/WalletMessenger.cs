@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Utility;
 
@@ -15,6 +16,18 @@ namespace Prime.Core
             _userContext = userContext;
             _token = _userContext.Token;
             _messenger.RegisterAsync<WalletAllRequestMessage>(this, _token, WalletAllRequestMessage);
+            _messenger.RegisterAsync<WalletAddressRequestMessage>(this, _token, WalletAddressRequestMessage);
+        }
+
+        private async void WalletAddressRequestMessage(WalletAddressRequestMessage m)
+        {
+            var newAddresses = await _userContext.WalletProvider.GenerateNewAddress(m.Network, m.Asset);
+
+            if (newAddresses == null)
+                return;
+            
+            foreach (var a in newAddresses)
+                _messenger.SendAsync(new WalletAddressResponseMessage(a), _userContext.Token);
         }
 
         public IUserContextMessenger GetInstance(UserContext context)
@@ -24,7 +37,7 @@ namespace Prime.Core
 
         private void WalletAllRequestMessage(WalletAllRequestMessage m)
         {
-            _messenger.Send(new WalletAllResponseMessage(null), _token);
+            _messenger.SendAsync(new WalletAllResponseMessage(_userContext.UserSettings.Addresses), _token);
         }
 
         public void Dispose()

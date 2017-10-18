@@ -20,16 +20,16 @@ namespace Prime.Ui.Wpf.ViewModel
             Services = Networks.I.WalletProviders;
             ServiceSelected = Services.FirstProvider();
             ServiceChanged(false);
+            var uc = UserContext.Current;
 
             ClickCommand = new RelayCommand(AddAddress);
-            WalletAddresses = new BindingList<WalletAddress>(WalletProvider.GetAll().ToList());
 
-            M.RegisterAsync<WalletAddressResponseMessage>(this, UiDispatcher, m =>
+            M.RegisterAsync<WalletAddressResponseMessage>(this, uc.Token, UiDispatcher, m =>
             {
                 WalletAddresses.Add(m.Address);
             });
 
-            M.RegisterAsync<WalletAllResponseMessage>(this, UiDispatcher, m =>
+            M.RegisterAsync<WalletAllResponseMessage>(this, uc.Token, UiDispatcher, m =>
             {
                 foreach (var a in m.Addresses)
                     WalletAddresses.Add(a);
@@ -54,13 +54,16 @@ namespace Prime.Ui.Wpf.ViewModel
 
                     if (raiseChanged)
                         RaisePropertyChanged(() => Assets);
+
+                    if (AssetSelected == null)
+                        AssetSelected = Assets.EqualOrPegged(UserContext.Current.QuoteAsset) ?? Assets.FirstOrDefault();
                 });
             }).Start();
         }
 
         private void AddAddress()
         {
-            M.SendAsync(new WalletAddressRequestMessage(ServiceSelected.Network, AssetSelected));
+            M.SendAsync(new WalletAddressRequestMessage(ServiceSelected.Network, AssetSelected), UserContext.Current.Token);
         }
 
         public WalletProvider WalletProvider => UserContext.Current.WalletProvider;

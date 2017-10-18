@@ -40,6 +40,13 @@ namespace Prime.Utility
             messenger.Register<TMessage>(recipient, Ka);
         }
 
+        public static void RegisterAsync<TMessage>(this IMessenger messenger, object recipient, object token, Dispatcher dispatcher, Action<TMessage> action)
+        {
+            void Ka(TMessage m) => RegisterAction(dispatcher, action, m);
+            KeepAlive.Add(new Tuple<object, object>(recipient, (Action<TMessage>)Ka));
+            messenger.Register<TMessage>(recipient, token, Ka);
+        }
+
         public static void RegisterAsync<TMessage>(this IMessenger messenger, object recipient, Dispatcher dispatcher, Action<TMessage> action)
         {
             void Ka(TMessage m) => RegisterAction(dispatcher, action, m);

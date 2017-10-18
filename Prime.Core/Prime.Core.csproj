@@ -253,7 +253,6 @@
     <Compile Include="Api\Request\RateLimits\PerMinuteRateLimiter.cs" />
     <Compile Include="Api\Request\RateLimits\IRateLimiter.cs" />
     <Compile Include="Api\Request\RateLimits\NoRateLimits.cs" />
-    <Compile Include="Asset\AssetEventArgs.cs" />
     <Compile Include="Asset\AssetGoCommand.cs" />
     <Compile Include="Asset\AssetUtility.cs" />
     <Compile Include="Asset\Messages\AssetAllRequestMessage.cs" />
@@ -441,7 +440,7 @@
     <Compile Include="User\WindowManager\WindowInstanceBase.cs" />
     <Compile Include="User\WindowManager\WindowInstances.cs" />
     <Compile Include="User\WindowManager\WindowOpenState.cs" />
-    <Compile Include="Asset\BaseAssetChangedMessage.cs" />
+    <Compile Include="Asset\Messages\QuoteAssetChangedMessage.cs" />
     <Compile Include="System\CoordinatorBase.cs" />
     <Compile Include="Wallet\Address\Messages\WalletAddressRequestMessage.cs" />
     <Compile Include="Wallet\Address\Messages\WalletAddressResponseMessage.cs" />

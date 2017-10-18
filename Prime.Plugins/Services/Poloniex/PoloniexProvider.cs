@@ -248,9 +248,10 @@ namespace Prime.Plugins.Services.Poloniex
                     addresses.Add(new WalletAddress(this, balance.Key.ToAsset(this)) { Address = balance.Value });
                 }
             }
-            catch
+            catch (Exception e)
             {
-                throw new ApiResponseException("Unable to get deposit addresses, please check that your account is verified", this);
+                // "Unable to get deposit addresses, please check that your account is verified"
+                throw new ApiResponseException(e, this);
             }
 
             return addresses;
