@@ -222,6 +222,12 @@ namespace Prime.Tests.Providers
                 var balances = await provider.GetBalancesAsync(ctx);
 
                 Assert.IsTrue(balances != null);
+
+                Trace.WriteLine("User balances: ");
+                foreach (var b in balances)
+                {
+                    Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Balance} balance, {b.Reserved} reserved");
+                }
             }
             catch (Exception e)
             {

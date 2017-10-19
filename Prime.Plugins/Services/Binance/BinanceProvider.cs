@@ -239,7 +239,7 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
@@ -252,9 +252,26 @@ namespace Prime.Plugins.Services.Binance
             return r != null;
         }
 
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAccountInformation();
+
+            var balances = new BalanceResults();
+
+            foreach (var b in r.balances)
+            {
+                var asset = b.asset.ToAsset(this);
+
+                balances.Add(new BalanceResult(asset)
+                {
+                    Available = new Money(b.free, asset),
+                    Balance = new Money(b.free, asset),
+                    Reserved = new Money(b.locked, asset)
+                });
+            }
+
+            return balances;
         }
     }
 }
