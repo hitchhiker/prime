@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Core;
+using Prime.Core.Exchange;
 
 namespace Prime.Tests.Providers
 {
@@ -182,10 +184,10 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(c.BaseAsset.Equals(PublicPricesContext.BaseAsset));
                 Assert.IsTrue(c.Prices.Count == PublicPricesContext.Assets.Count);
 
-                Console.WriteLine($"Latest prices for {c.BaseAsset}:");
+                Trace.WriteLine($"Latest prices for {c.BaseAsset}:");
                 foreach (var latestPrice in c.Prices)
                 {
-                    Console.WriteLine(latestPrice.Display);
+                    Trace.WriteLine(latestPrice.Display);
                 }
             }
             catch (Exception e)
@@ -280,6 +282,12 @@ namespace Prime.Tests.Providers
                     Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
                 else
                     Assert.IsTrue(r.Count > 0);
+
+                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderBookType.Ask)} asks, {r.Count(x => x.Type == OrderBookType.Bid)} bids): ");
+                foreach (var obr in r)
+                {
+                    Trace.WriteLine($"{obr.Data.Time} | For {OrderBookContext.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
+                }
             }
             catch (Exception e)
             {

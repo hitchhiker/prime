@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Core;
+using Prime.Core.Exchange;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
@@ -166,9 +167,71 @@ namespace Prime.Plugins.Services.Binance
             return assetPair;
         }
 
-        public Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            throw new NotImplementedException();
+            CheckOrderRecordsInputNumber(context.MaxRecordsCount);
+
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.TickerSimple();
+
+            var r = context.MaxRecordsCount.HasValue
+                ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2)
+                : await api.GetOrderBook(pairCode);
+
+            var orderBook = new OrderBook();
+
+            foreach (var rBid in r.asks)
+            {
+                var bid = GetOrderBookRecordData(rBid);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Bid,
+                    Data = new BidAskData()
+                    {
+                        Time = DateTime.UtcNow,
+                        Price = new Money(bid.Price, context.Pair.Asset2),
+                        Volume = bid.Volume
+                    }
+                });
+            }
+
+            foreach (var rAsk in r.asks)
+            {
+                var ask = GetOrderBookRecordData(rAsk);
+
+                orderBook.Add(new OrderBookRecord()
+                {
+                    Type = OrderBookType.Ask,
+                    Data = new BidAskData()
+                    {
+                        Time = DateTime.UtcNow,
+                        Price = new Money(ask.Price, context.Pair.Asset2),
+                        Volume = ask.Volume
+                    }
+                });
+            }
+
+            return orderBook;
+        }
+
+        private (decimal Price, decimal Volume) GetOrderBookRecordData(object[] rawEntry)
+        {
+            if(!decimal.TryParse(rawEntry[0].ToString(), out var price))
+                throw new ApiResponseException("Incorrect format of returned price", this);
+
+            if(!decimal.TryParse(rawEntry[1].ToString(), out var volume))
+                throw new ApiResponseException("Incorrect format of returned volume", this);
+
+            return (price, volume);
+        }
+
+        private void CheckOrderRecordsInputNumber(int? recordsNumber)
+        {
+            var validRecordsCount = new int[] { 5, 10, 20, 50, 100, 200, 500 };
+
+            if (recordsNumber.HasValue && !validRecordsCount.Contains(recordsNumber.Value))
+                throw new ArgumentException("Specified number of order book records is not supported");
         }
 
         public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)

@@ -5,14 +5,14 @@ namespace plugins
 {
     public class DebugDeserialiser : ResponseDeserializer
     {
-        public T Deserialize<T>(string content, HttpResponseMessage response)
+        public override T Deserialize<T>(string content, HttpResponseMessage response, ResponseDeserializerInfo info)
         {
             // Consider caching generated XmlSerializers
             var serializer = new JsonResponseDeserializer();
             if (content.Contains("Error"))
                 return default(T);
 
-            return serializer.Deserialize<T>(content, response, new ResponseDeserializerInfo());
+            return base.Deserialize<T>(content, response, info);
         }
     }
 }

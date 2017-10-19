@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using plugins;
 using Prime.Core;
 using Prime.Plugins.Services.BitMex;
 using RestEase;
@@ -29,7 +30,10 @@ namespace Prime.Plugins.Services
 
         public T GetApi(NetworkProviderContext context)
         {
-            return RestClient.For<T>(_apiUrl) as T;
+            return new RestClient(_apiUrl)
+            {
+                // ResponseDeserializer = new DebugDeserialiser()
+            }.For<T>();
         }
 
         public T GetApi(NetworkProviderPrivateContext context)
