@@ -8,7 +8,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         internal class TickerResponse : Dictionary<string, TickerEntryResponse> { }
 
-        internal class DepositAddressesResponse : List<KeyValuePair<string, string>> { }
+        internal class DepositAddressesResponse : Dictionary<string, string> { }
 
         internal class ChartEntriesResponse : List<ChartEntryResponse> { }
 

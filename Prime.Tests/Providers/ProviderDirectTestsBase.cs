@@ -235,9 +235,15 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var addresses = await provider.GetAddressesAsync(ctx);
+                var r = await provider.GetAddressesAsync(ctx);
 
-                Assert.IsTrue(addresses != null);
+                Assert.IsTrue(r != null);
+
+                Trace.WriteLine($"All deposit addresses:");
+                foreach (var walletAddress in r)
+                {
+                    Trace.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
+                }
             }
             catch (Exception e)
             {
@@ -259,6 +265,12 @@ namespace Prime.Tests.Providers
                 var r = await provider.GetAddressesForAssetAsync(WalletAddressAssetContext);
 
                 Assert.IsTrue(r != null);
+
+                Trace.WriteLine($"Deposit addresses for {WalletAddressAssetContext.Asset}:");
+                foreach (var walletAddress in r)
+                {
+                    Trace.WriteLine($"\"{walletAddress.Address}\"");
+                }
             }
             catch (Exception e)
             {
