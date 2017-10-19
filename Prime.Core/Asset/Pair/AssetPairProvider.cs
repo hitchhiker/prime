@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Nito.AsyncEx;
 using Prime.Utility;
 
 namespace Prime.Core
@@ -12,6 +13,8 @@ namespace Prime.Core
         internal static AssetPairProvider I => Lazy.Value;
         private static readonly Lazy<AssetPairProvider> Lazy = new Lazy<AssetPairProvider>(()=>new AssetPairProvider());
 
+        private readonly CacheDictionary<IExchangeProvider, AssetPairs> _cache = new CacheDictionary<IExchangeProvider, AssetPairs>(TimeSpan.FromHours(12));
+
         public async Task<AssetPairs> GetPairsAsync(Network network)
         {
             var prov = network?.Providers.OfType<IExchangeProvider>().FirstOrDefault();
@@ -21,11 +24,17 @@ namespace Prime.Core
                 return null;
             }
 
-            var r = await ApiCoordinator.GetAssetPairsAsync(prov);
-            if (r.IsNull)
-                return null;
+            var task = new Task<AssetPairs>(() =>
+            {
+                return _cache.Try(prov, k =>
+                {
+                    var r = AsyncContext.Run(() => ApiCoordinator.GetAssetPairsAsync(k));
+                    return r.Response;
+                });
+            });
 
-            return r.Response;
+            task.Start();
+            return await task;
         }
     }
 }
