@@ -10,6 +10,25 @@ namespace Prime.Plugins.Services.Binance
     {
         internal class LatestPricesResponse : List<LatestPriceResponse> { }
 
+        internal class UserInformationResponse
+        {
+            public decimal makerCommission;
+            public decimal takerCommission;
+            public decimal buyerCommission;
+            public decimal sellerCommission;
+            public bool canTrade;
+            public bool canWithdraw;
+            public bool canDeposit;
+            public UserBalanceResponse[] balances;
+        }
+
+        internal class UserBalanceResponse
+        {
+            public string asset;
+            public decimal free;
+            public decimal locked;
+        }
+
         internal class OrderBookResponse
         {
             public long lastUpdateId;

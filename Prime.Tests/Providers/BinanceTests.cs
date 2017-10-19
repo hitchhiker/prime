@@ -60,5 +60,11 @@ namespace Prime.Tests.Providers
             OrderBookContext = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()), 20);
             await base.TestGetOrderBookAsync();
         }
+
+        [TestMethod]
+        public override async Task TestApiAsync()
+        {
+            await base.TestApiAsync();
+        }
     }
 }

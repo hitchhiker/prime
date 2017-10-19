@@ -12,8 +12,8 @@ namespace Prime.Plugins.Services.Binance
 {
     public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider
     {
-        public const string BinanceApiVersion = "v1";
-        public const string BinanceApiUrl = "https://www.binance.com/api/" + BinanceApiVersion;
+        // public const string BinanceApiVersion = "v1";
+        public const string BinanceApiUrl = "https://www.binance.com/api";
 
         private static readonly ObjectId IdHash = "prime:bitflyer".GetObjectIdHashCode();
 
@@ -244,9 +244,12 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
-        public Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAccountInformation();
+
+            return r != null;
         }
 
         public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
