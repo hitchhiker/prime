@@ -281,8 +281,10 @@
     <Compile Include="Logging\Default\NewLogMessage.cs" />
     <Compile Include="Logging\Logging.cs" />
     <Compile Include="Messaging\MessengerExtensionMethods.cs" />
+    <Compile Include="Misc\CacheDictionary.cs" />
+    <Compile Include="Misc\CacheItem.cs" />
     <Compile Include="Misc\CommonFs.cs" />
-    <Compile Include="Misc\NetworkMonitor.cs" />
+    <Compile Include="Misc\NetworkTraffic.cs" />
     <Compile Include="Native\ExecuteDos.cs" />
     <Compile Include="Native\ProcessExiter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
