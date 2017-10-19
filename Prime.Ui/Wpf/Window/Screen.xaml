@@ -138,7 +138,7 @@
                 <xcad:DockingManager.DocumentHeaderTemplate>
                     <DataTemplate>
                         <StackPanel Height="20" Orientation="Horizontal" VerticalAlignment="Center">
-                            <prime:Star Margin="0,0,5,0"></prime:Star>
+                            <prime:Star Margin="0,0,5,0" DataContext="{Binding Path=Content.StarViewModel}"/>
                             <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Title}"/>
                         </StackPanel>
                     </DataTemplate>

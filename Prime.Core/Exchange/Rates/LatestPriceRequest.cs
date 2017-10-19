@@ -45,8 +45,8 @@ namespace Prime.Core.Exchange.Rates
 
         private void Discovery()
         {
-            var pc = new PairProviderDiscoveryContext { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
-            var d = new AssetPairProviderDiscovery(pc);
+            var pc = new AssetPairDiscoveryContext { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
+            var d = new AssetPairDiscovery(pc);
             var r = d.Discover();
 
             if (r?.Provider == null)

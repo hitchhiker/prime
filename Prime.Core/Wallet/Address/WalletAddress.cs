@@ -9,22 +9,16 @@ namespace Prime.Core
 
         public WalletAddress(IWalletService service, Asset asset)
         {
-            Service = service;
+            Network = service.Network;
             UtcCreated = UtcLastChecked = DateTime.UtcNow;
             Asset = asset;
         }
 
         [Bson]
-        public IWalletService Service { get; private set; }
+        public Network Network { get; private set; }
 
         [Bson]
         public Asset Asset { get; private set; }
-
-        [Bson]
-        public DateTime UtcCreated { get; set; }
-
-        [Bson]
-        public DateTime UtcLastChecked { get; set; }
 
         [Bson]
         public string Address { get; set; }
@@ -33,9 +27,15 @@ namespace Prime.Core
         public string Tag { get; set; }
 
         [Bson]
+        public DateTime UtcCreated { get; set; }
+
+        [Bson]
+        public DateTime UtcLastChecked { get; set; }
+
+        [Bson]
         public DateTime ExpiresUtc { get; set; }
 
-        public string ServiceName => Service?.Title ?? "Unknown";
+        public string ServiceName => Network?.Name ?? "Unknown";
 
         public override string ToString()
         {
@@ -56,7 +56,7 @@ namespace Prime.Core
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Service?.Id, other?.Service.Id) && Equals(Asset, other.Asset);
+            return Equals(Network, other.Network) && Equals(Asset, other.Asset) && string.Equals(Address, other.Address) && string.Equals(Tag, other.Tag);
         }
 
         public override bool Equals(object obj)
@@ -71,7 +71,11 @@ namespace Prime.Core
         {
             unchecked
             {
-                return ((Service != null ? Service.GetHashCode() : 0) * 397) ^ (Asset != null ? Asset.GetHashCode() : 0);
+                var hashCode = (Network != null ? Network.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Asset != null ? Asset.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Address != null ? Address.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Tag != null ? Tag.GetHashCode() : 0);
+                return hashCode;
             }
         }
     }

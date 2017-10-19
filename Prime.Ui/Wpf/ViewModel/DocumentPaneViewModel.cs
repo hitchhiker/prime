@@ -1,5 +1,6 @@
 using GalaSoft.MvvmLight;
 using Prime.Core;
+using Prime.Ui.Wpf.ViewModel;
 
 namespace Prime.Ui.Wpf
 {
@@ -13,6 +14,7 @@ namespace Prime.Ui.Wpf
         }
 
         private string _key;
+
         public string Key
         {
             get => _key;
@@ -21,6 +23,12 @@ namespace Prime.Ui.Wpf
 
         public abstract CommandContent GetPageCommand();
 
-        public override void Dispose() { }
+        private StarViewModel _starViewModel;
+        public StarViewModel StarViewModel => _starViewModel ?? (_starViewModel = new StarViewModel(this));
+
+        public override void Dispose()
+        {
+            _starViewModel?.Dispose();
+        }
     }
 }

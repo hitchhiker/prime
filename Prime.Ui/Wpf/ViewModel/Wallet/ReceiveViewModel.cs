@@ -1,56 +1,76 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using Prime.Core;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
     public class ReceiveViewModel : DocumentPaneViewModel
     {
-        private readonly ScreenViewModel _screen;
-
         public RelayCommand ClickCommand { get; private set; }
 
-        public ReceiveViewModel(ScreenViewModel screen)
+        public ReceiveViewModel()
         {
-            _screen = screen;
+            if (IsInDesignMode)
+                return;
+
+            var uc = UserContext.Current;
+
+            ClickCommand = new RelayCommand(AddAddress);
+
+            M.RegisterAsync<WalletAddressResponseMessage>(this, uc.Token, UiDispatcher, m =>
+            {
+                WalletAddresses.Add(m.Address);
+            });
+
+            M.RegisterAsync<WalletAllResponseMessage>(this, uc.Token, UiDispatcher, m =>
+            {
+                foreach (var a in m.Addresses)
+                    WalletAddresses.Add(a);
+            });
+
+            M.RegisterAsync<AssetNetworkResponseMessage>(this, UiDispatcher, m =>
+            {
+                UpdateAssets(m.Assets);
+            });
+
             Services = Networks.I.WalletProviders;
             ServiceSelected = Services.FirstProvider();
-            PropertyChanged += ReceiveViewModel_PropertyChanged;
-            ClickCommand = new RelayCommand(AddAddress);
-            WalletAddresses = new BindingList<WalletAddress>(WalletProvider.GetAll().ToList());
-        }
 
-        private void ReceiveViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ServiceSelected))
-                ServiceChanged();
+            ServiceChanged();
         }
-
+        
         private void ServiceChanged()
         {
-            Assets.Clear();
-            var assets = PublicContext.I.ExchangeDatas.GetOrCreate(PublicContext.I, ServiceSelected).Assets;
+            UiDispatcher.Invoke(delegate
+            {
+                Assets.Clear();
 
+                if (ServiceSelected != null)
+                    M.SendAsync(new AssetNetworkRequestMessage(ServiceSelected?.Network));
+            });
+        }
+
+        private void UpdateAssets(IReadOnlyList<Asset> assets)
+        {
             if (!assets.Contains(AssetSelected))
                 AssetSelected = null;
 
             foreach (var i in assets)
                 Assets.Add(i);
 
-            RaisePropertyChanged(()=> Assets);
+            RaisePropertyChanged(() => Assets);
+
+            if (AssetSelected == null)
+                AssetSelected = Assets.EqualOrPegged(UserContext.Current.QuoteAsset) ?? Assets.FirstOrDefault();
         }
 
         private void AddAddress()
         {
-            var t = WalletProvider.AddAddressAsync(ServiceSelected, AssetSelected);
-            t.ContinueWith(ta =>
-            {
-                WalletAddresses.Clear();
-                foreach (var i in WalletProvider.GetAll())
-                    WalletAddresses.Add(i);
-            });
+            M.SendAsync(new WalletAddressRequestMessage(ServiceSelected.Network, AssetSelected), UserContext.Current.Token);
         }
 
         public WalletProvider WalletProvider => UserContext.Current.WalletProvider;
@@ -65,7 +85,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public IWalletService ServiceSelected
         {
             get => _serviceSelected;
-            set => Set(ref _serviceSelected, value);
+            set => SetAfter(ref _serviceSelected, value, v => ServiceChanged());
         }
 
         private Asset _assetSelected;
@@ -82,7 +102,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            PropertyChanged -= ReceiveViewModel_PropertyChanged;
+            M.UnregisterAsync(this);
             base.Dispose();
         }
     }

@@ -4,14 +4,14 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class AssetPairProviderDiscovery
+    public class AssetPairDiscovery
     {
-        private readonly PairProviderDiscoveryContext _context;
+        private readonly AssetPairDiscoveryContext _context;
         private readonly AssetPair _pair;
         private const string IntermediariesCsv = "USD,BTC,EUR,LTC,USDT";
         private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
 
-        public AssetPairProviderDiscovery(PairProviderDiscoveryContext context)
+        public AssetPairDiscovery(AssetPairDiscoveryContext context)
         {
             _context = context;
             _pair = context.Pair;

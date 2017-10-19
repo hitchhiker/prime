@@ -39,7 +39,7 @@ namespace Prime.Ui.Wpf.PageUri
             switch (command.Command)
             {
                 case "exchange rates":
-                    return new ExchangeRateViewModel(model) { Key = command.Command, Title = command.Title };
+                    return new ExchangeRateViewModel() { Key = command.Command, Title = command.Title };
                 case "portfolio":
                     return new PortfolioPaneViewModel(model) { Key = command.Command, Title = command.Title };
                 case "watchlist":
@@ -47,9 +47,9 @@ namespace Prime.Ui.Wpf.PageUri
                 case "buy sell":
                     return new BuySellViewModel(model) { Key = command.Command, Title = command.Title };
                 case "wallet":
-                    return new WalletViewModel(model) { Key = command.Command, Title = command.Title };
+                    return new WalletViewModel() { Key = command.Command, Title = command.Title };
                 case "services":
-                    return new ServicesPaneViewModel(messenger, model) { Key = command.Command, Title = command.Title };
+                    return new ServicesPaneViewModel() { Key = command.Command, Title = command.Title };
                 case "send":
                     return null;
                 case "exchanges":
@@ -59,7 +59,7 @@ namespace Prime.Ui.Wpf.PageUri
                 case "markets discovery":
                     return new MarketsDiscoveryViewModel(model) { Key = command.Command, Title = command.Title };
                 case "receive":
-                    return new ReceiveViewModel(model) { Key = command.Command, Title = command.Title };
+                    return new ReceiveViewModel() { Key = command.Command, Title = command.Title };
                 default:
                     return null;
             }

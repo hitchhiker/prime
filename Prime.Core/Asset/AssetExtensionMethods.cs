@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Prime.Core
 {
@@ -59,6 +61,18 @@ namespace Prime.Core
         public static bool IsNone(this Asset asset)
         {
             return asset == null || Equals(asset, Asset.None);
+        }
+
+        public static Asset EqualOrPegged(this IEnumerable<Asset> items, Asset asset)
+        {
+            foreach (var i in items)
+            {
+                if (i.Equals(asset))
+                    return i;
+                if (asset.Pegged.Contains(i))
+                    return i;
+            }
+            return null;
         }
     }
 }

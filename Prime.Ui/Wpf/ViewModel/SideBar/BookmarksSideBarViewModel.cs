@@ -19,14 +19,34 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             ItemClickedCommand = new RelayCommand<CommandContent>(Clicked);
 
-            _messenger.Register<BookmarkAllResponseMessage>(this, UserContext.Current.Token, m =>
+            _messenger.RegisterAsync<BookmarkAllResponseMessage>(this, UserContext.Current.Token, BookmarkAllResponseMessage);
+            _messenger.RegisterAsync<BookmarkHasChangedMessage>(this, UserContext.Current.Token, BookmarkHasChangedMessage);
+            _messenger.SendAsync(new BookmarkAllRequestMessage(), UserContext.Current.Token);
+        }
+
+        private void BookmarkHasChangedMessage(BookmarkHasChangedMessage m)
+        {
+            var state = _bookmarks.Contains(m.Bookmark);
+            UiDispatcher.Invoke(() =>
+            {
+                if (m.IsBookmarked && state || !m.IsBookmarked && !state)
+                    return;
+
+                if (m.IsBookmarked)
+                    _bookmarks.Add(m.Bookmark);
+                else
+                    _bookmarks.Remove(m.Bookmark);
+            });
+        }
+
+        private void BookmarkAllResponseMessage(BookmarkAllResponseMessage m)
+        {
+            UiDispatcher.Invoke(() =>
             {
                 _bookmarks.Clear();
                 foreach (var i in m.Bookmarks)
                     _bookmarks.Add(i);
             });
-
-            _messenger.Send(new BookmarkAllRequestMessage(), UserContext.Current.Token);
         }
 
         public RelayCommand<CommandContent> ItemClickedCommand { get; private set; }

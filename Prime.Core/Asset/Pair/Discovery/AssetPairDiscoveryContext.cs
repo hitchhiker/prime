@@ -1,10 +1,10 @@
 ﻿namespace Prime.Core
 {
-    public class PairProviderDiscoveryContext
+    public class AssetPairDiscoveryContext
     {
-        public PairProviderDiscoveryContext() { }
+        public AssetPairDiscoveryContext() { }
 
-        public PairProviderDiscoveryContext(PairProviderDiscoveryContext context)
+        public AssetPairDiscoveryContext(AssetPairDiscoveryContext context)
         {
             Pair = context.Pair;
             PeggedEnabled = context.PeggedEnabled;

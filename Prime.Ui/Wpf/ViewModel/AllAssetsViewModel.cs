@@ -12,11 +12,11 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class AllAssetsViewModel : VmBase
     {
-        public AllAssetsViewModel() : this(null) { }
-
-        public AllAssetsViewModel(ScreenViewModel screenViewModel)
+        public AllAssetsViewModel()
         {
-            _screenViewModel = screenViewModel;
+            if (IsInDesignMode)
+                return;
+
             _debouncer = new DebouncerThread();
 
             Context = UserContext.Current;
@@ -59,7 +59,6 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public bool SetAsDefault { get; set; }
 
-        private readonly ScreenViewModel _screenViewModel;
         private readonly DebouncerThread _debouncer;
 
         public AddressBoxModel AddressBoxModel { get; set; }

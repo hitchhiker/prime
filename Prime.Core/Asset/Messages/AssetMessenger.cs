@@ -17,13 +17,22 @@ namespace Prime.Core
             "XRP".ToAssetRaw();
             "ETH".ToAssetRaw();*/
 
-            _messenger.Register<AssetAllRequestMessage>(this, AllRequestMessage);
+            _messenger.RegisterAsync<AssetAllRequestMessage>(this, AllRequestMessage);
+            _messenger.RegisterAsync<AssetNetworkRequestMessage>(this, AssetNetworkRequestMessage);
         }
 
         private void AllRequestMessage(AssetAllRequestMessage m)
         {
             var currentAsssets = Core.Assets.I.Cached().Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
-            _messenger.Send(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
+            _messenger.SendAsync(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
+        }
+
+        private async void AssetNetworkRequestMessage(AssetNetworkRequestMessage m)
+        {
+            var assets = await AssetProvider.I.GetAssetsAsync(m.Network);
+
+            if (assets?.Any() == true)
+                _messenger.SendAsync(new AssetNetworkResponseMessage(m.Network, assets));
         }
     }
 }

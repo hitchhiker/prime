@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Prime.Utility;
 
@@ -15,18 +16,32 @@ namespace Prime.Core
 
         private UniqueList<WalletAddress> Addresses => _context.UserSettings.Addresses;
 
-        public async Task AddAddressAsync(IWalletService service, Asset asset)
+        public async Task<IReadOnlyList<WalletAddress>> GenerateNewAddress(Network network, Asset asset)
         {
+            var service = network.WalletProviders.FirstProvider();
+            if (!service.CanGenerateDepositAddress)
+                return null;
+
             var r = await ApiCoordinator.GetDepositAddressesAsync(service, new WalletAddressAssetContext(asset, true, _context));
             if (r.IsNull)
-                return;
+                return null;
 
-            var wa = r.Response;
-            if (wa == null)
-                return;
+            var ads = r.Response;
+            var usr = Addresses;
 
-            Addresses.AddRange(wa);
+            foreach (var a in usr)
+            {
+                if (ads.Contains(a))
+                    ads.Remove(a);
+            }
+
+            if (!ads.Any())
+                return null;
+
+            usr.AddRange(ads);
             _context.UserSettings.Save(_context);
+
+            return ads;
         }
 
         public IReadOnlyList<WalletAddress> GetAll()

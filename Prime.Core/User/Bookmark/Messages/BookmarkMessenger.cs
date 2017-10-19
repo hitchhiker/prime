@@ -4,20 +4,25 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class BookmarkMessenger
+    public class BookmarkMessenger : IUserContextMessenger
     {
         private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         private readonly UserContext _userContext;
         private readonly BookmarkedCommands _bookmarks;
 
-        internal BookmarkMessenger(UserContext userContext)
+        private BookmarkMessenger(UserContext userContext)
         {
             _userContext = userContext;
-            _bookmarks = _userContext.UserSettings.BookmarkedCommands;
+            _bookmarks = _userContext.UserSettings.Bookmarks;
 
-            _messenger.Register<BookmarkAllRequestMessage>(this, _userContext.Token, BookmarkAllRequestMessage);
-            _messenger.Register<BookmarkStatusRequestMessage>(this, _userContext.Token, BookmarkStatusRequestMessage);
-            _messenger.Register<BookmarkSetMessage>(this, _userContext.Token, BookmarkSetMessage);
+            _messenger.RegisterAsync<BookmarkAllRequestMessage>(this, _userContext.Token, BookmarkAllRequestMessage);
+            _messenger.RegisterAsync<BookmarkStatusRequestMessage>(this, _userContext.Token, BookmarkStatusRequestMessage);
+            _messenger.RegisterAsync<BookmarkSetMessage>(this, _userContext.Token, BookmarkSetMessage);
+        }
+
+        public IUserContextMessenger GetInstance(UserContext context)
+        {
+            return new BookmarkMessenger(context);
         }
 
         private void BookmarkAllRequestMessage(BookmarkAllRequestMessage m)
@@ -27,8 +32,8 @@ namespace Prime.Core
 
         private void BookmarkStatusRequestMessage(BookmarkStatusRequestMessage m)
         {
-            var bmd = _bookmarks.Items.Contains(m.Bookmark);
-            _messenger.Send(new BookmarkStatusResponseMessage(m.Bookmark, bmd), _userContext.Token);
+            var state = _bookmarks.Items.Contains(m.Bookmark);
+            _messenger.Send(new BookmarkStatusResponseMessage(m.Bookmark, state), _userContext.Token);
         }
 
         private void BookmarkSetMessage(BookmarkSetMessage m)
@@ -40,8 +45,15 @@ namespace Prime.Core
 
             var sr = _userContext.UserSettings.Save(_userContext);
 
+            var state = _bookmarks.Items.Contains(m.Bookmark);
+
             if (sr.IsSuccess)
-                _messenger.Send(new BookmarkHasChangedMessage(m.Bookmark, m.IsBookmarked), _userContext.Token);
+                _messenger.Send(new BookmarkHasChangedMessage(m.Bookmark, state), _userContext.Token);
+        }
+
+        public void Dispose()
+        {
+            _messenger.UnregisterAsync(this);
         }
     }
 }

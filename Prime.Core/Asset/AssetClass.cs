@@ -1,5 +1,6 @@
 namespace Prime.Core
 {
+
     public enum AssetClass
     {
         CryptoCurrency = 0,

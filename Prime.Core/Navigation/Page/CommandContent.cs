@@ -23,7 +23,7 @@ namespace Prime.Core
 
         public bool Equals(CommandContent other)
         {
-            return base.Equals(this);
+            return base.Equals(other);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Prime.Core
             if (!Items.Contains(bookmark))
                 return;
 
-            Items.Remove(bookmark);
+            Items.RemoveAll(x=> x.Equals(bookmark));
         }
 
         public IEnumerator<CommandContent> GetEnumerator()

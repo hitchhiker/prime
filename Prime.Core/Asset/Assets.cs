@@ -13,9 +13,7 @@ namespace Prime.Core
         private static readonly Lazy<Assets> Lazy = new Lazy<Assets>(()=>new Assets());
 
         private readonly ConcurrentDictionary<string, Asset> _cache = new ConcurrentDictionary<string, Asset>();
-
-        public event EventHandler OnAssetsUpdated;
-
+        
         /// <summary>
         /// Returns the assetCode as an Asset object, no remote provider conversion of codes is done. 
         /// Use with caution.

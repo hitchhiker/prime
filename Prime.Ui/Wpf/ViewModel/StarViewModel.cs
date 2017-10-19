@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using System;
+using GalaSoft.MvvmLight.Command;
 using Prime.Core;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
@@ -6,39 +7,60 @@ using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class StarViewModel
+    public class StarViewModel : VmBase, IDisposable
     {
-        //public StarViewModel()
-        //{
-        //    _context = UserContext.Current;
+        private readonly DocumentPaneViewModel _paneVm;
+        private readonly CommandContent _paneCommand;
 
-        //    _messenger.Register<BookmarkHasChangedMessage>(this, _context.Token, UpdateStar);
-        //    _messenger.Register<BookmarkStatusResponseMessage>(this, _context.Token, UpdateStar);
+        public StarViewModel(DocumentPaneViewModel paneVm)
+        {
+            _paneVm = paneVm;
+            _context = UserContext.Current;
+            _paneCommand = _paneVm.GetPageCommand();
 
-        //    _messenger.Send<BookmarkStatusRequestMessage>(new BookmarkStatusRequestMessage(vm.GetPageCommand()), _context.Token);
+            _messenger.RegisterAsync<BookmarkHasChangedMessage>(this, _context.Token, SetBookmarkedState);
+            _messenger.RegisterAsync<BookmarkStatusResponseMessage>(this, _context.Token, SetBookmarkedState);
 
-        //    ClickBookmarkCommand = new RelayCommand(() =>
-        //    {
-        //           _messenger.Send(new BookmarkSetMessage(vm.GetPageCommand(), !isBookmarkSet), _context.Token);
-        //    });
-        //}
+            _messenger.SendAsync<BookmarkStatusRequestMessage>(new BookmarkStatusRequestMessage(_paneCommand), _context.Token);
 
-        //private bool isBookmarkSet;
-        //private readonly UserContext _context;
-        //public readonly Dispatcher Dispatcher;
-        //private readonly IMessenger _messenger = DefaultMessenger.I.Default;
+            ClickBookmarkCommand = new RelayCommand(() =>
+            {
+                //IsBookmarked responds to clicks, and will be reflect that after-clicked state.
+                _messenger.SendAsync(new BookmarkSetMessage(_paneCommand, IsBookmarked), _context.Token);
+            });
 
-        //public RelayCommand ClickBookmarkCommand { get; }
+            IsEnabled = true;
+        }
 
-        //private void UpdateStar(BookmarkMessageBase m)
-        //{
-        //    if (!m.Bookmark.Equals(vm.GetPageCommand()))
-        //       return;
+        private bool _isBookmarked;
+        public bool IsBookmarked
+        {
+            get => _isBookmarked;
+            set => Set(ref _isBookmarked, value);
+        }
 
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        isBookmarkSet = m.IsBookmarked;
-        //    });
-        //}
+        public bool IsEnabled { get; }
+
+        private readonly UserContext _context;
+
+        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
+
+        public RelayCommand ClickBookmarkCommand { get; }
+
+        private void SetBookmarkedState(BookmarkMessageBase m)
+        {
+            if (!m.Bookmark.Equals(_paneCommand))
+               return;
+
+            UiDispatcher.Invoke(() =>
+            {
+                IsBookmarked = m.IsBookmarked;
+            });
+        }
+
+        public void Dispose()
+        {
+            _messenger.UnregisterAsync(this);
+        }
     }
 }

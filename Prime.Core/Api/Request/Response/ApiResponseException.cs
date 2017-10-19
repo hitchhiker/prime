@@ -5,6 +5,11 @@ namespace Prime.Core
 {
     public class ApiResponseException : Exception
     {
+        public ApiResponseException(Exception exception, INetworkProvider provider, [CallerMemberName] string method = "Unknown")
+        {
+            Message = exception.Message + " - " + method + " in " + provider.Title + " provider.";
+        }
+
         public ApiResponseException(string message)
         {
             Message = message;

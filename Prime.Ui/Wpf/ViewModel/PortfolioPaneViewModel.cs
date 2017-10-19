@@ -73,7 +73,7 @@ namespace Prime.Ui.Wpf.ViewModel
             {
                 PortfolioChangedCaught();
             }
-            catch (Exception e)
+            catch
             { }
         }
 
