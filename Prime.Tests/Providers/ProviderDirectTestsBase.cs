@@ -131,6 +131,12 @@ namespace Prime.Tests.Providers
 
                 Assert.IsTrue(success);
                 Assert.IsTrue(ohlc != null && ohlc.Count > 0);
+
+                Trace.WriteLine("OHLC data:");
+                foreach (var entry in ohlc)
+                {
+                    Trace.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
+                }
             }
             catch (Exception e)
             {

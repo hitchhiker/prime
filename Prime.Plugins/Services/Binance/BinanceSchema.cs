@@ -10,6 +10,8 @@ namespace Prime.Plugins.Services.Binance
     {
         internal class LatestPricesResponse : List<LatestPriceResponse> { }
 
+        internal class CandlestickResponse : List<decimal[]> { }
+
         internal class UserInformationResponse
         {
             public decimal makerCommission;

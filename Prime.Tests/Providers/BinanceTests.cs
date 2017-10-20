@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -71,6 +72,14 @@ namespace Prime.Tests.Providers
         public override async Task TestGetBalancesAsync()
         {
             await base.TestGetBalancesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetOhlcAsync()
+        {
+            OhlcContext = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
+                new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
+            await base.TestGetOhlcAsync();
         }
     }
 }

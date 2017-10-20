@@ -38,9 +38,56 @@ namespace Prime.Plugins.Services.Binance
             ApiProvider = new RestApiClientProvider<IBinanceApi>(BinanceApiUrl, this, k => new BinanceAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var pairCode = context.Pair.TickerSimple();
+
+            var interval = ConvertToBinanceInterval(context.Market);
+            var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
+            var endDate = (long)(context.Range.UtcTo.ToUnixTimeStamp() * 1000);
+
+            var r = await api.GetCandlestickBars(pairCode, interval, startDate, endDate);
+
+            var ohlc = new OhlcData(context.Market);
+
+            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+
+            foreach (var rEntry in r)
+            {
+                var dateTime = ((long) (rEntry[0] / 1000)).ToUtcDateTime();
+                ohlc.Add(new OhlcEntry(seriesId, dateTime, this)
+                {
+                    Open = (double)rEntry[1],
+                    Close = (double)rEntry[4],
+                    Low = (double)rEntry[3],
+                    High = (double)rEntry[2],
+                    VolumeTo = (double)rEntry[7], // Quote asset volume
+                    VolumeFrom = (double)rEntry[5], // Volume
+                    WeightedAverage = 0 // BUG: no WeightedAverage data returned from API.
+                });
+            }
+
+            ohlc.Reverse();
+
+            return ohlc;
+        }
+
+        private string ConvertToBinanceInterval(TimeResolution resolution)
+        {
+            // BUG: API doesn't support seconds and milliseconds.
+            switch (resolution)
+            {
+                case TimeResolution.Minute:
+                    return "1m";
+                case TimeResolution.Hour:
+                    return "1h";
+                case TimeResolution.Day:
+                    return "1d";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
+            }
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -239,7 +286,7 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
