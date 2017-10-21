@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
+using Prime.Core.Exchange;
 
 namespace Prime.Tests.Providers
 {
@@ -129,6 +131,12 @@ namespace Prime.Tests.Providers
 
                 Assert.IsTrue(success);
                 Assert.IsTrue(ohlc != null && ohlc.Count > 0);
+
+                Trace.WriteLine("OHLC data:");
+                foreach (var entry in ohlc)
+                {
+                    Trace.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
+                }
             }
             catch (Exception e)
             {
@@ -152,6 +160,8 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(c != null);
                 Assert.IsTrue(c.BaseAsset.Equals(PublicPriceContext.Pair.Asset1));
                 Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
+
+                Trace.WriteLine($"Latest price for {c.BaseAsset}: {c.Price.Display}");
             }
             catch (Exception e)
             {
@@ -179,6 +189,12 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(c != null);
                 Assert.IsTrue(c.BaseAsset.Equals(PublicPricesContext.BaseAsset));
                 Assert.IsTrue(c.Prices.Count == PublicPricesContext.Assets.Count);
+
+                Trace.WriteLine($"Latest prices for {c.BaseAsset}:");
+                foreach (var latestPrice in c.Prices)
+                {
+                    Trace.WriteLine(latestPrice.Display);
+                }
             }
             catch (Exception e)
             {
@@ -212,6 +228,12 @@ namespace Prime.Tests.Providers
                 var balances = await provider.GetBalancesAsync(ctx);
 
                 Assert.IsTrue(balances != null);
+
+                Trace.WriteLine("User balances: ");
+                foreach (var b in balances)
+                {
+                    Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Balance} balance, {b.Reserved} reserved");
+                }
             }
             catch (Exception e)
             {
@@ -225,9 +247,15 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var addresses = await provider.GetAddressesAsync(ctx);
+                var r = await provider.GetAddressesAsync(ctx);
 
-                Assert.IsTrue(addresses != null);
+                Assert.IsTrue(r != null);
+
+                Trace.WriteLine($"All deposit addresses:");
+                foreach (var walletAddress in r)
+                {
+                    Trace.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
+                }
             }
             catch (Exception e)
             {
@@ -249,6 +277,12 @@ namespace Prime.Tests.Providers
                 var r = await provider.GetAddressesForAssetAsync(WalletAddressAssetContext);
 
                 Assert.IsTrue(r != null);
+
+                Trace.WriteLine($"Deposit addresses for {WalletAddressAssetContext.Asset}:");
+                foreach (var walletAddress in r)
+                {
+                    Trace.WriteLine($"\"{walletAddress.Address}\"");
+                }
             }
             catch (Exception e)
             {
@@ -272,6 +306,12 @@ namespace Prime.Tests.Providers
                     Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
                 else
                     Assert.IsTrue(r.Count > 0);
+
+                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderBookType.Ask)} asks, {r.Count(x => x.Type == OrderBookType.Bid)} bids): ");
+                foreach (var obr in r)
+                {
+                    Trace.WriteLine($"{obr.Data.Time} | For {OrderBookContext.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
+                }
             }
             catch (Exception e)
             {

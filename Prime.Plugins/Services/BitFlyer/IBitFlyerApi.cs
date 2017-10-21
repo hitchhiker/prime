@@ -11,5 +11,14 @@ namespace Prime.Plugins.Services.BitFlyer
     {
         [Get("/getprices")]
         Task<BitFlyerSchema.PricesResponse> GetPrices();
+
+        [Get("/getmarkets")]
+        Task<BitFlyerSchema.MarketsResponse> GetMarkets();
+
+        [Get("/getticker?product_code={productCode}")]
+        Task<BitFlyerSchema.TickerResponse> GetTicker([Path] string productCode);
+
+        [Get("/getboard?product_code={productCode}")]
+        Task<BitFlyerSchema.BoardResponse> GetBoard([Path] string productCode);
     }
 }

@@ -31,7 +31,9 @@ namespace Prime.Plugins.Services.BitStamp
 
         public ObjectId Id => IdHash;
 
-        private static readonly NoRateLimits Limiter = new NoRateLimits();
+        // Do not make more than 600 requests per 10 minutes or we will ban your IP address.
+        // https://www.bitstamp.net/api/
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(600, 10);
         public IRateLimiter RateLimiter => Limiter;
 
         public T GetApi<T>(NetworkProviderContext context) where T : class
@@ -94,6 +96,8 @@ namespace Prime.Plugins.Services.BitStamp
                 var r = await api.GetTicker(pairCode);
 
                 moneyList.Add(new Money(r.last, asset));
+
+                ApiHelpers.EnterRate(this, context);
             }
 
             var latestPrices = new LatestPrices()
