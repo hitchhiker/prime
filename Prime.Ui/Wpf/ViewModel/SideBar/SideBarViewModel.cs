@@ -5,17 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
+using Prime.Ui.Wpf.Components;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
     public class SideBarViewModel : VmBase
     {
         private readonly ScreenViewModel _screenVm;
+        private readonly NavigationProvider _nav;
 
         public SideBarViewModel()
         {
+        }
+
+        public SideBarViewModel(ScreenViewModel screenVm) : this()
+        {
+            _screenVm = screenVm;
+            _nav = screenVm.NavigationProvider;
+
             _sideBarWidth = 40;
             MenuClickedCommand = new RelayCommand(ToggleMenu);
             BookmarkClickedCommand = new RelayCommand(delegate ()
@@ -24,20 +33,15 @@ namespace Prime.Ui.Wpf.ViewModel
                 ClickMenuItem<BookmarksSideBarViewModel>();
             });
 
-            PortfolioClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "portfolio"); });
-            SettingsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "services"); });
-            BuySellClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "buy sell"); });
-            WatchlistClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "watchlist"); });
-            ExchangesClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "exchanges"); });
-            CoinsClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "coins"); });
-            MarketsDiscoveryClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "markets discovery"); });
-            ExchangeRatesClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "exchange rates"); });
-            ReceiveClickedCommand = new RelayCommand(() => { _screenVm.CommandManager.IssueCommand(this, UserContext.Current, "receive"); });
-        }
-
-        public SideBarViewModel(ScreenViewModel screenVm) : this()
-        {
-            _screenVm = screenVm;
+            PortfolioClickedCommand = new RelayCommand(() => { _nav.IssueCommand("portfolio"); });
+            SettingsClickedCommand = new RelayCommand(() => { _nav.IssueCommand("services"); });
+            BuySellClickedCommand = new RelayCommand(() => { _nav.IssueCommand("buy sell"); });
+            WatchlistClickedCommand = new RelayCommand(() => { _nav.IssueCommand("watchlist"); });
+            ExchangesClickedCommand = new RelayCommand(() => { _nav.IssueCommand("exchanges"); });
+            CoinsClickedCommand = new RelayCommand(() => { _nav.IssueCommand("coins"); });
+            MarketsDiscoveryClickedCommand = new RelayCommand(() => { _nav.IssueCommand("markets discovery"); });
+            ExchangeRatesClickedCommand = new RelayCommand(() => { _nav.IssueCommand("exchange rates"); });
+            ReceiveClickedCommand = new RelayCommand(() => { _nav.IssueCommand("receive"); });
         }
 
         public RelayCommand MenuClickedCommand { get; private set; }

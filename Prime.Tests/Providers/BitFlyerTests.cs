@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.BitFlyer;
 
 namespace Prime.Tests.Providers

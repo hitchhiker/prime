@@ -1,5 +1,5 @@
 using GalaSoft.MvvmLight;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
 
 namespace Prime.Ui.Wpf

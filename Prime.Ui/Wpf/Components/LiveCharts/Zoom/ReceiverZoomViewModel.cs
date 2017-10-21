@@ -3,7 +3,7 @@ using System.Windows.Threading;
 using LiveCharts;
 using LiveCharts.Wpf.Charts.Base;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Ui.Wpf
 {

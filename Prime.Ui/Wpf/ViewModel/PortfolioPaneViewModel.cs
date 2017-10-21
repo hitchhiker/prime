@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
-using Prime.Core;
-using Prime.Core.Wallet;
+using Prime.Common;
+using Prime.Common.Wallet;
 using GalaSoft.MvvmLight.Command;
 using Humanizer;
-using Prime.Core.Exchange.Rates;
+using Prime.Common.Exchange.Rates;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel

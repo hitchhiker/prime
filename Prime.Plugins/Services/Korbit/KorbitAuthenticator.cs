@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Plugins.Services.Korbit
 {

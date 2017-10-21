@@ -5,8 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Prime.Core;
-using Prime.Core.Wallet;
+using Prime.Common;
+using Prime.Common.Wallet;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 using plugins;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.Poloniex;
 
 namespace Prime.TestConsole

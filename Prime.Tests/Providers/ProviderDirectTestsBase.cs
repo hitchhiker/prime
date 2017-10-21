@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Tests.Providers
 {

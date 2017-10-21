@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using Prime.Core;
+using Prime.Common;
 using Framework.UI;
 using Hardcodet.Wpf.TaskbarNotification;
 using Prime.Utility;
@@ -26,7 +26,7 @@ namespace prime
         {
             //DispatcherUnhandledException += App_DispatcherUnhandledException;
             GlobalMisc.I.MainAssembly = Assembly.GetExecutingAssembly();
-            _prime = Prime.Core.Prime.I; //INIT PRIME
+            _prime = Prime.Core.Prime.I; //INIT PRIME //THIS IS A HACK FOR NOW
             PrimeWpf.I.SetDispatcher();
 
             this.Startup += App_Startup;

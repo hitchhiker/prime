@@ -1,5 +1,5 @@
-﻿using Prime.Core;
-using Prime.Core.Misc;
+﻿using Prime.Common;
+using Prime.Common.Misc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

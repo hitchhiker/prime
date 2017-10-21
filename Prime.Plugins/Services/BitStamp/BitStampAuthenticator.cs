@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitStamp

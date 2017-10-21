@@ -306,10 +306,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prime.Utility\Prime.Utility.csproj">
-      <Project>{3cd6e69d-868e-41bb-a168-cfcbeedafc73}</Project>
-      <Name>Prime.Utility</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Prime.Spark\Prime.Spark.csproj">
       <Project>{2664affa-c342-46ab-aa68-2af51efd18f4}</Project>
       <Name>Prime.Spark</Name>

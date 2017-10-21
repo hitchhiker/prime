@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Data;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 using System.Windows.Threading;
 
@@ -17,7 +17,7 @@ namespace Prime.Ui.Wpf.ViewModel
             if (IsInDesignMode)
                 return;
 
-            _debouncer = new DebouncerThread();
+            _debouncer = new Debouncer();
 
             Context = UserContext.Current;
             SelectedBaseAsset = Context.QuoteAsset;
@@ -59,7 +59,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public bool SetAsDefault { get; set; }
 
-        private readonly DebouncerThread _debouncer;
+        private readonly Debouncer _debouncer;
 
         public AddressBoxModel AddressBoxModel { get; set; }
 

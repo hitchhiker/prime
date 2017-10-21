@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using LiveCharts.Helpers;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Ui.Wpf
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Plugins.Services.Kraken
 {

@@ -1,5 +1,5 @@
-﻿using Prime.Core;
-using Prime.Core.Trade;
+﻿using Prime.Common;
+using Prime.Common.Trade;
 using System;
 using System.Collections.Generic;
 using System.Linq;

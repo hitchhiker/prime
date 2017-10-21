@@ -4,7 +4,7 @@ using LiveCharts;
 using LiveCharts.Dtos;
 using LiveCharts.Wpf.Charts.Base;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf

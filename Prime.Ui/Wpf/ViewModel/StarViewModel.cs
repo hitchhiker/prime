@@ -1,6 +1,6 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
-using Prime.Core;
+using Prime.Common;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Utility;

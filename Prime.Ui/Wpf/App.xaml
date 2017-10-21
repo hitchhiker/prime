@@ -2,36 +2,19 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="Themes\Expression.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="Themes\Expression.AvalonDock.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="Themes\Expression.Charting.xaml">
-                </ResourceDictionary>
-                <ResourceDictionary Source="Themes\Expression.Toolbar.xaml">
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml"/>
+                <ResourceDictionary Source="Themes\Expression.xaml"/>
+                <ResourceDictionary Source="Themes\Expression.AvalonDock.xaml"/>
+                <ResourceDictionary Source="Themes\Expression.Charting.xaml"/>
+                <ResourceDictionary Source="Themes\Expression.Toolbar.xaml"/>
                 <ResourceDictionary Source="Themes/PrimeStyle.xaml" x:Name="PrimeStyle" />
-                <!--<ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Size/m.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/normal.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Colors/material.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
-                -->
-                <ResourceDictionary Source="/Resources/NotifyIconResources.xaml">
-                </ResourceDictionary>
+                <ResourceDictionary Source="/Resources/NotifyIconResources.xaml"/>
                 <ResourceDictionary Source="/Resources/SharedResources.xaml"/>
-
             </ResourceDictionary.MergedDictionaries>
-            <wpf:ViewModelLocator x:Key="Locator" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

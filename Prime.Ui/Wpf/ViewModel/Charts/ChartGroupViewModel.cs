@@ -9,7 +9,7 @@ using LiveCharts;
 using LiveCharts.Events;
 using LiveCharts.Wpf;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
 using Series = LiveCharts.Wpf.Series;
 

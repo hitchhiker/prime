@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.CryptoCompare;
 using Prime.Utility;
 
@@ -14,7 +14,7 @@ namespace plugins
 
         public override string AggregatorName => null;
 
-        public async Task<AssetPairData> GetCoinSnapshotAsync(AssetPairDataContext context)
+        public async Task<AggregatedAssetPairData> GetCoinSnapshotAsync(AssetPairDataContext context)
         {
             var assetData = context.Document;
             if (assetData == null)

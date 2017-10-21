@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using Amib.Threading;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf

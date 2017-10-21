@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer

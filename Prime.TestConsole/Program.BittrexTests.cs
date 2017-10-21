@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.Bittrex;
 using Prime.Plugins.Services.Poloniex;
 

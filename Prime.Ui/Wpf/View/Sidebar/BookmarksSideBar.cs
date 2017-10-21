@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
 
 namespace Prime.Ui.Wpf

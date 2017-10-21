@@ -1,4 +1,4 @@
-﻿using Prime.Core;
+﻿using Prime.Common;
 
 namespace Prime.Plugins.Services.Base
 {

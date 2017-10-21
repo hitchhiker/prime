@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
-using Prime.Core;
+using Prime.Common;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -65,7 +65,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void Clicked(CommandContent sender)
         {
-            ScreenViewModel.CommandManager.IssueCommand(UserContext.Current, sender);
+            ScreenViewModel.NavigationProvider.IssueCommand(sender.Command);
         }
     }
 }

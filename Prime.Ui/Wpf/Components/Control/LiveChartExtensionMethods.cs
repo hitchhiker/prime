@@ -8,7 +8,7 @@ using LiveCharts.Defaults;
 using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Ui.Wpf
 {

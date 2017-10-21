@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Prime.Core;
+using Prime.Common;
 using FirstFloor.ModernUI.Windows.Controls;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -20,7 +20,7 @@ using Prime.Ui.Wpf.ViewModel;
 using Prime.Utility;
 using Prime.Ui.Wpf.ExtensionMethods;
 using GalaSoft.MvvmLight.Command;
-using Prime.Core.Exchange.Model;
+using Prime.Common.Exchange.Model;
 using Prime.Ui.Wpf.View.Trade;
 using Prime.Ui.Wpf.ViewModel.Trading;
 

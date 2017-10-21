@@ -1,6 +1,6 @@
 using System;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Ui.Wpf
 {

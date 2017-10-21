@@ -5,14 +5,16 @@ using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Core;
+using Prime.Common;
+using Prime.Ui.Wpf.Components;
 using Xceed.Wpf.AvalonDock;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class ScreenViewModel : VmBase
+    public class ScreenViewModel : VmBase, IDisposable
     {
         private readonly ILayoutManager _layoutManager;
+        private readonly DockingManager _dockingManager;
         private readonly IMessenger _messenger;
 
         private ObservableCollection<DocumentPaneViewModel> _documents = new ObservableCollection<DocumentPaneViewModel>();
@@ -27,7 +29,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand<DockingManager> SaveLayoutCommand { get; }
         public RelayCommand<DockingManager> ResetLayoutCommand { get; }
         public RelayCommand<DockingManager> RestoreLayoutCommand { get; }
-        public readonly CommandManager CommandManager;
+        public readonly NavigationProvider NavigationProvider;
 
         public string Title { get; } = "prime [pre-alpha v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "]";
 
@@ -65,25 +67,37 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public ScreenViewModel(IMessenger messenger, ILayoutManager layoutManager, DockingManager dockingManager)
         {
-            CommandManager = new CommandManager();
-            CommandManager.CommandAccepted.SubscribePermanent(a => OnCommandAccepted(a?.Command));
+            dockingManager.DocumentClosed += DockingManager_DocumentClosed;
+
+            NavigationProvider = new NavigationProvider(this, OnCommandAccepted);
 
             AddressBarModel = new AddressBarModel(messenger, this);
             SideBarViewModel = new SideBarViewModel(this);
 
             _layoutManager = layoutManager;
+            _dockingManager = dockingManager;
             _messenger = messenger;
-            
+
             LogPane = new LogPanelViewModel(messenger);
 
-            dockingManager.DocumentClosed += DockingManager_DocumentClosed;
-            
             ExitCommand = new RelayCommand(() => Application.Current.Shutdown());
-          
+
             SaveLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.SaveLayout(manager));
             RestoreLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.LoadLayout(manager));
             ResetLayoutCommand = new RelayCommand<DockingManager>(manager => _layoutManager.ResetLayout(manager));
             SettingsCommand = new RelayCommand(() => { SideBarViewModel.SettingsClickedCommand.Execute(null); });
+        }
+
+        private void OnCommandAccepted(CommandBase c)
+        {
+            var inst = PrimeWpf.I.PanelProviders.FirstOrDefault(x => x.IsFor(c))?.GetInstance(_messenger, this, c);
+            if (inst == null)
+                return;
+
+            UiDispatcher.Invoke(() =>
+            {
+                AddDocument(inst);
+            });
         }
 
         private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
@@ -95,13 +109,10 @@ namespace Prime.Ui.Wpf.ViewModel
                 Documents.Remove(doc);
         }
 
-        private void OnCommandAccepted(CommandBase c)
+        public void Dispose()
         {
-            var inst = PrimeWpf.I.PanelProviders.FirstOrDefault(x => x.IsFor(c))?.GetInstance(_messenger, this, c);
-            if (inst == null)
-                return;
-
-            AddDocument(inst);
+            NavigationProvider?.Dispose();
+            _dockingManager.DocumentClosed -= DockingManager_DocumentClosed;
         }
     }
 }

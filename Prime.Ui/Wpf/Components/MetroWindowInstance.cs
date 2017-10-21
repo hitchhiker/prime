@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Prime.Core;
+using Prime.Common;
 using MahApps.Metro.Controls;
 using prime;
 

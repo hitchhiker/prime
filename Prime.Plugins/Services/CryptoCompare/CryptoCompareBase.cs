@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
-using Quobject.SocketIoClientDotNet.Client;
 using RestEase;
 
 namespace Prime.Plugins.Services.CryptoCompare
 {
-    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IPriceSocketProvider, IDisposable, IPublicPricesProvider
+    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicPricesProvider
     {
         public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
         public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
@@ -218,9 +217,8 @@ namespace Prime.Plugins.Services.CryptoCompare
             _priceSocket.OnOpen += (sender, args) => _priceSocket.Send("{type:'SubAdd', message: { subs: ['0~Poloniex~BTC~USD'] }}");
             _priceSocket.Connect();
         }
-        */
+        
 
-        private Socket _priceSocket;
         public void SubscribePrice(Action<string, LivePriceResponse> action)
         {
             UnSubscribePrice();
@@ -247,7 +245,7 @@ namespace Prime.Plugins.Services.CryptoCompare
                 //L.Info("Socket Disconnected");
             });
         }
-
+        
         public void UnSubscribePrice()
         {
             if (_priceSocket != null)
@@ -256,10 +254,10 @@ namespace Prime.Plugins.Services.CryptoCompare
                 _priceSocket = null;
             }
         }
-
+        */
         public void Dispose()
         {
-            UnSubscribePrice();
+            //UnSubscribePrice();
         }
     }
 }

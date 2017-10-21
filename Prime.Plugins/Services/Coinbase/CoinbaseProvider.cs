@@ -5,11 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
 using plugins;
-using Prime.Core;
-using Prime.Core.Exchange;
+using Prime.Common;
+using Prime.Common.Exchange;
 using Prime.Utility;
 using RestEase;
-using OrderBook = Prime.Core.OrderBook;
+using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {

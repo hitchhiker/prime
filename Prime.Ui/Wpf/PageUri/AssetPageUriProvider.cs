@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Ui.Wpf.PageUri
 {

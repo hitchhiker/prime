@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5BA0588E-12CA-470A-8FB1-2D581E63A17C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Prime.Utility.Win</RootNamespace>
+    <AssemblyName>Prime.Utility.Win</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.1\lib\net47\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExtensionMethods\FileExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\MessengerExtensionMethods.cs" />
+    <Compile Include="Misc\GridValueColourConverter.cs" />
+    <Compile Include="Misc\NetworkTraffic.cs" />
+    <Compile Include="Misc\TimeValueConverter.cs" />
+    <Compile Include="PrimeCommonWindows.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Thread\DebouncerDispatched.cs" />
+    <Compile Include="Thread\SmartThreadPool\CallerThreadContext.cs" />
+    <Compile Include="Thread\SmartThreadPool\CanceledWorkItemsGroup.cs" />
+    <Compile Include="Thread\SmartThreadPool\EventWaitHandle.cs" />
+    <Compile Include="Thread\SmartThreadPool\EventWaitHandleFactory.cs" />
+    <Compile Include="Thread\SmartThreadPool\Exceptions.cs" />
+    <Compile Include="Thread\SmartThreadPool\Interfaces.cs" />
+    <Compile Include="Thread\SmartThreadPool\InternalInterfaces.cs" />
+    <Compile Include="Thread\SmartThreadPool\PriorityQueue.cs" />
+    <Compile Include="Thread\SmartThreadPool\SLExt.cs" />
+    <Compile Include="Thread\SmartThreadPool\SmartThreadPool.cs" />
+    <Compile Include="Thread\SmartThreadPool\SmartThreadPool.ThreadEntry.cs" />
+    <Compile Include="Thread\SmartThreadPool\Stopwatch.cs" />
+    <Compile Include="Thread\SmartThreadPool\STPEventWaitHandle.cs" />
+    <Compile Include="Thread\SmartThreadPool\STPPerformanceCounter.cs" />
+    <Compile Include="Thread\SmartThreadPool\STPStartInfo.cs" />
+    <Compile Include="Thread\SmartThreadPool\SynchronizedDictionary.cs" />
+    <Compile Include="Thread\SmartThreadPool\WIGStartInfo.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItem.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItem.WorkItemResult.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItemFactory.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItemInfo.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItemResultTWrapper.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItemsGroup.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItemsGroupBase.cs" />
+    <Compile Include="Thread\SmartThreadPool\WorkItemsQueue.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
+      <Project>{c22efeca-8587-4975-84ef-4bf59e768537}</Project>
+      <Name>Prime.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj">
+      <Project>{18fbcf00-7e02-4357-97a0-4dc4b35f3f1d}</Project>
+      <Name>Prime.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
+</Project>

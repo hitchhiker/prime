@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
-using Prime.Core;
-using Prime.Core.Exchange;
+using Prime.Common;
+using Prime.Common.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Plugins.Services.Kraken.Converters;
 using Prime.Utility;
 using RestEase;
-using AssetPair = Prime.Core.AssetPair;
+using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {

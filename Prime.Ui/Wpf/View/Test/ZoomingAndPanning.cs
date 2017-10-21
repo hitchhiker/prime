@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Prime.Core;
+using Prime.Common;
 using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;

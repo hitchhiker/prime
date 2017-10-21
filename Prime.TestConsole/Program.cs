@@ -2,12 +2,10 @@
 using System.Linq;
 using Ipfs.Api;
 using Nito.AsyncEx;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.BitMex;
 using Prime.Plugins.Services.Kraken;
-using Prime.Radiant.Components;
-using Prime.Radiant;
-using AssetPair = Prime.Core.AssetPair;
+using AssetPair = Prime.Common.AssetPair;
 
 namespace TestConsole
 {
@@ -175,7 +173,7 @@ namespace TestConsole
         }
 
 
-
+        /*
         private static void IpfsName(Radiant radiant)
         {
             var n = new FileSystemNode { Hash = "ABCDE" };
@@ -196,7 +194,7 @@ namespace TestConsole
             var v = await client.VersionAsync();
             var fsn = await client.FileSystem.AddDirectoryAsync(@"C:\Users\hitchhiker\AppData\Local\Prime\publish\test", true);
             return fsn.Hash;
-        }*/
+        }
 
         private static void DeployTest()
         {
@@ -205,7 +203,7 @@ namespace TestConsole
 
             pub.Start();
         }
-
+        */
         private static void LatestPricesTest()
         {
 

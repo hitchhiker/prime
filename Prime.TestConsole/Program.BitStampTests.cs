@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Nito.AsyncEx;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.BitStamp;
 
 namespace Prime.TestConsole

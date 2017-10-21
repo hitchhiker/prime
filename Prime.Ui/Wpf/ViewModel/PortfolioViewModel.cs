@@ -1,6 +1,6 @@
-﻿using Prime.Core;
-using Prime.Core.Portfolio;
-using Prime.Core.Wallet;
+﻿using Prime.Common;
+using Prime.Common.Portfolio;
+using Prime.Common.Wallet;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;

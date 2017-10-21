@@ -20,12 +20,12 @@ namespace Prime.Ui.Wpf
     /// </summary>
     public partial class ChartPanel : UserControl
     {
-        private readonly DebouncerThread _dispatcher;
+        private readonly Debouncer _dispatcher;
         private PriceChartPaneModel _pcmodel;
         public ChartPanel()
         {
             InitializeComponent();
-            _dispatcher = new DebouncerThread();
+            _dispatcher = new Debouncer();
             this.DataContextChanged += ChartPanel_DataContextChanged;
 
         }

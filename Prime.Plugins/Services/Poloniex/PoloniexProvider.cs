@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Core;
-using Prime.Core.Exchange;
+using Prime.Common;
+using Prime.Common.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
-using OrderBook = Prime.Core.OrderBook;
+using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Poloniex
 {

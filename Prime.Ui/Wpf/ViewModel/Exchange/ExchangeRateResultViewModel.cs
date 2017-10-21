@@ -1,6 +1,6 @@
 using System;
-using Prime.Core;
-using Prime.Core.Exchange.Rates;
+using Prime.Common;
+using Prime.Common.Exchange.Rates;
 
 namespace Prime.Ui.Wpf.ViewModel
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.BitMex;
 using RestEase;
 

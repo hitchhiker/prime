@@ -1,14 +1,17 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using System;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Core;
+using Prime.Common;
+using Prime.Common.Messages;
+using Prime.Ui.Wpf.Components;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class AddressBoxModel : VmBase
+    public class AddressBoxModel : VmBase, IDisposable
     {
         private readonly AddressBarModel _addressBarModel;
         private readonly ScreenViewModel _screenViewModel;
-        private readonly CommandManager _commandManager;
 
         public AddressBoxModel() : base() { }
 
@@ -17,21 +20,26 @@ namespace Prime.Ui.Wpf.ViewModel
             _addressBarModel = addressBarModel;
             _screenViewModel = screenViewModel;
             OnEnterCommand = new RelayCommand<string>(IssueCommandStart);
-            
-            _commandManager = _screenViewModel.CommandManager;
-            _commandManager.CommandAccepted.SubscribePermanent(e => { LastCommandAccepted = e; });
+
+            DefaultMessenger.I.Default.RegisterAsync<CommandAcceptedMessage>(this, _screenViewModel.Id, CommandAcceptedMessage);
+        }
+
+        private void CommandAcceptedMessage(CommandAcceptedMessage m)
+        {
+            if (m.Command!=null)
+                LastCommandAccepted = m.Command;
         }
 
         public RelayCommand<string> OnEnterCommand { get; set; }
 
         private void IssueCommandStart(string enteredText)
         {
-            _commandManager.IssueCommand(this, UserContext.Current, enteredText);
+            _screenViewModel.NavigationProvider.IssueCommand(enteredText);
             CommandAttemptedText = enteredText;
         }
         
-        private CommandManagerEvent _lastCommandAccepted;
-        public CommandManagerEvent LastCommandAccepted
+        private CommandBase _lastCommandAccepted;
+        public CommandBase LastCommandAccepted
         {
             get => _lastCommandAccepted;
             set => Set(ref _lastCommandAccepted, value);
@@ -42,6 +50,11 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             get => _commandAttemptedText;
             set => Set(ref _commandAttemptedText, value);
+        }
+
+        public void Dispose()
+        {
+            DefaultMessenger.I.Default.UnregisterD(this);
         }
     }
 }

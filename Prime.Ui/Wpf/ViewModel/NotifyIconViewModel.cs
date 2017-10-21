@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using Prime.Core;
+using Prime.Common;
 
 namespace Prime.Ui.Wpf.ViewModel
 {

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -21,18 +21,18 @@ namespace Prime.Ui.Wpf.ViewModel
 
             ClickCommand = new RelayCommand(AddAddress);
 
-            M.RegisterAsync<WalletAddressResponseMessage>(this, uc.Token, UiDispatcher, m =>
+            M.RegisterAsyncD<WalletAddressResponseMessage>(this, uc.Token, UiDispatcher, m =>
             {
                 WalletAddresses.Add(m.Address);
             });
 
-            M.RegisterAsync<WalletAllResponseMessage>(this, uc.Token, UiDispatcher, m =>
+            M.RegisterAsyncD<WalletAllResponseMessage>(this, uc.Token, UiDispatcher, m =>
             {
                 foreach (var a in m.Addresses)
                     WalletAddresses.Add(a);
             });
 
-            M.RegisterAsync<AssetNetworkResponseMessage>(this, UiDispatcher, m =>
+            M.RegisterAsyncD<AssetNetworkResponseMessage>(this, UiDispatcher, m =>
             {
                 UpdateAssets(m.Assets);
             });
@@ -102,7 +102,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            M.UnregisterAsync(this);
+            M.UnregisterD(this);
             base.Dispose();
         }
     }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Prime.Core;
-using Prime.Core.Trade;
+using Prime.Common;
+using Prime.Common.Trade;
 
 namespace Prime.Ui.Wpf.ViewModel.Trading
 {

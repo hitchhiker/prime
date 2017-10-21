@@ -14,13 +14,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Prime.Core;
+using Prime.Common;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Xceed.Wpf.DataGrid;
 using Xceed.Wpf.DataGrid.Views;
 using System.Drawing;
-using Prime.Core.Wallet;
+using Prime.Common.Wallet;
 using Prime.Ui.Wpf.ViewModel;
 using Prime.Utility;
 
@@ -31,12 +31,12 @@ namespace Prime.Ui.Wpf
     /// </summary>
     public partial class Portfolio
     {
-        private readonly DebouncerThread _debouncer;
+        private readonly DebouncerDispatched _debouncer;
 
         public Portfolio()
         {
             InitializeComponent();
-            _debouncer = new DebouncerThread(Dispatcher);
+            _debouncer = new DebouncerDispatched(Dispatcher);
             this.DataContextChanged += Portfolio_DataContextChanged;
             SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
         }

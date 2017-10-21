@@ -8,27 +8,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf;
 using Prime.Ui.Wpf.Annotations;
 using Prime.Ui.Wpf.ExtensionMethods;
 using Prime.Ui.Wpf.ViewModel;
-using CommandManager = Prime.Core.CommandManager;
 
 namespace prime
 {
-
-    /// <summary>
-    /// Interaction logic for CustomCaretTextBox.xaml
-    /// https://www.codeproject.com/Articles/633935/Customizing-the-Caret-of-a-WPF-TextBox
-    /// </summary>
     public partial class AddressBox : UserControl
     {
         public string TestText { get; set; }
 
         public List<string> TestItems { get; set; }
 
-        public AddressBoxModel Model => DataContext as AddressBoxModel;
+        public AddressBoxModel Model { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressBox"/> class.
@@ -42,6 +36,8 @@ namespace prime
 
         private void ContextChanged()
         {
+            Model = DataContext as AddressBoxModel;
+
             if (Model == null)
             {
                 Visibility = Visibility.Hidden;
@@ -67,7 +63,6 @@ namespace prime
             window.Activated += (sender, args) => Canvas.Visibility = Visibility.Visible;
             window.Deactivated += (sender, args) => Canvas.Visibility = Visibility.Collapsed;
 
-
             MoveCustomCaret();
         }
 
@@ -77,12 +72,15 @@ namespace prime
                 OnCommandAccepted(Model.LastCommandAccepted);
         }
 
-        private void OnCommandAccepted(CommandManagerEvent e)
+        private void OnCommandAccepted(CommandBase e)
         {
-            CustomTextBox.Text = "";
-            Watermark.Text = e?.Command?.Command.ToUpper();
-            MoveCustomCaret();
-            CustomTextBox.Focus();
+            Dispatcher.Invoke(() =>
+            {
+                CustomTextBox.Text = "";
+                Watermark.Text = e?.Command?.ToUpper();
+                MoveCustomCaret();
+                CustomTextBox.Focus();
+            });
         }
 
         /// <summary>

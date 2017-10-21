@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Threading;
 
 namespace Prime.Utility
 {
@@ -19,18 +18,9 @@ namespace Prime.Utility
     /// in which no other pending event has fired. Only the last event in the
     /// sequence is fired.
     /// </summary>
-    public class DebouncerThread
+    public class Debouncer
     {
-        public DebouncerThread() : this(Dispatcher.CurrentDispatcher) { }
-
-        public DebouncerThread(Dispatcher dispatcher)
-        {
-            _dispatcher = dispatcher;
-        }
-
-        private readonly Dispatcher _dispatcher;
         private Timer _timer;
-        private DateTime TimerStarted { get; set; } = DateTime.UtcNow.AddYears(-1);
 
         /// <summary>
         /// Debounce an event by resetting the event timeout every time the event is 
@@ -48,29 +38,28 @@ namespace Prime.Utility
         /// <param name="action">Action<object> to fire when debounced event fires</object></param>
         /// <param name="param">optional parameter</param>
         /// <param name="priority">optional priorty for the dispatcher</param>   
-        public void Debounce(int interval, Action<object> action, object param = null, DispatcherPriority priority = DispatcherPriority.ApplicationIdle)
+        public void Debounce(int interval, Action<object> action, object param = null)
         {
             // kill pending timer and pending ticks
-            _dispatcher.Invoke(() =>
+            
+            _timer?.Stop();
+            _timer = null;
+
+            // timer is recreated for each event and effectively
+            // resets the timeout. Action only fires after timeout has fully
+            // elapsed without other events firing in between
+            _timer = new Timer(interval) {AutoReset = false};
+            _timer.Elapsed += delegate
             {
+                if (_timer == null)
+                    return;
+
                 _timer?.Stop();
                 _timer = null;
+                action.Invoke(param);
+            };
 
-                // timer is recreated for each event and effectively
-                // resets the timeout. Action only fires after timeout has fully
-                // elapsed without other events firing in between
-                _timer = new Timer(interval) {AutoReset = false};
-                _timer.Elapsed += delegate
-                {
-                    if (_timer == null)
-                        return;
-
-                    _timer?.Stop();
-                    _timer = null;
-                    action.Invoke(param);
-                };
-                _timer.Enabled = true;
-            });
+            _timer.Enabled = true;
         }
 
         /*

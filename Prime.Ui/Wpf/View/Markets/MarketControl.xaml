@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
-             xmlns:local1="clr-namespace:Prime.Core.Misc;assembly=Prime.Core"
+             xmlns:local11="clr-namespace:Prime.Common.Misc;assembly=Prime.Utility.Win"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:MarketControlViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <local1:GridValueColourConverter x:Key="GridValueColourConverter"/>
+        <local11:GridValueColourConverter x:Key="GridValueColourConverter"/>
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Vertical" Background="White" Width="215" Margin="20">

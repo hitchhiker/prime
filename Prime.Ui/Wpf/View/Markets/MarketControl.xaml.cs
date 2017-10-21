@@ -3,7 +3,7 @@ using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.View.Trade;
 using Prime.Ui.Wpf.ViewModel.Trading;
 using System;

@@ -1,4 +1,4 @@
-using Prime.Core;
+using Prime.Common;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Ui.Wpf.PageUri;
 using Prime.Ui.Wpf.ViewModel;

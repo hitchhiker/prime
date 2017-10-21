@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using Prime.Core;
-using Prime.Core.Trade;
+using Prime.Common;
+using Prime.Common.Trade;
 using Prime.Ui.Wpf.ViewModel.Trading;
 using System;
 using System.Collections.ObjectModel;

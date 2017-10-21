@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
-using Prime.Core;
+using Prime.Common;
 using MahApps.Metro.Controls;
 using prime;
 using Prime.Ui.Wpf.ViewModel;
@@ -18,7 +18,7 @@ namespace Prime.Ui.Wpf
 
         private readonly List<MetroWindowInstance> _instances = new List<MetroWindowInstance>();
 
-        private readonly DebouncerThread _debouncer = new DebouncerThread();
+        private readonly Debouncer _debouncer = new Debouncer();
 
         public void CreateNewWindow()
         {

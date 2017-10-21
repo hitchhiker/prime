@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Net.Http;
 using System.Threading;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinbase

@@ -11,7 +11,7 @@ using LiveCharts;
 using LiveCharts.Definitions.Series;
 using LiveCharts.Wpf;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -24,7 +24,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly ScreenViewModel _screenViewModel;
         public ChartGroupViewModel ChartGroupViewModel { get; private set; }
         private readonly AssetPair _pair;
-        private readonly DebouncerThread _debouncer;
+        private readonly DebouncerDispatched _debouncer;
         private ChartViewModel _volumeChart;
         private ChartViewModel _priceChart;
         private Timer _liveTimer;
@@ -49,7 +49,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public PriceChartPaneModel(IMessenger messenger, ScreenViewModel screenViewModel, AssetPair pair)
         {
             _dispatcher = PrimeWpf.I.UiDispatcher;
-            _debouncer = new DebouncerThread(Dispatcher.CurrentDispatcher);
+            _debouncer = new DebouncerDispatched(Dispatcher.CurrentDispatcher);
             _messenger = messenger;
             _screenViewModel = screenViewModel;
             _pair = pair;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using plugins;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.Coinbase;
 
 namespace Prime.Tests.Providers

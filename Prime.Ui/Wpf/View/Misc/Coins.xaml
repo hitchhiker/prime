@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
-             xmlns:local="clr-namespace:Prime.Core.Misc;assembly=Prime.Core"
+             xmlns:misc="clr-namespace:Prime.Common.Misc;assembly=Prime.Utility.Win"
              d:DataContext="{d:DesignInstance viewModel:CoinsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <local:GridValueColourConverter x:Key="GridValueColourConverter"/>
-        <local:TimeValueConverter x:Key="TimeValueConverter"/>
+        <misc:GridValueColourConverter x:Key="GridValueColourConverter"/>
+        <misc:TimeValueConverter x:Key="TimeValueConverter"/>
     </UserControl.Resources>
     <ScrollViewer Background="{DynamicResource ScrollViewerBackground}" BorderThickness="0" x:Name="SViewer">
         <StackPanel>

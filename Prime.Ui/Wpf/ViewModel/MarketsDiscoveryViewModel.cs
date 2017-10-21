@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using Prime.Core;
-using Prime.Core.Exchange.Model;
+using Prime.Common;
+using Prime.Common.Exchange.Model;
 using Prime.Utility;
 using System;
 using System.Collections.Generic;

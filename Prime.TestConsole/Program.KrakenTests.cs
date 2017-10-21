@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 using plugins;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.Kraken;
-using AssetPair = Prime.Core.AssetPair;
+using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.TestConsole
 {

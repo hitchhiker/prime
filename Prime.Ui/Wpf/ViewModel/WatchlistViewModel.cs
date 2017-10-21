@@ -1,5 +1,5 @@
-﻿using Prime.Core;
-using Prime.Core.Watchlist;
+﻿using Prime.Common;
+using Prime.Common.Watchlist;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

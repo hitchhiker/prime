@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
 using Prime.Utility;
 using Prime.Ui.Wpf.ViewModel.Trading;
@@ -33,8 +33,17 @@ namespace Prime.Ui.Wpf.PageUri
             {"markets discovery", "/View/Markets/MarketsDiscovery.xaml"}
         };
 
-
         public static DocumentPaneViewModel GetViewModel(IMessenger messenger, ScreenViewModel model, SimpleContentCommand command)
+        {
+            DocumentPaneViewModel dpvm = null;
+            model.UiDispatcher.Invoke(() =>
+            {
+                dpvm = GetViewModelInvoked(model, command);
+            });
+            return dpvm;
+        }
+
+        private static DocumentPaneViewModel GetViewModelInvoked(ScreenViewModel model, SimpleContentCommand command)
         {
             switch (command.Command)
             {

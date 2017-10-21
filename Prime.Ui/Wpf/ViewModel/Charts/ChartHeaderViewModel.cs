@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Prime.Core;
+using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel

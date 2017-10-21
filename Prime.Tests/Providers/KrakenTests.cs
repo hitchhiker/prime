@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Prime.Core;
+using Prime.Common;
 using Prime.Plugins.Services.Kraken;
-using AssetPair = Prime.Core.AssetPair;
+using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Tests.Providers
 {

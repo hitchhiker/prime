@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
-using Prime.Core;
-using Prime.Core.Exchange.Rates;
+using Prime.Common;
+using Prime.Common.Exchange.Rates;
 using Prime.Utility;
-using Prime.Core.Exchange.Model;
+using Prime.Common.Exchange.Model;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -26,7 +26,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _assetRight = UserContext.Current.QuoteAsset;
 
             _dispatcher = PrimeWpf.I.UiDispatcher;
-            _debouncer = new DebouncerThread(_dispatcher);
+            _debouncer = new DebouncerDispatched(_dispatcher);
             
 
             foreach (var i in UserContext.Current.UserSettings.FavouritePairs)
@@ -43,7 +43,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly Dispatcher _dispatcher;
         private readonly List<LatestPriceRequest> _requests = new List<LatestPriceRequest>();
         private readonly LatestPriceCoordinator _coord = LatestPriceCoordinator.I;
-        private readonly DebouncerThread _debouncer;
+        private readonly DebouncerDispatched _debouncer;
         public AllAssetsViewModel AllAssetsViewModel { get; }
 
         public RelayCommand GoCommand { get; }

@@ -2,7 +2,7 @@ using System;
 using System.Windows.Threading;
 using LiveCharts.Dtos;
 using NodaTime;
-using Prime.Core;
+using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
 using Prime.Utility;
 
@@ -14,7 +14,7 @@ namespace Prime.Ui.Wpf
     public abstract class ZoomViewModel : VmBase
     {
         protected readonly ZoomViewModel _zoomChart;
-        protected readonly DebouncerThread _debouncer;
+        protected readonly DebouncerDispatched _debouncer;
         protected readonly Dispatcher _uiDispatcher;
 
         protected double _zoomFrom;
@@ -55,7 +55,7 @@ namespace Prime.Ui.Wpf
         protected ZoomViewModel(TimeResolution resolution, Dispatcher uiDispatcher)
         {
             Resolution = resolution;
-            _debouncer = new DebouncerThread(uiDispatcher);
+            _debouncer = new DebouncerDispatched(uiDispatcher);
         }
 
         public event EventHandler OnRangePreviewChange;

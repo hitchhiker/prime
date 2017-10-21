@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Prime.Core;
+using Prime.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prime.Core.Tests
+namespace Prime.Common.Tests
 {
     [TestClass()]
     public class ApiCoordinatorTests
