@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Core.Exchange;
+using Prime.Common.Exchange;
 
 namespace Prime.Tests.Providers
 {
