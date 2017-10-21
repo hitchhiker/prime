@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Core;
-using Prime.Core.Exchange;
+using Prime.Common;
+using Prime.Common.Exchange;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance

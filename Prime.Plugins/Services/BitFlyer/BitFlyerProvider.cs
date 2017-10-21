@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Core.Exchange;
+using Prime.Common.Exchange;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer

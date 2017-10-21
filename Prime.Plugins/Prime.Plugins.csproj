@@ -8,10 +8,6 @@
     <Compile Remove="Services\3rdParty\**" />
     <EmbeddedResource Remove="Services\3rdParty\**" />
     <None Remove="Services\3rdParty\**" />
-    <Compile Include="Services\Binance\BinanceAuthenticator.cs" />
-    <Compile Include="Services\Binance\BinanceProvider.cs" />
-    <Compile Include="Services\Binance\BinanceSchema.cs" />
-    <Compile Include="Services\Binance\IBinanceApi.cs" />
   </ItemGroup>
 
   <ItemGroup>
