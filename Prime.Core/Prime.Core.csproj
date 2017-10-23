@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MvvmLightLibs" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
     <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
   </ItemGroup>
