@@ -4,8 +4,10 @@ using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Utility;
 using System.Linq;
+using Prime.Common;
+using Prime.Common.Exchange.Rates;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core
 {
     public class LatestPriceProvider : IDisposable
     {
@@ -13,7 +15,6 @@ namespace Prime.Common.Exchange.Rates
         private readonly IPublicPriceProvider _provider;
         private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
-        private readonly LatestPriceCoordinator _coordinator;
         private readonly IMessenger _messenger;
         private readonly Timer _timer;
         public readonly Network Network;
@@ -24,8 +25,7 @@ namespace Prime.Common.Exchange.Rates
             _context = context;
             _provider = context.Provider;
             Network = _provider.Network;
-            _coordinator = context.Coordinator;
-            _messenger = context.Coordinator.Messenger;
+            _messenger = context.Aggregator.M;
             _timer = new Timer(10) {AutoReset = false};
             _timer.Elapsed += delegate { UpdateTick(); };
             _timer.Start();
@@ -72,15 +72,15 @@ namespace Prime.Common.Exchange.Rates
             }
         }
 
-        public void AddVerifiedRequest(LatestPriceRequest request)
+        public void AddVerifiedRequest(LatestPriceRequest requestMessage)
         {
             lock (_timerLock)
             {
-                if (!request.IsVerified)
-                    throw new ArgumentException($"You cant add an un-verified {request.GetType()} to {GetType()}");
+                if (!requestMessage.IsVerified)
+                    throw new ArgumentException($"You cant add an un-verified {requestMessage.GetType()} to {GetType()}");
 
-                _verifiedRequests.Add(request);
-                _pairRequests.Add(request.PairRequestable);
+                _verifiedRequests.Add(requestMessage);
+                _pairRequests.Add(requestMessage.PairRequestable);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Prime.Common.Exchange.Rates
             }
 
             if (hasresult && !_isDisposed)
-                _messenger.Send(new ExchangeRatesUpdatedMessage());
+                _messenger.Send(new LatestPricesUpdatedMessage());
         }
 
         private void AddResult(AssetPair pair, LatestPrice response)
@@ -132,7 +132,7 @@ namespace Prime.Common.Exchange.Rates
 
         private void Collect(LatestPrice response, LatestPriceRequest request)
         {
-            var collected = request.LastResult = new LatestPriceResult(request, _provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
+            var collected = request.LastResult = new LatestPriceResultMessage(_provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
 
             _messenger.Send(collected);
 
@@ -140,10 +140,10 @@ namespace Prime.Common.Exchange.Rates
                 SendConverted(request, collected, request.ConvertedOther?.LastResult);
         }
 
-        private void SendConverted(LatestPriceRequest request, LatestPriceResult recent, LatestPriceResult other)
+        private void SendConverted(LatestPriceRequest request, LatestPriceResultMessage recent, LatestPriceResultMessage other)
         {
             if (other != null)
-                _messenger.Send(new LatestPriceResult(request, recent, other));
+                _messenger.Send(new LatestPriceResultMessage(request.Pair, request.IsConvertedPart1, recent, other));
         }
 
         private bool _isDisposed;

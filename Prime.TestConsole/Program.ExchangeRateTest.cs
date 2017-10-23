@@ -21,7 +21,7 @@ namespace TestConsole
                     Console.WriteLine(m.Message);
                 });
 
-                var exch = LatestPriceCoordinator.I;
+                var exch = LatestPriceAggregator.I;
                 exch.AddRequest(this, new AssetPair("cann", "usd"));
                 //exch.AddRequest(new AssetPair("btc", "usd"));
                 //exch.AddRequest(new AssetPair("usd", "btc"));
@@ -74,7 +74,7 @@ namespace TestConsole
                     RunOnce();
                 });*/
                 
-                messenger.Register<ExchangeRatesUpdatedMessage>(this, re =>
+                messenger.Register<LatestPricesUpdatedMessage>(this, re =>
                 {
                     lock (_lock)
                     {

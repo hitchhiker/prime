@@ -1,12 +1,14 @@
 ﻿using System;
+using GalaSoft.MvvmLight.Messaging;
+using Prime.Core;
+using Prime.Utility;
 
 namespace Prime.Common.Exchange.Rates
 {
-    public class LatestPriceResult
+    public class LatestPriceResultMessage
     {
         public readonly IPublicPriceProvider Provider;
         public readonly IPublicPriceProvider ProviderConversion;
-        public readonly LatestPriceRequest Request;
 
         public DateTime UtcCreated { get; }
         public AssetPair Pair { get; }
@@ -17,21 +19,19 @@ namespace Prime.Common.Exchange.Rates
 
         public bool IsConverted => ProviderConversion != null;
 
-        public LatestPriceResult(LatestPriceRequest request, IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
+        public LatestPriceResultMessage(IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
         {
-            Request = request;
             UtcCreated = latestPrice.UtcCreated;
             Provider = provider;
             Pair = pair;
             Price = isReversed ? new Money(1d / latestPrice.Price, pair.Asset1) : latestPrice.Price;
         }
 
-        public LatestPriceResult(LatestPriceRequest request, LatestPriceResult recent, LatestPriceResult other)
+        public LatestPriceResultMessage(AssetPair pair, bool isPart1, LatestPriceResultMessage recent, LatestPriceResultMessage other)
         {
-            Request = request;
-            Pair = request.Pair;
-            var p1 = request.IsConvertedPart1 ? recent : other;
-            var p2 = request.IsConvertedPart1 ? other : recent;
+            Pair = pair;
+            var p1 = isPart1 ? recent : other;
+            var p2 = isPart1 ? other : recent;
 
             UtcCreated = recent.UtcCreated > other.UtcCreated ? other.UtcCreated : recent.UtcCreated;
             Provider = p1.Provider;
@@ -42,7 +42,7 @@ namespace Prime.Common.Exchange.Rates
             AssetConvert = p1.Pair.Asset2;
         }
 
-        public bool IsMatch(LatestPriceResult request)
+        public bool IsMatch(LatestPriceResultMessage request)
         {
             if (request == null)
                 return false;

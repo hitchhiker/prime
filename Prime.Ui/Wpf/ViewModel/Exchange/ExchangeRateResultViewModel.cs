@@ -7,11 +7,11 @@ namespace Prime.Ui.Wpf.ViewModel
     public class ExchangeRateResultViewModel : VmBase
     {
         private readonly ExchangeRateViewModel _model;
-        private readonly LatestPriceResult _result;
+        private readonly LatestPriceResultMessage _result;
 
         public ExchangeRateResultViewModel() { }
 
-        public ExchangeRateResultViewModel(ExchangeRateViewModel model, LatestPriceResult result)
+        public ExchangeRateResultViewModel(ExchangeRateViewModel model, LatestPriceResultMessage result)
         {
             _model = model;
             _result = result;

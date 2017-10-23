@@ -6,5 +6,5 @@ using Prime.Utility;
 
 namespace Prime.Common.Exchange.Rates
 {
-    public class ExchangeRatesUpdatedMessage { }
+    public class LatestPricesUpdatedMessage { }
 }

@@ -22,15 +22,15 @@ namespace Prime.Ui.Wpf.ViewModel
         }
 
         private Random random = null;
-        public BindingList<PortfolioItemModel> ListPortfolioItems { get; private set; }
+        public BindingList<DesignPortfolioItemModel> ListPortfolioItems { get; private set; }
 
         private void PopulateGrid()
         {
-            ListPortfolioItems = new BindingList<PortfolioItemModel>();
+            ListPortfolioItems = new BindingList<DesignPortfolioItemModel>();
 
             for (int i = 0; i < 5; i++)
             {
-                ListPortfolioItems.Add(new PortfolioItemModel((decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1 + 1) - 1), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (i % 2 == 0 ? "../../Asset/img/CAT.png" : "../../Asset/img/Apple.png"), (i % 2 == 0 ? "CAT" : "AAPL"), (i % 2 == 0 ? "" : "Apple"), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000)), new Money((decimal)(random.NextDouble() * (10000 + 10000) - 10000)), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000))));
+                ListPortfolioItems.Add(new DesignPortfolioItemModel((decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1 + 1) - 1), (decimal)(random.NextDouble() * (1000 - 100) + 100), (decimal)(random.NextDouble() * (1000 - 100) + 100), (i % 2 == 0 ? "../../Asset/img/CAT.png" : "../../Asset/img/Apple.png"), (i % 2 == 0 ? "CAT" : "AAPL"), (i % 2 == 0 ? "" : "Apple"), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000)), new Money((decimal)(random.NextDouble() * (10000 + 10000) - 10000)), new Money((decimal)(random.NextDouble() * (10000 - 1000) + 1000))));
             }
         }
 

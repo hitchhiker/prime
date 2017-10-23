@@ -18,6 +18,5 @@ namespace Prime.Core
         private static readonly Lazy<Prime> Lazy = new Lazy<Prime>(()=>new Prime());
 
         public readonly List<IStartupMessenger> StartupMessengers;
-
     }
 }

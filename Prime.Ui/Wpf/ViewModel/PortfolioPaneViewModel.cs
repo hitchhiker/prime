@@ -18,28 +18,25 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class PortfolioPaneViewModel : DocumentPaneViewModel
     {
-        public PortfolioPaneViewModel() { }
-
-        public PortfolioPaneViewModel(ScreenViewModel screenViewModel)
-        {
-            _context = UserContext.Current;
-            PCoordinator = _context.PortfolioCoordinator;
-            ECoordinator = LatestPriceCoordinator.I;
-            Dispatcher = Application.Current.Dispatcher;
-            PCoordinator.Register<PortfolioChangedMessage>(this, PortfolioChanged);
-        }
-
-
-#pragma warning disable 169
-        private readonly ScreenViewModel _screenViewModel;
-#pragma warning restore 169
-        public readonly Dispatcher Dispatcher;
-        private readonly UserContext _context;
-        public readonly PortfolioCoordinator PCoordinator;
-        public readonly LatestPriceCoordinator ECoordinator;
         private DateTime _utcLastUpdated;
         private string _information;
         private Money _totalConverted;
+        private readonly TimerIrregular _timer;
+
+        public PortfolioPaneViewModel()
+        {
+            if (IsInDesignMode)
+                return;
+
+            M.Register<PortfolioChangedMessage>(this, PortfolioChanged);
+            _timer = new TimerIrregular(TimeSpan.FromSeconds(30), KeepSubscriptionAlive);
+            _timer.Start();
+        }
+
+        private void KeepSubscriptionAlive()
+        {
+            M.Send(new PortfolioSubscribeMessage(Id, UserContext.Current.Id));
+        }
 
         public event EventHandler OnChanged;
 
@@ -71,27 +68,30 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             try
             {
-                PortfolioChangedCaught();
+                PortfolioChangedCaught(m);
             }
             catch
             { }
         }
 
-        private void PortfolioChangedCaught()
+        private void PortfolioChangedCaught(PortfolioChangedMessage m)
         {
-            Dispatcher.Invoke(() =>
+            if (m.UserId != UserContext.Current.Id)
+                return;
+
+            UiDispatcher.Invoke(() =>
             {
                 var q = UserContext.Current.QuoteAsset;
-                var p = PCoordinator;
+                var items = m.Items;
 
                 PortfolioObservable.Clear();
 
-                foreach (var i in p.Items.OrderBy(x => x.Asset?.ShortCode ?? "ZZZ").ThenBy(x => x.Network?.Name ?? "ZZZ"))
+                foreach (var i in items.OrderBy(x => x.Asset?.ShortCode ?? "ZZZ").ThenBy(x => x.Network?.Name ?? "ZZZ"))
                     PortfolioObservable.Add(i);
 
                 PortfolioInfoObservable.Clear();
 
-                foreach (var i in p.PortfolioInfoItems.OrderBy(x => x.Network.NameLowered))
+                foreach (var i in m.InfoItems.OrderBy(x => x.Network.NameLowered))
                     PortfolioInfoObservable.Add(i);
 
                 var t = PortfolioInfoObservable.Select(x => x.TotalConvertedAssetValue).Sum();
@@ -100,24 +100,24 @@ namespace Prime.Ui.Wpf.ViewModel
                     i.Percentage = r * i.TotalConvertedAssetValue;
 
                 var gi = new List<PortfolioGroupedItem>();
-                foreach (var i in p.Items.GroupBy(x => x.Asset))
+                foreach (var i in items.GroupBy(x => x.Asset))
                     gi.Add(PortfolioGroupedItem.Create(q, i.Key, i.ToList()));
 
                 SummaryObservable.Clear();
                 foreach (var i in gi.OrderBy(x => x.IsTotalLine).ThenByDescending(x => (decimal)x.Converted))
                     SummaryObservable.Add(i);
 
-                UtcLastUpdated = p.UtcLastUpdated;
+                UtcLastUpdated = m.UtcLastUpdated;
                 Information = null;
 
-                Information += "Via: " + string.Join(", ", p.WorkingProviders.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
+                Information += "Via: " + string.Join(", ", m.Working.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
 
-                if (p.FailingProviders.Any())
-                    Information += " | Failed: " + string.Join(", ", p.FailingProviders.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
+                if (m.Failing.Any())
+                    Information += " | Failed: " + string.Join(", ", m.Failing.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
 
-                TotalConverted = p.Items.FirstOrDefault(x => x.IsTotalLine)?.Converted ?? Money.Zero;
+                TotalConverted = items.FirstOrDefault(x => x.IsTotalLine)?.Converted ?? Money.Zero;
 
-                if (p.Items.Any(x=>x.ConversionFailed))
+                if (items.Any(x=>x.ConversionFailed))
                     Information += " Warning: Some currencies could not be converted, and so are not included in this total.";
 
                 OnChanged?.Invoke(this, EventArgs.Empty);
@@ -138,7 +138,9 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            PCoordinator.Unregister<PortfolioChangedMessage>(this, PortfolioChanged);
+            M.Send(new PortfolioSubscribeMessage(Id, SubscriptionType.UnsubscribeAll));
+            M.Unregister(this);
+            _timer?.Dispose();
             base.Dispose();
         }
     }

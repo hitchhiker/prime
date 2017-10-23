@@ -7,7 +7,7 @@ using Prime.Utility;
 
 namespace Prime.Common.Wallet
 {
-    public class PortfolioProvider : IDisposable
+    internal class PortfolioProvider : IDisposable
     {
         public PortfolioProvider(PortfolioProviderContext context)
         {
@@ -170,10 +170,6 @@ namespace Prime.Common.Wallet
         {
             try
             {
-                var pair = new AssetPair(balance.Available.Asset, UserContext.Current.QuoteAsset);
-
-                //var fx = pair.Fx(provider as IPublicPriceProvider) ?? Money.Zero;
-
                 var pli = new PortfolioLineItem()
                 {
                     Asset = balance.Asset,
@@ -182,11 +178,8 @@ namespace Prime.Common.Wallet
                     PendingBalance = balance.Reserved,
                     ReservedBalance = balance.Reserved,
                     Total = new Money((decimal) balance.Available + (decimal) balance.Reserved, balance.Available.Asset),
-                    //Converted = new Money((decimal) balance.Available * (decimal) fx, pair.Asset2),
-                    //ConversionFailed = fx == Money.Zero,
                     ChangePercentage = 0
                 };
-
 
                 return pli;
             }

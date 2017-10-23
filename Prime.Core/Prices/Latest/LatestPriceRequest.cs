@@ -2,18 +2,19 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Common;
+using Prime.Common.Exchange.Rates;
+using Prime.Utility;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core
 {
     public partial class LatestPriceRequest : IEquatable<LatestPriceRequest>
     {
-        private readonly IMessenger _messenger;
-        private readonly LatestPriceCoordinator _coordinator = LatestPriceCoordinator.I;
+        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         public readonly AssetPair Pair;
 
         public LatestPriceRequest(AssetPair pair, Network network = null)
         {
-            _messenger = _coordinator.Messenger;
             Network = NetworkSuggested = network;
             Pair = pair;
         }
@@ -41,7 +42,7 @@ namespace Prime.Common.Exchange.Rates
 
         public Network NetworkSuggested { get; private set; }
 
-        public LatestPriceResult LastResult { get; set; }
+        public LatestPriceResultMessage LastResult { get; set; }
 
         private void Discovery()
         {
@@ -66,7 +67,7 @@ namespace Prime.Common.Exchange.Rates
             if (IsConvertedPart1 && !isPart2)
                 ProcessConvertedPart2(r.Via);
 
-            _messenger.Send(new ExchangeRateRequestVerifiedMessage(this));
+            _messenger.Send(new InternalLatestPriceRequestVerifiedMessage(this));
         }
 
         private void ProcessConvertedPart2(AssetPairKnownProviders provs)

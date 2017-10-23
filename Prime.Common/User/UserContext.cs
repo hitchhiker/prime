@@ -51,6 +51,12 @@ namespace Prime.Common
 
         public static UserContext Current = new UserContext(new ObjectId("50709e6e210a18719ea877a2"), "test");
 
+        public static UserContext Get(ObjectId id)
+        {
+            //temp
+            return id == Current.Id ? Current : null;
+        }
+
         ObjectId IDataContext.Id => Id;
 
         public bool IsPublic => false;
@@ -100,10 +106,7 @@ namespace Prime.Common
         private Radiant.Radiant _radiant;
         public Radiant.Radiant Radiant => _radiant ?? (_radiant = new Radiant.Radiant(Logging.I.DefaultLogger));
         */
-
-        private PortfolioCoordinator _portfolioCoordinator;
-        public PortfolioCoordinator PortfolioCoordinator => _portfolioCoordinator ?? (_portfolioCoordinator = new PortfolioCoordinator(this));
-
+        
         private WalletProvider _walletProvider;
         public WalletProvider WalletProvider => _walletProvider ?? (_walletProvider = new WalletProvider(this));
 

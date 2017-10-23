@@ -5,13 +5,13 @@ using Prime.Utility;
 
 namespace Prime.Common.Exchange.Rates
 {
-    public class SubscriberList<T>
+    public class WeakSubscriberList<T>
     {
         private readonly Action<T> _onExisting;
         private readonly Action<T> _onAdded;
         private readonly Action<T> _onRemoved;
 
-        public SubscriberList(Action<T> onAdded, Action<T> onExisting, Action<T> onRemoved)
+        public WeakSubscriberList(Action<T> onAdded, Action<T> onExisting, Action<T> onRemoved)
         {
             _onExisting = onExisting;
             _onAdded = onAdded;

@@ -4,28 +4,37 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Timers;
 using System.Windows;
+using GalaSoft.MvvmLight.Messaging;
+using LiteDB;
 using Nito.AsyncEx;
 using Prime.Common.Exchange.Rates;
 using Prime.Utility;
 
 namespace Prime.Common.Wallet
 {
-    public class PortfolioCoordinator : CoordinatorBase
+    internal class PortfolioAggregator
     {
-        public PortfolioCoordinator(UserContext context)
+        public PortfolioAggregator(UserContext context)
         {
+            _id = ObjectId.NewObjectId();
             TimerInterval = 15000;
             Context = context;
             _scanners = new List<PortfolioProvider>();
-            _messenger.Register<QuoteAssetChangedMessage>(this, BaseAssetChanged);
+            M.Register<QuoteAssetChangedMessage>(this, BaseAssetChanged);
             _debouncer = new Debouncer();
+            _timer = new TimerIrregular(TimeSpan.FromSeconds(30), KeepPricesSubscriptionAlive);
+            _keepAlive = new LatestPriceRequestMessage(_id);
         }
 
+        private readonly ObjectId _id;
+        private readonly TimerIrregular _timer;
+        public readonly int TimerInterval;
+        protected readonly IMessenger M = DefaultMessenger.I.Default;
         private readonly Debouncer _debouncer;
         private readonly List<PortfolioProvider> _scanners;
-        private readonly UniqueList<LatestPriceRequest> _requests = new UniqueList<LatestPriceRequest>();
         public readonly UserContext Context;
         private readonly object _lock = new object();
+        private readonly LatestPriceRequestMessage _keepAlive;
 
         public UniqueList<PortfolioLineItem> Items { get; } = new UniqueList<PortfolioLineItem>();
         public List<IWalletService> FailingProviders { get; } = new List<IWalletService>();
@@ -34,40 +43,45 @@ namespace Prime.Common.Wallet
         public UniqueList<PortfolioInfoItem> PortfolioInfoItems { get; } = new UniqueList<PortfolioInfoItem>();
         public DateTime UtcLastUpdated { get; private set; }
 
+        private void KeepPricesSubscriptionAlive()
+        {
+            M.Send(_keepAlive);
+        }
+
         private void BaseAssetChanged(QuoteAssetChangedMessage m)
         {
             lock (_lock)
-                Restart(Context);
-        }
-
-        protected override void OnSubscribersChanged()
-        {
-            if (SubscribersCount == 0)
+            {
                 Stop();
-            else
-                Start(UserContext.Current);
+                Start();
+            }
         }
 
-        protected override void OnStart(UserContext context)
+        public void Start()
         {
             lock (_lock)
             {
                 var providers = Networks.I.WalletProviders.WithApi();
                 _scanners.Clear();
-                _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, context.QuoteAsset, TimerInterval))).ToList());
+                _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, Context.QuoteAsset, TimerInterval))).ToList());
                 _scanners.ForEach(x => x.OnChanged += ScannerChanged);
+                _timer.Start();
+
+                M.Register<LatestPriceResultMessage>(this, IncomingLatestPrice);
             }
         }
 
-        protected override void OnStop()
+        public void Stop()
         {
             lock (_lock)
             {
+                _timer.Stop();
                 _scanners.ForEach(delegate(PortfolioProvider x)
                 {
                     x.OnChanged -= ScannerChanged;
                     x.Dispose();
                 });
+                _scanners.Clear();
 
                 Items.Clear();
                 PortfolioInfoItems.Clear();
@@ -75,10 +89,9 @@ namespace Prime.Common.Wallet
                 WorkingProviders.Clear();
                 QueryingProviders.Clear();
                 UtcLastUpdated = DateTime.MinValue;
-                var lpc = LatestPriceCoordinator.I;
 
-                foreach (var r in _requests)
-                    lpc.RemoveRequest(this, r);
+                M.Send(new LatestPriceRequestMessage(_id, SubscriptionType.UnsubscribeAll));
+                M.Unregister(this);
 
                 SendChangedMessageDebounced();
             }
@@ -119,20 +132,20 @@ namespace Prime.Common.Wallet
 
         private void SendChangedMessageDebounced()
         {
-            _debouncer.Debounce(25, _ => SendChangedMessage());
+            _debouncer.Debounce(5, _ => SendChangedMessage());
         }
 
-        private void SendChangedMessage()
+        public void SendChangedMessage()
         {
-            _messenger.Send(new PortfolioChangedMessage());
+            var msg = new PortfolioChangedMessage(Context.Id, UtcLastUpdated, Items.ToUniqueList(), PortfolioInfoItems.ToUniqueList(), WorkingProviders.ToList(), QueryingProviders.ToList(), FailingProviders.ToList());
+            M.Send(msg);
         }
 
         private void DoFinal()
         {
             Items.RemoveAll(x => x.IsTotalLine);
-
-            var lpc = LatestPriceCoordinator.I;
-            var pairs = new List<AssetPair>();
+            
+            var subscribed = new List<AssetPair>();
 
             foreach (var i in Items)
             {
@@ -144,32 +157,35 @@ namespace Prime.Common.Wallet
 
                 var pair = new AssetPair(i.Asset, UserContext.Current.QuoteAsset);
 
-                lpc.Messenger.Register<LatestPriceResult>(i, m =>
-                {
-                    if (!m.Pair.Equals(pair))
-                        return;
-                    if (DoConversion(i, m, pair))
-                        SendChangedMessageDebounced();
-                });
-
-                var r = lpc.GetResult(pair);
-                if (r != null)
-                    DoConversion(i, r, pair);
-
-                if (pairs.Contains(pair))
+                if (subscribed.Contains(pair))
                     continue;
 
-                pairs.Add(pair);
-                _requests.Add(lpc.AddRequest(this, pair));
+                subscribed.Add(pair);
+                M.Send(new LatestPriceRequestMessage(_id, pair));
             }
 
             if (Items.Any())
                 Items.Add(new PortfolioTotalLineItem() { Items = Items });
         }
 
-        private static bool DoConversion(PortfolioLineItem i, LatestPriceResult m, AssetPair pair)
+
+        private void IncomingLatestPrice(LatestPriceResultMessage m)
         {
-            var mn = new Money((decimal) i.AvailableBalance * (decimal) m.Price, pair.Asset2);
+            lock (_lock)
+            {
+                var qa = UserContext.Current.QuoteAsset;
+                var ti = Items.FirstOrDefault(x => Equals(x.Total.Asset, m.Pair.Asset1) && Equals(qa, m.Pair.Asset2));
+                if (ti == null)
+                    return;
+
+                if (DoConversion(ti, m, qa))
+                    SendChangedMessageDebounced();
+            }
+        }
+
+        private static bool DoConversion(PortfolioLineItem i, LatestPriceResultMessage m, Asset targetAsset)
+        {
+            var mn = new Money((decimal)i.Total * (decimal)m.Price, targetAsset);
             if (i.Converted != null && mn.ToDecimalValue() == i.Converted.Value.ToDecimalValue())
                 return false;
 

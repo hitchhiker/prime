@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Prime.Common.Portfolio
 {
-    public class PortfolioItemModel
+    public class DesignPortfolioItemModel
     {
         public decimal Units { get; }
         public decimal AvgOpen { get; }
@@ -20,7 +20,7 @@ namespace Prime.Common.Portfolio
         public Money ProfitLoss { get; }
         public Money Value { get; }
 
-        public PortfolioItemModel(decimal units, decimal avgOpen, decimal profitLossPerc, decimal sell, decimal buy, string iconPath, string market, string marketDescription, Money invested, Money profitLoss, Money value)
+        public DesignPortfolioItemModel(decimal units, decimal avgOpen, decimal profitLossPerc, decimal sell, decimal buy, string iconPath, string market, string marketDescription, Money invested, Money profitLoss, Money value)
         {
             this.Units = units;
             this.AvgOpen = avgOpen;

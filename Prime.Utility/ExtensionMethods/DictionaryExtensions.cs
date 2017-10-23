@@ -283,7 +283,7 @@ namespace Prime.Utility
             return dict.Get(name, "").ToEnum(defaultValue);
         }
 
-        public static void RemoveAll<T>(this IDictionary<string, T> dictionary, Func<KeyValuePair<string,T>, bool> predicate)
+        public static void RemoveAll<TK, T>(this IDictionary<TK, T> dictionary, Func<KeyValuePair<TK, T>, bool> predicate)
         {
             var removekeys = dictionary.Where(predicate).Select(x => x.Key).ToList();
             foreach (var k in removekeys)
