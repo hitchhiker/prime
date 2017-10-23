@@ -20,7 +20,7 @@ namespace TestConsole
                 {
                     Console.WriteLine(m.Message);
                 });
-
+                /*
                 var exch = LatestPriceAggregator.I;
                 exch.AddRequest(this, new AssetPair("cann", "usd"));
                 //exch.AddRequest(new AssetPair("btc", "usd"));
@@ -67,12 +67,12 @@ namespace TestConsole
                         AddRequest3();
                     }).Start();
                 }
-
+                */
                 /*messenger.Register<ExchangeRateCollected>(this, m =>
                 {
                     Console.WriteLine(m.UtcCreated.ToLongTimeString() + ": " + m.Pair + " = " + m.Price.Asset + " " + m.Price.ToDecimalPointString(10));
                     RunOnce();
-                });*/
+                });
                 
                 messenger.Register<LatestPricesUpdatedMessage>(this, re =>
                 {
@@ -91,7 +91,7 @@ namespace TestConsole
                 do
                 {
                     Thread.Sleep(1);
-                } while (1 == 1);
+                } while (1 == 1);*/
             }
         }
     }
