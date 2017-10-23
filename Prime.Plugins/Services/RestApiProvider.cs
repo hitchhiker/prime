@@ -36,7 +36,10 @@ namespace Prime.Plugins.Services
         {
             var key = context.GetKey(_provider);
 
-            return RestClient.For<T>(_apiUrl, _requestModifier.Invoke(key)) as T;
+            return new RestClient(_apiUrl, _requestModifier.Invoke(key))
+            {
+                // ResponseDeserializer = new DebugDeserialiser()
+            }.For<T>();
         }
     }
 }

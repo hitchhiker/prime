@@ -212,6 +212,12 @@ namespace Prime.Tests.Providers
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
+
+                Trace.WriteLine("Asset pairs:");
+                foreach (var pair in pairs)
+                {
+                    Trace.WriteLine($"{pair.Asset1}-{pair.Asset2}");
+                }
             }
             catch (Exception e)
             {
