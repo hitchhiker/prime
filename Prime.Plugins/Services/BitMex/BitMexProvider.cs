@@ -23,25 +23,24 @@ namespace Prime.Plugins.Services.BitMex
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
 
         private RestApiClientProvider<IBitMexApi> ApiProvider { get; }
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
+
+        public IRateLimiter RateLimiter => Limiter;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => false;
+        public bool CanPeekDepositAddress => false;
+        public ObjectId Id => IdHash;
+        public Network Network => new Network("BitMex");
+        public bool Disabled => false;
+        public int Priority => 100;
+        public string AggregatorName => null;
+        public string Title => Network.Name;
 
         public BitMexProvider()
         {
-            Network = new Network("BitMex");
-            Disabled = false;
-            AggregatorName = null;
-            Title = Network.Name;
-            Id = IdHash;
-            Priority = 100;
-            GetApiConfiguration = ApiConfiguration.Standard2;
-
-            ApiProvider = RestApiClientProvider<IBitMexApi>.Create(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
-
-            CanGenerateDepositAddress = false;
-            CanMultiDepositAddress = false;
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
-
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
-        public IRateLimiter RateLimiter => Limiter;
 
         private string ConvertToBitMexInterval(TimeResolution market)
         {
@@ -231,6 +230,11 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private string AdjustAssetCode(string input)
         {
             // TODO: should be re-factored.
@@ -269,20 +273,22 @@ namespace Prime.Plugins.Services.BitMex
 
             var pairCode = GetBitMexTicker(context.Pair);
 
-            var r = context.MaxRecordsCount.HasValue ? 
-                await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value) : 
-                await api.GetOrderBookAsync(pairCode, 0);
+            var r = context.MaxRecordsCount.HasValue
+                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value)
+                : await api.GetOrderBookAsync(pairCode, 0);
 
             var buyAction = "buy";
             var sellAction = "sell";
 
-            var buys = context.MaxRecordsCount.HasValue ? 
-                r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).Take(context.MaxRecordsCount.Value / 2).ToList() :
-                r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList();
+            var buys = context.MaxRecordsCount.HasValue
+                ? r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id)
+                    .Take(context.MaxRecordsCount.Value / 2).ToList()
+                : r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList();
 
-            var sells = context.MaxRecordsCount.HasValue ?
-                r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).Take(context.MaxRecordsCount.Value / 2).ToList():
-                r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
+            var sells = context.MaxRecordsCount.HasValue
+                ? r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id)
+                    .Take(context.MaxRecordsCount.Value / 2).ToList()
+                : r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
 
             var orderBook = new OrderBook();
 
@@ -317,40 +323,9 @@ namespace Prime.Plugins.Services.BitMex
             return orderBook;
         }
 
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return RestClient.For<IBitMexApi>(BitMexApiUrl) as T;
-        }
-
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
-        {
-            var key = context.GetKey(this);
-
-            return RestClient.For<IBitMexApi>(BitMexApiUrl, new BitMexAuthenticator(key).GetRequestModifier) as T;
-        }
-
         private string GetBitMexTicker(AssetPair pair)
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
         }
-
-        public ApiConfiguration GetApiConfiguration { get; }
-
-        public bool CanMultiDepositAddress { get; }
-
-        public bool CanGenerateDepositAddress { get; }
-
-        public ObjectId Id { get; }
-
-        public Network Network { get; }
-
-        public bool Disabled { get; }
-
-        public int Priority { get; }
-
-        public string AggregatorName { get; }
-
-        public string Title { get; }
-
     }
 }

@@ -33,6 +33,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAddressesForAssetAsync()
         {
+            WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
             await base.TestGetAddressesForAssetAsync();
         }
 

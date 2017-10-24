@@ -57,7 +57,7 @@ namespace Prime.TestConsole
 
                 var asset = "BTC".ToAsset(provider);
 
-                var ctx = new WalletAddressAssetContext(asset, false, UserContext.Current);
+                var ctx = new WalletAddressAssetContext(asset, UserContext.Current);
 
                 try
                 {
@@ -173,7 +173,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
                 
-                var ctx = new WalletAddressContext(false, UserContext.Current);
+                var ctx = new WalletAddressContext(UserContext.Current);
 
                 try
                 {

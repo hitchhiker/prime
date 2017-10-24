@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void PullWallet()
         {
-            var wac = new WalletAddressAssetContext(Asset.Btc, false, UserContext.Current);
+            var wac = new WalletAddressAssetContext(Asset.Btc, UserContext.Current);
             foreach (var network in Networks.I.WalletProviders)
             {
                 var r = ApiCoordinator.GetDepositAddresses(network, wac);

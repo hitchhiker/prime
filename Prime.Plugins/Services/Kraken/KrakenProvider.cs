@@ -15,18 +15,16 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider, IOrderBookProvider
+    public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
+        private RestApiClientProvider<IKrakenApi> ApiProvider { get; }
+
         public Network Network { get; } = new Network("Kraken");
-
         public bool Disabled => false;
-
         public int Priority => 100;
-
         public string AggregatorName => null;
-
         public string Title => Network.Name;
 
         // 'Ledger/trade history calls increase the counter by 2. ... Tier 2 users have a maximum of 15 and their count gets reduced by 1 every 3 seconds.'
@@ -34,6 +32,22 @@ namespace Prime.Plugins.Services.Kraken
         // https://www.kraken.com/help/api
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1);
         public IRateLimiter RateLimiter => Limiter;
+
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => true;
+        public bool CanPeekDepositAddress { get; }
+
+        private static readonly ObjectId IdHash = "prime:kraken".GetObjectIdHashCode();
+        public ObjectId Id => IdHash;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+
+        public KrakenProvider()
+        {
+            ApiProvider = new RestApiClientProvider<IKrakenApi>(KrakenApiUrl, this, k => new KrakenAuthenticator(k).GetRequestModifier)
+            {
+                JsonSerializerSettings = CreateJsonSerializerSettings()
+            };
+        }
 
         private JsonSerializerSettings CreateJsonSerializerSettings()
         {
@@ -43,29 +57,9 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return new RestClient(KrakenApiUrl)
-            {
-                JsonSerializerSettings = CreateJsonSerializerSettings()
-            }.For<IKrakenApi>() as T;
-        }
-
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
-        {
-            var key = context.GetKey(this);
-
-            return new RestClient(KrakenApiUrl, new KrakenAuthenticator(key).GetRequestModifier)
-            {
-                JsonSerializerSettings = CreateJsonSerializerSettings()
-            }.For<IKrakenApi>() as T;
-        }
-
-        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
             var body = CreateKrakenBody();
 
             var r = await api.GetBalancesAsync(body);
@@ -75,13 +69,10 @@ namespace Prime.Plugins.Services.Kraken
             return r != null;
         }
 
-        private static readonly ObjectId IdHash = "prime:kraken".GetObjectIdHashCode();
-
-        public ObjectId Id => IdHash;
 
         public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var remoteCode = GetKrakenTicker(context.Pair);
 
@@ -102,7 +93,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
             var prices = new List<Money>();
 
             foreach (var asset in context.Assets)
@@ -140,7 +131,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetAssetPairsAsync();
 
@@ -159,9 +150,6 @@ namespace Prime.Plugins.Services.Kraken
 
             return assetPairs;
         }
-
-        public bool CanMultiDepositAddress { get; } = false;
-        public bool CanGenerateDepositAddress { get; } = true;
 
         private Dictionary<string, object> CreateKrakenBody()
         {
@@ -183,7 +171,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var body = CreateKrakenBody();
 
@@ -216,7 +204,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<string> GetFundingMethod(NetworkProviderPrivateContext context, Asset asset)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var body = CreateKrakenBody();
             body.Add("asset", asset.ToRemoteCode(this));
@@ -241,7 +229,7 @@ namespace Prime.Plugins.Services.Kraken
             return null;
         }
 
-        private async Task<WalletAddresses> GetAddressesLocal(IKrakenApi api, string fundingMethod, Asset asset)
+        private async Task<WalletAddresses> GetAddressesLocal(IKrakenApi api, string fundingMethod, Asset asset, bool generateNew = false)
         {
             var body = CreateKrakenBody();
 
@@ -249,7 +237,7 @@ namespace Prime.Plugins.Services.Kraken
             //body.Add("aclass", asset.ToRemoteCode(this));
             body.Add("asset", asset.ToRemoteCode(this));
             body.Add("method", fundingMethod);
-            body.Add("new", false);
+            body.Add("new", generateNew);
 
             var r = await api.GetDepositAddresses(body);
             CheckResponseErrors(r);
@@ -277,7 +265,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
             var assets = await GetAssetPairs(context);
 
             var addresses = new WalletAddresses();
@@ -297,9 +285,14 @@ namespace Prime.Plugins.Services.Kraken
             return addresses;
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var fundingMethod = await GetFundingMethod(context, context.Asset);
 
@@ -313,7 +306,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
 
@@ -394,7 +387,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            var api = GetApi<IKrakenApi>(context);
+            var api = ApiProvider.GetApi(context);
             var orderBook = await GetOrderBookLocal(api, context.Pair, context.MaxRecordsCount);
 
             return orderBook;

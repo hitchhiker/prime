@@ -22,7 +22,7 @@ namespace Prime.Common
             if (!service.CanGenerateDepositAddress)
                 return null;
 
-            var r = await ApiCoordinator.GetDepositAddressesAsync(service, new WalletAddressAssetContext(asset, true, _context));
+            var r = await ApiCoordinator.GetDepositAddressesAsync(service, new WalletAddressAssetContext(asset, _context));
             if (r.IsNull)
                 return null;
 

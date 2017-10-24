@@ -21,15 +21,10 @@ namespace Prime.Plugins.Services.Korbit
 
         private RestApiClientProvider<IKorbitApi> ApiProvider { get; }
 
-        public KorbitProvider()
-        {
-            ApiProvider = new RestApiClientProvider<IKorbitApi>(KorbitApiUrl, this, k => new KorbitAuthenticator(k).GetRequestModifier);
-        }
-
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
         public ObjectId Id => IdHash;
         public Network Network { get; } = new Network("Korbit");
-        public bool Disabled { get; } = false;
+        public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
@@ -37,10 +32,16 @@ namespace Prime.Plugins.Services.Korbit
         // https://apidocs.korbit.co.kr/#first_section
         // ... Ticker calls are limited to 60 calls per 60 seconds. ...
         public IRateLimiter RateLimiter { get; } = new PerMinuteRateLimiter(60, 1);
-        public ApiConfiguration GetApiConfiguration { get; } = ApiConfiguration.Standard2;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public bool CanMultiDepositAddress { get; } = false;
-        public bool CanGenerateDepositAddress { get; } = false;
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => false;
+        public bool CanPeekDepositAddress => false;
+
+        public KorbitProvider()
+        {
+            ApiProvider = new RestApiClientProvider<IKorbitApi>(KorbitApiUrl, this, k => new KorbitAuthenticator(k).GetRequestModifier);
+        }
 
         public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
@@ -169,6 +170,11 @@ namespace Prime.Plugins.Services.Korbit
         }
 
         public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
         {
             throw new NotImplementedException();
         }

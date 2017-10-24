@@ -247,13 +247,18 @@ namespace Prime.Tests.Providers
             }
         }
 
+        protected WalletAddressContext WalletAddressContext { get; set; }
+
         private async Task GetAddressesAsync(IDepositService provider)
         {
-            var ctx = new WalletAddressContext(false, UserContext.Current);
+            if (WalletAddressContext == null)
+            {
+                WalletAddressContext = new WalletAddressContext(UserContext.Current);
+            }
 
             try
             {
-                var r = await provider.GetAddressesAsync(ctx);
+                var r = await provider.GetAddressesAsync(WalletAddressContext);
 
                 Assert.IsTrue(r != null);
 
@@ -275,7 +280,7 @@ namespace Prime.Tests.Providers
         {
             if (WalletAddressAssetContext == null)
             {
-                WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
+                WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
             }
 
             try

@@ -22,16 +22,15 @@ namespace Prime.Plugins.Services.Coinbase
 
         private const string GdaxApiUrl = "https://api.gdax.com";
 
+        private RestApiClientProvider<ICoinbaseApi> ApiProvider { get; }
+        private RestApiClientProvider<IGdaxApi> GdaxApiProvider { get; }
+
         public Network Network { get; } = new Network("Coinbase");
 
         public bool Disabled => false;
-
         public int Priority => 100;
-
         public string AggregatorName => null;
-
         public string Title => Network.Name;
-
         public ObjectId Id => IdHash;
 
         // 10000 per hour.
@@ -39,28 +38,21 @@ namespace Prime.Plugins.Services.Coinbase
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(2, 1);
         public IRateLimiter RateLimiter => Limiter;
 
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return RestClient.For<T>(CoinbaseApiUrl);
-        }
+        public bool CanMultiDepositAddress => true;
+        public bool CanGenerateDepositAddress => true;
+        public bool CanPeekDepositAddress => true;
 
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
+        public CoinbaseProvider()
         {
-            var key = context.GetKey(this);
-
-            return RestClient.For<T>(CoinbaseApiUrl, new CoinbaseAuthenticator(key).GetRequestModifier) as T;
-        }
-
-        private IGdaxApi GetGdaxApi()
-        {
-            return RestClient.For<IGdaxApi>(GdaxApiUrl);
+            ApiProvider = new RestApiClientProvider<ICoinbaseApi>(CoinbaseApiUrl, this, k => new CoinbaseAuthenticator(k).GetRequestModifier);
+            GdaxApiProvider = new RestApiClientProvider<IGdaxApi>(GdaxApiUrl);
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
-            var api = GetApi<ICoinbaseApi>(context);
+            var api = ApiProvider.GetApi(context);
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
             var r = await api.GetLatestPrice(pairCode);
 
@@ -74,7 +66,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            var api = GetApi<ICoinbaseApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var prices = new List<Money>();
 
@@ -112,7 +104,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var api = GetGdaxApi();
+            var api = GdaxApiProvider.GetApi(context);
             var r = await api.GetProducts();
 
             var pairs = new AssetPairs();
@@ -127,18 +119,14 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<ICoinbaseApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountsAsync();
             return r != null;
         }
 
-        public bool CanMultiDepositAddress { get; } = true;
-
-        public bool CanGenerateDepositAddress { get; } = true;
-
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = GetApi<ICoinbaseApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountsAsync();
 
             var results = new BalanceResults(this);
@@ -164,7 +152,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<ICoinbaseApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var accid = "";
 
@@ -181,13 +169,13 @@ namespace Prime.Plugins.Services.Coinbase
                 return null;
 
             var r = await api.GetAddressesAsync(acc.id);
-
-            if (r.data.Count == 0 && context.CanGenerateAddress)
-            {
-                var cr = await api.CreateAddressAsync(accid);
-                if (cr != null)
-                    r.data.AddRange(cr.data);
-            }
+            // TODO: re-implement.
+            //if (r.data.Count == 0 && context.CanGenerateAddress)
+            //{
+            //    var cr = await api.CreateAddressAsync(accid);
+            //    if (cr != null)
+            //        r.data.AddRange(cr.data);
+            //}
 
             var addresses = new WalletAddresses();
 
@@ -208,7 +196,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            var api = GetApi<ICoinbaseApi>(context);
+            var api = ApiProvider.GetApi(context);
             var accs = await api.GetAccounts();
             var addresses = new WalletAddresses();
 
@@ -233,6 +221,11 @@ namespace Prime.Plugins.Services.Coinbase
             return addresses;
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private Asset FromNetwork(string network)
         {
             switch (network)
@@ -250,7 +243,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            var api = GetGdaxApi();
+            var api = GdaxApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
 
             // TODO: Check this! Can we use limit when we query all records?
@@ -312,7 +305,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
-            var api = GetGdaxApi();
+            var api = GdaxApiProvider.GetApi(context);
             var currencyCode = context.Pair.TickerDash();
 
             var ohlc = new OhlcData(context.Market);

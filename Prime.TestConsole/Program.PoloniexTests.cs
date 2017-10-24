@@ -98,8 +98,8 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
 
-                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
-                var ctxAll = new WalletAddressContext(false, UserContext.Current);
+                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
+                var ctxAll = new WalletAddressContext(UserContext.Current);
 
                 try
                 {
