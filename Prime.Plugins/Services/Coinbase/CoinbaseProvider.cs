@@ -221,6 +221,11 @@ namespace Prime.Plugins.Services.Coinbase
             return addresses;
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private Asset FromNetwork(string network)
         {
             switch (network)

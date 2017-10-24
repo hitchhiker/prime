@@ -179,9 +179,30 @@ namespace Prime.Plugins.Services.Bittrex
             return addresses;
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
+
+            var r = await api.GetAllBalances();
+
+            var addresses = new WalletAddresses();
+
+            var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
+
+            if (address != null)
+            {
+                addresses.Add(new WalletAddress(this, context.Asset)
+                {
+                    Address = address.CryptoAddress
+                });
+            }
+
+            return addresses;
 
             // TODO: re-implement.
             //if (context.CanGenerateAddress)
@@ -224,8 +245,6 @@ namespace Prime.Plugins.Services.Bittrex
 
             //    return addresses;
             //}
-
-            return null;
         }
 
         private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response)

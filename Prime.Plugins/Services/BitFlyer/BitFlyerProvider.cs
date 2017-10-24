@@ -100,6 +100,11 @@ namespace Prime.Plugins.Services.BitFlyer
             throw new NotImplementedException();
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> TestApiAsync(ApiTestContext context)
         {
             throw new NotImplementedException();

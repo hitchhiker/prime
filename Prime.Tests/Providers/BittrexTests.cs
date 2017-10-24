@@ -35,9 +35,6 @@ namespace Prime.Tests.Providers
         {
             WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
             await base.TestGetAddressesForAssetAsync();
-
-            WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
-            await base.TestGetAddressesForAssetAsync();
         }
 
         [TestMethod]

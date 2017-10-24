@@ -230,6 +230,11 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private string AdjustAssetCode(string input)
         {
             // TODO: should be re-factored.
@@ -268,20 +273,22 @@ namespace Prime.Plugins.Services.BitMex
 
             var pairCode = GetBitMexTicker(context.Pair);
 
-            var r = context.MaxRecordsCount.HasValue ? 
-                await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value) : 
-                await api.GetOrderBookAsync(pairCode, 0);
+            var r = context.MaxRecordsCount.HasValue
+                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value)
+                : await api.GetOrderBookAsync(pairCode, 0);
 
             var buyAction = "buy";
             var sellAction = "sell";
 
-            var buys = context.MaxRecordsCount.HasValue ? 
-                r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).Take(context.MaxRecordsCount.Value / 2).ToList() :
-                r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList();
+            var buys = context.MaxRecordsCount.HasValue
+                ? r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id)
+                    .Take(context.MaxRecordsCount.Value / 2).ToList()
+                : r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList();
 
-            var sells = context.MaxRecordsCount.HasValue ?
-                r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).Take(context.MaxRecordsCount.Value / 2).ToList():
-                r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
+            var sells = context.MaxRecordsCount.HasValue
+                ? r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id)
+                    .Take(context.MaxRecordsCount.Value / 2).ToList()
+                : r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
 
             var orderBook = new OrderBook();
 
@@ -316,22 +323,9 @@ namespace Prime.Plugins.Services.BitMex
             return orderBook;
         }
 
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return RestClient.For<IBitMexApi>(BitMexApiUrl) as T;
-        }
-
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
-        {
-            var key = context.GetKey(this);
-
-            return RestClient.For<IBitMexApi>(BitMexApiUrl, new BitMexAuthenticator(key).GetRequestModifier) as T;
-        }
-
         private string GetBitMexTicker(AssetPair pair)
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
         }
-
     }
 }

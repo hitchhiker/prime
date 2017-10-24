@@ -292,6 +292,11 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
+        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
             var api = ApiProvider.GetApi(context);
