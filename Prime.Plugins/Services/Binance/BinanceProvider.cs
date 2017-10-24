@@ -95,7 +95,7 @@ namespace Prime.Plugins.Services.Binance
             return null;
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTicker();
@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Binance
             return latestPrice;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -127,7 +127,7 @@ namespace Prime.Plugins.Services.Binance
 
             foreach (var asset in context.Assets)
             {
-                var currentAssetPair = new AssetPair(context.BaseAsset, asset);
+                var currentAssetPair = new AssetPair(context.QuoteAsset, asset);
                 var rPrice = r.FirstOrDefault(x => x.symbol.Equals(currentAssetPair.TickerSimple()));
 
                 if (rPrice == null)
@@ -138,7 +138,7 @@ namespace Prime.Plugins.Services.Binance
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList,
                 UtcCreated = DateTime.UtcNow
             };

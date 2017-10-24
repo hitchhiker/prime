@@ -105,7 +105,10 @@ namespace Prime.Common
                     return;
 
                 foreach (var i in e.GetEntries())
+                {
+                    e.Unsubscribe(i);
                     OnRemovingFromSubscriber(e, i);
+                }
 
                 TryRemoveSubscriber(e);
             }

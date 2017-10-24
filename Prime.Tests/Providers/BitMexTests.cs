@@ -36,10 +36,10 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetLatestPricesAsync()
         {
-            PublicPricesContext = new PublicPricesContext(Asset.Btc, new List<Asset>()
+            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
                 "USD".ToAssetRaw()
-            });
+            }, Asset.Btc);
             await base.TestGetLatestPricesAsync();
         }
 

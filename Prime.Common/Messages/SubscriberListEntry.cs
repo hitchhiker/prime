@@ -63,13 +63,16 @@ namespace Prime.Common
             return exists != null;
         }
 
-        private bool Unsubscribe(TMessage message)
+        public bool Unsubscribe(TMessage message)
         {
-            var exists = _entries.FirstOrDefault(x => x.IsEquivalent(message));
-            if (exists == null)
-                return false;
-            _entries.Remove(exists);
-            return true;
+            lock (_lock)
+            {
+                var exists = _entries.FirstOrDefault(x => x.IsEquivalent(message));
+                if (exists == null)
+                    return false;
+                _entries.Remove(exists);
+                return true;
+            }
         }
 
         public void Ping()

@@ -41,7 +41,7 @@ namespace Prime.Plugins.Services.BitFlyer
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.BitFlyer
             return latestPrice;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
             foreach (var asset in context.Assets)
             {
-                var pair = new AssetPair(context.BaseAsset, asset);
+                var pair = new AssetPair(context.QuoteAsset, asset);
                 var pairCode = GetBitFlyerTicker(pair);
 
                 var r = await api.GetTicker(pairCode);
@@ -76,7 +76,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList,
                 UtcCreated = DateTime.UtcNow
             };

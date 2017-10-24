@@ -12,7 +12,7 @@ namespace Prime.Core
     public class LatestPriceProvider : IDisposable
     {
         private readonly LatestPriceProviderContext _context;
-        private readonly IPublicPriceProvider _provider;
+        private readonly IPublicPairPriceProvider _provider;
         private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
@@ -97,14 +97,22 @@ namespace Prime.Core
             if (_isDisposed)
                 return;
 
+            var hasresult = RequestSingleEntries();
+
+            if (hasresult && !_isDisposed)
+                _messenger.Send(new LatestPricesUpdatedMessage());
+        }
+
+        private bool RequestSingleEntries()
+        {
             var hasresult = false;
 
             foreach (var pair in _pairRequests)
             {
                 if (_isDisposed)
-                    return;
+                    return false;
 
-                var r = ApiCoordinator.GetLatestPrice(_provider, new PublicPriceContext(pair));
+                var r = ApiCoordinator.GetPairPrice(_provider, new PublicPairPriceContext(pair));
                 if (r.IsNull)
                 {
                     IsFailing = true;
@@ -112,15 +120,35 @@ namespace Prime.Core
                 }
 
                 if (_isDisposed)
-                    return;
+                    return false;
 
                 hasresult = true;
                 AddResult(pair, r.Response);
             }
-
-            if (hasresult && !_isDisposed)
-                _messenger.Send(new LatestPricesUpdatedMessage());
+            return hasresult;
         }
+        /*
+        private bool RequestMultipleEntries()
+        {
+            var hasresult = false;
+
+            foreach (var pair in _pairRequests)
+            {
+                var r = ApiCoordinator.GetLatestPrices(_provider, new PublicAssetPricesContext(_pairRequests));
+                if (r.IsNull)
+                {
+                    IsFailing = true;
+                    continue;
+                }
+
+                if (_isDisposed)
+                    return false;
+
+                hasresult = true;
+                AddResult(pair, r.Response);
+            }
+            return hasresult;
+        }*/
 
         private void AddResult(AssetPair pair, LatestPrice response)
         {

@@ -68,7 +68,7 @@ namespace Prime.Plugins.Services.BitStamp
             ApiExtraName = "Customer Number"
         };
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = GetApi<IBitStampApi>(context);
 
@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.BitStamp
             return latestPrice;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = GetApi<IBitStampApi>(context);
 
@@ -92,7 +92,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             foreach (var asset in context.Assets)
             {
-                var pairCode = context.BaseAsset.ToPair(asset).TickerSimple();
+                var pairCode = context.QuoteAsset.ToPair(asset).TickerSimple();
                 var r = await api.GetTicker(pairCode);
 
                 moneyList.Add(new Money(r.last, asset));
@@ -102,7 +102,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList,
                 UtcCreated = DateTime.UtcNow
             };

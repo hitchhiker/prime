@@ -79,11 +79,11 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
                 var pair = new AssetPair("BTC", "ETH");
 
-                var ctx = new PublicPriceContext(pair);
+                var ctx = new PublicPairPriceContext(pair);
 
                 try
                 {
-                    var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+                    var price = AsyncContext.Run(() => provider.GetPairPriceAsync(ctx));
 
                     Console.WriteLine($"Latest price for {pair} is {price.Price}");
                 }

@@ -5,7 +5,7 @@ namespace Prime.Common.Exchange.Rates
 {
     public class LatestPriceProviderContext
     {
-        public LatestPriceProviderContext(IPublicPriceProvider provider, LatestPriceAggregator aggregator)
+        public LatestPriceProviderContext(IPublicPairPriceProvider provider, LatestPriceAggregator aggregator)
         {
             Provider = provider;
             Aggregator = aggregator;
@@ -14,7 +14,7 @@ namespace Prime.Common.Exchange.Rates
 
         public readonly Network Network;
         public TimeSpan PollingSpan { get; set; } = new TimeSpan(0, 0, 15);
-        public IPublicPriceProvider Provider { get; private set; }
+        public IPublicPairPriceProvider Provider { get; private set; }
         public LatestPriceAggregator Aggregator { get; private set; }
     }
 }

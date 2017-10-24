@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public ObjectId Id => IdHash;
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = GetApi<IKrakenApi>(context);
 
@@ -100,14 +100,14 @@ namespace Prime.Plugins.Services.Kraken
             return price;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = GetApi<IKrakenApi>(context);
             var prices = new List<Money>();
 
             foreach (var asset in context.Assets)
             {
-                var pair = new AssetPair(context.BaseAsset, asset);
+                var pair = new AssetPair(context.QuoteAsset, asset);
                 var remoteCode = GetKrakenTicker(pair);
 
                 var r = await api.GetTickerInformationAsync(remoteCode);
@@ -121,7 +121,7 @@ namespace Prime.Plugins.Services.Kraken
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = prices
             };
 

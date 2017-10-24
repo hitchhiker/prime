@@ -12,16 +12,15 @@ namespace Prime.Common.Exchange.Rates
     internal class LatestPriceMessenger : RenewingSubscriberList<LatestPriceRequestMessage, LatestPriceSubscriptions>, IStartupMessenger, IDisposable
     {
         private readonly IMessenger _messenger = DefaultMessenger.I.Default;
-        private readonly LatestPriceAggregator _aggregator;
+        public readonly LatestPriceAggregator Aggregator;
 
         internal LatestPriceMessenger()
         {
-            _aggregator = new LatestPriceAggregator(this);
-            _messenger.Register<InternalLatestPriceRequestVerifiedMessage>(this, _aggregator.LatestPriceRequestVerifiedMessage);
-            _messenger.Register<LatestPriceResultMessage>(this, _aggregator.LatestPriceResultMessage);
+            Aggregator = new LatestPriceAggregator(this);
+            _messenger.Register<InternalLatestPriceRequestVerifiedMessage>(this, Aggregator.LatestPriceRequestVerifiedMessage);
+            _messenger.Register<LatestPriceResultMessage>(this, Aggregator.LatestPriceResultMessage);
         }
-
-
+        
         protected override LatestPriceSubscriptions OnCreatingSubscriber(ObjectId subscriberId, LatestPriceRequestMessage message)
         {
             return new LatestPriceSubscriptions();
@@ -33,17 +32,18 @@ namespace Prime.Common.Exchange.Rates
             var nr = new LatestPriceRequest(message.Pair, message.Network);
             if (subs.Requests.Add(nr))
                 nr.Discover();
+            Aggregator.SyncProviders();
         }
 
         protected override void OnRemovingFromSubscriber(MessageListEntry<LatestPriceRequestMessage, LatestPriceSubscriptions> entry, LatestPriceRequestMessage message)
         {
             var subs = entry.Subscriber;
             subs.Requests.Remove(new LatestPriceRequest(message.Pair, message.Network));
+            Aggregator.SyncProviders();
         }
 
         protected override void OnRemovingSubscriber(MessageListEntry<LatestPriceRequestMessage, LatestPriceSubscriptions> entry)
         {
-            //
         }
 
         protected override void OnDisposingSubscription(MessageListEntry<LatestPriceRequestMessage, LatestPriceSubscriptions> entry)

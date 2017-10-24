@@ -40,11 +40,11 @@ namespace Prime.TestConsole
             public void GetLatestPrice()
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
-                var ctx = new PublicPriceContext(new AssetPair("BTC", "USD"));
+                var ctx = new PublicPairPriceContext(new AssetPair("BTC", "USD"));
 
                 try
                 {
-                    var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(ctx));
+                    var price = AsyncContext.Run(() => provider.GetPairPriceAsync(ctx));
 
                     Console.WriteLine($"Latest {ctx.Pair} value is {price.Price}");
                 }

@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.BitMex
             return new BitMexCodeConverter();
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
@@ -118,7 +118,7 @@ namespace Prime.Plugins.Services.BitMex
             return latestPrice;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             if (context.Assets.Count < 1)
                 throw new ArgumentException("The number of target assets should be greater than 0");
@@ -133,7 +133,7 @@ namespace Prime.Plugins.Services.BitMex
 
             foreach (var asset in context.Assets)
             {
-                var remote = context.BaseAsset.ToRemoteCode(this);
+                var remote = context.QuoteAsset.ToRemoteCode(this);
                 var pairCode = (remote + asset.ToRemoteCode(this)).ToLower();
 
                 var data = r.FirstOrDefault(x =>
@@ -148,7 +148,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = pricesList
             };
 
