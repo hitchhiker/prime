@@ -165,7 +165,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var addresses = new WalletAddresses();
-            var wac = new WalletAddressAssetContext("ETH".ToAsset(this), false, context.UserContext, context.L);
+            var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.UserContext, context.L);
             addresses.AddRange(await GetAddressesForAssetAsync(wac));
 
             wac.Asset = "BTC".ToAsset(this);

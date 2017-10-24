@@ -19,7 +19,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
+                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
 
                 try
                 {

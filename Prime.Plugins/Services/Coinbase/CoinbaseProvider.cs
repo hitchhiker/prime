@@ -169,13 +169,13 @@ namespace Prime.Plugins.Services.Coinbase
                 return null;
 
             var r = await api.GetAddressesAsync(acc.id);
-
-            if (r.data.Count == 0 && context.CanGenerateAddress)
-            {
-                var cr = await api.CreateAddressAsync(accid);
-                if (cr != null)
-                    r.data.AddRange(cr.data);
-            }
+            // TODO: re-implement.
+            //if (r.data.Count == 0 && context.CanGenerateAddress)
+            //{
+            //    var cr = await api.CreateAddressAsync(accid);
+            //    if (cr != null)
+            //        r.data.AddRange(cr.data);
+            //}
 
             var addresses = new WalletAddresses();
 

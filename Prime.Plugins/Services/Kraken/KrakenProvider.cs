@@ -294,7 +294,7 @@ namespace Prime.Plugins.Services.Kraken
             if (fundingMethod == null)
                 throw new NullReferenceException("No funding method is found");
 
-            var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset, context.CanGenerateAddress);
+            var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset);
 
             return addresses;
         }

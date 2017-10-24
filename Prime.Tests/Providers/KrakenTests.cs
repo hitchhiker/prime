@@ -46,7 +46,7 @@ namespace Prime.Tests.Providers
         public override async Task TestGetAddressesForAssetAsync()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
-            WalletAddressAssetContext = new WalletAddressAssetContext("MLN".ToAssetRaw(), false, UserContext.Current);
+            WalletAddressAssetContext = new WalletAddressAssetContext("MLN".ToAssetRaw(), UserContext.Current);
             await base.TestGetAddressesForAssetAsync();
         }
 

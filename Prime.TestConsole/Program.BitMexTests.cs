@@ -57,7 +57,7 @@ namespace Prime.TestConsole
 
                 var asset = "BTC".ToAsset(provider);
 
-                var ctx = new WalletAddressAssetContext(asset, false, UserContext.Current);
+                var ctx = new WalletAddressAssetContext(asset, UserContext.Current);
 
                 try
                 {

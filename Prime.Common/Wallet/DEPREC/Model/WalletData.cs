@@ -43,7 +43,7 @@ namespace Prime.Common
 
             lock (Lock)
             {
-                var r = ApiCoordinator.FetchAllDepositAddresses(provider, new WalletAddressAssetContext(asset, false, context));
+                var r = ApiCoordinator.FetchAllDepositAddresses(provider, new WalletAddressAssetContext(asset, context));
                 if (r.IsNull)
                     return;
 

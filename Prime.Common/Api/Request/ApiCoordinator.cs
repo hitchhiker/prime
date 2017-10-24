@@ -76,8 +76,9 @@ namespace Prime.Common
 
         public static Task<ApiResponse<WalletAddresses>> GetDepositAddressesAsync(IWalletService provider, WalletAddressAssetContext context)
         {
-            if (context.CanGenerateAddress && !provider.CanPeekDepositAddress)
-                throw new Exception($"{provider.Title} cannot 'peek' deposit addresses.");
+            // TODO: review.
+            //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
+            //    throw new Exception($"{provider.Title} cannot 'peek' deposit addresses.");
 
             return ApiHelpers.WrapException(() => provider.GetAddressesForAssetAsync(context), "GetDepositAddresses", provider, context);
         }
@@ -89,8 +90,9 @@ namespace Prime.Common
 
         public static Task<ApiResponse<WalletAddresses>> GetAllDepositAddressesAsync(IWalletService provider, WalletAddressContext context)
         {
-            if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
-                throw new Exception($"{provider.Title} cannot 'peek' deposit addresses.");
+            // TODO: review
+            //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
+            //    throw new Exception($"{provider.Title} cannot 'peek' deposit addresses.");
 
             return ApiHelpers.WrapException(() => provider.GetAddressesAsync(context), "GetDepositAddresses", provider, context);
         }

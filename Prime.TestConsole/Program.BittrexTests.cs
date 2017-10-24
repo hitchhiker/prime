@@ -38,7 +38,7 @@ namespace Prime.TestConsole
 			{
 				var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
 
-				var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), true, UserContext.Current);
+				var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
 				var ctxAll = new WalletAddressContext(UserContext.Current);
 
 				var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));

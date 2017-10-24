@@ -183,46 +183,49 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            if (context.CanGenerateAddress)
-            {
-                var r = await api.GetDepositAddress(context.Asset.ToRemoteCode(this));
-                var addresses = new WalletAddresses();
+            // TODO: re-implement.
+            //if (context.CanGenerateAddress)
+            //{
+            //    var r = await api.GetDepositAddress(context.Asset.ToRemoteCode(this));
+            //    var addresses = new WalletAddresses();
 
-                if (r.success)
-                {
-                    addresses.Add(new WalletAddress(this, context.Asset)
-                    {
-                        Address = r.result.Address
-                    });
-                }
-                else
-                {
-                    if (String.IsNullOrEmpty(r.message) == false && r.message.Contains(ErrorText_AddressIsGenerating) == false)
-                    {
-                        throw new ApiResponseException("Unexpected error during address generation", this);
-                    }
-                }
+            //    if (r.success)
+            //    {
+            //        addresses.Add(new WalletAddress(this, context.Asset)
+            //        {
+            //            Address = r.result.Address
+            //        });
+            //    }
+            //    else
+            //    {
+            //        if (String.IsNullOrEmpty(r.message) == false && r.message.Contains(ErrorText_AddressIsGenerating) == false)
+            //        {
+            //            throw new ApiResponseException("Unexpected error during address generation", this);
+            //        }
+            //    }
 
-                return addresses;
-            }
-            else
-            {
-                var r = await api.GetAllBalances();
+            //    return addresses;
+            //}
+            //else
+            //{
+            //    var r = await api.GetAllBalances();
 
-                var addresses = new WalletAddresses();
+            //    var addresses = new WalletAddresses();
 
-                var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
+            //    var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
 
-                if (address != null)
-                {
-                    addresses.Add(new WalletAddress(this, context.Asset)
-                    {
-                        Address = address.CryptoAddress
-                    });
-                }
+            //    if (address != null)
+            //    {
+            //        addresses.Add(new WalletAddress(this, context.Asset)
+            //        {
+            //            Address = address.CryptoAddress
+            //        });
+            //    }
 
-                return addresses;
-            }
+            //    return addresses;
+            //}
+
+            return null;
         }
 
         private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response)

@@ -280,7 +280,7 @@ namespace Prime.Tests.Providers
         {
             if (WalletAddressAssetContext == null)
             {
-                WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAsset(provider), false, UserContext.Current);
+                WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
             }
 
             try
