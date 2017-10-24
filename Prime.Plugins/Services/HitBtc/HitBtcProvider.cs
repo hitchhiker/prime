@@ -23,6 +23,17 @@ namespace Prime.Plugins.Services.HitBtc
         public string AggregatorName { get; } = null;
         public string Title => Network.Name;
         public IRateLimiter RateLimiter => Limiter;
+
+        public Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool CanMultiDepositAddress { get; } = false;
         public bool CanGenerateDepositAddress { get; } = true;
         public ApiConfiguration GetApiConfiguration { get; } = ApiConfiguration.Standard2;
@@ -40,16 +51,6 @@ namespace Prime.Plugins.Services.HitBtc
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
-        {
-            throw new NotImplementedException();
         }
 
         public BuyResult Buy(BuyContext ctx)
