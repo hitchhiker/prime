@@ -437,6 +437,7 @@
     <Compile Include="ViewModel\ICanMore.cs" />
     <Compile Include="ViewModel\MarketControlViewModel.cs" />
     <Compile Include="ViewModel\MarketsDiscoveryViewModel.cs" />
+    <Compile Include="ViewModel\PortfolioPieChartViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
     <Compile Include="ViewModel\StarViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
@@ -492,6 +493,9 @@
     </Compile>
     <Compile Include="View\Portfolio\PortfolioNew.xaml.cs">
       <DependentUpon>PortfolioNew.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Portfolio\PortfolioPieChartControl.xaml.cs">
+      <DependentUpon>PortfolioPieChartControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Portfolio\Receive.xaml.cs">
       <DependentUpon>Receive.xaml</DependentUpon>
@@ -649,6 +653,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Portfolio\PortfolioNew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Portfolio\PortfolioPieChartControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
