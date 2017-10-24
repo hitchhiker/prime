@@ -8,6 +8,9 @@ namespace Prime.Common
 
         bool CanGenerateDepositAddress { get; }
 
+        // TOTO: implement.
+        // bool CanPeekDepositAddress { get; }
+
         Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context);
 
         Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context);
