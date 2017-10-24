@@ -13,9 +13,9 @@ namespace Prime.Common
 
         public DateTime UtcEntered { get; set; }
 
-        public IPublicPriceProvider Provider { get; set; }
+        public IPublicPairPriceProvider Provider { get; set; }
 
-        public bool Match(IPublicPriceProvider provider, AssetPair pair)
+        public bool Match(IPublicPairPriceProvider provider, AssetPair pair)
         {
             if (provider.Id != Provider.Id)
                 return false;

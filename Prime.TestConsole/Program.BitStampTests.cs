@@ -15,11 +15,11 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
 		        var pair = new AssetPair("BTC", "USD");
 
-                var priceContext = new PublicPriceContext(pair);
+                var priceContext = new PublicPairPriceContext(pair);
 
                 try
                 {
-                    var price = AsyncContext.Run(() => provider.GetLatestPriceAsync(priceContext));
+                    var price = AsyncContext.Run(() => provider.GetPairPriceAsync(priceContext));
 
                     Console.WriteLine($"Latest {pair}: {price.Price}");
                 }

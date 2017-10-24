@@ -28,6 +28,17 @@ namespace Prime.Plugins.Services.HitBtc
         public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
+        public Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+ 
         public HitBtcProvider()
         {
             ApiProvider = new RestApiClientProvider<IHitBtcApi>(HitBtcApiUrl, this, k => new HitBtcAuthenticator(k).GetRequestModifier);
@@ -41,16 +52,6 @@ namespace Prime.Plugins.Services.HitBtc
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        public Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
-        {
-            throw new NotImplementedException();
         }
 
         public BuyResult Buy(BuyContext ctx)

@@ -50,7 +50,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.Coinbase
             return price;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -72,7 +72,7 @@ namespace Prime.Plugins.Services.Coinbase
 
             foreach (var asset in context.Assets)
             {
-                var pairCode = GetCoinbaseTicker(context.BaseAsset, asset);
+                var pairCode = GetCoinbaseTicker(context.QuoteAsset, asset);
                 var r = await api.GetLatestPrice(pairCode);
 
                 prices.Add(new Money(r.data.amount, r.data.currency.ToAsset(this)));
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.Coinbase
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = prices
             };
 

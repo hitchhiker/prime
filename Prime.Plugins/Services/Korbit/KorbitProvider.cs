@@ -43,7 +43,7 @@ namespace Prime.Plugins.Services.Korbit
             ApiProvider = new RestApiClientProvider<IKorbitApi>(KorbitApiUrl, this, k => new KorbitAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.Korbit
             return latestPrice;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.Korbit
 
             foreach (var asset in context.Assets)
             {
-                var pair = new AssetPair(context.BaseAsset, asset);
+                var pair = new AssetPair(context.QuoteAsset, asset);
                 var pairCode = GetKorbitTicker(pair);
 
                 var r = await api.GetTicker(pairCode);
@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Korbit
             var latestPrices = new LatestPrices()
             {
                 UtcCreated = DateTime.UtcNow,
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList
             };
 

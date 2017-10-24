@@ -67,8 +67,19 @@ namespace Prime.Common.Wallet
                 _scanners.ForEach(x => x.OnChanged += ScannerChanged);
                 _timer.Start();
 
-                M.Register<LatestPriceResultMessage>(this, IncomingLatestPrice);
+                M.RegisterAsync<LatestPriceResultMessage>(this, IncomingLatestPrice);
+                M.RegisterAsync<LatestPriceRequestMessage>(this, QuickFindPrice);
             }
+        }
+
+        private void QuickFindPrice(LatestPriceRequestMessage message)
+        {
+            if (message.Pair == null || message.SubscriptionType != SubscriptionType.Subscribe)
+                return;
+
+            var r = Core.Prime.I.LatestPriceAggregator.Results().FirstOrDefault(x => x.Pair.Equals(message.Pair));
+            if (r!=null)
+                M.SendAsync(r);
         }
 
         public void Stop()
@@ -90,8 +101,8 @@ namespace Prime.Common.Wallet
                 QueryingProviders.Clear();
                 UtcLastUpdated = DateTime.MinValue;
 
-                M.Send(new LatestPriceRequestMessage(_id, SubscriptionType.UnsubscribeAll));
-                M.Unregister(this);
+                M.SendAsync(new LatestPriceRequestMessage(_id, SubscriptionType.UnsubscribeAll));
+                M.UnregisterAsync(this);
 
                 SendChangedMessageDebounced();
             }
@@ -161,7 +172,7 @@ namespace Prime.Common.Wallet
                     continue;
 
                 subscribed.Add(pair);
-                M.Send(new LatestPriceRequestMessage(_id, pair));
+                M.SendAsync(new LatestPriceRequestMessage(_id, pair));
             }
 
             if (Items.Any())
@@ -174,24 +185,27 @@ namespace Prime.Common.Wallet
             lock (_lock)
             {
                 var qa = UserContext.Current.QuoteAsset;
-                var ti = Items.FirstOrDefault(x => Equals(x.Total.Asset, m.Pair.Asset1) && Equals(qa, m.Pair.Asset2));
-                if (ti == null)
-                    return;
+                var ti = Items.Where(x => Equals(x.Total.Asset, m.Pair.Asset1) && Equals(qa, m.Pair.Asset2));
 
                 if (DoConversion(ti, m, qa))
                     SendChangedMessageDebounced();
             }
         }
 
-        private static bool DoConversion(PortfolioLineItem i, LatestPriceResultMessage m, Asset targetAsset)
+        private static bool DoConversion(IEnumerable<PortfolioLineItem> items, LatestPriceResultMessage m, Asset targetAsset)
         {
-            var mn = new Money((decimal)i.Total * (decimal)m.Price, targetAsset);
-            if (i.Converted != null && mn.ToDecimalValue() == i.Converted.Value.ToDecimalValue())
-                return false;
+            var change = false;
+            foreach (var i in items)
+            {
+                var mn = new Money((decimal) i.Total * (decimal) m.Price, targetAsset);
+                if (i.Converted != null && mn.ToDecimalValue() == i.Converted.Value.ToDecimalValue())
+                    continue;
 
-            i.Converted = mn;
-            i.ConversionFailed = false;
-            return true;
+                i.Converted = mn;
+                i.ConversionFailed = false;
+                change = true;
+            }
+            return change;
         }
 
         private void UpdateScanningStatuses()

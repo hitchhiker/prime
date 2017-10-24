@@ -1,6 +1,6 @@
 ﻿namespace Prime.Common
 {
-    public interface ILatestPriceAggregationProvider : IPublicPriceProvider
+    public interface ILatestPriceAggregationProvider : IPublicPairPriceProvider
     {
 
     }

@@ -4,7 +4,7 @@ using Prime.Common.Exchange.Rates;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class ExchangeRateResultViewModel : VmBase
+    public class ExchangeRateResultViewModel : VmBase, IDisposable
     {
         private readonly ExchangeRateViewModel _model;
         private readonly LatestPriceResultMessage _result;
@@ -141,6 +141,11 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             get => _networkMiddle;
             set => Set(ref _networkMiddle, value);
+        }
+
+        public void Dispose()
+        {
+            _model?.Dispose();
         }
     }
 }

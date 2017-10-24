@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Common.Exchange;
-using Prime.Plugins.Services.Base;
 using Prime.Utility;
-using RestEase;
-using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Poloniex
 {
@@ -59,7 +56,7 @@ namespace Prime.Plugins.Services.Poloniex
             }
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -81,7 +78,7 @@ namespace Prime.Plugins.Services.Poloniex
             return price;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync();
@@ -91,7 +88,7 @@ namespace Prime.Plugins.Services.Poloniex
             var tickerEntries = r.Where(x =>
             {
                 var pair = x.Key.ToAssetPair(this);
-                return context.BaseAsset.Equals(pair.Asset1) && context.Assets.Contains(x.Key.ToAssetPair(this).Asset2);
+                return context.QuoteAsset.Equals(pair.Asset1) && context.Assets.Contains(x.Key.ToAssetPair(this).Asset2);
             });
 
             foreach (var rTicker in tickerEntries)
@@ -102,7 +99,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList,
                 UtcCreated = DateTime.UtcNow
             };

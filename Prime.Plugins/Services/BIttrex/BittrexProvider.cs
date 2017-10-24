@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.Bittrex
             return r != null && r.success && r.result != null;
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
@@ -73,7 +73,7 @@ namespace Prime.Plugins.Services.Bittrex
             return latestPrice;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             foreach (var asset in context.Assets)
             {
-                var pairCode = context.BaseAsset.ToPair(asset).TickerDash();
+                var pairCode = context.QuoteAsset.ToPair(asset).TickerDash();
                 var r = await api.GetTicker(pairCode);
 
                 CheckResponseErrors(r);
@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList,
                 UtcCreated = DateTime.UtcNow
             };

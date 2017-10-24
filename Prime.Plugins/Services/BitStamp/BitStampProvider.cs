@@ -31,6 +31,11 @@ namespace Prime.Plugins.Services.BitStamp
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        public Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
@@ -55,23 +60,25 @@ namespace Prime.Plugins.Services.BitStamp
             return r != null;
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetLatestPriceAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            //var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetTicker(context.Pair.TickerSimple());
+            //var r = await api.GetTicker(context.Pair.TickerSimple());
 
-            var latestPrice = new LatestPrice()
-            {
-                Price = new Money(r.last, context.Pair.Asset2),
-                BaseAsset = context.Pair.Asset1,
-                UtcCreated = r.timestamp.ToUtcDateTime()
-            };
+            //var latestPrice = new LatestPrice()
+            //{
+            //    Price = new Money(r.last, context.Pair.Asset2),
+            //    BaseAsset = context.Pair.Asset1,
+            //    UtcCreated = r.timestamp.ToUtcDateTime()
+            //};
 
-            return latestPrice;
+            //return latestPrice;
+
+            return null;
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -79,7 +86,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             foreach (var asset in context.Assets)
             {
-                var pairCode = context.BaseAsset.ToPair(asset).TickerSimple();
+                var pairCode = context.QuoteAsset.ToPair(asset).TickerSimple();
                 var r = await api.GetTicker(pairCode);
 
                 moneyList.Add(new Money(r.last, asset));
@@ -89,7 +96,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             var latestPrices = new LatestPrices()
             {
-                BaseAsset = context.BaseAsset,
+                BaseAsset = context.QuoteAsset,
                 Prices = moneyList,
                 UtcCreated = DateTime.UtcNow
             };

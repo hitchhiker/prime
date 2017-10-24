@@ -9,7 +9,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.CryptoCompare
 {
-    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicPricesProvider
+    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicAssetPricesProvider
     {
         public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
         public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
@@ -55,18 +55,18 @@ namespace Prime.Plugins.Services.CryptoCompare
             return null;
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
         {
-            var r = await GetLatestPricesAsync(new PublicPricesContext(context.Pair.Asset1, new List<Asset>() {context.Pair.Asset2}));
+            var r = await GetAssetPricesAsync(new PublicAssetPricesContext(new List<Asset>() {context.Pair.Asset2}, context.Pair.Asset1));
             if (r == null || r.Prices?.Any() != true)
                 return null;
 
             return new LatestPrice(r.Prices.First());
         }
 
-        public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
+        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            var baseAsset = context.BaseAsset;
+            var baseAsset = context.QuoteAsset;
             var assets = context.Assets;
 
             var api = GetApi<ICryptoCompareApi>();

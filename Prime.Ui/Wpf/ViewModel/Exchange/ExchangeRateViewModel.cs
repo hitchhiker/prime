@@ -25,8 +25,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _assetLeft = Assets.I.GetRaw("BTC");
             _assetRight = UserContext.Current.QuoteAsset;
 
-            _dispatcher = PrimeWpf.I.UiDispatcher;
-            _debouncer = new DebouncerDispatched(_dispatcher);
+            _debouncer = new DebouncerDispatched(UiDispatcher);
             
             /*foreach (var i in UserContext.Current.UserSettings.FavouritePairs)
                 _requests.Add(_coord.AddRequest(this, i));
@@ -34,12 +33,11 @@ namespace Prime.Ui.Wpf.ViewModel
             foreach (var i in UserContext.Current.UserSettings.HistoricExchangeRates)
                 _requests.Add(_coord.AddRequest(this, i));*/
 
-            M.Register<LatestPriceResultMessage>(this, NewRate);
+            M.RegisterAsync<LatestPriceResultMessage>(this, NewRate);
 
             GoCommand = new RelayCommand(AddRequestDebounced);
         }
 
-        private readonly Dispatcher _dispatcher;
         private readonly List<LatestPriceRequestMessage> _requests = new List<LatestPriceRequestMessage>();
         private readonly DebouncerDispatched _debouncer;
         public AllAssetsViewModel AllAssetsViewModel { get; }
@@ -48,7 +46,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void NewRate(LatestPriceResultMessage result)
         {
-            _dispatcher.Invoke(() =>
+            UiDispatcher.Invoke(() =>
             {
                 var e = ExchangeRates.FirstOrDefault(x => x.IsMatch(result));
                 if (e != null)
@@ -152,14 +150,15 @@ namespace Prime.Ui.Wpf.ViewModel
 
             ConversionDate = DateTime.Now;
             ResultViewModel = new ExchangeRateResultViewModel();
-            //M.Send(new LatestPriceRequestMessage(new AssetPair(AssetLeft, AssetRight)));
+            M.Send(new LatestPriceRequestMessage(Id, new AssetPair(AssetLeft, AssetRight)));
         }
 
         public BindingList<LatestPriceResultMessage> ExchangeRates { get; } = new BindingList<LatestPriceResultMessage>();
 
         public override void Dispose()
         {
-            //M.Unregister(this);
+            M.Send(new LatestPriceRequestMessage(Id, SubscriptionType.UnsubscribeAll));
+            M.UnregisterAsync(this);
             base.Dispose();
         }
     }
