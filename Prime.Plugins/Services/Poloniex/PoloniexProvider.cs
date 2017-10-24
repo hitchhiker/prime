@@ -12,44 +12,39 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IApiProvider, IOrderBookProvider
+    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
+        private RestApiClientProvider<IPoloniexApi> ApiProvider { get; }
+
         public Network Network { get; } = new Network("Poloniex");
-
         public bool Disabled => false;
-
         public int Priority => 100;
-
         public string AggregatorName => null;
-
         public string Title => Network.Name;
 
         private static readonly ObjectId IdHash = "prime:poloniex".GetObjectIdHashCode();
-
         public ObjectId Id => IdHash;
 
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
 
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return RestClient.For<IPoloniexApi>(PoloniexApiUrl) as T;
-        }
-
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
-        {
-            var key = context.GetKey(this);
-
-            return RestClient.For<IPoloniexApi>(PoloniexApiUrl, new PoloniexAuthenticator(key).GetRequestModifier) as T;
-        }
-
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+
+
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => true;
+        public bool CanPeekDepositAddress { get; }
+
+        public PoloniexProvider()
+        {
+            ApiProvider = new RestApiClientProvider<IPoloniexApi>(PoloniexApiUrl, this, k => new PoloniexAuthenticator(k).GetRequestModifier);
+        }
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnBalances);
 
             try
@@ -66,7 +61,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetTickerAsync();
 
@@ -88,7 +83,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync();
 
             var moneyList = new List<Money>();
@@ -127,7 +122,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetTickerAsync();
 
@@ -143,12 +138,9 @@ namespace Prime.Plugins.Services.Poloniex
             return pairs;
         }
 
-        public bool CanMultiDepositAddress { get; } = true;
-        public bool CanGenerateDepositAddress { get; } = true;
-
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
             var addresses = new WalletAddresses();
@@ -176,7 +168,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnCompleteBalances);
 
@@ -202,7 +194,6 @@ namespace Prime.Plugins.Services.Poloniex
         private Dictionary<string, object> CreatePoloniexBody(PoloniexBodyType bodyType)
         {
             var body = new Dictionary<string, object>();
-
             body.Add("nonce", BaseAuthenticator.GetLongNonce());
 
             switch (bodyType)
@@ -230,7 +221,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
             var addresses = new WalletAddresses();
@@ -267,7 +258,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             var period = ConvertToPoloniexInterval(market);
 
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period);
 
             var ohlc = new OhlcData(market);
@@ -304,7 +295,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            var api = GetApi<IPoloniexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerUnderslash();
 
             var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2) : await api.GetOrderBook(pairCode);

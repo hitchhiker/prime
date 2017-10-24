@@ -23,25 +23,24 @@ namespace Prime.Plugins.Services.BitMex
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
 
         private RestApiClientProvider<IBitMexApi> ApiProvider { get; }
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
+
+        public IRateLimiter RateLimiter => Limiter;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => false;
+        public bool CanPeekDepositAddress => false;
+        public ObjectId Id => IdHash;
+        public Network Network => new Network("BitMex");
+        public bool Disabled => false;
+        public int Priority => 100;
+        public string AggregatorName => null;
+        public string Title => Network.Name;
 
         public BitMexProvider()
         {
-            Network = new Network("BitMex");
-            Disabled = false;
-            AggregatorName = null;
-            Title = Network.Name;
-            Id = IdHash;
-            Priority = 100;
-            GetApiConfiguration = ApiConfiguration.Standard2;
-
-            ApiProvider = RestApiClientProvider<IBitMexApi>.Create(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
-
-            CanGenerateDepositAddress = false;
-            CanMultiDepositAddress = false;
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
-
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
-        public IRateLimiter RateLimiter => Limiter;
 
         private string ConvertToBitMexInterval(TimeResolution market)
         {
@@ -333,24 +332,6 @@ namespace Prime.Plugins.Services.BitMex
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
         }
-
-        public ApiConfiguration GetApiConfiguration { get; }
-
-        public bool CanMultiDepositAddress { get; }
-
-        public bool CanGenerateDepositAddress { get; }
-
-        public ObjectId Id { get; }
-
-        public Network Network { get; }
-
-        public bool Disabled { get; }
-
-        public int Priority { get; }
-
-        public string AggregatorName { get; }
-
-        public string Title { get; }
 
     }
 }

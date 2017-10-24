@@ -21,17 +21,18 @@ namespace Prime.Plugins.Services.Binance
 
         public ObjectId Id => IdHash;
         public Network Network { get; } = new Network("Binance");
-        public bool Disabled { get; } = false;
+        public bool Disabled => false;
         public int Priority => 100;
-        public string AggregatorName { get; } = null;
+        public string AggregatorName => null;
         public string Title => Network.Name;
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
-        public bool CanMultiDepositAddress { get; } = false;
-        public bool CanGenerateDepositAddress { get; } = false;
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => false;
+        public bool CanPeekDepositAddress => false;
 
-        public ApiConfiguration GetApiConfiguration { get; } = ApiConfiguration.Standard2;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public BinanceProvider()
         {

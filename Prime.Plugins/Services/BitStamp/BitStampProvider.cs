@@ -12,55 +12,29 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService, IApiProvider, IOrderBookProvider
+    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
 
-        public Network Network { get; } = new Network("BitStamp");
-
-        public bool Disabled => false;
-
-        public int Priority => 100;
-
-        public string AggregatorName => null;
-
-        public string Title => Network.Name;
-
         private static readonly ObjectId IdHash = "prime:bitstamp".GetObjectIdHashCode();
-
-        public ObjectId Id => IdHash;
+        private static readonly string _pairs = "btcusd,btceur,eurusd,xrpusd,xrpeur,xrpbtc,ltcusd,ltceur,ltcbtc,ethusd,etheur,ethbtc";
+        private RestApiClientProvider<IBitStampApi> ApiProvider { get; }
 
         // Do not make more than 600 requests per 10 minutes or we will ban your IP address.
         // https://www.bitstamp.net/api/
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(600, 10);
+        public Network Network { get; } = new Network("BitStamp");
+        public bool Disabled => false;
+        public int Priority => 100;
+        public string AggregatorName => null;
+        public string Title => Network.Name;
+        public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return RestClient.For<IBitStampApi>(BitStampApiUrl) as T;
-        }
-
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
-        {
-            var key = context.GetKey(this);
-
-            return RestClient.For<IBitStampApi>(BitStampApiUrl, new BitStampAuthenticator(key).GetRequestModifier) as T;
-        }
-
-        public Task<bool> TestApiAsync(ApiTestContext context)
-        {
-            var t = new Task<bool>(() =>
-            {
-                var api = GetApi<IBitStampApi>(context);
-                var r = api.GetAccountBalances().Result;
-
-                return r != null;
-            });
-            t.Start();
-            return t;
-        }
-
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => false;
+        public bool CanPeekDepositAddress => false;
+        public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
         public ApiConfiguration GetApiConfiguration => new ApiConfiguration()
         {
             HasSecret = true,
@@ -68,9 +42,22 @@ namespace Prime.Plugins.Services.BitStamp
             ApiExtraName = "Customer Number"
         };
 
+        public BitStampProvider()
+        {
+            ApiProvider = new RestApiClientProvider<IBitStampApi>(BitStampApiUrl, this, (k) => new BitStampAuthenticator(k).GetRequestModifier);
+        }
+
+        public async Task<bool> TestApiAsync(ApiTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAccountBalances();
+
+            return r != null;
+        }
+
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var api = GetApi<IBitStampApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetTicker(context.Pair.TickerSimple());
 
@@ -86,7 +73,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            var api = GetApi<IBitStampApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var moneyList = new List<Money>();
 
@@ -120,10 +107,6 @@ namespace Prime.Plugins.Services.BitStamp
             return null;
         }
 
-        private static readonly string _pairs = "btcusd,btceur,eurusd,xrpusd,xrpeur,xrpbtc,ltcusd,ltceur,ltcbtc,ethusd,etheur,ethbtc";
-
-        public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
-
         public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
             var t = new Task<AssetPairs>(() => Pairs);
@@ -133,7 +116,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = GetApi<IBitStampApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetAccountBalances();
 
@@ -172,14 +155,10 @@ namespace Prime.Plugins.Services.BitStamp
             return null;
         }
 
-        public bool CanMultiDepositAddress => true;
-
-        public bool CanGenerateDepositAddress => false;
-
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var addresses = new WalletAddresses();
-            var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.CanGenerateAddress, context.UserContext, context.L);
+            var wac = new WalletAddressAssetContext("ETH".ToAsset(this), false, context.UserContext, context.L);
             addresses.AddRange(await GetAddressesForAssetAsync(wac));
 
             wac.Asset = "BTC".ToAsset(this);
@@ -196,7 +175,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<IBitStampApi>(context);
+            var api = ApiProvider.GetApi(context);
             var currencyPath = GetCurrencyPath(context.Asset);
 
             var r = await api.GetDepositAddress(currencyPath);
@@ -238,7 +217,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            var api = GetApi<IBitStampApi>(context);
+            var api = ApiProvider.GetApi(context);
             var pairCode = GetBitStampTicker(context.Pair);
 
             var r = await api.GetOrderBook(pairCode);
@@ -286,11 +265,8 @@ namespace Prime.Plugins.Services.BitStamp
 
         private (decimal Price, decimal Amount) GetBidAskData(decimal[] data)
         {
-            decimal price = 0;
-            decimal amount = 0;
-
-            price = data[0];
-            amount = data[1];
+            decimal price = data[0];
+            decimal amount = data[1];
 
             return (price, amount);
         }

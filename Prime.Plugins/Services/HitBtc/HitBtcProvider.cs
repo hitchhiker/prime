@@ -14,18 +14,19 @@ namespace Prime.Plugins.Services.HitBtc
         private static readonly ObjectId IdHash = "prime:hitbtc".GetObjectIdHashCode();
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private readonly RestApiClientProvider<IHitBtcApi> ApiProvider;
+        private RestApiClientProvider<IHitBtcApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
         public Network Network { get; } = new Network("HitBTC");
-        public bool Disabled { get; } = false;
-        public int Priority { get; } = 100;
+        public bool Disabled => false;
+        public int Priority => 100;
         public string AggregatorName { get; } = null;
         public string Title => Network.Name;
         public IRateLimiter RateLimiter => Limiter;
-        public bool CanMultiDepositAddress { get; } = false;
-        public bool CanGenerateDepositAddress { get; } = true;
-        public ApiConfiguration GetApiConfiguration { get; } = ApiConfiguration.Standard2;
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => true;
+        public bool CanPeekDepositAddress => false;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public HitBtcProvider()
         {

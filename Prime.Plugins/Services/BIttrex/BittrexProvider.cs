@@ -11,56 +11,53 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IApiProvider, IOrderBookProvider
+    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
 
         private const string ErrorText_AddressIsGenerating = "ADDRESS_GENERATING";
-
-        public Network Network { get; } = new Network("Bittrex");
-
-        public bool Disabled => false;
-
-        public int Priority => 100;
-
-        public string AggregatorName => null;
-
-        public string Title => Network.Name;
-
         private static readonly ObjectId IdHash = "prime:bittrex".GetObjectIdHashCode();
-        //3d3bdcb685a3455f965f0e78ead0cbba
-        public ObjectId Id => IdHash;
 
         // No information in API documents.
         // https://bitcoin.stackexchange.com/questions/53778/bittrex-api-rate-limit
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60, 1);
+
+        private RestApiClientProvider<IBittrexApi> ApiProvider { get; }
+
+        public Network Network { get; } = new Network("Bittrex");
+
+        public bool Disabled => false;
+        public int Priority => 100;
+        public string AggregatorName => null;
+        public string Title => Network.Name;
+        public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        public bool CanMultiDepositAddress => false;
 
-        public T GetApi<T>(NetworkProviderContext context) where T : class
-        {
-            return RestClient.For<IBittrexApi>(BittrexApiUrl) as T;
-        }
+        /// <summary>
+        /// Only allows new address generating if it is empty. Otherwise only peeking.
+        /// </summary>
+        public bool CanGenerateDepositAddress => true;
+        public bool CanPeekDepositAddress => true;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public T GetApi<T>(NetworkProviderPrivateContext context) where T : class
+        public BittrexProvider()
         {
-            var key = context.GetKey(this);
-            return RestClient.For<IBittrexApi>(BittrexApiUrl, new BittrexAuthenticator(key).GetRequestModifier) as T;
+            ApiProvider = new RestApiClientProvider<IBittrexApi>(BittrexApiUrl, this, k => new BittrexAuthenticator(k).GetRequestModifier);
         }
 
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetAllBalances();
 
             return r != null && r.success && r.result != null;
         }
 
-        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-
         public async Task<LatestPrice> GetLatestPriceAsync(PublicPriceContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
             var r = await api.GetTicker(pairCode);
 
@@ -78,7 +75,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public async Task<LatestPrices> GetLatestPricesAsync(PublicPricesContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var moneyList = new List<Money>();
 
@@ -116,7 +113,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
             var r = await api.GetMarkets();
 
             CheckResponseErrors(r);
@@ -135,7 +132,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetAllBalances();
             CheckResponseErrors(r);
@@ -162,13 +159,9 @@ namespace Prime.Plugins.Services.Bittrex
             return null;
         }
 
-        public bool CanMultiDepositAddress => false;
-
-        public bool CanGenerateDepositAddress => true;
-
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var r = await api.GetAllBalances();
             CheckResponseErrors(r);
@@ -188,7 +181,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             if (context.CanGenerateAddress)
             {
@@ -238,51 +231,9 @@ namespace Prime.Plugins.Services.Bittrex
                 throw new ApiResponseException($"API error: {response.message}", this);
         }
 
-        [Obsolete]
-        private async Task<OrderBook> GetOrderBookLocal(IBittrexApi api, AssetPair assetPair, int depth)
-        {
-            var pairCode = assetPair.TickerDash();
-
-            var r = await api.GetOrderBook(pairCode);
-
-            CheckResponseErrors(r);
-
-            var orderBook = new OrderBook();
-
-            foreach (var rBuy in r.result.buy.Take(depth))
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(1 / rBuy.Rate, assetPair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rBuy.Quantity
-                    }
-                });
-            }
-
-            foreach (var rSell in r.result.sell.Take(depth))
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(1 / rSell.Rate, assetPair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rSell.Quantity
-                    }
-                });
-            }
-
-            return orderBook;
-        }
-
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
         {
-            var api = GetApi<IBittrexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerDash();
 

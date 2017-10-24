@@ -170,7 +170,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new WalletAddressContext(false, UserContext.Current);
+                var ctx = new WalletAddressContext(UserContext.Current);
 
                 try
                 {

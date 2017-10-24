@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         public ObjectId Id => IdHash;
         public Network Network { get; } = new Network("BitFlyer");
-        public bool Disabled { get; } = false;
+        public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
@@ -31,10 +31,11 @@ namespace Prime.Plugins.Services.BitFlyer
         // https://lightning.bitflyer.jp/docs?lang=en#api-limits
         public IRateLimiter RateLimiter { get; } = new PerMinuteRateLimiter(400, 1);
 
-        public ApiConfiguration GetApiConfiguration { get; } = ApiConfiguration.Standard2;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public bool CanMultiDepositAddress { get; } = false;
-        public bool CanGenerateDepositAddress { get; } = false;
+        public bool CanMultiDepositAddress => false;
+        public bool CanGenerateDepositAddress => false;
+        public bool CanPeekDepositAddress => false;
 
         public BitFlyerProvider()
         {
