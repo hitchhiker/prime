@@ -284,16 +284,13 @@ namespace Prime.Plugins.Services.Binance
 
         public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
+            // No API endpoint.
             throw new NotImplementedException();
         }
 
         public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
+            // No API endpoint.
             throw new NotImplementedException();
         }
 

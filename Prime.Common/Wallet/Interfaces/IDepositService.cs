@@ -15,7 +15,5 @@ namespace Prime.Common
         Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context);
 
         Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context);
-
-        Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context);
     }
 }

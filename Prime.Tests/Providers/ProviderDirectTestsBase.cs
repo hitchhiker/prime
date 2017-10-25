@@ -43,6 +43,13 @@ namespace Prime.Tests.Providers
                 await GetLatestPricesAsync(p.Provider);
         }
 
+        public virtual async Task TestGetPairsPricesAsync()
+        {
+            var p = IsType<IPublicPairsPricesProvider>();
+            if (p.Success)
+                await GetPairsPricesAsync(p.Provider);
+        }
+
         public virtual async Task TestGetAssetPairsAsync()
         {
             var p = IsType<IExchangeProvider>();
@@ -225,6 +232,38 @@ namespace Prime.Tests.Providers
             }
         }
 
+        protected PublicPairsPricesContext PublicPairsPricesContext { get; set; }
+
+        private async Task GetPairsPricesAsync(IPublicPairsPricesProvider provider)
+        {
+            if (PublicPairsPricesContext == null)
+            {
+                PublicPairsPricesContext = new PublicPairsPricesContext(new List<AssetPair>()
+                {
+                    "BTC_USD".ToAssetPairRaw(),
+                    "BTC_JPY".ToAssetPairRaw()
+                });
+            }
+
+            try
+            {
+                var pairs = await provider.GetPairsPricesAsync(PublicPairsPricesContext);
+
+                Assert.IsTrue(pairs != null);
+                Assert.IsTrue(pairs.Count > 0);
+
+                Trace.WriteLine("Latest prices:");
+                foreach (var pair in pairs)
+                {
+                    Trace.WriteLine($"{pair.BaseAsset}: {pair.Price.Display}");
+                }
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
         private async Task GetBalancesAsync(IWalletService provider)
         {
             var ctx = new NetworkProviderPrivateContext(UserContext.Current);
@@ -313,7 +352,7 @@ namespace Prime.Tests.Providers
                 var r = await provider.GetOrderBook(OrderBookContext);
                 Assert.IsTrue(r != null);
 
-                if(OrderBookContext.MaxRecordsCount.HasValue)
+                if (OrderBookContext.MaxRecordsCount.HasValue)
                     Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
                 else
                     Assert.IsTrue(r.Count > 0);

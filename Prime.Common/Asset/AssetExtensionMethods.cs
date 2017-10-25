@@ -15,6 +15,12 @@ namespace Prime.Common
             return p.Length != 2 ? AssetPair.Empty : new AssetPair(p[0], p[1], provider);
         }
 
+        public static AssetPair ToAssetPairRaw(this string pair, char delimiter = '_')
+        {
+            var p = pair.Split(delimiter);
+            return p.Length != 2 ? AssetPair.Empty : new AssetPair(p[0], p[1]);
+        }
+
         /// <summary>
         /// Returns the assetCode as an Asset object, no remote provider conversion of codes is done. 
         /// Use with caution.
