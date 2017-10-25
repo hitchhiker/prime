@@ -10,38 +10,49 @@ using Prime.Common;
 using Prime.Common.Portfolio;
 using System.Windows;
 using Prime.Common.Wallet;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class PortfolioPieChartViewModel : DocumentPaneViewModel
+    public class PortfolioPieChartViewModel : VmBase, IDisposable
     {
         public PortfolioPieChartViewModel()
         {
             _context = UserContext.Current;
-            Dispatcher = Application.Current.Dispatcher;
             new Task(PopulatePieChart).Start();
+            M.RegisterAsync<PortfolioChangedMessage>(this, PortfolioChangedMessage);
+        }
+
+        private void PortfolioChangedMessage(PortfolioChangedMessage m)
+        {
+            UiDispatcher.Invoke(() =>
+                {
+                }
+            );
         }
 
         public ObservableCollection<PortfolioInfoItem> ListPieChartItems { get; private set; }
 
         private void PopulatePieChart()
         {
-            ListPieChartItems = new ObservableCollection<PortfolioInfoItem>
+            UiDispatcher.Invoke(() =>
             {
-                new PortfolioInfoItem(new Network("Poloniex")),
-                new PortfolioInfoItem(new Network("Bitstamp")),
-                new PortfolioInfoItem(new Network("Bittrex"))
-            };
+                ListPieChartItems = new ObservableCollection<PortfolioInfoItem>
+                {
+                    new PortfolioInfoItem(new Network("Poloniex")),
+                    new PortfolioInfoItem(new Network("Bitstamp")),
+                    new PortfolioInfoItem(new Network("Bittrex"))
+                };
+            });
 
             //Send message to core that new exchanges and percentages have been added
         }
 
-        public readonly Dispatcher Dispatcher;
         private readonly UserContext _context;
 
-        public override CommandContent GetPageCommand()
+        public void Dispose()
         {
-            return new SimpleContentCommand("portfolio pie chart");
+            M.UnregisterAsync(this);
         }
     }
 }
