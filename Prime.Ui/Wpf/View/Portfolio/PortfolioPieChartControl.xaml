@@ -9,6 +9,6 @@
              d:DataContext="{d:DesignInstance viewModel:PortfolioPieChartViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <wpf:PieChart x:Name="Pie" LegendLocation="Right" DataTooltip="{x:Null}" Margin="0,0,0,0" Height="280" Width="400" DataContext="{Binding ListPieChartItems}"/>
+        <wpf:PieChart x:Name="Pie" LegendLocation="Right" DataTooltip="{x:Null}" Margin="0,0,0,0" Height="280" Width="400" Series="{Binding SeriesPieChartItems}"/>
     </Grid>
 </UserControl>

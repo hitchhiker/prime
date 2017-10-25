@@ -37,7 +37,6 @@ namespace Prime.Ui.Wpf
         {
             InitializeComponent();
             _debouncer = new DebouncerDispatched(Dispatcher);
-            this.DataContextChanged += Portfolio_DataContextChanged;
             SViewer.PreviewMouseWheel += SViewer_PreviewMouseWheel;
 
             PortfolioPieChart.DataContext = new PortfolioPieChartViewModel();
@@ -49,13 +48,5 @@ namespace Prime.Ui.Wpf
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
-
-        private void Portfolio_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            //_paneViewModel = (DataContext as PortfolioPaneViewModel);
-            //_paneViewModel.OnChanged += (_, __) => PortfolioPieChart.UpdatePieChartSeries((PortfolioPaneViewModel)this.DataContext);
-        }
-
-        private PortfolioPaneViewModel _paneViewModel;
     } 
 }
