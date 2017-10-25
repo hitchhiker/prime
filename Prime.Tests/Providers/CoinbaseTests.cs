@@ -37,6 +37,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override async Task TestGetPairsPricesAsync()
+        {
+            await base.TestGetPairsPricesAsync();
+        }
+
+        [TestMethod]
         public override async Task TestGetOhlcAsync()
         {
             await base.TestGetOhlcAsync();
