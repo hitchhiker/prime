@@ -44,7 +44,7 @@
                     </Border>
                 </Grid>
 
-                <portfolio:PortfolioPieChartControl/>
+                <portfolio:PortfolioPieChartControl x:Name="PortfolioPieChart"/>
 
             </StackPanel>
 
