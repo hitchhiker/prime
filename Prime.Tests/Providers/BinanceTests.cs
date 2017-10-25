@@ -54,6 +54,20 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override async Task TestGetPairsPricesAsync()
+        {
+            PublicPairsPricesContext = new PublicPairsPricesContext(new List<AssetPair>()
+            {
+                "BNT_ETH".ToAssetPairRaw(),
+                "BNT_BTC".ToAssetPairRaw(),
+                "SALT_ETH".ToAssetPairRaw(),
+                "SALT_BTC".ToAssetPairRaw()
+            });
+
+            await base.TestGetPairsPricesAsync();
+        }
+
+        [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
             OrderBookContext = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()));

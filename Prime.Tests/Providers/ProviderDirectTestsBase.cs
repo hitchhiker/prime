@@ -241,7 +241,7 @@ namespace Prime.Tests.Providers
                 PublicPairsPricesContext = new PublicPairsPricesContext(new List<AssetPair>()
                 {
                     "BTC_USD".ToAssetPairRaw(),
-                    "BTC_JPY".ToAssetPairRaw()
+                    "BTC_EUR".ToAssetPairRaw()
                 });
             }
 
