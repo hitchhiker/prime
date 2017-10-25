@@ -13,6 +13,20 @@ namespace Prime.Plugins.Services.HitBtc
             public SymbolResponse[] symbols;
         }
 
+        internal class TickersResponse : Dictionary<string, TickerResponse> { }
+
+        internal class TickerResponse
+        {
+            public decimal? ask;
+            public decimal? bid;
+            public decimal? last;
+            public decimal? low;
+            public decimal? high;
+            public decimal volume;
+            public decimal volume_quote;
+            public long timestamp;
+        }
+
         internal class BalancesResponse
         {
             public BalanceResponse[] balance;

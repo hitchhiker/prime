@@ -38,5 +38,23 @@ namespace Prime.Tests.Providers
         {
             await base.TestGetBalancesAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetPairPriceAsync()
+        {
+            await base.TestGetPairPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPricesAsync()
+        {
+            await base.TestGetAssetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetPairsPricesAsync()
+        {
+            await base.TestGetPairsPricesAsync();
+        }
     }
 }
