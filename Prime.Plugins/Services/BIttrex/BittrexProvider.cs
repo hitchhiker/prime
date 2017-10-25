@@ -11,12 +11,11 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider
+    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPairsPricesProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
 
-        private const string ErrorText_AddressIsGenerating = "ADDRESS_GENERATING";
         private static readonly ObjectId IdHash = "prime:bittrex".GetObjectIdHashCode();
 
         // No information in API documents.
@@ -39,7 +38,8 @@ namespace Prime.Plugins.Services.Bittrex
         /// Only allows new address generating if it is empty. Otherwise only peeking.
         /// </summary>
         public bool CanGenerateDepositAddress => true;
-        public bool CanPeekDepositAddress => true;
+
+        public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public BittrexProvider()
@@ -101,6 +101,33 @@ namespace Prime.Plugins.Services.Bittrex
             return latestPrices;
         }
 
+        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var pairCode = pair.TickerDash();
+                var r = await api.GetTicker(pairCode);
+
+                CheckResponseErrors(r);
+
+                prices.Add(new LatestPrice()
+                {
+                    BaseAsset = pair.Asset1,
+                    Price = new Money(1 / r.result.Last, pair.Asset2),
+                    UtcCreated = DateTime.UtcNow
+                });
+
+                ApiHelpers.EnterRate(this, context);
+            }
+
+            return prices;
+        }
+
+
         public BuyResult Buy(BuyContext ctx)
         {
             return null;
@@ -128,7 +155,6 @@ namespace Prime.Plugins.Services.Bittrex
 
             return pairs;
         }
-
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
