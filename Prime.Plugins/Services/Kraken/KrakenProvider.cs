@@ -35,7 +35,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => true;
-        public bool CanPeekDepositAddress { get; }
+        public bool CanPeekDepositAddress => true;
 
         private static readonly ObjectId IdHash = "prime:kraken".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
