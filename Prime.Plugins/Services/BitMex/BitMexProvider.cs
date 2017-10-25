@@ -181,6 +181,8 @@ namespace Prime.Plugins.Services.BitMex
                     Price = new Money(rPair.lastPrice.Value, pair.Asset2),
                     UtcCreated = rPair.timestamp
                 });
+
+                ApiHelpers.EnterRate(this, context);
             }
 
             return prices;

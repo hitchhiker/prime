@@ -50,10 +50,10 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetLatestPriceAsync()
+        public override async Task TestGetPairPriceAsync()
         {
             PublicPairPriceContext = new PublicPairPriceContext(new AssetPair("BTC", "LTC"));
-            await base.TestGetLatestPriceAsync();
+            await base.TestGetPairPriceAsync();
         }
 
         [TestMethod]
@@ -67,14 +67,14 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetLatestPricesAsync()
+        public override async Task TestGetAssetPricesAsync()
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
                 "LTC".ToAssetRaw(),
                 "XRP".ToAssetRaw()
             }, Asset.Btc);
-            await base.TestGetLatestPricesAsync();
+            await base.TestGetAssetPricesAsync();
         }
     }
 }

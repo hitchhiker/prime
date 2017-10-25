@@ -59,6 +59,8 @@ namespace Prime.Plugins.Services.BitFlyer
                     BaseAsset = pair.Asset1,
                     UtcCreated = DateTime.UtcNow
                 });
+
+                ApiHelpers.EnterRate(this, context);
             }
 
             return prices;
