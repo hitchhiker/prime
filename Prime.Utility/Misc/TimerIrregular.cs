@@ -14,7 +14,7 @@ namespace Prime.Utility
         private readonly Timer _timer;
         private readonly object _lock = new object();
 
-        public TimerIrregular(TimeSpan frequencySpan, Action action)
+        public TimerIrregular(TimeSpan frequencySpan, Action action, bool startNow = false)
         {
             _action = action;
             _timer = new Timer
@@ -23,6 +23,9 @@ namespace Prime.Utility
                 AutoReset = false
             };
             _timer.Elapsed += _timer_Elapsed;
+
+            if (startNow)
+                Start();
         }
 
         public void Start()

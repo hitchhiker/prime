@@ -16,7 +16,7 @@ namespace Prime.Common.Wallet
             Provider = context.Provider;
             BaseAsset = context.BaseAsset;
             _timerFrequency = context.Frequency;
-            Info = new PortfolioInfoItem(Provider.Network);
+            NetworkInfo = new PortfolioNetworkInfoItem(Provider.Network);
             _providerContext = new NetworkProviderPrivateContext(_context, L);
 
             if (context.Frequency!=0)
@@ -40,7 +40,7 @@ namespace Prime.Common.Wallet
 
         public List<PortfolioLineItem> Items { get; } = new List<PortfolioLineItem>();
 
-        public PortfolioInfoItem Info { get; }
+        public PortfolioNetworkInfoItem NetworkInfo { get; }
 
         private void SetTimer(int frequency)
         {
@@ -118,12 +118,12 @@ namespace Prime.Common.Wallet
         {
             var q = Items.Where(x => !x.IsTotalLine);
 
-            Info.IsConnected = IsConnected;
-            Info.IsFailed = IsFailing;
-            Info.IsQuerying = IsQuerying;
-            Info.Assets = q.Select(x => x.Asset).ToUniqueList();
-            Info.UtcLastConnect = DateTime.UtcNow;
-            Info.TotalConvertedAssetValue = q.Select(x => x.Converted).Sum();
+            NetworkInfo.IsConnected = IsConnected;
+            NetworkInfo.IsFailed = IsFailing;
+            NetworkInfo.IsQuerying = IsQuerying;
+            NetworkInfo.Assets = q.Select(x => x.Asset).ToUniqueList();
+            NetworkInfo.UtcLastConnect = DateTime.UtcNow;
+            NetworkInfo.ConvertedTotal = q.Select(x => x.Converted).Sum();
         }
 
         private void Update(List<PortfolioLineItem> r, bool finished, PortfolioLineItem li = null)

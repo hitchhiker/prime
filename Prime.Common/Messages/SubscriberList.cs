@@ -17,11 +17,17 @@ namespace Prime.Common
 
         protected readonly object Lock = new object();
 
-        protected SubscriberList()
+        public readonly object Token;
+
+        protected SubscriberList(object token = null)
         {
-            M.RegisterAsync<TMessage>(this, IncomingSubscription);
+            Token = token;
+            if (token == null)
+                M.RegisterAsync<TMessage>(this, IncomingSubscription);
+            else
+                M.RegisterAsync<TMessage>(this, token, IncomingSubscription);
         }
-        
+
         protected abstract TSubscriber OnCreatingSubscriber(ObjectId subscriberId, TMessage message);
 
         protected abstract void OnAddingToSubscriber(MessageListEntry<TMessage, TSubscriber> entry, TMessage message);

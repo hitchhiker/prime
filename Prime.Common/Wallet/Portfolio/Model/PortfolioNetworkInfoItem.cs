@@ -4,9 +4,9 @@ using Prime.Utility;
 
 namespace Prime.Common.Wallet
 {
-    public class PortfolioInfoItem : IEquatable<PortfolioInfoItem>
+    public class PortfolioNetworkInfoItem : IEquatable<PortfolioNetworkInfoItem>
     {
-        public PortfolioInfoItem(Network network)
+        public PortfolioNetworkInfoItem(Network network)
         {
             Network = network;
         }
@@ -25,13 +25,13 @@ namespace Prime.Common.Wallet
 
         public DateTime UtcLastConnect { get; set; }
 
-        public Money TotalConvertedAssetValue { get; set; }
+        public Money ConvertedTotal { get; set; }
 
         public string ConnectReport => IsConnected ? "Connected" : "Disconnected";
 
         public string StateReport => IsFailed ? "Failed" : (IsQuerying ? "Querying" : "Idle");
 
-        public bool Equals(PortfolioInfoItem other)
+        public bool Equals(PortfolioNetworkInfoItem other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -43,7 +43,7 @@ namespace Prime.Common.Wallet
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((PortfolioInfoItem) obj);
+            return Equals((PortfolioNetworkInfoItem) obj);
         }
 
         public override int GetHashCode()

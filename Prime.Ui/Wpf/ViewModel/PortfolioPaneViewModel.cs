@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,23 +23,23 @@ namespace Prime.Ui.Wpf.ViewModel
         private string _information;
         private Money _totalConverted;
         private readonly TimerIrregular _timer;
+        private readonly PortfolioSubscribeMessage _subscribeKeepAlive;
 
         public PortfolioPaneViewModel()
         {
             if (IsInDesignMode)
                 return;
 
-            M.Register<PortfolioChangedMessage>(this, PortfolioChanged);
-            _timer = new TimerIrregular(TimeSpan.FromSeconds(30), KeepSubscriptionAlive);
-            _timer.Start();
+            M.Register<PortfolioResultsMessage>(this, UserContext.Current.Token, PortfolioChanged);
+
+            _subscribeKeepAlive = new PortfolioSubscribeMessage(Id, SubscriptionType.Subscribe);
+            _timer = new TimerIrregular(TimeSpan.FromSeconds(30), KeepSubscriptionAlive, true);
         }
 
         private void KeepSubscriptionAlive()
         {
-            M.Send(new PortfolioSubscribeMessage(Id, UserContext.Current.Id));
+            M.Send(_subscribeKeepAlive, UserContext.Current.Token);
         }
-
-        public event EventHandler OnChanged;
 
         public DateTime UtcLastUpdated
         {
@@ -58,13 +59,13 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _information, value);
         }
 
-        public ObservableCollection<PortfolioGroupedItem> SummaryObservable { get; private set; } = new ObservableCollection<PortfolioGroupedItem>();
+        public BindingList<PortfolioGroupedItem> SummaryList { get; private set; } = new BindingList<PortfolioGroupedItem>();
 
-        public ObservableCollection<PortfolioLineItem> PortfolioObservable { get; private set; } = new ObservableCollection<PortfolioLineItem>();
+        public BindingList<PortfolioLineItem> AssetsList { get; private set; } = new BindingList<PortfolioLineItem>();
 
-        public ObservableCollection<PortfolioInfoItem> PortfolioInfoObservable { get; private set; } = new ObservableCollection<PortfolioInfoItem>();
+        public BindingList<PortfolioNetworkInfoItem> NetworkList { get; private set; } = new BindingList<PortfolioNetworkInfoItem>();
 
-        private void PortfolioChanged(PortfolioChangedMessage m)
+        private void PortfolioChanged(PortfolioResultsMessage m)
         {
             try
             {
@@ -74,60 +75,46 @@ namespace Prime.Ui.Wpf.ViewModel
             { }
         }
 
-        private void PortfolioChangedCaught(PortfolioChangedMessage m)
+        private void PortfolioChangedCaught(PortfolioResultsMessage m)
         {
-            if (m.UserId != UserContext.Current.Id)
-                return;
-
             UiDispatcher.Invoke(() =>
             {
-                var q = UserContext.Current.QuoteAsset;
-                var items = m.Items;
+                var info = m;
+                var items = info.Items;
 
-                PortfolioObservable.Clear();
+                AssetsList.Clear();
 
                 foreach (var i in items.OrderBy(x => x.Asset?.ShortCode ?? "ZZZ").ThenBy(x => x.Network?.Name ?? "ZZZ"))
-                    PortfolioObservable.Add(i);
+                    AssetsList.Add(i);
 
-                PortfolioInfoObservable.Clear();
+                NetworkList.Clear();
 
-                foreach (var i in m.InfoItems.OrderBy(x => x.Network.NameLowered))
-                    PortfolioInfoObservable.Add(i);
+                foreach (var i in info.NetworkItems.OrderBy(x => x.Network.NameLowered))
+                    NetworkList.Add(i);
 
-                var t = PortfolioInfoObservable.Select(x => x.TotalConvertedAssetValue).Sum();
+                var t = NetworkList.Select(x => x.ConvertedTotal).Sum();
                 var r = t==0 ? 0 : 100 / t;
-                foreach (var i in PortfolioInfoObservable)
-                    i.Percentage = r * i.TotalConvertedAssetValue;
+                foreach (var i in NetworkList)
+                    i.Percentage = r * i.ConvertedTotal;
 
-                var gi = new List<PortfolioGroupedItem>();
-                foreach (var i in items.GroupBy(x => x.Asset))
-                    gi.Add(PortfolioGroupedItem.Create(q, i.Key, i.ToList()));
+                var gi = info.GroupedAsset;
 
-                SummaryObservable.Clear();
+                SummaryList.Clear();
                 foreach (var i in gi.OrderBy(x => x.IsTotalLine).ThenByDescending(x => (decimal)x.Converted))
-                    SummaryObservable.Add(i);
+                    SummaryList.Add(i);
 
-                UtcLastUpdated = m.UtcLastUpdated;
-                Information = null;
+                var information = "Via: " + string.Join(", ", info.WorkingProviders.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
 
-                Information += "Via: " + string.Join(", ", m.Working.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
-
-                if (m.Failing.Any())
-                    Information += " | Failed: " + string.Join(", ", m.Failing.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
+                if (info.FailingProviders.Any())
+                    information += " | Failed: " + string.Join(", ", info.FailingProviders.OrderBy(x => x.Network.Name).Select(x => x.Network.Name));
 
                 TotalConverted = items.FirstOrDefault(x => x.IsTotalLine)?.Converted ?? Money.Zero;
 
                 if (items.Any(x=>x.ConversionFailed))
-                    Information += " Warning: Some currencies could not be converted, and so are not included in this total.";
+                    information += " Warning: Some currencies could not be converted, and so are not included in this total.";
 
-                OnChanged?.Invoke(this, EventArgs.Empty);
-
-                RaisePropertyChanged(nameof(UtcLastUpdated));
-                RaisePropertyChanged(nameof(TotalConverted));
-                RaisePropertyChanged(nameof(Information));
-                RaisePropertyChanged(nameof(SummaryObservable));
-                RaisePropertyChanged(nameof(PortfolioObservable));
-                RaisePropertyChanged(nameof(PortfolioInfoObservable));
+                UtcLastUpdated = info.UtcLastUpdated;
+                Information = information;
             });
         }
 
@@ -138,7 +125,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            M.Send(new PortfolioSubscribeMessage(Id, SubscriptionType.UnsubscribeAll));
+            M.SendAsync(new PortfolioSubscribeMessage(Id, SubscriptionType.UnsubscribeAll), UserContext.Current.Token);
             M.Unregister(this);
             _timer?.Dispose();
             base.Dispose();

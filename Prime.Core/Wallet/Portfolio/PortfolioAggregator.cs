@@ -36,11 +36,18 @@ namespace Prime.Common.Wallet
         private readonly object _lock = new object();
         private readonly LatestPriceRequestMessage _keepAlive;
 
-        public UniqueList<PortfolioLineItem> Items { get; } = new UniqueList<PortfolioLineItem>();
-        public List<IWalletService> FailingProviders { get; } = new List<IWalletService>();
-        public List<IWalletService> WorkingProviders { get; } = new List<IWalletService>();
-        public List<IWalletService> QueryingProviders { get; } = new List<IWalletService>();
-        public UniqueList<PortfolioInfoItem> PortfolioInfoItems { get; } = new UniqueList<PortfolioInfoItem>();
+        private Asset _quoteAsset;
+        private readonly UniqueList<PortfolioLineItem> _items = new UniqueList<PortfolioLineItem>();
+        private readonly UniqueList<PortfolioNetworkInfoItem> _infoItems= new UniqueList<PortfolioNetworkInfoItem>();
+        private readonly List<PortfolioGroupedItem> _groupedAsset = new List<PortfolioGroupedItem>();
+
+        private readonly List<IWalletService> _failingProviders = new List<IWalletService>();
+        private readonly List<IWalletService> _workingProviders= new List<IWalletService>();
+        private readonly List<IWalletService> _queryingProviders = new List<IWalletService>();
+        private readonly List<IWalletService> _hasCollected = new List<IWalletService>();
+
+        public ObjectId UserId => Context.Id;
+
         public DateTime UtcLastUpdated { get; private set; }
 
         private void KeepPricesSubscriptionAlive()
@@ -61,10 +68,11 @@ namespace Prime.Common.Wallet
         {
             lock (_lock)
             {
+                _quoteAsset = Context.QuoteAsset;
                 var providers = Networks.I.WalletProviders.WithApi();
                 _scanners.Clear();
-                _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, Context.QuoteAsset, TimerInterval))).ToList());
-                _scanners.ForEach(x => x.OnChanged += ScannerChanged);
+                _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, _quoteAsset, TimerInterval))).ToList());
+                _scanners.ForEach(x => x.OnChanged += ProviderChanged);
                 _timer.Start();
 
                 M.RegisterAsync<LatestPriceResultMessage>(this, IncomingLatestPrice);
@@ -89,16 +97,16 @@ namespace Prime.Common.Wallet
                 _timer.Stop();
                 _scanners.ForEach(delegate(PortfolioProvider x)
                 {
-                    x.OnChanged -= ScannerChanged;
+                    x.OnChanged -= ProviderChanged;
                     x.Dispose();
                 });
                 _scanners.Clear();
 
-                Items.Clear();
-                PortfolioInfoItems.Clear();
-                FailingProviders.Clear();
-                WorkingProviders.Clear();
-                QueryingProviders.Clear();
+                _items.Clear();
+                _infoItems.Clear();
+                _failingProviders.Clear();
+                _workingProviders.Clear();
+                _queryingProviders.Clear();
                 UtcLastUpdated = DateTime.MinValue;
 
                 M.SendAsync(new LatestPriceRequestMessage(_id, SubscriptionType.UnsubscribeAll));
@@ -108,32 +116,35 @@ namespace Prime.Common.Wallet
             }
         }
 
-        private void ScannerChanged(object sender, EventArgs e)
+        private void ProviderChanged(object sender, EventArgs e)
         {
             lock (_lock)
             {
                 var ev = e as PortfolioProvider.PortfolioChangedLineEvent;
                 var li = ev?.Item;
-                var scanner = sender as PortfolioProvider;
+                var instance = sender as PortfolioProvider;
+
+                if (!_hasCollected.Contains(instance.Provider))
+                    _hasCollected.Add(instance.Provider);
 
                 UpdateScanningStatuses();
 
-                var prov = scanner.Provider;
-                UtcLastUpdated = scanner.UtcLastUpdated;
+                var prov = instance.Provider;
+                UtcLastUpdated = instance.UtcLastUpdated;
 
                 if (li != null)
                 {
-                    Items.RemoveAll(x => Equals(x.Network, prov.Network) && Equals(x.Asset, li.Asset));
-                    Items.Add(li);
+                    _items.RemoveAll(x => Equals(x.Network, prov.Network) && Equals(x.Asset, li.Asset));
+                    _items.Add(li);
                 }
                 else
                 {
-                    Items.RemoveAll(x => Equals(x.Network, prov.Network));
-                    foreach (var i in scanner.Items)
-                        Items.Add(i);
+                    _items.RemoveAll(x => Equals(x.Network, prov.Network));
+                    foreach (var i in instance.Items)
+                        _items.Add(i);
                 }
 
-                PortfolioInfoItems.Add(scanner.Info, true);
+                _infoItems.Add(instance.NetworkInfo, true);
 
                 DoFinal();
 
@@ -141,51 +152,92 @@ namespace Prime.Common.Wallet
             }
         }
 
+        private void DoFinal()
+        {
+            lock (_lock)
+            {
+                _items.RemoveAll(x => x.IsTotalLine);
+                var qa = _quoteAsset;
+
+                var subscribed = new List<AssetPair>();
+
+                foreach (var i in _items)
+                {
+                    if (Equals(i.Asset, qa))
+                    {
+                        i.Converted = i.Total;
+                        continue;
+                    }
+
+                    var pair = new AssetPair(i.Asset, qa);
+
+                    if (subscribed.Contains(pair))
+                        continue;
+
+                    subscribed.Add(pair);
+                    M.SendAsync(new LatestPriceRequestMessage(_id, pair));
+                }
+
+                if (_items.Any())
+                    _items.Add(new PortfolioTotalLineItem() {Items = _items});
+
+                _groupedAsset.Clear();
+
+                foreach (var i in _items.GroupBy(x => x.Asset))
+                    _groupedAsset.Add(PortfolioGroupedItem.Create(qa, i.Key, i.ToList()));
+            }
+        }
+
+        private void UpdateScanningStatuses()
+        {
+            _workingProviders.Clear();
+            _workingProviders.AddRange(_scanners.Where(x => x.IsConnected).Select(x => x.Provider));
+
+            _failingProviders.Clear();
+            _failingProviders.AddRange(_scanners.Where(x => x.IsFailing).Select(x => x.Provider));
+
+            _queryingProviders.Clear();
+            _queryingProviders.AddRange(_scanners.Where(x => x.IsQuerying).Select(x => x.Provider));
+
+            _hasCollected.RemoveAll(x => _failingProviders.Contains(x));
+        }
+
         private void SendChangedMessageDebounced()
         {
-            _debouncer.Debounce(5, _ => SendChangedMessage());
+            _debouncer.Debounce(25, delegate
+            {
+                DoFinal();
+                SendChangedMessage();
+            });
         }
 
         public void SendChangedMessage()
         {
-            var msg = new PortfolioChangedMessage(Context.Id, UtcLastUpdated, Items.ToUniqueList(), PortfolioInfoItems.ToUniqueList(), WorkingProviders.ToList(), QueryingProviders.ToList(), FailingProviders.ToList());
-            M.Send(msg);
-        }
-
-        private void DoFinal()
-        {
-            Items.RemoveAll(x => x.IsTotalLine);
-            
-            var subscribed = new List<AssetPair>();
-
-            foreach (var i in Items)
+            lock (_lock)
             {
-                if (Equals(i.Asset, UserContext.Current.QuoteAsset))
+                var msg = new PortfolioResultsMessage
                 {
-                    i.Converted = i.Total;
-                    continue;
-                }
-
-                var pair = new AssetPair(i.Asset, UserContext.Current.QuoteAsset);
-
-                if (subscribed.Contains(pair))
-                    continue;
-
-                subscribed.Add(pair);
-                M.SendAsync(new LatestPriceRequestMessage(_id, pair));
+                    UtcLastUpdated = UtcLastUpdated,
+                    Items = _items.ToList(),
+                    NetworkItems = _infoItems.ToList(),
+                    GroupedAsset = _groupedAsset.ToList(),
+                    WorkingProviders = _workingProviders.ToList(),
+                    QueryingProviders = _queryingProviders.ToList(),
+                    FailingProviders = _failingProviders.ToList(),
+                    IsCollectionComplete = _scanners.All(x=> _hasCollected.Contains(x.Provider)),
+                    IsConversionComplete = _items.All(x=>x.Converted!=null),
+                    Total = _items.Where(x=>x!=null && !x.IsTotalLine).Select(x=>x.Converted).Sum(_quoteAsset)
+                };
+                M.Send(msg, Context.Token);
             }
-
-            if (Items.Any())
-                Items.Add(new PortfolioTotalLineItem() { Items = Items });
         }
-
 
         private void IncomingLatestPrice(LatestPriceResultMessage m)
         {
             lock (_lock)
             {
                 var qa = UserContext.Current.QuoteAsset;
-                var ti = Items.Where(x => Equals(x.Total.Asset, m.Pair.Asset1) && Equals(qa, m.Pair.Asset2));
+                var ti = _items.Where(x => Equals(x.Total.Asset, m.Pair.Asset1) && Equals(qa, m.Pair.Asset2));
 
                 if (DoConversion(ti, m, qa))
                     SendChangedMessageDebounced();
@@ -197,7 +249,7 @@ namespace Prime.Common.Wallet
             var change = false;
             foreach (var i in items)
             {
-                var mn = new Money((decimal) i.Total * (decimal) m.Price, targetAsset);
+                var mn = new Money((decimal)i.Total * (decimal)m.Price, targetAsset);
                 if (i.Converted != null && mn.ToDecimalValue() == i.Converted.Value.ToDecimalValue())
                     continue;
 
@@ -206,18 +258,6 @@ namespace Prime.Common.Wallet
                 change = true;
             }
             return change;
-        }
-
-        private void UpdateScanningStatuses()
-        {
-            WorkingProviders.Clear();
-            WorkingProviders.AddRange(_scanners.Where(x => x.IsConnected).Select(x => x.Provider));
-
-            FailingProviders.Clear();
-            FailingProviders.AddRange(_scanners.Where(x => x.IsFailing).Select(x => x.Provider));
-
-            QueryingProviders.Clear();
-            QueryingProviders.AddRange(_scanners.Where(x => x.IsQuerying).Select(x => x.Provider));
         }
     }
 }

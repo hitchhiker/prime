@@ -13,7 +13,7 @@ namespace Prime.Core
     {
         private readonly Timer _timer = new Timer();
 
-        protected RenewingSubscriberList()
+        protected RenewingSubscriberList(object token = null) : base(token)
         {
             _timer = new Timer
             {

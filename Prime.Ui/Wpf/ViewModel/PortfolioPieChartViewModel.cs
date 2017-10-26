@@ -1,25 +1,14 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using Prime.Common;
-using Prime.Common.Portfolio;
-using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
-using prime;
 using Prime.Common.Wallet;
-using Prime.Common.Wallet.Portfolio.Messages;
 using Prime.Utility;
-using Xceed.Wpf.Toolkit;
 using Brush = System.Windows.Media.Brush;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -31,57 +20,58 @@ namespace Prime.Ui.Wpf.ViewModel
             _context = UserContext.Current;
             new Task(PopulateTestData).Start();
             SeriesPieChartItems = new SeriesCollection();
-            M.RegisterAsync<ExchangePortfolioChangedMessage>(this, ExchangePortfolioChangedMessage);
+            M.RegisterAsync<PortfolioResultsMessage>(this, UserContext.Current.Token, PortfolioResultsMessage);
         }
 
-        private void ExchangePortfolioChangedMessage(ExchangePortfolioChangedMessage m)
+        private Money? _lastTotal;
+
+        private void PortfolioResultsMessage(PortfolioResultsMessage m)
         {
-            UiDispatcher.Invoke(() =>
-                {
-                    UpdatePieChart(m.PortfolioInfoItem.Network, m.Percentage, m.Amount);
-                }
-            );
+            if (!m.IsConversionComplete)
+                return;
+
+            if (_lastTotal != null && !_lastTotal.Value.IsWithinPercentage(m.Total, 1))
+                return;
+
+            _lastTotal = m.Total;
+
+            UiDispatcher.Invoke(() => UpdatePieChart(m));
         }
 
-        private void UpdatePieChart(Network network, decimal percentage, decimal amount)
+        private void UpdatePieChart(PortfolioResultsMessage m)
         {
             UiDispatcher.Invoke(() =>
                 {
                     lock (_lock)
                     {
-                        string name = network.Name;
-
-                        //var lp = _lastPercentages.GetOrAdd(network, percentage);
-
-                        //if (Math.Abs(lp - percentage) < 1)
-                        //    continue;
-
-                        _lastPercentages.AddOrUpdate(network, percentage, (_, __) => percentage);
-
-                        var e = SeriesPieChartItems.FirstOrDefault(x => x.Title == name);
-
-                        PieSeries seriesItem = new PieSeries
+                        foreach (var i in m.NetworkItems)
                         {
-                            Title = network.Name,
-                            Fill = StringColor(name),
-                            Values = new ChartValues<double>() { (double)amount },
-                            DataLabels = true,
-                            LabelPosition = PieLabelPosition.InsideSlice,
-                            Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#555"),
-                            LabelPoint = c => c.Participation > 0.05 ? $"{Math.Round(c.Participation, 2):P}" : null
-                        };
+                            var name = i.Network.Name;
 
-                        if (e != null)
-                            e.Values = new ChartValues<double>() { (double)amount };
-                        else
-                            SeriesPieChartItems.Add(seriesItem);
+                            var e = SeriesPieChartItems.FirstOrDefault(x => x.Title == name);
+
+                            var seriesItem = new PieSeries
+                            {
+                                Title = i.Network.Name,
+                                Fill = StringColor(name),
+                                Values = new ChartValues<double>() {(double) i.ConvertedTotal.ToDecimalValue()},
+                                DataLabels = true,
+                                LabelPosition = PieLabelPosition.InsideSlice,
+                                Foreground = (SolidColorBrush) new BrushConverter().ConvertFromString("#555"),
+                                LabelPoint = c => c.Participation > 0.05 ? $"{Math.Round(c.Participation, 2):P}" : null
+                            };
+
+                            if (e != null)
+                                e.Values = new ChartValues<double>() {(double)i.ConvertedTotal.ToDecimalValue()};
+                            else
+                                SeriesPieChartItems.Add(seriesItem);
+                        }
                     }
                 }
             );
         }
 
         private readonly object _lock = new object();
-        private readonly ConcurrentDictionary<Network, decimal> _lastPercentages = new ConcurrentDictionary<Network, decimal>();
 
         public SeriesCollection SeriesPieChartItems { get; }
 
@@ -91,13 +81,11 @@ namespace Prime.Ui.Wpf.ViewModel
             {
                 DateTime timestamp = DateTime.UtcNow;
 
-                ExchangePortfolioChangedMessage message1 = new ExchangePortfolioChangedMessage(UserContext.Current.Id, 200, 20, timestamp, new PortfolioInfoItem(new Network("Poloniex")));
-                ExchangePortfolioChangedMessage message2 = new ExchangePortfolioChangedMessage(UserContext.Current.Id, 300, 30, timestamp, new PortfolioInfoItem(new Network("Bittrex")));
-                ExchangePortfolioChangedMessage message3 = new ExchangePortfolioChangedMessage(UserContext.Current.Id, 500, 50, timestamp, new PortfolioInfoItem(new Network("Bitstamp")));
+                //PortfolioDistributionChangedMessage message1 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 200, 20, timestamp, new PortfolioInfoItem(new Network("Poloniex")));
+                //PortfolioDistributionChangedMessage message2 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 300, 30, timestamp, new PortfolioInfoItem(new Network("Bittrex")));
+                //PortfolioDistributionChangedMessage message3 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 500, 50, timestamp, new PortfolioInfoItem(new Network("Bitstamp")));
 
-                M.Send(message1, UserContext.Current.Token);
-                M.Send(message2, UserContext.Current.Token);
-                M.Send(message3, UserContext.Current.Token);
+                //M.Send(new PortfolioNetworksMessage(DateTime.UtcNow, new List<PortfolioDistributionItem>()));
             });
         }
 

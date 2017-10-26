@@ -10,11 +10,23 @@ using Prime.Utility;
 
 namespace Prime.Core.Wallet
 {
-    internal class PortfolioMessenger : RenewingSubscriberList<PortfolioSubscribeMessage, PortfolioAggregator>, IStartupMessenger
+    internal class PortfolioMessenger : RenewingSubscriberList<PortfolioSubscribeMessage, PortfolioAggregator>, IUserContextMessenger
     {
+        private readonly UserContext _context;
+
+        public IUserContextMessenger GetInstance(UserContext context)
+        {
+            return new PortfolioMessenger(context);
+        }
+
+        private PortfolioMessenger(UserContext context) : base(context.Token)
+        {
+            _context = context;
+        }
+        
         protected override PortfolioAggregator OnCreatingSubscriber(ObjectId subscriberId, PortfolioSubscribeMessage message)
         {
-            var aggregator = new PortfolioAggregator(UserContext.Get(message.UserContextId));
+            var aggregator = new PortfolioAggregator(_context);
             aggregator.Start();
             return aggregator;
         }
@@ -40,5 +52,6 @@ namespace Prime.Core.Wallet
             var aggregator = entry.Subscriber;
             aggregator.Stop();
         }
+
     }
 }
