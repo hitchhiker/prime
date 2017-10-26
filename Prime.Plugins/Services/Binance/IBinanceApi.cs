@@ -9,6 +9,10 @@ namespace Prime.Plugins.Services.Binance
 {
     internal interface IBinanceApi
     {
+        /// <summary>
+        /// For more details see https://www.binance.com/restapipub.html#user-content-market-data-endpoints.
+        /// </summary>
+        /// <returns></returns>
         [Get("/v1/ticker/allPrices")]
         Task<BinanceSchema.LatestPricesResponse> GetSymbolPriceTicker();
 

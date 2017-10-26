@@ -29,18 +29,25 @@ namespace Prime.Tests.Providers
                 await GetOhlcAsync(p.Provider);
         }
 
-        public virtual async Task TestGetLatestPriceAsync()
+        public virtual async Task TestGetPairPriceAsync()
         {
             var p = IsType<IPublicPairPriceProvider>();
             if (p.Success)
-                await GetLatestPriceAsync(p.Provider);
+                await GetPairPriceAsync(p.Provider);
         }
 
-        public virtual async Task TestGetLatestPricesAsync()
+        public virtual async Task TestGetAssetPricesAsync()
         {
             var p = IsType<IPublicAssetPricesProvider>();
             if (p.Success)
-                await GetLatestPricesAsync(p.Provider);
+                await GetAssetPricesAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetPairsPricesAsync()
+        {
+            var p = IsType<IPublicPairsPricesProvider>();
+            if (p.Success)
+                await GetPairsPricesAsync(p.Provider);
         }
 
         public virtual async Task TestGetAssetPairsAsync()
@@ -146,7 +153,7 @@ namespace Prime.Tests.Providers
 
         protected PublicPairPriceContext PublicPairPriceContext { get; set; }
 
-        private async Task GetLatestPriceAsync(IPublicPairPriceProvider provider)
+        private async Task GetPairPriceAsync(IPublicPairPriceProvider provider)
         {
             if (PublicPairPriceContext == null)
             {
@@ -171,7 +178,7 @@ namespace Prime.Tests.Providers
 
         protected PublicAssetPricesContext PublicAssetPricesContext { get; set; }
 
-        private async Task GetLatestPricesAsync(IPublicAssetPricesProvider provider)
+        private async Task GetAssetPricesAsync(IPublicAssetPricesProvider provider)
         {
             if (PublicAssetPricesContext == null)
             {
@@ -217,6 +224,38 @@ namespace Prime.Tests.Providers
                 foreach (var pair in pairs)
                 {
                     Trace.WriteLine($"{pair.Asset1}-{pair.Asset2}");
+                }
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected PublicPairsPricesContext PublicPairsPricesContext { get; set; }
+
+        private async Task GetPairsPricesAsync(IPublicPairsPricesProvider provider)
+        {
+            if (PublicPairsPricesContext == null)
+            {
+                PublicPairsPricesContext = new PublicPairsPricesContext(new List<AssetPair>()
+                {
+                    "BTC_USD".ToAssetPairRaw(),
+                    "BTC_EUR".ToAssetPairRaw()
+                });
+            }
+
+            try
+            {
+                var pairs = await provider.GetPairsPricesAsync(PublicPairsPricesContext);
+
+                Assert.IsTrue(pairs != null);
+                Assert.IsTrue(pairs.Count > 0);
+
+                Trace.WriteLine("Latest prices:");
+                foreach (var pair in pairs)
+                {
+                    Trace.WriteLine($"{pair.BaseAsset}: {pair.Price.Display}");
                 }
             }
             catch (Exception e)
@@ -313,7 +352,7 @@ namespace Prime.Tests.Providers
                 var r = await provider.GetOrderBook(OrderBookContext);
                 Assert.IsTrue(r != null);
 
-                if(OrderBookContext.MaxRecordsCount.HasValue)
+                if (OrderBookContext.MaxRecordsCount.HasValue)
                     Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
                 else
                     Assert.IsTrue(r.Count > 0);

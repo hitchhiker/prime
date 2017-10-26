@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider
+    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider, IPublicPairsPricesProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -40,6 +40,30 @@ namespace Prime.Plugins.Services.BitFlyer
         public BitFlyerProvider()
         {
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
+        }
+
+        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var code = GetBitFlyerTicker(pair);
+                var r = await api.GetTicker(code);
+
+                prices.Add(new LatestPrice()
+                {
+                    Price = new Money(r.ltp, pair.Asset2),
+                    BaseAsset = pair.Asset1,
+                    UtcCreated = DateTime.UtcNow
+                });
+
+                ApiHelpers.EnterRate(this, context);
+            }
+
+            return prices;
         }
 
         public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)

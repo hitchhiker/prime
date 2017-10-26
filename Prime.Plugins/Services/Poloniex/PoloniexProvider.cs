@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => true;
-        public bool CanPeekDepositAddress { get; }
+        public bool CanPeekDepositAddress => true;
 
         public PoloniexProvider()
         {

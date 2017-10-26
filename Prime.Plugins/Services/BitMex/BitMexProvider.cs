@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider
+    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPairsPricesProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -26,6 +26,7 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
 
         public IRateLimiter RateLimiter => Limiter;
+
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => false;
@@ -152,6 +153,39 @@ namespace Prime.Plugins.Services.BitMex
             };
 
             return latestPrices;
+        }
+
+        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var r = await api.GetLatestPriceAsync(pair.Asset1.ToRemoteCode(this));
+                var rPair = r.FirstOrDefault();
+
+                if (r == null)
+                    throw new ApiResponseException("No price data found", this);
+
+                if (rPair.timestamp.Kind != DateTimeKind.Utc)
+                    throw new ApiResponseException("Time is not in UTC format", this);
+
+                if (rPair.lastPrice.HasValue == false)
+                    throw new ApiResponseException("No last price for currency", this);
+
+                prices.Add(new LatestPrice
+                {
+                    BaseAsset = pair.Asset1,
+                    Price = new Money(rPair.lastPrice.Value, pair.Asset2),
+                    UtcCreated = rPair.timestamp
+                });
+
+                ApiHelpers.EnterRate(this, context);
+            }
+
+            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)

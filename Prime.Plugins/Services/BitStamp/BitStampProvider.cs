@@ -12,7 +12,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider
+    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPairsPricesProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -31,10 +31,6 @@ namespace Prime.Plugins.Services.BitStamp
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
-        {
-            throw new NotImplementedException();
-        }
 
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => false;
@@ -102,6 +98,46 @@ namespace Prime.Plugins.Services.BitStamp
             };
 
             return latestPrices;
+        }
+
+        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var r = await api.GetTicker(context.Pair.TickerSimple());
+
+            var latestPrice = new LatestPrice()
+            {
+                Price = new Money(r.last, context.Pair.Asset2),
+                BaseAsset = context.Pair.Asset1,
+                UtcCreated = r.timestamp.ToUtcDateTime()
+            };
+
+            return latestPrice;
+        }
+
+        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var pairCode = pair.TickerSimple();
+                var r = await api.GetTicker(pairCode);
+
+                prices.Add(new LatestPrice()
+                {
+                    BaseAsset = pair.Asset1,
+                    Price = new Money(r.last, pair.Asset2),
+                    UtcCreated = DateTime.UtcNow
+                });
+
+                ApiHelpers.EnterRate(this, context);
+            }
+
+            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)

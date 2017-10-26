@@ -10,7 +10,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider
+    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider, IPublicPairsPricesProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -28,6 +28,7 @@ namespace Prime.Plugins.Services.Binance
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
+
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
@@ -145,6 +146,33 @@ namespace Prime.Plugins.Services.Binance
             };
 
             return latestPrices;
+        }
+
+        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetSymbolPriceTicker();
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var lowerPairTicker = pair.TickerSimple().ToLower();
+
+                var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
+
+                if (lpr == null)
+                    throw new ApiResponseException("Specified currency pair is not supported by provider", this);
+
+                prices.Add(new LatestPrice()
+                {
+                    Price = new Money(lpr.price, pair.Asset2),
+                    BaseAsset = pair.Asset1,
+                    UtcCreated = DateTime.UtcNow
+                });
+            }
+
+            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -284,16 +312,13 @@ namespace Prime.Plugins.Services.Binance
 
         public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
+            // No API endpoint.
             throw new NotImplementedException();
         }
 
         public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
+            // No API endpoint.
             throw new NotImplementedException();
         }
 

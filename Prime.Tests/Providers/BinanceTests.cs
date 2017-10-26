@@ -24,17 +24,17 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetLatestPriceAsync()
+        public override async Task TestGetPairPriceAsync()
         {
             PublicPairPriceContext = new PublicPairPriceContext(new AssetPair("ETH", "BTC"));
-            await base.TestGetLatestPriceAsync();
+            await base.TestGetPairPriceAsync();
 
             PublicPairPriceContext = new PublicPairPriceContext(new AssetPair("STRAT", "ETH"));
-            await base.TestGetLatestPriceAsync();
+            await base.TestGetPairPriceAsync();
         }
 
         [TestMethod]
-        public override async Task TestGetLatestPricesAsync()
+        public override async Task TestGetAssetPricesAsync()
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -42,7 +42,7 @@ namespace Prime.Tests.Providers
                 "BTC".ToAssetRaw()
             }, "BNT".ToAssetRaw());
 
-            await base.TestGetLatestPricesAsync();
+            await base.TestGetAssetPricesAsync();
 
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -50,7 +50,21 @@ namespace Prime.Tests.Providers
                 "BTC".ToAssetRaw()
             }, "SALT".ToAssetRaw());
 
-            await base.TestGetLatestPricesAsync();
+            await base.TestGetAssetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetPairsPricesAsync()
+        {
+            PublicPairsPricesContext = new PublicPairsPricesContext(new List<AssetPair>()
+            {
+                "BNT_ETH".ToAssetPairRaw(),
+                "BNT_BTC".ToAssetPairRaw(),
+                "SALT_ETH".ToAssetPairRaw(),
+                "SALT_BTC".ToAssetPairRaw()
+            });
+
+            await base.TestGetPairsPricesAsync();
         }
 
         [TestMethod]
