@@ -91,12 +91,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
                 foreach (var i in info.NetworkItems.OrderBy(x => x.Network.NameLowered))
                     NetworkList.Add(i);
-
-                var t = NetworkList.Select(x => x.ConvertedTotal).Sum();
-                var r = t==0 ? 0 : 100 / t;
-                foreach (var i in NetworkList)
-                    i.Percentage = r * i.ConvertedTotal;
-
+                
                 var gi = info.GroupedAsset;
 
                 SummaryList.Clear();

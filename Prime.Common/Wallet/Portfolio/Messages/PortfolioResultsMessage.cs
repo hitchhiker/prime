@@ -21,6 +21,6 @@ namespace Prime.Common.Wallet
         public IReadOnlyList<IWalletService> QueryingProviders { get; internal set; }
         public IReadOnlyList<IWalletService> FailingProviders { get; internal set; }
 
-        public Money Total { get; internal set; }
+        public Money TotalConverted { get; internal set; }
     }
 }

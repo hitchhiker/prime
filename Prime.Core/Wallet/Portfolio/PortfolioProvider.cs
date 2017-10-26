@@ -123,7 +123,6 @@ namespace Prime.Common.Wallet
             NetworkInfo.IsQuerying = IsQuerying;
             NetworkInfo.Assets = q.Select(x => x.Asset).ToUniqueList();
             NetworkInfo.UtcLastConnect = DateTime.UtcNow;
-            NetworkInfo.ConvertedTotal = q.Select(x => x.Converted).Sum();
         }
 
         private void Update(List<PortfolioLineItem> r, bool finished, PortfolioLineItem li = null)

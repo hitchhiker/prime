@@ -152,41 +152,6 @@ namespace Prime.Common.Wallet
             }
         }
 
-        private void DoFinal()
-        {
-            lock (_lock)
-            {
-                _items.RemoveAll(x => x.IsTotalLine);
-                var qa = _quoteAsset;
-
-                var subscribed = new List<AssetPair>();
-
-                foreach (var i in _items)
-                {
-                    if (Equals(i.Asset, qa))
-                    {
-                        i.Converted = i.Total;
-                        continue;
-                    }
-
-                    var pair = new AssetPair(i.Asset, qa);
-
-                    if (subscribed.Contains(pair))
-                        continue;
-
-                    subscribed.Add(pair);
-                    M.SendAsync(new LatestPriceRequestMessage(_id, pair));
-                }
-
-                if (_items.Any())
-                    _items.Add(new PortfolioTotalLineItem() {Items = _items});
-
-                _groupedAsset.Clear();
-
-                foreach (var i in _items.GroupBy(x => x.Asset))
-                    _groupedAsset.Add(PortfolioGroupedItem.Create(qa, i.Key, i.ToList()));
-            }
-        }
 
         private void UpdateScanningStatuses()
         {
@@ -224,11 +189,60 @@ namespace Prime.Common.Wallet
                     WorkingProviders = _workingProviders.ToList(),
                     QueryingProviders = _queryingProviders.ToList(),
                     FailingProviders = _failingProviders.ToList(),
-                    IsCollectionComplete = _scanners.All(x=> _hasCollected.Contains(x.Provider)),
-                    IsConversionComplete = _items.All(x=>x.Converted!=null),
-                    Total = _items.Where(x=>x!=null && !x.IsTotalLine).Select(x=>x.Converted).Sum(_quoteAsset)
+                    IsCollectionComplete = _scanners.All(x => _hasCollected.Contains(x.Provider)),
+                    IsConversionComplete = _items.All(x => x.Converted != null),
+                    TotalConverted = _items.Where(x => x != null && !x.IsTotalLine).Select(x => x.Converted).Sum(_quoteAsset)
                 };
+
                 M.Send(msg, Context.Token);
+            }
+        }
+
+        private void DoFinal()
+        {
+            lock (_lock)
+            {
+                _items.RemoveAll(x => x.IsTotalLine);
+                var qa = _quoteAsset;
+
+                var subscribed = new List<AssetPair>();
+
+                foreach (var i in _items)
+                {
+                    if (Equals(i.Asset, qa))
+                    {
+                        i.Converted = i.Total;
+                        continue;
+                    }
+
+                    var pair = new AssetPair(i.Asset, qa);
+
+                    if (subscribed.Contains(pair))
+                        continue;
+
+                    subscribed.Add(pair);
+                    M.SendAsync(new LatestPriceRequestMessage(_id, pair));
+                }
+
+                if (_items.Any())
+                    _items.Add(new PortfolioTotalLineItem() { Items = _items });
+
+                _groupedAsset.Clear();
+
+                foreach (var i in _items.GroupBy(x => x.Asset))
+                    _groupedAsset.Add(PortfolioGroupedItem.Create(qa, i.Key, i.ToList()));
+
+                foreach (var n in _infoItems)
+                    n.ConvertedTotal = _items.Where(x=>!x.IsTotalLine && Equals(x.Network, n.Network)).Select(x=>x.Converted).Sum(_quoteAsset);
+
+                if (_infoItems.All(x => x.ConvertedTotal != null))
+                {
+                    var t = _infoItems.Select(x => x.ConvertedTotal).Sum();
+                    var r = t == 0 ? 0 : 100 / t;
+
+                    foreach (var n in _infoItems)
+                        n.Percentage = n.ConvertedTotal.Value.ToDecimalValue() * r;
+                }
             }
         }
 

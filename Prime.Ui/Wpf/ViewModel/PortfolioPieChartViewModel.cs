@@ -30,10 +30,10 @@ namespace Prime.Ui.Wpf.ViewModel
             if (!m.IsConversionComplete)
                 return;
 
-            if (_lastTotal != null && !_lastTotal.Value.IsWithinPercentage(m.Total, 1))
+            if (_lastTotal != null && _lastTotal.Value.IsWithinPercentage(m.TotalConverted, 1))
                 return;
 
-            _lastTotal = m.Total;
+            _lastTotal = m.TotalConverted;
 
             UiDispatcher.Invoke(() => UpdatePieChart(m));
         }
@@ -44,7 +44,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 {
                     lock (_lock)
                     {
-                        foreach (var i in m.NetworkItems)
+                        foreach (var i in m.NetworkItems.Where(x=>x.ConvertedTotal!=null))
                         {
                             var name = i.Network.Name;
 
@@ -54,7 +54,7 @@ namespace Prime.Ui.Wpf.ViewModel
                             {
                                 Title = i.Network.Name,
                                 Fill = StringColor(name),
-                                Values = new ChartValues<double>() {(double) i.ConvertedTotal.ToDecimalValue()},
+                                Values = new ChartValues<double>() {(double) i.ConvertedTotal.Value.ToDecimalValue()},
                                 DataLabels = true,
                                 LabelPosition = PieLabelPosition.InsideSlice,
                                 Foreground = (SolidColorBrush) new BrushConverter().ConvertFromString("#555"),
@@ -62,7 +62,7 @@ namespace Prime.Ui.Wpf.ViewModel
                             };
 
                             if (e != null)
-                                e.Values = new ChartValues<double>() {(double)i.ConvertedTotal.ToDecimalValue()};
+                                e.Values = new ChartValues<double>() {(double)i.ConvertedTotal.Value.ToDecimalValue()};
                             else
                                 SeriesPieChartItems.Add(seriesItem);
                         }

@@ -11,6 +11,11 @@ namespace Prime.Common
     {
         public AssetPairs() { }
 
+        public AssetPairs(IEnumerable<AssetPair> pairs)
+        {
+            _pairs.AddRange(pairs);
+        }
+
         public AssetPairs(int length, string csv, IWalletService provider)
         {
             foreach (var i in csv.ToCsv(true))

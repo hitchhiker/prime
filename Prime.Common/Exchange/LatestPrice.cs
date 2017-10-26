@@ -6,6 +6,12 @@ namespace Prime.Common
     {
         public LatestPrice() { }
 
+        public LatestPrice(AssetPair pair, decimal value)
+        {
+            Price = new Money(value, pair.Asset1);
+            BaseAsset = pair.Asset2;
+        }
+
         public LatestPrice(Money price)
         {
             UtcCreated = DateTime.UtcNow;

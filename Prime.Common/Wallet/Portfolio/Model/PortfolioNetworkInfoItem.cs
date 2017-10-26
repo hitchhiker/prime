@@ -25,7 +25,7 @@ namespace Prime.Common.Wallet
 
         public DateTime UtcLastConnect { get; set; }
 
-        public Money ConvertedTotal { get; set; }
+        public Money? ConvertedTotal { get; set; }
 
         public string ConnectReport => IsConnected ? "Connected" : "Disconnected";
 

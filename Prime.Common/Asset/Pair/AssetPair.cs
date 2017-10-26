@@ -14,19 +14,19 @@ namespace Prime.Common
         /// The first listed currency of a currency pair is called the base currency, and the second currency is called the quote currency.
         /// The currency pair indicates how much of the quote currency is needed to purchase one unit of the base currency.
         /// </summary>
-        /// <param name="asset1">Base Currency</param>
-        /// <param name="asset2">Quote Currency</param>
-        public AssetPair(Asset asset1, Asset asset2)
+        /// <param name="asset">Base Currency</param>
+        /// <param name="quote">Quote Currency</param>
+        public AssetPair(Asset asset, Asset quote)
         {
-            Asset1 = asset1 ?? throw new ArgumentException($"{nameof(asset1)} is null.");
-            Asset2 = asset2 ?? throw new ArgumentException($"{nameof(asset2)} is null.");
+            Asset1 = asset ?? throw new ArgumentException($"{nameof(asset)} is null.");
+            Asset2 = quote ?? throw new ArgumentException($"{nameof(quote)} is null.");
         }
 
-        public AssetPair(string asset1, string asset2) : this(asset1.ToAssetRaw(), asset2.ToAssetRaw())
+        public AssetPair(string asset, string quote) : this(asset.ToAssetRaw(), quote.ToAssetRaw())
         {
         }
 
-        public AssetPair(string asset1, string asset2, IDescribesAssets provider) : this(Assets.I.Get(asset1, provider), Assets.I.Get(asset2, provider))
+        public AssetPair(string asset, string quote, IDescribesAssets provider) : this(Assets.I.Get(asset, provider), Assets.I.Get(quote, provider))
         {
         }
 
