@@ -10,6 +10,16 @@ namespace Prime.Common
             return providers == null ? default(T) : providers.OrderByDescending(x => x.Priority).FirstOrDefault();
         }
 
+        public static T FirstProviderOf<T>(this IEnumerable<INetworkProvider> providers) where T : INetworkProvider
+        {
+            return providers == null ? default(T) : providers.OfType<T>().OrderByDescending(x => x.Priority).FirstOrDefault();
+        }
+
+        public static T FirstProviderOf<T2, T>(this IEnumerable<T2> providers) where T : INetworkProvider where T2 : T
+        {
+            return providers == null ? default(T) : providers.OfType<T>().OrderByDescending(x => x.Priority).FirstOrDefault();
+        }
+
         public static T FirstProviderByVolume<T>(this IEnumerable<T> providers, AssetPair pair) where T : INetworkProvider
         {
             if (providers == null)
@@ -17,7 +27,7 @@ namespace Prime.Common
 
             var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
             if (apd.IsMissing)
-                return FirstProvider(providers);
+                return FirstProviderOf<T, T>(providers);
 
             var voldesc = apd.Exchanges.OrderByDescending(x => x.Volume24HourTo).ToList();
             foreach (var e in voldesc)
@@ -27,7 +37,7 @@ namespace Prime.Common
                     return prov;
             }
 
-            return FirstProvider(providers);
+            return FirstProviderOf<T, T>(providers);
         }
 
         public static IList<T> WithApi<T>(this IEnumerable<T> providers) where T : INetworkProvider

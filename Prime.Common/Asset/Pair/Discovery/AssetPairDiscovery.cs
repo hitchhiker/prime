@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Nito.AsyncEx;
 using Prime.Utility;
 
 namespace Prime.Common
@@ -107,6 +108,10 @@ namespace Prime.Common
 
         private static List<IOhlcProvider> GetProviders(AssetPair pair)
         {
+            var provs = AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IOhlcProvider>().ToList();
+            if (provs.Any())
+                return provs;
+
             var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
             return apd.Exchanges.Count == 0 ? new List<IOhlcProvider>() : apd.AllProviders.OfType<IOhlcProvider>().DistinctBy(x => x.Id).ToList();
         }

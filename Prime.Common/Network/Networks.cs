@@ -25,6 +25,9 @@ namespace Prime.Common
         private IReadOnlyList<IWalletService> _wProviders;
         public IReadOnlyList<IWalletService> WalletProviders => _wProviders ?? (_wProviders = Providers.OfList<IWalletService>());
 
+        private IReadOnlyList<IAssetPairsProvider> _assetPairProviders;
+        public IReadOnlyList<IAssetPairsProvider> AssetPairsProviders => _assetPairProviders ?? (_assetPairProviders = Providers.OfList<IAssetPairsProvider>());
+
         private IReadOnlyList<IPublicPriceProvider> _ppProviders;
         public IReadOnlyList<IPublicPriceProvider> PublicPriceProviders => _ppProviders ?? (_ppProviders = Providers.OfList<IPublicPriceProvider>());
 

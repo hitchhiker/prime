@@ -14,7 +14,7 @@ namespace Prime.Common
     {
         public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiTestContext context)
         {
-            return ApiHelpers.WrapException(() => provider.TestApiAsync(context), "TestApi", provider, context);
+            return ApiHelpers.WrapException(() => provider.TestApiAsync(context), nameof(TestApi), provider, context);
         }
 
         public static ApiResponse<bool> TestApi(INetworkProviderPrivate provider, ApiTestContext context)
@@ -22,20 +22,20 @@ namespace Prime.Common
             return AsyncContext.Run(() => TestApiAsync(provider, context));
         }
 
-        public static Task<ApiResponse<AssetPairs>> GetAssetPairsAsync(IExchangeProvider provider, NetworkProviderContext context = null)
+        public static Task<ApiResponse<AssetPairs>> GetAssetPairsAsync(IAssetPairsProvider provider, NetworkProviderContext context = null)
         {
             context = context ?? new NetworkProviderContext();
             return ApiHelpers.WrapException(()=> provider.GetAssetPairs(context), nameof(GetAssetPairs), provider, context);
         }
 
-        public static ApiResponse<AssetPairs> GetAssetPairs(IExchangeProvider provider, NetworkProviderContext context = null)
+        public static ApiResponse<AssetPairs> GetAssetPairs(IAssetPairsProvider provider, NetworkProviderContext context = null)
         {
             return AsyncContext.Run(() => GetAssetPairsAsync(provider, context));
         }
 
         public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)
         {
-            return ApiHelpers.WrapException(()=> provider.GetPriceAsync(context), "GetPrice", provider, context);
+            return ApiHelpers.WrapException(()=> provider.GetPriceAsync(context), nameof(GetPrice), provider, context);
         }
 
         public static ApiResponse<LatestPrice> GetPrice(IPublicPriceProvider provider, PublicPriceContext context)
@@ -59,7 +59,7 @@ namespace Prime.Common
 
         public static Task<ApiResponse<List<LatestPrice>>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetPricesAsync(context), "GetPrices", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetPricesAsync(context), nameof(GetPrices), provider, context);
         }
 
         public static ApiResponse<List<LatestPrice>> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
@@ -69,7 +69,7 @@ namespace Prime.Common
 
         public static Task<ApiResponse<List<LatestPrice>>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetAssetPricesAsync(context), "GetAssetPrices", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetAssetPricesAsync(context), nameof(GetAssetPrices), provider, context);
         }
 
         public static ApiResponse<List<LatestPrice>> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
@@ -80,7 +80,7 @@ namespace Prime.Common
         public static Task<ApiResponse<List<AssetInfo>>> GetSnapshotAsync(ICoinInformationProvider provider, NetworkProviderContext context = null)
         {
             context = context ?? new NetworkProviderContext();
-            return ApiHelpers.WrapException(() => provider.GetCoinInfoAsync(context), "GetCoinInfo", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetCoinInfoAsync(context), nameof(GetCoinInfo), provider, context);
         }
 
         public static ApiResponse<List<AssetInfo>> GetCoinInfo(ICoinInformationProvider provider, NetworkProviderContext context = null)
@@ -90,7 +90,7 @@ namespace Prime.Common
 
         public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetOhlcAsync(context), "GetOhlc", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetOhlcAsync(context), nameof(GetOhlc), provider, context);
         }
 
         public static ApiResponse<OhlcData> GetOhlc(IOhlcProvider provider, OhlcContext context)
@@ -104,7 +104,7 @@ namespace Prime.Common
             //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
             //    throw new Exception($"{provider.Title} cannot 'peek' deposit addresses.");
 
-            return ApiHelpers.WrapException(() => provider.GetAddressesForAssetAsync(context), "GetDepositAddresses", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetAddressesForAssetAsync(context), nameof(GetDepositAddresses), provider, context);
         }
 
         public static ApiResponse<WalletAddresses> GetDepositAddresses(IWalletService provider, WalletAddressAssetContext context)
@@ -118,7 +118,7 @@ namespace Prime.Common
             //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
             //    throw new Exception($"{provider.Title} cannot 'peek' deposit addresses.");
 
-            return ApiHelpers.WrapException(() => provider.GetAddressesAsync(context), "GetDepositAddresses", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetAddressesAsync(context), nameof(GetDepositAddresses), provider, context);
         }
 
         public static ApiResponse<WalletAddresses> FetchAllDepositAddresses(IWalletService provider, WalletAddressContext context)
@@ -138,7 +138,7 @@ namespace Prime.Common
 
         public static Task<ApiResponse<BalanceResults>> GetBalancesAsync(IWalletService provider, NetworkProviderPrivateContext context)
         {
-            return ApiHelpers.WrapException(() => CheckedBalancesAsync(provider,context), "GetBalances", provider, context);
+            return ApiHelpers.WrapException(() => CheckedBalancesAsync(provider,context), nameof(GetBalances), provider, context);
         }
 
         public static ApiResponse<BalanceResults> GetBalances(IWalletService provider, NetworkProviderPrivateContext context)
@@ -148,7 +148,7 @@ namespace Prime.Common
 
         public static Task<ApiResponse<AggregatedAssetPairData>> GetCoinSnapshotAsync(IAssetPairAggregationProvider provider, AssetPairDataContext context)
         {
-            return ApiHelpers.WrapException(() => provider.GetCoinSnapshotAsync(context), "GetCoinSnapshot", provider, context);
+            return ApiHelpers.WrapException(() => provider.GetCoinSnapshotAsync(context), nameof(GetCoinSnapshot), provider, context);
         }
 
         public static ApiResponse<AggregatedAssetPairData> GetCoinSnapshot(IAssetPairAggregationProvider provider, AssetPairDataContext context)
