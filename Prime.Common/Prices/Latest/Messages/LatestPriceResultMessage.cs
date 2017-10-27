@@ -7,8 +7,8 @@ namespace Prime.Common.Exchange.Rates
 {
     public class LatestPriceResultMessage
     {
-        public readonly IPublicPairPriceProvider Provider;
-        public readonly IPublicPairPriceProvider ProviderConversion;
+        public readonly IPublicPriceProvider Provider;
+        public readonly IPublicPriceProvider ProviderConversion;
 
         public DateTime UtcCreated { get; }
         public AssetPair Pair { get; }
@@ -19,7 +19,7 @@ namespace Prime.Common.Exchange.Rates
 
         public bool IsConverted => ProviderConversion != null;
 
-        public LatestPriceResultMessage(IPublicPairPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
+        public LatestPriceResultMessage(IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
         {
             UtcCreated = latestPrice.UtcCreated;
             Provider = provider;

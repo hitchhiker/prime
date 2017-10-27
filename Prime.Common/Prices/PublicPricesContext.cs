@@ -3,11 +3,11 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class PublicPairsPricesContext : NetworkProviderContext
+    public class PublicPricesContext : NetworkProviderContext
     {
         public readonly List<AssetPair> Pairs;
 
-        public PublicPairsPricesContext(List<AssetPair> pairs, ILogger logger = null) : base(logger)
+        public PublicPricesContext(List<AssetPair> pairs, ILogger logger = null) : base(logger)
         {
             Pairs = pairs;
         }

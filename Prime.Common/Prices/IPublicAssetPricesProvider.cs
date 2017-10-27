@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IPublicAssetPricesProvider : IPublicPairPriceProvider
+    public interface IPublicAssetPricesProvider : INetworkProvider
     {
-        Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context);
+        Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context);
     }
 }

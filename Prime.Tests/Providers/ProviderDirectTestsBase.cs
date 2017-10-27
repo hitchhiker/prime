@@ -31,7 +31,7 @@ namespace Prime.Tests.Providers
 
         public virtual async Task TestGetPairPriceAsync()
         {
-            var p = IsType<IPublicPairPriceProvider>();
+            var p = IsType<IPublicPriceProvider>();
             if (p.Success)
                 await GetPairPriceAsync(p.Provider);
         }
@@ -45,7 +45,7 @@ namespace Prime.Tests.Providers
 
         public virtual async Task TestGetPairsPricesAsync()
         {
-            var p = IsType<IPublicPairsPricesProvider>();
+            var p = IsType<IPublicPricesProvider>();
             if (p.Success)
                 await GetPairsPricesAsync(p.Provider);
         }
@@ -151,24 +151,24 @@ namespace Prime.Tests.Providers
             }
         }
 
-        protected PublicPairPriceContext PublicPairPriceContext { get; set; }
+        protected PublicPriceContext PublicPriceContext { get; set; }
 
-        private async Task GetPairPriceAsync(IPublicPairPriceProvider provider)
+        private async Task GetPairPriceAsync(IPublicPriceProvider provider)
         {
-            if (PublicPairPriceContext == null)
+            if (PublicPriceContext == null)
             {
-                PublicPairPriceContext = new PublicPairPriceContext(new AssetPair("BTC", "USD"));
+                PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "USD"));
             }
 
             try
             {
-                var c = await provider.GetPairPriceAsync(PublicPairPriceContext);
+                var c = await provider.GetPriceAsync(PublicPriceContext);
 
                 Assert.IsTrue(c != null);
-                Assert.IsTrue(c.BaseAsset.Equals(PublicPairPriceContext.Pair.Asset1));
-                Assert.IsTrue(c.Price.Asset.Equals(PublicPairPriceContext.Pair.Asset2));
+                Assert.IsTrue(c.QuoteAsset.Equals(PublicPriceContext.Pair.Asset1));
+                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
 
-                Trace.WriteLine($"Latest price for {c.BaseAsset}: {c.Price.Display}");
+                Trace.WriteLine($"Latest price for {c.QuoteAsset}: {c.Price.Display}");
             }
             catch (Exception e)
             {
@@ -194,13 +194,13 @@ namespace Prime.Tests.Providers
                 var c = await provider.GetAssetPricesAsync(PublicAssetPricesContext);
 
                 Assert.IsTrue(c != null);
-                Assert.IsTrue(c.BaseAsset.Equals(PublicAssetPricesContext.QuoteAsset));
-                Assert.IsTrue(c.Prices.Count == PublicAssetPricesContext.Assets.Count);
+                Assert.IsTrue(c.FirstOrDefault()?.QuoteAsset?.Equals(PublicAssetPricesContext.QuoteAsset) == true);
+                Assert.IsTrue(c.Count == PublicAssetPricesContext.Assets.Count);
 
-                Trace.WriteLine($"Latest prices for {c.BaseAsset}:");
-                foreach (var latestPrice in c.Prices)
+                Trace.WriteLine($"Latest prices for {PublicAssetPricesContext.QuoteAsset}:");
+                foreach (var i in c)
                 {
-                    Trace.WriteLine(latestPrice.Display);
+                    Trace.WriteLine(i.Price.Display);
                 }
             }
             catch (Exception e)
@@ -232,13 +232,13 @@ namespace Prime.Tests.Providers
             }
         }
 
-        protected PublicPairsPricesContext PublicPairsPricesContext { get; set; }
+        protected PublicPricesContext PublicPricesContext { get; set; }
 
-        private async Task GetPairsPricesAsync(IPublicPairsPricesProvider provider)
+        private async Task GetPairsPricesAsync(IPublicPricesProvider provider)
         {
-            if (PublicPairsPricesContext == null)
+            if (PublicPricesContext == null)
             {
-                PublicPairsPricesContext = new PublicPairsPricesContext(new List<AssetPair>()
+                PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
                 {
                     "BTC_USD".ToAssetPairRaw(),
                     "BTC_EUR".ToAssetPairRaw()
@@ -247,7 +247,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var pairs = await provider.GetPairsPricesAsync(PublicPairsPricesContext);
+                var pairs = await provider.GetPricesAsync(PublicPricesContext);
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
@@ -255,7 +255,7 @@ namespace Prime.Tests.Providers
                 Trace.WriteLine("Latest prices:");
                 foreach (var pair in pairs)
                 {
-                    Trace.WriteLine($"{pair.BaseAsset}: {pair.Price.Display}");
+                    Trace.WriteLine($"{pair.QuoteAsset}: {pair.Price.Display}");
                 }
             }
             catch (Exception e)

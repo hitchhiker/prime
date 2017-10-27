@@ -6,23 +6,22 @@ namespace Prime.Common
     {
         public LatestPrice() { }
 
-        public LatestPrice(AssetPair pair, decimal value)
+        public LatestPrice(AssetPair pair, decimal value) : this(new Money(value, pair.Asset1), pair.Asset2)
         {
-            Price = new Money(value, pair.Asset1);
-            BaseAsset = pair.Asset2;
         }
 
-        public LatestPrice(Money price)
+        public LatestPrice(Money price, Asset quoteAsset)
         {
             UtcCreated = DateTime.UtcNow;
             Price = price;
+            QuoteAsset = quoteAsset;
         }
 
         [Bson]
         public DateTime UtcCreated { get; set; }
 
         [Bson]
-        public Asset BaseAsset { get; set; }
+        public Asset QuoteAsset { get; set; }
 
         [Bson]
         public Money Price { get; set; }

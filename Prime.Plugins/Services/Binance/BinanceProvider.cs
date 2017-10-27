@@ -10,7 +10,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider, IPublicPairsPricesProvider
+    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -97,7 +97,7 @@ namespace Prime.Plugins.Services.Binance
             return null;
         }
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTicker();
@@ -112,67 +112,11 @@ namespace Prime.Plugins.Services.Binance
             var latestPrice = new LatestPrice()
             {
                 Price = new Money(lpr.price, context.Pair.Asset2),
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 UtcCreated = DateTime.UtcNow
             };
 
             return latestPrice;
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var moneyList = new List<Money>();
-
-            var r = await api.GetSymbolPriceTicker();
-
-            foreach (var asset in context.Assets)
-            {
-                var currentAssetPair = new AssetPair(context.QuoteAsset, asset);
-                var rPrice = r.FirstOrDefault(x => x.symbol.Equals(currentAssetPair.TickerSimple()));
-
-                if (rPrice == null)
-                    continue;
-
-                moneyList.Add(new Money(rPrice.price, asset));
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = moneyList,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrices;
-        }
-
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTicker();
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var lowerPairTicker = pair.TickerSimple().ToLower();
-
-                var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
-
-                if (lpr == null)
-                    throw new ApiResponseException("Specified currency pair is not supported by provider", this);
-
-                prices.Add(new LatestPrice()
-                {
-                    Price = new Money(lpr.price, pair.Asset2),
-                    BaseAsset = pair.Asset1,
-                    UtcCreated = DateTime.UtcNow
-                });
-            }
-
-            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)

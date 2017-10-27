@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider, IPublicPairsPricesProvider
+    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider, IPublicPriceProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -42,31 +42,7 @@ namespace Prime.Plugins.Services.BitFlyer
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var code = GetBitFlyerTicker(pair);
-                var r = await api.GetTicker(code);
-
-                prices.Add(new LatestPrice()
-                {
-                    Price = new Money(r.ltp, pair.Asset2),
-                    BaseAsset = pair.Asset1,
-                    UtcCreated = DateTime.UtcNow
-                });
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            return prices;
-        }
-
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
@@ -76,37 +52,11 @@ namespace Prime.Plugins.Services.BitFlyer
             var latestPrice = new LatestPrice()
             {
                 Price = new Money(r.ltp, context.Pair.Asset2),
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 UtcCreated = DateTime.UtcNow
             };
 
             return latestPrice;
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var moneyList = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var pair = new AssetPair(context.QuoteAsset, asset);
-                var pairCode = GetBitFlyerTicker(pair);
-
-                var r = await api.GetTicker(pairCode);
-
-                moneyList.Add(new Money(r.ltp, asset));
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = moneyList,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrices;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

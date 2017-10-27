@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class PublicAssetPricesContext : NetworkProviderContext
+    public class PublicAssetPricesContext : PublicPricesContext
     {
+        public readonly List<Asset> Assets;
         public readonly Asset QuoteAsset;
 
-        public readonly List<Asset> Assets;
-
-        public PublicAssetPricesContext(List<Asset> assets, Asset quoteAsset, ILogger logger = null) : base(logger)
+        public PublicAssetPricesContext(List<Asset> assets, Asset quoteAsset, ILogger logger = null) : base(assets.Select(x => new AssetPair(x, quoteAsset)).ToList(), logger)
         {
-            QuoteAsset = quoteAsset;
             Assets = assets;
+            QuoteAsset = quoteAsset;
         }
     }
 }

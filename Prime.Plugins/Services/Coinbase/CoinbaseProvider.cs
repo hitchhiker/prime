@@ -13,7 +13,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IOhlcProvider, IPublicPairsPricesProvider
+    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IOhlcProvider, IPublicPriceProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -50,68 +50,18 @@ namespace Prime.Plugins.Services.Coinbase
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
             var r = await api.GetLatestPrice(pairCode);
 
-            var price = new LatestPrice(new Money(r.data.amount, r.data.currency.ToAsset(this)))
+            var price = new LatestPrice(new Money(r.data.amount, r.data.currency.ToAsset(this)), context.QuoteAsset)
             {
-                BaseAsset = context.Pair.Asset1
+                QuoteAsset = context.Pair.Asset1
             };
 
             return price;
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var prices = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var pairCode = GetCoinbaseTicker(context.QuoteAsset, asset);
-                var r = await api.GetLatestPrice(pairCode);
-
-                prices.Add(new Money(r.data.amount, asset));
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = prices,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrices;
-        }
-
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var pairCode = GetCoinbaseTicker(pair.Asset1, pair.Asset2);
-                var r = await api.GetLatestPrice(pairCode);
-
-                prices.Add(new LatestPrice()
-                {
-                    BaseAsset = pair.Asset1,
-                    Price = new Money(r.data.amount, pair.Asset2),
-                    UtcCreated = DateTime.UtcNow
-                });
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            return prices;
         }
 
         private string GetCoinbaseTicker(Asset baseAsset, Asset asset)

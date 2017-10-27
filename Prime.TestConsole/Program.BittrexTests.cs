@@ -114,11 +114,11 @@ namespace Prime.TestConsole
 				var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
 				var pair = new AssetPair("BTC", "LTC");
 
-				var ctx = new PublicPairPriceContext(pair);
+				var ctx = new PublicPriceContext(pair);
 
 				try
 				{
-					var price = AsyncContext.Run(() => provider.GetPairPriceAsync(ctx));
+					var price = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
 
 					Console.WriteLine($"Latest price for {pair} is {price.Price}");
 				}

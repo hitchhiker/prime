@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPairsPricesProvider
+    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.BitMex
             return new BitMexCodeConverter();
         }
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
@@ -110,82 +110,12 @@ namespace Prime.Plugins.Services.BitMex
 
             var latestPrice = new LatestPrice
             {
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 Price = new Money(r.lastPrice.Value, context.Pair.Asset2),
                 UtcCreated = r.timestamp
             };
 
             return latestPrice;
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            if (context.Assets.Count < 1)
-                throw new ArgumentException("The number of target assets should be greater than 0");
-
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPricesAsync();
-
-            if (r == null || r.Count < 1)
-                throw new ApiResponseException("No prices data found", this);
-
-            var pricesList = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var remote = context.QuoteAsset.ToRemoteCode(this);
-                var pairCode = (remote + asset.ToRemoteCode(this)).ToLower();
-
-                var data = r.FirstOrDefault(x =>
-                    x.symbol.ToLower().Equals(pairCode)
-                );
-
-                if (data == null || data.lastPrice.HasValue == false)
-                    throw new ApiResponseException("No price returned for selected currency");
-
-                pricesList.Add(new Money(data.lastPrice.Value, data.quoteCurrency.ToAsset(this)));
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = pricesList
-            };
-
-            return latestPrices;
-        }
-
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var r = await api.GetLatestPriceAsync(pair.Asset1.ToRemoteCode(this));
-                var rPair = r.FirstOrDefault();
-
-                if (r == null)
-                    throw new ApiResponseException("No price data found", this);
-
-                if (rPair.timestamp.Kind != DateTimeKind.Utc)
-                    throw new ApiResponseException("Time is not in UTC format", this);
-
-                if (rPair.lastPrice.HasValue == false)
-                    throw new ApiResponseException("No last price for currency", this);
-
-                prices.Add(new LatestPrice
-                {
-                    BaseAsset = pair.Asset1,
-                    Price = new Money(rPair.lastPrice.Value, pair.Asset2),
-                    UtcCreated = rPair.timestamp
-                });
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)

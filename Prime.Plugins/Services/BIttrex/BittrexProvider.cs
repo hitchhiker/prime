@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPairsPricesProvider
+    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPriceProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.Bittrex
             return r != null && r.success && r.result != null;
         }
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
@@ -65,68 +65,12 @@ namespace Prime.Plugins.Services.Bittrex
 
             var convertedPrice = 1 / r.result.Last;
 
-            var latestPrice = new LatestPrice(new Money(convertedPrice, context.Pair.Asset2))
-            {
-                BaseAsset = context.Pair.Asset1
-            };
-
-            return latestPrice;
+            return new LatestPrice(new Money(convertedPrice, context.Pair.Asset2), context.QuoteAsset);
         }
 
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
+        public bool DoesMultiplePairs => false;
 
-            var moneyList = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var pairCode = context.QuoteAsset.ToPair(asset).TickerDash();
-                var r = await api.GetTicker(pairCode);
-
-                CheckResponseErrors(r);
-
-                moneyList.Add(new Money(1 / r.result.Last, asset));
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = moneyList,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrices;
-        }
-
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var pairCode = pair.TickerDash();
-                var r = await api.GetTicker(pairCode);
-
-                CheckResponseErrors(r);
-
-                prices.Add(new LatestPrice()
-                {
-                    BaseAsset = pair.Asset1,
-                    Price = new Money(1 / r.result.Last, pair.Asset2),
-                    UtcCreated = DateTime.UtcNow
-                });
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            return prices;
-        }
-
+        public bool PricesAsAssetQuotes => false;
 
         public BuyResult Buy(BuyContext ctx)
         {

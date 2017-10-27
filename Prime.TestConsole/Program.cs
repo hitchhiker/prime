@@ -212,11 +212,11 @@ namespace TestConsole
         private static void LatestPriceTest()
         {
             var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-            var ctx = new PublicPairPriceContext(new AssetPair("XBT".ToAsset(provider), "USD".ToAsset(provider)));
+            var ctx = new PublicPriceContext(new AssetPair("XBT".ToAsset(provider), "USD".ToAsset(provider)));
 
             try
             {
-                var c = AsyncContext.Run(() => provider.GetPairPriceAsync(ctx));
+                var c = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
                 Console.WriteLine(c.Price.ToString());
             }
             catch (Exception e)

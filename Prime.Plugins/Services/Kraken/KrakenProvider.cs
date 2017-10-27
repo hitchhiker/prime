@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.Kraken
         }
 
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -84,40 +84,13 @@ namespace Prime.Plugins.Services.Kraken
             var price = new LatestPrice()
             {
                 Price = money,
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 UtcCreated = DateTime.Now
             };
 
             return price;
         }
 
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var prices = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var pair = new AssetPair(context.QuoteAsset, asset);
-                var remoteCode = GetKrakenTicker(pair);
-
-                var r = await api.GetTickerInformationAsync(remoteCode);
-
-                CheckResponseErrors(r);
-
-                prices.Add(new Money(r.result.FirstOrDefault().Value.c[0], asset));
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = prices
-            };
-
-            return latestPrices;
-        }
 
         public BuyResult Buy(BuyContext ctx)
         {

@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPairsPricesProvider
+    public class HitBtcProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.HitBtc
         public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -45,78 +45,13 @@ namespace Prime.Plugins.Services.HitBtc
             var latestPrice = new LatestPrice()
             {
                 UtcCreated = DateTime.UtcNow,
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 Price = new Money(r.last.Value, context.Pair.Asset2)
             };
 
             return latestPrice;
         }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickers();
-
-            var prices = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var pair = context.QuoteAsset.ToPair(asset);
-                var pairCode = pair.TickerSimple();
-
-                var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
-
-                if (!tickers.Any())
-                    throw new ApiResponseException(String.Format(ErrorTextExchangeDoesNotSupportPair, pair.TickerDash()), this);
-
-                var ticker = tickers.First();
-
-                CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
-
-                prices.Add(new Money(ticker.Value.last.Value, asset));
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                UtcCreated = DateTime.UtcNow,
-                BaseAsset = context.QuoteAsset,
-                Prices = prices
-            };
-
-            return latestPrices;
-        }
-
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickers();
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var pairCode = pair.TickerSimple();
-
-                var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
-
-                if (!tickers.Any())
-                    throw new ApiResponseException(String.Format(ErrorTextExchangeDoesNotSupportPair, pair.TickerDash()), this);
-
-                var ticker = tickers.First();
-
-                CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
-
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    BaseAsset = pair.Asset1,
-                    Price = new Money(ticker.Value.last.Value, pair.Asset2)
-                });
-            }
-
-            return prices;
-        }
-
+        
         private void CheckNullableResult<T>(T? value, string message) where T : struct
         {
             if (value.HasValue == false)

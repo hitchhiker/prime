@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Fiat
 {
-    public class EcbProvider : IPublicAssetPricesProvider, IPublicPairPriceProvider, IPublicPairsPricesProvider
+    public class EcbProvider : IPublicPricesProvider
     {
         private static readonly ObjectId IdHash = "prime:ECB:PROVIDER".GetObjectIdHashCode();
         private static readonly Network _network = new Network("ECB (Fiat)");
@@ -20,6 +20,11 @@ namespace Prime.Plugins.Services.Fiat
 
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => _limiter;
+
+        public Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
 
         public Network Network => _network;
         public bool Disabled => false;
@@ -98,7 +103,7 @@ namespace Prime.Plugins.Services.Fiat
             }
         }
 
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var rates = await GetRatesAsync();
 
@@ -116,21 +121,10 @@ namespace Prime.Plugins.Services.Fiat
             return lp;
         }
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
-            var r = await GetPairsPricesAsync(new PublicPairsPricesContext(new List<AssetPair>() {context.Pair}, context.L));
+            var r = await GetPricesAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L));
             return r.FirstOrDefault();
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var pairs = new List<AssetPair>();
-            foreach (var i in context.Assets)
-                pairs.Add(new AssetPair(i, context.QuoteAsset));
-
-            var ctx = new PublicPairsPricesContext(pairs, context.L);
-            var r = await GetPairsPricesAsync(ctx);
-            return new LatestPrices {UtcCreated = DateTime.UtcNow, BaseAsset = context.QuoteAsset, Prices = r.Select(x=>x.Price).ToList()};
         }
     }
 }

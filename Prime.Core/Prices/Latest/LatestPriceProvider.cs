@@ -12,7 +12,7 @@ namespace Prime.Core
     public class LatestPriceProvider : IDisposable
     {
         private readonly LatestPriceProviderContext _context;
-        private readonly IPublicPairPriceProvider _provider;
+        private readonly IPublicPriceProvider _provider;
         private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
@@ -112,7 +112,7 @@ namespace Prime.Core
                 if (_isDisposed)
                     return false;
 
-                var r = ApiCoordinator.GetPairPrice(_provider, new PublicPairPriceContext(pair));
+                var r = ApiCoordinator.GetPrice(_provider, new PublicPriceContext(pair));
                 if (r.IsNull)
                 {
                     IsFailing = true;

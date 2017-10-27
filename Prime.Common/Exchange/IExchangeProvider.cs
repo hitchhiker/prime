@@ -3,12 +3,10 @@ using Prime.Common;
 
 namespace Prime.Common
 {
-    public interface IExchangeProvider : IPublicAssetPricesProvider
+    public interface IExchangeProvider : IPublicPriceProvider, IAssetPairsProvider
     {
         BuyResult Buy(BuyContext ctx);
 
         SellResult Sell(SellContext ctx);
-
-        Task<AssetPairs> GetAssetPairs(NetworkProviderContext context);
     }
 }

@@ -8,7 +8,7 @@ using Prime.Utility;
 namespace Prime.Common
 {
     public static class ExchangeExtensionMethods
-    {
+    {/*
         private static readonly QueueSet<PriceCacheItem> PriceCache = new QueueSet<PriceCacheItem>(50);
 
         private static readonly object PriceCacheLock = new object();
@@ -23,7 +23,7 @@ namespace Prime.Common
             return PublicContext.I.Data(provider).AssetPairs.Any(x => pair.Equals(x, true));
         }
 
-        public static Money? Fx(this AssetPair pair, IPublicPairPriceProvider providerPreferred = null)
+        public static Money? Fx(this AssetPair pair, IPublicPriceProvider providerPreferred = null)
         {
             if (pair.Asset1.Equals(pair.Asset2))
                 return new Money(1, pair.Asset1);
@@ -42,7 +42,7 @@ namespace Prime.Common
                     return m.Value;
             }
 
-            var ppps = Networks.I.Providers.OfType<ILatestPriceAggregationProvider>().OfType<IPublicPairPriceProvider>();
+            var ppps = Networks.I.Providers.OfType<ILatestPriceAggregationProvider>().OfType<IPublicPriceProvider>();
             foreach (var e in ppps)
             {
                 var m = GetLatestPrice(e, pair);
@@ -53,7 +53,7 @@ namespace Prime.Common
             return null;
         }
 
-        public static Money? GetLatestPrice(this IPublicPairPriceProvider provider, AssetPair pair)
+        public static Money? GetLatestPrice(this IPublicPriceProvider provider, AssetPair pair)
         {
             if (provider == null)
                 throw new ArgumentException(nameof(provider) + " cannot be null for " + nameof(GetLatestPrice));
@@ -64,7 +64,7 @@ namespace Prime.Common
                 if (e != null)
                     return e.IsMissing ? (Money?)null : e.Price;
 
-                var m = ApiCoordinator.GetPairPrice(provider, new PublicPairPriceContext(pair)).Response?.Price;
+                var m = ApiCoordinator.GetPrice(provider, new PublicPriceContext(pair)).Response?.Price;
 
                 if (m == null || m == Money.Zero)
                 {
@@ -75,6 +75,6 @@ namespace Prime.Common
                 PriceCache.Add(new PriceCacheItem() { Provider = provider, Pair = pair, Price = m.Value, UtcEntered = DateTime.UtcNow });
                 return m;
             }
-        }
+        }*/
     }
 }

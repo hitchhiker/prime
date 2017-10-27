@@ -33,22 +33,46 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetAssetPairsAsync(provider, context));
         }
 
-        public static Task<ApiResponse<LatestPrice>> GetPairPriceAsync(IPublicPairPriceProvider provider, PublicPairPriceContext context)
+        public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)
         {
-            return ApiHelpers.WrapException(()=> provider.GetPairPriceAsync(context), "GetPairPrice", provider, context);
+            return ApiHelpers.WrapException(()=> provider.GetPriceAsync(context), "GetPrice", provider, context);
         }
 
-        public static ApiResponse<LatestPrice> GetPairPrice(IPublicPairPriceProvider provider, PublicPairPriceContext context)
+        public static ApiResponse<LatestPrice> GetPrice(IPublicPriceProvider provider, PublicPriceContext context)
         {
-            return AsyncContext.Run(() => GetPairPriceAsync(provider, context));
+            return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
 
-        public static Task<ApiResponse<LatestPrices>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicAssetPricesProvider provider, PublicPriceContext context)
         {
-            return ApiHelpers.WrapException(()=> provider.GetAssetPricesAsync(context), "GetAssetPrices", provider, context);
+            return ApiHelpers.WrapException(async delegate
+            {
+                var r = await provider.GetAssetPricesAsync(context);
+                return r.FirstOrDefault();
+            }, "GetPrices (x1)", provider, context);
         }
 
-        public static ApiResponse<LatestPrices> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static ApiResponse<LatestPrice> GetPrice(IPublicAssetPricesProvider provider, PublicPriceContext context)
+        {
+            return AsyncContext.Run(() => GetPriceAsync(provider, context));
+        }
+
+        public static Task<ApiResponse<List<LatestPrice>>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
+        {
+            return ApiHelpers.WrapException(() => provider.GetPricesAsync(context), "GetPrices", provider, context);
+        }
+
+        public static ApiResponse<List<LatestPrice>> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
+        {
+            return AsyncContext.Run(() => GetPricesAsync(provider, context));
+        }
+
+        public static Task<ApiResponse<List<LatestPrice>>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        {
+            return ApiHelpers.WrapException(() => provider.GetAssetPricesAsync(context), "GetAssetPrices", provider, context);
+        }
+
+        public static ApiResponse<List<LatestPrice>> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return AsyncContext.Run(() => GetAssetPricesAsync(provider, context));
         }

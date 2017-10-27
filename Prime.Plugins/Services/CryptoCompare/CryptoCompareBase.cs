@@ -55,25 +55,18 @@ namespace Prime.Plugins.Services.CryptoCompare
             return null;
         }
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
-        {
-            var r = await GetAssetPricesAsync(new PublicAssetPricesContext(new List<Asset>() {context.Pair.Asset2}, context.Pair.Asset1));
-            if (r == null || r.Prices?.Any() != true)
-                return null;
+        public bool PricesAsAssetQuotes => true;
 
-            return new LatestPrice(r.Prices.First());
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            var baseAsset = context.QuoteAsset;
+            var quoteAsset = context.QuoteAsset;
             var assets = context.Assets;
 
             var api = GetApi<ICryptoCompareApi>();
 
-            var apir = await api.GetPricesAsync(baseAsset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
-            
-            var r = new LatestPrices() {UtcCreated = DateTime.UtcNow, BaseAsset = baseAsset};
+            var apir = await api.GetPricesAsync(quoteAsset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
+
+            var r = new List<LatestPrice>() {};
             if (apir == null)
                 return r;
 
@@ -83,7 +76,7 @@ namespace Prime.Plugins.Services.CryptoCompare
                 var a = assets.FirstOrDefault(x => x.ShortCode == ra.ShortCode);
                 if (a == null)
                     continue;
-                r.Prices.Add(new Money((decimal) i.Value, a));
+                r.Add(new LatestPrice(new Money((decimal)i.Value, a), quoteAsset));
             }
             return r;
         }

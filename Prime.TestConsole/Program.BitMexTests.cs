@@ -104,21 +104,14 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var ctx = new PublicAssetPricesContext(new List<Asset>()
-                {
-                    "USD".ToAsset(provider)
-                }, "BTC".ToAssetRaw());
+                var ctx = new PublicPriceContext(new AssetPair("USD".ToAsset(provider), "BTC".ToAssetRaw()));
 
                 try
                 {
-                    var c = AsyncContext.Run(() => provider.GetAssetPricesAsync(ctx));
+                    var c = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
 
                     Console.WriteLine($"Base asset: {ctx.QuoteAsset}\n");
-
-                    foreach (Money price in c.Prices)
-                    {
-                        Console.WriteLine(price.Display);
-                    }
+                    Console.WriteLine(c.Price.Display);
                 }
                 catch (Exception e)
                 {

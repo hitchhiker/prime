@@ -56,7 +56,7 @@ namespace Prime.Plugins.Services.Poloniex
             }
         }
 
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -71,40 +71,11 @@ namespace Prime.Plugins.Services.Poloniex
 
             var price = new LatestPrice()
             {
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 Price = new Money(1 / selectedPair.Value.last, context.Pair.Asset2)
             };
 
             return price;
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync();
-
-            var moneyList = new List<Money>();
-
-            var tickerEntries = r.Where(x =>
-            {
-                var pair = x.Key.ToAssetPair(this);
-                return context.QuoteAsset.Equals(pair.Asset1) && context.Assets.Contains(x.Key.ToAssetPair(this).Asset2);
-            });
-
-            foreach (var rTicker in tickerEntries)
-            {
-                var currenctAssetPair = rTicker.Key.ToAssetPair(this);
-                moneyList.Add(new Money(1 / rTicker.Value.last, currenctAssetPair.Asset2));
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = moneyList,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrices;
         }
 
         public BuyResult Buy(BuyContext ctx)

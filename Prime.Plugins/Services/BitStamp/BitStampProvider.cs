@@ -12,7 +12,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPairsPricesProvider
+    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -56,51 +56,11 @@ namespace Prime.Plugins.Services.BitStamp
             return r != null;
         }
 
-        public async Task<LatestPrice> GetLatestPriceAsync(NetworkProviderContext context)
-        {
-            //var api = ApiProvider.GetApi(context);
+        public bool AllowMultiplePairs { get; set; }
 
-            //var r = await api.GetTicker(context.Pair.TickerSimple());
+        public bool AllowMultipleAssets { get; set; }
 
-            //var latestPrice = new LatestPrice()
-            //{
-            //    Price = new Money(r.last, context.Pair.Asset2),
-            //    BaseAsset = context.Pair.Asset1,
-            //    UtcCreated = r.timestamp.ToUtcDateTime()
-            //};
-
-            //return latestPrice;
-
-            return null;
-        }
-
-        public async Task<LatestPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var moneyList = new List<Money>();
-
-            foreach (var asset in context.Assets)
-            {
-                var pairCode = context.QuoteAsset.ToPair(asset).TickerSimple();
-                var r = await api.GetTicker(pairCode);
-
-                moneyList.Add(new Money(r.last, asset));
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            var latestPrices = new LatestPrices()
-            {
-                BaseAsset = context.QuoteAsset,
-                Prices = moneyList,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrices;
-        }
-
-        public async Task<LatestPrice> GetPairPriceAsync(PublicPairPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -109,35 +69,11 @@ namespace Prime.Plugins.Services.BitStamp
             var latestPrice = new LatestPrice()
             {
                 Price = new Money(r.last, context.Pair.Asset2),
-                BaseAsset = context.Pair.Asset1,
+                QuoteAsset = context.Pair.Asset1,
                 UtcCreated = r.timestamp.ToUtcDateTime()
             };
 
             return latestPrice;
-        }
-
-        public async Task<List<LatestPrice>> GetPairsPricesAsync(PublicPairsPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var prices = new List<LatestPrice>();
-
-            foreach (var pair in context.Pairs)
-            {
-                var pairCode = pair.TickerSimple();
-                var r = await api.GetTicker(pairCode);
-
-                prices.Add(new LatestPrice()
-                {
-                    BaseAsset = pair.Asset1,
-                    Price = new Money(r.last, pair.Asset2),
-                    UtcCreated = DateTime.UtcNow
-                });
-
-                ApiHelpers.EnterRate(this, context);
-            }
-
-            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -230,8 +166,8 @@ namespace Prime.Plugins.Services.BitStamp
 
             var processedAddress = ProcessAddressResponce(context.Asset, r);
 
-            if (!this.ExchangeHas(context.Asset))
-                return null;
+            //if (!this.ExchangeHas(context.Asset))
+            //    return null;
 
             var walletAddress = new WalletAddress(this, context.Asset)
             {
