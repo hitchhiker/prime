@@ -20,7 +20,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _debouncer = new Debouncer();
 
             Context = UserContext.Current;
-            SelectedBaseAsset = Context.QuoteAsset;
+            SelectedAsset = Context.QuoteAsset;
             var msg = DefaultMessenger.I.Default;
 
             msg.Register<AssetFoundMessage>(this, AssetFound);
@@ -29,6 +29,29 @@ namespace Prime.Ui.Wpf.ViewModel
 
             msg.Send(new AssetAllRequestMessage(RequesterTokenVm));
         }
+
+        public readonly UserContext Context;
+
+        private readonly Debouncer _debouncer;
+
+        private Asset _selectedAsset;
+
+        public BindingList<Asset> Assets { get; private set; } = new BindingList<Asset>();
+
+        public Asset SelectedAsset
+        {
+            get => _selectedAsset;
+            set => Set(ref _selectedAsset, value, x =>
+            {
+                if (SetAsDefault)
+                    return Context.QuoteAsset = x;
+                return x;
+            });
+        }
+
+        public bool SetAsDefault { get; set; }
+
+        public AddressBoxModel AddressBoxModel { get; set; }
 
         private void AssetFound(AssetFoundMessage m)
         {
@@ -57,32 +80,10 @@ namespace Prime.Ui.Wpf.ViewModel
             });
         }
 
-        public bool SetAsDefault { get; set; }
-
-        private readonly Debouncer _debouncer;
-
-        public AddressBoxModel AddressBoxModel { get; set; }
-
         private void InvalidateProperties()
         {
             RaisePropertyChanged(nameof(Assets));
-            CollectionViewSource.GetDefaultView(Assets).Refresh();
+            //CollectionViewSource.GetDefaultView(Assets).Refresh();
         }
-
-        public readonly UserContext Context;
-        private Asset _selectedBaseAsset;
-
-        public Asset SelectedBaseAsset
-        {
-            get => _selectedBaseAsset;
-            set => Set(ref _selectedBaseAsset, value, x =>
-            {
-                if (SetAsDefault)
-                    return Context.QuoteAsset = x;
-                return x;
-            });
-        }
-
-        public BindingList<Asset> Assets { get; private set; } = new BindingList<Asset>();
     }
 }

@@ -256,28 +256,11 @@ namespace Prime.Ui.Wpf.ViewModel
                 TimeRange resetZoom = null;
                 TimeRange newRange = null;
 
-                //if (!OverviewZoom.CanFit(newres))
-                //{
-                    var ts = newres.GetDefaultTimeSpan();
-                    var ep = OverviewZoom.EndPoint.ToDateTimeUtc();
-                /*switch (newres)
-                {
-                    case TimeResolution.Hour:
-                        ep = ep.AddHours(23);
-                        break;
-                    case TimeResolution.Minute:
-                        ep = ep.AddHours(23).AddMinutes(59);
-                        break;
-                }*/
-                    newRange = new TimeRange(ep, -ts, newres).RemoveLiveRange();
-                    resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
-                /*}
-                else
-                {
-                    newRange = OverviewZoom.GetTimeRange();
-                    newRange.TimeResolution = newres;
-                    resetZoom = newRange;
-                }*/
+                var ts = newres.GetDefaultTimeSpan();
+                var ep = OverviewZoom.EndPoint.ToDateTimeUtc();
+
+                newRange = new TimeRange(ep, -ts, newres).RemoveLiveRange();
+                resetZoom = new TimeRange(newRange.UtcFrom, newRange.UtcTo, OverviewZoom.Resolution);
 
                 var priceData = RequestData(newRange);
                 if (priceData.IsEmpty())
@@ -379,7 +362,6 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             MergeSeriesViews<OhlcInstantChartPoint>(_priceChart.SeriesCollection[0], sourceData.ToGCandleSeries(_chartResolutionProvider, "Prices"));
             MergeSeriesViews<InstantChartPoint>(_volumeChart.SeriesCollection[0], sourceData.ToVolumeSeries(_chartResolutionProvider, "Volume"));
-            //Merge(_priceChart.SeriesCollection[1], sourceData.ToSmaSeries(50));
         }
 
         private void MergeSeriesViews<T>(ISeriesView oldData, ISeriesView newData) where T: IInstantChartPoint
