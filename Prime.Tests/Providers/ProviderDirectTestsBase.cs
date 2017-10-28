@@ -196,9 +196,19 @@ namespace Prime.Tests.Providers
                 Assert.IsNotNull(c);
                 Assert.IsTrue(c.Count == PublicAssetPricesContext.Assets.Count);
 
+                foreach (var requiredAsset in PublicAssetPricesContext.Assets)
+                {
+                    Assert.IsTrue(
+                        c.Exists(
+                            x => x.QuoteAsset.Equals(requiredAsset) &&
+                                 x.Price.Asset.Equals(PublicAssetPricesContext.QuoteAsset)
+                        ),
+                        $"Provider did not return {requiredAsset.ToPair(PublicAssetPricesContext.QuoteAsset)} price"
+                    );
+                }
+
                 foreach (var price in c)
                 {
-                    Assert.IsTrue(PublicAssetPricesContext.Assets.Contains(price.QuoteAsset), $"Provider did not return {price.QuoteAsset.ToPair(price.Price.Asset)}");
                     Trace.WriteLine($"Latest price for {price.QuoteAsset}: {price.Price.Display}");
                 }
             }
@@ -265,6 +275,11 @@ namespace Prime.Tests.Providers
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
+
+                foreach (var requiredPair in PublicPricesContext.Pairs)
+                {
+                    Assert.IsTrue(pairs.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset1)), $"Provider did not return {requiredPair} price");
+                }
 
                 Trace.WriteLine("Latest prices:");
                 foreach (var pair in pairs)
