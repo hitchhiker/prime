@@ -142,7 +142,7 @@ namespace Prime.Plugins.Services.BitMex
                 );
 
                 if (data == null || data.lastPrice.HasValue == false)
-                    throw new ApiResponseException("No price returned for selected currency");
+                    throw new ApiResponseException("No price returned for selected currency", this);
 
                 prices.Add(new LatestPrice()
                 {

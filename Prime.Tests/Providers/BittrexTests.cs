@@ -77,6 +77,18 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override async Task TestGetAssetPricesAsync()
+        {
+            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            {
+                "ETH".ToAssetRaw(),
+                "BTC".ToAssetRaw()
+            }, "WINGS".ToAssetRaw());
+
+            await base.TestGetAssetPricesAsync();
+        }
+
+        [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()));
@@ -84,17 +96,6 @@ namespace Prime.Tests.Providers
 
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
-        {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "LTC".ToAssetRaw(),
-                "XRP".ToAssetRaw()
-            }, Asset.Btc);
-            await base.TestGetAssetPricesAsync();
         }
     }
 }
