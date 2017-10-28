@@ -106,14 +106,14 @@ namespace Prime.Common
             };
         }
 
-        private static List<IOhlcProvider> GetProviders(AssetPair pair)
+        private static List<IPublicPriceProvider> GetProviders(AssetPair pair)
         {
-            var provs = AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IOhlcProvider>().ToList();
+            var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
+            var provs = apd.Exchanges.Count == 0 ? new List<IPublicPriceProvider>() : apd.AllProviders.OfType<IPublicPriceProvider>().DistinctBy(x => x.Id).ToList();
             if (provs.Any())
                 return provs;
 
-            var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
-            return apd.Exchanges.Count == 0 ? new List<IOhlcProvider>() : apd.AllProviders.OfType<IOhlcProvider>().DistinctBy(x => x.Id).ToList();
-        }
+            return AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IPublicPriceProvider>().ToList();
+         }
     }
 }

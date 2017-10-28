@@ -7,18 +7,18 @@ namespace Prime.Common
     public class AssetPairKnownProviders
     {
         public readonly AssetPair Pair;
-        public readonly IReadOnlyList<IOhlcProvider> Providers;
+        public readonly IReadOnlyList<IPublicPriceProvider> Providers;
         public readonly bool IsReversed;
 
-        public AssetPairKnownProviders(AssetPair pair, IReadOnlyList<IOhlcProvider> providers, bool isReversed = false)
+        public AssetPairKnownProviders(AssetPair pair, IReadOnlyList<IPublicPriceProvider> providers, bool isReversed = false)
         {
             Pair = pair;
-            Providers = providers;
+            Providers = providers.OrderByVolume(pair);
             Provider = providers.FirstProviderByVolume(pair);
             IsReversed = isReversed;
         }
 
-        public IOhlcProvider Provider { get; set; }
+        public IPublicPriceProvider Provider { get; set; }
 
         public bool IsPegged { get; set; }
 

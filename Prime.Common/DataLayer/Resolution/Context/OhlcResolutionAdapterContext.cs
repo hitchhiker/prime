@@ -77,13 +77,13 @@ namespace Prime.Common
 
             if (!overwrite)
             {
-                PrimaryApiProvider = PrimaryApiProvider ?? ProvidersForDirect?.Provider;
-                CurrencyConversionApiProvider = CurrencyConversionApiProvider ?? ProvidersForConversion?.Provider;
+                PrimaryApiProvider = PrimaryApiProvider ?? ProvidersForDirect?.Providers.FirstProviderOf<IOhlcProvider>();
+                CurrencyConversionApiProvider = CurrencyConversionApiProvider ?? ProvidersForConversion?.Providers.FirstProviderOf<IOhlcProvider>();
             }
             else
             {
-                PrimaryApiProvider = ProvidersForDirect?.Provider;
-                CurrencyConversionApiProvider = ProvidersForConversion?.Provider;
+                PrimaryApiProvider = ProvidersForDirect?.Providers.FirstProviderOf<IOhlcProvider>();
+                CurrencyConversionApiProvider = ProvidersForConversion?.Providers.FirstProviderOf<IOhlcProvider>();
             }
 
             if (provs.Via != null)

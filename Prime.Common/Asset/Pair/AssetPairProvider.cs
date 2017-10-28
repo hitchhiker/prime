@@ -47,7 +47,7 @@ namespace Prime.Common
                 return _cache.Try(prov, k =>
                 {
                     var r = AsyncContext.Run(() => ApiCoordinator.GetAssetPairsAsync(k));
-                    return r.Response;
+                    return r.Response ?? new AssetPairs();
                 });
             });
 

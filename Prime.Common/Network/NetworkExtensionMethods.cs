@@ -20,6 +20,28 @@ namespace Prime.Common
             return providers == null ? default(T) : providers.OfType<T>().OrderByDescending(x => x.Priority).FirstOrDefault();
         }
 
+        public static List<T> OrderByVolume<T>(this IEnumerable<T> providers, AssetPair pair) where T : INetworkProvider
+        {
+            var r = new List<T>();
+
+            if (providers == null)
+                return r;
+
+            var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
+            if (apd.IsMissing)
+                return providers.ToList();
+
+            var voldesc = apd.Exchanges.OrderByDescending(x => x.Volume24HourTo).ToList();
+            foreach (var e in voldesc)
+            {
+                var prov = providers.FirstOrDefault(x => Equals(x.Network, e.Network));
+                if (prov != null)
+                    r.Add(prov);
+            }
+
+            return r;
+        }
+
         public static T FirstProviderByVolume<T>(this IEnumerable<T> providers, AssetPair pair) where T : INetworkProvider
         {
             if (providers == null)
