@@ -224,17 +224,18 @@ namespace Prime.Tests.Providers
 
                 if (RequiredAssetPairs != null)
                 {
+                    Trace.WriteLine("Checked pairs:");
                     foreach (var requiredPair in RequiredAssetPairs)
                     {
                         var contains = pairs.Contains(requiredPair);
                         Assert.IsTrue(contains, $"Provider didn't return required {requiredPair} pair.");
 
                         if (contains)
-                            Trace.WriteLine($"{requiredPair} is found.");
+                            Trace.WriteLine(requiredPair);
                     }
                 }
 
-                Trace.WriteLine("Asset pairs:");
+                Trace.WriteLine("\nRemote pairs from exchange:");
                 foreach (var pair in pairs)
                 {
                     Trace.WriteLine(pair);

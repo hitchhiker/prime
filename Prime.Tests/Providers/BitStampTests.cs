@@ -38,6 +38,22 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
+            RequiredAssetPairs = new AssetPairs()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "BTC_EUR".ToAssetPairRaw(),
+                "EUR_USD".ToAssetPairRaw(),
+                "XRP_USD".ToAssetPairRaw(),
+                "XRP_EUR".ToAssetPairRaw(),
+                "XRP_BTC".ToAssetPairRaw(),
+                "LTC_USD".ToAssetPairRaw(),
+                "LTC_EUR".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_USD".ToAssetPairRaw(),
+                "ETH_EUR".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw()
+            };  
+
             await base.TestGetAssetPairsAsync();
         }
 
