@@ -22,7 +22,12 @@ namespace Prime.Tests.Providers
         {
             RequiredAssetPairs = new AssetPairs()
             {
-                "USD_BTC".ToAssetPairRaw()
+                "NEO_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "NEO_ETH".ToAssetPairRaw(),
+                "IOTA_BTC".ToAssetPairRaw(),
+                "ETC_BTC".ToAssetPairRaw()
             };
 
             await base.TestGetAssetPairsAsync();
