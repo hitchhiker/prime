@@ -38,7 +38,9 @@ namespace Prime.Tests.Providers
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
-                "USD".ToAssetRaw()
+                "LTC".ToAssetRaw(),
+                "ETH".ToAssetRaw(),
+                "FCT".ToAssetRaw()
             }, Asset.Btc);
             await base.TestGetAssetPricesAsync();
         }
@@ -48,7 +50,11 @@ namespace Prime.Tests.Providers
         {
             PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
             {
-                "BTC_USD".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw(),
+                "DAO_ETH".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "FCT_BTC".ToAssetPairRaw()
             });
             await base.TestGetPricesAsync();
         }
