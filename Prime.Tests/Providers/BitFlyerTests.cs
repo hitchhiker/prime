@@ -37,29 +37,6 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
-        {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "USD".ToAssetRaw(),
-                "JPY".ToAssetRaw()
-            }, Asset.Btc);
-
-            await base.TestGetAssetPricesAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetPricesAsync()
-        {
-            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
-            {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_JPY".ToAssetPairRaw()
-            });
-            await base.TestGetPricesAsync();
-        }
-
-        [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()));

@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider, IPublicPriceProvider
+    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
