@@ -64,9 +64,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPairPriceAsync()
+        public override async Task TestGetPriceAsync()
         {
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
         }
 
         [TestMethod]
@@ -76,9 +76,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPairsPricesAsync()
+        public override async Task TestGetPricesAsync()
         {
-            await base.TestGetPairsPricesAsync();
+            await base.TestGetPricesAsync();
         }
 
         [TestMethod]

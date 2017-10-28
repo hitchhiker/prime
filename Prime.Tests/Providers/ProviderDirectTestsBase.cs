@@ -29,7 +29,7 @@ namespace Prime.Tests.Providers
                 await GetOhlcAsync(p.Provider);
         }
 
-        public virtual async Task TestGetPairPriceAsync()
+        public virtual async Task TestGetPriceAsync()
         {
             var p = IsType<IPublicPriceProvider>();
             if (p.Success)
@@ -43,11 +43,11 @@ namespace Prime.Tests.Providers
                 await GetAssetPricesAsync(p.Provider);
         }
 
-        public virtual async Task TestGetPairsPricesAsync()
+        public virtual async Task TestGetPricesAsync()
         {
             var p = IsType<IPublicPricesProvider>();
             if (p.Success)
-                await GetPairsPricesAsync(p.Provider);
+                await GetPricesAsync(p.Provider);
         }
 
         public virtual async Task TestGetAssetPairsAsync()
@@ -193,14 +193,13 @@ namespace Prime.Tests.Providers
             {
                 var c = await provider.GetAssetPricesAsync(PublicAssetPricesContext);
 
-                Assert.IsTrue(c != null);
-                Assert.IsTrue(c.FirstOrDefault()?.QuoteAsset?.Equals(PublicAssetPricesContext.QuoteAsset) == true);
+                Assert.IsNotNull(c);
                 Assert.IsTrue(c.Count == PublicAssetPricesContext.Assets.Count);
 
-                Trace.WriteLine($"Latest prices for {PublicAssetPricesContext.QuoteAsset}:");
-                foreach (var i in c)
+                foreach (var price in c)
                 {
-                    Trace.WriteLine(i.Price.Display);
+                    Assert.IsTrue(PublicAssetPricesContext.Assets.Contains(price.QuoteAsset), $"Provider did not return {price.QuoteAsset.ToPair(price.Price.Asset)}");
+                    Trace.WriteLine($"Latest price for {price.QuoteAsset}: {price.Price.Display}");
                 }
             }
             catch (Exception e)
@@ -249,7 +248,7 @@ namespace Prime.Tests.Providers
 
         protected PublicPricesContext PublicPricesContext { get; set; }
 
-        private async Task GetPairsPricesAsync(IPublicPricesProvider provider)
+        private async Task GetPricesAsync(IPublicPricesProvider provider)
         {
             if (PublicPricesContext == null)
             {
