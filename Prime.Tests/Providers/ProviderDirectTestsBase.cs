@@ -209,6 +209,8 @@ namespace Prime.Tests.Providers
             }
         }
 
+        protected AssetPairs RequiredAssetPairs { get; set; }
+
         private async Task GetAssetPairsAsync(IExchangeProvider provider)
         {
             var ctx = new NetworkProviderContext();
@@ -219,6 +221,14 @@ namespace Prime.Tests.Providers
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
+
+                if (RequiredAssetPairs != null)
+                {
+                    foreach (var assetPair in pairs)
+                    {
+                        Assert.IsTrue(RequiredAssetPairs.Contains(assetPair), $"Provider didn't return required {assetPair} pair.");
+                    }
+                }
 
                 Trace.WriteLine("Asset pairs:");
                 foreach (var pair in pairs)
