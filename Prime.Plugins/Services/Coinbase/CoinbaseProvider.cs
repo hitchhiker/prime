@@ -286,7 +286,7 @@ namespace Prime.Plugins.Services.Coinbase
             var currencyCode = context.Pair.TickerDash();
 
             var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
 
             var granularitySeconds = GetSeconds(context.Market);
             var maxNumberOfCandles = 200;

@@ -16,9 +16,25 @@ namespace Prime.Common
 
         private readonly CacheDictionary<IAssetPairsProvider, AssetPairs> _cache = new CacheDictionary<IAssetPairsProvider, AssetPairs>(TimeSpan.FromHours(12));
 
+        public IReadOnlyList<AssetPair> GetAllFromPrivate()
+        {
+            return AsyncContext.Run(() => GetAllFromPrivate());
+        }
+
+        public async Task<IReadOnlyList<AssetPair>> GetAllFromPrivateAsync()
+        {
+            var pairs = new UniqueList<AssetPair>();
+            foreach (var prov in Networks.I.AssetPairsProviders.WithApi())
+            {
+                var r = await GetPairsAsync(prov.Network);
+                pairs.AddRange(r);
+            }
+            return pairs;
+        }
+
         public IReadOnlyList<IAssetPairsProvider> GetProvidersFromPrivate(AssetPair pair)
         {
-           return AsyncContext.Run(() => AssetPairProvider.I.GetProvidersFromPrivateAsync(pair));
+           return AsyncContext.Run(() => GetProvidersFromPrivateAsync(pair));
         }
 
         public async Task<IReadOnlyList<IAssetPairsProvider>> GetProvidersFromPrivateAsync(AssetPair pair)

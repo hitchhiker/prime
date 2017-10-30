@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Binance
 
             var ohlc = new OhlcData(context.Market);
 
-            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
 
             foreach (var rEntry in r)
             {

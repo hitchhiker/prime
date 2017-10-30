@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.BitMex
             var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate);
 
             var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
 
             foreach (var instrActive in r)
             {

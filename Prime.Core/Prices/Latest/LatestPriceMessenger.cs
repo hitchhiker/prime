@@ -30,8 +30,10 @@ namespace Prime.Common.Exchange.Rates
         {
             var subs = entry.Subscriber;
             var nr = new LatestPriceRequest(message.Pair, message.Network);
+
             if (subs.Requests.Add(nr))
                 nr.Discover();
+
             Aggregator.SyncProviders();
         }
 

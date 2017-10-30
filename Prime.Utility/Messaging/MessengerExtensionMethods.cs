@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 
@@ -58,6 +59,27 @@ namespace Prime.Utility
         {
             messenger.Unregister(recipient);
             KeepAlive.RemoveAll(x => x.Item1 == recipient);
+        }
+
+        public static T WaitForMessageResponseHack<T>(this object requestMessage, Func<T, bool> messageCheck)
+        {
+            var m = DefaultMessenger.I.Default;
+            m.Send(requestMessage);
+            var r = default(T);
+            var obj = new object();
+
+            m.Register<T>(obj, msg =>
+            {
+                r = msg;
+            });
+
+            do
+            {
+                Thread.Sleep(1);
+            } while (Equals(r, default(T)) || messageCheck(r)==false);
+
+            m.Unregister(obj);
+            return r;
         }
     }
 }

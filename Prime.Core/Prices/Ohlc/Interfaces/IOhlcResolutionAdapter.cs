@@ -1,7 +1,7 @@
 ﻿using System;
 using LiteDB;
 
-namespace Prime.Common
+namespace Prime.Core
 {
     public interface IOhlcResolutionAdapter : IOhlcResolutionApi
     {

@@ -1,4 +1,4 @@
-﻿namespace Prime.Common
+﻿namespace Prime.Core
 {
     public class OhlcResolutionContext : OhlcResolutionAdapterContext
     {

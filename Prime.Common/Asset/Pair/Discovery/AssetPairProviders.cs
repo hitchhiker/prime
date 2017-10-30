@@ -4,19 +4,21 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class AssetPairKnownProviders
+    public class AssetPairProviders
     {
         public readonly AssetPair Pair;
         public readonly IReadOnlyList<IPublicPriceProvider> Providers;
-        public readonly bool IsReversed;
+        public readonly bool IsPairReversed;
 
-        public AssetPairKnownProviders(AssetPair pair, IReadOnlyList<IPublicPriceProvider> providers, bool isReversed = false)
+        public AssetPairProviders(AssetPair pair, IReadOnlyList<IPublicPriceProvider> providers, bool isPairReversed = false)
         {
             Pair = pair;
             Providers = providers.OrderByVolume(pair);
             Provider = providers.FirstProviderByVolume(pair);
-            IsReversed = isReversed;
+            IsPairReversed = isPairReversed;
         }
+
+        public AssetPair OriginalPair => IsPairReversed ? Pair.Reverse() : Pair;
 
         public IPublicPriceProvider Provider { get; set; }
 
@@ -24,6 +26,6 @@ namespace Prime.Common
 
         public bool IsIntermediary { get; set; }
 
-        public AssetPairKnownProviders Via { get; set; }
+        public AssetPairProviders Via { get; set; }
     }
 }

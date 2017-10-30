@@ -143,7 +143,7 @@ namespace Prime.Plugins.Services.CryptoCompare
                 return null;
 
             var r = new OhlcData(market);
-            var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
+            var seriesid = OhlcUtilities.GetHash(pair, market, Network);
             var from = apir.TimeFrom;
             var to = apir.TimeTo;
             foreach (var i in apir.Data.Where(x=>x.time >= from && x.time<=to))

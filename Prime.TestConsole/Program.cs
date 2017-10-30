@@ -3,6 +3,7 @@ using System.Linq;
 using Ipfs.Api;
 using Nito.AsyncEx;
 using Prime.Common;
+using Prime.Core;
 using Prime.Plugins.Services.BitMex;
 using Prime.Plugins.Services.Kraken;
 using AssetPair = Prime.Common.AssetPair;

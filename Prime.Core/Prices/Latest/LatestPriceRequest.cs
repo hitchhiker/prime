@@ -19,16 +19,13 @@ namespace Prime.Core
             Pair = pair;
         }
 
-        public void Discover()
-        {
-            new Task(Discovery).Start();
-        }
+        private volatile AssetPairDiscoveryRequestMessage _discoveryRequestRequest;
 
         public AssetPair PairRequestable { get; private set; }
 
         public bool IsVerified { get; private set; }
 
-        public AssetPairKnownProviders Providers { get; private set; }
+        public AssetPairProviders Providers { get; private set; }
 
         public LatestPriceRequest ConvertedOther { get; private set; }
 
@@ -44,21 +41,30 @@ namespace Prime.Core
 
         public LatestPriceResultMessage LastResult { get; set; }
 
-        private void Discovery()
+        public void Discover()
         {
-            var pc = new AssetPairDiscoveryContext { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
-            var d = new AssetPairDiscovery(pc);
-            var r = d.Discover();
-
-            if (r?.Provider == null)
+            if (_discoveryRequestRequest != null)
                 return;
 
+            _messenger.Register<AssetPairDiscoveryResultMessage>(this, AssetPairProviderResultMessage);
+            _discoveryRequestRequest = new AssetPairDiscoveryRequestMessage { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
+            _messenger.Send(_discoveryRequestRequest);
+        }
+
+        private void AssetPairProviderResultMessage(AssetPairDiscoveryResultMessage m)
+        {
+            if (_discoveryRequestRequest == null || !_discoveryRequestRequest.Equals(m.RequestRequestMessage))
+                return;
+
+            _messenger.Unregister<AssetPairDiscoveryResultMessage>(this);
+
+            var r = m.Providers;
             ProcessDiscoveryResponse(r);
         }
 
-        private void ProcessDiscoveryResponse(AssetPairKnownProviders r, bool isPart2 = false)
+        private void ProcessDiscoveryResponse(AssetPairProviders r, bool isPart2 = false)
         {
-            PairRequestable = r.IsReversed ? r.Pair.Reverse() : r.Pair;
+            PairRequestable = r.OriginalPair;
             IsConvertedPart1 = !isPart2 && r.Via != null;
             Providers = r;
             Network = r.Provider.Network;
@@ -70,7 +76,7 @@ namespace Prime.Core
             _messenger.Send(new InternalLatestPriceRequestVerifiedMessage(this));
         }
 
-        private void ProcessConvertedPart2(AssetPairKnownProviders provs)
+        private void ProcessConvertedPart2(AssetPairProviders provs)
         {
             var request = new LatestPriceRequest(Pair, provs.Provider.Network)
             {

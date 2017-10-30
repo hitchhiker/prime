@@ -12,6 +12,7 @@ using LiveCharts.Definitions.Series;
 using LiveCharts.Wpf;
 using NodaTime;
 using Prime.Common;
+using Prime.Core;
 using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
