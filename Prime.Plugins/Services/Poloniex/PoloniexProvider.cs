@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider
+    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -76,6 +76,38 @@ namespace Prime.Plugins.Services.Poloniex
             };
 
             return price;
+        }
+
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickerAsync();
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var rTickers = r.Where(x => x.Key.ToAssetPair(this).Equals(pair)).ToList();
+
+                if(rTickers.Count == 0)
+                    throw new ApiResponseException($"Asset pair {pair} is not supported by this API", this);
+
+                var rTicker = rTickers[0];
+
+                prices.Add(new LatestPrice()
+                {
+                    UtcCreated = DateTime.UtcNow,
+                    Price = new Money(1 / rTicker.Value.last, pair.Asset2),
+                    QuoteAsset = pair.Asset1
+                });
+            }
+
+            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)
