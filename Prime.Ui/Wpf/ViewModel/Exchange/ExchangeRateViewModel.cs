@@ -26,7 +26,7 @@ namespace Prime.Ui.Wpf.ViewModel
             _assetRight = UserContext.Current.QuoteAsset;
 
             _debouncer = new DebouncerDispatched(UiDispatcher);
-            
+
             /*foreach (var i in UserContext.Current.UserSettings.FavouritePairs)
                 _requests.Add(_coord.AddRequest(this, i));
 
@@ -113,14 +113,13 @@ namespace Prime.Ui.Wpf.ViewModel
             get => _assetLeft;
             set => Set(ref _assetLeft, value);
         }
-
+        
         private Asset _assetRight;
         public Asset AssetRight
         {
             get => _assetRight;
             set => Set(ref _assetRight, value);
         }
-
 
         private ExchangeRateResultViewModel _resultViewModel = new ExchangeRateResultViewModel();
         public ExchangeRateResultViewModel ResultViewModel
