@@ -3,15 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewModel:AssetSelectorControlViewModel}" Style="{StaticResource {x:Type ComboBox}}"
+             Style="{StaticResource {x:Type ComboBox}}"
           Width="200" Height="25" 
           IsEditable="True" 
           IsSynchronizedWithCurrentItem="False" 
           IsTextSearchEnabled="True" 
-          TextSearch.TextPath="Asset" 
-          ItemsSource="{Binding ListComboSections}">
+          TextSearch.TextPath="Asset">
     <ComboBox.GroupStyle>
         <GroupStyle>
             <GroupStyle.HeaderTemplate>
