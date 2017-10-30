@@ -80,7 +80,8 @@
                     <DataGrid Width="Auto" Margin="0,0,0,20" ItemsSource="{Binding NetworkList, Mode=OneWay, NotifyOnSourceUpdated=True}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CellStyle="{DynamicResource Padding4Left}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Network" Binding="{Binding Network}" CanUserSort="False" CanUserResize="False"/>
-                            <DataGridTextColumn Header="Exposure" Binding="{Binding Percentage}" CanUserSort="False" CanUserResize="False"/>
+                            <DataGridTextColumn Header="Exposure" Binding="{Binding Percentage, StringFormat={}{0}%}" CanUserSort="False" CanUserResize="False"/>
+                            <DataGridTextColumn Header="Total" Binding="{Binding ConvertedTotal.Display}" CanUserSort="False" CanUserResize="False"/>
                             <DataGridTextColumn Binding="{Binding ConnectReport}" CanUserSort="False" CanUserResize="False"/>
                             <DataGridTextColumn Binding="{Binding StateReport}" CanUserSort="False" CanUserResize="False"/>
                             <DataGridTemplateColumn CanUserSort="False" CanUserResize="False">
@@ -90,7 +91,6 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Binding="{Binding ConvertedTotal.Display}" CanUserSort="False" CanUserResize="False"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>

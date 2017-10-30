@@ -25,6 +25,12 @@ namespace Prime.Utility
                 InternalAdd(i);
         }
         
+        /// <summary>
+        /// Returns true if new item added
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="readd"></param>
+        /// <returns></returns>
         public virtual bool Add(T item, bool readd = false)
         {
             return InternalAdd(item, readd);

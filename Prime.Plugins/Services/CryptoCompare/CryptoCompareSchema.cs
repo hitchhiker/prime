@@ -47,11 +47,11 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         internal class CoinSnapshotDataBlock
         {
-            public string TYPE;
+            public int TYPE;
             public string MARKET;
             public string FROMSYMBOL;
             public string TOSYMBOL;
-            public string FLAGS;
+            public int FLAGS;
             public string PRICE;
             public string LASTUPDATE;
             public string LASTVOLUME;

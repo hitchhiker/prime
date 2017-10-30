@@ -14,9 +14,9 @@ namespace Prime.Common
         [Bson]
         public Network Network { get; private set; }
         [Bson]
-        public string Type { get; set; }
+        public int Type { get; set; }
         [Bson]
-        public string Flags { get; set; }
+        public int Flags { get; set; }
         [Bson]
         public double Price { get; set; }
         [Bson]

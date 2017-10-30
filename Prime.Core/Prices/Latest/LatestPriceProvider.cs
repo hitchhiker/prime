@@ -123,7 +123,7 @@ namespace Prime.Core
                     return false;
 
                 hasresult = true;
-                AddResult(pair, r.Response);
+                SendResult(pair, r.Response);
             }
             return hasresult;
         }
@@ -150,22 +150,22 @@ namespace Prime.Core
             return hasresult;
         }*/
 
-        private void AddResult(AssetPair pair, LatestPrice response)
+        private void SendResult(AssetPair pair, LatestPrice response)
         {
             var requests = _verifiedRequests.Where(x => x.PairRequestable.Equals(pair));
 
             foreach (var request in requests)
-                Collect(response, request);
+                SendResult(response, request);
         }
 
-        private void Collect(LatestPrice response, LatestPriceRequest request)
+        private void SendResult(LatestPrice price, LatestPriceRequest request)
         {
-            var collected = request.LastResult = new LatestPriceResultMessage(_provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsPairReversed);
+            var resultMsg = request.LastResult = new LatestPriceResultMessage(_provider, request.IsConverted ? request.PairRequestable : request.Pair, price, request.Providers.IsPairReversed);
 
-            _messenger.Send(collected);
+            _messenger.Send(resultMsg);
 
             if (request.IsConverted)
-                SendConverted(request, collected, request.ConvertedOther?.LastResult);
+                SendConverted(request, resultMsg, request.ConvertedOther?.LastResult);
         }
 
         private void SendConverted(LatestPriceRequest request, LatestPriceResultMessage recent, LatestPriceResultMessage other)

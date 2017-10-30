@@ -24,7 +24,7 @@ namespace Prime.Common.Exchange.Rates
             UtcCreated = latestPrice.UtcCreated;
             Provider = provider;
             Pair = pair;
-            Price = isReversed ? new Money(1d / latestPrice.Price, pair.Asset1) : latestPrice.Price;
+            Price = isReversed ? new Money(1d / latestPrice.Price, latestPrice.QuoteAsset) : latestPrice.Price;
         }
 
         public LatestPriceResultMessage(AssetPair pair, bool isPart1, LatestPriceResultMessage recent, LatestPriceResultMessage other)
@@ -39,7 +39,7 @@ namespace Prime.Common.Exchange.Rates
             Price = new Money(p1.Price * p2.Price, Pair.Asset2);
             PriceConvert1 = p1.Price;
             PriceConvert2 = p2.Price;
-            AssetConvert = p1.Pair.Asset2;
+            AssetConvert = p1.AssetConvert;
         }
 
         public bool IsMatch(LatestPriceResultMessage request)

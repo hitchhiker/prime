@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Prices\Exchange\**" />
+    <EmbeddedResource Remove="Prices\Exchange\**" />
+    <None Remove="Prices\Exchange\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MvvmLightLibs" Version="5.3.0" />
   </ItemGroup>
 
