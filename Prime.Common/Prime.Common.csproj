@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Prices\ExchangeRate\**" />
     <Compile Remove="System\Events\**" />
+    <EmbeddedResource Remove="Prices\ExchangeRate\**" />
     <EmbeddedResource Remove="System\Events\**" />
+    <None Remove="Prices\ExchangeRate\**" />
     <None Remove="System\Events\**" />
   </ItemGroup>
 

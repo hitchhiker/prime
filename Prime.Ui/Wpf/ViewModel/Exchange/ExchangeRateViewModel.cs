@@ -52,8 +52,13 @@ namespace Prime.Ui.Wpf.ViewModel
                 var e = ExchangeRates.FirstOrDefault(x => x.IsMatch(result));
                 if (e != null)
                     ExchangeRates.Remove(e);
-
                 ExchangeRates.Add(result);
+
+                var exrs = ExchangeRates.OrderBy(x => x.Pair.ToString()).ToList();
+                ExchangeRates.Clear();
+
+                foreach (var er in exrs)
+                    ExchangeRates.Add(er);
 
                 if (AssetLeft.IsNone() || AssetRight.IsNone() || ConvertLeft == 0)
                     return;

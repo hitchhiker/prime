@@ -64,7 +64,7 @@ namespace Prime.Core
 
         private void ProcessDiscoveryResponse(AssetPairProviders r, bool isPart2 = false)
         {
-            PairRequestable = r.OriginalPair;
+            PairRequestable = r.Pair;
             IsConvertedPart1 = !isPart2 && r.Via != null;
             Providers = r;
             Network = r.Provider.Network;

@@ -43,7 +43,7 @@ namespace plugins
             foreach (var v in apir.Data.Exchanges)
             {
                 var nd = Convert(v);
-                if (nd.Network == null)
+                if (nd.Network == null || nd.Flags == 4)
                     continue;
                 assetData.Exchanges.Add(nd);
             }

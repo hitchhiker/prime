@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
     <PackageReference Include="MvvmLightLibs" Version="5.3.0" />
     <PackageReference Include="Nito.AsyncEx" Version="4.0.1" />
   </ItemGroup>

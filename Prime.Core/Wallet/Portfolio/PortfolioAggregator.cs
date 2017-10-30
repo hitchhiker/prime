@@ -241,7 +241,7 @@ namespace Prime.Common.Wallet
                     var r = t == 0 ? 0 : 100 / t;
 
                     foreach (var n in _infoItems)
-                        n.Percentage = n.ConvertedTotal.Value.ToDecimalValue() * r;
+                        n.Percentage = Math.Round(n.ConvertedTotal.Value.ToDecimalValue() * r, 2);
                 }
             }
         }
