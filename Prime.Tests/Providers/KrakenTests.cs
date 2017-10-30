@@ -29,18 +29,11 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
-        {
-            await base.TestGetAssetPricesAsync();
-        }
-
-        [TestMethod]
         public override async Task TestGetAddressesAsync()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
             await base.TestGetAddressesAsync();
         }
-
 
         [TestMethod]
         public override async Task TestGetAddressesForAssetAsync()
