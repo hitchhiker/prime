@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.BitStamp
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetTicker(context.Pair.TickerSimple());
+            var r = await api.GetTicker(context.Pair.TickerSimple().ToLower());
 
             var latestPrice = new LatestPrice()
             {

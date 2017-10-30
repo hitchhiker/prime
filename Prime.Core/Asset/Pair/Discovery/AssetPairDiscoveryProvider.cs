@@ -140,12 +140,12 @@ namespace Prime.Core
 
         private static List<IPublicPriceProvider> GetProviders(AssetPair pair)
         {
-            var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
+            return AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IPublicPriceProvider>().ToList();
+
+            /*var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
             var provs = apd.Exchanges.Count == 0 ? new List<IPublicPriceProvider>() : apd.AllProviders.OfType<IPublicPriceProvider>().DistinctBy(x => x.Id).ToList();
             if (provs.Any())
-                return provs;
-
-            return AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IPublicPriceProvider>().ToList();
+                return provs;*/
         }
     }
 }
