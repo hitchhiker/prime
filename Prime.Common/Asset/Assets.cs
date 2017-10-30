@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Prime.Utility;
+using System.Linq;
 
 namespace Prime.Common
 {
@@ -55,6 +57,12 @@ namespace Prime.Common
         public IReadOnlyList<Asset> Cached()
         {
             return _cache.Values.ToUniqueList();
+        }
+
+        public async Task<UniqueList<Asset>> GetAllPrivateAsync()
+        {
+            var r = await AssetPairProvider.I.GetAllFromPrivateAsync();
+            return r.Select(x => x.Asset1).Union(r.Select(x => x.Asset2)).ToUniqueList();
         }
     }
 }

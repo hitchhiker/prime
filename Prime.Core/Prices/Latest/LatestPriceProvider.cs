@@ -160,7 +160,7 @@ namespace Prime.Core
 
         private void Collect(LatestPrice response, LatestPriceRequest request)
         {
-            var collected = request.LastResult = new LatestPriceResultMessage(_provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsReversed);
+            var collected = request.LastResult = new LatestPriceResultMessage(_provider, request.IsConverted ? request.PairRequestable : request.Pair, response, request.Providers.IsPairReversed);
 
             _messenger.Send(collected);
 

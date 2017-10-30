@@ -1,4 +1,6 @@
-﻿namespace Prime.Common
+﻿using Prime.Common;
+
+namespace Prime.Core
 {
     public interface IOhlcResolutionAdapterStorage : IOhlcResolutionAdapter
     {

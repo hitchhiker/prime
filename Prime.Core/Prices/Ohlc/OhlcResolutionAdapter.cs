@@ -6,8 +6,9 @@ using LiteDB;
 using Prime.Utility;
 using System.Linq;
 using System.Threading;
+using Prime.Common;
 
-namespace Prime.Common
+namespace Prime.Core
 {
     public class OhlcResolutionAdapter
     {
@@ -24,7 +25,7 @@ namespace Prime.Common
 
             context.Network = context.Network ?? context.PrimaryApiProvider?.Network;
 
-            SeriesId = GetHash(context.Pair, context.TimeResolution, context.Network);
+            SeriesId = OhlcUtilities.GetHash(context.Pair, context.TimeResolution, context.Network);
 
             if (StorageEnabled)
             {
@@ -66,14 +67,9 @@ namespace Prime.Common
 
         public IReadOnlyList<IOhlcResolutionApi> ApiAdapters => _apiAdapters.OrderBy(x => x.Key).Select(x => x.Value).ToList();
 
-        public static ObjectId GetHash(AssetPair pair, TimeResolution market, Network network)
-        {
-            return $"prime:{pair.Asset1.ShortCode}:{pair.Asset2.ShortCode}:{(int)market}:{network.Id}".GetObjectIdHashCode(true, true);
-        }
-
         public ObjectId GetHash(Network network)
         {
-            return GetHash(Pair, TimeResolution, network);
+            return OhlcUtilities.GetHash(Pair, TimeResolution, network);
         }
 
         public OhlcData Request(TimeRange timeRange, bool allowLive = false)

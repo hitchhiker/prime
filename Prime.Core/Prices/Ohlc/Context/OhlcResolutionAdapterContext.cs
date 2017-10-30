@@ -1,9 +1,11 @@
+using Prime.Common;
+using Prime.Utility;
 using System;
 using System.Linq;
 
-namespace Prime.Common
+namespace Prime.Core
 {
-    public class OhlcResolutionAdapterContext : AssetPairDiscoveryContext
+    public class OhlcResolutionAdapterContext : AssetPairDiscoveryRequestMessage
     {
         public OhlcResolutionAdapterContext() { }
 
@@ -37,7 +39,7 @@ namespace Prime.Common
 
         public bool CanDiscoverApiProviders { get; set; } = true;
 
-        public Func<AssetPairKnownProviders> ApiDiscoveryFunction { get; set; }
+        public Func<AssetPairProviders> ApiDiscoveryFunction { get; set; }
 
         public TimeResolution TimeResolution { get; set; }
 
@@ -49,9 +51,9 @@ namespace Prime.Common
 
         public IOhlcProvider CurrencyConversionApiProvider { get; set; }
 
-        public AssetPairKnownProviders ProvidersForDirect { get; set; }
+        public AssetPairProviders ProvidersForDirect { get; set; }
 
-        public AssetPairKnownProviders ProvidersForConversion { get; set; }
+        public AssetPairProviders ProvidersForConversion { get; set; }
 
         public bool IsDataConverted { get; private set; }
 
@@ -70,7 +72,7 @@ namespace Prime.Common
 
         public void DiscoverAndApplyApiProviders(bool overwrite = false)
         {
-            var provs = ApiDiscoveryFunction?.Invoke() ?? new AssetPairDiscovery(this).Discover();
+            var provs = ApiDiscoveryFunction?.Invoke() ?? this.WaitForMessageResponseHack<AssetPairDiscoveryResultMessage>(m => Equals(m.RequestRequestMessage, this)).Providers;
 
             ProvidersForDirect = provs;
             ProvidersForConversion = provs.Via;
@@ -93,7 +95,7 @@ namespace Prime.Common
                 throw new Exception("Cannot locate an api " + nameof(IOhlcProvider) + " for " + Pair);
         }
 
-        private void DoIntermediary(AssetPairKnownProviders providers)
+        private void DoIntermediary(AssetPairProviders providers)
         {
             if (providers.IsPegged)
                 AssetPegged = providers.Pair.Asset2;

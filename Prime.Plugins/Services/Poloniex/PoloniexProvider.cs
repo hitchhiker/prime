@@ -235,7 +235,7 @@ namespace Prime.Plugins.Services.Poloniex
             var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period);
 
             var ohlc = new OhlcData(market);
-            var seriesid = OhlcResolutionAdapter.GetHash(pair, market, Network);
+            var seriesid = OhlcUtilities.GetHash(pair, market, Network);
 
             foreach (var ohlcEntry in r)
             {

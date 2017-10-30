@@ -289,7 +289,7 @@ namespace Prime.Plugins.Services.Kraken
             CheckResponseErrors(r);
 
             var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcResolutionAdapter.GetHash(context.Pair, context.Market, Network);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
 
             if (r.result.pairs.Count != 0)
             {

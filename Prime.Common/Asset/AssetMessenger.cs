@@ -21,9 +21,10 @@ namespace Prime.Common
             _messenger.RegisterAsync<AssetNetworkRequestMessage>(this, AssetNetworkRequestMessage);
         }
 
-        private void AllRequestMessage(AssetAllRequestMessage m)
+        private async void AllRequestMessage(AssetAllRequestMessage m)
         {
-            var currentAsssets = Assets.I.Cached().Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
+            var assets = await Assets.I.GetAllPrivateAsync();
+            var currentAsssets = assets.Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
             _messenger.SendAsync(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
         }
 

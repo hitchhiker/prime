@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using LiteDB;
+using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Common
+namespace Prime.Core
 {
     public class OhlcResolutionDataAdapterApi : IOhlcResolutionApi
     {
@@ -95,7 +96,7 @@ namespace Prime.Common
                 Network = Ctx.PrimaryApiProvider.Network
             };
 
-            var seriesid = OhlcResolutionAdapter.GetHash(Ctx.Pair, range.TimeResolution, ohcldata.Network);
+            var seriesid = OhlcUtilities.GetHash(Ctx.Pair, range.TimeResolution, ohcldata.Network);
 
             foreach (var i in d1)
             {
@@ -103,7 +104,7 @@ namespace Prime.Common
                 if (i2 == null)
                     return null;
 
-                ohcldata.Add(new OhlcEntry(seriesid, i.DateTimeUtc, Ctx)
+                ohcldata.Add(new OhlcEntry(seriesid, i.DateTimeUtc, Ctx.PrimaryApiProvider, Ctx.CurrencyConversionApiProvider, Ctx.AssetIntermediary)
                 {
                     Open = i.Open * i2.Open,
                     Close = i.Close * i2.Close,

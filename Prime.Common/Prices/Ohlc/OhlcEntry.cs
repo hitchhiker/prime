@@ -18,10 +18,10 @@ namespace Prime.Common
             Id = (SeriesId + ":" + utcDateTime).GetObjectIdHashCode();
         }
 
-        public OhlcEntry(ObjectId seriesId, DateTime utcDateTime, OhlcResolutionAdapterContext context) : this(seriesId, utcDateTime, context.PrimaryApiProvider)
+        public OhlcEntry(ObjectId seriesId, DateTime utcDateTime, IOhlcProvider primary, IOhlcProvider conversionProvider, Asset intermediary) : this(seriesId, utcDateTime, primary)
         {
-            ConvertedProvider = context.CurrencyConversionApiProvider;
-            ConvertedVia = context.AssetIntermediary;
+            ConvertedProvider = conversionProvider;
+            ConvertedVia = intermediary;
         }
 
         public void SetGap(DateTime newDateTimeUtc)

@@ -2,3 +2,4 @@
 using Prime.Utility;
 [assembly: IncludeInTypeCatalogue]
 [assembly: InternalsVisibleTo("Prime.TestConsole")]
+[assembly: InternalsVisibleTo("Prime.Tests")]
