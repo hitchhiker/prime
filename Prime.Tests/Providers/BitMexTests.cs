@@ -28,9 +28,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPairPriceAsync()
+        public override async Task TestGetPriceAsync()
         {
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
         }
 
         [TestMethod]
@@ -38,24 +38,35 @@ namespace Prime.Tests.Providers
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
-                "USD".ToAssetRaw()
+                "LTC".ToAssetRaw(),
+                "ETH".ToAssetRaw(),
+                "FCT".ToAssetRaw()
             }, Asset.Btc);
             await base.TestGetAssetPricesAsync();
         }
 
         [TestMethod]
-        public override async Task TestGetPairsPricesAsync()
+        public override async Task TestGetPricesAsync()
         {
             PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
             {
-                "BTC_USD".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw(),
+                "DAO_ETH".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "FCT_BTC".ToAssetPairRaw()
             });
-            await base.TestGetPairsPricesAsync();
+            await base.TestGetPricesAsync();
         }
 
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
+            RequiredAssetPairs = new AssetPairs()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+            };
+
             await base.TestGetAssetPairsAsync();
         }
 

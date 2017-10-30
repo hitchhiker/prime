@@ -29,7 +29,7 @@ namespace Prime.Tests.Providers
                 await GetOhlcAsync(p.Provider);
         }
 
-        public virtual async Task TestGetPairPriceAsync()
+        public virtual async Task TestGetPriceAsync()
         {
             var p = IsType<IPublicPriceProvider>();
             if (p.Success)
@@ -43,11 +43,11 @@ namespace Prime.Tests.Providers
                 await GetAssetPricesAsync(p.Provider);
         }
 
-        public virtual async Task TestGetPairsPricesAsync()
+        public virtual async Task TestGetPricesAsync()
         {
             var p = IsType<IPublicPricesProvider>();
             if (p.Success)
-                await GetPairsPricesAsync(p.Provider);
+                await GetPricesAsync(p.Provider);
         }
 
         public virtual async Task TestGetAssetPairsAsync()
@@ -193,14 +193,23 @@ namespace Prime.Tests.Providers
             {
                 var c = await provider.GetAssetPricesAsync(PublicAssetPricesContext);
 
-                Assert.IsTrue(c != null);
-                Assert.IsTrue(c.FirstOrDefault()?.QuoteAsset?.Equals(PublicAssetPricesContext.QuoteAsset) == true);
+                Assert.IsNotNull(c);
                 Assert.IsTrue(c.Count == PublicAssetPricesContext.Assets.Count);
 
-                Trace.WriteLine($"Latest prices for {PublicAssetPricesContext.QuoteAsset}:");
-                foreach (var i in c)
+                foreach (var requiredAsset in PublicAssetPricesContext.Assets)
                 {
-                    Trace.WriteLine(i.Price.Display);
+                    Assert.IsTrue(
+                        c.Exists(
+                            x => x.QuoteAsset.Equals(requiredAsset) &&
+                                 x.Price.Asset.Equals(PublicAssetPricesContext.QuoteAsset)
+                        ),
+                        $"Provider did not return {requiredAsset.ToPair(PublicAssetPricesContext.QuoteAsset)} price"
+                    );
+                }
+
+                foreach (var price in c)
+                {
+                    Trace.WriteLine($"Latest price for {price.QuoteAsset}: {price.Price.Display}");
                 }
             }
             catch (Exception e)
@@ -208,6 +217,8 @@ namespace Prime.Tests.Providers
                 Assert.Fail(e.Message);
             }
         }
+
+        protected AssetPairs RequiredAssetPairs { get; set; }
 
         private async Task GetAssetPairsAsync(IExchangeProvider provider)
         {
@@ -220,10 +231,23 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
 
-                Trace.WriteLine("Asset pairs:");
+                if (RequiredAssetPairs != null)
+                {
+                    Trace.WriteLine("Checked pairs:");
+                    foreach (var requiredPair in RequiredAssetPairs)
+                    {
+                        var contains = pairs.Contains(requiredPair);
+                        Assert.IsTrue(contains, $"Provider didn't return required {requiredPair} pair.");
+
+                        if (contains)
+                            Trace.WriteLine(requiredPair);
+                    }
+                }
+
+                Trace.WriteLine("\nRemote pairs from exchange:");
                 foreach (var pair in pairs)
                 {
-                    Trace.WriteLine($"{pair.Asset1}-{pair.Asset2}");
+                    Trace.WriteLine(pair);
                 }
             }
             catch (Exception e)
@@ -234,7 +258,7 @@ namespace Prime.Tests.Providers
 
         protected PublicPricesContext PublicPricesContext { get; set; }
 
-        private async Task GetPairsPricesAsync(IPublicPricesProvider provider)
+        private async Task GetPricesAsync(IPublicPricesProvider provider)
         {
             if (PublicPricesContext == null)
             {
@@ -251,6 +275,11 @@ namespace Prime.Tests.Providers
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
+
+                foreach (var requiredPair in PublicPricesContext.Pairs)
+                {
+                    Assert.IsTrue(pairs.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset1)), $"Provider did not return {requiredPair} price");
+                }
 
                 Trace.WriteLine("Latest prices:");
                 foreach (var pair in pairs)

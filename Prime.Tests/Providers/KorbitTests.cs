@@ -20,15 +20,23 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
+            RequiredAssetPairs = new AssetPairs()
+            {
+                "BTC_KRW".ToAssetPairRaw(),
+                "ETC_KRW".ToAssetPairRaw(),
+                "ETH_KRW".ToAssetPairRaw(),
+                "XRP_KRW".ToAssetPairRaw(),
+            };
+
             await base.TestGetAssetPairsAsync();
         }
 
         [TestMethod]
-        public override async Task TestGetPairPriceAsync()
+        public override async Task TestGetPriceAsync()
         {
             PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "KRW"));
 
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
         }
 
         [TestMethod]
@@ -39,16 +47,6 @@ namespace Prime.Tests.Providers
 
             OrderBookContext = new OrderBookContext(new AssetPair("BTC", "KRW"));
             await base.TestGetOrderBookAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
-        {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "KRW".ToAssetRaw()
-            }, "BTC".ToAssetRaw());
-            await base.TestGetAssetPricesAsync();
         }
     }
 }

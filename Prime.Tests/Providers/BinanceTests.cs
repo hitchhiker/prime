@@ -20,17 +20,27 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
+            RequiredAssetPairs = new AssetPairs()
+            {
+                "NEO_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "NEO_ETH".ToAssetPairRaw(),
+                "IOTA_BTC".ToAssetPairRaw(),
+                "ETC_BTC".ToAssetPairRaw()
+            };
+
             await base.TestGetAssetPairsAsync();
         }
 
         [TestMethod]
-        public override async Task TestGetPairPriceAsync()
+        public override async Task TestGetPriceAsync()
         {
             PublicPriceContext = new PublicPriceContext(new AssetPair("ETH", "BTC"));
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
 
             PublicPriceContext = new PublicPriceContext(new AssetPair("STRAT", "ETH"));
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
         }
 
         [TestMethod]
@@ -38,23 +48,15 @@ namespace Prime.Tests.Providers
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
-                "ETH".ToAssetRaw(),
-                "BTC".ToAssetRaw()
-            }, "BNT".ToAssetRaw());
-
-            await base.TestGetAssetPricesAsync();
-
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "ETH".ToAssetRaw(),
-                "BTC".ToAssetRaw()
-            }, "SALT".ToAssetRaw());
+                "BNT".ToAssetRaw(),
+                "ETC".ToAssetRaw()
+            }, "BTC".ToAssetRaw());
 
             await base.TestGetAssetPricesAsync();
         }
 
         [TestMethod]
-        public override async Task TestGetPairsPricesAsync()
+        public override async Task TestGetPricesAsync()
         {
             PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
             {
@@ -64,7 +66,7 @@ namespace Prime.Tests.Providers
                 "SALT_BTC".ToAssetPairRaw()
             });
 
-            await base.TestGetPairsPricesAsync();
+            await base.TestGetPricesAsync();
         }
 
         [TestMethod]

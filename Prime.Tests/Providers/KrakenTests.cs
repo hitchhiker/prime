@@ -23,9 +23,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPairPriceAsync()
+        public override async Task TestGetPriceAsync()
         {
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
         }
 
         [TestMethod]
@@ -59,6 +59,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
+            RequiredAssetPairs = new AssetPairs()
+            {
+                "ETC_ETH".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "XRP_BTC".ToAssetPairRaw(),
+            };
+
             await base.TestGetAssetPairsAsync();
         }
 

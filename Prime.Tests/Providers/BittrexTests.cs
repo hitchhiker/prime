@@ -40,6 +40,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
+            RequiredAssetPairs = new AssetPairs()
+            {
+                "BTC_LTC".ToAssetPairRaw(),
+                "BTC_XRP".ToAssetPairRaw(),
+                "BTC_ETH".ToAssetPairRaw(),
+                "BTC_ETC".ToAssetPairRaw(),
+            };
+
             await base.TestGetAssetPairsAsync();
         }
 
@@ -50,14 +58,14 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPairPriceAsync()
+        public override async Task TestGetPriceAsync()
         {
             PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "LTC"));
-            await base.TestGetPairPriceAsync();
+            await base.TestGetPriceAsync();
         }
 
         [TestMethod]
-        public override async Task TestGetPairsPricesAsync()
+        public override async Task TestGetPricesAsync()
         {
             PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
             {
@@ -65,7 +73,19 @@ namespace Prime.Tests.Providers
                 "BTC_XRP".ToAssetPairRaw()
             });
 
-            await base.TestGetPairsPricesAsync();
+            await base.TestGetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPricesAsync()
+        {
+            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            {
+                "ETH".ToAssetRaw(),
+                "BTC".ToAssetRaw()
+            }, "WINGS".ToAssetRaw());
+
+            await base.TestGetAssetPricesAsync();
         }
 
         [TestMethod]
@@ -76,17 +96,6 @@ namespace Prime.Tests.Providers
 
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
-        {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "LTC".ToAssetRaw(),
-                "XRP".ToAssetRaw()
-            }, Asset.Btc);
-            await base.TestGetAssetPricesAsync();
         }
     }
 }

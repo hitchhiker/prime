@@ -20,10 +20,16 @@ namespace Prime.Common
         [Bson]
         public DateTime UtcCreated { get; set; }
 
+        [Obsolete("Maybe should be called BaseAsset")]
         [Bson]
-        public Asset QuoteAsset { get; set; }
+        public Asset QuoteAsset { get; set; } // BUG: rename to base asset?
 
         [Bson]
         public Money Price { get; set; }
+
+        public override string ToString()
+        {
+            return $"{QuoteAsset}: {Price.Display}";
+        }
     }
 }

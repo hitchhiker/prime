@@ -10,7 +10,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider
+    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider, IPublicPricesProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -117,6 +117,38 @@ namespace Prime.Plugins.Services.Binance
             };
 
             return latestPrice;
+        }
+
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetSymbolPriceTicker();
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var lowerPairTicker = pair.TickerSimple().ToLower();
+
+                var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
+
+                if (lpr == null)
+                    throw new ApiResponseException("Specified currency pair is not supported by provider", this);
+
+                prices.Add(new LatestPrice()
+                {
+                    Price = new Money(lpr.price, pair.Asset2),
+                    QuoteAsset = pair.Asset1,
+                    UtcCreated = DateTime.UtcNow
+                });
+            }
+
+            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)

@@ -431,6 +431,7 @@
     <Compile Include="Components\ViewModelLocator.cs" />
     <Compile Include="Components\LeftMarginMultiplierConverter.cs" />
     <Compile Include="Themes\TreeViewItemExtensions.cs" />
+    <Compile Include="ViewModel\AssetSelectorControlViewModel.cs" />
     <Compile Include="ViewModel\CoinsViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangeRateResultViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangesViewModel.cs" />
@@ -464,6 +465,9 @@
     <Compile Include="ViewModel\WatchlistViewModel.cs" />
     <Compile Include="View\AfkMonitor.xaml.cs">
       <DependentUpon>AfkMonitor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Asset\AssetSelectorControl.xaml.cs">
+      <DependentUpon>AssetSelectorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Exchange\ExchangeRateResult.cs">
       <DependentUpon>ExchangeRateResult.xaml</DependentUpon>
@@ -613,6 +617,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\AfkMonitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Asset\AssetSelectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -899,7 +907,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messages\" />
-    <Folder Include="View\Asset\" />
     <Folder Include="Window\Test\" />
   </ItemGroup>
   <ItemGroup>

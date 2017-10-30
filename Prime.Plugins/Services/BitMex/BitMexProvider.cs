@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider
+    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -117,6 +117,44 @@ namespace Prime.Plugins.Services.BitMex
 
             return latestPrice;
         }
+
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetLatestPricesAsync();
+
+            if (r == null || r.Count < 1)
+                throw new ApiResponseException("No prices data found", this);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var pairCode = GetBitMexTicker(pair);
+
+                var data = r.FirstOrDefault(x =>
+                    x.symbol.Equals(pairCode)
+                );
+
+                if (data == null || data.lastPrice.HasValue == false)
+                    throw new ApiResponseException("No price returned for selected currency", this);
+
+                prices.Add(new LatestPrice()
+                {
+                    UtcCreated = DateTime.UtcNow,
+                    Price = new Money(data.lastPrice.Value, pair.Asset2),
+                    QuoteAsset = pair.Asset1
+                });
+            }
+
+            return prices;
+        }
+
 
         public BuyResult Buy(BuyContext ctx)
         {

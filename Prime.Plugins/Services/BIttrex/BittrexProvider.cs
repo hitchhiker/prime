@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPriceProvider
+    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPricesProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -63,10 +63,43 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            var convertedPrice = 1 / r.result.Last;
-
-            return new LatestPrice(new Money(convertedPrice, context.Pair.Asset2), context.QuoteAsset);
+            return new LatestPrice(new Money(1 / r.result.Last, context.Pair.Asset2), context.Pair.Asset1);
         }
+
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetMarketSummaries();
+
+            CheckResponseErrors(r);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var pairCode = pair.TickerDash();
+
+                var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
+
+                if(ms == null)
+                    throw new ApiResponseException("No price returned for selected currency", this);
+
+                prices.Add(new LatestPrice()
+                {
+                    UtcCreated = DateTime.UtcNow,
+                    Price = new Money(1 / ms.Last, pair.Asset2),
+                    QuoteAsset = pair.Asset1
+                });
+            }
+
+            return prices;
+        }
+
 
         public bool DoesMultiplePairs => false;
 

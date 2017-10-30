@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider
+    public class HitBtcProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -27,7 +27,6 @@ namespace Prime.Plugins.Services.HitBtc
         public string AggregatorName { get; } = null;
         public string Title => Network.Name;
         public IRateLimiter RateLimiter => Limiter;
-
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => false;
@@ -51,7 +50,44 @@ namespace Prime.Plugins.Services.HitBtc
 
             return latestPrice;
         }
-        
+
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAllTickers();
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var pairCode = pair.TickerSimple();
+
+                var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
+
+                if (!tickers.Any())
+                    throw new ApiResponseException(String.Format(ErrorTextExchangeDoesNotSupportPair, pair.TickerDash()), this);
+
+                var ticker = tickers.First();
+
+                CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
+
+                prices.Add(new LatestPrice()
+                {
+                    UtcCreated = DateTime.UtcNow,
+                    QuoteAsset = pair.Asset1,
+                    Price = new Money(ticker.Value.last.Value, pair.Asset2)
+                });
+            }
+
+            return prices;
+        }
+
+
         private void CheckNullableResult<T>(T? value, string message) where T : struct
         {
             if (value.HasValue == false)
@@ -92,7 +128,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             foreach (var symbol in r.symbols)
             {
-                assetPairs.Add(new AssetPair(symbol.currency.ToAsset(this), symbol.commodity.ToAsset(this)));
+                assetPairs.Add(new AssetPair(symbol.commodity.ToAsset(this), symbol.currency.ToAsset(this)));
             }
 
             return assetPairs;
