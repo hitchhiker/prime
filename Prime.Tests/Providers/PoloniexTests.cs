@@ -77,12 +77,25 @@ namespace Prime.Tests.Providers
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
             {
-                "LTC".ToAssetRaw(),
-                "NXT".ToAssetRaw(),
-                "ETH".ToAssetRaw()
-            }, Asset.Btc);
+                "BTC".ToAssetRaw(),
+                "USDT".ToAssetRaw(),
+                "XMR".ToAssetRaw()
+            }, "LTC".ToAssetRaw());
 
             await base.TestGetAssetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            {
+                "BTC_LTC".ToAssetPairRaw(),
+                "BTC_NXT".ToAssetPairRaw(),
+                "BTC_ETH".ToAssetPairRaw()
+            });
+
+            await base.TestGetPricesAsync();
         }
 
         [TestMethod]

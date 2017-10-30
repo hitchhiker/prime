@@ -70,7 +70,8 @@ namespace Prime.Tests.Providers
             PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
             {
                 "BTC_LTC".ToAssetPairRaw(),
-                "BTC_XRP".ToAssetPairRaw()
+                "BTC_XRP".ToAssetPairRaw(),
+                "BTC_BCC".ToAssetPairRaw()
             });
 
             await base.TestGetPricesAsync();
