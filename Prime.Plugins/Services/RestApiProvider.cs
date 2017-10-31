@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using plugins;
 using Prime.Common;
 using Prime.Plugins.Services.BitMex;
 using RestEase;
@@ -43,7 +44,8 @@ namespace Prime.Plugins.Services
         {
             return new RestClient(_apiUrl)
             {
-                JsonSerializerSettings = JsonSerializerSettings
+                JsonSerializerSettings = JsonSerializerSettings,
+                // ResponseDeserializer = new DebugDeserialiser()
             }.For<T>() as T;
         }
 
@@ -56,7 +58,7 @@ namespace Prime.Plugins.Services
 
             return new RestClient(_apiUrl, _requestModifier.Invoke(key))
             {
-                JsonSerializerSettings = JsonSerializerSettings
+                JsonSerializerSettings = JsonSerializerSettings,
                 // ResponseDeserializer = new DebugDeserialiser()
             }.For<T>();
         }
