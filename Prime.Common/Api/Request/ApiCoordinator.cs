@@ -12,6 +12,23 @@ namespace Prime.Common
 {
     public static class ApiCoordinator
     {
+        public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context)
+        {
+            switch (provider)
+            {
+                case IPublicPriceProvider ip:
+                    return GetPriceAsync(ip, context);
+                case IPublicAssetPricesProvider ips:
+                    return GetPriceAsync(ips, context);
+            }
+            return null;
+        }
+
+        public static ApiResponse<LatestPrice> GetPrice(IPublicPriceSuper provider, PublicPriceContext context)
+        {
+            return AsyncContext.Run(() => GetPriceAsync(provider, context));
+        }
+
         public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiTestContext context)
         {
             return ApiHelpers.WrapException(() => provider.TestApiAsync(context), nameof(TestApi), provider, context);

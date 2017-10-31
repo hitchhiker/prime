@@ -1,6 +1,6 @@
 namespace Prime.Common
 {
-    public interface IPublicPrice : INetworkProvider
+    public interface IPublicPriceSuper : INetworkProvider
     {
         
     }

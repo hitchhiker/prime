@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IPublicAssetPricesProvider : IPublicPrice
+    public interface IPublicAssetPricesProvider : IPublicPriceSuper
     {
         Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context);
     }
