@@ -12,34 +12,36 @@ namespace Prime.Common.Exchange.Rates
 
         public DateTime UtcCreated { get; }
         public AssetPair Pair { get; }
-        public Asset AssetConvert { get; }
         public Money Price { get; }
+
+        public Asset AssetConvert { get; }
         public Money PriceConvert1 { get; }
         public Money PriceConvert2 { get; }
 
         public bool IsConverted => ProviderConversion != null;
 
-        public LatestPriceResultMessage(IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice, bool isReversed)
+        public LatestPriceResultMessage(IPublicPriceProvider provider, AssetPair pair, LatestPrice latestPrice)
         {
             UtcCreated = latestPrice.UtcCreated;
             Provider = provider;
             Pair = pair;
-            Price = isReversed ? new Money(1d / latestPrice.Price, latestPrice.QuoteAsset) : latestPrice.Price;
+            Price = latestPrice.Price;
         }
 
-        public LatestPriceResultMessage(AssetPair pair, bool isPart1, LatestPriceResultMessage recent, LatestPriceResultMessage other)
+        public LatestPriceResultMessage(AssetPair originalPair, LatestPrice price1, LatestPrice price2, IPublicPriceProvider provider, IPublicPriceProvider providerConvert)
         {
-            Pair = pair;
-            var p1 = isPart1 ? recent : other;
-            var p2 = isPart1 ? other : recent;
+            Pair = originalPair;
 
-            UtcCreated = recent.UtcCreated > other.UtcCreated ? other.UtcCreated : recent.UtcCreated;
-            Provider = p1.Provider;
-            ProviderConversion = p2.Provider;
-            Price = new Money(p1.Price * p2.Price, Pair.Asset2);
-            PriceConvert1 = p1.Price;
-            PriceConvert2 = p2.Price;
-            AssetConvert = p1.AssetConvert;
+            UtcCreated = price1.UtcCreated > price2.UtcCreated ? price2.UtcCreated : price1.UtcCreated;
+
+            Price = new Money(price1.Price * price2.Reverse().Price, Pair.Asset2);
+
+            PriceConvert1 = price1.Reverse().Price;
+            PriceConvert2 = price2.Reverse().Price;
+
+            AssetConvert = price1.Price.Asset;
+            Provider = provider;
+            ProviderConversion = providerConvert;
         }
 
         public bool IsMatch(LatestPriceResultMessage request)

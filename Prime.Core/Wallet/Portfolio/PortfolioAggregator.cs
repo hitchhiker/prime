@@ -204,25 +204,9 @@ namespace Prime.Common.Wallet
             {
                 _items.RemoveAll(x => x.IsTotalLine);
                 var qa = _quoteAsset;
+                
 
-                var subscribed = new List<AssetPair>();
-
-                foreach (var i in _items)
-                {
-                    if (Equals(i.Asset, qa))
-                    {
-                        i.Converted = i.Total;
-                        continue;
-                    }
-
-                    var pair = new AssetPair(i.Asset, qa);
-
-                    if (subscribed.Contains(pair))
-                        continue;
-
-                    subscribed.Add(pair);
-                    M.SendAsync(new LatestPriceRequestMessage(_id, pair));
-                }
+                SubscribePriceConversion(qa);
 
                 if (_items.Any())
                     _items.Add(new PortfolioTotalLineItem() { Items = _items });
@@ -243,6 +227,28 @@ namespace Prime.Common.Wallet
                     foreach (var n in _infoItems)
                         n.Percentage = Math.Round(n.ConvertedTotal.Value.ToDecimalValue() * r, 2);
                 }
+            }
+        }
+
+        private void SubscribePriceConversion(Asset qa)
+        {
+            var subscribed = new List<AssetPair>();
+
+            foreach (var i in _items)
+            {
+                if (Equals(i.Asset, qa))
+                {
+                    i.Converted = i.Total;
+                    continue;
+                }
+
+                var pair = new AssetPair(i.Asset, qa);
+
+                if (subscribed.Contains(pair))
+                    continue;
+
+                subscribed.Add(pair);
+                M.SendAsync(new LatestPriceRequestMessage(_id, pair));
             }
         }
 

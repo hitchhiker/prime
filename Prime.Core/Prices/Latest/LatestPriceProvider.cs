@@ -38,10 +38,8 @@ namespace Prime.Core
             {
                 if (_pairRequests.Count != 0 && !_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
                 {
+                    Update();
                     _utcLastUpdate = DateTime.UtcNow;
-                    
-                        Update();
-                        IsFailing = true;
                 }
 
                 if (!_isDisposed)
@@ -80,7 +78,7 @@ namespace Prime.Core
                     throw new ArgumentException($"You cant add an un-verified {requestMessage.GetType()} to {GetType()}");
 
                 _verifiedRequests.Add(requestMessage);
-                _pairRequests.Add(requestMessage.PairRequestable);
+                _pairRequests.Add(requestMessage.PairForProvider);
             }
         }
 
@@ -123,7 +121,7 @@ namespace Prime.Core
                     return false;
 
                 hasresult = true;
-                SendResult(pair, r.Response);
+                SendResults(pair, r.Response);
             }
             return hasresult;
         }
@@ -150,28 +148,40 @@ namespace Prime.Core
             return hasresult;
         }*/
 
-        private void SendResult(AssetPair pair, LatestPrice response)
+        private void SendResults(AssetPair pair, LatestPrice response)
         {
-            var requests = _verifiedRequests.Where(x => x.PairRequestable.Equals(pair));
+            var requests = _verifiedRequests.Where(x => x.PairForProvider.Equals(pair));
 
             foreach (var request in requests)
-                SendResult(response, request);
+                SendResults(response, request);
         }
 
-        private void SendResult(LatestPrice price, LatestPriceRequest request)
+        private void SendResults(LatestPrice price, LatestPriceRequest request)
         {
-            var resultMsg = request.LastResult = new LatestPriceResultMessage(_provider, request.IsConverted ? request.PairRequestable : request.Pair, price, request.Providers.IsPairReversed);
+            var priceNormalised = request.Providers.IsPairReversed ? price.Reverse() : price;
 
-            _messenger.Send(resultMsg);
+            var resultMsg = request.LastResult = new LatestPriceResultMessage(_provider, request.PairForProvider, priceNormalised);
+            request.LastPrice = priceNormalised;
 
+            if (Equals(priceNormalised.QuoteAsset, "BTC".ToAssetRaw()) && Equals(priceNormalised.Price.Asset, "USD".ToAssetRaw()) && priceNormalised.Price<1000)
+                throw new Exception("WTF");
+
+            _messenger.SendAsync(resultMsg);
+            
             if (request.IsConverted)
-                SendConverted(request, resultMsg, request.ConvertedOther?.LastResult);
+                SendConverted(priceNormalised, request);
         }
 
-        private void SendConverted(LatestPriceRequest request, LatestPriceResultMessage recent, LatestPriceResultMessage other)
+        private void SendConverted(LatestPrice price, LatestPriceRequest request)
         {
-            if (other != null)
-                _messenger.Send(new LatestPriceResultMessage(request.Pair, request.IsConvertedPart1, recent, other));
+            if (request.ConvertedOther?.LastResult == null || request.ConvertedOther?.LastPrice == null)
+                return;
+
+            var p1 = request.IsConvertedPart1 ? request : request.ConvertedOther;
+            var p2 = request.IsConvertedPart2 ? request : request.ConvertedOther;
+
+            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Providers.Provider, p2.Providers.Provider);
+            _messenger.SendAsync(resultMsg);
         }
 
         private bool _isDisposed;
