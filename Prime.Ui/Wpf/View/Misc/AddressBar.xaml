@@ -8,6 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:wpf="clr-namespace:Prime.Ui.Wpf"
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             xmlns:asset="clr-namespace:Prime.Ui.Wpf.View.Asset"
              d:DataContext="{d:DesignInstance viewModel:AddressBarModel}"
              mc:Ignorable="d" 
              d:DesignHeight="25" d:DesignWidth="700">
@@ -15,19 +16,15 @@
         <Border Width="40">
             <iconPacks:PackIconMaterialLight Kind="Home" Height="25" Width="25" HorizontalAlignment="Center"/>
         </Border>
-        
+
         <prime:AddressBox Width="Auto" MinWidth="400" DataContext="{Binding Path=AddressBoxModel}"/>
 
-        <ComboBox IsSynchronizedWithCurrentItem="True" DataContext="{Binding Path=AllAssetsViewModel}"
-                  IsEditable="True"
-                  DisplayMemberPath="ShortCode"
-                  ItemsSource="{Binding Path=Assets, UpdateSourceTrigger=LostFocus}" 
-                  SelectedItem="{Binding Path=SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <asset:AssetSelectorControl Margin="10,0,0,0" SelectedItem="{Binding Path=SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="LostFocus">
                     <i:InvokeCommandAction Command="{Binding }" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </ComboBox>
+        </asset:AssetSelectorControl>
     </StackPanel>
 </UserControl>

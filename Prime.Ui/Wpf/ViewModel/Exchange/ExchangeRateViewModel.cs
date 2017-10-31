@@ -10,6 +10,7 @@ using Prime.Common;
 using Prime.Common.Exchange.Rates;
 using Prime.Utility;
 using Prime.Common.Exchange.Model;
+using Prime.Ui.Wpf.View.Asset;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -41,7 +42,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly List<LatestPriceRequestMessage> _requests = new List<LatestPriceRequestMessage>();
         private readonly DebouncerDispatched _debouncer;
         public AllAssetsViewModel AllAssetsViewModel { get; }
-
+        
         public RelayCommand GoCommand { get; }
 
         private void NewRate(LatestPriceResultMessage result)
@@ -112,6 +113,20 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _convertRight, value);
         }
 
+        private AssetSelectorControl.ComboSectionItem _selectedAssetRight;
+        public AssetSelectorControl.ComboSectionItem SelectedAssetRight
+        {
+            get => _selectedAssetRight;
+            set => Set(ref _selectedAssetRight, value);
+        }
+
+        private AssetSelectorControl.ComboSectionItem _selectedAssetLeft;
+        public AssetSelectorControl.ComboSectionItem SelectedAssetLeft
+        {
+            get => _selectedAssetLeft;
+            set => Set(ref _selectedAssetLeft, value);
+        }
+
         private Asset _assetLeft;
         public Asset AssetLeft
         {
@@ -140,6 +155,9 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void AddRequest()
         {
+            AssetLeft = SelectedAssetLeft?.Asset;
+            AssetRight = SelectedAssetRight?.Asset;
+
             if (AssetRight.IsNone() || AssetLeft.IsNone())
                 return;
 
