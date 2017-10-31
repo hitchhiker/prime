@@ -4,13 +4,13 @@ using System.Linq;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using LiveCharts;
 using LiveCharts.Events;
 using LiveCharts.Wpf;
 using NodaTime;
 using Prime.Common;
 using Prime.Ui.Wpf.ViewModel;
+using Prime.Utility;
 using Series = LiveCharts.Wpf.Series;
 
 namespace Prime.Ui.Wpf.ViewModel
@@ -22,21 +22,19 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public ChartGroupViewModel() { }
 
-        public ChartGroupViewModel(PriceChartPaneModel parentModel, IMessenger messenger, OverviewZoomViewModel zoom)
+        public ChartGroupViewModel(PriceChartPaneViewModel parentViewModel, OverviewZoomViewModel zoom)
         {
-            ParentModel = parentModel;
-            _messenger = messenger;
+            ParentViewModel = parentViewModel;
 
             OverviewZoom = zoom;
             ZoomResetCommand = new RelayCommand(OverviewZoom.ZoomToDefault);
             _resolutionSelected = zoom.Resolution;
-            ChartHeaderViewModel = new ChartHeaderViewModel(parentModel);
-            ParentModel.OnRangeChange += (s, e) => InvalidateRangeProperties();
+            ChartHeaderViewModel = new ChartHeaderViewModel(parentViewModel);
+            ParentViewModel.OnRangeChange += (s, e) => InvalidateRangeProperties();
         }
 
-        public PriceChartPaneModel ParentModel { get; private set; }
+        public PriceChartPaneViewModel ParentViewModel { get; private set; }
 
-        private readonly IMessenger _messenger;
         private DateTime _initialDateTime = Instant.FromUnixTimeSeconds(0).ToDateTimeUtc();
         private TimeResolution _resolutionSelected;
         private bool _isPositionLocked;
@@ -89,19 +87,19 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public bool CanDaily
         {
-            get => ResolutionSelected != TimeResolution.Day && ParentModel.IsGraphReady;
+            get => ResolutionSelected != TimeResolution.Day && ParentViewModel.IsGraphReady;
             set { }
         }
 
         public bool CanHourly
         {
-            get => ResolutionSelected != TimeResolution.Hour && ParentModel.IsGraphReady;
+            get => ResolutionSelected != TimeResolution.Hour && ParentViewModel.IsGraphReady;
             set { }
         }
 
         public bool CanMinute
         {
-            get => ResolutionSelected != TimeResolution.Minute && ParentModel.IsGraphReady;
+            get => ResolutionSelected != TimeResolution.Minute && ParentViewModel.IsGraphReady;
             set { }
         }
 

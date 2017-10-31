@@ -21,7 +21,7 @@ namespace Prime.Ui.Wpf
     public partial class ChartPanel : UserControl
     {
         private readonly Debouncer _dispatcher;
-        private PriceChartPaneModel _pcmodel;
+        private PriceChartPaneViewModel _pcmodel;
         public ChartPanel()
         {
             InitializeComponent();
@@ -32,7 +32,7 @@ namespace Prime.Ui.Wpf
 
         private void ChartPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            _pcmodel = DataContext as PriceChartPaneModel;
+            _pcmodel = DataContext as PriceChartPaneViewModel;
             if (_pcmodel == null)
                 return;
 

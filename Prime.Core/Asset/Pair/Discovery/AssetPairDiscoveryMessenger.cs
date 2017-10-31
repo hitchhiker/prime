@@ -11,6 +11,7 @@ namespace Prime.Core
         private readonly IMessenger _m = DefaultMessenger.I.Default;
         private readonly Dictionary<AssetPairDiscoveryRequestMessage, AssetPairDiscoveryProvider> _cache = new Dictionary<AssetPairDiscoveryRequestMessage, AssetPairDiscoveryProvider>();
         private readonly object _lock = new object();
+
         internal AssetPairDiscoveryMessenger()
         {
             _m.RegisterAsync<AssetPairDiscoveryRequestMessage>(this, AssetPairProviderDiscoveryMessage);

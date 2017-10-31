@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Threading;
 using LiveCharts;
 using LiveCharts.Dtos;
 using LiveCharts.Wpf.Charts.Base;
@@ -14,7 +13,7 @@ namespace Prime.Ui.Wpf
     /// </summary>
     public class OverviewZoomViewModel : ZoomViewModel
     {
-        public OverviewZoomViewModel(TimeResolution resolution, Dispatcher uiDispatcher) : base(resolution, uiDispatcher)
+        public OverviewZoomViewModel(TimeResolution resolution) : base(resolution)
         {
         }
 

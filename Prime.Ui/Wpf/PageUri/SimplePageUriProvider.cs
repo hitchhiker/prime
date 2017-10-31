@@ -33,7 +33,7 @@ namespace Prime.Ui.Wpf.PageUri
             {"markets discovery", "/View/Markets/MarketsDiscovery.xaml"}
         };
 
-        public static DocumentPaneViewModel GetViewModel(IMessenger messenger, ScreenViewModel model, SimpleContentCommand command)
+        public static DocumentPaneViewModel GetViewModel(ScreenViewModel model, SimpleContentCommand command)
         {
             DocumentPaneViewModel dpvm = null;
             model.UiDispatcher.Invoke(() =>

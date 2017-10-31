@@ -19,7 +19,7 @@ namespace Prime.Core
             context.EnsureDefaults();
 
             if (context.RequiresApiDiscovery())
-                context.DiscoverAndApplyApiProviders();
+                context.ApplyApiProviders();
 
             context.EnsureProvider();
 

@@ -12,14 +12,14 @@ namespace Prime.Ui.Wpf
             return command is SimpleContentCommand;
         }
 
-        public DocumentPaneViewModel GetInstance(IMessenger messenger, ScreenViewModel model, CommandBase command)
+        public DocumentPaneViewModel GetInstance(ScreenViewModel model, CommandBase command)
         {
-            return !(command is SimpleContentCommand c) ? null : GetInstance(messenger, model ,c);
+            return !(command is SimpleContentCommand c) ? null : GetInstance(model ,c);
         }
 
-        private DocumentPaneViewModel GetInstance(IMessenger messenger, ScreenViewModel model, SimpleContentCommand command)
+        private DocumentPaneViewModel GetInstance(ScreenViewModel model, SimpleContentCommand command)
         {
-            var panel = SimplePageUriProvider.GetViewModel(messenger, model, command);
+            var panel = SimplePageUriProvider.GetViewModel(model, command);
 
             if (panel != null)
             {

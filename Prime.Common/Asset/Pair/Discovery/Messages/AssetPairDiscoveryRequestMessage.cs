@@ -6,6 +6,12 @@ namespace Prime.Common
     {
         public AssetPairDiscoveryRequestMessage() { }
 
+        public AssetPairDiscoveryRequestMessage(AssetPair pair, Network network = null)
+        {
+            Pair = pair;
+            Network = network;
+        }
+
         public AssetPairDiscoveryRequestMessage(AssetPairDiscoveryRequestMessage context)
         {
             Pair = context.Pair;

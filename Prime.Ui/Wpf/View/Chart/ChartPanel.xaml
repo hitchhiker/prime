@@ -11,7 +11,7 @@
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              Foreground="{StaticResource ForegroundBrush}"
              mc:Ignorable="d"              
-             d:DataContext="{d:DesignInstance Type=viewModel:PriceChartPaneModel,IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance Type=viewModel:PriceChartPaneViewModel,IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid DataContext="{Binding Path=ChartGroupViewModel}">
         <Grid.RowDefinitions>
@@ -44,9 +44,9 @@
                                            IsIndeterminate="True"
                                            Maximum="100"
                                            Minimum="0"
-                                           Visibility="{Binding Path=ParentModel.IsDataBusy, Converter={StaticResource BoolToHiddenConverter}}" />
+                                           Visibility="{Binding Path=ParentViewModel.IsDataBusy, Converter={StaticResource BoolToHiddenConverter}}" />
                 <TextBlock Text="Data status: " Foreground="#ccc"/>
-                <TextBlock Text="{Binding Path=ParentModel.DataStatus}"/>
+                <TextBlock Text="{Binding Path=ParentViewModel.DataStatus}"/>
             </StackPanel>
         </Grid>
 
