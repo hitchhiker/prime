@@ -155,6 +155,7 @@
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
+    <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\HitBtcTests.cs" />
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />

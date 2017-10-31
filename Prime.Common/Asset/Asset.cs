@@ -84,5 +84,11 @@ namespace Prime.Common
         public static Asset Eth = Assets.I.GetRaw("ETH");
 
         public static Asset Xrp = Assets.I.GetRaw("XRP");
+
+        /// <summary>
+        /// It is used for not creating KRW asset in Korean providers.
+        /// If above assets are used for another purpose this asset can be deleted.
+        /// </summary>
+        public static Asset Krw = Assets.I.GetRaw("KRW");
     }
 }

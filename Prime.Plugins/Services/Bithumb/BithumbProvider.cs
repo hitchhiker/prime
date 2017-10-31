@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Bithumb
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
 
-        private static readonly ObjectId IdHash = "prime:Bithumb".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:bithumb".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
         public Network Network { get; } = new Network("Bithumb");
         public bool Disabled => false;
@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.Bithumb
             var r = await api.GetTickers();
 
             var pairs = new AssetPairs();
-            var krwAsset = "KRW".ToAsset(this);
+            var krwAsset = Asset.Krw;
 
             foreach (var rTicker in r.data)
             {
@@ -62,10 +62,15 @@ namespace Prime.Plugins.Services.Bithumb
 
             var r = await api.GetTicker(currency);
 
+            var krwAsset = Asset.Krw;
+
+            if (!context.Pair.Asset2.Equals(krwAsset))
+                throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
+
             var latestPrice = new LatestPrice()
             {
                 UtcCreated = DateTime.UtcNow,
-                Price = new Money((r.data.max_price + r.data.min_price) / 2, "KRW".ToAssetRaw()),
+                Price = new Money(r.data.sell_price, krwAsset),
                 QuoteAsset = context.Pair.Asset1
             };
 
@@ -83,7 +88,7 @@ namespace Prime.Plugins.Services.Bithumb
             var rRaw = await api.GetTickers();
             var r = ParseTickerResponse(rRaw);
 
-            var krwAsset = "KRW".ToAsset(this);
+            var krwAsset = Asset.Krw;
 
             var prices = new List<LatestPrice>();
 
@@ -100,7 +105,7 @@ namespace Prime.Plugins.Services.Bithumb
                 prices.Add(new LatestPrice()
                 {
                     UtcCreated = DateTime.UtcNow,
-                    Price = new Money((rTiker.Value.max_price + rTiker.Value.min_price) / 2, pair.Asset2),
+                    Price = new Money(rTiker.Value.sell_price, pair.Asset2),
                     QuoteAsset = pair.Asset1
                 });
             }
