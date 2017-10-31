@@ -53,9 +53,6 @@ namespace Prime.Core
         {
             Ctx.PrimaryApiProvider = Ctx.PrimaryApiProvider ?? Ctx.GetDefaultAggregationProvider();
 
-            if (Ctx.RequiresApiDiscovery())
-                Ctx.DiscoverAndApplyApiProviders();
-
             _adapters.ForEach(x =>
             {
                 x.Ctx.CanDiscoverApiProviders = false;

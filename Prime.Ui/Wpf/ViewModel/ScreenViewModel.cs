@@ -90,7 +90,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void OnCommandAccepted(CommandBase c)
         {
-            var inst = PrimeWpf.I.PanelProviders.FirstOrDefault(x => x.IsFor(c))?.GetInstance(_messenger, this, c);
+            var inst = PrimeWpf.I.PanelProviders.FirstOrDefault(x => x.IsFor(c))?.GetInstance(this, c);
             if (inst == null)
                 return;
 

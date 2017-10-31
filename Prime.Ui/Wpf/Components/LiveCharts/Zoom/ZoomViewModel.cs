@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Threading;
 using LiveCharts.Dtos;
 using NodaTime;
 using Prime.Common;
@@ -14,8 +13,6 @@ namespace Prime.Ui.Wpf
     public abstract class ZoomViewModel : VmBase
     {
         protected readonly ZoomViewModel _zoomChart;
-        protected readonly DebouncerDispatched _debouncer;
-        protected readonly Dispatcher _uiDispatcher;
 
         protected double _zoomFrom;
         protected double _zoomTo = 1;
@@ -52,10 +49,9 @@ namespace Prime.Ui.Wpf
 
         public bool IsMouseOver { get; set; }
 
-        protected ZoomViewModel(TimeResolution resolution, Dispatcher uiDispatcher)
+        protected ZoomViewModel(TimeResolution resolution)
         {
             Resolution = resolution;
-            _debouncer = new DebouncerDispatched(uiDispatcher);
         }
 
         public event EventHandler OnRangePreviewChange;

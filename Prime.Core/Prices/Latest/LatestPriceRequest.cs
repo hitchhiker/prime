@@ -21,7 +21,7 @@ namespace Prime.Core
 
         private volatile AssetPairDiscoveryRequestMessage _discoveryRequestRequest;
 
-        public AssetPair PairRequestable { get; private set; }
+        public AssetPair PairForProvider { get; private set; }
 
         public bool IsVerified { get; private set; }
 
@@ -40,6 +40,8 @@ namespace Prime.Core
         public Network NetworkSuggested { get; private set; }
 
         public LatestPriceResultMessage LastResult { get; set; }
+
+        public LatestPrice LastPrice { get; set; }
 
         public void Discover()
         {
@@ -64,7 +66,7 @@ namespace Prime.Core
 
         private void ProcessDiscoveryResponse(AssetPairProviders r, bool isPart2 = false)
         {
-            PairRequestable = r.Pair;
+            PairForProvider = r.Pair;
             IsConvertedPart1 = !isPart2 && r.Via != null;
             Providers = r;
             Network = r.Provider.Network;

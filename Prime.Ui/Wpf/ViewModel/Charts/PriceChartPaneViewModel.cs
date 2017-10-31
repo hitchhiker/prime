@@ -6,7 +6,6 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
 using LiveCharts;
 using LiveCharts.Definitions.Series;
 using LiveCharts.Wpf;
@@ -17,12 +16,9 @@ using Prime.Utility;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class PriceChartPaneModel : DocumentPaneViewModel, IPaneProvider
+    public class PriceChartPaneViewModel : DocumentPaneViewModel, IPaneProvider
     {
-        private readonly OhlcDataAdapter _adapter;
-        private readonly Dispatcher _dispatcher;
-        private readonly IMessenger _messenger;
-        private readonly ScreenViewModel _screenViewModel;
+        private OhlcDataAdapter _adapter;
         public ChartGroupViewModel ChartGroupViewModel { get; private set; }
         private readonly AssetPair _pair;
         private readonly DebouncerDispatched _debouncer;
@@ -45,14 +41,11 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public EventHandler OnRangeChange;
 
-        public PriceChartPaneModel() { }
+        public PriceChartPaneViewModel() { }
 
-        public PriceChartPaneModel(IMessenger messenger, ScreenViewModel screenViewModel, AssetPair pair)
+        private PriceChartPaneViewModel(AssetPair pair)
         {
-            _dispatcher = PrimeWpf.I.UiDispatcher;
-            _debouncer = new DebouncerDispatched(Dispatcher.CurrentDispatcher);
-            _messenger = messenger;
-            _screenViewModel = screenViewModel;
+            _debouncer = new DebouncerDispatched(UiDispatcher);
             _pair = pair;
 
             Key = _pair.ToString();
@@ -60,25 +53,62 @@ namespace Prime.Ui.Wpf.ViewModel
             CanClose = true;
             IsActive = true;
             IsSelected = true;
+
+            OverviewZoom = new OverviewZoomViewModel(OverviewDefaultResolution);
+            ReceiverZoom = new ReceiverZoomViewModel(ReceiverDefaultResolution);
             
+            M.RegisterAsync<AssetPairDiscoveryResultMessage>(this, AssetPairDiscoveryResultMessage);
+            M.SendAsync(new AssetPairDiscoveryRequestMessage(_pair));
+
+            SetDataStatus("Provider Discovery", true);
+        }
+
+        public bool IsFor(CommandBase command)
+        {
+            return command is AssetGoCommand;
+        }
+
+        public DocumentPaneViewModel GetInstance(ScreenViewModel model, CommandBase command)
+        {
+            var c = command as AssetGoCommand;
+            var pair = new AssetPair(c.Asset, UserContext.Current.QuoteAsset);
+            return new PriceChartPaneViewModel(pair);
+        }
+
+        private void AssetPairDiscoveryResultMessage(AssetPairDiscoveryResultMessage m)
+        {
+            if (!Equals(m.RequestRequestMessage.Pair, _pair) || m.RequestRequestMessage.Network != null)
+                return;
+
+            M.UnregisterD(this);
+
+            if (!m.Providers.Providers.Any())
+            {
+
+                SetDataStatus("No providers found", false);
+                return;
+            }
+
+            SetDataStatus("Initialising", true);
+
             var ctx = new OhlcResolutionContext()
             {
+                AssetPairProviders = m.Providers,
                 Pair = _pair,
                 RequestFullDaily = true,
-                StatusEntry = (s) => _dispatcher.Invoke(() => DataStatus = s)
+                StatusEntry = (s) => UiDispatcher.Invoke(() => DataStatus = s)
             };
 
             _adapter = new OhlcDataAdapter(ctx);
 
-            OverviewZoom = new OverviewZoomViewModel(OverviewDefaultResolution, _dispatcher);
-            ReceiverZoom = new ReceiverZoomViewModel(ReceiverDefaultResolution, _dispatcher);
-
             _allZooms.Add(OverviewZoom);
 
-            ChartGroupViewModel = new ChartGroupViewModel(this, _messenger, OverviewZoom)
+            ChartGroupViewModel = new ChartGroupViewModel(this, OverviewZoom)
             {
                 ResolutionSelected = ReceiverDefaultResolution
             };
+
+            QueueWork(InitDataThread);
         }
 
         public bool AllowLive { get; set; } = true;
@@ -99,22 +129,9 @@ namespace Prime.Ui.Wpf.ViewModel
         public bool IsGraphReady
         {
             get => _isGraphReady;
-            set => SetAfter(ref _isGraphReady, value, (a)=> ChartGroupViewModel.InvalidateRangeProperties());
+            set => SetAfter(ref _isGraphReady, value, a=> ChartGroupViewModel.InvalidateRangeProperties());
         }
 
-        public bool IsFor(CommandBase command)
-        {
-            return command is AssetGoCommand;
-        }
-
-        public DocumentPaneViewModel GetInstance(IMessenger messenger, ScreenViewModel model, CommandBase command)
-        {
-            var c = command as AssetGoCommand;
-            var pair = new AssetPair(c.Asset, UserContext.Current.QuoteAsset);
-            var pcp = new PriceChartPaneModel(messenger, model, pair);
-            pcp.QueueWork(pcp.InitDataThread);
-            return pcp;
-        }
 
         private void InitDataThread()
         {
@@ -132,7 +149,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             SetDataStatus("Initialising chart");
 
-            _dispatcher.Invoke(delegate
+            UiDispatcher.Invoke(delegate
             {
                 CreateCharts(priceData);
                 SetupZoomEvents();
@@ -267,7 +284,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 if (priceData.IsEmpty())
                     return;
 
-                _dispatcher.Invoke(() =>
+                UiDispatcher.Invoke(() =>
                 {
                     ClearData();
 
@@ -321,7 +338,7 @@ namespace Prime.Ui.Wpf.ViewModel
             if (nPriceData.IsEmpty())
                 return;
 
-            _dispatcher.Invoke(delegate
+            UiDispatcher.Invoke(delegate
             {
                 MergeSeriesViews(nPriceData);
                 OnDataUpdate?.Invoke(this, new OhlcDataUpdatedEvent(nPriceData, _pair.Asset2, isLive));
@@ -432,16 +449,19 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public void SetDataStatus(string message = null, bool? busy = null)
         {
-            if (message == null)
+            UiDispatcher.Invoke(() =>
             {
-                IsDataBusy = busy ?? false;
-                DataStatus = "Idle";
-            }
-            else
-            {
-                IsDataBusy = busy ?? true;
-                DataStatus = message;
-            }
+                if (message == null)
+                {
+                    IsDataBusy = busy ?? false;
+                    DataStatus = "Idle";
+                }
+                else
+                {
+                    IsDataBusy = busy ?? true;
+                    DataStatus = message;
+                }
+            });
         }
 
         public override CommandContent GetPageCommand()

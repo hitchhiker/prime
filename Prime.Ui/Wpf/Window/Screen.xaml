@@ -75,7 +75,7 @@
                         <wpf:ExchangeRates/>
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type viewmodel:PriceChartPaneModel}">
+                    <DataTemplate DataType="{x:Type viewmodel:PriceChartPaneViewModel}">
                         <wpf:ChartPanel/>
                     </DataTemplate>
 

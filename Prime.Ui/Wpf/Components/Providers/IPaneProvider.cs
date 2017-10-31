@@ -1,5 +1,4 @@
 using Prime.Common;
-using GalaSoft.MvvmLight.Messaging;
 using Prime.Ui.Wpf.ViewModel;
 
 namespace Prime.Ui.Wpf
@@ -8,6 +7,6 @@ namespace Prime.Ui.Wpf
     {
         bool IsFor(CommandBase command);
 
-        DocumentPaneViewModel GetInstance(IMessenger messenger, ScreenViewModel model, CommandBase command);
+        DocumentPaneViewModel GetInstance(ScreenViewModel model, CommandBase command);
     }
 }

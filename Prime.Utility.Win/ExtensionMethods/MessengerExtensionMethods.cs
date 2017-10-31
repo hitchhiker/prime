@@ -48,5 +48,6 @@ namespace Prime.Utility
             KeepAlive.RemoveAll(x => x.Item1 == recipient);
             messenger.UnregisterAsync(recipient);
         }
+
     }
 }

@@ -7,10 +7,10 @@ namespace Prime.Common
     public class AssetPairProviders
     {
         public readonly AssetPair Pair;
-        public readonly IReadOnlyList<IPublicPriceProvider> Providers;
+        public readonly IReadOnlyList<IPublicPrice> Providers;
         public readonly bool IsPairReversed;
 
-        public AssetPairProviders(AssetPair pair, IReadOnlyList<IPublicPriceProvider> providers, bool isPairReversed = false)
+        public AssetPairProviders(AssetPair pair, IReadOnlyList<IPublicPrice> providers, bool isPairReversed = false)
         {
             Pair = pair;
             Providers = providers.OrderByVolume(pair);
@@ -20,7 +20,7 @@ namespace Prime.Common
 
         public AssetPair OriginalPair => IsPairReversed ? Pair.Reverse() : Pair;
 
-        public IPublicPriceProvider Provider { get; set; }
+        public IPublicPrice Provider { get; set; }
 
         public bool IsPegged { get; set; }
 

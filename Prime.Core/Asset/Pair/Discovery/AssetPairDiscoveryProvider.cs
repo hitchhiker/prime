@@ -13,7 +13,6 @@ namespace Prime.Core
         private const string IntermediariesCsv = "USD,BTC,EUR,LTC,USDT,XRP,ETH,ETC,BCC,BCH";
         private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
         public bool IsFinished;
-        private int _requests = 0;
         private readonly object _lock = new object();
         private AssetPairProviders _providers;
 
@@ -138,14 +137,16 @@ namespace Prime.Core
             return provs1;
         }
 
-        private static List<IPublicPriceProvider> GetProviders(AssetPair pair)
+        private static List<IPublicPrice> GetProviders(AssetPair pair)
         {
-            return AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IPublicPriceProvider>().ToList();
-
-            /*var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
-            var provs = apd.Exchanges.Count == 0 ? new List<IPublicPriceProvider>() : apd.AllProviders.OfType<IPublicPriceProvider>().DistinctBy(x => x.Id).ToList();
+            var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
+            var provs = apd.Exchanges.Count == 0 ? new List<IPublicPrice>() : apd.AllProviders.OfType<IPublicPrice>().DistinctBy(x => x.Id).ToList();
             if (provs.Any())
-                return provs;*/
+                return provs;
+
+            return AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IPublicPrice>().ToList();
+
+            /**/
         }
     }
 }

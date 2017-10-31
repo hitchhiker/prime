@@ -455,7 +455,7 @@
     <Compile Include="ViewModel\Trading\OrderBookViewModel.cs" />
     <Compile Include="ViewModel\SideBar\PanelFlyoutViewModelBase.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
-    <Compile Include="ViewModel\Charts\PriceChartPaneModel.cs" />
+    <Compile Include="ViewModel\Charts\PriceChartPaneViewModel.cs" />
     <Compile Include="Components\Providers\SimplePagePaneProvider.cs" />
     <Compile Include="ViewModel\Trading\SellViewModel.cs" />
     <Compile Include="ViewModel\Wallet\ReceiveViewModel.cs" />

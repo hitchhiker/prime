@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Threading;
 using LiveCharts;
 using LiveCharts.Wpf.Charts.Base;
 using NodaTime;
@@ -9,7 +8,7 @@ namespace Prime.Ui.Wpf
 {
     public class ReceiverZoomViewModel : ZoomViewModel
     {
-        public ReceiverZoomViewModel(TimeResolution resolution, Dispatcher uiDispatcher) : base(resolution, uiDispatcher)
+        public ReceiverZoomViewModel(TimeResolution resolution) : base(resolution)
         {
             RangeDebounce = 50;
         }

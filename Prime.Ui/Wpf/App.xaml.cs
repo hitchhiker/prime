@@ -24,7 +24,7 @@ namespace prime
 
         public App()
         {
-            //DispatcherUnhandledException += App_DispatcherUnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
             GlobalMisc.I.MainAssembly = Assembly.GetExecutingAssembly();
             _prime = Prime.Core.Prime.I; //INIT PRIME //THIS IS A HACK FOR NOW
             PrimeWpf.I.SetDispatcher();
@@ -37,17 +37,12 @@ namespace prime
             UserContext.Current.WindowManager.Init();
         }
         
-        /*
+        
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            var exceptionView = new ExceptionView(e.Exception)
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-            };
-            exceptionView.ShowDialog();
-
+            Logging.I.DefaultLogger.Fatal("App Exception: " + e.Exception.Message);
             e.Handled = true;
-        }*/
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {

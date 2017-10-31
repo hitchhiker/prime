@@ -7,12 +7,12 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class ChartHeaderViewModel : VmBase
     {
-        private readonly PriceChartPaneModel _parentModel;
+        private readonly PriceChartPaneViewModel _parentViewModel;
 
-        public ChartHeaderViewModel(PriceChartPaneModel parentModel)
+        public ChartHeaderViewModel(PriceChartPaneViewModel parentViewModel)
         {
-            _parentModel = parentModel;
-            _parentModel.OnDataUpdate += OnParentModelOnDataUpdate;
+            _parentViewModel = parentViewModel;
+            _parentViewModel.OnDataUpdate += OnParentModelOnDataUpdate;
         }
 
         private void OnParentModelOnDataUpdate(object s, EventArgs e)
