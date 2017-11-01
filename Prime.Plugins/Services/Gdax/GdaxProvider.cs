@@ -64,14 +64,7 @@ namespace Prime.Plugins.Services.Gdax
             var pairCode = context.Pair.TickerDash();
             var r = await api.GetProductTicker(pairCode);
 
-            var price = new LatestPrice()
-            {
-                UtcCreated = DateTime.UtcNow,
-                Price = new Money(r.price, context.Pair.Asset2),
-                QuoteAsset = context.Pair.Asset1
-            };
-
-            return price;
+            return new LatestPrice(context.Pair, r.price);
         }
 
         public BuyResult Buy(BuyContext ctx)
