@@ -7,6 +7,7 @@ using LiteDB;
 using plugins;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Plugins.Services.Gdax;
 using Prime.Utility;
 using RestEase;
 using OrderBook = Prime.Common.OrderBook;
