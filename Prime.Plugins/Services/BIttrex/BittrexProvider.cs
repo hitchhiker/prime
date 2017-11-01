@@ -89,12 +89,7 @@ namespace Prime.Plugins.Services.Bittrex
                 if(ms == null)
                     throw new ApiResponseException("No price returned for selected currency", this);
 
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    Price = new Money(1 / ms.Last, pair.Asset2),
-                    QuoteAsset = pair.Asset1
-                });
+                prices.Add(new LatestPrice(pair, 1 / ms.Last));
             }
 
             return prices;

@@ -4,27 +4,29 @@ namespace Prime.Common
 {
     public class LatestPrice
     {
-        public LatestPrice() { }
+        private LatestPrice() { }
 
-        public LatestPrice(AssetPair pair, decimal value) : this(new Money(value, pair.Asset1), pair.Asset2)
+        public LatestPrice(AssetPair pair, decimal value, DateTime? utcCreated = null)
+        {
+            Pair = pair;
+            UtcCreated = utcCreated ?? DateTime.UtcNow;
+            Price = new Money(value, pair.Asset1);
+        }
+
+        public LatestPrice(Money price, Asset quoteAsset) : this(new AssetPair(price.Asset, quoteAsset), price)
         {
         }
 
-        public LatestPrice(Money price, Asset quoteAsset)
-        {
-            UtcCreated = DateTime.UtcNow;
-            Price = price;
-            QuoteAsset = quoteAsset;
-        }
+        public Asset QuoteAsset => Pair.Asset2;
 
         [Bson]
-        public DateTime UtcCreated { get; set; }
+        public AssetPair Pair { get; private set; }
 
         [Bson]
-        public Asset QuoteAsset { get; set; }
+        public DateTime UtcCreated { get; private set; }
 
         [Bson]
-        public Money Price { get; set; }
+        public Money Price { get; private set; }
 
         public LatestPrice Reverse()
         {
@@ -33,7 +35,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"{QuoteAsset}: {Price.Display}";
+            return $"{Price.Display} [=1 {QuoteAsset}]";
         }
     }
 }

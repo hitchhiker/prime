@@ -69,13 +69,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             var selectedPair = assetPairsInfo[0];
 
-            var price = new LatestPrice()
-            {
-                QuoteAsset = context.Pair.Asset1,
-                Price = new Money(1 / selectedPair.Value.last, context.Pair.Asset2)
-            };
-
-            return price;
+            return new LatestPrice(context.Pair, 1 / selectedPair.Value.last);
         }
 
         public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -99,12 +93,7 @@ namespace Prime.Plugins.Services.Poloniex
 
                 var rTicker = rTickers[0];
 
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    Price = new Money(1 / rTicker.Value.last, pair.Asset2),
-                    QuoteAsset = pair.Asset1
-                });
+                prices.Add(new LatestPrice(pair, 1 / rTicker.Value.last));
             }
 
             return prices;

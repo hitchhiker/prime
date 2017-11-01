@@ -108,12 +108,7 @@ namespace Prime.Plugins.Services.BitMex
             if (r.lastPrice.HasValue == false)
                 throw new ApiResponseException("No last price for currency", this);
 
-            var latestPrice = new LatestPrice
-            {
-                QuoteAsset = context.Pair.Asset1,
-                Price = new Money(r.lastPrice.Value, context.Pair.Asset2),
-                UtcCreated = r.timestamp
-            };
+            var latestPrice = new LatestPrice(context.Pair, r.lastPrice.Value);
 
             return latestPrice;
         }
@@ -144,12 +139,7 @@ namespace Prime.Plugins.Services.BitMex
                 if (data == null || data.lastPrice.HasValue == false)
                     throw new ApiResponseException("No price returned for selected currency", this);
 
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    Price = new Money(data.lastPrice.Value, pair.Asset2),
-                    QuoteAsset = pair.Asset1
-                });
+                prices.Add(new LatestPrice(pair, data.lastPrice.Value));
             }
 
             return prices;

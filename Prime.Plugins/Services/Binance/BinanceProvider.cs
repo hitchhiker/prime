@@ -109,14 +109,7 @@ namespace Prime.Plugins.Services.Binance
             if(lpr == null)
                 throw new ApiResponseException("Specified currency pair is not supported by provider", this);
 
-            var latestPrice = new LatestPrice()
-            {
-                Price = new Money(lpr.price, context.Pair.Asset2),
-                QuoteAsset = context.Pair.Asset1,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrice;
+            return new LatestPrice(context.Pair, lpr.price);
         }
 
         public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -140,12 +133,7 @@ namespace Prime.Plugins.Services.Binance
                 if (lpr == null)
                     throw new ApiResponseException("Specified currency pair is not supported by provider", this);
 
-                prices.Add(new LatestPrice()
-                {
-                    Price = new Money(lpr.price, pair.Asset2),
-                    QuoteAsset = pair.Asset1,
-                    UtcCreated = DateTime.UtcNow
-                });
+                prices.Add(new LatestPrice(pair, lpr.price));
             }
 
             return prices;

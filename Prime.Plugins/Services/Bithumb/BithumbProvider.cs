@@ -67,12 +67,7 @@ namespace Prime.Plugins.Services.Bithumb
             if (!context.Pair.Asset2.Equals(krwAsset))
                 throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
 
-            var latestPrice = new LatestPrice()
-            {
-                UtcCreated = DateTime.UtcNow,
-                Price = new Money(r.data.sell_price, krwAsset),
-                QuoteAsset = context.Pair.Asset1
-            };
+            var latestPrice = new LatestPrice(context.Pair, r.data.sell_price);
 
             return latestPrice;
         }
@@ -102,12 +97,7 @@ namespace Prime.Plugins.Services.Bithumb
                     throw new ApiResponseException($"Exchange does not support {pair} currency pair", this);
 
                 var rTiker = rTickers[0];
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    Price = new Money(rTiker.Value.sell_price, pair.Asset2),
-                    QuoteAsset = pair.Asset1
-                });
+                prices.Add(new LatestPrice(pair, rTiker.Value.sell_price));
             }
 
             return prices;

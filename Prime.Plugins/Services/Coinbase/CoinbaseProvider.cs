@@ -56,10 +56,7 @@ namespace Prime.Plugins.Services.Coinbase
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
             var r = await api.GetLatestPrice(pairCode);
 
-            var price = new LatestPrice(new Money(r.data.amount, r.data.currency.ToAsset(this)), context.QuoteAsset)
-            {
-                QuoteAsset = context.Pair.Asset1
-            };
+            var price = new LatestPrice(context.Pair, r.data.amount);
 
             return price;
         }

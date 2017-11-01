@@ -53,14 +53,7 @@ namespace Prime.Plugins.Services.Korbit
 
             var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-            var latestPrice = new LatestPrice()
-            {
-                QuoteAsset = context.Pair.Asset1,
-                UtcCreated = sTimeStamp.ToUtcDateTime(),
-                Price = new Money(r.last, context.Pair.Asset2)
-            };
-
-            return latestPrice;
+            return new LatestPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
         }
 
         public BuyResult Buy(BuyContext ctx)

@@ -119,14 +119,7 @@ namespace Prime.Plugins.Services.Coinone
 
             CheckResponseErrors(r);
 
-            var price = new LatestPrice()
-            {
-                UtcCreated = DateTime.UtcNow,
-                Price = new Money(r.last, krwAsset),
-                QuoteAsset = context.Pair.Asset1
-            };
-
-            return price;
+            return new LatestPrice(context.Pair, r.last);
         }
 
         public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -155,12 +148,7 @@ namespace Prime.Plugins.Services.Coinone
                 if(!r.TryGetValue(pair.Asset1.ShortCode.ToLower(), out ticker))
                     throw new ApiResponseException($"Exchange does not support {pair} currency pair", this);
 
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    Price = new Money(ticker.last, pair.Asset2),
-                    QuoteAsset = pair.Asset1
-                });
+                prices.Add(new LatestPrice(pair, ticker.last));
             }
 
             return prices;
