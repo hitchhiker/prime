@@ -3,16 +3,16 @@ using LiteDB;
 
 namespace Prime.Common.Exchange.Rates
 {
-    public class LatestPriceRequestMessage : RenewableSubscribeMessageBase
+    public class LatestPriceRequestSubscription : RenewableSubscribeMessageBase
     {
         public readonly AssetPair Pair;
         public readonly Network Network;
 
-        public LatestPriceRequestMessage(ObjectId subscriberId, SubscriptionType type = SubscriptionType.KeepAlive) : base(subscriberId, type)
+        public LatestPriceRequestSubscription(ObjectId subscriberId, SubscriptionType type = SubscriptionType.KeepAlive) : base(subscriberId, type)
         {
         }
 
-        public LatestPriceRequestMessage(ObjectId subscriberId, AssetPair pair, Network network = null, SubscriptionType type = SubscriptionType.Subscribe) : base(subscriberId, type)
+        public LatestPriceRequestSubscription(ObjectId subscriberId, AssetPair pair, Network network = null, SubscriptionType type = SubscriptionType.Subscribe) : base(subscriberId, type)
         {
             Pair = pair;
             Network = network;
@@ -24,7 +24,7 @@ namespace Prime.Common.Exchange.Rates
 
         public override bool IsEquivalent(SubscribeMessageBase smb)
         {
-            if (!(smb is LatestPriceRequestMessage o))
+            if (!(smb is LatestPriceRequestSubscription o))
                 return false;
 
             return Equals(o.Pair, Pair) && (o.Network == null && Network == null || Equals(o.Network, Network));

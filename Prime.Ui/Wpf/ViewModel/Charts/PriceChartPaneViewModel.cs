@@ -82,9 +82,8 @@ namespace Prime.Ui.Wpf.ViewModel
 
             M.UnregisterD(this);
 
-            if (!m.Providers.Providers.Any())
+            if (m.IsFailed)
             {
-
                 SetDataStatus("No providers found", false);
                 return;
             }

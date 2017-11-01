@@ -39,7 +39,7 @@ namespace Prime.Ui.Wpf.ViewModel
             GoCommand = new RelayCommand(AddRequestDebounced);
         }
 
-        private readonly List<LatestPriceRequestMessage> _requests = new List<LatestPriceRequestMessage>();
+        private readonly List<LatestPriceRequestSubscription> _requests = new List<LatestPriceRequestSubscription>();
         private readonly DebouncerDispatched _debouncer;
         public AllAssetsViewModel AllAssetsViewModel { get; }
         
@@ -172,14 +172,14 @@ namespace Prime.Ui.Wpf.ViewModel
 
             ConversionDate = DateTime.Now;
             ResultViewModel = new ExchangeRateResultViewModel();
-            M.Send(new LatestPriceRequestMessage(Id, new AssetPair(AssetLeft, AssetRight)));
+            M.Send(new LatestPriceRequestSubscription(Id, new AssetPair(AssetLeft, AssetRight)));
         }
 
         public BindingList<LatestPriceResultMessage> ExchangeRates { get; } = new BindingList<LatestPriceResultMessage>();
 
         public override void Dispose()
         {
-            M.Send(new LatestPriceRequestMessage(Id, SubscriptionType.UnsubscribeAll));
+            M.Send(new LatestPriceRequestSubscription(Id, SubscriptionType.UnsubscribeAll));
             M.UnregisterAsync(this);
             base.Dispose();
         }

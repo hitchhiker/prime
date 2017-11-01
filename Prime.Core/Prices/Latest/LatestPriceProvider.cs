@@ -14,7 +14,10 @@ namespace Prime.Core
         private readonly LatestPriceProviderContext _context;
         private readonly IPublicPriceProvider _provider;
         private readonly IPublicPricesProvider _providerS;
-        private readonly bool _multiPrice;
+        private readonly IPublicAssetPricesProvider _providerA;
+        private readonly bool _hasPrices;
+        private readonly bool _hasPrice;
+        private readonly bool _hasPriceA;
         private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
@@ -25,10 +28,18 @@ namespace Prime.Core
         public LatestPriceProvider(LatestPriceProviderContext context)
         {
             _context = context;
-            _provider = context.Provider;
+            _provider = context.Provider as IPublicPriceProvider;
             _providerS = context.Provider as IPublicPricesProvider;
-            _multiPrice = _providerS != null;
-            Network = _provider.Network;
+            _providerA = context.Provider as IPublicAssetPricesProvider;
+
+            if (context.Provider == null)
+                throw new ArgumentException($"{nameof(context.Provider)} is null in {GetType()}");
+
+            _hasPrices = _providerS != null;
+            _hasPriceA = _providerA != null;
+            _hasPrice = _provider != null || _providerA != null;
+
+            Network = context.Provider.Network;
             _messenger = context.Aggregator.M;
             _timer = new Timer(10) {AutoReset = false};
             _timer.Elapsed += delegate { UpdateTick(); };
@@ -99,7 +110,7 @@ namespace Prime.Core
             if (_isDisposed)
                 return;
 
-            var hasresult = _multiPrice ? RequestMultipleEntries() : RequestSingleEntries();
+            var hasresult = ((_hasPrices && _pairRequests.Count>1) || !_hasPrice) ? RequestMultipleEntries() : RequestSingleEntries();
 
             if (hasresult && !_isDisposed)
                 _messenger.Send(new LatestPricesUpdatedMessage());
@@ -114,7 +125,8 @@ namespace Prime.Core
                 if (_isDisposed)
                     return false;
 
-                var r = ApiCoordinator.GetPrice(_provider, new PublicPriceContext(pair));
+                var r = _hasPriceA ? ApiCoordinator.GetPrice(_providerA, new PublicPriceContext(pair)) : ApiCoordinator.GetPrice(_provider, new PublicPriceContext(pair));
+
                 if (r.IsNull)
                 {
                     IsFailing = true;
