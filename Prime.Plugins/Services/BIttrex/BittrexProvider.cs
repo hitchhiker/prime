@@ -5,13 +5,16 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.History;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPricesProvider
+    public class BittrexProvider : 
+        IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPricesProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;

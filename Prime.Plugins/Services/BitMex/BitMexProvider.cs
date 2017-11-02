@@ -5,13 +5,18 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.Confirmation;
+using Prime.Common.Wallet.Withdrawal.History;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class BitMexProvider : 
+        IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
+        IWithdrawalPlacementProviderExtended<string>, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider<bool>, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -318,6 +323,27 @@ namespace Prime.Plugins.Services.BitMex
         private string GetBitMexTicker(AssetPair pair)
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
+        }
+
+        public bool IsFeeIncluded => false;
+        public Task<string> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WithdrawalHistoryEntry> GetWithdrawalHistory(WithdrawalHistoryContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CancelWithdrawal(WithdrawalCancelationContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ConfirmWithdrawal(WithdrawalConfirmationContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
