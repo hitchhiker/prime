@@ -156,6 +156,7 @@
     <Compile Include="Providers\BitMexTests.cs" />
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
+    <Compile Include="Providers\CexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\GdaxTests.cs" />
