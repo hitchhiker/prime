@@ -13,6 +13,11 @@ namespace Prime.Core
     {
         private readonly LatestPriceProviderContext _context;
         private readonly IPublicPriceProvider _provider;
+        private readonly IPublicPricesProvider _providerS;
+        private readonly IPublicAssetPricesProvider _providerA;
+        private readonly bool _hasPrices;
+        private readonly bool _hasPrice;
+        private readonly bool _hasPriceA;
         private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
@@ -23,8 +28,18 @@ namespace Prime.Core
         public LatestPriceProvider(LatestPriceProviderContext context)
         {
             _context = context;
-            _provider = context.Provider;
-            Network = _provider.Network;
+            _provider = context.Provider as IPublicPriceProvider;
+            _providerS = context.Provider as IPublicPricesProvider;
+            _providerA = context.Provider as IPublicAssetPricesProvider;
+
+            if (context.Provider == null)
+                throw new ArgumentException($"{nameof(context.Provider)} is null in {GetType()}");
+
+            _hasPrices = _providerS != null;
+            _hasPriceA = _providerA != null;
+            _hasPrice = _provider != null || _providerA != null;
+
+            Network = context.Provider.Network;
             _messenger = context.Aggregator.M;
             _timer = new Timer(10) {AutoReset = false};
             _timer.Elapsed += delegate { UpdateTick(); };
@@ -95,7 +110,7 @@ namespace Prime.Core
             if (_isDisposed)
                 return;
 
-            var hasresult = RequestSingleEntries();
+            var hasresult = ((_hasPrices && _pairRequests.Count>1) || !_hasPrice) ? RequestMultipleEntries() : RequestSingleEntries();
 
             if (hasresult && !_isDisposed)
                 _messenger.Send(new LatestPricesUpdatedMessage());
@@ -110,7 +125,8 @@ namespace Prime.Core
                 if (_isDisposed)
                     return false;
 
-                var r = ApiCoordinator.GetPrice(_provider, new PublicPriceContext(pair));
+                var r = _hasPriceA ? ApiCoordinator.GetPrice(_providerA, new PublicPriceContext(pair)) : ApiCoordinator.GetPrice(_provider, new PublicPriceContext(pair));
+
                 if (r.IsNull)
                 {
                     IsFailing = true;
@@ -121,36 +137,42 @@ namespace Prime.Core
                     return false;
 
                 hasresult = true;
-                SendResults(pair, r.Response);
+                SendResults(r.Response);
             }
             return hasresult;
         }
-        /*
+        
         private bool RequestMultipleEntries()
         {
             var hasresult = false;
 
-            foreach (var pair in _pairRequests)
-            {
-                var r = ApiCoordinator.GetLatestPrices(_provider, new PublicAssetPricesContext(_pairRequests));
-                if (r.IsNull)
-                {
-                    IsFailing = true;
-                    continue;
-                }
+            if (_isDisposed)
+                return false;
 
+            var r = ApiCoordinator.GetPrices(_providerS, new PublicPricesContext(_pairRequests));
+            if (r.IsNull)
+            {
+                IsFailing = true;
+                return false;
+            }
+
+            if (_isDisposed)
+                return false;
+
+            foreach (var lp in r.Response)
+            {
                 if (_isDisposed)
                     return false;
 
                 hasresult = true;
-                AddResult(pair, r.Response);
+                SendResults(lp);
             }
             return hasresult;
-        }*/
+        }
 
-        private void SendResults(AssetPair pair, LatestPrice response)
+        private void SendResults(LatestPrice response)
         {
-            var requests = _verifiedRequests.Where(x => x.PairForProvider.Equals(pair));
+            var requests = _verifiedRequests.Where(x => x.PairForProvider.Equals(response.Pair));
 
             foreach (var request in requests)
                 SendResults(response, request);
@@ -169,10 +191,10 @@ namespace Prime.Core
             _messenger.SendAsync(resultMsg);
             
             if (request.IsConverted)
-                SendConverted(priceNormalised, request);
+                SendConverted(request);
         }
 
-        private void SendConverted(LatestPrice price, LatestPriceRequest request)
+        private void SendConverted(LatestPriceRequest request)
         {
             if (request.ConvertedOther?.LastResult == null || request.ConvertedOther?.LastPrice == null)
                 return;

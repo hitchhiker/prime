@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Common.Exchange.Rates
 {
-    public class LatestPriceAggregator
+    public class LatestPriceAggregator : IDisposable
     {
         private readonly LatestPriceMessenger _lpm;
         private readonly List<LatestPriceProvider> _providers = new List<LatestPriceProvider>();
@@ -21,6 +21,8 @@ namespace Prime.Common.Exchange.Rates
         internal LatestPriceAggregator(LatestPriceMessenger lpm)
         {
             _lpm = lpm;
+            M.RegisterAsync<InternalLatestPriceRequestVerifiedMessage>(this, LatestPriceRequestVerifiedMessage);
+            M.RegisterAsync<LatestPriceResultMessage>(this, LatestPriceResultMessage);
         }
 
         internal void LatestPriceRequestVerifiedMessage(InternalLatestPriceRequestVerifiedMessage m)
@@ -80,6 +82,9 @@ namespace Prime.Common.Exchange.Rates
             lock (_commonLock)
             {
                 var prov = network.PublicPriceProviders.FirstProvider();
+                if (prov == null)
+                    throw new Exception($"Can't find {nameof(IPublicPriceSuper)} for {network.Name}");
+
                 var erprov = new LatestPriceProvider(new LatestPriceProviderContext(prov, this) {PollingSpan = TimeSpan.FromMilliseconds(_timerInterval)});
                 _providers.Add(erprov);
                 return erprov;
@@ -98,6 +103,11 @@ namespace Prime.Common.Exchange.Rates
         public LatestPriceResultMessage GetResult(AssetPair pair)
         {
             return Results().FirstOrDefault(x => x.Pair.Equals(pair));
+        }
+
+        public void Dispose()
+        {
+            M.UnregisterAsync(this);
         }
     }
 }

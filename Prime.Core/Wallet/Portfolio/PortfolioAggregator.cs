@@ -23,7 +23,7 @@ namespace Prime.Common.Wallet
             M.Register<QuoteAssetChangedMessage>(this, BaseAssetChanged);
             _debouncer = new Debouncer();
             _timer = new TimerIrregular(TimeSpan.FromSeconds(30), KeepPricesSubscriptionAlive);
-            _keepAlive = new LatestPriceRequestMessage(_id);
+            _keepAlive = new LatestPriceRequestSubscription(_id);
         }
 
         private readonly ObjectId _id;
@@ -34,7 +34,7 @@ namespace Prime.Common.Wallet
         private readonly List<PortfolioProvider> _scanners;
         public readonly UserContext Context;
         private readonly object _lock = new object();
-        private readonly LatestPriceRequestMessage _keepAlive;
+        private readonly LatestPriceRequestSubscription _keepAlive;
 
         private Asset _quoteAsset;
         private readonly UniqueList<PortfolioLineItem> _items = new UniqueList<PortfolioLineItem>();
@@ -76,11 +76,11 @@ namespace Prime.Common.Wallet
                 _timer.Start();
 
                 M.RegisterAsync<LatestPriceResultMessage>(this, IncomingLatestPrice);
-                M.RegisterAsync<LatestPriceRequestMessage>(this, QuickFindPrice);
+                M.RegisterAsync<LatestPriceRequestSubscription>(this, QuickFindPrice);
             }
         }
 
-        private void QuickFindPrice(LatestPriceRequestMessage message)
+        private void QuickFindPrice(LatestPriceRequestSubscription message)
         {
             if (message.Pair == null || message.SubscriptionType != SubscriptionType.Subscribe)
                 return;
@@ -109,7 +109,7 @@ namespace Prime.Common.Wallet
                 _queryingProviders.Clear();
                 UtcLastUpdated = DateTime.MinValue;
 
-                M.SendAsync(new LatestPriceRequestMessage(_id, SubscriptionType.UnsubscribeAll));
+                M.SendAsync(new LatestPriceRequestSubscription(_id, SubscriptionType.UnsubscribeAll));
                 M.UnregisterAsync(this);
 
                 SendChangedMessageDebounced();
@@ -248,7 +248,7 @@ namespace Prime.Common.Wallet
                     continue;
 
                 subscribed.Add(pair);
-                M.SendAsync(new LatestPriceRequestMessage(_id, pair));
+                M.SendAsync(new LatestPriceRequestSubscription(_id, pair));
             }
         }
 

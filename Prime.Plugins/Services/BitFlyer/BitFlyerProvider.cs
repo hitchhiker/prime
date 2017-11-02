@@ -49,14 +49,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
             var r = await api.GetTicker(productCode);
 
-            var latestPrice = new LatestPrice()
-            {
-                Price = new Money(r.ltp, context.Pair.Asset2),
-                QuoteAsset = context.Pair.Asset1,
-                UtcCreated = DateTime.UtcNow
-            };
-
-            return latestPrice;
+            return new LatestPrice(context.Pair, r.ltp);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

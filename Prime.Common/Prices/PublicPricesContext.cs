@@ -5,9 +5,9 @@ namespace Prime.Common
 {
     public class PublicPricesContext : NetworkProviderContext
     {
-        public readonly List<AssetPair> Pairs;
+        public readonly IList<AssetPair> Pairs;
 
-        public PublicPricesContext(List<AssetPair> pairs, ILogger logger = null) : base(logger)
+        public PublicPricesContext(IList<AssetPair> pairs, ILogger logger = null) : base(logger)
         {
             Pairs = pairs;
         }

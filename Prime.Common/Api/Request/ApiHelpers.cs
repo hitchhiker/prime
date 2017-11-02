@@ -18,19 +18,19 @@ namespace Prime.Common
                 EnterRate(provider, context);
                 var sw = new Stopwatch();
                 sw.Start();
-                context.L.Trace("Api: " + provider.Network + " " + name);
+                context.L.Trace("Api: " + provider.Title + " " + name);
                 var response = await t.Invoke();
-                context.L.Trace("Api finished @ " + sw.ToElapsed() + " : " + provider.Network + " " + name);
+                context.L.Trace("Api finished @ " + sw.ToElapsed() + " : " + provider.Title + " " + name);
                 return new ApiResponse<T>(response);
             }
             catch (ApiResponseException ae)
             {
-                context.L.Error("Api Error: " + provider.Network + " " + name + ": " + ae.Message);
+                context.L.Error("Api Error: " + provider.Title + " " + name + ": " + ae.Message);
                 return new ApiResponse<T>(ae.Message);
             }
             catch (Exception e)
             {
-                context.L.Error("Api Error: " + provider.Network + " " + name + ": " + e.Message);
+                context.L.Error("Api Error: " + provider.Title + " " + name + ": " + e.Message);
                 return new ApiResponse<T>(e);
             }
         }

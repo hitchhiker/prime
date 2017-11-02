@@ -41,14 +41,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             CheckNullableResult(r.last, String.Format(ErroTextrNoLatestValueForPair, context.Pair.TickerDash()));
 
-            var latestPrice = new LatestPrice()
-            {
-                UtcCreated = DateTime.UtcNow,
-                QuoteAsset = context.Pair.Asset1,
-                Price = new Money(r.last.Value, context.Pair.Asset2)
-            };
-
-            return latestPrice;
+            return new LatestPrice(context.Pair, r.last.Value);
         }
 
         public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -76,12 +69,7 @@ namespace Prime.Plugins.Services.HitBtc
 
                 CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
 
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    QuoteAsset = pair.Asset1,
-                    Price = new Money(ticker.Value.last.Value, pair.Asset2)
-                });
+                prices.Add(new LatestPrice(pair, ticker.Value.last.Value));
             }
 
             return prices;

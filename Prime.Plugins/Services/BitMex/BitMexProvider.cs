@@ -5,13 +5,18 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.Confirmation;
+using Prime.Common.Wallet.Withdrawal.History;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class BitMexProvider : 
+        IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
+        IWithdrawalPlacementProviderExtended<string>, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider<bool>, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -108,12 +113,7 @@ namespace Prime.Plugins.Services.BitMex
             if (r.lastPrice.HasValue == false)
                 throw new ApiResponseException("No last price for currency", this);
 
-            var latestPrice = new LatestPrice
-            {
-                QuoteAsset = context.Pair.Asset1,
-                Price = new Money(r.lastPrice.Value, context.Pair.Asset2),
-                UtcCreated = r.timestamp
-            };
+            var latestPrice = new LatestPrice(context.Pair, r.lastPrice.Value);
 
             return latestPrice;
         }
@@ -144,12 +144,7 @@ namespace Prime.Plugins.Services.BitMex
                 if (data == null || data.lastPrice.HasValue == false)
                     throw new ApiResponseException("No price returned for selected currency", this);
 
-                prices.Add(new LatestPrice()
-                {
-                    UtcCreated = DateTime.UtcNow,
-                    Price = new Money(data.lastPrice.Value, pair.Asset2),
-                    QuoteAsset = pair.Asset1
-                });
+                prices.Add(new LatestPrice(pair, data.lastPrice.Value));
             }
 
             return prices;
@@ -328,6 +323,27 @@ namespace Prime.Plugins.Services.BitMex
         private string GetBitMexTicker(AssetPair pair)
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
+        }
+
+        public bool IsFeeIncluded => false;
+        public Task<string> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WithdrawalHistoryEntry> GetWithdrawalHistory(WithdrawalHistoryContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CancelWithdrawal(WithdrawalCancelationContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ConfirmWithdrawal(WithdrawalConfirmationContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

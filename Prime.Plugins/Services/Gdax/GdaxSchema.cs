@@ -1,10 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Prime.Plugins.Services.Coinbase
+namespace Prime.Plugins.Services.Gdax
 {
     internal class GdaxSchema
     {
         internal class ProductsResponse : List<ProductResponse> { }
+
+        internal class ProductTickerResponse
+        {
+            public long trade_id;
+            public decimal price;
+            public decimal size;
+            public decimal bid;
+            public decimal ask;
+            public decimal volume;
+            public DateTime time;
+        }
 
         internal class ProductResponse
         {

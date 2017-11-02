@@ -80,15 +80,7 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            var money = new Money(r.result.FirstOrDefault().Value.c[0], context.Pair.Asset2);
-            var price = new LatestPrice()
-            {
-                Price = money,
-                QuoteAsset = context.Pair.Asset1,
-                UtcCreated = DateTime.Now
-            };
-
-            return price;
+            return new LatestPrice(context.Pair, r.result.FirstOrDefault().Value.c[0]);
         }
 
 
