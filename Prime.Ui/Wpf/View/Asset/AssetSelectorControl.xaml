@@ -8,8 +8,7 @@
           Width="200" Height="25" 
           IsEditable="True" 
           IsSynchronizedWithCurrentItem="False" 
-          IsTextSearchEnabled="True" 
-          TextSearch.TextPath="Asset">
+          DropDownOpened="AssetSelectorControl_OnDropDownOpened" DisplayMemberPath="Asset" IsTextSearchEnabled="False" KeyUp="AssetSelectorControl_OnKeyUp">
     <ComboBox.GroupStyle>
         <GroupStyle>
             <GroupStyle.HeaderTemplate>
@@ -24,7 +23,7 @@
             </GroupStyle.Panel>
         </GroupStyle>
     </ComboBox.GroupStyle>
-    <ComboBox.ItemTemplate>
+    <!--<ComboBox.ItemTemplate>
         <DataTemplate>
             <TextBlock x:Name="Section" Text="{Binding Asset}" Padding="15,0,0,0"/>
             <DataTemplate.Triggers>
@@ -33,7 +32,7 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
-    </ComboBox.ItemTemplate>
+    </ComboBox.ItemTemplate>-->
     <ComboBox.ItemsPanel>
         <ItemsPanelTemplate>
             <StackPanel Orientation="Vertical" IsItemsHost="True"/>
