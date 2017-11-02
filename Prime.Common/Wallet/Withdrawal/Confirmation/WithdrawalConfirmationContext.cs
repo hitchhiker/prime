@@ -7,11 +7,11 @@ namespace Prime.Common.Wallet.Withdrawal.Confirmation
 {
     public class WithdrawalConfirmationContext : NetworkProviderContext
     {
-        public WithdrawalConfirmationContext(string transactionId, ILogger logger = null) : base(logger)
+        public WithdrawalConfirmationContext(string withdrawalId, ILogger logger = null) : base(logger)
         {
-            TransactionId = transactionId;
+            WithdrawalId = withdrawalId;
         }
 
-        public string TransactionId { get; set; }
+        public string WithdrawalId { get; set; }
     }
 }
