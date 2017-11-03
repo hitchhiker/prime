@@ -36,6 +36,7 @@ namespace Prime.Plugins.Services.Bittrex
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool CanMultiDepositAddress => false;
+        public bool IsDirect => true;
 
         /// <summary>
         /// Only allows new address generating if it is empty. Otherwise only peeking.

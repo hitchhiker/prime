@@ -10,17 +10,17 @@ namespace Prime.Common
     {
         public static OpResult SavePublic<T>(this T doc) where T : IModelBase
         {
-            return OpResult.From();
+            return Save(doc, PublicContext.I);
         }
 
         public static OpResult DeletePublic<T>(this T doc) where T : IModelBase
         {
-            return OpResult.From();
+            return Delete(doc, PublicContext.I);
         }
 
         public static OpResult Save<T>(this T doc, IDataContext context) where T : IModelBase
         {
-            return OpResult.From();
+            return OpResult.From(context.GetDb().Upsert(doc));
         }
 
         public static OpResult SaveAll<T>(this IEnumerable<T> docs, IDataContext context) where T : IModelBase
@@ -30,7 +30,7 @@ namespace Prime.Common
 
         public static OpResult Delete<T>(this T doc, IDataContext context) where T : IModelBase
         {
-            return OpResult.From();
+            return OpResult.From(context.GetDb().Delete<T>(doc.Id));
         }
 
         public static T FirstOrDefault<T>(this LiteQueryable<T> query,  Expression<Func<T, bool>> predicate)

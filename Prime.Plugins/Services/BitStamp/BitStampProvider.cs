@@ -31,6 +31,7 @@ namespace Prime.Plugins.Services.BitStamp
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        public bool IsDirect => true;
 
         public bool CanMultiDepositAddress => false;
         public bool CanGenerateDepositAddress => false;

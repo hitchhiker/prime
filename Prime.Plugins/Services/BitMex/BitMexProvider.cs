@@ -31,6 +31,7 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
 
         public IRateLimiter RateLimiter => Limiter;
+        public bool IsDirect => true;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool CanMultiDepositAddress => false;

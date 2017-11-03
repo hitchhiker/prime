@@ -20,6 +20,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => _limiter;
+        public bool IsDirect => true;
 
         public Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {

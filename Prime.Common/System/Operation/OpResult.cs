@@ -2,7 +2,9 @@ namespace Prime.Common
 {
     public class OpResult
     {
-        public bool IsSuccess { get; set; }
+        public bool IsSuccess { get; private set; }
+
+        public int InsertedDeletedCount { get; private set; }
 
         public static OpResult Success => new OpResult() {IsSuccess = true};
 
@@ -13,11 +15,14 @@ namespace Prime.Common
             return new OpResult() {IsSuccess = true};
         }
 
-        public static OpResult From(int count)
+        public static OpResult From(bool count)
         {
-            return new OpResult() {IsSuccess = true, ReturnedCount = count };
+            return new OpResult() { IsSuccess = true, InsertedDeletedCount = count ? 1 : 0 };
         }
 
-        public int ReturnedCount { get; private set; }
+        public static OpResult From(int count)
+        {
+            return new OpResult() {IsSuccess = true, InsertedDeletedCount = count };
+        }
     }
 }

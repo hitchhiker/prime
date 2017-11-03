@@ -1,20 +1,22 @@
 ﻿using System;
-using Prime.Utility;
+using Prime.Common;
+using Prime.Common.Exchange.Rates;
+using Prime.Core.Prices.Latest;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core
 {
-    public class LatestPriceProviderContext
+    internal sealed class LatestPriceProviderContext
     {
-        public LatestPriceProviderContext(IPublicPriceSuper provider, LatestPriceAggregator aggregator)
+        internal LatestPriceProviderContext(IPublicPriceSuper provider, Aggregator aggregator)
         {
             Provider = provider;
             Aggregator = aggregator;
             Network = provider?.Network;
         }
 
-        public readonly Network Network;
-        public TimeSpan PollingSpan { get; set; } = new TimeSpan(0, 0, 15);
-        public IPublicPriceSuper Provider { get; private set; }
-        public LatestPriceAggregator Aggregator { get; private set; }
+        internal readonly Network Network;
+        internal TimeSpan PollingSpan { get; set; } = new TimeSpan(0, 0, 15);
+        internal IPublicPriceSuper Provider { get; private set; }
+        internal Aggregator Aggregator { get; private set; }
     }
 }

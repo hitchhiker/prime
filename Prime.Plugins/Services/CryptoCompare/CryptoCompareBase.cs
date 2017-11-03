@@ -9,7 +9,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.CryptoCompare
 {
-    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicAssetPricesProvider
+    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicAssetPricesProvider, IProxyProvider
     {
         public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
         public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
@@ -22,7 +22,11 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         public int Priority => 200;
 
-        public virtual string AggregatorName => "CryptoCompare";
+        public virtual string AggregatorName => ProxyName;
+
+        public virtual string ProxyName => "CryptoCompare";
+
+        public bool IsDirect => false;
 
         private string _title;
         public virtual string Title => _title ?? (_title = Name + " (" + AggregatorName + ")");

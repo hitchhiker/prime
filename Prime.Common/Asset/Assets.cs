@@ -59,9 +59,9 @@ namespace Prime.Common
             return _cache.Values.ToUniqueList();
         }
 
-        public async Task<UniqueList<Asset>> GetAllPrivateAsync()
+        public async Task<UniqueList<Asset>> GetAllAsync(bool onlyPrivate = false)
         {
-            var r = await AssetPairProvider.I.GetAllFromPrivateAsync();
+            var r = await AssetPairProvider.I.GetPairsAsync(true);
             return r.Select(x => x.Asset1).Union(r.Select(x => x.Asset2)).ToUniqueList();
         }
     }

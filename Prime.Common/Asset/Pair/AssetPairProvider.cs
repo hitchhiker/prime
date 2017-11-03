@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,42 +17,45 @@ namespace Prime.Common
 
         private readonly CacheDictionary<IAssetPairsProvider, AssetPairs> _cache = new CacheDictionary<IAssetPairsProvider, AssetPairs>(TimeSpan.FromHours(12));
 
-        public IReadOnlyList<AssetPair> GetAllFromPrivate()
+        public IReadOnlyList<Network> GetNetworks(AssetPair pair, bool onlyPrivate = false)
         {
-            return AsyncContext.Run(() => GetAllFromPrivate());
+           return AsyncContext.Run(() => GetNetworksAsync(pair, onlyPrivate));
         }
 
-        public async Task<IReadOnlyList<AssetPair>> GetAllFromPrivateAsync()
+        public async Task<IReadOnlyList<Network>> GetNetworksAsync(AssetPair pair, bool onlyPrivate = false)
         {
-            var pairs = new UniqueList<AssetPair>();
-            foreach (var prov in Networks.I.AssetPairsProviders.WithApi())
+            var provs = new List<Network>();
+            var q = onlyPrivate ? Networks.I.AssetPairsProviders.WithApi() : (IEnumerable<INetworkProvider>)Networks.I.AssetPairsProviders;
+            foreach (var n in q.Select(x=>x.Network).Distinct())
             {
-                var r = await GetPairsAsync(prov.Network);
-                pairs.AddRange(r);
-            }
-            return pairs;
-        }
-
-        public IReadOnlyList<IAssetPairsProvider> GetProvidersFromPrivate(AssetPair pair)
-        {
-           return AsyncContext.Run(() => GetProvidersFromPrivateAsync(pair));
-        }
-
-        public async Task<IReadOnlyList<IAssetPairsProvider>> GetProvidersFromPrivateAsync(AssetPair pair)
-        {
-            var provs = new List<IAssetPairsProvider>();
-            foreach (var prov in Networks.I.AssetPairsProviders.WithApi())
-            {
-                var r = await GetPairsAsync(prov.Network);
+                var r = await GetPairsAsync(n);
                 if (r.Contains(pair))
-                    provs.Add(prov);
+                    provs.Add(n);
             }
             return provs;
         }
 
+        public IReadOnlyList<AssetPair> GetPairs(bool onlyPrivate = false)
+        {
+            return AsyncContext.Run(() => GetPairs(onlyPrivate));
+        }
+
+        public async Task<IReadOnlyList<AssetPair>> GetPairsAsync(bool onlyPrivate = false)
+        {
+            var pairs = new UniqueList<AssetPair>();
+            var q = onlyPrivate ? Networks.I.AssetPairsProviders.WithApi() : (IEnumerable<IAssetPairsProvider>)Networks.I.AssetPairsProviders;
+            foreach (var prov in q)
+            {
+                var r = await GetPairsAsync(prov.Network);
+                if (r!=null)
+                    pairs.AddRange(r);
+            }
+            return pairs;
+        }
+
         public async Task<AssetPairs> GetPairsAsync(Network network)
         {
-            var prov = network?.Providers.OfType<IExchangeProvider>().FirstOrDefault();
+            var prov = network?.Providers.OfType<IAssetPairsProvider>().FirstProvider();
             if (prov == null)
             {
                 Logging.I.DefaultLogger.Error($"An instance of {nameof(IAssetPairsProvider)} cannot be located for {network.Name}");
@@ -62,7 +66,7 @@ namespace Prime.Common
             {
                 return _cache.Try(prov, k =>
                 {
-                    var r = AsyncContext.Run(() => ApiCoordinator.GetAssetPairsAsync(k));
+                    var r = ApiCoordinator.GetAssetPairs(k);
                     return r.Response ?? new AssetPairs();
                 });
             });

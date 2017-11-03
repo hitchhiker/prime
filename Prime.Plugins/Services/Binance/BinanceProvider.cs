@@ -25,6 +25,7 @@ namespace Prime.Plugins.Services.Binance
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
+        public bool IsDirect => true;
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;

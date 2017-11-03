@@ -29,6 +29,7 @@ namespace Prime.Plugins.Services.Gdax
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(180, 1, 300, 1);
 
         public IRateLimiter RateLimiter => Limiter;
+        public bool IsDirect => true;
 
         private RestApiClientProvider<IGdaxApi> ApiProvider { get; }
 

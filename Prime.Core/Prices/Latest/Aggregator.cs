@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Core;
+using Prime.Common;
+using Prime.Common.Exchange.Rates;
+using Prime.Core.Prices.Latest.Messages;
 using Prime.Utility;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core.Prices.Latest
 {
-    public class LatestPriceAggregator : IDisposable
+    internal class Aggregator : IDisposable
     {
-        private readonly LatestPriceMessenger _lpm;
+        private readonly Messenger _lpm;
         private readonly List<LatestPriceProvider> _providers = new List<LatestPriceProvider>();
         private readonly List<LatestPriceResultMessage> _results = new List<LatestPriceResultMessage>();
         private readonly object _resultsLock = new object();
@@ -18,14 +19,14 @@ namespace Prime.Common.Exchange.Rates
         private readonly int _timerInterval = 5000;
         public IMessenger M { get; } = DefaultMessenger.I.Default;
 
-        internal LatestPriceAggregator(LatestPriceMessenger lpm)
+        internal Aggregator(Messenger lpm)
         {
             _lpm = lpm;
-            M.RegisterAsync<InternalLatestPriceRequestVerifiedMessage>(this, LatestPriceRequestVerifiedMessage);
+            M.RegisterAsync<VerifiedMessage>(this, LatestPriceRequestVerifiedMessage);
             M.RegisterAsync<LatestPriceResultMessage>(this, LatestPriceResultMessage);
         }
 
-        internal void LatestPriceRequestVerifiedMessage(InternalLatestPriceRequestVerifiedMessage m)
+        internal void LatestPriceRequestVerifiedMessage(VerifiedMessage m)
         {
             SyncProviders();
         }
@@ -34,9 +35,7 @@ namespace Prime.Common.Exchange.Rates
         {
             lock (_resultsLock)
             {
-                var e = _results.FirstOrDefault(x => x.Pair.Equals(result.Pair) && (x.Provider.Id == result.Provider.Id || x.ProviderConversion?.Id == result.Provider.Id));
-                if (e != null)
-                    _results.Remove(e);
+                _results.RemoveAll(x => x.IsSimilarRequest(result));
                 _results.Add(result);
             }
         }
@@ -81,7 +80,7 @@ namespace Prime.Common.Exchange.Rates
         {
             lock (_commonLock)
             {
-                var prov = network.PublicPriceProviders.FirstProvider();
+                var prov = network.PublicPriceProviders.FirstDirectProvider();
                 if (prov == null)
                     throw new Exception($"Can't find {nameof(IPublicPriceSuper)} for {network.Name}");
 
