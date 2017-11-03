@@ -165,10 +165,10 @@ namespace Prime.Tests.Providers
                 var c = await provider.GetPriceAsync(PublicPriceContext);
 
                 Assert.IsTrue(c != null);
-                Assert.IsTrue(c.QuoteAsset.Equals(PublicPriceContext.Pair.Asset1));
-                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
+                Assert.IsTrue(c.QuoteAsset.Equals(PublicPriceContext.Pair.Asset2));
+                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset1));
 
-                Trace.WriteLine($"Latest price for {c.QuoteAsset}: {c.Price.Display}");
+                Trace.WriteLine($"Quote asset: {c.QuoteAsset}, Price: {c.Price.Display}");
             }
             catch (Exception e)
             {
@@ -200,8 +200,8 @@ namespace Prime.Tests.Providers
                 {
                     Assert.IsTrue(
                         c.Exists(
-                            x => x.QuoteAsset.Equals(requiredAsset) &&
-                                 x.Price.Asset.Equals(PublicAssetPricesContext.QuoteAsset)
+                            x => x.QuoteAsset.Equals(PublicAssetPricesContext.QuoteAsset) &&
+                                 x.Price.Asset.Equals(requiredAsset)
                         ),
                         $"Provider did not return {requiredAsset.ToPair(PublicAssetPricesContext.QuoteAsset)} price"
                     );
@@ -278,13 +278,13 @@ namespace Prime.Tests.Providers
 
                 foreach (var requiredPair in PublicPricesContext.Pairs)
                 {
-                    Assert.IsTrue(pairs.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset1)), $"Provider did not return {requiredPair} price");
+                    Assert.IsTrue(pairs.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset2)), $"Provider did not return {requiredPair} price");
                 }
 
                 Trace.WriteLine("Latest prices:");
                 foreach (var pair in pairs)
                 {
-                    Trace.WriteLine($"{pair.QuoteAsset}: {pair.Price.Display}");
+                    Trace.WriteLine($"Quote asset: {pair.QuoteAsset}, Price: {pair.Price.Display}");
                 }
             }
             catch (Exception e)

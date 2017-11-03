@@ -30,5 +30,38 @@ namespace Prime.Tests.Providers
 
             await base.TestGetAssetPairsAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetPriceAsync()
+        {
+            await base.TestGetPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "BTC_EUR".ToAssetPairRaw(),
+                "BTC_RUB".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw()
+            });
+            await base.TestGetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPricesAsync()
+        {
+            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            {
+                "GHS".ToAssetRaw(),
+                "ZEC".ToAssetRaw(),
+                "DASH".ToAssetRaw(),
+                "BCH".ToAssetRaw()
+            }, Asset.Btc);
+
+            await base.TestGetAssetPricesAsync();
+        }
     }
 }

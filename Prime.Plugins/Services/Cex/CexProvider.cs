@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -50,19 +51,47 @@ namespace Prime.Plugins.Services.Cex
             return pairs;
         }
 
-        public Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var pairCode = GetCexTicher(context.Pair);
+
+            var r = await api.GetLastPrice(pairCode);
+
+            return new LatestPrice(context.Pair, r.lprice);
         }
 
-        public Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        private string GetCexTicher(AssetPair pair)
         {
-            throw new NotImplementedException();
+            return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
 
-        public Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            throw new NotImplementedException();
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetLastPrices();
+            CheckResponseError(r);
+
+            var prices = new List<LatestPrice>();
+
+            foreach (var pair in context.Pairs)
+            {
+                var rPair = r.data.FirstOrDefault(x =>
+                    x.symbol1.ToAsset(this).Equals(pair.Asset1) && 
+                    x.symbol2.ToAsset(this).Equals(pair.Asset2));
+
+                if(rPair == null)
+                    throw new ApiResponseException($"{pair} pair is not supported by this API", this);
+
+                prices.Add(new LatestPrice(pair, rPair.lprice));
+            }
+
+            return prices;
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -73,6 +102,12 @@ namespace Prime.Plugins.Services.Cex
         public SellResult Sell(SellContext ctx)
         {
             throw new NotImplementedException();
+        }
+
+        private void CheckResponseError(CexSchema.BaseResponse response)
+        {
+            if(!response.ok.Equals("ok")) 
+                throw new ApiResponseException($"Error occurred in provider: {response.ok}", this);
         }
     }
 }
