@@ -6,11 +6,11 @@ namespace Prime.Common.Wallet.Withdrawal.History
 {
     public class WithdrawalHistoryContext : NetworkProviderContext
     {
-        public string Currency { get; set; }
+        public Asset Asset { get; set; }
 
         /// <summary>
         /// Optional. Some providers can use it.
         /// </summary>
-        public DateTime FromTime { get; set; }
+        public DateTime FromTimeUtc { get; set; }
     }
 }

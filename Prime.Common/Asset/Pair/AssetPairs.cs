@@ -16,7 +16,7 @@ namespace Prime.Common
             _pairs.AddRange(pairs);
         }
 
-        public AssetPairs(int length, string csv, IWalletService provider)
+        public AssetPairs(int length, string csv, IDescribesAssets provider)
         {
             foreach (var i in csv.ToCsv(true))
             {

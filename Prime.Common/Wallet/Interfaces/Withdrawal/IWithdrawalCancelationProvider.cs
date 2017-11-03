@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Prime.Common.Wallet.Withdrawal;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 
 namespace Prime.Common
 {
-    public interface IWithdrawalCancelationProvider<TResult>
+    public interface IWithdrawalCancelationProvider
     {
-        Task<TResult> CancelWithdrawal(WithdrawalCancelationContext context);
+        Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context);
     }
 }

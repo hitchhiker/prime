@@ -12,7 +12,7 @@ namespace Prime.Common
         }
 
         public string Address { get; set; }
-        public decimal Amount { get; set; }
-        public string Currency { get; set; }
+
+        public Money Price { get; set; }
     }
 }
