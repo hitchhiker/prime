@@ -14,7 +14,7 @@ namespace Prime.Core
         private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
         public bool IsFinished;
         private readonly object _lock = new object();
-        private AssetPairProviders _providers;
+        private AssetPairNetworks _providers;
 
         internal AssetPairDiscoveryProvider(AssetPairDiscoveryRequestMessage requestMessage)
         {
@@ -55,7 +55,7 @@ namespace Prime.Core
                              DiscoverIntermediary(pair);
         }
 
-        private AssetPairProviders DiscoverSpecified(AssetPair pair)
+        private AssetPairNetworks DiscoverSpecified(AssetPair pair)
         {
             if (_requestMessage.Network == null)
                 return null;
@@ -63,24 +63,24 @@ namespace Prime.Core
             return DiscoverSpecified(pair, _requestMessage.Network, false) ?? (_requestMessage.ReversalEnabled ? DiscoverSpecified(pair.Reverse(), _requestMessage.Network, true) : null);
         }
 
-        private static AssetPairProviders DiscoverSpecified(AssetPair pair, Network network, bool isReversed)
+        private static AssetPairNetworks DiscoverSpecified(AssetPair pair, Network network, bool isReversed)
         {
-            var provs = GetProviders(pair).Where(x => x.Network.Equals(network)).ToList();
-            return provs.Any() ? new AssetPairProviders(pair, provs, isReversed) : null;
+            var provs = GetProviders(pair).Where(x => x.Equals(network)).ToList();
+            return provs.Any() ? new AssetPairNetworks(pair, provs, isReversed) : null;
         }
 
-        private static AssetPairProviders Discover(AssetPair pair, bool canReverse)
+        private static AssetPairNetworks Discover(AssetPair pair, bool canReverse)
         {
             return DiscoverReversable(pair, false) ?? (canReverse ? DiscoverReversable(pair.Reverse(), true) : null);
         }
 
-        private static AssetPairProviders DiscoverReversable(AssetPair pair, bool isReversed)
+        private static AssetPairNetworks DiscoverReversable(AssetPair pair, bool isReversed)
         {
             var provs = GetProviders(pair);
-            return provs.Any() ? new AssetPairProviders(pair, provs, isReversed) : null;
+            return provs.Any() ? new AssetPairNetworks(pair, provs, isReversed) : null;
         }
 
-        private static AssetPairProviders DiscoverPegged(AssetPair pair, bool canReverse, bool canPeg)
+        private static AssetPairNetworks DiscoverPegged(AssetPair pair, bool canReverse, bool canPeg)
         {
             if (!canPeg)
                 return null;
@@ -88,7 +88,7 @@ namespace Prime.Core
             return DiscoverPeggedReversable(pair, false) ?? (canReverse ? DiscoverPeggedReversable(pair.Reverse(), true) : null);
         }
 
-        private static AssetPairProviders DiscoverPeggedReversable(AssetPair pair, bool isReversed)
+        private static AssetPairNetworks DiscoverPeggedReversable(AssetPair pair, bool isReversed)
         {
             // Try alternate / pegged variation
 
@@ -96,13 +96,13 @@ namespace Prime.Core
             {
                 var provs = GetProviders(ap);
                 if (provs.Any())
-                    return new AssetPairProviders(ap, provs, isReversed) {IsPegged = true};
+                    return new AssetPairNetworks(ap, provs, isReversed) {IsPegged = true};
             }
 
             return null;
         }
         
-        private AssetPairProviders DiscoverIntermediary(AssetPair pair)
+        private AssetPairNetworks DiscoverIntermediary(AssetPair pair)
         {
             if (!_requestMessage.ConversionEnabled)
                 return null;
@@ -110,12 +110,12 @@ namespace Prime.Core
             return DiscoverIntermediaries(pair, _requestMessage.PeggedEnabled);
         }
 
-        private static AssetPairProviders DiscoverIntermediaries(AssetPair pair, bool canPeg)
+        private static AssetPairNetworks DiscoverIntermediaries(AssetPair pair, bool canPeg)
         {
             return Intermediaries.Select(intermediary => DiscoverFromIntermediary(pair, intermediary, canPeg)).FirstOrDefault(provs => provs != null);
         }
 
-        private static AssetPairProviders DiscoverFromIntermediary(AssetPair originalPair, Asset intermediary, bool canPeg)
+        private static AssetPairNetworks DiscoverFromIntermediary(AssetPair originalPair, Asset intermediary, bool canPeg)
         {
             var pair = new AssetPair(originalPair.Asset1, intermediary);
 
@@ -133,18 +133,20 @@ namespace Prime.Core
             if (provs2 == null)
                 return null;
 
-            provs1.Via = provs2;
+            provs1.ConversionPart2 = provs2;
+            provs2.ConversionPart1 = provs1;
+
             return provs1;
         }
 
-        private static List<IPublicPriceSuper> GetProviders(AssetPair pair)
+        private static IReadOnlyList<Network> GetProviders(AssetPair pair)
         {
             /*var apd = PublicContext.I.PubData.GetAggAssetPairData(pair);
             var provs = apd.Exchanges.Count == 0 ? new List<IPublicPriceSuper>() : apd.AllProviders.OfType<IPublicPriceSuper>().DistinctBy(x => x.Id).ToList();
             if (provs.Any())
                 return provs;*/
 
-            return AssetPairProvider.I.GetProvidersFromPrivate(pair).OfType<IPublicPriceSuper>().ToList();
+            return AssetPairProvider.I.GetNetworks(pair).ToList();
         }
     }
 }

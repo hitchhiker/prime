@@ -2,17 +2,18 @@
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
 using Prime.Utility;
+using Prime.Utility.Misc;
 
 namespace Prime.Common.Exchange.Rates
 {
     public class LatestPriceResultMessage
     {
-        public readonly IPublicPriceSuper Provider;
-        public readonly IPublicPriceSuper ProviderConversion;
-
         public DateTime UtcCreated { get; }
         public AssetPair Pair { get; }
         public Money Price { get; }
+
+        public readonly IPublicPriceSuper Provider;
+        public readonly IPublicPriceSuper ProviderConversion;
 
         public Asset AssetConvert { get; }
         public Money PriceConvert1 { get; }
@@ -44,12 +45,12 @@ namespace Prime.Common.Exchange.Rates
             ProviderConversion = providerConvert;
         }
 
-        public bool IsMatch(LatestPriceResultMessage request)
+        public bool IsSimilarRequest(LatestPriceResultMessage request)
         {
             if (request == null)
                 return false;
 
-            return Pair.Equals(request.Pair) && Provider == request.Provider && ProviderConversion == request.ProviderConversion;
+            return Pair.Equals(request.Pair) && AssetConvert.EqualOrBothNull(request.AssetConvert) && Provider.Id == request.Provider.Id && ProviderConversion.EqualOrBothNull(request.ProviderConversion);
         }
     }
 }

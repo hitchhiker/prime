@@ -49,7 +49,7 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             UiDispatcher.Invoke(() =>
             {
-                var e = ExchangeRates.FirstOrDefault(x => x.IsMatch(result));
+                var e = ExchangeRates.FirstOrDefault(x => x.IsSimilarRequest(result));
                 if (e != null)
                     ExchangeRates.Remove(e);
                 ExchangeRates.Add(result);

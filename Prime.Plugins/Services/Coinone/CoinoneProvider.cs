@@ -22,6 +22,7 @@ namespace Prime.Plugins.Services.Coinone
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
+        public bool IsDirect => true;
 
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(90, 1);
         public IRateLimiter RateLimiter => Limiter;

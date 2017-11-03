@@ -6,10 +6,11 @@ using Prime.Utility;
 using System.Linq;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
+using Prime.Core.Prices.Latest;
 
 namespace Prime.Core
 {
-    public class LatestPriceProvider : IDisposable
+    internal sealed class LatestPriceProvider : IDisposable
     {
         private readonly LatestPriceProviderContext _context;
         private readonly IPublicPriceProvider _provider;
@@ -18,7 +19,7 @@ namespace Prime.Core
         private readonly bool _hasPrices;
         private readonly bool _hasPrice;
         private readonly bool _hasPriceA;
-        private readonly UniqueList<LatestPriceRequest> _verifiedRequests = new UniqueList<LatestPriceRequest>();
+        private readonly UniqueList<Request> _verifiedRequests = new UniqueList<Request>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
         private readonly Timer _timer;
@@ -47,7 +48,8 @@ namespace Prime.Core
         }
 
         private DateTime _utcLastUpdate = DateTime.MinValue;
-        protected void UpdateTick()
+
+        private void UpdateTick()
         {
             lock (_timerLock)
             {
@@ -73,7 +75,7 @@ namespace Prime.Core
 
         public bool IsFailing { get; private set; }
 
-        public void SyncVerifiedRequests(IEnumerable<LatestPriceRequest> requests)
+        public void SyncVerifiedRequests(IEnumerable<Request> requests)
         {
             lock (_timerLock)
             {
@@ -85,7 +87,7 @@ namespace Prime.Core
             }
         }
 
-        public void AddVerifiedRequest(LatestPriceRequest requestMessage)
+        public void AddVerifiedRequest(Request requestMessage)
         {
             lock (_timerLock)
             {
@@ -178,15 +180,12 @@ namespace Prime.Core
                 SendResults(response, request);
         }
 
-        private void SendResults(LatestPrice price, LatestPriceRequest request)
+        private void SendResults(LatestPrice price, Request request)
         {
             var priceNormalised = request.Providers.IsPairReversed ? price.Reverse() : price;
 
             var resultMsg = request.LastResult = new LatestPriceResultMessage(_provider, request.PairForProvider, priceNormalised);
             request.LastPrice = priceNormalised;
-
-            if (Equals(priceNormalised.QuoteAsset, "BTC".ToAssetRaw()) && Equals(priceNormalised.Price.Asset, "USD".ToAssetRaw()) && priceNormalised.Price<1000)
-                throw new Exception("WTF");
 
             _messenger.SendAsync(resultMsg);
             
@@ -194,7 +193,7 @@ namespace Prime.Core
                 SendConverted(request);
         }
 
-        private void SendConverted(LatestPriceRequest request)
+        private void SendConverted(Request request)
         {
             if (request.ConvertedOther?.LastResult == null || request.ConvertedOther?.LastPrice == null)
                 return;
@@ -202,7 +201,7 @@ namespace Prime.Core
             var p1 = request.IsConvertedPart1 ? request : request.ConvertedOther;
             var p2 = request.IsConvertedPart2 ? request : request.ConvertedOther;
 
-            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Providers.Provider, p2.Providers.Provider);
+            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Providers.Provider<IPublicPriceSuper>(), p2.Providers.Provider<IPublicPriceSuper>());
             _messenger.SendAsync(resultMsg);
         }
 

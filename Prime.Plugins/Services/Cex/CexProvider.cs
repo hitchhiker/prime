@@ -20,6 +20,7 @@ namespace Prime.Plugins.Services.Cex
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
+        public bool IsDirect => true;
 
         private RestApiClientProvider<ICexApi> ApiProvider { get; }
 

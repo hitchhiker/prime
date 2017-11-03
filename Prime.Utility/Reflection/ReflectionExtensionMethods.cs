@@ -63,7 +63,7 @@ namespace Prime.Utility
 
         public static List<T> ImplementInstancesI<T>(this IEnumerable<Type> source, bool includeAbstractClasses = false, bool includeInterfaces = false) where T : class
         {
-            return Implements<T>(source, includeAbstractClasses, includeInterfaces).Select(x => x.GetPublicStaticProperty<T>("I")).ToList();
+            return Implements<T>(source, includeAbstractClasses, includeInterfaces).Select(x => x.GetStaticProperty<T>("I")).ToList();
         }
 
         public static T InstanceAny<T>(this Type type) where T : class
@@ -325,10 +325,10 @@ namespace Prime.Utility
             return mi.CustomAttributes.Any(x => x.AttributeType == typeof (T));
         }
 
-        public static T GetPublicStaticProperty<T>(this Type type, string propertyName)
+        public static T GetStaticProperty<T>(this Type type, string propertyName)
         {
             // Get a PropertyInfo of specific property type(T).GetProperty(....)
-            var propertyInfo = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static);
+            var propertyInfo = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
             if (propertyInfo==null)
                 throw new Exception("No static public property '" + propertyName + "' on class " + type.GetShortName());
 

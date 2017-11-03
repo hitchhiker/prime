@@ -14,6 +14,8 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
+            new Prime.TestConsole.Program.FrankTests();
+
             // ----- Kraken -----
 
             // new Prime.TestConsole.Program.KrakenTests().GetBalances();
@@ -139,7 +141,7 @@ namespace TestConsole
             // -----------
 
             //Sha256Test();
-            new ExchangeRateTest().Test();
+            //new ExchangeRateTest().Test();
 
             //LatestPricesTest();
             //LatestPrice();

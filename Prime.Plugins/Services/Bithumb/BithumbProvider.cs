@@ -21,6 +21,7 @@ namespace Prime.Plugins.Services.Bithumb
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
+        public bool IsDirect => true;
 
         // 20 requests available per second.
         // See https://www.bithumb.com/u1/US127.

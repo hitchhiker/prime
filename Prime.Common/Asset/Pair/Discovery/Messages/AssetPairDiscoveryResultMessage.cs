@@ -2,15 +2,15 @@
 {
     public class AssetPairDiscoveryResultMessage
     {
-        public readonly AssetPairProviders Providers;
+        public readonly AssetPairNetworks Networks;
         public readonly AssetPairDiscoveryRequestMessage RequestRequestMessage;
         public readonly bool IsFailed;
 
-        public AssetPairDiscoveryResultMessage(AssetPairDiscoveryRequestMessage requestRequest, AssetPairProviders providers)
+        public AssetPairDiscoveryResultMessage(AssetPairDiscoveryRequestMessage requestRequest, AssetPairNetworks networks)
         {
             RequestRequestMessage = requestRequest;
-            Providers = providers;
-            IsFailed = Providers == null || Providers.Providers.Count == 0;
+            Networks = networks;
+            IsFailed = Networks == null || Networks.Providers.Count == 0;
         }
 
         public AssetPairDiscoveryResultMessage(AssetPairDiscoveryRequestMessage requestRequest)

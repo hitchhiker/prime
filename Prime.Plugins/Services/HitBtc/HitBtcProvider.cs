@@ -31,6 +31,7 @@ namespace Prime.Plugins.Services.HitBtc
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+        public bool IsDirect => true;
 
         public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {

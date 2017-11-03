@@ -10,6 +10,11 @@ namespace Prime.Common
             return providers == null ? default(T) : providers.OrderByDescending(x => x.Priority).FirstOrDefault();
         }
 
+        public static T FirstDirectProvider<T>(this IEnumerable<T> providers) where T : INetworkProvider
+        {
+            return providers == null ? default(T) : providers.Where(x=>x.IsDirect).OrderByDescending(x => x.Priority).FirstOrDefault();
+        }
+
         public static T FirstProviderOf<T>(this IEnumerable<INetworkProvider> providers) where T : INetworkProvider
         {
             return providers == null ? default(T) : providers.OfType<T>().OrderByDescending(x => x.Priority).FirstOrDefault();

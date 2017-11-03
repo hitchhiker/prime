@@ -28,6 +28,7 @@ namespace Prime.Plugins.Services.Korbit
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;
+        public bool IsDirect => true;
 
         // https://apidocs.korbit.co.kr/#first_section
         // ... Ticker calls are limited to 60 calls per 60 seconds. ...

@@ -20,13 +20,16 @@ namespace prime
     public partial class App
     {
         private TaskbarIcon notifyIcon;
-        private Prime.Core.Prime _prime;
+        private ICore _prime;
 
         public App()
         {
             DispatcherUnhandledException += App_DispatcherUnhandledException;
             GlobalMisc.I.MainAssembly = Assembly.GetExecutingAssembly();
-            _prime = Prime.Core.Prime.I; //INIT PRIME //THIS IS A HACK FOR NOW
+
+            _prime = TypeCatalogue.I.ImplementInstancesI<ICore>().FirstOrDefault();
+            _prime.Start(); //INIT PRIME //THIS IS A HACK FOR NOW
+
             PrimeWpf.I.SetDispatcher();
 
             this.Startup += App_Startup;

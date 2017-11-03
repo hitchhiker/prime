@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
+using Prime.Core.Prices.Latest.Messages;
 using Prime.Utility;
+using Prime.Utility.Misc;
 
-namespace Prime.Core
+namespace Prime.Core.Prices.Latest
 {
-    public partial class LatestPriceRequest : IEquatable<LatestPriceRequest>
+    internal sealed partial class Request : IEquatable<Request>
     {
         private readonly IMessenger _messenger = DefaultMessenger.I.Default;
         public readonly AssetPair Pair;
 
-        public LatestPriceRequest(AssetPair pair, Network network = null)
+        public Request(AssetPair pair, Network network = null)
         {
             Network = NetworkSuggested = network;
             Pair = pair;
         }
 
-        private volatile AssetPairDiscoveryRequestMessage _discoveryRequestRequest;
+        private volatile AssetPairDiscoveryRequestMessage _discoveryRequest;
 
         public AssetPair PairForProvider { get; private set; }
 
         public bool IsVerified { get; private set; }
 
-        public AssetPairProviders Providers { get; private set; }
+        public AssetPairNetworks Providers { get; private set; }
 
-        public LatestPriceRequest ConvertedOther { get; private set; }
+        public Request ConvertedOther { get; private set; }
 
         public bool IsConvertedPart1 { get; private set; }
 
@@ -45,42 +45,46 @@ namespace Prime.Core
 
         public void Discover()
         {
-            if (_discoveryRequestRequest != null)
+            if (_discoveryRequest != null || IsVerified)
                 return;
 
             _messenger.Register<AssetPairDiscoveryResultMessage>(this, AssetPairProviderResultMessage);
-            _discoveryRequestRequest = new AssetPairDiscoveryRequestMessage { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
-            _messenger.Send(_discoveryRequestRequest);
+            _discoveryRequest = new AssetPairDiscoveryRequestMessage { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
+            _messenger.Send(_discoveryRequest);
         }
 
         private void AssetPairProviderResultMessage(AssetPairDiscoveryResultMessage m)
         {
-            if (_discoveryRequestRequest == null || !_discoveryRequestRequest.Equals(m.RequestRequestMessage))
+            if (_discoveryRequest == null || !_discoveryRequest.Equals(m.RequestRequestMessage))
                 return;
 
             _messenger.Unregister<AssetPairDiscoveryResultMessage>(this);
 
-            var r = m.Providers;
+            var r = m.Networks;
+
+            if (!r.Has<IPublicPriceSuper>())
+                return;
+
             ProcessDiscoveryResponse(r);
         }
 
-        private void ProcessDiscoveryResponse(AssetPairProviders r, bool isPart2 = false)
+        private void ProcessDiscoveryResponse(AssetPairNetworks r, bool isPart2 = false)
         {
             PairForProvider = r.Pair;
-            IsConvertedPart1 = !isPart2 && r.Via != null;
+            IsConvertedPart1 = !isPart2 && r.ConversionPart2 != null;
             Providers = r;
-            Network = r.Provider.Network;
+            Network = r.Network<IPublicPriceSuper>();
             IsVerified = true;
 
             if (IsConvertedPart1 && !isPart2)
-                ProcessConvertedPart2(r.Via);
+                ProcessConvertedPart2(r.ConversionPart2);
 
-            _messenger.Send(new InternalLatestPriceRequestVerifiedMessage(this));
+            _messenger.Send(new VerifiedMessage(this));
         }
 
-        private void ProcessConvertedPart2(AssetPairProviders provs)
+        private void ProcessConvertedPart2(AssetPairNetworks networks)
         {
-            var request = new LatestPriceRequest(Pair, provs.Provider.Network)
+            var request = new Request(Pair, networks.Network<IPublicPriceSuper>())
             {
                 ConvertedOther = this,
                 IsConvertedPart1 = false,
@@ -88,18 +92,18 @@ namespace Prime.Core
             };
 
             ConvertedOther = request;
-            request.ProcessDiscoveryResponse(provs, true);
+            request.ProcessDiscoveryResponse(networks, true);
         }
     }
 
-    public partial class LatestPriceRequest
+    internal sealed partial class Request
     {
         public bool Equals(AssetPair pair, bool isConvertedPart1, bool isConvertedPart2, Network networkSuggested)
         {
-            return Equals(Pair, pair) && IsConvertedPart1 == isConvertedPart1 && IsConvertedPart2 == isConvertedPart2 && (Equals(NetworkSuggested, networkSuggested) || NetworkSuggested == null && networkSuggested == null);
+            return Equals(Pair, pair) && IsConvertedPart1 == isConvertedPart1 && IsConvertedPart2 == isConvertedPart2 && NetworkSuggested.EqualOrBothNull(networkSuggested);
         }
 
-        public bool Equals(LatestPriceRequest other)
+        public bool Equals(Request other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -111,7 +115,7 @@ namespace Prime.Core
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((LatestPriceRequest)obj);
+            return Equals((Request)obj);
         }
 
         public override int GetHashCode()

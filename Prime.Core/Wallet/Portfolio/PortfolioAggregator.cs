@@ -85,7 +85,7 @@ namespace Prime.Common.Wallet
             if (message.Pair == null || message.SubscriptionType != SubscriptionType.Subscribe)
                 return;
 
-            var r = Core.Prime.I.LatestPriceAggregator.Results().FirstOrDefault(x => x.Pair.Equals(message.Pair));
+            var r = Core.Prime.I.Aggregator.Results().FirstOrDefault(x => x.Pair.Equals(message.Pair));
             if (r!=null)
                 M.SendAsync(r);
         }

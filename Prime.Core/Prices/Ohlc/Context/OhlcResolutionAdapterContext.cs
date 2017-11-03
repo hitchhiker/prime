@@ -23,8 +23,8 @@ namespace Prime.Core
             AssetPegged = ctx.AssetPegged;
             PrimaryApiProvider = ctx.PrimaryApiProvider;
             CurrencyConversionApiProvider = ctx.CurrencyConversionApiProvider;
-            ProvidersForDirect = ctx.ProvidersForDirect;
-            ProvidersForConversion = ctx.ProvidersForConversion;
+            NetworksForDirect = ctx.NetworksForDirect;
+            NetworksForConversion = ctx.NetworksForConversion;
             IsDataConverted = ctx.IsDataConverted;
             StatusEntry = ctx.StatusEntry;
             Network = ctx.Network;
@@ -54,7 +54,7 @@ namespace Prime.Core
 
         public bool CanDiscoverApiProviders { get; set; } = true;
 
-        public AssetPairProviders AssetPairProviders { get; set; }
+        public AssetPairNetworks AssetPairProviders { get; set; }
 
         public TimeResolution TimeResolution { get; set; }
 
@@ -66,9 +66,9 @@ namespace Prime.Core
 
         public IOhlcProvider CurrencyConversionApiProvider { get; set; }
 
-        public AssetPairProviders ProvidersForDirect { get; set; }
+        public AssetPairNetworks NetworksForDirect { get; set; }
 
-        public AssetPairProviders ProvidersForConversion { get; set; }
+        public AssetPairNetworks NetworksForConversion { get; set; }
 
         public bool IsDataConverted { get; private set; }
 
@@ -89,25 +89,25 @@ namespace Prime.Core
         {
             var provs = AssetPairProviders;
 
-            ProvidersForDirect = provs;
-            ProvidersForConversion = provs.Via;
+            NetworksForDirect = provs;
+            NetworksForConversion = provs.ConversionPart2;
 
-            PrimaryApiProvider = ProvidersForDirect?.Providers.FirstProviderOf<IOhlcProvider>();
-            CurrencyConversionApiProvider = ProvidersForConversion?.Providers.FirstProviderOf<IOhlcProvider>();
+            PrimaryApiProvider = NetworksForDirect?.Providers.FirstProviderOf<IOhlcProvider>();
+            CurrencyConversionApiProvider = NetworksForConversion?.Providers.FirstProviderOf<IOhlcProvider>();
 
-            if (provs.Via != null)
+            if (provs.ConversionPart2 != null)
                 DoIntermediary(provs);
 
             if (PrimaryApiProvider == null)
                 throw new Exception("Cannot locate " + nameof(IOhlcProvider) + " for " + Pair);
         }
 
-        private void DoIntermediary(AssetPairProviders providers)
+        private void DoIntermediary(AssetPairNetworks networks)
         {
-            if (providers.IsPegged)
-                AssetPegged = providers.Pair.Asset2;
-            else if (providers.Via != null && providers.Via.IsIntermediary)
-                AssetIntermediary = providers.Pair.Asset2;
+            if (networks.IsPegged)
+                AssetPegged = networks.Pair.Asset2;
+            else if (networks.ConversionPart2 != null && networks.ConversionPart2.IsIntermediary)
+                AssetIntermediary = networks.Pair.Asset2;
         }
 
         public IOhlcProvider GetDefaultAggregationProvider()

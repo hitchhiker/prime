@@ -26,6 +26,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
+        public bool IsDirect => true;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
