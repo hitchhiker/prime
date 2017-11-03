@@ -14,7 +14,7 @@ namespace Prime.Ui.Wpf.View.Asset
     /// </summary>
     public partial class AssetSelectorControl : ComboBox
     {
-        private int caretPosition;
+        private int _caretPosition;
 
         public AssetSelectorControl()
         {
@@ -24,26 +24,29 @@ namespace Prime.Ui.Wpf.View.Asset
 
         public void PopulateAssets()
         {
-            int mostPopularCount = 0;
+            var maxPopular = 8; //make it into a property.
 
             _listComboItems = new List<ComboSectionItem>();
 
             var listAssets = Assets.I.Cached();
 
-            mostPopularCount = listAssets.Count() > 5 ? 5 : listAssets.Count();
+            var popular = listAssets.Where(x => x.IsPopular).OrderBy(x => x.Popularity).Take(maxPopular).ToList();
+            var regular = listAssets.Except(popular).Where(x=> !Equals(x, Common.Asset.None)).OrderBy(x => x.Name).ToList();
 
-            for (int i = 0; i < mostPopularCount; i++)
-            {
-                _listComboItems.Add(new ComboSectionItem { Header = "Most Popular", Asset = listAssets[i] });
-            }
-
+            foreach (var i in popular)
+                _listComboItems.Add(new ComboSectionItem { Header = "Most Popular", Asset = i });
+            
+            foreach (var i in regular)
+                _listComboItems.Add(new ComboSectionItem { Header = "More Assets...", Asset = i });
+            
+            /*
             if (mostPopularCount < listAssets.Count())
             {
                 for (int i = mostPopularCount; i < listAssets.Count(); i++)
                 {
                     _listComboItems.Add(new ComboSectionItem { Header = "More Assets...", Asset = listAssets[i] });
                 }
-            }
+            }*/
 
             ListCollectionView listComboSections = new ListCollectionView(_listComboItems);
             listComboSections.GroupDescriptions.Add(new PropertyGroupDescription("Header"));
@@ -108,11 +111,11 @@ namespace Prime.Ui.Wpf.View.Asset
 
             if (base.IsDropDownOpen && txt.SelectionLength > 0)
             {
-                txt.CaretIndex = caretPosition;
+                txt.CaretIndex = _caretPosition;
             }
             if (txt.SelectionLength == 0 && txt.CaretIndex != 0)
             {
-                caretPosition = txt.CaretIndex;
+                _caretPosition = txt.CaretIndex;
             }
         }
     }
