@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 using Prime.Utility;
+using System.Linq;
 
 namespace Prime.Common
 {
@@ -85,10 +86,19 @@ namespace Prime.Common
 
         public static Asset Xrp = Assets.I.GetRaw("XRP");
 
-        /// <summary>
-        /// It is used for not creating KRW asset in Korean providers.
-        /// If above assets are used for another purpose this asset can be deleted.
-        /// </summary>
+        public static Asset Eur = Assets.I.GetRaw("EUR");
+
+        public static Asset Jpy = Assets.I.GetRaw("JPY");
+
+        public static Asset Usd = Assets.I.GetRaw("USD");
+
+        public static Asset UsdT = Assets.I.GetRaw("USDT");
+
         public static Asset Krw = Assets.I.GetRaw("KRW");
+
+        private int? _popularity;
+        public int Popularity => _popularity ?? (int)(_popularity = Assets.I.Popular.ToList().IndexOf(this) + 1);
+
+        public bool IsPopular => Popularity != 0;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Prime.Utility;
 
 namespace Prime.Common
 {
@@ -30,6 +31,11 @@ namespace Prime.Common
         public static Asset ToAssetRaw(this string assetCode)
         {
             return Assets.I.GetRaw(assetCode);
+        }
+
+        public static IReadOnlyList<Asset> ToAssetsCsvRaw(this string assetCsv)
+        {
+            return assetCsv.ToCsv(true).Select(x => x.ToAssetRaw()).ToList();
         }
 
         public static Asset ToAsset(this string assetCode, IDescribesAssets provider)

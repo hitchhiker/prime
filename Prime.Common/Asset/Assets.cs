@@ -15,7 +15,10 @@ namespace Prime.Common
         private static readonly Lazy<Assets> Lazy = new Lazy<Assets>(()=>new Assets());
 
         private readonly ConcurrentDictionary<string, Asset> _cache = new ConcurrentDictionary<string, Asset>();
-        
+
+        private IReadOnlyList<Asset> _popular;
+        public IReadOnlyList<Asset> Popular => _popular ?? (_popular = "BTC,ETH,XRP,LTC,USD,EUR,JPY,USDT".ToAssetsCsvRaw());
+
         /// <summary>
         /// Returns the assetCode as an Asset object, no remote provider conversion of codes is done. 
         /// Use with caution.
