@@ -6,10 +6,14 @@ namespace Prime.Plugins.Services.Cex
 {
     internal class CexSchema
     {
-        internal class TickersResponse
+        internal class BaseResponse
         {
             public string e;
             public string ok;
+        }
+
+        internal class TickersResponse : BaseResponse
+        {
             public TickerResponse[] data;
         }
 
@@ -24,6 +28,18 @@ namespace Prime.Plugins.Services.Cex
             public decimal volume30d;
             public decimal bid;
             public decimal ask;
+        }
+
+        internal class LatestPricesResponse : BaseResponse
+        {
+            public LatestPriceResponse[] data;
+        }
+
+        internal class LatestPriceResponse
+        {
+            public string symbol1;
+            public string symbol2;
+            public decimal lprice;
         }
     }
 }
