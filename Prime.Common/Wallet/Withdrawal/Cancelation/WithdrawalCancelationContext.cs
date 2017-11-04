@@ -6,6 +6,6 @@ namespace Prime.Common.Wallet.Withdrawal.Cancelation
 {
     public class WithdrawalCancelationContext : NetworkProviderContext
     {
-        public string WithdrawalId { get; set; }
+        public string WithdrawalRemoteId { get; set; }
     }
 }

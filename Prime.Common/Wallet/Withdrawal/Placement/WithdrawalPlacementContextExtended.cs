@@ -14,7 +14,7 @@ namespace Prime.Common
         /// <summary>
         /// Provides ability to set custom withdrawal fee if provider supports it.
         /// </summary>
-        public decimal CustomFee { get; set; }
+        public Money CustomFee { get; set; }
 
         /// <summary>
         /// This field can store paymentId or any other relevant information.

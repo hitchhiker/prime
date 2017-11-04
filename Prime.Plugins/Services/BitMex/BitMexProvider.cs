@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
@@ -16,7 +17,7 @@ namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider : 
         IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
-        IWithdrawalPlacementProviderExtended<string>, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider<bool>, IWithdrawalConfirmationProvider
+        IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -94,9 +95,10 @@ namespace Prime.Plugins.Services.BitMex
             return ohlc;
         }
 
+        private static readonly IAssetCodeConverter AssetCodeConverter = new BitMexCodeConverter();
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-            return new BitMexCodeConverter();
+            return AssetCodeConverter;
         }
 
         public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
@@ -328,7 +330,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public bool IsFeeIncluded => false;
 
-        public Task<string> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
+        public Task<WithdrawalPlacementResult> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
         {
             throw new NotImplementedException();
         }
@@ -338,12 +340,12 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        public Task<bool> CancelWithdrawal(WithdrawalCancelationContext context)
+        public Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> ConfirmWithdrawal(WithdrawalConfirmationContext context)
+        public Task<WithdrawalConfirmationResult> ConfirmWithdrawal(WithdrawalConfirmationContext context)
         {
             throw new NotImplementedException();
         }

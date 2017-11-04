@@ -2,10 +2,10 @@
 
 namespace Prime.Common
 {
-    public interface IWithdrawalBase<TResult, TWithdrawalContext> where TWithdrawalContext : WithdrawalPlacementContext
+    public interface IWithdrawalBase<TWithdrawalContext> where TWithdrawalContext : WithdrawalPlacementContext
     {
         bool IsFeeIncluded { get; }
 
-        Task<TResult> PlaceWithdrawal(TWithdrawalContext context);
+        Task<WithdrawalPlacementResult> PlaceWithdrawal(TWithdrawalContext context);
     }
 }
