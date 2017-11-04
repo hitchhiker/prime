@@ -21,7 +21,7 @@ namespace Prime.Plugins.Services.Kraken
 
         private RestApiClientProvider<IKrakenApi> ApiProvider { get; }
 
-        public Network Network { get; } = new Network("Kraken");
+        public Network Network { get; } = Networks.I.Get("Kraken");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

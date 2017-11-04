@@ -20,7 +20,7 @@ namespace Prime.Plugins.Services.Binance
         private RestApiClientProvider<IBinanceApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("Binance");
+        public Network Network { get; } = Networks.I.Get("Binance");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

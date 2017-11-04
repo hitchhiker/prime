@@ -7,29 +7,26 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class Network : IEquatable<Network>, IUniqueIdentifier<ObjectId>
+    public sealed class Network : IEquatable<Network>, IUniqueIdentifier<ObjectId>
     {
+        public readonly string NameLowered;
+        public readonly ObjectId Id;
+        public readonly string Name;
+
         public Network(string name)
         {
-            Name = name;
-            NameLowered = name.ToLower();
-            _isntEmpty = true;
-            Id = ("network:" + NameLowered).GetObjectIdHashCode();
+            Name = name.Trim();
+            NameLowered = Name.ToLower();
+            Id = GetHash(NameLowered);
         }
 
-        public readonly ObjectId Id;
         ObjectId IUniqueIdentifier<ObjectId>.Id => Id;
 
-        public string Name { get; private set; }
-
-        public readonly string NameLowered;
-        private readonly bool _isntEmpty;
-        
-        public bool IsEmpty()
+        public static ObjectId GetHash(string name)
         {
-            return !_isntEmpty;
+            return ("network:" + name).GetObjectIdHashCode(true, true);
         }
-
+        
         public bool Equals(Network other)
         {
             return Id == other?.Id;
@@ -38,8 +35,7 @@ namespace Prime.Common
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            var a = obj as Network;
-            return a != null && Equals(a);
+            return obj is Network a && Equals(a);
         }
 
         public override int GetHashCode()

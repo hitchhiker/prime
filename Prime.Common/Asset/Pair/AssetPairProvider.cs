@@ -17,15 +17,15 @@ namespace Prime.Common
 
         private readonly CacheDictionary<IAssetPairsProvider, AssetPairs> _cache = new CacheDictionary<IAssetPairsProvider, AssetPairs>(TimeSpan.FromHours(12));
 
-        public IReadOnlyList<Network> GetNetworks(AssetPair pair, bool onlyPrivate = false)
+        public IReadOnlyList<Network> GetNetworks(AssetPair pair, bool onlyDirect = false)
         {
-           return AsyncContext.Run(() => GetNetworksAsync(pair, onlyPrivate));
+           return AsyncContext.Run(() => GetNetworksAsync(pair, onlyDirect));
         }
 
-        public async Task<IReadOnlyList<Network>> GetNetworksAsync(AssetPair pair, bool onlyPrivate = false)
+        public async Task<IReadOnlyList<Network>> GetNetworksAsync(AssetPair pair, bool onlyDirect = false)
         {
             var provs = new List<Network>();
-            var q = onlyPrivate ? Networks.I.AssetPairsProviders.WithApi() : (IEnumerable<INetworkProvider>)Networks.I.AssetPairsProviders;
+            var q = onlyDirect ? Networks.I.AssetPairsProviders.Where(x=>x.IsDirect) : (IEnumerable<INetworkProvider>)Networks.I.AssetPairsProviders;
             foreach (var n in q.Select(x=>x.Network).Distinct())
             {
                 var r = await GetPairsAsync(n);
@@ -35,15 +35,15 @@ namespace Prime.Common
             return provs;
         }
 
-        public IReadOnlyList<AssetPair> GetPairs(bool onlyPrivate = false)
+        public IReadOnlyList<AssetPair> GetPairs(bool onlyDirect = true)
         {
-            return AsyncContext.Run(() => GetPairs(onlyPrivate));
+            return AsyncContext.Run(() => GetPairs(onlyDirect));
         }
 
-        public async Task<IReadOnlyList<AssetPair>> GetPairsAsync(bool onlyPrivate = false)
+        public async Task<IReadOnlyList<AssetPair>> GetPairsAsync(bool onlyDirect = true)
         {
             var pairs = new UniqueList<AssetPair>();
-            var q = onlyPrivate ? Networks.I.AssetPairsProviders.WithApi() : (IEnumerable<IAssetPairsProvider>)Networks.I.AssetPairsProviders;
+            var q = onlyDirect ? Networks.I.AssetPairsProviders.Where(x => x.IsDirect) : Networks.I.AssetPairsProviders;
             foreach (var prov in q)
             {
                 var r = await GetPairsAsync(prov.Network);
@@ -53,9 +53,10 @@ namespace Prime.Common
             return pairs;
         }
 
-        public async Task<AssetPairs> GetPairsAsync(Network network)
+        public async Task<AssetPairs> GetPairsAsync(Network network, bool onlyDirect = true)
         {
-            var prov = network?.Providers.OfType<IAssetPairsProvider>().FirstProvider();
+            var q = onlyDirect ? network?.Providers.OfType<IAssetPairsProvider>().Where(x => x.IsDirect) : network?.Providers.OfType<IAssetPairsProvider>();
+            var prov = q.FirstProvider();
             if (prov == null)
             {
                 Logging.I.DefaultLogger.Error($"An instance of {nameof(IAssetPairsProvider)} cannot be located for {network.Name}");

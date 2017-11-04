@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Gdax
         private static readonly ObjectId IdHash = "prime:gdax".GetObjectIdHashCode();
 
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("GDAX");
+        public Network Network { get; } = Networks.I.Get("GDAX");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

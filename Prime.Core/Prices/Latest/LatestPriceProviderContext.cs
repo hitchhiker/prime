@@ -11,10 +11,8 @@ namespace Prime.Core
         {
             Provider = provider;
             Aggregator = aggregator;
-            Network = provider?.Network;
         }
 
-        internal readonly Network Network;
         internal TimeSpan PollingSpan { get; set; } = new TimeSpan(0, 0, 15);
         internal IPublicPriceSuper Provider { get; private set; }
         internal Aggregator Aggregator { get; private set; }

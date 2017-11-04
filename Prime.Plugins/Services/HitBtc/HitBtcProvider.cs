@@ -21,7 +21,7 @@ namespace Prime.Plugins.Services.HitBtc
         private RestApiClientProvider<IHitBtcApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("HitBTC");
+        public Network Network { get; } = Networks.I.Get("HitBTC");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName { get; } = null;

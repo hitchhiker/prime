@@ -21,7 +21,7 @@ namespace Prime.Plugins.Services.BitFlyer
         private RestApiClientProvider<IBitFlyerApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("BitFlyer");
+        public Network Network { get; } = Networks.I.Get("BitFlyer");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Cex
 
         private static readonly ObjectId IdHash = "prime:cex".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("CEX.IO");
+        public Network Network { get; } = Networks.I.Get("CEX.IO");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

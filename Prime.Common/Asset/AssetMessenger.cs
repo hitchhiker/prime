@@ -23,7 +23,7 @@ namespace Prime.Common
 
         private async void AllRequestMessage(AssetAllRequestMessage m)
         {
-            var assets = await Assets.I.GetAllAsync();
+            var assets = await Assets.I.GetAllAsync(true);
             var currentAsssets = assets.Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
             _messenger.SendAsync(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
         }

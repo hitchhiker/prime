@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Bithumb
 
         private static readonly ObjectId IdHash = "prime:bithumb".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("Bithumb");
+        public Network Network { get; } = Networks.I.Get("Bithumb");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

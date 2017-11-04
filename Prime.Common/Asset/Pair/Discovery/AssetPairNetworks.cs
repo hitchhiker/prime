@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LiteDB;
 using Prime.Utility;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Prime.Common
 {
@@ -23,19 +25,53 @@ namespace Prime.Common
 
         public AssetPair OriginalPair => IsPairReversed ? Pair.Reverse() : Pair;
 
-        public bool Has<T>() where T : INetworkProvider
+        public bool Has<T>(bool onlyDirect = true) where T : INetworkProvider
         {
-            return Providers.OfType<T>().Any();
+            return onlyDirect ? Providers.OfType<T>().Any(x => x.IsDirect) : Providers.OfType<T>().Any();
         }
 
-        public T Provider<T>() where T : INetworkProvider
+        public T Provider<T>(bool onlyDirect = true) where T : INetworkProvider
         {
-            return Providers.OfList<T>().FirstProviderByVolume(Pair);
+            var prov = Providers.OfList<T>().Where(x=>x.IsDirect).FirstProviderByVolume(Pair);
+            if (prov== null && !onlyDirect)
+                return Providers.OfList<T>().FirstProviderByVolume(Pair);
+            return prov;
         }
 
-        public Network Network<T>() where T : INetworkProvider
+        public Network Network<T>(bool onlyDirect = true) where T : INetworkProvider
         {
-            return Provider<T>()?.Network;
+            return Provider<T>(onlyDirect)?.Network;
+        }
+
+        private readonly object _confirmedLock = new object();
+        private readonly List<Tuple<IPublicPriceSuper, AssetPair>> _confirmed = new List<Tuple<IPublicPriceSuper, AssetPair>>();
+
+        public Network NetworkConfirmedPricing(AssetPair pair)
+        {
+            var provs = Providers.OfList<IPublicPriceSuper>().OrderByVolume(pair).Where(x => x.IsDirect);
+            var ctx = new PublicPriceContext(pair);
+            Network net = null;
+
+            foreach (var i in provs)
+            {
+                lock (_confirmedLock)
+                    if (_confirmed.Any(x => x.Item1 == i && Equals(x.Item2, pair)))
+                    {
+                        net = i.Network;
+                        break;
+                    }
+
+                if (ApiCoordinator.GetPrice(i, ctx).IsNull)
+                    continue;
+
+                net = i.Network;
+
+                lock (_confirmedLock)
+                    _confirmed.Add(new Tuple<IPublicPriceSuper, AssetPair>(i, pair));
+                break;
+            }
+
+            return net;
         }
 
         public bool IsPegged { get; set; }

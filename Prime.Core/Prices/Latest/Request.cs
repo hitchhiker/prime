@@ -15,7 +15,7 @@ namespace Prime.Core.Prices.Latest
 
         public Request(AssetPair pair, Network network = null)
         {
-            Network = NetworkSuggested = network;
+            NetworkSuggested = network;
             Pair = pair;
         }
 
@@ -25,7 +25,7 @@ namespace Prime.Core.Prices.Latest
 
         public bool IsVerified { get; private set; }
 
-        public AssetPairNetworks Providers { get; private set; }
+        public AssetPairNetworks NetworksFound { get; private set; }
 
         public Request ConvertedOther { get; private set; }
 
@@ -34,8 +34,6 @@ namespace Prime.Core.Prices.Latest
         public bool IsConvertedPart2 { get; private set; }
 
         public bool IsConverted => IsConvertedPart1 || IsConvertedPart2;
-
-        public Network Network { get; private set; }
 
         public Network NetworkSuggested { get; private set; }
 
@@ -49,7 +47,7 @@ namespace Prime.Core.Prices.Latest
                 return;
 
             _messenger.Register<AssetPairDiscoveryResultMessage>(this, AssetPairProviderResultMessage);
-            _discoveryRequest = new AssetPairDiscoveryRequestMessage { Network = Network, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
+            _discoveryRequest = new AssetPairDiscoveryRequestMessage { Network = NetworkSuggested, Pair = Pair, ConversionEnabled = true, PeggedEnabled = true, ReversalEnabled = true };
             _messenger.Send(_discoveryRequest);
         }
 
@@ -72,8 +70,7 @@ namespace Prime.Core.Prices.Latest
         {
             PairForProvider = r.Pair;
             IsConvertedPart1 = !isPart2 && r.ConversionPart2 != null;
-            Providers = r;
-            Network = r.Network<IPublicPriceSuper>();
+            NetworksFound = r;
             IsVerified = true;
 
             if (IsConvertedPart1 && !isPart2)

@@ -13,7 +13,8 @@ namespace Prime.Core
     internal sealed class LatestPriceProvider : IDisposable
     {
         private readonly LatestPriceProviderContext _context;
-        private readonly IPublicPriceProvider _provider;
+        public readonly IPublicPriceSuper Provider;
+        private readonly IPublicPriceProvider _providerP;
         private readonly IPublicPricesProvider _providerS;
         private readonly IPublicAssetPricesProvider _providerA;
         private readonly bool _hasPrices;
@@ -29,7 +30,8 @@ namespace Prime.Core
         public LatestPriceProvider(LatestPriceProviderContext context)
         {
             _context = context;
-            _provider = context.Provider as IPublicPriceProvider;
+            Provider = context.Provider;
+            _providerP = context.Provider as IPublicPriceProvider;
             _providerS = context.Provider as IPublicPricesProvider;
             _providerA = context.Provider as IPublicAssetPricesProvider;
 
@@ -38,9 +40,9 @@ namespace Prime.Core
 
             _hasPrices = _providerS != null;
             _hasPriceA = _providerA != null;
-            _hasPrice = _provider != null || _providerA != null;
+            _hasPrice = _providerP != null || _providerA != null;
 
-            Network = context.Provider.Network;
+            Network = Provider.Network;
             _messenger = context.Aggregator.M;
             _timer = new Timer(10) {AutoReset = false};
             _timer.Elapsed += delegate { UpdateTick(); };
@@ -55,7 +57,7 @@ namespace Prime.Core
             {
                 if (_pairRequests.Count != 0 && !_utcLastUpdate.IsWithinTheLast(_context.PollingSpan))
                 {
-                    Update();
+                    Run();
                     _utcLastUpdate = DateTime.UtcNow;
                 }
 
@@ -69,34 +71,31 @@ namespace Prime.Core
             lock (_timerLock)
             {
                 _utcLastUpdate = DateTime.UtcNow;
-                Update();
+                Run();
             }
         }
 
         public bool IsFailing { get; private set; }
 
-        public void SyncVerifiedRequests(IEnumerable<Request> requests)
+        internal void SyncVerifiedRequests(List<Request> requests)
         {
             lock (_timerLock)
             {
                 _verifiedRequests.Clear();
                 _pairRequests.Clear();
 
-                foreach (var req in requests)
+                foreach (var req in requests.Where(x=>x.IsVerified))
                     AddVerifiedRequest(req);
             }
         }
 
-        public void AddVerifiedRequest(Request requestMessage)
+        private void AddVerifiedRequest(Request requestMessage)
         {
-            lock (_timerLock)
-            {
-                if (!requestMessage.IsVerified)
-                    throw new ArgumentException($"You cant add an un-verified {requestMessage.GetType()} to {GetType()}");
+            if (!requestMessage.IsVerified)
+                throw new ArgumentException($"You cant add an un-verified {requestMessage.GetType()} to {GetType()}");
 
-                _verifiedRequests.Add(requestMessage);
-                _pairRequests.Add(requestMessage.PairForProvider);
-            }
+            _verifiedRequests.Add(requestMessage);
+            _pairRequests.Add(requestMessage.PairForProvider);
         }
 
         public bool HasRequests()
@@ -107,7 +106,7 @@ namespace Prime.Core
             }
         }
 
-        private void Update()
+        private void Run()
         {
             if (_isDisposed)
                 return;
@@ -127,7 +126,7 @@ namespace Prime.Core
                 if (_isDisposed)
                     return false;
 
-                var r = _hasPriceA ? ApiCoordinator.GetPrice(_providerA, new PublicPriceContext(pair)) : ApiCoordinator.GetPrice(_provider, new PublicPriceContext(pair));
+                var r = _hasPriceA ? ApiCoordinator.GetPrice(_providerA, new PublicPriceContext(pair)) : ApiCoordinator.GetPrice(_providerP, new PublicPriceContext(pair));
 
                 if (r.IsNull)
                 {
@@ -182,13 +181,22 @@ namespace Prime.Core
 
         private void SendResults(LatestPrice price, Request request)
         {
-            var priceNormalised = request.Providers.IsPairReversed ? price.Reverse() : price;
+            if (request.IsConvertedPart2)
+            {
 
-            var resultMsg = request.LastResult = new LatestPriceResultMessage(_provider, request.PairForProvider, priceNormalised);
-            request.LastPrice = priceNormalised;
+            }
+            else
+            {
+                var isreversed = request.NetworksFound.IsPairReversed;
+                var priceNormalised = isreversed ? price.Reverse() : price;
+                var pair = request.Pair;
 
-            _messenger.SendAsync(resultMsg);
-            
+                var resultMsg = request.LastResult = new LatestPriceResultMessage(Provider, pair, priceNormalised);
+                request.LastPrice = priceNormalised;
+                CheckMessage(resultMsg);
+                _messenger.SendAsync(resultMsg);
+            }
+
             if (request.IsConverted)
                 SendConverted(request);
         }
@@ -201,8 +209,15 @@ namespace Prime.Core
             var p1 = request.IsConvertedPart1 ? request : request.ConvertedOther;
             var p2 = request.IsConvertedPart2 ? request : request.ConvertedOther;
 
-            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Providers.Provider<IPublicPriceSuper>(), p2.Providers.Provider<IPublicPriceSuper>());
+            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.NetworksFound.Provider<IPublicPriceSuper>(), p2.NetworksFound.Provider<IPublicPriceSuper>());
+            CheckMessage(resultMsg);
             _messenger.SendAsync(resultMsg);
+        }
+
+        public void CheckMessage(LatestPriceResultMessage m)
+        {
+            if (m.Pair.Equals(new AssetPair("BTC", "USD")) && m.Price < 10)
+                throw new Exception("Bad price caught.");
         }
 
         private bool _isDisposed;

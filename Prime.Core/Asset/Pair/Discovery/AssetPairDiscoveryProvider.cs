@@ -146,7 +146,7 @@ namespace Prime.Core
             if (provs.Any())
                 return provs;*/
 
-            return AssetPairProvider.I.GetNetworks(pair).ToList();
+            return AssetPairProvider.I.GetNetworks(pair, true).ToList();
         }
     }
 }

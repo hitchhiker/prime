@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         private RestApiClientProvider<IPoloniexApi> ApiProvider { get; }
 
-        public Network Network { get; } = new Network("Poloniex");
+        public Network Network { get; } = Networks.I.Get("Poloniex");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;
@@ -188,8 +188,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         private Dictionary<string, object> CreatePoloniexBody(PoloniexBodyType bodyType)
         {
-            var body = new Dictionary<string, object>();
-            body.Add("nonce", BaseAuthenticator.GetLongNonce());
+            var body = new Dictionary<string, object> {{"nonce", BaseAuthenticator.GetLongNonce()}};
 
             switch (bodyType)
             {
@@ -267,7 +266,7 @@ namespace Prime.Plugins.Services.Poloniex
                     Close = ohlcEntry.close,
                     Low = ohlcEntry.low,
                     High = ohlcEntry.high,
-                    VolumeTo = ohlcEntry.quoteVolume, // BUG: volumes are stored in long, but API returns doubles. Is it a bug?
+                    VolumeTo = ohlcEntry.quoteVolume,
                     VolumeFrom = ohlcEntry.volume,
                     WeightedAverage = ohlcEntry.weightedAverage
                 });

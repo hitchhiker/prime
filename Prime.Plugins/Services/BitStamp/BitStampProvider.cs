@@ -24,7 +24,7 @@ namespace Prime.Plugins.Services.BitStamp
         // Do not make more than 600 requests per 10 minutes or we will ban your IP address.
         // https://www.bitstamp.net/api/
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(600, 10);
-        public Network Network { get; } = new Network("BitStamp");
+        public Network Network { get; } = Networks.I.Get("BitStamp");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

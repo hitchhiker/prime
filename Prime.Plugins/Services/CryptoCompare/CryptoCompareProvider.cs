@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Plugins.Services.CryptoCompare;
 using Prime.Utility;
@@ -53,6 +54,7 @@ namespace plugins
 
         public override string Title => "CryptoCompare Aggregator";
 
+
         public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
         {
             var r = await base.GetAssetPricesAsync(context);
@@ -77,6 +79,43 @@ namespace plugins
                 Low24Hour = r.LOW24HOUR.ToDouble()
             };
             return ce;
+        }
+
+        private AssetPairByNetwork _cachedApn;
+        private DateTime _cachedApnUtc;
+        private readonly object _cachedApnLock = new object();
+
+        public async Task<AssetPairByNetwork> GetAssetPairsAllNetworksAsync()
+        {
+            var task = new Task<AssetPairByNetwork>(() =>
+            {
+                lock (_cachedApnLock)
+                {
+                    if (_cachedApn != null && _cachedApnUtc.IsWithinTheLast(TimeSpan.FromHours(12)))
+                        return _cachedApn;
+
+                    var api = GetApi<ICryptoCompareApi>();
+                    var r = AsyncContext.Run(() => api.GetAssetPairsAllExchanges());
+                    var apn = new AssetPairByNetwork();
+
+                    foreach (var e in r)
+                    {
+                        var aps = new AssetPairs();
+                        foreach (var i in e.Value)
+                        {
+                            var a = i.Key.ToAssetRaw();
+                            foreach (var q in i.Value)
+                                aps.Add(new AssetPair(a, q.ToAssetRaw()));
+                        }
+                        apn.Add(Networks.I.Get(e.Key), aps);
+                    }
+                    _cachedApnUtc = DateTime.UtcNow;
+                    return _cachedApn = apn;
+                }
+            });
+            task.Start();
+
+            return await task;
         }
     }
 }

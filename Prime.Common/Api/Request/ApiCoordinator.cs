@@ -44,12 +44,7 @@ namespace Prime.Common
         {
             return AsyncContext.Run(() => GetPricesAsync(provider, context));
         }
-
-        public static ApiResponse<List<AssetInfo>> GetCoinInfo(ICoinInformationProvider provider, NetworkProviderContext context = null)
-        {
-            return AsyncContext.Run(() => GetSnapshotAsync(provider, context));
-        }
-
+        
         public static ApiResponse<OhlcData> GetOhlc(IOhlcProvider provider, OhlcContext context)
         {
             return AsyncContext.Run(() => GetOhlcAsync(provider, context));
@@ -68,6 +63,11 @@ namespace Prime.Common
         public static ApiResponse<BalanceResults> GetBalances(IWalletService provider, NetworkProviderPrivateContext context)
         {
             return AsyncContext.Run(() => GetBalancesAsync(provider, context));
+        }
+
+        public static ApiResponse<List<AssetInfo>> GetCoinInformation(ICoinInformationProvider provider, NetworkProviderContext context = null)
+        {
+            return AsyncContext.Run(() => GetCoinInformationAsync(provider, context));
         }
 
         public static ApiResponse<AggregatedAssetPairData> GetCoinSnapshot(IAssetPairAggregationProvider provider, AssetPairDataContext context)

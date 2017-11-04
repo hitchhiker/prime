@@ -50,7 +50,7 @@ namespace Prime.Common.Exchange.Rates
             if (request == null)
                 return false;
 
-            return Pair.Equals(request.Pair) && AssetConvert.EqualOrBothNull(request.AssetConvert) && Provider.Id == request.Provider.Id && ProviderConversion.EqualOrBothNull(request.ProviderConversion);
+            return Pair.Equals(request.Pair) && AssetConvert.EqualOrBothNull(request.AssetConvert) && Provider.EqualOrBothNull(request.Provider) && ProviderConversion.EqualOrBothNull(request.ProviderConversion);
         }
     }
 }

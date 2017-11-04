@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.Coinone
 
         private static readonly ObjectId IdHash = "prime:coinone".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("Coinone");
+        public Network Network { get; } = Networks.I.Get("Coinone");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

@@ -27,7 +27,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         private RestApiClientProvider<IBittrexApi> ApiProvider { get; }
 
-        public Network Network { get; } = new Network("Bittrex");
+        public Network Network { get; } = Networks.I.Get("Bittrex");
 
         public bool Disabled => false;
         public int Priority => 100;

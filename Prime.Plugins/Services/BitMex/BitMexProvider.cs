@@ -38,7 +38,7 @@ namespace Prime.Plugins.Services.BitMex
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
         public ObjectId Id => IdHash;
-        public Network Network => new Network("BitMex");
+        public Network Network => Networks.I.Get("BitMex");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;
@@ -327,6 +327,7 @@ namespace Prime.Plugins.Services.BitMex
         }
 
         public bool IsFeeIncluded => false;
+
         public Task<string> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
         {
             throw new NotImplementedException();
