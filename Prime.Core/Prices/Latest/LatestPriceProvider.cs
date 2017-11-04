@@ -84,14 +84,14 @@ namespace Prime.Core
                 _verifiedRequests.Clear();
                 _pairRequests.Clear();
 
-                foreach (var req in requests.Where(x=>x.IsVerified))
+                foreach (var req in requests.Where(x=>x.IsDiscovered))
                     AddVerifiedRequest(req);
             }
         }
 
         private void AddVerifiedRequest(Request requestMessage)
         {
-            if (!requestMessage.IsVerified)
+            if (!requestMessage.IsDiscovered)
                 throw new ArgumentException($"You cant add an un-verified {requestMessage.GetType()} to {GetType()}");
 
             _verifiedRequests.Add(requestMessage);
@@ -181,13 +181,9 @@ namespace Prime.Core
 
         private void SendResults(LatestPrice price, Request request)
         {
-            if (request.IsConvertedPart2)
+            if (!request.IsConvertedPart2)
             {
-
-            }
-            else
-            {
-                var isreversed = request.NetworksFound.IsPairReversed;
+                var isreversed = request.Discovered.IsPairReversed;
                 var priceNormalised = isreversed ? price.Reverse() : price;
                 var pair = request.Pair;
 
@@ -209,7 +205,7 @@ namespace Prime.Core
             var p1 = request.IsConvertedPart1 ? request : request.ConvertedOther;
             var p2 = request.IsConvertedPart2 ? request : request.ConvertedOther;
 
-            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.NetworksFound.Provider<IPublicPriceSuper>(), p2.NetworksFound.Provider<IPublicPriceSuper>());
+            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Discovered.Provider<IPublicPriceSuper>(), p2.Discovered.Provider<IPublicPriceSuper>());
             CheckMessage(resultMsg);
             _messenger.SendAsync(resultMsg);
         }

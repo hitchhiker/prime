@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.Binance
             var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
             if(lpr == null)
-                throw new ApiResponseException("Specified currency pair is not supported by provider", this);
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
             return new LatestPrice(context.Pair, lpr.price);
         }
@@ -132,7 +132,7 @@ namespace Prime.Plugins.Services.Binance
                 var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
                 if (lpr == null)
-                    throw new ApiResponseException("Specified currency pair is not supported by provider", this);
+                    throw new ApiResponseException($"Specified currency pair {pair} is not supported by provider", this);
 
                 prices.Add(new LatestPrice(pair, lpr.price));
             }

@@ -51,11 +51,14 @@ namespace Prime.Core.Prices.Latest
             lock (_commonLock)
             {
                 var reqs = _lpm.GetRequests();
-                var subs = reqs.Where(x => x.IsVerified).ToList();
-                var sr = subs.Where(x => x.IsConverted).Select(x => x.ConvertedOther).ToList();
-                subs.AddRange(sr);
+                var active = reqs.Where(x => x.IsDiscovered).ToList();
+                if (active.Count == 0)
+                    return;
 
-                var grouped = GetGrouping(subs);
+                var converted = active.Where(x => x.IsConverted).Select(x => x.ConvertedOther).ToList();
+                active.AddRange(converted);
+
+                var grouped = GetGrouping(active);
 
                 var inuse = new List<LatestPriceProvider>();
                 foreach (var g in grouped.Where(x=>x.Key!=null))
@@ -85,7 +88,7 @@ namespace Prime.Core.Prices.Latest
 
         private List<IGrouping<IPublicPriceSuper,Request>> GetGrouping(List<Request> requests)
         {
-            return requests.GroupBy(x => x.NetworksFound.Provider<IPublicPriceSuper>()).ToList();
+            return requests.GroupBy(x => x.Discovered.Provider<IPublicPriceSuper>()).ToList();
         }
 
         private LatestPriceProvider CreateProvider(IPublicPriceSuper provider)
