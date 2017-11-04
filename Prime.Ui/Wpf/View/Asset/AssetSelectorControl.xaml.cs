@@ -38,22 +38,14 @@ namespace Prime.Ui.Wpf.View.Asset
             
             foreach (var i in regular)
                 _listComboItems.Add(new ComboSectionItem { Header = "More Assets...", Asset = i });
-            
-            /*
-            if (mostPopularCount < listAssets.Count())
-            {
-                for (int i = mostPopularCount; i < listAssets.Count(); i++)
-                {
-                    _listComboItems.Add(new ComboSectionItem { Header = "More Assets...", Asset = listAssets[i] });
-                }
-            }*/
-
+           
             ListCollectionView listComboSections = new ListCollectionView(_listComboItems);
             listComboSections.GroupDescriptions.Add(new PropertyGroupDescription("Header"));
 
             this.Dispatcher.Invoke(() =>
             {
                 ItemsSource = listComboSections;
+                SelectedIndex = 0;
             });
         }
 

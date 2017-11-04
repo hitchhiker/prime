@@ -26,7 +26,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </TextBox>
-                        <asset:AssetSelectorControl SelectedItem="{Binding SelectedAssetLeft, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <!--<asset:AssetSelectorControl SelectedItem="{Binding SelectedAssetLeft, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
@@ -35,8 +35,13 @@
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </asset:AssetSelectorControl>
-                        <asset:AssetSelectorControl Margin="10,0,0,0" SelectedItem="{Binding SelectedAssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        </asset:AssetSelectorControl>-->
+                        <ComboBox Margin="0,0,20,0" 
+                                  IsSynchronizedWithCurrentItem="False"
+                                  IsEditable="True"
+                                  DisplayMemberPath="ShortCode"
+                                  ItemsSource="{Binding Path=AllAssetsViewModel.Assets, UpdateSourceTrigger=LostFocus}" 
+                                  SelectedItem="{Binding Path=AssetLeft, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
@@ -45,7 +50,31 @@
                                     <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </asset:AssetSelectorControl>
+                        </ComboBox>
+                        <!--<asset:AssetSelectorControl Margin="10,0,0,0" SelectedItem="{Binding SelectedAssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PropertyChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </asset:AssetSelectorControl>-->
+                        <ComboBox IsSynchronizedWithCurrentItem="False"
+                                  IsEditable="True"
+                                  DisplayMemberPath="ShortCode"
+                                  ItemsSource="{Binding Path=AllAssetsViewModel.Assets, UpdateSourceTrigger=LostFocus}" 
+                                  SelectedItem="{Binding Path=AssetRight, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PropertyChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=GoCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
                     </StackPanel>
                 </StackPanel>
                 <Button Visibility="Hidden" Height="60" Padding="10" VerticalAlignment="Top" Cursor="Hand" Background="DarkGray" Command="{Binding Path=GoCommand}" Content="Convert"/>
