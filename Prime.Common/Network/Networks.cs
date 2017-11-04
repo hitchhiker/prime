@@ -1,21 +1,36 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using LiteDB;
 using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class Networks : UniqueList<Network>
+    public sealed class Networks : IEnumerable<Network>
     {
-        private Networks()
-        {
-            base.AddRange(TypeCatalogue.I.ImplementInstances<INetworkProvider>().Select(x=>x.Network).ToUniqueList());
-        }
-
         public static Networks I => Lazy.Value;
         private static readonly Lazy<Networks> Lazy = new Lazy<Networks>(()=>new Networks());
+        private readonly object _lock = new object();
 
+        private readonly ConcurrentDictionary<ObjectId, Network> _cache = new ConcurrentDictionary<ObjectId, Network>();
+
+        public Network Get(string name)
+        {
+            lock (_lock)
+            {
+                if (!_collected)
+                {
+                    _collected = true;
+                    TypeCatalogue.I.ImplementInstances<INetworkProvider>().Select(x => x.Network).ToList();
+                }
+            }
+            return _cache.GetOrAdd(Network.GetHash(name), k => new Network(name));
+        }
+
+        private bool _collected;
         private IReadOnlyList<INetworkProvider> _providers;
         public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = TypeCatalogue.I.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).OrderByDescending(x=>x.Priority).ToList());
 
@@ -39,5 +54,15 @@ namespace Prime.Common
 
         private IReadOnlyList<IAssetPairAggregationProvider> _apaggProviders;
         public IReadOnlyList<IAssetPairAggregationProvider> AssetPairAggregationProviders => _apaggProviders ?? (_apaggProviders = Providers.OfList<IAssetPairAggregationProvider>());
+
+        public IEnumerator<Network> GetEnumerator()
+        {
+            return _cache.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)_cache.Values).GetEnumerator();
+        }
     }
 }

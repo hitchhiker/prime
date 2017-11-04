@@ -109,6 +109,16 @@ namespace Prime.Plugins.Services.CryptoCompare
 
             public CoinSnapshotData Data;
         }
+
+        internal class AssetPairsAllExchanges : Dictionary<string, AssetPairsAllExchanges.AssetPairExchange>
+        {
+            public class AssetPairExchange : Dictionary<string, List<string>>
+            {
+
+            }
+        }
+
+        internal class PriceMultiResult : Dictionary<string, Dictionary<string, double>> { }
     }
 }
 

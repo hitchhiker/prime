@@ -81,9 +81,9 @@ namespace Prime.Ui.Wpf.ViewModel
             {
                 DateTime timestamp = DateTime.UtcNow;
 
-                //PortfolioDistributionChangedMessage message1 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 200, 20, timestamp, new PortfolioInfoItem(new Network("Poloniex")));
-                //PortfolioDistributionChangedMessage message2 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 300, 30, timestamp, new PortfolioInfoItem(new Network("Bittrex")));
-                //PortfolioDistributionChangedMessage message3 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 500, 50, timestamp, new PortfolioInfoItem(new Network("Bitstamp")));
+                //PortfolioDistributionChangedMessage message1 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 200, 20, timestamp, new PortfolioInfoItem(Networks.I.Get("Poloniex")));
+                //PortfolioDistributionChangedMessage message2 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 300, 30, timestamp, new PortfolioInfoItem(Networks.I.Get("Bittrex")));
+                //PortfolioDistributionChangedMessage message3 = new PortfolioDistributionChangedMessage(UserContext.Current.Id, 500, 50, timestamp, new PortfolioInfoItem(Networks.I.Get("Bitstamp")));
 
                 //M.Send(new PortfolioNetworksMessage(DateTime.UtcNow, new List<PortfolioDistributionItem>()));
             });

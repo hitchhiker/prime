@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Fiat
     public class EcbProvider : IPublicPricesProvider
     {
         private static readonly ObjectId IdHash = "prime:ECB:PROVIDER".GetObjectIdHashCode();
-        private static readonly Network _network = new Network("ECB (Fiat)");
+        private static readonly Network _network = Networks.I.Get("ECB (Fiat)");
         private static readonly IRateLimiter _limiter = new NoRateLimits();
         private static readonly string _title = "European Central Bank";
 

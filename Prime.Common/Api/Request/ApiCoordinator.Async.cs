@@ -53,13 +53,7 @@ namespace Prime.Common
         {
             return ApiHelpers.WrapException(() => provider.GetAssetPricesAsync(context), nameof(GetAssetPrices), provider, context);
         }
-
-        public static Task<ApiResponse<List<AssetInfo>>> GetSnapshotAsync(ICoinInformationProvider provider, NetworkProviderContext context = null)
-        {
-            context = context ?? new NetworkProviderContext();
-            return ApiHelpers.WrapException(() => provider.GetCoinInfoAsync(context), nameof(GetCoinInfo), provider, context);
-        }
-
+        
         public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
             return ApiHelpers.WrapException(() => provider.GetOhlcAsync(context), nameof(GetOhlc), provider, context);
@@ -96,6 +90,12 @@ namespace Prime.Common
         public static Task<ApiResponse<BalanceResults>> GetBalancesAsync(IWalletService provider, NetworkProviderPrivateContext context)
         {
             return ApiHelpers.WrapException(() => CheckedBalancesAsync(provider,context), nameof(GetBalances), provider, context);
+        }
+
+        public static Task<ApiResponse<List<AssetInfo>>> GetCoinInformationAsync(ICoinInformationProvider provider, NetworkProviderContext context = null)
+        {
+            context = context ?? new NetworkProviderContext();
+            return ApiHelpers.WrapException(() => provider.GetCoinInformationAsync(context), nameof(GetCoinInformation), provider, context);
         }
 
         public static Task<ApiResponse<AggregatedAssetPairData>> GetCoinSnapshotAsync(IAssetPairAggregationProvider provider, AssetPairDataContext context)

@@ -44,6 +44,8 @@ namespace Prime.Common
                     r.Add(prov);
             }
 
+            r.AddRange(r.Except(providers));
+
             return r;
         }
 

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
+using Newtonsoft.Json;
+using plugins;
 using Prime.Common;
 using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.CryptoCompare
 {
-    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicAssetPricesProvider, IProxyProvider
+    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicPricesProvider, IProxyProvider, IAssetPairsProvider
     {
         public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
         public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
@@ -43,7 +45,7 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         private Network GetNetwork()
         {
-            return new Network(Name);
+            return Networks.I.Get(Name);
         }
 
         private ObjectId GetIdHash()
@@ -61,31 +63,49 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         public bool PricesAsAssetQuotes => true;
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
         {
-            var quoteAsset = context.QuoteAsset;
-            var assets = context.Assets;
+            var p = Networks.I.Providers.FirstProviderOf<CryptoCompareProvider>();
+            var r = await p.GetAssetPairsAllNetworksAsync();
 
-            var api = GetApi<ICryptoCompareApi>();
+            var d = r.Get(Network);
+            if (d == null)
+                throw new Exception($"CryptoCompare does not provide asset pair information for {Network}");
 
-            var apir = await api.GetPricesAsync(quoteAsset.ToRemoteCode(this), string.Join(",", assets.Select(x => x.ToRemoteCode(this))), Name, "prime", "false", "false");
-
-            var r = new List<LatestPrice>() {};
-            if (apir == null)
-                return r;
-
-            foreach (var i in apir)
-            {
-                var ra = i.Key.ToAsset(this);
-                var a = assets.FirstOrDefault(x => x.ShortCode == ra.ShortCode);
-                if (a == null)
-                    continue;
-                r.Add(new LatestPrice(new Money((decimal)i.Value, a), quoteAsset));
-            }
-            return r;
+            return d;
         }
 
-        public async Task<List<AssetInfo>> GetCoinInfoAsync(NetworkProviderContext context)
+        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return await GetPricesAsync(context);
+        }
+
+        public async Task<List<LatestPrice>>  GetPricesAsync(PublicPricesContext context)
+        {
+            var api = GetApi<ICryptoCompareApi>();
+            var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));
+            var tos = string.Join(",", context.Pairs.Select(x => x.Asset2).Distinct().Select(x => x.ShortCode));
+            var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false");
+            var apir = JsonConvert.DeserializeObject<CryptoCompareSchema.PriceMultiResult>(str);
+            var results = new List<LatestPrice>();
+
+            foreach (var i in context.Pairs)
+            {
+                var a1 = i.Asset1.ShortCode.ToLower();
+                var k = apir.FirstOrDefault(x => x.Key.ToLower() == a1);
+                if (k.Key == null)
+                    continue;
+                var a2 = i.Asset2.ShortCode.ToLower();
+                var r = k.Value.FirstOrDefault(x => x.Key.ToLower() == a2);
+                if (r.Key == null)
+                    continue;
+                results.Add(new LatestPrice(i, (decimal) r.Value));
+            }
+
+            return results;
+        }
+
+        public async Task<List<AssetInfo>> GetCoinInformationAsync(NetworkProviderContext context)
         {
             var api = GetApi<ICryptoCompareApi>(true);
             var apir = await api.GetCoinListAsync();

@@ -51,18 +51,28 @@ namespace Prime.Core.Prices.Latest
             lock (_commonLock)
             {
                 var reqs = _lpm.GetRequests();
-                var subs = reqs.Where(x => x.IsVerified).ToList();
-                var sr = subs.Where(x => x.IsConverted).Select(x => x.ConvertedOther).ToList();
-                subs.AddRange(sr);
-               
-                var grouped = subs.GroupBy(x => x.Network).ToList();
+                var active = reqs.Where(x => x.IsDiscovered).ToList();
+                if (active.Count == 0)
+                    return;
+
+                var converted = active.Where(x => x.IsConverted).Select(x => x.ConvertedOther).ToList();
+                active.AddRange(converted);
+
+                var grouped = GetGrouping(active);
 
                 var inuse = new List<LatestPriceProvider>();
-                foreach (var g in grouped)
+                foreach (var g in grouped.Where(x=>x.Key!=null))
                 {
-                    var prov = _providers.FirstOrDefault(x => x.Network.Equals(g.Key)) ?? CreateProvider(g.Key);
-                    prov.SyncVerifiedRequests(g);
-                    inuse.Add(prov);
+                    try
+                    {
+                        var prov = _providers.FirstOrDefault(x => x.Provider.Equals(g.Key)) ?? CreateProvider(g.Key);
+                        prov.SyncVerifiedRequests(g.ToList());
+                        inuse.Add(prov);
+                    }
+                    catch (Exception e)
+                    {
+                        Logging.I.DefaultLogger.Error($"Unable to sync {nameof(LatestPriceProvider)} for provider {g.Key.Title} {e.Message}");
+                    }
                 }
 
                 //remove unused
@@ -76,15 +86,16 @@ namespace Prime.Core.Prices.Latest
             }
         }
 
-        private LatestPriceProvider CreateProvider(Network network)
+        private List<IGrouping<IPublicPriceSuper,Request>> GetGrouping(List<Request> requests)
+        {
+            return requests.GroupBy(x => x.Discovered.Provider<IPublicPriceSuper>()).ToList();
+        }
+
+        private LatestPriceProvider CreateProvider(IPublicPriceSuper provider)
         {
             lock (_commonLock)
             {
-                var prov = network.PublicPriceProviders.FirstDirectProvider();
-                if (prov == null)
-                    throw new Exception($"Can't find {nameof(IPublicPriceSuper)} for {network.Name}");
-
-                var erprov = new LatestPriceProvider(new LatestPriceProviderContext(prov, this) {PollingSpan = TimeSpan.FromMilliseconds(_timerInterval)});
+                var erprov = new LatestPriceProvider(new LatestPriceProviderContext(provider, this) {PollingSpan = TimeSpan.FromMilliseconds(_timerInterval)});
                 _providers.Add(erprov);
                 return erprov;
             }

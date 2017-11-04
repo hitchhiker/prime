@@ -35,7 +35,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"{Price.Display} [=1 {QuoteAsset}]";
+            return $"1 {QuoteAsset} = {Price.Display}";
         }
     }
 }

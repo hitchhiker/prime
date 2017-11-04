@@ -8,6 +8,6 @@ namespace Prime.Common
 {
     public interface ICoinInformationProvider : INetworkProvider, IDescribesAssets
     {
-        Task<List<AssetInfo>> GetCoinInfoAsync(NetworkProviderContext context);
+        Task<List<AssetInfo>> GetCoinInformationAsync(NetworkProviderContext context);
     }
 }

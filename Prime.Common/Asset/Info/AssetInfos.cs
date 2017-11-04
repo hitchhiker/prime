@@ -29,7 +29,7 @@ namespace Prime.Common
         private void DoRefresh()
         {
             var cc = Networks.I.CoinListProviders.FirstProvider();
-            var r = ApiCoordinator.GetCoinInfo(cc);
+            var r = ApiCoordinator.GetCoinInformation(cc);
             if (r.IsNull)
                 return;
 

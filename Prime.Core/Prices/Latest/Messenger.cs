@@ -32,10 +32,12 @@ namespace Prime.Core.Prices.Latest
                 var subs = entry.Subscriber;
                 var nr = new Request(message.Pair, message.Network);
 
-                if (subs.Requests.Add(nr))
-                    nr.Discover();
+                var request = subs.Requests.FirstOrDefault(x => x.Equals(nr));
+                if (request != null)
+                    return;
 
-                Aggregator.SyncProviders();
+                subs.Requests.Add(request = nr);
+                request.DiscoveryProcessor = new RequestDiscoveryProcessor(request, () => { Aggregator.SyncProviders(); });
             }
         }
 

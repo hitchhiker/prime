@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.Korbit
 
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("Korbit");
+        public Network Network { get; } = Networks.I.Get("Korbit");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

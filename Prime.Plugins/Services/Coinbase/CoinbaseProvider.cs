@@ -26,7 +26,7 @@ namespace Prime.Plugins.Services.Coinbase
         private RestApiClientProvider<ICoinbaseApi> ApiProvider { get; }
         private RestApiClientProvider<IGdaxApi> GdaxApiProvider { get; }
 
-        public Network Network { get; } = new Network("Coinbase");
+        public Network Network { get; } = Networks.I.Get("Coinbase");
 
         public bool Disabled => false;
         public int Priority => 100;
