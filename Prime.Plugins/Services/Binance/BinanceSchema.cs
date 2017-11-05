@@ -12,6 +12,26 @@ namespace Prime.Plugins.Services.Binance
 
         internal class CandlestickResponse : List<decimal[]> { }
 
+        internal class Ticker24HrResponse
+        {
+            public decimal priceChange;
+            public decimal priceChangePercent;
+            public decimal weightedAvgPrice;
+            public decimal prevClosePrice;
+            public decimal lastPrice;
+            public decimal bidPrice;
+            public decimal askPrice;
+            public decimal openPrice;
+            public decimal highPrice;
+            public decimal lowPrice;
+            public decimal volume;
+            public long openTime;
+            public long closeTime;
+            public int fristId;
+            public int lastId;
+            public int count;
+        }
+
         internal class UserInformationResponse
         {
             public decimal makerCommission;
