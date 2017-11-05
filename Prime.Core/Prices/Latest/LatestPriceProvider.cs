@@ -20,7 +20,7 @@ namespace Prime.Core
         private readonly bool _hasPrices;
         private readonly bool _hasPrice;
         private readonly bool _hasPriceA;
-        private readonly UniqueList<Request> _verifiedRequests = new UniqueList<Request>();
+        //private readonly UniqueList<Request> _verifiedRequests = new UniqueList<Request>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
         private readonly Timer _timer;
@@ -77,25 +77,13 @@ namespace Prime.Core
 
         public bool IsFailing { get; private set; }
 
-        internal void SyncVerifiedRequests(List<Request> requests)
+        internal void SyncPairRequests(IEnumerable<AssetPair> pairs)
         {
             lock (_timerLock)
             {
-                _verifiedRequests.Clear();
                 _pairRequests.Clear();
-
-                foreach (var req in requests.Where(x=>x.IsDiscovered))
-                    AddVerifiedRequest(req);
+                _pairRequests.AddRange(pairs);
             }
-        }
-
-        private void AddVerifiedRequest(Request requestMessage)
-        {
-            if (!requestMessage.IsDiscovered)
-                throw new ArgumentException($"You cant add an un-verified {requestMessage.GetType()} to {GetType()}");
-
-            _verifiedRequests.Add(requestMessage);
-            _pairRequests.Add(requestMessage.PairForProvider);
         }
 
         public bool HasRequests()
@@ -173,21 +161,24 @@ namespace Prime.Core
 
         private void SendResults(LatestPrice response)
         {
-            var requests = _verifiedRequests.Where(x => x.PairForProvider.Equals(response.Pair));
+            var resultMsg = new LatestPriceResultMessage(Provider, response);
+            _messenger.SendAsync(resultMsg);
 
-            foreach (var request in requests)
-                SendResults(response, request);
+            //var requests = _verifiedRequests.Where(x => x.Pair.Equals(response.Pair));
+
+            //foreach (var request in requests)
+            //    SendResults(response, request);
         }
 
         private void SendResults(LatestPrice price, Request request)
         {
             if (!request.IsConvertedPart2)
             {
-                var isreversed = request.Discovered.IsPairReversed;
+                var isreversed = !Equals(request.Pair.Asset2, price.QuoteAsset);
                 var priceNormalised = isreversed ? price.Reverse() : price;
                 var pair = request.Pair;
 
-                var resultMsg = request.LastResult = new LatestPriceResultMessage(Provider, pair, priceNormalised);
+                var resultMsg = request.LastResult = new LatestPriceResultMessage(Provider, priceNormalised);
                 request.LastPrice = priceNormalised;
                 CheckMessage(resultMsg);
                 _messenger.SendAsync(resultMsg);
@@ -199,7 +190,7 @@ namespace Prime.Core
 
         private void SendConverted(Request request)
         {
-            if (request.ConvertedOther?.LastResult == null || request.ConvertedOther?.LastPrice == null)
+            /*if (request.ConvertedOther?.LastResult == null || request.ConvertedOther?.LastPrice == null)
                 return;
 
             var p1 = request.IsConvertedPart1 ? request : request.ConvertedOther;
@@ -207,7 +198,7 @@ namespace Prime.Core
 
             var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Discovered.Provider<IPublicPriceSuper>(), p2.Discovered.Provider<IPublicPriceSuper>());
             CheckMessage(resultMsg);
-            _messenger.SendAsync(resultMsg);
+            _messenger.SendAsync(resultMsg);*/
         }
 
         public void CheckMessage(LatestPriceResultMessage m)

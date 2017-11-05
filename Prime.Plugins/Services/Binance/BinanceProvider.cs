@@ -158,7 +158,7 @@ namespace Prime.Plugins.Services.Binance
 
             var assetPairs = new AssetPairs();
 
-            foreach (var rPrice in r)
+            foreach (var rPrice in r.OrderBy(x=>x.symbol.Length))
             {
                 var pair = GetAssetPair(rPrice.symbol, assetPairs);
 
@@ -200,7 +200,7 @@ namespace Prime.Plugins.Services.Binance
                         var asset1 = pairCode.Replace(existingAsset.ShortCode, "");
                         var asset2 = existingAsset.ShortCode;
 
-                        assetPair = new AssetPair(asset1, asset2);
+                        assetPair = pairCode.IndexOf(asset1, StringComparison.OrdinalIgnoreCase)==0 ? new AssetPair(asset1, asset2) : new AssetPair(asset2, asset1);
                     }
                 }
             }

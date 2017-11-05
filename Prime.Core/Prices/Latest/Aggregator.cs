@@ -51,22 +51,22 @@ namespace Prime.Core.Prices.Latest
             lock (_commonLock)
             {
                 var reqs = _lpm.GetRequests();
-                var active = reqs.Where(x => x.IsDiscovered).ToList();
+                var active = reqs.Where(x => x.IsDiscovered).Select(x=>x.Discovered).ToList();
                 if (active.Count == 0)
                     return;
 
-                var converted = active.Where(x => x.IsConverted).Select(x => x.ConvertedOther).ToList();
+                var converted = active.Where(x => x.IsConverting).Select(x => x.ConversionOther).ToList();
                 active.AddRange(converted);
 
-                var grouped = GetGrouping(active);
+                var grouped = GetPairsByProviderGrouped(active);
 
                 var inuse = new List<LatestPriceProvider>();
-                foreach (var g in grouped.Where(x=>x.Key!=null))
+                foreach (var g in grouped.Where(kv => kv.Key != null && kv.Any()))
                 {
                     try
                     {
                         var prov = _providers.FirstOrDefault(x => x.Provider.Equals(g.Key)) ?? CreateProvider(g.Key);
-                        prov.SyncVerifiedRequests(g.ToList());
+                        prov.SyncPairRequests(g.Select(x => x.Pair));
                         inuse.Add(prov);
                     }
                     catch (Exception e)
@@ -86,9 +86,9 @@ namespace Prime.Core.Prices.Latest
             }
         }
 
-        private List<IGrouping<IPublicPriceSuper,Request>> GetGrouping(List<Request> requests)
+        private List<IGrouping<IPublicPriceSuper, AssetPairNetworks>> GetPairsByProviderGrouped(List<AssetPairNetworks> requests)
         {
-            return requests.GroupBy(x => x.Discovered.Provider<IPublicPriceSuper>()).ToList();
+            return requests.GroupBy(x => x.Provider<IPublicPriceSuper>()).ToList();
         }
 
         private LatestPriceProvider CreateProvider(IPublicPriceSuper provider)
