@@ -48,7 +48,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            var api = BitMexTestApiUrl;
+            var api = BitMexApiUrl;
             ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
