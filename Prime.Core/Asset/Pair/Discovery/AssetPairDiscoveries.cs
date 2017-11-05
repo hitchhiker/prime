@@ -7,18 +7,19 @@ using Prime.Utility;
 
 namespace Prime.Core
 {
-    public class AssetPairDiscoveryInstance : IHasProcessState
+    public class AssetPairDiscoveries : IHasProcessState
     {
         private const string IntermediariesCsv = "USD,BTC,EUR,LTC,USDT,XRP,ETH,ETC,BCC,BCH";
         private static readonly List<Asset> Intermediaries = IntermediariesCsv.ToCsv().Select(x => x.ToAssetRaw()).ToList();
         public readonly AssetPairDiscoveryRequestMessage Context;
+        public readonly List<AssetPairNetworks> Discovered = new List<AssetPairNetworks>();
 
         private readonly object _lock = new object();
 
         public ProcessState ProcessState { get; private set; }
-        public AssetPairNetworks Networks { get; private set; }
+        public AssetPairNetworks DiscoverFirst { get; private set; }
 
-        internal AssetPairDiscoveryInstance(AssetPairDiscoveryRequestMessage requestMessage)
+        internal AssetPairDiscoveries(AssetPairDiscoveryRequestMessage requestMessage)
         {
             Context = requestMessage;
             ProcessState = ProcessState.None;
@@ -44,7 +45,7 @@ namespace Prime.Core
         
         private void Discover(AssetPair pair)
         {
-            Networks = DiscoverSpecified(pair) ??
+            DiscoverFirst = DiscoverSpecified(pair) ??
                        Discover(pair, Context.ReversalEnabled) ??
                        DiscoverPegged(pair, Context.ReversalEnabled, Context.PeggedEnabled) ??
                        DiscoverIntermediary(pair);
@@ -55,24 +56,24 @@ namespace Prime.Core
             if (Context.Network == null)
                 return null;
 
-            return DiscoverSpecified(pair, Context.Network, false) ?? (Context.ReversalEnabled ? DiscoverSpecified(pair.Reverse(), Context.Network, true) : null);
+            return DiscoverSpecified(pair, Context.Network) ?? (Context.ReversalEnabled ? DiscoverSpecified(pair.Reverse(), Context.Network) : null);
         }
 
-        private static AssetPairNetworks DiscoverSpecified(AssetPair pair, Network network, bool isReversed)
+        private static AssetPairNetworks DiscoverSpecified(AssetPair pair, Network network)
         {
             var provs = GetProviders(pair).Where(x => x.Equals(network)).ToList();
-            return provs.Any() ? new AssetPairNetworks(pair, provs, isReversed) : null;
+            return provs.Any() ? new AssetPairNetworks(pair, provs) : null;
         }
 
         private static AssetPairNetworks Discover(AssetPair pair, bool canReverse)
         {
-            return DiscoverReversable(pair, false) ?? (canReverse ? DiscoverReversable(pair.Reverse(), true) : null);
+            return DiscoverReversable(pair) ?? (canReverse ? DiscoverReversable(pair.Reverse()) : null);
         }
 
-        private static AssetPairNetworks DiscoverReversable(AssetPair pair, bool isReversed)
+        private static AssetPairNetworks DiscoverReversable(AssetPair pair)
         {
             var provs = GetProviders(pair);
-            return provs.Any() ? new AssetPairNetworks(pair, provs, isReversed) : null;
+            return provs.Any() ? new AssetPairNetworks(pair, provs) : null;
         }
 
         private static AssetPairNetworks DiscoverPegged(AssetPair pair, bool canReverse, bool canPeg)
@@ -80,10 +81,10 @@ namespace Prime.Core
             if (!canPeg)
                 return null;
 
-            return DiscoverPeggedReversable(pair, false) ?? (canReverse ? DiscoverPeggedReversable(pair.Reverse(), true) : null);
+            return DiscoverPeggedReversable(pair) ?? (canReverse ? DiscoverPeggedReversable(pair.Reverse()) : null);
         }
 
-        private static AssetPairNetworks DiscoverPeggedReversable(AssetPair pair, bool isReversed)
+        private static AssetPairNetworks DiscoverPeggedReversable(AssetPair pair)
         {
             // Try alternate / pegged variation
 
@@ -91,7 +92,7 @@ namespace Prime.Core
             {
                 var provs = GetProviders(ap);
                 if (provs.Any())
-                    return new AssetPairNetworks(ap, provs, isReversed) {IsPegged = true};
+                    return new AssetPairNetworks(ap, provs) {IsPegged = true};
             }
 
             return null;
@@ -102,12 +103,27 @@ namespace Prime.Core
             if (!Context.ConversionEnabled)
                 return null;
 
-            return DiscoverIntermediaries(pair, Context.PeggedEnabled);
+            return DiscoverIntermediariesLoop(pair);
         }
 
-        private static AssetPairNetworks DiscoverIntermediaries(AssetPair pair, bool canPeg)
+        private AssetPairNetworks DiscoverIntermediariesLoop(AssetPair pair)
         {
-            return Intermediaries.Select(intermediary => DiscoverFromIntermediary(pair, intermediary, canPeg)).FirstOrDefault(provs => provs != null);
+            var ints = Intermediaries.Select(intermediary => DoIntermerdiaryReverseable(pair, intermediary)).Where(provs => provs != null).ToList();
+            return ints.OrderByDescending(x=>x.Sort).ThenByDescending(x=>x.TotalNetworksInvolved).FirstOrDefault();
+        }
+
+        private AssetPairNetworks DoIntermerdiaryReverseable(AssetPair pair, Asset intermediary)
+        {
+            var p1 = DiscoverFromIntermediary(pair, intermediary, Context.PeggedEnabled);
+            var p2 = Context.ReversalEnabled ? DiscoverFromIntermediary(pair.Reverse(), intermediary, Context.PeggedEnabled) : null;
+
+            if (p1 != null)
+                Discovered.Add(p1);
+
+            if (p2 != null)
+                Discovered.Add(p2);
+
+            return p1 ?? p2;
         }
 
         private static AssetPairNetworks DiscoverFromIntermediary(AssetPair originalPair, Asset intermediary, bool canPeg)
@@ -128,8 +144,11 @@ namespace Prime.Core
             if (provs2 == null)
                 return null;
 
-            provs1.ConversionPart2 = provs2;
-            provs2.ConversionPart1 = provs1;
+            provs1.IsConversionPart1 = true;
+            provs1.ConversionOther = provs2;
+
+            provs2.IsConversionPart2 = true;
+            provs2.ConversionOther = provs1;
 
             return provs1;
         }

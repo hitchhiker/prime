@@ -30,7 +30,7 @@ namespace Prime.Common
 
         public LatestPrice Reverse()
         {
-            return new LatestPrice(new Money(1d / Price, QuoteAsset), Price.Asset);
+            return new LatestPrice(Price.ReverseAsset(QuoteAsset), Price.Asset);
         }
 
         public override string ToString()

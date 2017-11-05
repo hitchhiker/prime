@@ -37,7 +37,11 @@ namespace Prime.Core.Prices.Latest
                     return;
 
                 subs.Requests.Add(request = nr);
-                request.DiscoveryProcessor = new RequestDiscoveryProcessor(request, () => { Aggregator.SyncProviders(); });
+                request.Processor = new DiscoveryRequestProcessor(request, () =>
+                {
+                    request.Messenger = new RequestMessenger(request);
+                    Aggregator.SyncProviders();
+                });
             }
         }
 
@@ -46,7 +50,14 @@ namespace Prime.Core.Prices.Latest
             lock (Lock)
             {
                 var subs = entry.Subscriber;
-                subs.Requests.Remove(new Request(message.Pair, message.Network));
+
+                var nr = new Request(message.Pair, message.Network);
+                var request = subs.Requests.FirstOrDefault(x => x.Equals(nr));
+                if (request == null)
+                    return;
+
+                request.Dispose();
+                subs.Requests.Remove(request);
                 Aggregator.SyncProviders();
             }
         }

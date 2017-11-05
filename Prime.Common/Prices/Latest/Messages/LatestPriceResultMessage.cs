@@ -21,11 +21,11 @@ namespace Prime.Common.Exchange.Rates
 
         public bool IsConverted => ProviderConversion != null;
 
-        public LatestPriceResultMessage(IPublicPriceSuper provider, AssetPair pair, LatestPrice latestPrice)
+        public LatestPriceResultMessage(IPublicPriceSuper provider, LatestPrice latestPrice)
         {
             UtcCreated = latestPrice.UtcCreated;
             Provider = provider;
-            Pair = pair;
+            Pair = latestPrice.Pair;
             Price = latestPrice.Price;
         }
 

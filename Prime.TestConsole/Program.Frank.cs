@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Common;
+using Prime.Core;
 using Prime.Utility;
 
 namespace Prime.TestConsole
@@ -20,6 +21,19 @@ namespace Prime.TestConsole
 
             public FrankTests()
             {
+                Console.WriteLine("CANN:USD");
+
+                var nets = AssetPairDiscovery.I.Discover(new AssetPairDiscoveryRequestMessage(new AssetPair("CANN", "USD")));
+                foreach (var i in nets.Discovered.OrderByDescending(x=>x.Sort).ThenByDescending(x=>x.TotalNetworksInvolved))
+                    Console.WriteLine(i.TotalNetworksInvolved + " " + i.SortB + " "+  i.Sort + " " + string.Join(", ", i.Networks.Select(x => x.Name)));
+
+                Console.WriteLine("USDT:USD");
+
+                nets = AssetPairDiscovery.I.Discover(new AssetPairDiscoveryRequestMessage(new AssetPair("USDT", "USD")));
+                foreach (var i in nets.Discovered.OrderByDescending(x => x.Sort).ThenByDescending(x => x.TotalNetworksInvolved))
+                    Console.WriteLine(i.TotalNetworksInvolved + " " + i.SortB + " " + i.Sort + " " + string.Join(", ", i.Networks.Select(x => x.Name)));
+
+                /*
                 var done = false;
                 var apd = new AssetPairDiscoveryRequestMessage(new AssetPair("XRP", "USD"));
                 _m.Register<AssetPairDiscoveryResultMessage>(this, m =>
@@ -35,7 +49,6 @@ namespace Prime.TestConsole
                     Thread.Sleep(1);
                 } while (!done);
 
-                /*
                 var p1 = Networks.I.Providers.FirstProviderOf<CoinfloorCryptoCompareProvider>() as IAssetPairsProvider;
                 var r1 = ApiCoordinator.GetAssetPairs(p1);
 

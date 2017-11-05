@@ -102,5 +102,10 @@ namespace Prime.Common
         {
             return PercentageDifference(money1, money2) <= percentageTolerance;
         }
+
+        public static Money ReverseAsset(this Money money1, Asset quote)
+        {
+            return new Money(1d / money1, quote);
+        }
     }
 }

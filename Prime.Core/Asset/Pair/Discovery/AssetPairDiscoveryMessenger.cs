@@ -17,7 +17,7 @@ namespace Prime.Core
         private void AssetPairProviderDiscoveryMessage(AssetPairDiscoveryRequestMessage m)
         {
             var networks = AssetPairDiscovery.I.Discover(m);
-            _m.SendAsync(new AssetPairDiscoveryResultMessage(m, networks));
+            _m.SendAsync(new AssetPairDiscoveryResultMessage(m, networks.DiscoverFirst));
         }
     }
 }

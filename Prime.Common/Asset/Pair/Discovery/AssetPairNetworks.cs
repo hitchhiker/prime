@@ -11,19 +11,15 @@ namespace Prime.Common
     {
         public readonly AssetPair Pair;
         public readonly IReadOnlyList<Network> Networks;
-        public readonly bool IsPairReversed;
 
-        public AssetPairNetworks(AssetPair pair, IReadOnlyList<Network> networks, bool isPairReversed = false)
+        public AssetPairNetworks(AssetPair pair, IReadOnlyList<Network> networks)
         {
             Pair = pair;
             Networks = networks;
-            IsPairReversed = isPairReversed;
         }
 
         private List<INetworkProvider> _providers;
         public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = Networks.SelectMany(x => x.Providers).Distinct().ToList());
-
-        public AssetPair OriginalPair => IsPairReversed ? Pair.Reverse() : Pair;
 
         public bool Has<T>(bool onlyDirect = true) where T : INetworkProvider
         {
@@ -78,10 +74,22 @@ namespace Prime.Common
 
         public bool IsIntermediary { get; set; }
 
-        public AssetPairNetworks ConversionPart1 { get; set; }
+        public AssetPairNetworks ConversionPart1 => IsConversionPart1 ? this : ConversionOther;
 
-        public AssetPairNetworks ConversionPart2 { get; set; }
+        public AssetPairNetworks ConversionPart2 => IsConversionPart2 ? this : ConversionOther;
 
-        public bool IsConverting => ConversionPart1 != null || ConversionPart2 != null;
+        public AssetPairNetworks ConversionOther { get; set; }
+
+        public bool IsConversionPart1 { get; set; }
+
+        public bool IsConversionPart2 { get; set; }
+
+        public bool IsConverting => IsConversionPart1 || IsConversionPart2;
+
+        public int TotalNetworksInvolved => Networks.Count + ConversionOther?.Networks.Count ?? Networks.Count;
+
+        public int SortB => Math.Abs(Networks.Count - ConversionOther?.Networks.Count ?? 0);
+
+        public int Sort => TotalNetworksInvolved - SortB + (Networks.Count>1 && (ConversionOther == null || ConversionOther.Networks.Count>1) ? 1000 : 0);
     }
 }

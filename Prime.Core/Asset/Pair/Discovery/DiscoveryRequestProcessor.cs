@@ -4,12 +4,12 @@ using Prime.Common;
 
 namespace Prime.Core.Prices.Latest
 {
-    internal sealed class RequestDiscoveryProcessor
+    internal sealed class DiscoveryRequestProcessor
     {
         private readonly Request _req;
         private readonly Action _doAfterDiscovery;
 
-        internal RequestDiscoveryProcessor(Request req, Action doAfterDiscovery = null)
+        internal DiscoveryRequestProcessor(Request req, Action doAfterDiscovery = null)
         {
             _req = req;
             _doAfterDiscovery = doAfterDiscovery;
@@ -29,36 +29,36 @@ namespace Prime.Core.Prices.Latest
 
             var r = AssetPairDiscovery.I.Discover(request);
 
-            if (!r.Has<IPublicPriceSuper>())
+            if (r == null)
                 return;
 
-            ProcessDiscoveryResponse(_req, r);
+            if (!r.DiscoverFirst.Has<IPublicPriceSuper>())
+                return;
+
+            ProcessDiscovery(_req, r.DiscoverFirst);
 
             _doAfterDiscovery?.Invoke();
         }
 
-        private static void ProcessDiscoveryResponse(Request request, AssetPairNetworks r, bool isPart2 = false)
+        private static void ProcessDiscovery(Request request, AssetPairNetworks r, bool isPart2 = false)
         {
-            request.PairForProvider = r.Pair;
             request.IsConvertedPart1 = !isPart2 && r.ConversionPart2 != null;
             request.Discovered = r;
             request.IsDiscovered = true;
 
             if (request.IsConvertedPart1 && !isPart2)
-                ProcessConvertedPart2(request, r.ConversionPart2);
+                ProcessConverted(request, r.ConversionPart2);
         }
 
-        private static void ProcessConvertedPart2(Request request, AssetPairNetworks networks)
+        private static void ProcessConverted(Request request, AssetPairNetworks networks)
         {
             var part2 = new Request(request.Pair, networks.Network<IPublicPriceSuper>())
             {
-                ConvertedOther = request,
                 IsConvertedPart1 = false,
                 IsConvertedPart2 = true
             };
 
-            request.ConvertedOther = part2;
-            ProcessDiscoveryResponse(part2, networks, true);
+            ProcessDiscovery(part2, networks, true);
         }
     }
 }
