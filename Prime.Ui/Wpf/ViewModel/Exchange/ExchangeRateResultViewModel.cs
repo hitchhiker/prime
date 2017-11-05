@@ -31,9 +31,9 @@ namespace Prime.Ui.Wpf.ViewModel
             if (IsConverted)
             {
                 AssetConvert = result.AssetIntermediary;
-                InfoLeft = $"1 {AssetLeft.ShortCode} = {result.MarketPrice1.Price.ToString()}";
-                InfoConvert = $"1 {AssetConvert.ShortCode} = {result.MarketPrice2.Price.ToString()}";
-                InfoRight = $"1 {AssetRight.ShortCode} = {new Money(result.Price, AssetLeft).ToString()}";
+                InfoLeft = result.MarketPrice.ToString();
+                InfoConvert = result.MarketPrice1.AsQuote(result.AssetIntermediary)?.ToString();
+                InfoRight = result.MarketPrice2.AsQuote(AssetRight)?.ToString();
                 NetworkMiddle = result.ProviderConversion?.Network;
             }
             else

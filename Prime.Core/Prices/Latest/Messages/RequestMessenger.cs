@@ -39,7 +39,7 @@ namespace Prime.Core.Prices.Latest
             lock (_lock)
             {
                 if (_nets.Pair.Equals(m.Pair))
-                    _m.SendAsync(new LatestPriceResultMessage(m.Provider, Reverse(m)));
+                    _m.SendAsync(new LatestPriceResultMessage(m.Provider, m.MarketPrice.Reverse()));
             }
         }
 
@@ -58,11 +58,6 @@ namespace Prime.Core.Prices.Latest
             }
         }
 
-        private MarketPrice Reverse(LatestPriceResultMessage m)
-        {
-            return new MarketPrice(m.Price.ReverseAsset(m.Pair.Asset2), m.Pair.Asset1);
-        }
-
         private bool TryConversion(AssetPairNetworks networks, LatestPriceResultMessage m)
         {
             if (TryConversion(networks, m, false))
@@ -78,7 +73,7 @@ namespace Prime.Core.Prices.Latest
             if (!pair.Equals(m.Pair))
                 return false;
 
-            var message = reverse ? new LatestPriceResultMessage(m.Provider, Reverse(m)) : m;
+            var message = reverse ? new LatestPriceResultMessage(m.Provider, m.MarketPrice.Reverse()) : m;
             if (networks.IsConversionPart1)
                 _request.LastConvert1 = message;
             else
@@ -95,8 +90,14 @@ namespace Prime.Core.Prices.Latest
             var p1 = _request.LastConvert1;
             var p2 = _request.LastConvert2;
 
-            var price = new Money(1 / p1.Price * p2.Price, _request.Pair.Asset2);
-            var market = new MarketPrice(price, _request.Pair.Asset1);
+            var reverse1 = Equals(p1.Pair.Asset1, _request.Pair.Asset1);
+            var reverse2 = Equals(p2.Pair.Asset1, _request.Pair.Asset1);
+
+            var p1F = reverse1 ? 1 / p1.Price : p1.Price;
+            var p2F = reverse2 ? 1 / p2.Price : p2.Price;
+
+            var price = new Money(p1F * p2F, _request.Pair.Asset2);
+            var market = new MarketPrice(_request.Pair.Asset1, price);
 
             var message = new LatestPriceResultMessage(market, _nets.Intermediary, p1.MarketPrice, p2.MarketPrice, p1.Provider, p2.Provider);
 

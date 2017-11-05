@@ -6,18 +6,26 @@ namespace Prime.Common
     {
         private MarketPrice() { }
 
+        /// <summary>
+        /// As an example if the pair was BTC:USD - the value quoted should therefore be a USD value.
+        /// The result would be a market price in USD, and a QuoteAsset of BTC
+        /// Avoid using this constructor unless you are clear with this information.
+        /// </summary>
+        /// <param name="pair"></param>
+        /// <param name="value"></param>
+        /// <param name="utcCreated"></param>
         public MarketPrice(AssetPair pair, decimal value, DateTime? utcCreated = null)
         {
             Pair = pair;
             UtcCreated = utcCreated ?? DateTime.UtcNow;
-            Price = new Money(value, pair.Asset1);
+            Price = new Money(value, pair.Asset2);
         }
 
-        public MarketPrice(Money price, Asset quoteAsset) : this(new AssetPair(price.Asset, quoteAsset), price)
+        public MarketPrice(Asset quoteAsset, Money price) : this(new AssetPair(quoteAsset, price.Asset), price)
         {
         }
 
-        public Asset QuoteAsset => Pair.Asset2;
+        public Asset QuoteAsset => Pair.Asset1;
 
         [Bson]
         public AssetPair Pair { get; private set; }
@@ -30,7 +38,16 @@ namespace Prime.Common
 
         public MarketPrice Reverse()
         {
-            return new MarketPrice(Price.ReverseAsset(QuoteAsset), Price.Asset);
+            return new MarketPrice(Price.Asset, Price.ReverseAsset(QuoteAsset));
+        }
+
+        public MarketPrice AsQuote(Asset quote)
+        {
+            if (Equals(Pair.Asset1, quote))
+                return this;
+            if (Equals(Pair.Asset2, quote))
+                return Reverse();
+            return null;
         }
 
         public override string ToString()
