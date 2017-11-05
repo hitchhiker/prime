@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ using System.Windows.Threading;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class AllAssetsViewModel : VmBase
+    public class AllAssetsViewModel : VmBase, IDisposable
     {
         public AllAssetsViewModel()
         {
@@ -21,13 +22,12 @@ namespace Prime.Ui.Wpf.ViewModel
 
             Context = UserContext.Current;
             SelectedAsset = Context.QuoteAsset;
-            var msg = DefaultMessenger.I.Default;
 
-            msg.Register<AssetFoundMessage>(this, AssetFound);
+            M.RegisterAsync<AssetFoundMessage>(this, AssetFound);
 
-            msg.Register<AssetAllResponseMessage>(this, RetreiveAllAssets);
+            M.RegisterAsync<AssetAllResponseMessage>(this, RetreiveAllAssets);
 
-            msg.Send(new AssetAllRequestMessage(RequesterTokenVm));
+            M.SendAsync(new AssetAllRequestMessage(RequesterTokenVm));
         }
 
         public readonly UserContext Context;
@@ -84,6 +84,11 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             RaisePropertyChanged(nameof(Assets));
             //CollectionViewSource.GetDefaultView(Assets).Refresh();
+        }
+
+        public void Dispose()
+        {
+            M.UnregisterAsync(this);
         }
     }
 }
