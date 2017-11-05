@@ -6,6 +6,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Prime.Common;
 using System;
+using Prime.Ui.Wpf.ViewModel;
+using Prime.Utility;
 
 namespace Prime.Ui.Wpf.View.Asset
 {
@@ -19,70 +21,19 @@ namespace Prime.Ui.Wpf.View.Asset
         public AssetSelectorControl()
         {
             InitializeComponent();
-            new Task(PopulateAssets).Start();
-        }
-
-        public void PopulateAssets()
-        {
-            var maxPopular = 8; //make it into a property.
-
-            _listComboItems = new List<ComboSectionItem>();
-
-            var listAssets = Assets.I.Cached();
-
-            var popular = listAssets.Where(x => x.IsPopular).OrderBy(x => x.Popularity).Take(maxPopular).ToList();
-            var regular = listAssets.Except(popular).Where(x=> !Equals(x, Common.Asset.None)).OrderBy(x => x.Name).ToList();
-
-            foreach (var i in popular)
-                _listComboItems.Add(new ComboSectionItem { Header = "Most Popular", Asset = i });
-            
-            foreach (var i in regular)
-                _listComboItems.Add(new ComboSectionItem { Header = "More Assets...", Asset = i });
-           
-            ListCollectionView listComboSections = new ListCollectionView(_listComboItems);
-            listComboSections.GroupDescriptions.Add(new PropertyGroupDescription("Header"));
-
-            this.Dispatcher.Invoke(() =>
-            {
-                ItemsSource = listComboSections;
-                SelectedIndex = 0;
-            });
-        }
-
-        private List<ComboSectionItem> _listComboItems;
-
-        public class ComboSectionItem
-        {
-            public string Header { get; set; }
-            public Common.Asset Asset { get; set; }
         }
 
         private void AssetSelectorControl_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(this.Text) == false)
-            {
-                var source = _listComboItems.Where(x =>
-                    x.Asset.ShortCode.IndexOf(this.Text, StringComparison.InvariantCultureIgnoreCase) >= 0);
-                ItemsSource = source;
-                
-                if (source.Any())
-                {
-                    IsDropDownOpen = true;
-                }
-                else
-                {
-                    IsDropDownOpen = false;
-                }
-            }
-            else
-            {
-                PopulateAssets();
-            }
-        }
+            CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ItemsSource);
 
-        private void AssetSelectorControl_OnDropDownOpened(object sender, EventArgs e)
-        {
-            PopulateAssets();
+            itemsViewOriginal.Filter = ((comboItem) =>
+            {
+                if (string.IsNullOrWhiteSpace(Text)) return true;
+                return ((Common.Asset)comboItem).ShortCode.IndexOf(Text, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            });
+            
+            IsDropDownOpen = itemsViewOriginal.Count > 0;
         }
 
         public override void OnApplyTemplate()
@@ -90,11 +41,9 @@ namespace Prime.Ui.Wpf.View.Asset
             base.OnApplyTemplate();
 
             var element = GetTemplateChild("PART_EditableTextBox");
-            if (element != null)
-            {
-                var textBox = (TextBox)element;
-                textBox.SelectionChanged += OnDropSelectionChanged;
-            }
+            if (element == null) return;
+            var textBox = (TextBox)element;
+            textBox.SelectionChanged += OnDropSelectionChanged;
         }
 
         private void OnDropSelectionChanged(object sender, System.Windows.RoutedEventArgs e)

@@ -19,10 +19,10 @@
 
         <prime:AddressBox Width="Auto" MinWidth="400" DataContext="{Binding Path=AddressBoxModel}"/>
 
-        <asset:AssetSelectorControl Margin="10,0,0,0" SelectedItem="{Binding Path=SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <asset:AssetSelectorControl Margin="10,0,0,0" DataContext="{Binding AssetSelectorViewModel}" SelectedItem="{Binding SelectedAsset, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="LostFocus">
-                    <i:InvokeCommandAction Command="{Binding }" />
+                    <i:InvokeCommandAction Command="{Binding}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </asset:AssetSelectorControl>
