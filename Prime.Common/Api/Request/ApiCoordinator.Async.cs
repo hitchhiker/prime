@@ -27,7 +27,10 @@ namespace Prime.Common
         public static Task<ApiResponse<AssetPairs>> GetAssetPairsAsync(IAssetPairsProvider provider, NetworkProviderContext context = null)
         {
             context = context ?? new NetworkProviderContext();
-            return ApiHelpers.WrapException(()=> provider.GetAssetPairs(context), nameof(GetAssetPairs), provider, context);
+
+            return AssetPairCache.I.TryAsync(provider,
+                async () => await ApiHelpers.WrapException(() => provider.GetAssetPairs(context), nameof(GetAssetPairs),
+                    provider, context));
         }
 
         public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)

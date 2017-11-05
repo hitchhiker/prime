@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,13 +14,14 @@ namespace Prime.Utility
             ExpirationSpan = expirationSpan;
         }
 
-        private readonly object _lock = new object();
-
         private readonly Dictionary<T, CacheItem<T2>> _cache = new Dictionary<T, CacheItem<T2>>();
+        private readonly ConcurrentDictionary<T, object> _locks = new ConcurrentDictionary<T, object>();
 
         public T2 Try(T key, Func<T, T2> create)
         {
-            lock (_lock)
+            var locki = _locks.GetOrAdd(key, k => new object());
+
+            lock (locki)
             {
                 var ci = _cache.Get(key);
 
