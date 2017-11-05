@@ -1,14 +1,12 @@
 ﻿using System;
-using GalaSoft.MvvmLight.Messaging;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
 using Prime.Core.Prices.Latest.Messages;
-using Prime.Utility;
 using Prime.Utility.Misc;
 
 namespace Prime.Core.Prices.Latest
 {
-    internal sealed partial class Request : IEquatable<Request>
+    internal sealed partial class Request : IEquatable<Request>, IDisposable
     {
         public Request(AssetPair pair, Network network = null)
         {
@@ -18,13 +16,13 @@ namespace Prime.Core.Prices.Latest
 
         public readonly AssetPair Pair;
 
-        public AssetPair PairForProvider { get; set; }
+        public Network NetworkSuggested { get; private set; }
 
         public bool IsDiscovered { get; set; }
 
         public AssetPairNetworks Discovered { get; set; }
 
-        public Request ConvertedOther { get; set; }
+        public RequestMessenger Messenger { get; set; }
 
         public bool IsConvertedPart1 { get; set; }
 
@@ -32,13 +30,18 @@ namespace Prime.Core.Prices.Latest
 
         public bool IsConverted => IsConvertedPart1 || IsConvertedPart2;
 
-        public Network NetworkSuggested { get; private set; }
+        public bool IsReversed => !IsConverted && IsDiscovered && Pair.Equals(Discovered.Pair.Reverse());
 
         public LatestPriceResultMessage LastResult { get; set; }
 
         public LatestPrice LastPrice { get; set; }
 
-        internal RequestDiscoveryProcessor DiscoveryProcessor { get; set; }
+        internal DiscoveryRequestProcessor Processor { get; set; }
+
+        public void Dispose()
+        {
+            Messenger?.Dispose();
+        }
     }
 
     internal sealed partial class Request
