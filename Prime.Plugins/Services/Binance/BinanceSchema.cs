@@ -42,6 +42,11 @@ namespace Prime.Plugins.Services.Binance
         {
             public string symbol;
             public decimal price;
+
+            public override string ToString()
+            {
+                return $"{symbol}: {price}";
+            }
         }
     }
 }

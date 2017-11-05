@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.Binance
 
             foreach (var rEntry in r)
             {
-                var dateTime = ((long) (rEntry[0] / 1000)).ToUtcDateTime();
+                var dateTime = ((long)(rEntry[0] / 1000)).ToUtcDateTime();
                 ohlc.Add(new OhlcEntry(seriesId, dateTime, this)
                 {
                     Open = (double)rEntry[1],
@@ -107,7 +107,7 @@ namespace Prime.Plugins.Services.Binance
 
             var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
-            if(lpr == null)
+            if (lpr == null)
                 throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
             return new MarketPrice(context.Pair, lpr.price);
@@ -158,12 +158,12 @@ namespace Prime.Plugins.Services.Binance
 
             var assetPairs = new AssetPairs();
 
-            foreach (var rPrice in r.OrderBy(x=>x.symbol.Length))
+            foreach (var rPrice in r.OrderBy(x => x.symbol.Length))
             {
                 var pair = GetAssetPair(rPrice.symbol, assetPairs);
 
                 if (pair == null)
-                    continue;
+                    continue; //throw new ApiResponseException($"Error during {rPrice.symbol} asset pair parsing", this);
 
                 assetPairs.Add(pair);
             }
@@ -182,30 +182,43 @@ namespace Prime.Plugins.Services.Binance
 
                 assetPair = new AssetPair(asset1, asset2);
             }
-            else if(pairCode.Length > 6)
+            else if (pairCode.Length > 6)
             {
-                var existingAsset = existingPairs.FirstOrDefault(x => pairCode.Contains(x.Asset1.ShortCode))?.Asset1;
-                if (existingAsset != null)
-                {
-                    var asset1 = existingAsset.ShortCode;
-                    var asset2 = pairCode.Replace(existingAsset.ShortCode, "");
+                var existingAsset = FindAssetByPairCode(pairCode, existingPairs);
 
-                    assetPair = new AssetPair(asset1, asset2);
-                }
-                else
-                {
-                    existingAsset = existingPairs.FirstOrDefault(x => pairCode.Contains(x.Asset2.ShortCode))?.Asset2;
-                    if (existingAsset != null)
-                    {
-                        var asset1 = pairCode.Replace(existingAsset.ShortCode, "");
-                        var asset2 = existingAsset.ShortCode;
+                if (existingAsset == null)
+                    return null;
 
-                        assetPair = pairCode.IndexOf(asset1, StringComparison.OrdinalIgnoreCase)==0 ? new AssetPair(asset1, asset2) : new AssetPair(asset2, asset1);
-                    }
-                }
+                var asset1 = pairCode.Replace(existingAsset.ShortCode, "");
+                var asset2 = existingAsset.ShortCode;
+
+                assetPair = pairCode.StartsWith(existingAsset.ShortCode)
+                    ? new AssetPair(asset2, asset1)
+                    : new AssetPair(asset1, asset2);
             }
 
             return assetPair;
+        }
+
+        private Asset FindAssetByPairCode(string pairCode, AssetPairs pairs)
+        {
+            var asset = pairs.FirstOrDefault(x => pairCode.StartsWith(x.Asset1.ShortCode))?.Asset1;
+            if (asset != null)
+                return asset;
+
+            asset = pairs.FirstOrDefault(x => pairCode.StartsWith(x.Asset2.ShortCode))?.Asset2;
+            if (asset != null)
+                return asset;
+
+            asset = pairs.FirstOrDefault(x => pairCode.EndsWith(x.Asset1.ShortCode))?.Asset1;
+            if (asset != null)
+                return asset;
+
+            asset = pairs.FirstOrDefault(x => pairCode.EndsWith(x.Asset2.ShortCode))?.Asset2;
+            if (asset != null)
+                return asset;
+
+            return null;
         }
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
@@ -258,10 +271,10 @@ namespace Prime.Plugins.Services.Binance
 
         private (decimal Price, decimal Volume) GetOrderBookRecordData(object[] rawEntry)
         {
-            if(!decimal.TryParse(rawEntry[0].ToString(), out var price))
+            if (!decimal.TryParse(rawEntry[0].ToString(), out var price))
                 throw new ApiResponseException("Incorrect format of returned price", this);
 
-            if(!decimal.TryParse(rawEntry[1].ToString(), out var volume))
+            if (!decimal.TryParse(rawEntry[1].ToString(), out var volume))
                 throw new ApiResponseException("Incorrect format of returned volume", this);
 
             return (price, volume);

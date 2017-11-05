@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal.History;
 
 namespace Prime.Tests.Providers
 {
@@ -83,6 +84,13 @@ namespace Prime.Tests.Providers
             var p = IsType<IOrderBookProvider>();
             if (p.Success)
                 await GetOrderBookAsync(p.Provider);
+        }
+
+        public virtual async Task TestGetWithdrawalHistoryAsync()
+        {
+            var p = IsType<IWithdrawalHistoryProvider>();
+            if (p.Success)
+                await GetWithdrawalHistoryAsync(p.Provider);
         }
 
         #endregion
@@ -391,6 +399,31 @@ namespace Prime.Tests.Providers
                 {
                     Trace.WriteLine($"{obr.Data.Time} | For {OrderBookContext.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
                 }
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalHistoryContext WithdrawalHistoryContext { get; set; }
+
+        private async Task GetWithdrawalHistoryAsync(IWithdrawalHistoryProvider provider)
+        {
+            if (WithdrawalHistoryContext == null)
+            {
+                WithdrawalHistoryContext = new WithdrawalHistoryContext(UserContext.Current)
+                {
+                    Asset = Asset.Btc,
+                    FromTimeUtc = DateTime.UtcNow.AddDays(-7)
+                };
+            }
+
+            try
+            {
+                var r = await provider.GetWithdrawalHistory(WithdrawalHistoryContext);
+
+                // Assert.IsTrue(r);
             }
             catch (Exception e)
             {

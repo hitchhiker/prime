@@ -30,5 +30,8 @@ namespace Prime.Plugins.Services.BitMex
 
         [Get("/orderBook/L2?symbol={currencyPair}&depth={depth}")]
         Task<BitMexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int depth);
+
+        [Get("/user/walletHistory?currency={currency}")]
+        Task<BitMexSchema.WalletHistoryResponse> GetWalletHistory([Path] string currency);
     }
 }
