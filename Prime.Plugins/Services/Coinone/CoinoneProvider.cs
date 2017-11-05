@@ -123,12 +123,12 @@ namespace Prime.Plugins.Services.Coinone
             return new MarketPrice(context.Pair, r.last);
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -137,24 +137,23 @@ namespace Prime.Plugins.Services.Coinone
 
             var r = ParseTicker(rRaw);
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
             var krwAsset = Asset.Krw;
 
             foreach (var pair in context.Pairs)
             {
-                if (!pair.Asset2.Equals(krwAsset))
-                    throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
-
                 var ticker = new CoinoneSchema.TickerEntryResponse();
-                if(!r.TryGetValue(pair.Asset1.ShortCode.ToLower(), out ticker))
-                    throw new ApiResponseException($"Exchange does not support {pair} currency pair", this);
+                if (!r.TryGetValue(pair.Asset1.ShortCode.ToLower(), out ticker) || !pair.Asset2.Equals(krwAsset))
+                {
+                    prices.AddMissedPair(pair);
+                    continue;
+                }
 
-                prices.Add(new MarketPrice(pair, ticker.last));
+                prices.MarketPrices.Add(new MarketPrice(pair, ticker.last));
             }
 
             return prices;
         }
-
 
         public BuyResult Buy(BuyContext ctx)
         {

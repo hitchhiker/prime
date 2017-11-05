@@ -48,7 +48,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            var api = BitMexApiUrl;
+            var api = BitMexTestApiUrl;
             ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
@@ -123,20 +123,17 @@ namespace Prime.Plugins.Services.BitMex
             return latestPrice;
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync();
 
-            if (r == null || r.Count < 1)
-                throw new ApiResponseException("No prices data found", this);
-
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
@@ -147,9 +144,12 @@ namespace Prime.Plugins.Services.BitMex
                 );
 
                 if (data == null || data.lastPrice.HasValue == false)
-                    throw new ApiResponseException("No price returned for selected currency", this);
+                {
+                    prices.AddMissedPair(pair);
+                    continue;
+                }
 
-                prices.Add(new MarketPrice(pair, data.lastPrice.Value));
+                prices.MarketPrices.Add(new MarketPrice(pair, data.lastPrice.Value));
             }
 
             return prices;

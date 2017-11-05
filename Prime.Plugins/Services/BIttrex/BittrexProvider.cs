@@ -70,19 +70,19 @@ namespace Prime.Plugins.Services.Bittrex
             return new MarketPrice(context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetMarketSummaries();
 
             CheckResponseErrors(r);
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
@@ -90,10 +90,13 @@ namespace Prime.Plugins.Services.Bittrex
 
                 var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
 
-                if(ms == null)
-                    throw new ApiResponseException("No price returned for selected currency", this);
+                if (ms == null)
+                {
+                    prices.AddMissedPair(pair);
+                    continue;
+                }
 
-                prices.Add(new MarketPrice(pair, ms.Last));
+                prices.MarketPrices.Add(new MarketPrice(pair, ms.Last));
             }
 
             return prices;

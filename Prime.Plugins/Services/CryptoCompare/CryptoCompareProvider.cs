@@ -58,7 +58,7 @@ namespace plugins
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var r = await base.GetAssetPricesAsync(context);
-            return r.FirstOrDefault();
+            return r.MarketPrices.FirstOrDefault();
         }
 
         private AssetExchangeEntry Convert(CryptoCompareSchema.CoinSnapshotDataBlock r)

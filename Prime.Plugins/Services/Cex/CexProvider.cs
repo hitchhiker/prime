@@ -67,18 +67,18 @@ namespace Prime.Plugins.Services.Cex
             return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLastPrices();
             CheckResponseError(r);
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
@@ -86,10 +86,13 @@ namespace Prime.Plugins.Services.Cex
                     x.symbol1.ToAsset(this).Equals(pair.Asset1) && 
                     x.symbol2.ToAsset(this).Equals(pair.Asset2));
 
-                if(rPair == null)
-                    throw new ApiResponseException($"{pair} pair is not supported by this API", this);
+                if (rPair == null)
+                {
+                    prices.AddMissedPair(pair);
+                    continue;
+                }
 
-                prices.Add(new MarketPrice(pair, rPair.lprice));
+                prices.MarketPrices.Add(new MarketPrice(pair, rPair.lprice));
             }
 
             return prices;

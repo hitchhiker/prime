@@ -35,12 +35,12 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
 
-        public static ApiResponse<List<MarketPrice>> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static ApiResponse<MarketPricesResult> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return AsyncContext.Run(() => GetAssetPricesAsync(provider, context));
         }
 
-        public static ApiResponse<List<MarketPrice>> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
+        public static ApiResponse<MarketPricesResult> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
         {
             return AsyncContext.Run(() => GetPricesAsync(provider, context));
         }
