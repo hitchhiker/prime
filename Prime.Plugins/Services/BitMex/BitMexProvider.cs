@@ -22,6 +22,7 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";
+        private const String BitMexTestApiUrl = "https://testnet.bitmex.com/api/v1";
 
         private static readonly string _pairs = "btcusd";
         private const decimal ConversionRate = 0.00000001m;
@@ -47,7 +48,8 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+            var api = BitMexTestApiUrl;
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
@@ -335,9 +337,30 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        public Task<WithdrawalHistoryEntry> GetWithdrawalHistory(WithdrawalHistoryContext context)
+        public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
         {
-            throw new NotImplementedException();
+            if(!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
+                throw new ApiResponseException($"Exchange does not support {context.Asset.ShortCode} currency", this);
+
+            var api = ApiProvider.GetApi(context);
+            var remoteCode = context.Asset.ToRemoteCode(this);
+            var r = await api.GetWalletHistory(remoteCode);
+
+            var history = new List<WithdrawalHistoryEntry>();
+
+            foreach (var rHistory in r.Where(x => x.transactType.Equals("Withdrawal")))
+            {
+                history.Add(new WithdrawalHistoryEntry()
+                {
+                    Asset = context.Asset,
+                    Fee = rHistory.fee ?? 0.0m,
+                    CreatedTimeUtc = rHistory.timestamp,
+                    Address = rHistory.address,
+                    WithdrawalRemoteId = rHistory.transactID
+                });
+            }
+
+            return history;
         }
 
         public Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)

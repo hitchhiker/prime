@@ -9,6 +9,24 @@ namespace Prime.Plugins.Services.BitMex
 
         internal class OrderBookResponse : List<OrderBookRecordResponse> { }
 
+        internal class WalletHistoryResponse : List<WalletHistoryEntryResponse> { }
+
+        internal class WalletHistoryEntryResponse
+        {
+            public string transactID;
+            public int account;
+            public string currency;
+            public string transactType;
+            public decimal amount;
+            public decimal? fee;
+            public string transactStatus;
+            public string address;
+            public DateTime transactTime;
+            public decimal walletBalance;
+            public decimal? marginBalance;
+            public DateTime timestamp;
+        }
+
         internal class OrderBookRecordResponse
         {
             public string symbol;

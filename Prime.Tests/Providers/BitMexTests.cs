@@ -97,5 +97,11 @@ namespace Prime.Tests.Providers
             OrderBookContext = new OrderBookContext(new AssetPair(Asset.Btc, "USD".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetWithdrawalHistoryAsync()
+        {
+            await base.TestGetWithdrawalHistoryAsync();
+        }
     }
 }
