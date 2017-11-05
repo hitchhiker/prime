@@ -56,7 +56,7 @@ namespace Prime.Plugins.Services.Bithumb
             return pairs;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var currency = context.Pair.Asset1.ToRemoteCode(this);
@@ -68,17 +68,17 @@ namespace Prime.Plugins.Services.Bithumb
             if (!context.Pair.Asset2.Equals(krwAsset))
                 throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
 
-            var latestPrice = new LatestPrice(context.Pair, r.data.sell_price);
+            var latestPrice = new MarketPrice(context.Pair, r.data.sell_price);
 
             return latestPrice;
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickers();
@@ -86,7 +86,7 @@ namespace Prime.Plugins.Services.Bithumb
 
             var krwAsset = Asset.Krw;
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -98,7 +98,7 @@ namespace Prime.Plugins.Services.Bithumb
                     throw new ApiResponseException($"Exchange does not support {pair} currency pair", this);
 
                 var rTiker = rTickers[0];
-                prices.Add(new LatestPrice(pair, rTiker.Value.sell_price));
+                prices.Add(new MarketPrice(pair, rTiker.Value.sell_price));
             }
 
             return prices;

@@ -150,6 +150,8 @@ namespace Prime.Core
             provs2.IsConversionPart2 = true;
             provs2.ConversionOther = provs1;
 
+            provs1.Intermediary = provs2.Intermediary = intermediary;
+
             return provs1;
         }
 

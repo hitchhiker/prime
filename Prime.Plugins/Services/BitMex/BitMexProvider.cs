@@ -101,7 +101,7 @@ namespace Prime.Plugins.Services.BitMex
             return AssetCodeConverter;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
@@ -116,17 +116,17 @@ namespace Prime.Plugins.Services.BitMex
             if (r.lastPrice.HasValue == false)
                 throw new ApiResponseException("No last price for currency", this);
 
-            var latestPrice = new LatestPrice(context.Pair, r.lastPrice.Value);
+            var latestPrice = new MarketPrice(context.Pair, r.lastPrice.Value);
 
             return latestPrice;
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync();
@@ -134,7 +134,7 @@ namespace Prime.Plugins.Services.BitMex
             if (r == null || r.Count < 1)
                 throw new ApiResponseException("No prices data found", this);
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -147,7 +147,7 @@ namespace Prime.Plugins.Services.BitMex
                 if (data == null || data.lastPrice.HasValue == false)
                     throw new ApiResponseException("No price returned for selected currency", this);
 
-                prices.Add(new LatestPrice(pair, data.lastPrice.Value));
+                prices.Add(new MarketPrice(pair, data.lastPrice.Value));
             }
 
             return prices;

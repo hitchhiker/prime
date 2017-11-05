@@ -5,6 +5,6 @@ namespace Prime.Common
 {
     public interface IPublicPricesProvider : IPublicAssetPricesProvider
     {
-        Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context);
+        Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context);
     }
 }

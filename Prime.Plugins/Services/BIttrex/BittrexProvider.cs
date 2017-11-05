@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.Bittrex
             return r != null && r.success && r.result != null;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
@@ -67,22 +67,22 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            return new LatestPrice(new Money(1 / r.result.Last, context.Pair.Asset2), context.Pair.Asset1);
+            return new MarketPrice(new Money(1 / r.result.Last, context.Pair.Asset2), context.Pair.Asset1);
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetMarketSummaries();
 
             CheckResponseErrors(r);
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.Bittrex
                 if(ms == null)
                     throw new ApiResponseException("No price returned for selected currency", this);
 
-                prices.Add(new LatestPrice(pair, 1 / ms.Last));
+                prices.Add(new MarketPrice(pair, ms.Last));
             }
 
             return prices;

@@ -55,7 +55,7 @@ namespace plugins
         public override string Title => "CryptoCompare Aggregator";
 
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var r = await base.GetAssetPricesAsync(context);
             return r.FirstOrDefault();

@@ -106,8 +106,8 @@ namespace Prime.Core
         {
             if (networks.IsPegged)
                 AssetPegged = networks.Pair.Asset2;
-            else if (networks.ConversionPart2 != null && networks.ConversionPart2.IsIntermediary)
-                AssetIntermediary = networks.Pair.Asset2;
+            else if (networks.Intermediary!=null)
+                AssetIntermediary = networks.Intermediary;
         }
 
         public IOhlcProvider GetDefaultAggregationProvider()

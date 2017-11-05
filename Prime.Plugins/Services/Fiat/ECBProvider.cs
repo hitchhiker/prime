@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.Fiat
         public IRateLimiter RateLimiter => _limiter;
         public bool IsDirect => true;
 
-        public Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             throw new NotImplementedException();
         }
@@ -104,11 +104,11 @@ namespace Prime.Plugins.Services.Fiat
             }
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var rates = await GetRatesAsync();
 
-            var lp = new List<LatestPrice>();
+            var lp = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -116,13 +116,13 @@ namespace Prime.Plugins.Services.Fiat
                 if (rate.Key == null)
                     continue;
 
-                lp.Add(new LatestPrice(rate.Key, rate.Value));
+                lp.Add(new MarketPrice(rate.Key, rate.Value));
             }
 
             return lp;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var r = await GetPricesAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L));
             return r.FirstOrDefault();

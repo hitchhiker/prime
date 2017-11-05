@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.Kraken
         }
 
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            return new LatestPrice(context.Pair, r.result.FirstOrDefault().Value.c[0]);
+            return new MarketPrice(context.Pair, r.result.FirstOrDefault().Value.c[0]);
         }
 
 

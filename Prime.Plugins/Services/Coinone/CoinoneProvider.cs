@@ -107,7 +107,7 @@ namespace Prime.Plugins.Services.Coinone
                 throw new ApiResponseException($"Error {baseResponse.errorCode}", this);
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -120,15 +120,15 @@ namespace Prime.Plugins.Services.Coinone
 
             CheckResponseErrors(r);
 
-            return new LatestPrice(context.Pair, r.last);
+            return new MarketPrice(context.Pair, r.last);
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -137,7 +137,7 @@ namespace Prime.Plugins.Services.Coinone
 
             var r = ParseTicker(rRaw);
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
             var krwAsset = Asset.Krw;
 
             foreach (var pair in context.Pairs)
@@ -149,7 +149,7 @@ namespace Prime.Plugins.Services.Coinone
                 if(!r.TryGetValue(pair.Asset1.ShortCode.ToLower(), out ticker))
                     throw new ApiResponseException($"Exchange does not support {pair} currency pair", this);
 
-                prices.Add(new LatestPrice(pair, ticker.last));
+                prices.Add(new MarketPrice(pair, ticker.last));
             }
 
             return prices;

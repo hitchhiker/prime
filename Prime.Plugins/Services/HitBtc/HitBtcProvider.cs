@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.HitBtc
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -42,20 +42,20 @@ namespace Prime.Plugins.Services.HitBtc
 
             CheckNullableResult(r.last, String.Format(ErroTextrNoLatestValueForPair, context.Pair.TickerDash()));
 
-            return new LatestPrice(context.Pair, r.last.Value);
+            return new MarketPrice(context.Pair, r.last.Value);
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAllTickers();
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.HitBtc
 
                 CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
 
-                prices.Add(new LatestPrice(pair, ticker.Value.last.Value));
+                prices.Add(new MarketPrice(pair, ticker.Value.last.Value));
             }
 
             return prices;

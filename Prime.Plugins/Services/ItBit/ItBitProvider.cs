@@ -45,14 +45,14 @@ namespace Prime.Plugins.Services.ItBit
             return Task.Run(() => Pairs);
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetItBitTicker(context.Pair);
 
             var r = await api.GetTicker(pairCode);
 
-            return new LatestPrice(context.Pair, r.lastPrice);
+            return new MarketPrice(context.Pair, r.lastPrice);
         }
 
         private string GetItBitTicker(AssetPair pair)

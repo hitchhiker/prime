@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.Korbit
             ApiProvider = new RestApiClientProvider<IKorbitApi>(KorbitApiUrl, this, k => new KorbitAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Korbit
 
             var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-            return new LatestPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
+            return new MarketPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
         }
 
         public BuyResult Buy(BuyContext ctx)

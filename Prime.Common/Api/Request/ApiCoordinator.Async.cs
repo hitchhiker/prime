@@ -7,7 +7,7 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context)
+        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context)
         {
             switch (provider)
             {
@@ -33,12 +33,12 @@ namespace Prime.Common
                     provider, context));
         }
 
-        public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)
+        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)
         {
             return ApiHelpers.WrapException(()=> provider.GetPriceAsync(context), nameof(GetPrice), provider, context);
         }
 
-        public static Task<ApiResponse<LatestPrice>> GetPriceAsync(IPublicAssetPricesProvider provider, PublicPriceContext context)
+        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicAssetPricesProvider provider, PublicPriceContext context)
         {
             return ApiHelpers.WrapException(async delegate
             {
@@ -47,12 +47,12 @@ namespace Prime.Common
             }, "GetPrices (x1)", provider, context);
         }
 
-        public static Task<ApiResponse<List<LatestPrice>>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
+        public static Task<ApiResponse<List<MarketPrice>>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
         {
             return ApiHelpers.WrapException(() => provider.GetPricesAsync(context), nameof(GetPrices), provider, context);
         }
 
-        public static Task<ApiResponse<List<LatestPrice>>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static Task<ApiResponse<List<MarketPrice>>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return ApiHelpers.WrapException(() => provider.GetAssetPricesAsync(context), nameof(GetAssetPrices), provider, context);
         }

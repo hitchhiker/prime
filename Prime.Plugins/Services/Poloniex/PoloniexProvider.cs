@@ -57,7 +57,7 @@ namespace Prime.Plugins.Services.Poloniex
             }
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -70,20 +70,20 @@ namespace Prime.Plugins.Services.Poloniex
 
             var selectedPair = assetPairsInfo[0];
 
-            return new LatestPrice(context.Pair, 1 / selectedPair.Value.last);
+            return new MarketPrice(context.Pair, 1 / selectedPair.Value.last);
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync();
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Poloniex
 
                 var rTicker = rTickers[0];
 
-                prices.Add(new LatestPrice(pair, 1 / rTicker.Value.last));
+                prices.Add(new MarketPrice(pair, 1 / rTicker.Value.last));
             }
 
             return prices;

@@ -98,7 +98,7 @@ namespace Prime.Plugins.Services.Binance
             return null;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTicker();
@@ -110,20 +110,20 @@ namespace Prime.Plugins.Services.Binance
             if(lpr == null)
                 throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
-            return new LatestPrice(context.Pair, lpr.price);
+            return new MarketPrice(context.Pair, lpr.price);
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTicker();
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -134,7 +134,7 @@ namespace Prime.Plugins.Services.Binance
                 if (lpr == null)
                     throw new ApiResponseException($"Specified currency pair {pair} is not supported by provider", this);
 
-                prices.Add(new LatestPrice(pair, lpr.price));
+                prices.Add(new MarketPrice(pair, lpr.price));
             }
 
             return prices;

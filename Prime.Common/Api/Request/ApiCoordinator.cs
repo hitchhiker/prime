@@ -10,7 +10,7 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static ApiResponse<LatestPrice> GetPrice(IPublicPriceSuper provider, PublicPriceContext context)
+        public static ApiResponse<MarketPrice> GetPrice(IPublicPriceSuper provider, PublicPriceContext context)
         {
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
@@ -20,7 +20,7 @@ namespace Prime.Common
             return AsyncContext.Run(() => TestApiAsync(provider, context));
         }
 
-        public static ApiResponse<LatestPrice> GetPrice(IPublicPriceProvider provider, PublicPriceContext context)
+        public static ApiResponse<MarketPrice> GetPrice(IPublicPriceProvider provider, PublicPriceContext context)
         {
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
@@ -30,17 +30,17 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetAssetPairsAsync(provider, context));
         }
 
-        public static ApiResponse<LatestPrice> GetPrice(IPublicAssetPricesProvider provider, PublicPriceContext context)
+        public static ApiResponse<MarketPrice> GetPrice(IPublicAssetPricesProvider provider, PublicPriceContext context)
         {
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
 
-        public static ApiResponse<List<LatestPrice>> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static ApiResponse<List<MarketPrice>> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return AsyncContext.Run(() => GetAssetPricesAsync(provider, context));
         }
 
-        public static ApiResponse<List<LatestPrice>> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
+        public static ApiResponse<List<MarketPrice>> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
         {
             return AsyncContext.Run(() => GetPricesAsync(provider, context));
         }

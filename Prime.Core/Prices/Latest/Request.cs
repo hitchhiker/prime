@@ -32,9 +32,11 @@ namespace Prime.Core.Prices.Latest
 
         public bool IsReversed => !IsConverted && IsDiscovered && Pair.Equals(Discovered.Pair.Reverse());
 
-        public LatestPriceResultMessage LastResult { get; set; }
+        public LatestPriceResultMessage LastConvert1 { get; set; }
 
-        public LatestPrice LastPrice { get; set; }
+        public LatestPriceResultMessage LastConvert2 { get; set; }
+
+        public MarketPrice LastPrice { get; set; }
 
         internal DiscoveryRequestProcessor Processor { get; set; }
 

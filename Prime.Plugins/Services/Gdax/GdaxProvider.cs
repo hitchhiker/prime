@@ -58,14 +58,14 @@ namespace Prime.Plugins.Services.Gdax
             return pairs;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerDash();
             var r = await api.GetProductTicker(pairCode);
 
-            return new LatestPrice(context.Pair, r.price);
+            return new MarketPrice(context.Pair, r.price);
         }
 
         public BuyResult Buy(BuyContext ctx)

@@ -159,17 +159,12 @@ namespace Prime.Core
             return hasresult;
         }
 
-        private void SendResults(LatestPrice response)
+        private void SendResults(MarketPrice response)
         {
             var resultMsg = new LatestPriceResultMessage(Provider, response);
             _messenger.SendAsync(resultMsg);
-
-            //var requests = _verifiedRequests.Where(x => x.Pair.Equals(response.Pair));
-
-            //foreach (var request in requests)
-            //    SendResults(response, request);
         }
-
+        /*
         private void SendResults(LatestPrice price, Request request)
         {
             if (!request.IsConvertedPart2)
@@ -198,14 +193,14 @@ namespace Prime.Core
 
             var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Discovered.Provider<IPublicPriceSuper>(), p2.Discovered.Provider<IPublicPriceSuper>());
             CheckMessage(resultMsg);
-            _messenger.SendAsync(resultMsg);*/
+            _messenger.SendAsync(resultMsg);
         }
 
         public void CheckMessage(LatestPriceResultMessage m)
         {
             if (m.Pair.Equals(new AssetPair("BTC", "USD")) && m.Price < 10)
                 throw new Exception("Bad price caught.");
-        }
+        }*/
 
         private bool _isDisposed;
         public void Dispose()

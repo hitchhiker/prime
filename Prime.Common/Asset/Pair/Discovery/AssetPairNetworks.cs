@@ -72,8 +72,6 @@ namespace Prime.Common
 
         public bool IsPegged { get; set; }
 
-        public bool IsIntermediary { get; set; }
-
         public AssetPairNetworks ConversionPart1 => IsConversionPart1 ? this : ConversionOther;
 
         public AssetPairNetworks ConversionPart2 => IsConversionPart2 ? this : ConversionOther;
@@ -85,6 +83,8 @@ namespace Prime.Common
         public bool IsConversionPart2 { get; set; }
 
         public bool IsConverting => IsConversionPart1 || IsConversionPart2;
+
+        public Asset Intermediary { get; set; }
 
         public int TotalNetworksInvolved => Networks.Count + ConversionOther?.Networks.Count ?? Networks.Count;
 

@@ -75,19 +75,19 @@ namespace Prime.Plugins.Services.CryptoCompare
             return d;
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>>  GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>>  GetPricesAsync(PublicPricesContext context)
         {
             var api = GetApi<ICryptoCompareApi>();
             var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));
             var tos = string.Join(",", context.Pairs.Select(x => x.Asset2).Distinct().Select(x => x.ShortCode));
             var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false");
             var apir = JsonConvert.DeserializeObject<CryptoCompareSchema.PriceMultiResult>(str);
-            var results = new List<LatestPrice>();
+            var results = new List<MarketPrice>();
 
             foreach (var i in context.Pairs)
             {
@@ -99,7 +99,7 @@ namespace Prime.Plugins.Services.CryptoCompare
                 var r = k.Value.FirstOrDefault(x => x.Key.ToLower() == a2);
                 if (r.Key == null)
                     continue;
-                results.Add(new LatestPrice(i, (decimal) r.Value));
+                results.Add(new MarketPrice(i, (decimal) r.Value));
             }
 
             return results;

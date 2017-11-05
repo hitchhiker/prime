@@ -61,13 +61,13 @@ namespace Prime.Plugins.Services.BitStamp
 
         public bool AllowMultipleAssets { get; set; }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var r = await api.GetTicker(context.Pair.TickerSimple().ToLower());
 
-            var latestPrice = new LatestPrice(context.Pair, r.last);
+            var latestPrice = new MarketPrice(context.Pair, r.last);
 
             return latestPrice;
         }

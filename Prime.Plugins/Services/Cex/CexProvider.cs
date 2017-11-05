@@ -52,14 +52,14 @@ namespace Prime.Plugins.Services.Cex
             return pairs;
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCexTicher(context.Pair);
 
             var r = await api.GetLastPrice(pairCode);
 
-            return new LatestPrice(context.Pair, r.lprice);
+            return new MarketPrice(context.Pair, r.lprice);
         }
 
         private string GetCexTicher(AssetPair pair)
@@ -67,18 +67,18 @@ namespace Prime.Plugins.Services.Cex
             return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
 
-        public async Task<List<LatestPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<LatestPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLastPrices();
             CheckResponseError(r);
 
-            var prices = new List<LatestPrice>();
+            var prices = new List<MarketPrice>();
 
             foreach (var pair in context.Pairs)
             {
@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Cex
                 if(rPair == null)
                     throw new ApiResponseException($"{pair} pair is not supported by this API", this);
 
-                prices.Add(new LatestPrice(pair, rPair.lprice));
+                prices.Add(new MarketPrice(pair, rPair.lprice));
             }
 
             return prices;

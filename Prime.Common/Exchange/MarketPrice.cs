@@ -2,18 +2,18 @@
 
 namespace Prime.Common
 {
-    public class LatestPrice
+    public class MarketPrice
     {
-        private LatestPrice() { }
+        private MarketPrice() { }
 
-        public LatestPrice(AssetPair pair, decimal value, DateTime? utcCreated = null)
+        public MarketPrice(AssetPair pair, decimal value, DateTime? utcCreated = null)
         {
             Pair = pair;
             UtcCreated = utcCreated ?? DateTime.UtcNow;
             Price = new Money(value, pair.Asset1);
         }
 
-        public LatestPrice(Money price, Asset quoteAsset) : this(new AssetPair(price.Asset, quoteAsset), price)
+        public MarketPrice(Money price, Asset quoteAsset) : this(new AssetPair(price.Asset, quoteAsset), price)
         {
         }
 
@@ -28,9 +28,9 @@ namespace Prime.Common
         [Bson]
         public Money Price { get; private set; }
 
-        public LatestPrice Reverse()
+        public MarketPrice Reverse()
         {
-            return new LatestPrice(Price.ReverseAsset(QuoteAsset), Price.Asset);
+            return new MarketPrice(Price.ReverseAsset(QuoteAsset), Price.Asset);
         }
 
         public override string ToString()

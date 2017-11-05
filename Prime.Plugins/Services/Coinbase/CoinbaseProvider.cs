@@ -52,13 +52,13 @@ namespace Prime.Plugins.Services.Coinbase
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
             var r = await api.GetLatestPrice(pairCode);
 
-            var price = new LatestPrice(context.Pair, r.data.amount);
+            var price = new MarketPrice(context.Pair, r.data.amount);
 
             return price;
         }

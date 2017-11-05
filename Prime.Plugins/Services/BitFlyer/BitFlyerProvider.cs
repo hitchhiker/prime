@@ -43,14 +43,14 @@ namespace Prime.Plugins.Services.BitFlyer
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<LatestPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
 
             var r = await api.GetTicker(productCode);
 
-            return new LatestPrice(context.Pair, r.ltp);
+            return new MarketPrice(context.Pair, r.ltp);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

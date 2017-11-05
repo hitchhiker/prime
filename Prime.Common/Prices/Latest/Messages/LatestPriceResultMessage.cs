@@ -9,39 +9,37 @@ namespace Prime.Common.Exchange.Rates
     public class LatestPriceResultMessage
     {
         public DateTime UtcCreated { get; }
-        public AssetPair Pair { get; }
-        public Money Price { get; }
+
+        public AssetPair Pair => MarketPrice.Pair;
+        public Money Price => MarketPrice.Price;
 
         public readonly IPublicPriceSuper Provider;
+        public readonly MarketPrice MarketPrice;
         public readonly IPublicPriceSuper ProviderConversion;
 
-        public Asset AssetConvert { get; }
-        public Money PriceConvert1 { get; }
-        public Money PriceConvert2 { get; }
+        public Asset AssetIntermediary { get; }
+        public MarketPrice MarketPrice1 { get; }
+        public MarketPrice MarketPrice2 { get; }
 
         public bool IsConverted => ProviderConversion != null;
 
-        public LatestPriceResultMessage(IPublicPriceSuper provider, LatestPrice latestPrice)
+        public LatestPriceResultMessage(IPublicPriceSuper provider, MarketPrice marketPrice)
         {
-            UtcCreated = latestPrice.UtcCreated;
+            UtcCreated = marketPrice.UtcCreated;
             Provider = provider;
-            Pair = latestPrice.Pair;
-            Price = latestPrice.Price;
+            MarketPrice = marketPrice;
         }
 
-        public LatestPriceResultMessage(AssetPair originalPair, LatestPrice price1, LatestPrice price2, IPublicPriceSuper provider, IPublicPriceSuper providerConvert)
+        public LatestPriceResultMessage(MarketPrice price, Asset intermediary, MarketPrice price1, MarketPrice price2, IPublicPriceSuper provider, IPublicPriceSuper providerConvert)
         {
-            Pair = originalPair;
-
             UtcCreated = price1.UtcCreated > price2.UtcCreated ? price2.UtcCreated : price1.UtcCreated;
-
-            Price = new Money(price1.Price * price2.Reverse().Price, Pair.Asset2);
-
-            PriceConvert1 = price1.Reverse().Price;
-            PriceConvert2 = price2.Reverse().Price;
-
-            AssetConvert = price1.Price.Asset;
             Provider = provider;
+            MarketPrice = price;
+
+            MarketPrice1 = price1;
+            MarketPrice2 = price2;
+
+            AssetIntermediary = intermediary;
             ProviderConversion = providerConvert;
         }
 
@@ -50,7 +48,7 @@ namespace Prime.Common.Exchange.Rates
             if (request == null)
                 return false;
 
-            return Pair.Equals(request.Pair) && AssetConvert.EqualOrBothNull(request.AssetConvert) && Provider.EqualOrBothNull(request.Provider) && ProviderConversion.EqualOrBothNull(request.ProviderConversion);
+            return Pair.Equals(request.Pair) && AssetIntermediary.EqualOrBothNull(request.AssetIntermediary) && Provider.EqualOrBothNull(request.Provider) && ProviderConversion.EqualOrBothNull(request.ProviderConversion);
         }
     }
 }
