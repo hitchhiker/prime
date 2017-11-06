@@ -25,15 +25,19 @@ namespace Prime.Ui.Wpf.View.Asset
 
         private void AssetSelectorControl_OnKeyUp(object sender, KeyEventArgs e)
         {
-            CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ItemsSource);
-
-            itemsViewOriginal.Filter = ((comboItem) =>
+            if (e.Key != Key.Up && e.Key != Key.Down)
             {
-                if (string.IsNullOrWhiteSpace(Text)) return true;
-                return ((Common.Asset)comboItem).ShortCode.IndexOf(Text, StringComparison.InvariantCultureIgnoreCase) >= 0;
-            });
-            
-            IsDropDownOpen = itemsViewOriginal.Count > 0;
+                CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ItemsSource);
+
+                itemsViewOriginal.Filter = ((comboItem) =>
+                {
+                    if (string.IsNullOrWhiteSpace(Text)) return true;
+                    return ((Common.Asset)comboItem).ShortCode.IndexOf(Text,
+                               StringComparison.InvariantCultureIgnoreCase) >= 0;
+                });
+
+                IsDropDownOpen = itemsViewOriginal.Count > 0;
+            }
         }
 
         public override void OnApplyTemplate()
