@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Prime.Common
 {
-    public class WithdrawalPlacementResult
+    public enum WithdrawalStatus
     {
-        public string WithdrawalRemoteId { get; set; }
+        Completed,
+        Canceled,
+        Awaiting
     }
 }

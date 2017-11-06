@@ -93,6 +93,20 @@ namespace Prime.Tests.Providers
                 await GetWithdrawalHistoryAsync(p.Provider);
         }
 
+        public virtual async Task TestPlaceWithdrawalAsync()
+        {
+            var p = IsType<IWithdrawalPlacementProvider>();
+            if (p.Success)
+                await PlaceWithdrawalAsync(p.Provider);
+        }
+
+        public virtual async Task TestPlaceWithdrawalExtendedAsync()
+        {
+            var p = IsType<IWithdrawalPlacementProviderExtended>();
+            if (p.Success)
+                await PlaceWithdrawalExtendedAsync(p.Provider);
+        }
+
         #endregion
 
         #region Test methods
@@ -424,6 +438,46 @@ namespace Prime.Tests.Providers
                 var r = await provider.GetWithdrawalHistory(WithdrawalHistoryContext);
 
                 // Assert.IsTrue(r);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalPlacementContext WithdrawalPlacementContext { get; set; }
+
+        private async Task PlaceWithdrawalAsync(IWithdrawalPlacementProvider provider)
+        {
+            if (WithdrawalPlacementContext == null)
+                throw new NullReferenceException($"{nameof(WithdrawalPlacementContext)} should not be bull");
+
+            try
+            {
+                var r = await provider.PlaceWithdrawal(WithdrawalPlacementContext);
+
+                // Assert.IsTrue(r);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalPlacementContextExtended WithdrawalPlacementContextExtended { get; set; }
+
+        private async Task PlaceWithdrawalExtendedAsync(IWithdrawalPlacementProviderExtended provider)
+        {
+            if (WithdrawalPlacementContextExtended == null)
+                throw new NullReferenceException($"{nameof(WithdrawalPlacementContextExtended)} should not be bull");
+
+            try
+            {
+                var r = await provider.PlaceWithdrawal(WithdrawalPlacementContextExtended);
+
+                Assert.IsTrue(r != null);
+
+                Trace.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
             }
             catch (Exception e)
             {

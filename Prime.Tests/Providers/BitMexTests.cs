@@ -103,5 +103,22 @@ namespace Prime.Tests.Providers
         {
             await base.TestGetWithdrawalHistoryAsync();
         }
+
+        [TestMethod]
+        public override async Task TestPlaceWithdrawalExtendedAsync()
+        {
+            var token2fa = "152851";
+
+            WithdrawalPlacementContextExtended = new WithdrawalPlacementContextExtended(UserContext.Current)
+            {
+                Price = new Money(0.001m, Asset.Btc),
+                Address = "2NBMEXqYb3FXiui3ZZA5TzHV85LqN7yFDgP",
+                AuthenticationToken = token2fa,
+                CustomFee = new Money(0.004m, Asset.Btc),
+                Description = "Debug payment"
+            };
+
+            await base.TestPlaceWithdrawalExtendedAsync();
+        }
     }
 }

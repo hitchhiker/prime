@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RestEase;
 
@@ -7,7 +8,6 @@ namespace Prime.Plugins.Services.BitMex
     internal interface IBitMexApi
     {
         [Get("/user/depositAddress?currency={currency}")]
-        // TODO: Change String to custom class in BitMexProvider.
         Task<String> GetUserDepositAddressAsync([Path]String currency);
 
         [Get("/user/wallet?currency={currency}")]
@@ -33,5 +33,8 @@ namespace Prime.Plugins.Services.BitMex
 
         [Get("/user/walletHistory?currency={currency}")]
         Task<BitMexSchema.WalletHistoryResponse> GetWalletHistory([Path] string currency);
+
+        [Post("/user/requestWithdrawal")]
+        Task<BitMexSchema.RequestWithdrawalResponse> RequestWithdrawal([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

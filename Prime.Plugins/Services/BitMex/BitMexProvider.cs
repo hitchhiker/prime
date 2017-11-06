@@ -15,7 +15,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : 
+    public class BitMexProvider :
         IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
@@ -31,6 +31,8 @@ namespace Prime.Plugins.Services.BitMex
 
         private RestApiClientProvider<IBitMexApi> ApiProvider { get; }
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
+
+        private readonly BitMexPostCreator _postCreator;
 
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
@@ -50,6 +52,7 @@ namespace Prime.Plugins.Services.BitMex
         {
             var api = BitMexTestApiUrl;
             ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+            _postCreator = new BitMexPostCreator(this);
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
@@ -332,14 +335,38 @@ namespace Prime.Plugins.Services.BitMex
 
         public bool IsFeeIncluded => false;
 
-        public Task<WithdrawalPlacementResult> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreateWithdrawalRequestBody(context);
+
+            var r = await api.RequestWithdrawal(body);
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.transactID
+            };
+        }
+
+        private Dictionary<string, object> CreateWithdrawalRequestBody(WithdrawalPlacementContextExtended context)
+        {
+            var body = new Dictionary<string, object>();
+
+            if (!String.IsNullOrWhiteSpace(context.AuthenticationToken))
+                body.Add("otpToken", context.AuthenticationToken);
+
+            body.Add("currency", context.Price.Asset.ToRemoteCode(this));
+            body.Add("amount", context.Price.ToDecimalValue() / ConversionRate);
+            body.Add("address", context.Address);
+            body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
+
+            return body;
         }
 
         public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
         {
-            if(!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
+            if (!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
                 throw new ApiResponseException($"Exchange does not support {context.Asset.ShortCode} currency", this);
 
             var api = ApiProvider.GetApi(context);
@@ -353,14 +380,28 @@ namespace Prime.Plugins.Services.BitMex
                 history.Add(new WithdrawalHistoryEntry()
                 {
                     Asset = context.Asset,
-                    Fee = rHistory.fee ?? 0.0m,
+                    Fee = rHistory.fee * ConversionRate ?? 0.0m,
                     CreatedTimeUtc = rHistory.timestamp,
                     Address = rHistory.address,
-                    WithdrawalRemoteId = rHistory.transactID
+                    WithdrawalRemoteId = rHistory.transactID,
+                    WithdrawalStatus = ParseWithdrawalStatus(rHistory.transactStatus)
                 });
             }
 
             return history;
+        }
+
+        private WithdrawalStatus ParseWithdrawalStatus(string statusRaw)
+        {
+            switch (statusRaw)
+            {
+                case "Canceled":
+                    return WithdrawalStatus.Canceled;
+                case "Completed":
+                    return WithdrawalStatus.Completed;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)

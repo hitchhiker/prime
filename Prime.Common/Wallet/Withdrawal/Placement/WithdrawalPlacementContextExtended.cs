@@ -17,6 +17,11 @@ namespace Prime.Common
         public Money CustomFee { get; set; }
 
         /// <summary>
+        /// Used to provide any authentication tokens (e.g. 2FA token).
+        /// </summary>
+        public string AuthenticationToken { get; set; } 
+
+        /// <summary>
         /// This field can store paymentId or any other relevant information.
         /// </summary>
         public string Description { get; set; }
