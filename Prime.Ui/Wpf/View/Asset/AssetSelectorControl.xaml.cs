@@ -59,5 +59,6 @@ namespace Prime.Ui.Wpf.View.Asset
                 _caretPosition = txt.CaretIndex;
             }
         }
+        
     }
 }

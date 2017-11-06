@@ -9,7 +9,7 @@
           Width="200" Height="25" 
           ItemsSource="{Binding ListAssets}"
           DisplayMemberPath="ShortCode"
-          IsEditable="True" IsTextSearchEnabled="False" KeyUp="AssetSelectorControl_OnKeyUp">
+          IsEditable="True" IsTextSearchEnabled="False" KeyUp="AssetSelectorControl_OnKeyUp" IsSynchronizedWithCurrentItem="True" SelectedIndex="0">
     <!--<ComboBox.GroupStyle>
         <GroupStyle>
             <GroupStyle.HeaderTemplate>
