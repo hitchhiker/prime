@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Plugins.Services.BitMex;
 
 namespace Prime.Tests.Providers
@@ -108,7 +109,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestPlaceWithdrawalExtendedAsync()
         {
-            var token2fa = "077184";
+            var token2fa = "249723";
 
             WithdrawalPlacementContextExtended = new WithdrawalPlacementContextExtended(UserContext.Current)
             {
@@ -127,10 +128,21 @@ namespace Prime.Tests.Providers
         {
             WithdrawalCancelationContext = new WithdrawalCancelationContext()
             {
-                WithdrawalRemoteId = "c9ab0ea7-a4b0-e4c0-6e3a-c0bbe4868f6e"
+                WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
             };
 
             await base.TestCancelWithdrawalAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestConfirmWithdrawalAsync()
+        {
+            WithdrawalConfirmationContext = new WithdrawalConfirmationContext(UserContext.Current)
+            {
+                WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
+            };
+
+            await base.TestConfirmWithdrawalAsync();
         }
     }
 }

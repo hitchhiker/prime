@@ -5,11 +5,10 @@ using Prime.Utility;
 
 namespace Prime.Common.Wallet.Withdrawal.Confirmation
 {
-    public class WithdrawalConfirmationContext : NetworkProviderContext
+    public class WithdrawalConfirmationContext : NetworkProviderPrivateContext
     {
-        public WithdrawalConfirmationContext(string withdrawalRemoteId, ILogger logger = null) : base(logger)
+        public WithdrawalConfirmationContext(UserContext userContext, ILogger logger = null) : base(userContext, logger)
         {
-            WithdrawalRemoteId = withdrawalRemoteId;
         }
 
         public string WithdrawalRemoteId { get; set; }

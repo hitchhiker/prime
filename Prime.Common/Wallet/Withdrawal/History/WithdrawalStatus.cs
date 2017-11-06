@@ -7,6 +7,7 @@ namespace Prime.Common
     public enum WithdrawalStatus
     {
         Completed,
+        Confirmed,
         Canceled,
         Awaiting
     }

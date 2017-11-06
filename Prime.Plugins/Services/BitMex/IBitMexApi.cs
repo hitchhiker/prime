@@ -39,5 +39,8 @@ namespace Prime.Plugins.Services.BitMex
 
         [Post("/user/cancelWithdrawal")]
         Task<BitMexSchema.WithdrawalCancelationResponse> CancelWithdrawal([Body(BodySerializationMethod.UrlEncoded)]Dictionary<string, object> body);
+
+        [Post("/user/confirmWithdrawal")]
+        Task<BitMexSchema.WithdrawalConfirmationResponse> ConfirmWithdrawal([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

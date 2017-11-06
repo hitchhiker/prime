@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Common.Exchange;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
 
 namespace Prime.Tests.Providers
@@ -113,6 +114,13 @@ namespace Prime.Tests.Providers
             var p = IsType<IWithdrawalCancelationProvider>();
             if (p.Success)
                 await CancelWithdrawalAsync(p.Provider);
+        }
+
+        public virtual async Task TestConfirmWithdrawalAsync()
+        {
+            var p = IsType<IWithdrawalConfirmationProvider>();
+            if (p.Success)
+                await ConfirmWithdrawalAsync(p.Provider);
         }
 
         #endregion
@@ -445,6 +453,11 @@ namespace Prime.Tests.Providers
             {
                 var r = await provider.GetWithdrawalHistory(WithdrawalHistoryContext);
 
+                foreach (var historyEntry in r)
+                {
+                    Trace.WriteLine($"{historyEntry.CreatedTimeUtc} {historyEntry.WithdrawalStatus} {historyEntry.WithdrawalRemoteId} {historyEntry.Price.Display}");
+                }
+
                 // Assert.IsTrue(r);
             }
             catch (Exception e)
@@ -505,9 +518,33 @@ namespace Prime.Tests.Providers
                 var r = await provider.CancelWithdrawal(WithdrawalCancelationContext);
 
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal remote ids don't match.");
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
-                Trace.WriteLine($"Canceled request remote id: {r.WithdrawalRemoteId}");
+                Trace.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        // ConfirmWithdrawalAsync
+
+        protected WithdrawalConfirmationContext WithdrawalConfirmationContext { get; set; }
+
+        private async Task ConfirmWithdrawalAsync(IWithdrawalConfirmationProvider provider)
+        {
+            if (WithdrawalConfirmationContext == null)
+                throw new NullReferenceException($"{nameof(WithdrawalConfirmationContext)} should not be bull");
+
+            try
+            {
+                var r = await provider.ConfirmWithdrawal(WithdrawalConfirmationContext);
+
+                Assert.IsTrue(r != null);
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
+
+                Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
             }
             catch (Exception e)
             {
