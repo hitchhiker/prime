@@ -132,7 +132,7 @@ namespace Prime.Plugins.Services.Binance
 
                 if (lpr == null)
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

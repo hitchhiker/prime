@@ -145,7 +145,7 @@ namespace Prime.Plugins.Services.BitMex
 
                 if (data == null || data.lastPrice.HasValue == false)
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

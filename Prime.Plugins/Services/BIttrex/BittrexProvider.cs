@@ -92,7 +92,7 @@ namespace Prime.Plugins.Services.Bittrex
 
                 if (ms == null)
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

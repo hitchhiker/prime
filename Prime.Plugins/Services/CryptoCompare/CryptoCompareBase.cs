@@ -96,7 +96,7 @@ namespace Prime.Plugins.Services.CryptoCompare
 
                 if (k.Key == null)
                 {
-                    prices.AddMissedPair(i);
+                    prices.MissedPairs.Add(i);
                     continue;
                 }
 
@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.CryptoCompare
 
                 if (r.Key == null)
                 {
-                    prices.AddMissedPair(i);
+                    prices.MissedPairs.Add(i);
                     continue;
                 }
 

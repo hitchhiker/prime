@@ -145,7 +145,7 @@ namespace Prime.Plugins.Services.Coinone
                 var ticker = new CoinoneSchema.TickerEntryResponse();
                 if (!r.TryGetValue(pair.Asset1.ShortCode.ToLower(), out ticker) || !pair.Asset2.Equals(krwAsset))
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

@@ -65,7 +65,7 @@ namespace Prime.Plugins.Services.HitBtc
 
                 if (!tickers.Any())
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

@@ -91,7 +91,7 @@ namespace Prime.Plugins.Services.Poloniex
 
                 if (rTickers.Count == 0)
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

@@ -11,23 +11,12 @@ namespace Prime.Common
         public MarketPricesResult()
         {
             MarketPrices = new List<MarketPrice>();
-            IsCompleted = true;
             _missedPairs = new AssetPairs();
         }
 
-        public void AddMissedPair(AssetPair pair)
-        {
-            _missedPairs.Add(pair);
-
-            IsCompleted = false;
-        }
-
         public List<MarketPrice> MarketPrices { get; set; }
-        public bool IsCompleted { get; private set; }
+        public bool IsCompleted => MissedPairs.Count == 0;
 
-        /// <summary>
-        /// Gets missed pairs. Should not be used to add new pairs.
-        /// </summary>
-        public AssetPairs MissedPairs => _missedPairs;
+        public AssetPairs MissedPairs { get; set; }
     }
 }

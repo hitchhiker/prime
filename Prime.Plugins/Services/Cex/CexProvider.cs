@@ -88,7 +88,7 @@ namespace Prime.Plugins.Services.Cex
 
                 if (rPair == null)
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 

@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.Bithumb
                 var rTickers = r.Where(x => x.Key.ToAsset(this).Equals(pair.Asset1)).ToArray();
                 if (rTickers.Length < 1 || !pair.Asset2.Equals(krwAsset))
                 {
-                    prices.AddMissedPair(pair);
+                    prices.MissedPairs.Add(pair);
                     continue;
                 }
 
