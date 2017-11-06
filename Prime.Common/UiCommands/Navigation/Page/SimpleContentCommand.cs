@@ -33,7 +33,8 @@ namespace Prime.Common
             "send",
             "coins",
             "exchanges",
-            "markets discovery"
+            "markets discovery",
+            "data explorer"
         };
 
         public override CommandBase Parse(string scmd)

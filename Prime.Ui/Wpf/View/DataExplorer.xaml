@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.DataExplorer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Prime.Ui.Wpf.View"
+             xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel:DataExplorerViewModel}"
+             mc:Ignorable="d">
+    <Grid>
+        <ListBox Name="lbItems" ItemsSource="{Binding Path=ListDataExplorerItems}" HorizontalAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Width="{Binding ActualWidth, ElementName=lbItems}" Cursor="Hand" Margin="10,10,0,10" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Path=Title}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

@@ -433,6 +433,7 @@
     <Compile Include="Themes\TreeViewItemExtensions.cs" />
     <Compile Include="ViewModel\AssetSelectorViewModel.cs" />
     <Compile Include="ViewModel\CoinsViewModel.cs" />
+    <Compile Include="ViewModel\DataExplorerViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangeRateResultViewModel.cs" />
     <Compile Include="ViewModel\Exchange\ExchangesViewModel.cs" />
     <Compile Include="ViewModel\ICanMore.cs" />
@@ -468,6 +469,9 @@
     </Compile>
     <Compile Include="View\Asset\AssetSelectorControl.xaml.cs">
       <DependentUpon>AssetSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DataExplorer.xaml.cs">
+      <DependentUpon>DataExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Exchange\ExchangeRateResult.cs">
       <DependentUpon>ExchangeRateResult.xaml</DependentUpon>
@@ -621,6 +625,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Asset\AssetSelectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DataExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
