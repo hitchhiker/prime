@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.History;
 
 namespace Prime.Tests.Providers
@@ -105,6 +106,13 @@ namespace Prime.Tests.Providers
             var p = IsType<IWithdrawalPlacementProviderExtended>();
             if (p.Success)
                 await PlaceWithdrawalExtendedAsync(p.Provider);
+        }
+
+        public virtual async Task TestCancelWithdrawalAsync()
+        {
+            var p = IsType<IWithdrawalCancelationProvider>();
+            if (p.Success)
+                await CancelWithdrawalAsync(p.Provider);
         }
 
         #endregion
@@ -478,6 +486,28 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(r != null);
 
                 Trace.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalCancelationContext WithdrawalCancelationContext { get; set; }
+
+        private async Task CancelWithdrawalAsync(IWithdrawalCancelationProvider provider)
+        {
+            if (WithdrawalCancelationContext == null)
+                throw new NullReferenceException($"{nameof(WithdrawalCancelationContext)} should not be bull");
+
+            try
+            {
+                var r = await provider.CancelWithdrawal(WithdrawalCancelationContext);
+
+                Assert.IsTrue(r != null);
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal remote ids don't match.");
+
+                Trace.WriteLine($"Canceled request remote id: {r.WithdrawalRemoteId}");
             }
             catch (Exception e)
             {

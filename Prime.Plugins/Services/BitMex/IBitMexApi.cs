@@ -35,6 +35,9 @@ namespace Prime.Plugins.Services.BitMex
         Task<BitMexSchema.WalletHistoryResponse> GetWalletHistory([Path] string currency);
 
         [Post("/user/requestWithdrawal")]
-        Task<BitMexSchema.RequestWithdrawalResponse> RequestWithdrawal([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<BitMexSchema.WithdrawalRequestResponse> RequestWithdrawal([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/user/cancelWithdrawal")]
+        Task<BitMexSchema.WithdrawalCancelationResponse> CancelWithdrawal([Body(BodySerializationMethod.UrlEncoded)]Dictionary<string, object> body);
     }
 }

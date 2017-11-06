@@ -339,18 +339,6 @@ namespace Prime.Plugins.Services.BitMex
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = CreateWithdrawalRequestBody(context);
-
-            var r = await api.RequestWithdrawal(body);
-
-            return new WithdrawalPlacementResult()
-            {
-                WithdrawalRemoteId = r.transactID
-            };
-        }
-
-        private Dictionary<string, object> CreateWithdrawalRequestBody(WithdrawalPlacementContextExtended context)
-        {
             var body = new Dictionary<string, object>();
 
             if (!String.IsNullOrWhiteSpace(context.AuthenticationToken))
@@ -361,7 +349,12 @@ namespace Prime.Plugins.Services.BitMex
             body.Add("address", context.Address);
             body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
 
-            return body;
+            var r = await api.RequestWithdrawal(body);
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.transactID
+            };
         }
 
         public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
@@ -399,14 +392,27 @@ namespace Prime.Plugins.Services.BitMex
                     return WithdrawalStatus.Canceled;
                 case "Completed":
                     return WithdrawalStatus.Completed;
+                case "Pending":
+                    return WithdrawalStatus.Awaiting;
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        public Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)
+        public async Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>();
+
+            body.Add("token", context.WithdrawalRemoteId);
+
+            var r = await api.CancelWithdrawal(body);
+
+            return new WithdrawalCancelationResult()
+            {
+                WithdrawalRemoteId = r.transactID
+            };
         }
 
         public Task<WithdrawalConfirmationResult> ConfirmWithdrawal(WithdrawalConfirmationContext context)
