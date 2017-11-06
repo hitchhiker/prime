@@ -355,6 +355,8 @@ namespace Prime.Radiant
         /// We copy to the USR location so that windows et al. won't bother us with constant firewall requests.
         /// </summary>
         /// <returns></returns>
+        
+        [Obsolete("Doesn't take versions into account")]
         private string GetIpfsExe()
         {
             var cpuExe = Environment.Is64BitOperatingSystem ? "ipfs-x64.exe" : "ipfs-x86.exe";

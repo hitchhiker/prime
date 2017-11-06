@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace Prime.Utility
 {
@@ -22,30 +23,39 @@ namespace Prime.Utility
 
         private static IEnumerable<Type> Results()
         {
-            var result = new List<Type>();
-            var t = typeof(IncludeInTypeCatalogueAttribute);
-
-            foreach (var a in AssemblyCatalogue.I.Assemblies)
+            try
             {
-                if (a.CustomAttributes.All(x => x.AttributeType != t))
-                    continue;
+                var result = new List<Type>();
+                var t = typeof(IncludeInTypeCatalogueAttribute);
 
-                try
+                foreach (var a in AssemblyCatalogue.I.Assemblies)
                 {
-                    result.AddRange(a.GetTypes());
+                    if (a.CustomAttributes.All(x => x.AttributeType != t))
+                        continue;
+
+                    try
+                    {
+                        result.AddRange(a.GetTypes());
+                    }
+                    catch (ReflectionTypeLoadException tle)
+                    {
+                        var msgs = tle.LoaderExceptions.Select(x => x.Message).ToList();
+                        msgs.Add("In " + a.GetName());
+                        throw new Exception(string.Join(", ", msgs) +
+                                            " This is normally due to an installation issue or missing extension.");
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Problem loading types: " + e);
+                    }
                 }
-                catch (ReflectionTypeLoadException tle)
-                {
-                    var msgs = tle.LoaderExceptions.Select(x => x.Message).ToList();
-                    msgs.Add("In " + a.GetName());
-                    throw new Exception(string.Join(", ", msgs) + " This is normally due to an installation issue or missing extension.");
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Problem loading types: " + e);
-                }
+                return result;
             }
-            return result;
+            catch (Exception e)
+            {
+                Thread.Sleep(20000);
+                throw e;
+            }
         }
 
         public Type Get(int? hash)

@@ -17,16 +17,20 @@ namespace Prime.Radiant
     /// </summary>
     public partial class MainWindow
     {
-        private readonly StatusViewModel _statusViewModel;
-
         public MainWindow()
         {
             InitializeComponent();
 
+            this.Loaded += MainWindow_Loaded;
+
             Title = "prime radiant [alpha " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "] - decentralised bootstrapper [ipfs]";
 
             WindowState = WindowState.Minimized;
-        
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+
             var dispatcher = Dispatcher;
 
             Action<string> nativeLogger = (Terminal.DataContext as TerminalViewModel).AddItem;
@@ -39,8 +43,8 @@ namespace Prime.Radiant
             });
 
             var manager = new DeploymentManager(dispatcher, logger, () => { dispatcher.Invoke(() => WindowState = WindowState.Normal); });
-            
-            DataContext = _statusViewModel = new StatusViewModel(manager);
+
+            DataContext = new StatusViewModel(manager);
 
             var dom = AppDomain.CurrentDomain;
 
@@ -54,11 +58,6 @@ namespace Prime.Radiant
             {
                 manager.Bootstrap();
             });
-        }
-
-        private void I_OnNewMessage(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private string LanguageCorrection(string s)
