@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Binance
         Task<BinanceSchema.UserInformationResponse> GetAccountInformation();
 
         /// <summary>
-        /// Get OHLC data.
+        /// Gets OHLC data.
         /// </summary>
         /// <param name="currency">Currency pair code being queried.</param>
         /// <param name="interval">Time interval.</param>
@@ -44,5 +44,13 @@ namespace Prime.Plugins.Services.Binance
         /// <returns>Array of decimals that represent OHLC record.</returns>
         [Get("/v1/klines?symbol={currency}&interval={interval}")]
         Task<BinanceSchema.CandlestickResponse> GetCandlestickBars([Path] string currency, [Path] string interval, [Query] long? startTime = null, [Query] long? endTime = null, [Query] int? limit = null);
+
+        /// <summary>
+        /// Gets 24-hr ticker.
+        /// </summary>
+        /// <param name="currency">Currency which ticker is to be returned.</param>
+        /// <returns>24 hour ticker.</returns>
+        [Get("/v1/ticker/24hr?symbol={currency}")]
+        Task<BinanceSchema.Ticker24HrResponse> Get24HrTicker([Path] string currency);
     }
 }

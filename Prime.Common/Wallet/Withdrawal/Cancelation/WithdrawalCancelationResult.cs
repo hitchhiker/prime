@@ -6,5 +6,6 @@ namespace Prime.Common
 {
     public class WithdrawalCancelationResult
     {
+        public string WithdrawalRemoteId { get; set; }
     }
 }

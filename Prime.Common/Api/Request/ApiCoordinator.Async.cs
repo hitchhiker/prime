@@ -43,16 +43,16 @@ namespace Prime.Common
             return ApiHelpers.WrapException(async delegate
             {
                 var r = await provider.GetAssetPricesAsync(context);
-                return r.FirstOrDefault();
+                return r.MarketPrices.FirstOrDefault();
             }, "GetPrices (x1)", provider, context);
         }
 
-        public static Task<ApiResponse<List<MarketPrice>>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
+        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
         {
             return ApiHelpers.WrapException(() => provider.GetPricesAsync(context), nameof(GetPrices), provider, context);
         }
 
-        public static Task<ApiResponse<List<MarketPrice>>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static Task<ApiResponse<MarketPricesResult>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return ApiHelpers.WrapException(() => provider.GetAssetPricesAsync(context), nameof(GetAssetPrices), provider, context);
         }

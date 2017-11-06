@@ -11,6 +11,28 @@ namespace Prime.Plugins.Services.BitMex
 
         internal class WalletHistoryResponse : List<WalletHistoryEntryResponse> { }
 
+        internal class WithdrawalResponseBase
+        {
+            public string transactID;
+            public int account;
+            public string currency;
+            public string transactType;
+            public decimal amount;
+            public decimal fee;
+            public string transactStatus;
+            public string address;
+            public string tx;
+            public string text;
+            public DateTime transactTime;
+            public DateTime timestamp;
+        }
+
+        internal class WithdrawalRequestResponse : WithdrawalResponseBase { }
+
+        internal class WithdrawalCancelationResponse : WithdrawalResponseBase { }
+
+        internal class WithdrawalConfirmationResponse : WithdrawalResponseBase { }
+
         internal class WalletHistoryEntryResponse
         {
             public string transactID;

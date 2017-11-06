@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
@@ -113,17 +112,17 @@ namespace Prime.Plugins.Services.Binance
             return new MarketPrice(context.Pair, lpr.price);
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTicker();
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
@@ -132,9 +131,12 @@ namespace Prime.Plugins.Services.Binance
                 var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
                 if (lpr == null)
-                    throw new ApiResponseException($"Specified currency pair {pair} is not supported by provider", this);
+                {
+                    prices.MissedPairs.Add(pair);
+                    continue;
+                }
 
-                prices.Add(new MarketPrice(pair, lpr.price));
+                prices.MarketPrices.Add(new MarketPrice(pair, lpr.price));
             }
 
             return prices;
@@ -328,6 +330,21 @@ namespace Prime.Plugins.Services.Binance
             }
 
             return balances;
+        }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.TickerSimple();
+
+            var r = await api.Get24HrTicker(pairCode);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume,
+                Period = VolumePeriod.Day
+            };
         }
     }
 }

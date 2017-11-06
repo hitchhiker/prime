@@ -15,7 +15,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public class BitMexProvider : 
+    public class BitMexProvider :
         IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
@@ -31,6 +31,8 @@ namespace Prime.Plugins.Services.BitMex
 
         private RestApiClientProvider<IBitMexApi> ApiProvider { get; }
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
+
+        private readonly BitMexPostCreator _postCreator;
 
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
@@ -48,8 +50,9 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            var api = BitMexApiUrl;
+            var api = BitMexTestApiUrl;
             ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+            _postCreator = new BitMexPostCreator(this);
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
@@ -123,20 +126,17 @@ namespace Prime.Plugins.Services.BitMex
             return latestPrice;
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync();
 
-            if (r == null || r.Count < 1)
-                throw new ApiResponseException("No prices data found", this);
-
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
@@ -147,9 +147,12 @@ namespace Prime.Plugins.Services.BitMex
                 );
 
                 if (data == null || data.lastPrice.HasValue == false)
-                    throw new ApiResponseException("No price returned for selected currency", this);
+                {
+                    prices.MissedPairs.Add(pair);
+                    continue;
+                }
 
-                prices.Add(new MarketPrice(pair, data.lastPrice.Value));
+                prices.MarketPrices.Add(new MarketPrice(pair, data.lastPrice.Value));
             }
 
             return prices;
@@ -332,14 +335,31 @@ namespace Prime.Plugins.Services.BitMex
 
         public bool IsFeeIncluded => false;
 
-        public Task<WithdrawalPlacementResult> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>();
+
+            if (!String.IsNullOrWhiteSpace(context.AuthenticationToken))
+                body.Add("otpToken", context.AuthenticationToken);
+
+            body.Add("currency", context.Price.Asset.ToRemoteCode(this));
+            body.Add("amount", context.Price.ToDecimalValue() / ConversionRate);
+            body.Add("address", context.Address);
+            body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
+
+            var r = await api.RequestWithdrawal(body);
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.transactID
+            };
         }
 
         public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
         {
-            if(!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
+            if (!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
                 throw new ApiResponseException($"Exchange does not support {context.Asset.ShortCode} currency", this);
 
             var api = ApiProvider.GetApi(context);
@@ -352,25 +372,67 @@ namespace Prime.Plugins.Services.BitMex
             {
                 history.Add(new WithdrawalHistoryEntry()
                 {
-                    Asset = context.Asset,
-                    Fee = rHistory.fee ?? 0.0m,
+                    Price = new Money(rHistory.amount * ConversionRate, context.Asset),
+                    Fee = new Money(rHistory.fee * ConversionRate ?? 0.0m, context.Asset),
                     CreatedTimeUtc = rHistory.timestamp,
                     Address = rHistory.address,
-                    WithdrawalRemoteId = rHistory.transactID
+                    WithdrawalRemoteId = rHistory.transactID,
+                    WithdrawalStatus = ParseWithdrawalStatus(rHistory.transactStatus)
                 });
             }
 
             return history;
         }
 
-        public Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)
+        private WithdrawalStatus ParseWithdrawalStatus(string statusRaw)
         {
-            throw new NotImplementedException();
+            switch (statusRaw)
+            {
+                case "Canceled":
+                    return WithdrawalStatus.Canceled;
+                case "Completed":
+                    return WithdrawalStatus.Completed;
+                case "Confirmed":
+                    return WithdrawalStatus.Confirmed;
+                case "Pending":
+                    return WithdrawalStatus.Awaiting;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
-        public Task<WithdrawalConfirmationResult> ConfirmWithdrawal(WithdrawalConfirmationContext context)
+        public async Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>
+            {
+                { "token", context.WithdrawalRemoteId }
+            };
+
+            var r = await api.CancelWithdrawal(body);
+
+            return new WithdrawalCancelationResult()
+            {
+                WithdrawalRemoteId = r.transactID
+            };
+        }
+
+        public async Task<WithdrawalConfirmationResult> ConfirmWithdrawal(WithdrawalConfirmationContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>
+            {
+                { "token", context.WithdrawalRemoteId }
+            };
+
+            var r = await api.ConfirmWithdrawal(body);
+
+            return new WithdrawalConfirmationResult()
+            {
+                WithdrawalRemoteId = r.transactID
+            };
         }
     }
 }

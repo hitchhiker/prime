@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
+using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Plugins.Services.BitMex;
 
 namespace Prime.Tests.Providers
@@ -102,6 +104,45 @@ namespace Prime.Tests.Providers
         public override async Task TestGetWithdrawalHistoryAsync()
         {
             await base.TestGetWithdrawalHistoryAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestPlaceWithdrawalExtendedAsync()
+        {
+            var token2fa = "249723";
+
+            WithdrawalPlacementContextExtended = new WithdrawalPlacementContextExtended(UserContext.Current)
+            {
+                Price = new Money(0.001m, Asset.Btc),
+                Address = "2NBMEXqYb3FXiui3ZZA5TzHV85LqN7yFDgP",
+                AuthenticationToken = token2fa,
+                CustomFee = new Money(0.004m, Asset.Btc),
+                Description = "Debug payment"
+            };
+
+            await base.TestPlaceWithdrawalExtendedAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestCancelWithdrawalAsync()
+        {
+            WithdrawalCancelationContext = new WithdrawalCancelationContext()
+            {
+                WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
+            };
+
+            await base.TestCancelWithdrawalAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestConfirmWithdrawalAsync()
+        {
+            WithdrawalConfirmationContext = new WithdrawalConfirmationContext(UserContext.Current)
+            {
+                WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
+            };
+
+            await base.TestConfirmWithdrawalAsync();
         }
     }
 }

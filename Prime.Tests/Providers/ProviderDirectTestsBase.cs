@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Common.Exchange;
+using Prime.Common.Wallet.Withdrawal.Cancelation;
+using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
 
 namespace Prime.Tests.Providers
@@ -93,6 +95,34 @@ namespace Prime.Tests.Providers
                 await GetWithdrawalHistoryAsync(p.Provider);
         }
 
+        public virtual async Task TestPlaceWithdrawalAsync()
+        {
+            var p = IsType<IWithdrawalPlacementProvider>();
+            if (p.Success)
+                await PlaceWithdrawalAsync(p.Provider);
+        }
+
+        public virtual async Task TestPlaceWithdrawalExtendedAsync()
+        {
+            var p = IsType<IWithdrawalPlacementProviderExtended>();
+            if (p.Success)
+                await PlaceWithdrawalExtendedAsync(p.Provider);
+        }
+
+        public virtual async Task TestCancelWithdrawalAsync()
+        {
+            var p = IsType<IWithdrawalCancelationProvider>();
+            if (p.Success)
+                await CancelWithdrawalAsync(p.Provider);
+        }
+
+        public virtual async Task TestConfirmWithdrawalAsync()
+        {
+            var p = IsType<IWithdrawalConfirmationProvider>();
+            if (p.Success)
+                await ConfirmWithdrawalAsync(p.Provider);
+        }
+
         #endregion
 
         #region Test methods
@@ -173,8 +203,8 @@ namespace Prime.Tests.Providers
                 var c = await provider.GetPriceAsync(PublicPriceContext);
 
                 Assert.IsTrue(c != null);
-                Assert.IsTrue(c.QuoteAsset.Equals(PublicPriceContext.Pair.Asset2));
-                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset1));
+                Assert.IsTrue(c.QuoteAsset.Equals(PublicPriceContext.Pair.Asset1));
+                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
 
                 Trace.WriteLine($"Quote asset: {c.QuoteAsset}, Price: {c.Price.Display}");
             }
@@ -202,20 +232,20 @@ namespace Prime.Tests.Providers
                 var c = await provider.GetAssetPricesAsync(PublicAssetPricesContext);
 
                 Assert.IsNotNull(c);
-                Assert.IsTrue(c.Count == PublicAssetPricesContext.Assets.Count);
+                Assert.IsTrue(c.MarketPrices.Count == PublicAssetPricesContext.Assets.Count);
 
                 foreach (var requiredAsset in PublicAssetPricesContext.Assets)
                 {
                     Assert.IsTrue(
-                        c.Exists(
-                            x => x.QuoteAsset.Equals(PublicAssetPricesContext.QuoteAsset) &&
-                                 x.Price.Asset.Equals(requiredAsset)
+                        c.MarketPrices.Exists(
+                            x => x.QuoteAsset.Equals(requiredAsset) &&
+                                 x.Price.Asset.Equals(PublicAssetPricesContext.QuoteAsset)
                         ),
                         $"Provider did not return {requiredAsset.ToPair(PublicAssetPricesContext.QuoteAsset)} price"
                     );
                 }
 
-                foreach (var price in c)
+                foreach (var price in c.MarketPrices)
                 {
                     Trace.WriteLine($"Latest price for {price.QuoteAsset}: {price.Price.Display}");
                 }
@@ -282,15 +312,15 @@ namespace Prime.Tests.Providers
                 var pairs = await provider.GetPricesAsync(PublicPricesContext);
 
                 Assert.IsTrue(pairs != null);
-                Assert.IsTrue(pairs.Count > 0);
+                Assert.IsTrue(pairs.MarketPrices.Count > 0);
 
                 foreach (var requiredPair in PublicPricesContext.Pairs)
                 {
-                    Assert.IsTrue(pairs.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset2)), $"Provider did not return {requiredPair} price");
+                    Assert.IsTrue(pairs.MarketPrices.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset1)), $"Provider did not return {requiredPair} price");
                 }
 
                 Trace.WriteLine("Latest prices:");
-                foreach (var pair in pairs)
+                foreach (var pair in pairs.MarketPrices)
                 {
                     Trace.WriteLine($"Quote asset: {pair.QuoteAsset}, Price: {pair.Price.Display}");
                 }
@@ -423,7 +453,98 @@ namespace Prime.Tests.Providers
             {
                 var r = await provider.GetWithdrawalHistory(WithdrawalHistoryContext);
 
+                foreach (var historyEntry in r)
+                {
+                    Trace.WriteLine($"{historyEntry.CreatedTimeUtc} {historyEntry.WithdrawalStatus} {historyEntry.WithdrawalRemoteId} {historyEntry.Price.Display}");
+                }
+
                 // Assert.IsTrue(r);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalPlacementContext WithdrawalPlacementContext { get; set; }
+
+        private async Task PlaceWithdrawalAsync(IWithdrawalPlacementProvider provider)
+        {
+            if (WithdrawalPlacementContext == null)
+                throw new NullReferenceException($"{nameof(WithdrawalPlacementContext)} should not be bull");
+
+            try
+            {
+                var r = await provider.PlaceWithdrawal(WithdrawalPlacementContext);
+
+                // Assert.IsTrue(r);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalPlacementContextExtended WithdrawalPlacementContextExtended { get; set; }
+
+        private async Task PlaceWithdrawalExtendedAsync(IWithdrawalPlacementProviderExtended provider)
+        {
+            if (WithdrawalPlacementContextExtended == null)
+                throw new NullReferenceException($"{nameof(WithdrawalPlacementContextExtended)} should not be bull");
+
+            try
+            {
+                var r = await provider.PlaceWithdrawal(WithdrawalPlacementContextExtended);
+
+                Assert.IsTrue(r != null);
+
+                Trace.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected WithdrawalCancelationContext WithdrawalCancelationContext { get; set; }
+
+        private async Task CancelWithdrawalAsync(IWithdrawalCancelationProvider provider)
+        {
+            if (WithdrawalCancelationContext == null)
+                throw new NullReferenceException($"{nameof(WithdrawalCancelationContext)} should not be bull");
+
+            try
+            {
+                var r = await provider.CancelWithdrawal(WithdrawalCancelationContext);
+
+                Assert.IsTrue(r != null);
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
+
+                Trace.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        // ConfirmWithdrawalAsync
+
+        protected WithdrawalConfirmationContext WithdrawalConfirmationContext { get; set; }
+
+        private async Task ConfirmWithdrawalAsync(IWithdrawalConfirmationProvider provider)
+        {
+            if (WithdrawalConfirmationContext == null)
+                throw new NullReferenceException($"{nameof(WithdrawalConfirmationContext)} should not be bull");
+
+            try
+            {
+                var r = await provider.ConfirmWithdrawal(WithdrawalConfirmationContext);
+
+                Assert.IsTrue(r != null);
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
+
+                Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
             }
             catch (Exception e)
             {

@@ -6,5 +6,6 @@ namespace Prime.Common.Wallet.Withdrawal.Confirmation
 {
     public class WithdrawalConfirmationResult
     {
+        public string WithdrawalRemoteId { get; set; }
     }
 }

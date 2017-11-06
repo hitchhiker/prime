@@ -28,8 +28,9 @@ namespace Prime.Plugins.Services.BitMex
 
             var headers = request.Headers;
 
+            var data = request.Content == null ? "" : request.Content.ReadAsStringAsync().Result;
             var nonce = GetNonce().ToString(); 
-            var message = $"GET{path}{nonce}";
+            var message = $"{request.Method}{path}{nonce}{data}";
             var signature = HashHMACSHA256Hex(message, ApiKey.Secret);
 
             headers.Add("api-key", ApiKey.Key);

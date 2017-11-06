@@ -75,34 +75,44 @@ namespace Prime.Plugins.Services.CryptoCompare
             return d;
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>>  GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult>  GetPricesAsync(PublicPricesContext context)
         {
             var api = GetApi<ICryptoCompareApi>();
             var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));
             var tos = string.Join(",", context.Pairs.Select(x => x.Asset2).Distinct().Select(x => x.ShortCode));
             var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false");
             var apir = JsonConvert.DeserializeObject<CryptoCompareSchema.PriceMultiResult>(str);
-            var results = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var i in context.Pairs)
             {
                 var a1 = i.Asset1.ShortCode.ToLower();
                 var k = apir.FirstOrDefault(x => x.Key.ToLower() == a1);
+
                 if (k.Key == null)
+                {
+                    prices.MissedPairs.Add(i);
                     continue;
+                }
+
                 var a2 = i.Asset2.ShortCode.ToLower();
                 var r = k.Value.FirstOrDefault(x => x.Key.ToLower() == a2);
+
                 if (r.Key == null)
+                {
+                    prices.MissedPairs.Add(i);
                     continue;
-                results.Add(new MarketPrice(i, (decimal) r.Value));
+                }
+
+                prices.MarketPrices.Add(new MarketPrice(i, (decimal) r.Value));
             }
 
-            return results;
+            return prices;
         }
 
         public async Task<List<AssetInfo>> GetCoinInformationAsync(NetworkProviderContext context)

@@ -45,17 +45,17 @@ namespace Prime.Plugins.Services.HitBtc
             return new MarketPrice(context.Pair, r.last.Value);
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAllTickers();
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
@@ -64,13 +64,16 @@ namespace Prime.Plugins.Services.HitBtc
                 var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
 
                 if (!tickers.Any())
-                    throw new ApiResponseException(String.Format(ErrorTextExchangeDoesNotSupportPair, pair.TickerDash()), this);
+                {
+                    prices.MissedPairs.Add(pair);
+                    continue;
+                }
 
                 var ticker = tickers.First();
 
                 CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
 
-                prices.Add(new MarketPrice(pair, ticker.Value.last.Value));
+                prices.MarketPrices.Add(new MarketPrice(pair, ticker.Value.last.Value));
             }
 
             return prices;

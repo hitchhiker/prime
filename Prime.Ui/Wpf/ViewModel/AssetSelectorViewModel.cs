@@ -1,6 +1,7 @@
 ﻿using Prime.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public AssetSelectorViewModel()
         {
-            ListAssets = new List<Asset>();
+            ListAssets = new ObservableCollection<Asset>();
             AllAssetsViewModel = new AllAssetsViewModel();
             _debouncer = new Debouncer();
             //M.RegisterAsync<AssetFoundMessage>(this, AssetFound);
@@ -25,7 +26,7 @@ namespace Prime.Ui.Wpf.ViewModel
         private readonly Debouncer _debouncer;
 
         public AllAssetsViewModel AllAssetsViewModel { get; }
-        public List<Asset> ListAssets { get; private set; }
+        public ObservableCollection<Asset> ListAssets { get; private set; }
 
         private Asset _selectedAsset;
         public Asset SelectedAsset

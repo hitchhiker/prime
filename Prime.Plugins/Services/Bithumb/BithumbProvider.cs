@@ -73,12 +73,12 @@ namespace Prime.Plugins.Services.Bithumb
             return latestPrice;
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickers();
@@ -86,19 +86,19 @@ namespace Prime.Plugins.Services.Bithumb
 
             var krwAsset = Asset.Krw;
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
-                if (!pair.Asset2.Equals(krwAsset))
-                    throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
-
                 var rTickers = r.Where(x => x.Key.ToAsset(this).Equals(pair.Asset1)).ToArray();
-                if (rTickers.Length < 1)
-                    throw new ApiResponseException($"Exchange does not support {pair} currency pair", this);
+                if (rTickers.Length < 1 || !pair.Asset2.Equals(krwAsset))
+                {
+                    prices.MissedPairs.Add(pair);
+                    continue;
+                }
 
                 var rTiker = rTickers[0];
-                prices.Add(new MarketPrice(pair, rTiker.Value.sell_price));
+                prices.MarketPrices.Add(new MarketPrice(pair, rTiker.Value.sell_price));
             }
 
             return prices;

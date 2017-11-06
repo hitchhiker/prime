@@ -73,28 +73,31 @@ namespace Prime.Plugins.Services.Poloniex
             return new MarketPrice(context.Pair, 1 / selectedPair.Value.last);
         }
 
-        public async Task<List<MarketPrice>> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return await GetPricesAsync(context);
         }
 
-        public async Task<List<MarketPrice>> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync();
 
-            var prices = new List<MarketPrice>();
+            var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
                 var rTickers = r.Where(x => x.Key.ToAssetPair(this).Equals(pair)).ToList();
 
-                if(rTickers.Count == 0)
-                    throw new ApiResponseException($"Asset pair {pair} is not supported by this API", this);
+                if (rTickers.Count == 0)
+                {
+                    prices.MissedPairs.Add(pair);
+                    continue;
+                }
 
                 var rTicker = rTickers[0];
 
-                prices.Add(new MarketPrice(pair, 1 / rTicker.Value.last));
+                prices.MarketPrices.Add(new MarketPrice(pair, 1 / rTicker.Value.last));
             }
 
             return prices;

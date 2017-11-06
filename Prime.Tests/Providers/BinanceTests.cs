@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -97,6 +98,22 @@ namespace Prime.Tests.Providers
             OhlcContext = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
             await base.TestGetOhlcAsync();
+        }
+
+        [TestMethod]
+        public async Task TestGetVolumeAsync()
+        {
+            var provider = (BinanceProvider) Provider;
+            var ctx = new VolumeContext()
+            {
+                Pair = "BNT_BTC".ToAssetPairRaw()
+            };
+
+            var r = await provider.GetVolumeAsync(ctx);
+
+            Assert.IsTrue(r.Pair.Equals(ctx.Pair));
+
+            Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
         }
     }
 }
