@@ -11,7 +11,7 @@
         <ListBox Name="lbItems" ItemsSource="{Binding Path=ListDataExplorerItems}" HorizontalAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Width="{Binding ActualWidth, ElementName=lbItems}" Cursor="Hand" Margin="10,10,0,10" VerticalAlignment="Center">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=lbItems}" Cursor="Hand" Margin="10,10,0,10" VerticalAlignment="Center" MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp">
                         <TextBlock Text="{Binding Path=Title}"/>
                     </StackPanel>
                 </DataTemplate>

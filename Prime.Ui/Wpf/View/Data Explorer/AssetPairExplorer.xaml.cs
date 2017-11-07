@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Prime.Ui.Wpf.View
+namespace Prime.Ui.Wpf.View.Data_Explorer
 {
     /// <summary>
-    /// Interaction logic for DataExplorer.xaml
+    /// Interaction logic for AssetPairExplorer.xaml
     /// </summary>
-    public partial class DataExplorer : UserControl
+    public partial class AssetPairExplorer : UserControl
     {
-        public DataExplorer()
+        public AssetPairExplorer()
         {
             InitializeComponent();
         }
