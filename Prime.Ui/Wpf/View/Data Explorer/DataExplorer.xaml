@@ -5,10 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Prime.Ui.Wpf.View"
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              d:DataContext="{d:DesignInstance viewModel:DataExplorerViewModel}"
              mc:Ignorable="d">
-    <Grid>
-        <ListBox Name="lbItems" ItemsSource="{Binding Path=ListDataExplorerItems}" HorizontalAlignment="Stretch">
+    <DockPanel>
+        <TextBox DockPanel.Dock="Top" Margin="0,10,0,10" Width="200" HorizontalAlignment="Left" Text="{Binding Path=FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding Path=FilterSearchCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
+        <ListBox DockPanel.Dock="Bottom" Name="lbItems" ItemsSource="{Binding Path=ListDataExplorerItems}" HorizontalAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Width="{Binding ActualWidth, ElementName=lbItems}" Cursor="Hand" Margin="10,10,0,10" VerticalAlignment="Center" MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp">
@@ -17,5 +23,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </Grid>
+    </DockPanel>
 </UserControl>
