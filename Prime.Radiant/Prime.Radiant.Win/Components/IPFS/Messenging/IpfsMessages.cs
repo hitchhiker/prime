@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Ipfs.Api;
 using Newtonsoft.Json;
 using Prime.Utility;
@@ -46,7 +41,7 @@ namespace Prime.Radiant.Components.IPFS.Messenging
             
             //await na.Pin.AddAsync(node.Hash);
 
-            var result = await na.DoCommandAsync("name//publish", node.Hash);
+            var result = await na.DoCommandAsync("name//publish", new System.Threading.CancellationToken(), node.Hash);
 
             return result;
         }
@@ -54,7 +49,7 @@ namespace Prime.Radiant.Components.IPFS.Messenging
         public async Task<IpfsMessenger> Retrieve(string hash)
         {
             var c = _radiant.IpfsDaemon.Client;
-            var result = await c.DoCommandAsync("name//resolve", hash);
+            var result = await c.DoCommandAsync("name//resolve", new System.Threading.CancellationToken(), hash);
             var pResult = Newtonsoft.Json.JsonConvert.DeserializeObject<IpfsPathResponse>(result);
             var txt = await c.FileSystem.ReadAllTextAsync(pResult.Path);
             var msg = Newtonsoft.Json.JsonConvert.DeserializeObject<IpfsMessenger>(txt);

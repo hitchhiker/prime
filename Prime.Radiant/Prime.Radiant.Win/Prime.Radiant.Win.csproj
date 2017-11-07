@@ -83,6 +83,12 @@
     <Reference Include="Google.Protobuf, Version=3.4.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Protobuf.3.4.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="Ipfs.Api">
+      <HintPath>..\..\lib\ipfs\Ipfs.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Ipfs.Core">
+      <HintPath>..\..\lib\ipfs\Ipfs.Core.dll</HintPath>
+    </Reference>
     <Reference Include="LiteDB">
       <HintPath>..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
@@ -229,7 +235,7 @@
       <Name>Prime.Utility.Win</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Prime.Utility\Prime.Utility.csproj">
-      <Project>{3cd6e69d-868e-41bb-a168-cfcbeedafc73}</Project>
+      <Project>{18fbcf00-7e02-4357-97a0-4dc4b35f3f1d}</Project>
       <Name>Prime.Utility</Name>
     </ProjectReference>
     <ProjectReference Include="..\Prime.Radiant\Prime.Radiant.csproj">
