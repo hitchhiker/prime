@@ -10,6 +10,7 @@ namespace Prime.Common
         public AssetPairMessenger()
         {
             _messenger.RegisterAsync<AssetPairNetworkRequestMessage>(this, AssetPairNetworkRequestMessage);
+            _messenger.RegisterAsync<AssetPairAllRequestMessage>(this, AssetPairAllRequestMessage);
         }
 
         private async void AssetPairNetworkRequestMessage(AssetPairNetworkRequestMessage m)
@@ -19,6 +20,15 @@ namespace Prime.Common
                 return;
 
             _messenger.SendAsync(new AssetPairNetworkResponseMessage(m.Network, pairs));
+        }
+
+        private async void AssetPairAllRequestMessage(AssetPairAllRequestMessage m)
+        {
+            var pairs = await AssetPairProvider.I.GetPairsAsync();
+            if (pairs == null)
+                return;
+
+            _messenger.SendAsync(new AssetPairAllResponseMessage(pairs));
         }
     }
 }

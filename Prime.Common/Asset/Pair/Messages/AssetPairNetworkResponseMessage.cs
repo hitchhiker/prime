@@ -14,14 +14,4 @@ namespace Prime.Common
             Pairs = pairs as IReadOnlyList<AssetPair> ?? pairs.ToList();
         }
     }
-
-    public class AssetPairAllResponseMessage
-    {
-        public readonly IReadOnlyList<AssetPair> Pairs;
-
-        public AssetPairAllResponseMessage(IEnumerable<AssetPair> pairs)
-        {
-            Pairs = pairs as IReadOnlyList<AssetPair> ?? pairs.ToList();
-        }
-    }
 }
