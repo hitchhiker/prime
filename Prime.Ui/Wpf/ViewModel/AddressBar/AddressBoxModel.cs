@@ -15,7 +15,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public AddressBoxModel() : base() { }
 
-        public AddressBoxModel(IMessenger messenger, ScreenViewModel screenViewModel, AddressBarModel addressBarModel) : base(messenger)
+        public AddressBoxModel(ScreenViewModel screenViewModel, AddressBarModel addressBarModel)
         {
             _addressBarModel = addressBarModel;
             _screenViewModel = screenViewModel;

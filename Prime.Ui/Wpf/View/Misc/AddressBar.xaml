@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:prime="clr-namespace:prime"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:wpf="clr-namespace:Prime.Ui.Wpf"
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
              xmlns:asset="clr-namespace:Prime.Ui.Wpf.View.Asset"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              d:DataContext="{d:DesignInstance viewModel:AddressBarModel}"
              mc:Ignorable="d" 
              d:DesignHeight="25" d:DesignWidth="700">

@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MvvmLightLibs" Version="5.3.0" />
-    <PackageReference Include="Nito.AsyncEx" Version="4.0.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
   </ItemGroup>
 
   <ItemGroup>

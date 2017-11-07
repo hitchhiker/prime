@@ -40,8 +40,6 @@ namespace Prime.Ui.Wpf.ViewModel
             if (m.RequesterToken != RequesterTokenVm)
                 return;
 
-            var msg = DefaultMessenger.I.Default;
-
             UiDispatcher.Invoke(() =>
             {
                 ListAssets.Clear();

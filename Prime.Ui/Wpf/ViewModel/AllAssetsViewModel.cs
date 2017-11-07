@@ -41,11 +41,10 @@ namespace Prime.Ui.Wpf.ViewModel
         public Asset SelectedAsset
         {
             get => _selectedAsset;
-            set => Set(ref _selectedAsset, value, x =>
+            set => SetAfter(ref _selectedAsset, value, x =>
             {
                 if (SetAsDefault)
-                    return Context.QuoteAsset = x;
-                return x;
+                    Context.QuoteAsset = x;
             });
         }
 

@@ -3,7 +3,7 @@ using MahApps.Metro.Controls.Dialogs;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
-    public class DialogueVm : ViewModelBase
+    public class DialogueVm : VmBase
     {
         // Constructor
         public DialogueVm(IDialogCoordinator instance)

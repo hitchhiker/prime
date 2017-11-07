@@ -71,7 +71,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             NavigationProvider = new NavigationProvider(this, OnCommandAccepted);
 
-            AddressBarModel = new AddressBarModel(messenger, this);
+            AddressBarModel = new AddressBarModel(this);
             SideBarViewModel = new SideBarViewModel(this);
 
             _layoutManager = layoutManager;

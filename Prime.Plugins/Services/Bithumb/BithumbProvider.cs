@@ -116,7 +116,7 @@ namespace Prime.Plugins.Services.Bithumb
 
                     dict.Add(rPair.Key, parsedValue);
                 }
-                catch (Exception e)
+                catch
                 {
                     continue;
                 }

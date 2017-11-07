@@ -21,6 +21,8 @@ namespace Prime.Radiant.Components
 
         public string SshPrivateKeyPath { get; set; }
 
+        public string IpfsSeedPeerId { get; set; }
+
         public bool DoPrime { get; set; }
 
         public bool DoRadiant { get; set; }
@@ -30,7 +32,7 @@ namespace Prime.Radiant.Components
             var path = Path.Combine(CommonFs.I.UserConfigDirectory.FullName, "publisher-context.txt");
 
             var f = File.ReadAllLines(path);
-            if (f.Length != 9)
+            if (f.Length != 10)
                 return null;
 
             var pc = new PublishManagerContext
@@ -44,7 +46,8 @@ namespace Prime.Radiant.Components
                 CloudFlareApiOrigin = f[5].Trim(),
                 SshUri = f[6].Trim(),
                 SshUsername = f[7].Trim(),
-                SshPrivateKeyPath = f[8].Trim()
+                SshPrivateKeyPath = f[8].Trim(),
+                IpfsSeedPeerId = f[9].Trim()
             };
 
             return pc;
