@@ -65,20 +65,19 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public SideBarViewModel SideBarViewModel { get; }
 
-        public ScreenViewModel(IMessenger messenger, ILayoutManager layoutManager, DockingManager dockingManager)
+        public ScreenViewModel()
         {
-            dockingManager.DocumentClosed += DockingManager_DocumentClosed;
-
             NavigationProvider = new NavigationProvider(this, OnCommandAccepted);
 
             AddressBarModel = new AddressBarModel(this);
             SideBarViewModel = new SideBarViewModel(this);
 
-            _layoutManager = layoutManager;
-            _dockingManager = dockingManager;
-            _messenger = messenger;
+            _layoutManager = new LayoutManager();
+            _dockingManager = new DockingManager();
 
-            LogPane = new LogPanelViewModel(messenger);
+            _dockingManager.DocumentClosed += DockingManager_DocumentClosed;
+
+            LogPane = new LogPanelViewModel();
 
             ExitCommand = new RelayCommand(() => Application.Current.Shutdown());
 
