@@ -224,6 +224,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Prime.Utility.Win\Prime.Utility.Win.csproj">
+      <Project>{5ba0588e-12ca-470a-8fb1-2d581e63a17c}</Project>
+      <Name>Prime.Utility.Win</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Prime.Utility\Prime.Utility.csproj">
       <Project>{3cd6e69d-868e-41bb-a168-cfcbeedafc73}</Project>
       <Name>Prime.Utility</Name>
