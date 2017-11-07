@@ -421,14 +421,17 @@ namespace Prime.Ui.Wpf.ViewModel
                 {
                     action.Invoke();
                 }
+
+#if DEBUG
                 catch (Exception e)
                 {
-#if DEBUG
                     DataStatus = e.Message;
-#else
-                    DataStatus = "Fatal error";
-#endif
                 }
+#else
+                catch {
+                    DataStatus = "Fatal error";
+                }
+#endif
                 return null;
             });
         }
