@@ -32,8 +32,6 @@ namespace Prime.Plugins.Services.BitMex
         private RestApiClientProvider<IBitMexApi> ApiProvider { get; }
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(150, 5, 300, 5);
 
-        private readonly BitMexPostCreator _postCreator;
-
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
 
@@ -52,7 +50,6 @@ namespace Prime.Plugins.Services.BitMex
         {
             var api = BitMexApiUrl;
             ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
-            _postCreator = new BitMexPostCreator(this);
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
