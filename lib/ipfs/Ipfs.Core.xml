@@ -1,0 +1,1219 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Ipfs.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Ipfs.Base32">
+            <summary>
+              A codec for Base-32.
+            </summary>
+            <remarks>
+              <para>
+              A codec for Base-32, <see cref="M:Ipfs.Base32.Encode(System.Byte[])"/> and <see cref="M:Ipfs.Base32.Decode(System.String)"/>.  Adds the extension method <see cref="M:Ipfs.Base32.ToBase32(System.Byte[])"/>
+              to encode a byte array and <see cref="M:Ipfs.Base32.FromBase32(System.String)"/> to decode a Base-32 string.
+              </para>
+              <para>
+              A thin wrapper around <see href="https://github.com/ssg/SimpleBase"/>.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.Base32.Encode(System.Byte[])">
+            <summary>
+              Converts an array of 8-bit unsigned integers to its equivalent string representation that is 
+              encoded with base-32 characters.
+            </summary>s
+            <param name="input">
+              An array of 8-bit unsigned integers.
+            </param>
+            <returns>
+              The string representation, in base 32, of the contents of <paramref name="input"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Base32.ToBase32(System.Byte[])">
+            <summary>
+              Converts an array of 8-bit unsigned integers to its equivalent string representation that is 
+              encoded with base-32 digits.
+            </summary>
+            <param name="bytes">
+              An array of 8-bit unsigned integers.
+            </param>
+            <returns>
+              The string representation, in base 32, of the contents of <paramref name="bytes"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Base32.Decode(System.String)">
+            <summary>
+              Converts the specified <see cref="T:System.String"/>, which encodes binary data as base 32 digits, 
+              to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="input">
+              The base 32 string to convert.
+            </param>
+            <returns>
+              An array of 8-bit unsigned integers that is equivalent to <paramref name="input"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Base32.FromBase32(System.String)">
+            <summary>
+              Converts the specified <see cref="T:System.String"/>, which encodes binary data as base 32 digits, 
+              to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="s">
+              The base 32 string to convert.
+            </param>
+            <returns>
+              An array of 8-bit unsigned integers that is equivalent to <paramref name="s"/>.
+            </returns>
+        </member>
+        <member name="T:Ipfs.Base58">
+            <summary>
+              A codec for IPFS Base-58.
+            </summary>
+            <remarks>
+              <para>
+              A codec for Base-58, <see cref="M:Ipfs.Base58.Encode(System.Byte[])"/> and <see cref="M:Ipfs.Base58.Decode(System.String)"/>.  Adds the extension method <see cref="M:Ipfs.Base58.ToBase58(System.Byte[])"/>
+              to encode a byte array and <see cref="M:Ipfs.Base58.FromBase58(System.String)"/> to decode a Base-58 string.
+              </para>
+              <para>
+              This is just thin wrapper of <see href="https://github.com/ssg/SimpleBase"/>.
+              </para>
+              <para>
+              This codec uses the BitCoin alphabet <b>not Flickr's</b>.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.Base58.Encode(System.Byte[])">
+            <summary>
+              Converts an array of 8-bit unsigned integers to its equivalent string representation that is 
+              encoded with base-58 characters.
+            </summary>s
+            <param name="bytes">
+              An array of 8-bit unsigned integers.
+            </param>
+            <returns>
+              The string representation, in base 58, of the contents of <paramref name="bytes"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Base58.ToBase58(System.Byte[])">
+            <summary>
+              Converts an array of 8-bit unsigned integers to its equivalent string representation that is 
+              encoded with base-58 digits.
+            </summary>
+            <param name="bytes">
+              An array of 8-bit unsigned integers.
+            </param>
+            <returns>
+              The string representation, in base 58, of the contents of <paramref name="bytes"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Base58.Decode(System.String)">
+            <summary>
+              Converts the specified <see cref="T:System.String"/>, which encodes binary data as base 58 digits, 
+              to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="s">
+              The base 58 string to convert.
+            </param>
+            <returns>
+              An array of 8-bit unsigned integers that is equivalent to <paramref name="s"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Base58.FromBase58(System.String)">
+            <summary>
+              Converts the specified <see cref="T:System.String"/>, which encodes binary data as base 58 digits, 
+              to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="s">
+              The base 58 string to convert.
+            </param>
+            <returns>
+              An array of 8-bit unsigned integers that is equivalent to <paramref name="s"/>.
+            </returns>
+        </member>
+        <member name="T:Ipfs.DagLink">
+            <summary>
+              A link to another node in the IPFS Merkle DAG.
+            </summary>
+        </member>
+        <member name="M:Ipfs.DagLink.#ctor(System.String,System.String,System.Int64)">
+            <summary>
+              Create a new instance of <see cref="T:Ipfs.DagLink"/> class.
+            </summary>
+            <param name="name">The name associated with the linked node.</param>
+            <param name="hash">The string representation of the <see cref="T:Ipfs.MultiHash"/> of the linked node.</param>
+            <param name="size">The serialised size (in bytes) of the linked node.</param>
+        </member>
+        <member name="M:Ipfs.DagLink.#ctor(Ipfs.IMerkleLink)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.DagLink"/> class from the
+              specified <see cref="T:Ipfs.IMerkleLink"/>.
+            </summary>
+            <param name="link">
+              Some type of a Merkle link.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagLink.#ctor(System.IO.Stream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.DagLink"/> class from the
+              specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              A <see cref="T:System.IO.Stream"/> containing the binary representation of the
+              <b>DagLink</b>.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagLink.#ctor(Google.Protobuf.CodedInputStream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.DagLink"/> class from the
+              specified <see cref="T:Google.Protobuf.CodedInputStream"/>.
+            </summary>
+            <param name="stream">(
+              A <see cref="T:Google.Protobuf.CodedInputStream"/> containing the binary representation of the
+              <b>DagLink</b>.
+            </param>
+        </member>
+        <member name="P:Ipfs.DagLink.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Ipfs.DagLink.Hash">
+            <inheritdoc />
+        </member>
+        <member name="P:Ipfs.DagLink.Size">
+            <inheritdoc />
+        </member>
+        <member name="M:Ipfs.DagLink.Write(System.IO.Stream)">
+            <summary>
+              Writes the binary representation of the link to the specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.Stream"/> to write to.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagLink.Write(Google.Protobuf.CodedOutputStream)">
+            <summary>
+              Writes the binary representation of the link to the specified <see cref="T:Google.Protobuf.CodedOutputStream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedOutputStream"/> to write to.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagLink.ToArray">
+            <summary>
+              Returns the IPFS binary representation as a byte array.
+            </summary>
+            <returns>
+              A byte array.
+            </returns>
+        </member>
+        <member name="T:Ipfs.DagNode">
+            <summary>
+              A node in the IPFS Merkle DAG.
+            </summary>
+            <remarks>
+              A <b>DagNode</b> has opaque <see cref="P:Ipfs.DagNode.DataBytes"/>
+              and a set of navigable <see cref="P:Ipfs.DagNode.Links"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.DagNode.#ctor(System.Byte[],System.Collections.Generic.IEnumerable{Ipfs.IMerkleLink},System.String)">
+            <summary>
+              Create a new instance of a <see cref="T:Ipfs.DagNode"/> with the specified
+              <see cref="P:Ipfs.DagNode.DataBytes"/> and <see cref="P:Ipfs.DagNode.Links"/>
+            </summary>
+            <param name="data">
+              The opaque data, can be <b>null</b>.
+            </param>
+            <param name="links">
+              The links to other nodes.
+            </param>
+            <param name="hashAlgorithm">
+              The name of the hashing algorithm to use; defaults to 
+              <see cref="F:Ipfs.MultiHash.DefaultAlgorithmName"/>.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagNode.#ctor(System.IO.Stream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.DagNode"/> class from the
+              specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              A <see cref="T:System.IO.Stream"/> containing the binary representation of the
+              <b>DagNode</b>.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagNode.#ctor(Google.Protobuf.CodedInputStream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.DagNode"/> class from the
+              specified <see cref="T:Google.Protobuf.CodedInputStream"/>.
+            </summary>
+            <param name="stream">(
+              A <see cref="T:Google.Protobuf.CodedInputStream"/> containing the binary representation of the
+              <b>DagNode</b>.
+            </param>
+        </member>
+        <member name="P:Ipfs.DagNode.Links">
+            <inheritdoc />
+        </member>
+        <member name="P:Ipfs.DagNode.DataBytes">
+            <inheritdoc />
+        </member>
+        <member name="P:Ipfs.DagNode.DataStream">
+            <inheritdoc />
+        </member>
+        <member name="P:Ipfs.DagNode.Size">
+            <summary>
+              The serialised size in bytes of the node.
+            </summary>
+        </member>
+        <member name="P:Ipfs.DagNode.Hash">
+            <inheritdoc />
+        </member>
+        <member name="M:Ipfs.DagNode.ToLink(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Ipfs.DagNode.AddLink(Ipfs.IMerkleLink)">
+            <summary>
+              Adds a link.
+            </summary>
+            <param name="link">
+              The link to add.
+            </param>
+            <returns>
+              A new <see cref="T:Ipfs.DagNode"/> with the existing and new
+              links.
+            </returns>
+            <remarks>
+              A <b>DagNode</b> is immutable.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.DagNode.AddLinks(System.Collections.Generic.IEnumerable{Ipfs.IMerkleLink})">
+            <summary>
+              Adds a sequence of links.
+            </summary>
+            <param name="links">
+              The sequence of links to add.
+            </param>
+            <returns>
+              A new <see cref="T:Ipfs.DagNode"/> with the existing and new
+              links.
+            </returns>
+            <remarks>
+              A <b>DagNode</b> is immutable.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.DagNode.RemoveLink(Ipfs.IMerkleLink)">
+            <summary>
+              Removes a link.
+            </summary>
+            <param name="link">
+              The <see cref="T:Ipfs.IMerkleLink"/> to remove.
+            </param>
+            <returns>
+              A new <see cref="T:Ipfs.DagNode"/> with the <paramref name="link"/>
+              removed.
+            </returns>
+            <remarks>
+              A <b>DagNode</b> is immutable.
+              <para>
+              No exception is raised if the <paramref name="link"/> does
+              not exist.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.DagNode.RemoveLinks(System.Collections.Generic.IEnumerable{Ipfs.IMerkleLink})">
+            <summary>
+              Remove a sequence of links.
+            </summary>
+            <param name="links">
+              The sequence of <see cref="T:Ipfs.IMerkleLink"/> to remove.
+            </param>
+            <returns>
+              A new <see cref="T:Ipfs.DagNode"/> with the <paramref name="links"/>
+              removed.
+            </returns>
+            <remarks>
+              A <b>DagNode</b> is immutable.
+              <para>
+              No exception is raised if any of the <paramref name="links"/> do
+              not exist.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.DagNode.Write(System.IO.Stream)">
+            <summary>
+              Writes the binary representation of the node to the specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.Stream"/> to write to.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagNode.Write(Google.Protobuf.CodedOutputStream)">
+            <summary>
+              Writes the binary representation of the node to the specified <see cref="T:Google.Protobuf.CodedOutputStream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedOutputStream"/> to write to.
+            </param>
+        </member>
+        <member name="M:Ipfs.DagNode.ToArray">
+            <summary>
+              Returns the IPFS binary representation as a byte array.
+            </summary>
+            <returns>
+              A byte array.
+            </returns>
+        </member>
+        <member name="T:Ipfs.HexString">
+            <summary>
+              A codec for <see href="https://en.wikipedia.org/wiki/Hexadecimal">Hexadecimal</see>.
+            </summary>
+            <remarks>
+              <para>
+              A codec for a hexadecimal string, <see cref="M:Ipfs.HexString.Encode(System.Byte[],System.String)"/> and <see cref="M:Ipfs.HexString.Decode(System.String)"/>.  Adds the extension method <see cref="M:Ipfs.HexString.ToHexString(System.Byte[],System.String)"/>
+              to encode a byte array and <see cref="M:Ipfs.HexString.ToHexBuffer(System.String)"/> to decode a hexadecimal <see cref="T:System.String"/>.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.HexString.Encode(System.Byte[],System.String)">
+            <summary>
+              Converts an array of 8-bit unsigned integers to its equivalent hexadecimal string representation.
+            </summary>
+            <param name="buffer">
+              An array of <see cref="T:System.Byte">8-bit unsigned integers</see>.
+            </param>
+            <param name="format">
+              One of the format specifiers ("G" and "x" for lower-case hex digits, or "X" for the upper-case).
+              The default is "G".
+            </param>
+            <returns>
+              The string representation, in hexadecimal, of the contents of <paramref name="buffer"/>.  
+            </returns>
+        </member>
+        <member name="M:Ipfs.HexString.ToHexString(System.Byte[],System.String)">
+            <summary>
+              Converts an array of 8-bit unsigned integers to its equivalent hexadecimal string representation.
+            </summary>
+            <param name="buffer">
+              An array of <see cref="T:System.Byte">8-bit unsigned integers</see>.
+            </param>
+            <param name="format">
+              One of the format specifiers ("G" and "x" for lower-case hex digits, or "X" for the upper-case).
+              The default is "G".
+            </param>
+            <returns>
+              The string representation, in hexadecimal, of the contents of <paramref name="buffer"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.HexString.Decode(System.String)">
+            <summary>
+              Converts the specified <see cref="T:System.String"/>, which encodes binary data as hexadecimal digits, 
+              to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="s">
+              The hexadecimal string to convert.
+            </param>
+            <returns>
+              An array of 8-bit unsigned integers that is equivalent to <paramref name="s"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.HexString.ToHexBuffer(System.String)">
+            <summary>
+              Converts the specified <see cref="T:System.String"/>, which encodes binary data as a hexadecimal string, 
+              to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="s">
+              The hexadecimal string to convert.
+            </param>
+            <returns>
+              An array of 8-bit unsigned integers that is equivalent to <paramref name="s"/>.
+            </returns>
+        </member>
+        <member name="T:Ipfs.IDataBlock">
+            <summary>
+              Some data that is stored in IPFS.
+            </summary>
+            <remarks>
+              A <b>DataBlock</b> has an <see cref="P:Ipfs.IDataBlock.Hash">unique ID</see>
+              and some data (<see cref="P:Ipfs.IDataBlock.DataBytes"/> 
+              or <see cref="P:Ipfs.IDataBlock.DataStream"/>).
+              <para>
+              It is useful to talk about them as "blocks" in Bitswap 
+              and other things that do not care about what is being stored.
+              </para>
+            </remarks>
+            <seealso cref="T:Ipfs.IMerkleNode`1"/>
+        </member>
+        <member name="P:Ipfs.IDataBlock.DataBytes">
+            <summary>
+              Contents as a byte array.
+            </summary>
+            <remarks>
+              It is never <b>null</b>.
+            </remarks>
+            <value>
+              The contents as a sequence of bytes.
+            </value>
+        </member>
+        <member name="P:Ipfs.IDataBlock.DataStream">
+            <summary>
+              Contents as a stream of bytes.
+            </summary>
+            <value>
+              The contents as a stream of bytes.
+            </value>
+        </member>
+        <member name="P:Ipfs.IDataBlock.Hash">
+            <summary>
+              The string representation of the <see cref="T:Ipfs.MultiHash"/>.
+            </summary>
+            <value>
+              The unique ID of the data.
+            </value>
+        </member>
+        <member name="T:Ipfs.IMerkleLink">
+            <summary>
+              A link to another node in IPFS.
+            </summary>
+        </member>
+        <member name="P:Ipfs.IMerkleLink.Name">
+            <summary>
+              A name associated with the linked node.
+            </summary>
+            <value>A <see cref="T:System.String"/> or <b>null</b>.</value>
+            <remarks>
+              <note type="warning">
+              IPFS considers a <b>null</b> name different from a <see cref="F:System.String.Empty"/>
+              name;
+              </note>
+            </remarks>
+        </member>
+        <member name="P:Ipfs.IMerkleLink.Hash">
+            <summary>
+              The string representation of the <see cref="T:Ipfs.MultiHash"/> of the linked node.
+            </summary>
+            <value>
+              The unique ID of the linked node.
+            </value>
+        </member>
+        <member name="P:Ipfs.IMerkleLink.Size">
+            <summary>
+              The serialised size (in bytes) of the linked node.
+            </summary>
+            <value>Number of bytes.</value>
+        </member>
+        <member name="T:Ipfs.IMerkleNode`1">
+            <summary>
+              A Directed Acyclic Graph (DAG) in IPFS.
+            </summary>
+            <remarks>
+              A <b>MerkleNode</b> has a sequence of navigable <see cref="P:Ipfs.IMerkleNode`1.Links"/>
+              and some data (<see cref="P:Ipfs.IDataBlock.DataBytes"/> 
+              or <see cref="P:Ipfs.IDataBlock.DataStream"/>).
+            </remarks>
+            <typeparam name="Link">
+              The type of <see cref="T:Ipfs.IMerkleLink"/> used by this node.
+            </typeparam>
+            <seealso href="https://en.wikipedia.org/wiki/Directed_acyclic_graph"/>
+            <seealso href="https://github.com/ipfs/specs/tree/master/merkledag"/>
+        </member>
+        <member name="P:Ipfs.IMerkleNode`1.Links">
+            <summary>
+              Links to other nodes.
+            </summary>
+            <value>
+              A sequence of <typeparamref name="Link"/>.
+            </value>
+            <remarks>
+              It is never <b>null</b>.
+              <para>
+              The links are sorted ascending by <see cref="P:Ipfs.IMerkleLink.Name"/>. A <b>null</b>
+              name is compared as "".
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.IMerkleNode`1.ToLink(System.String)">
+            <summary>
+              Returns a link to the node.
+            </summary>
+            <param name="name">
+              A <see cref="P:Ipfs.IMerkleLink.Name"/> for the link; defaults to "".
+            </param>
+            <returns>
+              A new <see cref="T:Ipfs.IMerkleLink"/> to the node.
+            </returns>
+        </member>
+        <member name="T:Ipfs.MultiAddress">
+            <summary>
+              A standard way to represent a networks address that supports multiple network protocols.
+            </summary>
+            <remarks>
+              A multi address emphasizes explicitness, self-description, and
+              portability. It allows applications to treat addresses as opaque tokens
+               which avoids making assumptions about the address representation (e.g. length).
+              <para>
+              A multi address is represented as a series of protocol codes and values pairs.  For example,
+              an IPFS file at a sepcific address over ipv4 and tcp is 
+              "/ip4/10.1.10.10/tcp/29087/ipfs/QmVcSqVEsvm5RR9mBLjwpb2XjFVn5bPdPL69mL8PH45pPC".
+              </para>
+              <para>
+              Value type equality is implemented.
+              </para>
+            </remarks>
+            <seealso href="https://github.com/jbenet/multiaddr"/>
+        </member>
+        <member name="M:Ipfs.MultiAddress.#ctor">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiAddress"/> class.
+            </summary>
+        </member>
+        <member name="P:Ipfs.MultiAddress.Protocols">
+            <summary>
+              The components of the <b>MultiAddress</b>.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiAddress.#ctor(System.String)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiAddress"/> class with the string.
+            </summary>
+            <param name="s">
+              The string representation of a multi address, such as "/ip4/1270.0.01/tcp/5001".
+            </param>
+        </member>
+        <member name="M:Ipfs.MultiAddress.#ctor(System.IO.Stream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiAddress"/> class from the
+              specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              A <see cref="T:System.IO.Stream"/> containing the binary representation of a
+              <b>MultiAddress</b>.
+            </param>
+            <remarks>
+              Reads the binary representation of <see cref="T:Ipfs.MultiAddress"/> from the <paramref name="stream"/>.
+              <para>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.#ctor(System.Byte[])">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiAddress"/> class from the
+              specified byte array.
+            </summary>
+            <param name="buffer">(
+              A byte array containing the binary representation of a
+              <b>MultiAddress</b>.
+            </param>
+            <remarks>
+              Reads the binary representation of <see cref="T:Ipfs.MultiAddress"/> from the <paramref name="buffer"/>.
+              <para>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.Write(System.IO.Stream)">
+            <summary>
+              Writes the binary representation to the specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.Stream"/> to write to.
+            </param>
+            <remarks>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.Write(Google.Protobuf.CodedOutputStream)">
+            <summary>
+              Writes the binary representation to the specified <see cref="T:Google.Protobuf.CodedOutputStream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedOutputStream"/> to write to.
+            </param>
+            <remarks>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.Write(System.IO.TextWriter)">
+            <summary>
+              Writes the string representation to the specified <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.TextWriter"/> to write to.
+            </param>
+            <remarks>
+              The string representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.Read(System.IO.Stream)">
+            <summary>
+              Reads the binary representation of the the specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.Stream"/> to read from.
+            </param>
+            <remarks>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.Read(Google.Protobuf.CodedInputStream)">
+            <summary>
+              Reads the binary representation of the specified <see cref="T:Google.Protobuf.CodedInputStream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedInputStream"/> to read from.
+            </param>
+            <remarks>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.Read(System.IO.TextReader)">
+            <summary>
+              Reads the string representation from the specified <see cref="T:System.IO.TextReader"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.TextReader"/> to read from
+            </param>
+            <remarks>
+              The string representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Ipfs.MultiAddress.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Ipfs.MultiAddress.Equals(Ipfs.MultiAddress)">
+            <inheritdoc />
+        </member>
+        <member name="M:Ipfs.MultiAddress.op_Equality(Ipfs.MultiAddress,Ipfs.MultiAddress)">
+            <summary>
+              Value equality.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiAddress.op_Inequality(Ipfs.MultiAddress,Ipfs.MultiAddress)">
+            <summary>
+              Value inequality.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiAddress.ToString">
+            <summary>
+              A sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see> that is readable
+              to a human.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiAddress.ToArray">
+            <summary>
+              Returns the IPFS binary representation as a byte array.
+            </summary>
+            <returns>
+              A byte array.
+            </returns>
+            <remarks>
+              The binary representation is a sequence of <see cref="T:Ipfs.NetworkProtocol">network protocols</see>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiAddress.op_Implicit(System.String)~Ipfs.MultiAddress">
+            <summary>
+              Implicit casting of a <see cref="T:System.String"/> to a <see cref="T:Ipfs.MultiAddress"/>.
+            </summary>
+            <param name="s">The string representation of a <see cref="T:Ipfs.MultiAddress"/>.</param>
+            <returns>A new <see cref="T:Ipfs.MultiAddress"/>.</returns>
+        </member>
+        <member name="T:Ipfs.MultiBase">
+            <summary>
+              Self identifying base encodings.
+            </summary>
+            <remarks>
+              <b>Multibase</b> is a protocol for distinguishing base encodings 
+              and other simple string encodings, and for ensuring full compatibility 
+              with program interfaces.
+            </remarks>
+            <seealso href="https://github.com/multiformats/multibase"/>
+        </member>
+        <member name="T:Ipfs.MultiHash">
+            <summary> 
+              A protocol for differentiating outputs from various well-established cryptographic hash functions, 
+              addressing size + encoding considerations.
+            </summary>
+            <seealso href="https://github.com/jbenet/multihash"/>
+        </member>
+        <member name="T:Ipfs.MultiHash.HashingAlgorithm">
+            <summary>
+              Metadata and implementation of an IPFS hashing algorithm.
+            </summary>
+        </member>
+        <member name="P:Ipfs.MultiHash.HashingAlgorithm.Name">
+            <summary>
+              The name of the algorithm.
+            </summary>
+        </member>
+        <member name="P:Ipfs.MultiHash.HashingAlgorithm.Code">
+            <summary>
+              The IPFS number assigned to the hashing algorithm.
+            </summary>
+            <remarks>
+              Valid hash codes at <see href="https://github.com/multiformats/multihash/blob/master/hashtable.csv">hashtable.csv</see>.
+            </remarks>
+        </member>
+        <member name="P:Ipfs.MultiHash.HashingAlgorithm.DigestSize">
+            <summary>
+              The size, in bytes, of the digest value.
+            </summary>
+        </member>
+        <member name="P:Ipfs.MultiHash.HashingAlgorithm.Hasher">
+            <summary>
+              Returns a cryptographic hash algorithm that can compute
+              a hash (digest).
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.HashingAlgorithm.#ctor">
+            <summary>
+              Use <see cref="M:Ipfs.MultiHash.HashingAlgorithm.Register(System.String,System.Int32,System.Int32,System.Func{System.Security.Cryptography.HashAlgorithm})"/> to create a new instance of a <see cref="T:Ipfs.MultiHash.HashingAlgorithm"/>.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.HashingAlgorithm.ToString">
+            <summary>
+              The <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Name"/> of the hashing algorithm.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.HashingAlgorithm.Register(System.String,System.Int32,System.Int32,System.Func{System.Security.Cryptography.HashAlgorithm})">
+            <summary>
+              Register a new IPFS hashing algorithm.
+            </summary>
+            <param name="name">
+              The name of the algorithm.
+            </param>
+            <param name="code">
+              The IPFS number assigned to the hashing algorithm.
+            </param>
+            <param name="digestSize">
+              The size, in bytes, of the digest value.
+            </param>
+            <param name="hasher">
+              A <c>Func</c> that returns a <see cref="T:System.Security.Cryptography.HashAlgorithm"/>.  If not specified, then a <c>Func</c> is created to
+              throw a <see cref="T:System.NotImplementedException"/>.
+            </param>
+            <returns>
+              A new <see cref="T:Ipfs.MultiHash.HashingAlgorithm"/>.
+            </returns>
+        </member>
+        <member name="P:Ipfs.MultiHash.HashingAlgorithm.All">
+            <summary>
+              A sequence consisting of all <see cref="T:Ipfs.MultiHash.HashingAlgorithm">hashing algorithms</see>.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.#cctor">
+            <summary>
+              Register the standard hash algorithms for IPFS.
+            </summary>
+        </member>
+        <member name="F:Ipfs.MultiHash.DefaultAlgorithmName">
+            <summary>
+              The default hashing algorithm is "sha2-256".
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.GetHashAlgorithm(System.String)">
+            <summary>
+              Gets the <see cref="T:System.Security.Cryptography.HashAlgorithm"/> with the specified IPFS multi-hash name.
+            </summary>
+            <param name="name">
+              The name of a hashing algorithm, see <see href="https://github.com/multiformats/multihash/blob/master/hashtable.csv"/>
+              for IPFS defined names.
+            </param>
+        </member>
+        <member name="F:Ipfs.MultiHash.UnknownHashingAlgorithm">
+            <summary>
+              Occurs when an unknown hashing algorithm number is parsed.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.#ctor(System.String,System.Byte[])">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiHash"/> class with the
+              specified <see cref="T:Ipfs.MultiHash.HashingAlgorithm">Algorithm name</see> and <see cref="P:Ipfs.MultiHash.Digest"/> value.
+            </summary>
+            <param name="algorithmName">
+              A valid IPFS hashing algorithm name, e.g. "sha2-256" or "sha2-512".
+            </param>
+            <param name="digest">
+               The digest value as a byte array.
+            </param>
+        </member>
+        <member name="M:Ipfs.MultiHash.#ctor(System.IO.Stream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiHash"/> class from the
+              specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              A <see cref="T:System.IO.Stream"/> containing the binary representation of the
+              <b>MultiHash</b>.
+            </param>
+            <remarks>
+              Reads the binary representation of <see cref="T:Ipfs.MultiHash"/> from the <paramref name="stream"/>.
+              <para>
+              The binary representation is a <see cref="T:Ipfs.Varint"/> <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code"/>,
+              <see cref="T:Ipfs.Varint"/> <see cref="P:Ipfs.MultiHash.HashingAlgorithm.DigestSize"/> followed by the <see cref="P:Ipfs.MultiHash.Digest"/>.
+              </para>
+              <para>
+              When an unknown <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code">hashing algorithm number</see> is encountered
+              a new hashing algorithm is <see cref="M:Ipfs.MultiHash.HashingAlgorithm.Register(System.String,System.Int32,System.Int32,System.Func{System.Security.Cryptography.HashAlgorithm})">registered</see>.  This new algorithm does not support
+              matching nor computing a hash.
+              This behaviour allows parsing of any well formed <see cref="T:Ipfs.MultiHash"/> even when
+              the hashing algorithm is unknown.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.#ctor(Google.Protobuf.CodedInputStream)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiHash"/> class from the
+              specified <see cref="T:Google.Protobuf.CodedInputStream"/>.
+            </summary>
+            <param name="stream">
+              A <see cref="T:Google.Protobuf.CodedInputStream"/> containing the binary representation of the
+              <b>MultiHash</b>.
+            </param>
+            <remarks>
+              Reads the binary representation of <see cref="T:Ipfs.MultiHash"/> from the <paramref name="stream"/>.
+              <para>
+              The binary representation is a <see cref="T:Ipfs.Varint"/> <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code"/>,
+              <see cref="T:Ipfs.Varint"/> <see cref="P:Ipfs.MultiHash.HashingAlgorithm.DigestSize"/> followed by the <see cref="P:Ipfs.MultiHash.Digest"/>.
+              </para>
+              <para>
+              When an unknown <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code">hashing algorithm number</see> is encountered
+              a new hashing algorithm is <see cref="M:Ipfs.MultiHash.HashingAlgorithm.Register(System.String,System.Int32,System.Int32,System.Func{System.Security.Cryptography.HashAlgorithm})">registered</see>.  This new algorithm does not support
+              matching nor computing a hash.
+              This behaviour allows parsing of any well formed <see cref="T:Ipfs.MultiHash"/> even when
+              the hashing algorithm is unknown.
+              </para>
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.#ctor(System.String)">
+            <summary>
+              Creates a new instance of the <see cref="T:Ipfs.MultiHash"/> class from the specified
+              <see cref="T:Ipfs.Base58"/> encoded <see cref="T:System.String"/>.
+            </summary>
+            <param name="s">
+              A <see cref="T:Ipfs.Base58"/> encoded <b>MultiHash</b>.
+            </param>
+            <remarks>
+              <para>
+              When an unknown <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code">hashing algorithm number</see> is encountered
+              a new hashing algorithm is <see cref="M:Ipfs.MultiHash.HashingAlgorithm.Register(System.String,System.Int32,System.Int32,System.Func{System.Security.Cryptography.HashAlgorithm})">registered</see>.  This new algorithm does not support
+              matching nor computing a hash.
+              This behaviour allows parsing of any well formed <see cref="T:Ipfs.MultiHash"/> even when
+              the hashing algorithm is unknown.
+              </para>
+            </remarks>
+            <seealso cref="M:Ipfs.MultiHash.ToBase58"/>
+        </member>
+        <member name="P:Ipfs.MultiHash.Algorithm">
+            <summary>
+              The hashing algorithm.
+            </summary>
+        </member>
+        <member name="P:Ipfs.MultiHash.Digest">
+            <summary>
+              The hashing algorithm's digest value.
+            </summary>
+        </member>
+        <member name="M:Ipfs.MultiHash.Write(System.IO.Stream)">
+            <summary>
+              Writes the binary representation of the multihash to the specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.Stream"/> to write to.
+            </param>
+            <remarks>
+              The binary representation is a 1-byte <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code"/>,
+              1-byte <see cref="P:Ipfs.MultiHash.HashingAlgorithm.DigestSize"/> followed by the <see cref="P:Ipfs.MultiHash.Digest"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.Write(Google.Protobuf.CodedOutputStream)">
+            <summary>
+              Writes the binary representation of the multihash to the specified <see cref="T:Google.Protobuf.CodedOutputStream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedOutputStream"/> to write to.
+            </param>
+            <remarks>
+              The binary representation is a <see cref="T:Ipfs.Varint"/> <see cref="P:Ipfs.MultiHash.HashingAlgorithm.Code"/>,
+              <see cref="T:Ipfs.Varint"/> <see cref="P:Ipfs.MultiHash.HashingAlgorithm.DigestSize"/> followed by the <see cref="P:Ipfs.MultiHash.Digest"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.ToString">
+            <summary>
+              Returns the <see cref="T:Ipfs.Base58"/> encoding of the <see cref="T:Ipfs.MultiHash"/>.
+            </summary>
+            <returns>
+              A Base58 representaton of the MultiHash.
+            </returns>
+        </member>
+        <member name="M:Ipfs.MultiHash.ToBase58">
+            <summary>
+              Returns the <see cref="T:Ipfs.Base58"/> encoding of the <see cref="T:Ipfs.MultiHash"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ipfs.MultiHash.ToArray">
+            <summary>
+              Returns the IPFS binary representation as a byte array.
+            </summary>
+            <returns>
+              A byte array.
+            </returns>
+            <remarks>
+              The binary representation is a sequence of <see cref="T:Ipfs.MultiHash"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.Matches(System.Byte[])">
+            <summary>
+              Determines if the data matches the hash.
+            </summary>
+            <param name="data">
+              The data to check.
+            </param>
+            <returns>
+              <b>true</b> if the data matches the <see cref="T:Ipfs.MultiHash"/>; otherwise, <b>false</b>.
+            </returns>
+            <remarks>
+              <b>Matches</b> is used to ensure data integrity.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.Matches(System.IO.Stream)">
+            <summary>
+              Determines if the stream data matches the hash.
+            </summary>
+            <param name="data">
+              The <see cref="T:System.IO.Stream"/> containing the data to check.
+            </param>
+            <returns>
+              <b>true</b> if the data matches the <see cref="T:Ipfs.MultiHash"/>; otherwise, <b>false</b>.
+            </returns>
+            <remarks>
+              <b>Matches</b> is used to ensure data integrity.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.MultiHash.ComputeHash(System.Byte[],System.String)">
+            <summary>
+              Generate the multihash for the specified data. 
+            </summary>
+            <param name="data">
+              The <see cref="T:System.IO.Stream"/> containing the data to hash.
+            </param>
+            <param name="algorithmName">
+              The name of the hashing algorithm to use; defaults to <see cref="F:Ipfs.MultiHash.DefaultAlgorithmName"/>.
+            </param>
+            <returns>
+              A <see cref="T:Ipfs.MultiHash"/> for the <paramref name="data"/>.
+            </returns>
+        </member>
+        <member name="M:Ipfs.MultiHash.ComputeHash(System.IO.Stream,System.String)">
+            <summary>
+              Generate the multihash for the specified data. 
+            </summary>
+            <param name="data">
+              The <see cref="T:System.IO.Stream"/> containing the data to hash.
+            </param>
+            <param name="algorithmName">
+              The name of the hashing algorithm to use; defaults to <see cref="F:Ipfs.MultiHash.DefaultAlgorithmName"/>.
+            </param>
+            <returns>
+              A <see cref="T:Ipfs.MultiHash"/> for the <paramref name="data"/>.
+            </returns>
+        </member>
+        <member name="T:Ipfs.UnknownHashingAlgorithmEventArgs">
+            <summary>
+              Provides data for the unknown hashing algorithm event.
+            </summary>
+        </member>
+        <member name="P:Ipfs.UnknownHashingAlgorithmEventArgs.Algorithm">
+            <summary>
+              The <see cref="T:Ipfs.MultiHash.HashingAlgorithm"/> that is defined for the
+              unknown hashing number.
+            </summary>
+        </member>
+        <member name="T:Ipfs.NetworkProtocol">
+            <summary>
+              Metadata on an IPFS network protocol.
+            </summary>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.#cctor">
+            <summary>
+              Registers the standard network protocols for IPFS.
+            </summary>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.Register``1">
+            <summary>
+              Register a network protocol for use.
+            </summary>
+            <typeparam name="T">
+              A <see cref="T:Ipfs.NetworkProtocol"/> to register.
+            </typeparam>
+        </member>
+        <member name="P:Ipfs.NetworkProtocol.Name">
+            <summary>
+              The name of the protocol.
+            </summary>
+        </member>
+        <member name="P:Ipfs.NetworkProtocol.Code">
+            <summary>
+              The IPFS numeric code assigned to the network protocol.
+            </summary>
+        </member>
+        <member name="P:Ipfs.NetworkProtocol.Value">
+            <summary>
+              The string value associated with the protocol.
+            </summary>
+            <remarks>
+              For tcp and udp this is the port number.  This can be <b>null</b> as is the case for http and https.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.WriteValue(Google.Protobuf.CodedOutputStream)">
+            <summary>
+              Writes the binary representation to the specified <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedOutputStream"/> to write to.
+            </param>
+            <remarks>
+              The binary representation of the <see cref="P:Ipfs.NetworkProtocol.Value"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.WriteValue(System.IO.TextWriter)">
+            <summary>
+              Writes the string representation to the specified <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.TextWriter"/> to write to.
+            </param>
+            <remarks>
+              The string representation of the optional <see cref="P:Ipfs.NetworkProtocol.Value"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.ReadValue(Google.Protobuf.CodedInputStream)">
+            <summary>
+              Reads the binary representation from the specified <see cref="T:Google.Protobuf.CodedInputStream"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:Google.Protobuf.CodedOutputStream"/> to read from.
+            </param>
+            <remarks>
+              The binary representation is an option <see cref="P:Ipfs.NetworkProtocol.Value"/>.
+            </remarks>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.ReadValue(System.IO.TextReader)">
+            <summary>
+              Reads the string representation from the specified <see cref="T:System.IO.TextReader"/>.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.TextReader"/> to read from
+            </param>
+            <remarks>
+              The string representation is "/<see cref="P:Ipfs.NetworkProtocol.Name"/>" followed by 
+              an optional "/<see cref="P:Ipfs.NetworkProtocol.Value"/>".
+            </remarks>
+        </member>
+        <member name="M:Ipfs.NetworkProtocol.ToString">
+            <summary>
+              The <see cref="P:Ipfs.NetworkProtocol.Name"/> and optional <see cref="P:Ipfs.NetworkProtocol.Value"/> of the network protocol.
+            </summary>
+        </member>
+        <member name="T:Ipfs.Varint">
+            <summary>
+              A codec for a variable integer.
+            </summary>
+            <remarks>
+              A <b>VarInt</b> is encoded in network byte order (Big Endian). Each byte (except the last) contains 7 bits
+              of information with the most significant bit set to 1.  The last byte has MSB set to 0.
+              <para>
+              Negative values are not allowed.  When encountered a <see cref="T:System.NotSupportedException"/> is thrown.
+              </para>
+            </remarks>
+            <seealso href="https://developers.google.com/protocol-buffers/docs/encoding#varints"/>
+        </member>
+        <member name="M:Ipfs.Varint.Encode(System.Int64)">
+            <summary>
+              Convert the value to its variable integer encoding.
+            </summary>
+            <param name="value">
+              The value to convert.
+            </param>
+            <returns>
+              A byte array representing the <paramref name="value"/> as
+              a variable integer.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Varint.RequiredBytes(System.Int64)">
+            <summary>
+              The number of bytes required to encode the value.
+            </summary>
+            <param name="value">A positive integer value.</param>
+            <returns>
+              The number of bytes required to encode the value.
+            </returns>
+        </member>
+        <member name="M:Ipfs.Varint.DecodeInt32(System.Byte[],System.Int32)">
+            <summary>
+              Convert the byte array to an <see cref="T:System.Int32"/>.
+            </summary>
+            <param name="bytes">
+              A varint encoded byte array containing the variable integer.
+            </param>
+            <param name="offset">
+              Offset into <paramref name="bytes"/> to start reading from.
+            </param>
+            <returns>The integer value.</returns>
+        </member>
+        <member name="M:Ipfs.Varint.DecodeInt64(System.Byte[],System.Int32)">
+            <summary>
+              Convert the byte array to a <see cref="T:System.Int64"/>.
+            </summary>
+            <param name="bytes">
+              A varint encoded byte array containing the variable integer.
+            </param>
+            <param name="offset">
+              Offset into <paramref name="bytes"/> to start reading from.
+            </param>
+            <returns>The integer value.</returns>
+        </member>
+        <member name="M:Ipfs.Varint.WriteVarint(System.IO.Stream,System.Int64)">
+            <summary>
+              Writes the variable integer encoding of the value to
+              a stream.
+            </summary>
+            <param name="stream">
+              The <see cref="T:System.IO.Stream"/> to write to.
+            </param>
+            <param name="value">
+              A non-negative value to write.
+            </param>
+            <exception cref="T:System.NotSupportedException">
+              When <paramref name="value"/> is negative.
+            </exception>
+        </member>
+        <member name="M:Ipfs.Varint.ReadVarint32(System.IO.Stream)">
+            <summary>
+              Reads a variable integer from the stream. 
+            </summary>
+            <param name="stream">
+              A varint encoded <see cref="T:System.IO.Stream"/>.
+            </param>
+            <exception cref="T:System.IO.InvalidDataException">
+              When the varint value is greater than <see cref="F:System.Int32.MaxValue"/>.
+            </exception>
+            <returns>The integer value.</returns>
+        </member>
+        <member name="M:Ipfs.Varint.ReadVarint64(System.IO.Stream)">
+            <summary>
+              Reads a variable integer from the stream. 
+            </summary>
+            <param name="stream">
+              A varint encoded <see cref="T:System.IO.Stream"/>.
+            </param>
+            <exception cref="T:System.IO.InvalidDataException">
+              When the varint value is greater than <see cref="F:System.Int64.MaxValue"/>.
+            </exception>
+            <returns>The integer value.</returns>
+        </member>
+    </members>
+</doc>

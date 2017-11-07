@@ -20,7 +20,7 @@ namespace Prime.Ui.Wpf
                 if (_isSelected == value) return;
 
                 _isSelected = value;
-                ((ObservableObject) this).RaisePropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -38,7 +38,7 @@ namespace Prime.Ui.Wpf
             {
                 if (_isActive == value) return;
                 _isActive = value;
-                ((ObservableObject) this).RaisePropertyChanged();
+                RaisePropertyChanged();
             }
         }
 

@@ -109,8 +109,10 @@ namespace Prime.Radiant.Components
                 di.Create();
 
             PublishProjectDirectory = new DirectoryInfo(Path.Combine(di.FullName, ProjectKey));
-            if (!PublishProjectDirectory.Exists)
-                PublishProjectDirectory.Create();
+            if (PublishProjectDirectory.Exists)
+                PublishProjectDirectory.Delete(true);
+
+            PublishProjectDirectory.Create();
         }
     }
 }

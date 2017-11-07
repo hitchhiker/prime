@@ -65,7 +65,7 @@ namespace Prime.Radiant.Components
             return packageBundler.CreatePackage("mod-" + mod6, files =>
             {
                 var result = Except(alreadyDone, new List<FileInfo>(files));
-                result.RemoveAll(x => x.Name.GetHashCode() % 6 != mod6);
+                result.RemoveAll(x => Math.Abs(x.Name.GetHashCode()) % 6 != mod6);
                 return result;
             });
         }

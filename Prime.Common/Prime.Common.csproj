@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;Main (Debug)</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,12 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
-    <PackageReference Include="MvvmLightLibs" Version="5.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="Nito.AsyncEx" Version="4.0.1" />
-    <PackageReference Include="NodaTime" Version="2.2.1" />
-    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="NodaTime" Version="2.2.2" />
   </ItemGroup>
 
   <ItemGroup>

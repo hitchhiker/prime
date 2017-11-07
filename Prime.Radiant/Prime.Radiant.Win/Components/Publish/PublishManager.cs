@@ -43,10 +43,13 @@ namespace Prime.Radiant.Components
 
             api.Connect();
 
-            IpfsDaemon.WaitTillRunning(client =>
+            IpfsDaemon.WaitTillRunning(async client =>
             {
                 foreach (var b in bundlers)
                     Add(api, b);
+
+                await SendSwarmConnectAsync(api);
+
                 return true;
             });
 
@@ -58,6 +61,13 @@ namespace Prime.Radiant.Components
                     UpdateDns(b);
 
             L.Info("Deployment complete");
+        }
+
+        private async Task SendSwarmConnectAsync(IpFsApi api)
+        {
+            var peerid = Context.IpfsSeedPeerId;
+            var endpoint = "/ipfs/" + peerid;
+            await api.SwarmConnect(endpoint);
         }
 
         private void UpdateDns(PackageBundler packageBundler)
@@ -95,8 +105,8 @@ namespace Prime.Radiant.Components
         {
             var commands = bundles.Select(b => $"ipfs pin add {b.Hash}").ToList();
 
-            commands.Insert(0, $"ipfs swarm connect /ip4/$clientip/tcp/4001/ipfs/{IpFsPeerId}");
-            commands.Insert(0, "clientip=\"$(who am i --ips|awk '{print $5}')\"");
+            //commands.Insert(0, $"ipfs swarm connect /ip4/$clientip/tcp/4001/ipfs/{IpFsPeerId}");
+            //commands.Insert(0, "clientip=\"$(who am i --ips|awk '{print $5}')\"");
 
             new SSH.SshApi(Context).SendCommands(commands, c=> { Context.L.Info(c.Result); });
         }

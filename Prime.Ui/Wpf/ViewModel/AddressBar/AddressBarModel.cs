@@ -6,12 +6,12 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public AddressBarModel() { }
 
-        public AddressBarModel(IMessenger messenger, ScreenViewModel screenViewModel) : base(messenger)
+        public AddressBarModel(ScreenViewModel screenViewModel) : base()
         {
             _screenViewModel = screenViewModel;
             AllAssetsViewModel = new AllAssetsViewModel() {SetAsDefault = true};
             AssetSelectorViewModel = new AssetSelectorViewModel();
-            AddressBoxModel = new AddressBoxModel(messenger, screenViewModel, this);
+            AddressBoxModel = new AddressBoxModel(screenViewModel, this);
         }
 
         private readonly ScreenViewModel _screenViewModel;

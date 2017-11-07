@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Prime.Ui.Wpf.ViewModel"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:exchange="clr-namespace:Prime.Ui.Wpf.View.Exchange"
-             xmlns:asset="clr-namespace:Prime.Ui.Wpf.View.Asset"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=viewModel:ExchangeRateViewModel}"
              d:DesignHeight="300" d:DesignWidth="800">

@@ -15,7 +15,7 @@ namespace Prime.Ui.Wpf
             {
                 if (_key == value) return;
                 _key = value;
-                ((ObservableObject) this).RaisePropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -26,7 +26,7 @@ namespace Prime.Ui.Wpf
             {
                 if (_isVisible == value) return;
                 _isVisible = value;
-                ((ObservableObject) this).RaisePropertyChanged();
+                RaisePropertyChanged();
             }
         }
     }

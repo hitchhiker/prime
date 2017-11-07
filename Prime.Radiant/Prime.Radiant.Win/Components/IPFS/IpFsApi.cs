@@ -113,6 +113,20 @@ namespace Prime.Radiant
             return await _client.Config.GetAsync();
         }
 
+        public async Task<bool> SwarmConnect(string endpoint)
+        {
+            try
+            {
+                L.Log("[Optimisation] Connecting to distant peer swarm: " + endpoint);
+                await _client.Swarm.ConnectAsync(new MultiAddress(endpoint));
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<string> Add(DirectoryInfo directory, bool pin = false)
         {
             var deployNode = await _client.FileSystem.AddDirectoryAsync(directory.FullName, true);

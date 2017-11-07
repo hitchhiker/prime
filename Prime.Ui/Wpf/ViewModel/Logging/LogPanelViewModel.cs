@@ -10,16 +10,13 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class LogPanelViewModel : ToolPaneViewModel
     {
-        private readonly IMessenger _messenger;
         private readonly Dispatcher _dispatcher;
-        public LogPanelViewModel() { }
 
-        public LogPanelViewModel(IMessenger messenger, string key = null)
+        public LogPanelViewModel()
         {
-            Key = key;
+            Key = null;
             _dispatcher = Application.Current.Dispatcher;
-            _messenger = messenger;
-            _messenger.Register<NewLogMessage>(this, Key, AddEntry);
+            M.Register<NewLogMessage>(this, Key, AddEntry);
             base.Title = "Event log";
         }
 
@@ -63,7 +60,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            _messenger.Unregister<NewLogMessage>(this, AddEntry);
+            M.Unregister<NewLogMessage>(this, AddEntry);
             base.Dispose();
         }
     }

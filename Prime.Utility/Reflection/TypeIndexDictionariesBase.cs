@@ -79,6 +79,11 @@ namespace Prime.Utility
             return FormatterServices.GetUninitializedObject(type) as TItem;
         }
 
+        public TItem GetInstance<TItem>() where TItem : class
+        {
+            return GetInstance<TItem>(typeof(TItem));
+        }
+
         public TItem GetInstance<TItem>(T hash) where TItem : class
         {
             if (Equals(hash, default(T)))

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Ipfs.Api;
 using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Core;
