@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -32,6 +34,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
+            PublicPriceContext = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
             await base.TestGetPriceAsync();
         }
 
@@ -143,6 +146,18 @@ namespace Prime.Tests.Providers
             };
 
             await base.TestConfirmWithdrawalAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetVolumeAsync()
+        {
+            var ctx = new VolumeContext()
+            {
+                Pair = "BTC_USD".ToAssetPairRaw()
+            };
+            GetVolumeFunc = () => ((BitMexProvider) Provider).GetVolumeAsync(ctx);
+
+            await base.TestGetVolumeAsync();
         }
     }
 }

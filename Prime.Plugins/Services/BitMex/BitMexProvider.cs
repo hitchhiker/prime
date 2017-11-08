@@ -105,21 +105,14 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = (await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this))).FirstOrDefault();
+            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this));
 
-            if (r == null)
-                throw new ApiResponseException("No price data found", this);
+            var rPrice = r.FirstOrDefault();
 
-            if (r.timestamp.Kind != DateTimeKind.Utc)
-                throw new ApiResponseException("Time is not in UTC format", this);
+            if (rPrice == null || rPrice.lastPrice.HasValue == false)
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
-            // TODO: Check this. How to handle NULL in last price value?
-            if (r.lastPrice.HasValue == false)
-                throw new ApiResponseException("No last price for currency", this);
-
-            var latestPrice = new MarketPrice(context.Pair, r.lastPrice.Value);
-
-            return latestPrice;
+            return new MarketPrice(context.Pair, rPrice.lastPrice.Value);
         }
 
         public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -428,6 +421,24 @@ namespace Prime.Plugins.Services.BitMex
             return new WithdrawalConfirmationResult()
             {
                 WithdrawalRemoteId = r.transactID
+            };
+        }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this));
+
+            var rPrice = r.FirstOrDefault();
+
+            if (rPrice == null || rPrice.lastPrice.HasValue == false)
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = rPrice.volume24h,
+                Period = VolumePeriod.Day
             };
         }
     }

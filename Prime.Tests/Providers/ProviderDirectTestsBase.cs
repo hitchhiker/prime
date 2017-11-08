@@ -123,6 +123,23 @@ namespace Prime.Tests.Providers
                 await ConfirmWithdrawalAsync(p.Provider);
         }
 
+
+
+        protected Func<Task<VolumeResult>> GetVolumeFunc { get; set; }
+        public virtual async Task TestGetVolumeAsync()
+        {
+            // Temporary stub. Will be removed when IVolumeProvider interface will be implemented.
+
+            await GetVolumeAsync(GetVolumeFunc);
+        }
+
+        private async Task GetVolumeAsync(Func<Task<VolumeResult>> getVolumeFunc)
+        {
+            var r = await getVolumeFunc();
+
+            Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
+        }
+
         #endregion
 
         #region Test methods

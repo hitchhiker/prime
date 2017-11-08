@@ -48,19 +48,15 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public async Task TestGetVolumeAsync()
+        public override async Task TestGetVolumeAsync()
         {
-            var provider = (BitFlyerProvider)Provider;
             var ctx = new VolumeContext()
             {
-                Pair = "BTC_USD".ToAssetPairRaw()
+                Pair = "BTC_JPY".ToAssetPairRaw()
             };
+            GetVolumeFunc = () => ((BitFlyerProvider)Provider).GetVolumeAsync(ctx);
 
-            var r = await provider.GetVolumeAsync(ctx);
-
-            Assert.IsTrue(r.Pair.Equals(ctx.Pair));
-
-            Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
+            await base.TestGetVolumeAsync();
         }
     }
 }
