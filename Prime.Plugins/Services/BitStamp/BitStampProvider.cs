@@ -273,7 +273,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTicker(context.Pair.Asset1.ToRemoteCode(this));
+            var r = await api.GetTicker(GetBitStampTicker(context.Pair));
 
             return new VolumeResult()
             {

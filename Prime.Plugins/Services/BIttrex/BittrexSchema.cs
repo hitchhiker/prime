@@ -27,8 +27,6 @@ namespace Prime.Plugins.Services.Bittrex
 
         internal class MarketSummariesResponse : BaseResponse<IList<MarketSummaryEntryResponse>> { }
 
-        internal class MarketSummaryResponse : BaseResponse<MarketSummaryEntryResponse> { }
-
         internal class MarketSummaryEntryResponse
         {
             public string MarketName;

@@ -277,12 +277,18 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketSummary(context.Pair.Asset1.ToRemoteCode(this));
+            var pairCode = context.Pair.TickerDash().ToLower();
+            var r = await api.GetMarketSummary(pairCode);
+
+            var summary = r.result.FirstOrDefault();
+            var remoteMarker = summary.MarketName.ToAssetPair(this, '-');
+            if (summary == null || !remoteMarker.Equals(context.Pair))
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
             return new VolumeResult()
             {
                 Pair = context.Pair,
-                Volume = r.result.Volume,
+                Volume = summary.BaseVolume,
                 Period = VolumePeriod.Day
             };
         }
