@@ -183,5 +183,20 @@ namespace Prime.Plugins.Services.HitBtc
         {
             throw new NotImplementedException();
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var pairCode = context.Pair.TickerSimple();
+            var r = await api.GetTicker(pairCode);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume,
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }

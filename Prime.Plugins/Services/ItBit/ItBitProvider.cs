@@ -69,5 +69,20 @@ namespace Prime.Plugins.Services.ItBit
         {
             throw new NotImplementedException();
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = GetItBitTicker(context.Pair);
+
+            var r = await api.GetTicker(pairCode);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume24h,
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }

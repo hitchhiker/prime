@@ -403,5 +403,23 @@ namespace Prime.Plugins.Services.Kraken
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}";
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var remoteCode = GetKrakenTicker(context.Pair);
+
+            var r = await api.GetTickerInformationAsync(remoteCode);
+
+            CheckResponseErrors(r);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.result.FirstOrDefault().Value.v[0],
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }

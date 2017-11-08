@@ -107,5 +107,17 @@ namespace Prime.Tests.Providers
 
             await base.TestGetOhlcAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetVolumeAsync()
+        {
+            var ctx = new VolumeContext()
+            {
+                Pair = "BTC_USD".ToAssetPairRaw()
+            };
+            GetVolumeFunc = () => ((PoloniexProvider)Provider).GetVolumeAsync(ctx);
+
+            await base.TestGetVolumeAsync();
+        }
     }
 }

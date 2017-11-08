@@ -18,6 +18,9 @@ namespace Prime.Plugins.Services.Poloniex
         [Get("/public?command=returnTicker")]
         Task<PoloniexSchema.TickerResponse> GetTickerAsync();
 
+        [Get("/public?command=return24hVolume")]
+        Task<PoloniexSchema.VolumeResponse> Get24HVolume();
+
         [Get("/public?command=returnChartData&currencyPair={currencyPair}&start={timeStampStart}&end={timeStampEnd}&period={period}")]
         Task<PoloniexSchema.ChartEntriesResponse> GetChartDataAsync([Path] string currencyPair, [Path] long timeStampStart, [Path] long timeStampEnd, [Path(Format = "D")] PoloniexTimeInterval period);
 
