@@ -12,6 +12,8 @@ namespace Prime.Plugins.Services.Poloniex
 
         internal class ChartEntriesResponse : List<ChartEntryResponse> { }
 
+        internal class VolumeResponse : Dictionary<string, object> { }
+
         internal class OrderBookResponse
         {
             public decimal[][] asks;

@@ -332,5 +332,31 @@ namespace Prime.Plugins.Services.Poloniex
 
             return orderBook;
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.Get24HVolume();
+            var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
+
+            if (!volumes.Any())
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+
+            //var selectedPair = assetPairsInfo[0];
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                //Volume = selectedPair.Value.,
+                Period = VolumePeriod.Day
+            };
+        }
+
+        public Money ParseVolume(object raw)
+        {
+            var money = new Money();
+
+            return default(Money);
+        }
     }
 }
