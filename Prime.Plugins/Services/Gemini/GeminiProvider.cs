@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Gemini
 
         private static readonly ObjectId IdHash = "prime:gemini".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
-        public Network Network { get; } = new Network("Gemini");
+        public Network Network { get; } = Networks.I.Get("Gemini");
         public bool Disabled => false;
         public int Priority => 100;
         public string AggregatorName => null;

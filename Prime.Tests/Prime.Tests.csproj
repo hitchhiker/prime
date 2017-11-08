@@ -124,6 +124,7 @@
     <Compile Include="Providers\BinanceTests.cs" />
     <Compile Include="Providers\BitFlyerTests.cs" />
     <Compile Include="Providers\BithumbTests.cs" />
+    <Compile Include="Providers\BitMarketTests.cs" />
     <Compile Include="Providers\BitMexTests.cs" />
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
