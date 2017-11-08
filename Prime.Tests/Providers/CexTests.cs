@@ -63,5 +63,17 @@ namespace Prime.Tests.Providers
 
             await base.TestGetAssetPricesAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetVolumeAsync()
+        {
+            var ctx = new VolumeContext()
+            {
+                Pair = "BTC_USD".ToAssetPairRaw()
+            };
+            GetVolumeFunc = () => ((CexProvider) Provider).GetVolumeAsync(ctx);
+
+            await base.TestGetVolumeAsync();
+        }
     }
 }

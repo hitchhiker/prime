@@ -113,5 +113,25 @@ namespace Prime.Plugins.Services.Cex
             if(!response.ok.Equals("ok")) 
                 throw new ApiResponseException($"Error occurred in provider: {response.ok}", this);
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickers();
+
+            CheckResponseError(r);
+
+            var rTicker = r.data.FirstOrDefault(x => x.pair.ToAssetPair(this, ':').Equals(context.Pair));
+
+            if(rTicker == null)
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = rTicker.volume,
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }
