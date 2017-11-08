@@ -29,6 +29,9 @@ namespace Prime.Plugins.Services.Bittrex
         [Get("/public/getmarketsummaries")]
         Task<BittrexSchema.MarketSummariesResponse> GetMarketSummaries();
 
+        [Get("/public/getmarketsummary?market={market}")]
+        Task<BittrexSchema.MarketSummaryResponse> GetMarketSummary([Path] string market);
+
         [Get("/public/getorderbook?market={currenctPair}&type=both")]
         Task<BittrexSchema.OrderBookResponse> GetOrderBook([Path] string currenctPair);
     }

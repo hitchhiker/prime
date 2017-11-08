@@ -273,5 +273,18 @@ namespace Prime.Plugins.Services.Bittrex
 
             return orderBook;
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetMarketSummary(context.Pair.Asset1.ToRemoteCode(this));
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.result.Volume,
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }

@@ -98,5 +98,17 @@ namespace Prime.Tests.Providers
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetVolumeAsync()
+        {
+            var ctx = new VolumeContext()
+            {
+                Pair = "BTC_LTC".ToAssetPairRaw()
+            };
+            GetVolumeFunc = () => ((BittrexProvider) Provider).GetVolumeAsync(ctx);
+
+            await base.TestGetVolumeAsync();
+        }
     }
 }
