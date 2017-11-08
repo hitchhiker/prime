@@ -42,6 +42,7 @@ namespace Prime.Ui.Wpf.ViewModel
             MarketsDiscoveryClickedCommand = new RelayCommand(() => { _nav.IssueCommand("markets discovery"); });
             ExchangeRatesClickedCommand = new RelayCommand(() => { _nav.IssueCommand("exchange rates"); });
             ReceiveClickedCommand = new RelayCommand(() => { _nav.IssueCommand("receive"); });
+            DataExplorerClickedCommand = new RelayCommand(() => { _nav.IssueCommand("data explorer"); });
         }
 
         public RelayCommand MenuClickedCommand { get; private set; }
@@ -55,6 +56,7 @@ namespace Prime.Ui.Wpf.ViewModel
         public RelayCommand MarketsDiscoveryClickedCommand { get; private set; }
         public RelayCommand ExchangeRatesClickedCommand { get; private set; }
         public RelayCommand ReceiveClickedCommand { get; private set; }
+        public RelayCommand DataExplorerClickedCommand { get; private set; }
 
         public bool IsDemoVisible => PrimeWpf.I.IsDemo;
 

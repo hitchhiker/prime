@@ -123,6 +123,10 @@
                         <markets:MarketsDiscovery/>
                     </DataTemplate>
 
+                    <DataTemplate DataType="{x:Type viewmodel:DataExplorerViewModel}">
+                        <view:DataExplorer/>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="DockingWindowTitleDataTemplate" DataType="{x:Type xcad:LayoutContent}">
                         <Label>
                             <TextBlock Text="{Binding Path=Title}" VerticalAlignment="Center" FontSize="14" />

@@ -79,6 +79,11 @@
                             <iconPacks:PackIconMaterialLight Kind="Magnify" VerticalAlignment="Center" HorizontalAlignment="Center" Height="25" Width="25"/>
                         </Button>
                     </Border>
+                    <Border Margin="0,0,0,10" ToolTip="Data Explorer"  Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" BorderThickness="0">
+                        <Button Command="{Binding Path=DataExplorerClickedCommand}" Style="{DynamicResource BlankButton}" HorizontalAlignment="Center">
+                            <iconPacks:PackIconMaterialLight Kind="Console" VerticalAlignment="Center" HorizontalAlignment="Center" Height="25" Width="25"/>
+                        </Button>
+                    </Border>
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="0">
