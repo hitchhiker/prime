@@ -64,12 +64,9 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-
             var r = await api.GetTicker(context.Pair.TickerSimple().ToLower());
 
-            var latestPrice = new MarketPrice(context.Pair, r.last);
-
-            return latestPrice;
+            return new MarketPrice(context.Pair, r.last);
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -271,6 +268,19 @@ namespace Prime.Plugins.Services.BitStamp
                 default:
                     throw new NullReferenceException("No deposit address for specified currency");
             }
+        }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTicker(context.Pair.Asset1.ToRemoteCode(this));
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume,
+                Period = VolumePeriod.Day
+            };
         }
     }
 }

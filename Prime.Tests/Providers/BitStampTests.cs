@@ -78,5 +78,17 @@ namespace Prime.Tests.Providers
             OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
             await base.TestGetOrderBookAsync();
         }
+
+        [TestMethod]
+        public override async Task TestGetVolumeAsync()
+        {
+            var ctx = new VolumeContext()
+            {
+                Pair = "BTC_USD".ToAssetPairRaw()
+            };
+            GetVolumeFunc = () => ((BitStampProvider) Provider).GetVolumeAsync(ctx);
+
+            await base.TestGetVolumeAsync();
+        }
     }
 }
