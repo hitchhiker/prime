@@ -161,5 +161,20 @@ namespace Prime.Plugins.Services.BitFlyer
         {
             return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash();
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var productCode = GetBitFlyerTicker(context.Pair);
+
+            var r = await api.GetTicker(productCode);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume,
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }
