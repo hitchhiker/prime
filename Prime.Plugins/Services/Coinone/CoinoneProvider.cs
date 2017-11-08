@@ -111,10 +111,8 @@ namespace Prime.Plugins.Services.Coinone
         {
             var api = ApiProvider.GetApi(context);
 
-            var krwAsset = Asset.Krw;
-
-            if (!context.Pair.Asset2.Equals(krwAsset))
-                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+            if (!context.Pair.Asset2.Equals(Asset.Krw))
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
             var r = await api.GetTicker(context.Pair.Asset1.ShortCode);
 
@@ -163,6 +161,25 @@ namespace Prime.Plugins.Services.Coinone
         public SellResult Sell(SellContext ctx)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            if (!context.Pair.Asset2.Equals(Asset.Krw))
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+
+            var r = await api.GetTicker(context.Pair.Asset1.ShortCode);
+
+            CheckResponseErrors(r);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume,
+                Period = VolumePeriod.Day
+            };
         }
     }
 }
