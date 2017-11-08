@@ -22,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
             M.SendAsync(new AssetAllRequestMessage(RequesterTokenVm));
         }
 
-        private int _maxPopular = 8;
+        //private int _maxPopular = 8;
         private readonly Debouncer _debouncer;
 
         public AllAssetsViewModel AllAssetsViewModel { get; }

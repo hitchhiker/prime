@@ -7,7 +7,7 @@ namespace Prime.Common
         private MarketPrice() { }
 
         /// <summary>
-        /// As an example if the pair was BTC:USD - the value quoted should therefore be a USD value.
+        /// As an example if the pair requested was BTC:USD - the value quoted should therefore be a USD value.
         /// The result would be a market price in USD, and a QuoteAsset of BTC
         /// Avoid using this constructor unless you are clear with this information.
         /// </summary>

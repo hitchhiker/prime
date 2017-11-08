@@ -68,9 +68,10 @@ namespace Prime.Ui.Wpf.ViewModel
             return new SimpleContentCommand("data explorer");
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             M.UnregisterAsync(this);
+            base.Dispose();
         }
     }
 }

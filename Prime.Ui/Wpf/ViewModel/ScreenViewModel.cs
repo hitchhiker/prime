@@ -15,7 +15,6 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         private readonly ILayoutManager _layoutManager;
         private readonly DockingManager _dockingManager;
-        private readonly IMessenger _messenger;
 
         private ObservableCollection<DocumentPaneViewModel> _documents = new ObservableCollection<DocumentPaneViewModel>();
 
