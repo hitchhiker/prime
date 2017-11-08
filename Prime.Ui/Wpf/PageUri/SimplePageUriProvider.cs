@@ -30,7 +30,8 @@ namespace Prime.Ui.Wpf.PageUri
             {"watchlist", "/View/Watchlist/Watchlist.xaml"},
             {"coins", "/View/Misc/Coins.xaml"},
             {"exchanges", "/View/Exchange/Exchanges.xaml"},
-            {"markets discovery", "/View/Markets/MarketsDiscovery.xaml"}
+            {"markets discovery", "/View/Markets/MarketsDiscovery.xaml"},
+            {"data explorer", "/View/DataExplorer.xaml"}
         };
 
         public static DocumentPaneViewModel GetViewModel(ScreenViewModel model, SimpleContentCommand command)
@@ -69,6 +70,8 @@ namespace Prime.Ui.Wpf.PageUri
                     return new MarketsDiscoveryViewModel(model) { Key = command.Command, Title = command.Title };
                 case "receive":
                     return new ReceiveViewModel() { Key = command.Command, Title = command.Title };
+                case "data explorer":
+                    return new DataExplorerViewModel() { Key = command.Command, Title = command.Title };
                 default:
                     return null;
             }
