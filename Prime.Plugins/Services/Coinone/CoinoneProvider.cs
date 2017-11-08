@@ -114,7 +114,7 @@ namespace Prime.Plugins.Services.Coinone
             var krwAsset = Asset.Krw;
 
             if (!context.Pair.Asset2.Equals(krwAsset))
-                    throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
+                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
             var r = await api.GetTicker(context.Pair.Asset1.ShortCode);
 

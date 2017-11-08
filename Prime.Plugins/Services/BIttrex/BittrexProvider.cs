@@ -56,6 +56,8 @@ namespace Prime.Plugins.Services.Bittrex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAllBalances();
 
+            CheckResponseErrors(r);
+
             return r != null && r.success && r.result != null;
         }
 
@@ -65,7 +67,7 @@ namespace Prime.Plugins.Services.Bittrex
             var pairCode = context.Pair.TickerDash();
             var r = await api.GetTicker(pairCode);
 
-            CheckResponseErrors(r);
+            CheckResponseErrors(r, context.Pair);
 
             return new MarketPrice(context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
         }
@@ -195,6 +197,8 @@ namespace Prime.Plugins.Services.Bittrex
 
             var r = await api.GetAllBalances();
 
+            CheckResponseErrors(r);
+
             var addresses = new WalletAddresses();
 
             var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
@@ -208,54 +212,16 @@ namespace Prime.Plugins.Services.Bittrex
             }
 
             return addresses;
-
-            // TODO: re-implement.
-            //if (context.CanGenerateAddress)
-            //{
-            //    var r = await api.GetDepositAddress(context.Asset.ToRemoteCode(this));
-            //    var addresses = new WalletAddresses();
-
-            //    if (r.success)
-            //    {
-            //        addresses.Add(new WalletAddress(this, context.Asset)
-            //        {
-            //            Address = r.result.Address
-            //        });
-            //    }
-            //    else
-            //    {
-            //        if (String.IsNullOrEmpty(r.message) == false && r.message.Contains(ErrorText_AddressIsGenerating) == false)
-            //        {
-            //            throw new ApiResponseException("Unexpected error during address generation", this);
-            //        }
-            //    }
-
-            //    return addresses;
-            //}
-            //else
-            //{
-            //    var r = await api.GetAllBalances();
-
-            //    var addresses = new WalletAddresses();
-
-            //    var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
-
-            //    if (address != null)
-            //    {
-            //        addresses.Add(new WalletAddress(this, context.Asset)
-            //        {
-            //            Address = address.CryptoAddress
-            //        });
-            //    }
-
-            //    return addresses;
-            //}
         }
 
-        private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response)
+        private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response, AssetPair pair = null)
         {
             if (response.success == false)
+            {
+                if(response.message.Equals("INVALID_MARKET") && pair != null)
+                    throw new ApiResponseException($"Specified currency pair {pair} is not supported by provider", this);
                 throw new ApiResponseException($"API error: {response.message}", this);
+            }
         }
 
         public async Task<OrderBook> GetOrderBook(OrderBookContext context)
@@ -266,7 +232,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             var r = await api.GetOrderBook(pairCode);
 
-            CheckResponseErrors(r);
+            CheckResponseErrors(r, context.Pair);
 
             var orderBook = new OrderBook();
 

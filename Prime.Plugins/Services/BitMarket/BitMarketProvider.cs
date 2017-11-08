@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.BitMarket
 {
@@ -57,9 +59,19 @@ namespace Prime.Plugins.Services.BitMarket
 
             var pairCode = GetBitMarketPairCode(context.Pair);
 
-            var r = await api.GetTicker(pairCode);
+            try
+            {
+                var r = await api.GetTicker(pairCode);
 
-            return new MarketPrice(context.Pair, r.last);
+                return new MarketPrice(context.Pair, r.last);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                    throw new ApiResponseException(
+                        $"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw;
+            }
         }
 
         private string GetBitMarketPairCode(AssetPair pair)

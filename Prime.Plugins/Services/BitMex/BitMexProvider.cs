@@ -48,8 +48,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            var api = BitMexApiUrl;
-            ApiProvider = new RestApiClientProvider<IBitMexApi>(api, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)

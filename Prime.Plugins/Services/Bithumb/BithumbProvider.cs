@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.Bithumb
             var krwAsset = Asset.Krw;
 
             if (!context.Pair.Asset2.Equals(krwAsset))
-                throw new ApiResponseException("Exchange does not support quote currencies other than KRW", this);
+                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
 
             var latestPrice = new MarketPrice(context.Pair, r.data.sell_price);
 

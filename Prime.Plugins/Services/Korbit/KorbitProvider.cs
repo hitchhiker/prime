@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -8,6 +9,7 @@ using Prime.Common;
 using Prime.Common.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
@@ -50,11 +52,20 @@ namespace Prime.Plugins.Services.Korbit
 
             var pairCode = GetKorbitTicker(context.Pair);
 
-            var r = await api.GetTicker(pairCode);
+            try
+            {
+                var r = await api.GetTicker(pairCode);
 
-            var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
+                var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-            return new MarketPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
+                return new MarketPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
+            }
+            catch (ApiException ex)
+            {
+                if(ex.StatusCode == HttpStatusCode.BadRequest)
+                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw;
+            }
         }
 
         public BuyResult Buy(BuyContext ctx)
