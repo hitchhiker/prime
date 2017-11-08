@@ -77,5 +77,20 @@ namespace Prime.Plugins.Services.Gdax
         {
             throw new NotImplementedException();
         }
+
+        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var pairCode = context.Pair.TickerDash();
+            var r = await api.GetProductTicker(pairCode);
+
+            return new VolumeResult()
+            {
+                Pair = context.Pair,
+                Volume = r.volume,
+                Period = VolumePeriod.Day
+            };
+        }
     }
 }
