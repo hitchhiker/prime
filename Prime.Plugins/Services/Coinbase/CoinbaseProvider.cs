@@ -78,7 +78,7 @@ namespace Prime.Plugins.Services.Coinbase
             return null;
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
             var r = await api.GetProducts();

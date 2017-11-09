@@ -111,7 +111,7 @@ namespace Prime.Plugins.Services.HitBtc
             throw new NotImplementedException();
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbols();

@@ -281,7 +281,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var pairs = await provider.GetAssetPairs(ctx);
+                var pairs = await provider.GetAssetPairsAsync(ctx);
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);

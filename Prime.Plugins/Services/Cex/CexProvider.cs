@@ -37,7 +37,7 @@ namespace Prime.Plugins.Services.Cex
             return null;
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickers();

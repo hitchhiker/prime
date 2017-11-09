@@ -4,6 +4,6 @@ namespace Prime.Common
 {
     public interface IAssetPairsProvider : IDescribesAssets
     {
-        Task<AssetPairs> GetAssetPairs(NetworkProviderContext context);
+        Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context);
     }
 }

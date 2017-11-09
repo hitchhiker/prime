@@ -29,7 +29,7 @@ namespace Prime.Common
             context = context ?? new NetworkProviderContext();
 
             return AssetPairCache.I.TryAsync(provider,
-                async () => await ApiHelpers.WrapException(() => provider.GetAssetPairs(context), nameof(GetAssetPairs),
+                async () => await ApiHelpers.WrapException(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs),
                     provider, context));
         }
 

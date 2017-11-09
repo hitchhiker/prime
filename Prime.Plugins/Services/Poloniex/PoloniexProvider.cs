@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             try
             {
-                var r = await api.GetBalancesAsync(body);
+                var r = await api.GetBalancesAsync(body).ConfigureAwait(false);
 
                 return r != null && r.Count > 0;
             }
@@ -61,7 +61,7 @@ namespace Prime.Plugins.Services.Poloniex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetTickerAsync();
+            var r = await api.GetTickerAsync().ConfigureAwait(false);
 
             var assetPairsInfo = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair)).ToList();
 
@@ -73,15 +73,15 @@ namespace Prime.Plugins.Services.Poloniex
             return new MarketPrice(context.Pair, 1 / selectedPair.Value.last);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync();
+            var r = await api.GetTickerAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
@@ -113,11 +113,11 @@ namespace Prime.Plugins.Services.Poloniex
             return null;
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetTickerAsync();
+            var r = await api.GetTickerAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -140,7 +140,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             try
             {
-                var r = await api.GetDepositAddressesAsync(body);
+                var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
 
                 foreach (var balance in r)
                 {
@@ -170,7 +170,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnCompleteBalances);
 
-            var r = await api.GetBalancesDetailedAsync(body);
+            var r = await api.GetBalancesDetailedAsync(body).ConfigureAwait(false);
 
             var results = new BalanceResults(this);
 
@@ -225,7 +225,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             try
             {
-                var r = await api.GetDepositAddressesAsync(body);
+                var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
                 var assetBalances = r.Where(x => Equals(x.Key.ToAsset(this), context.Asset)).ToArray();
 
                 foreach (var balance in assetBalances)
@@ -256,7 +256,7 @@ namespace Prime.Plugins.Services.Poloniex
             var period = ConvertToPoloniexInterval(market);
 
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period);
+            var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
 
             var ohlc = new OhlcData(market);
             var seriesid = OhlcUtilities.GetHash(pair, market, Network);
@@ -295,7 +295,7 @@ namespace Prime.Plugins.Services.Poloniex
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerUnderslash();
 
-            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2) : await api.GetOrderBook(pairCode);
+            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBook(pairCode).ConfigureAwait(false);
 
             if (r.bids == null || r.asks == null)
                 throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
@@ -336,7 +336,7 @@ namespace Prime.Plugins.Services.Poloniex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.Get24HVolume();
+            var r = await api.Get24HVolume().ConfigureAwait(false);
             var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
 
             if (!volumes.Any())

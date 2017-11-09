@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Coinone
             return null;
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickers();

@@ -127,7 +127,7 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var pairs = AsyncContext.Run(() => provider.GetAssetPairs(ctx));
+                    var pairs = AsyncContext.Run(() => provider.GetAssetPairsAsync(ctx));
 
                     foreach (var pair in pairs)
                     {

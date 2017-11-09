@@ -138,7 +138,7 @@ namespace Prime.Plugins.Services.BitFlyer
             throw new NotImplementedException();
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
             var assetPairs = new AssetPairs();

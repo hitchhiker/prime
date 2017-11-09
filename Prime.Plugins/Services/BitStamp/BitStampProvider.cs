@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.BitStamp
             return null;
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var t = new Task<AssetPairs>(() => Pairs);
             t.RunSynchronously();

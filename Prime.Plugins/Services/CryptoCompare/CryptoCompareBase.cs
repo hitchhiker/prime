@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.CryptoCompare
 
         public bool PricesAsAssetQuotes => true;
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var p = Networks.I.Providers.FirstProviderOf<CryptoCompareProvider>();
             var r = await p.GetAssetPairsAllNetworksAsync();

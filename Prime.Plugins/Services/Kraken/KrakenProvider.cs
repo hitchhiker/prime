@@ -95,7 +95,7 @@ namespace Prime.Plugins.Services.Kraken
             throw new System.NotImplementedException();
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -232,7 +232,7 @@ namespace Prime.Plugins.Services.Kraken
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var assets = await GetAssetPairs(context);
+            var assets = await GetAssetPairsAsync(context);
 
             var addresses = new WalletAddresses();
 

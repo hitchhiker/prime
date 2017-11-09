@@ -158,7 +158,7 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var t = new Task<AssetPairs>(() => Pairs);
             t.RunSynchronously();

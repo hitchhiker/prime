@@ -79,7 +79,7 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
                 var ctx = new NetworkProviderPrivateContext(UserContext.Current);
 
-                var pairs = AsyncContext.Run(() => provider.GetAssetPairs(ctx));
+                var pairs = AsyncContext.Run(() => provider.GetAssetPairsAsync(ctx));
 
                 try
                 {

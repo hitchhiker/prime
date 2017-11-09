@@ -40,7 +40,7 @@ namespace Prime.Plugins.Services.ItBit
             return AssetCodeConverter;
         }
 
-        public Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             return Task.Run(() => Pairs);
         }
