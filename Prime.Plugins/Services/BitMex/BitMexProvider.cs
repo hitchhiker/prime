@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.BitMex
             var rPrice = r.FirstOrDefault();
 
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new MarketPrice(context.Pair, rPrice.lastPrice.Value);
         }
@@ -343,7 +343,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
         {
             if (!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
-                throw new ApiResponseException($"Exchange does not support {context.Asset.ShortCode} currency", this);
+                throw new NoAssetPairException(context.Asset.ShortCode, this);
 
             var api = ApiProvider.GetApi(context);
             var remoteCode = context.Asset.ToRemoteCode(this);
@@ -426,7 +426,7 @@ namespace Prime.Plugins.Services.BitMex
             var rPrice = r.FirstOrDefault();
 
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {

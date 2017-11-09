@@ -131,7 +131,7 @@ namespace Prime.Plugins.Services.Cex
             var rTicker = r.data.FirstOrDefault(x => x.pair.ToAssetPair(this, ':').Equals(context.Pair));
 
             if(rTicker == null)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {

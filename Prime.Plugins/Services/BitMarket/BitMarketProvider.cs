@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.BitMarket
             catch (ApiException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound)
-                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                    throw new NoAssetPairException(context.Pair, this);
                 throw;
             }
         }

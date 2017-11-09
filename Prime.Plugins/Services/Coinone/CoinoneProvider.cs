@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Coinone
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.Equals(Asset.Krw))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
@@ -173,7 +173,7 @@ namespace Prime.Plugins.Services.Coinone
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.Equals(Asset.Krw))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 

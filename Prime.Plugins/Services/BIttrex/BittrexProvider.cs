@@ -226,7 +226,7 @@ namespace Prime.Plugins.Services.Bittrex
             if (response.success == false)
             {
                 if(response.message.Equals("INVALID_MARKET") && pair != null)
-                    throw new ApiResponseException($"Specified currency pair {pair} is not supported by provider", this);
+                    throw new NoAssetPairException(pair, this);
                 throw new ApiResponseException($"API error: {response.message}", this);
             }
         }
@@ -290,7 +290,7 @@ namespace Prime.Plugins.Services.Bittrex
             var summary = r.result.FirstOrDefault();
             var remoteMarker = summary.MarketName.ToAssetPair(this, '-');
             if (summary == null || !remoteMarker.Equals(context.Pair))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {

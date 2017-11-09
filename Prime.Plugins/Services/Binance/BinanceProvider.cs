@@ -113,14 +113,14 @@ namespace Prime.Plugins.Services.Binance
             var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
             if (lpr == null)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new MarketPrice(context.Pair, lpr.price);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)

@@ -284,7 +284,7 @@ namespace Prime.Plugins.Services.Poloniex
             var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBook(pairCode).ConfigureAwait(false);
 
             if (r.bids == null || r.asks == null)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             var orderBook = new OrderBook();
 
@@ -326,7 +326,7 @@ namespace Prime.Plugins.Services.Poloniex
             var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
 
             if (!volumes.Any())
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             //var selectedPair = assetPairsInfo[0];
 
