@@ -68,7 +68,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             return new MarketPrice(context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(context, r.volume, r.volume, r.bid, r.ask, r.low, r.high)
+                PriceStatistics = new PriceStatistics(context, r.volume, null, r.ask, r.bid, r.low, r.high)
             };
         }
 

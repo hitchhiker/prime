@@ -2,7 +2,7 @@
 {
     public class PriceStatistics
     {
-        public PriceStatistics(PublicPriceContext context, decimal? volume24Quote, decimal? volume24, decimal? highestBid, decimal? lowestAsk, decimal? price24Low, decimal? price24High)
+        public PriceStatistics(PublicPriceContext context, decimal? volume24, decimal? volume24Quote, decimal? lowestAsk, decimal? highestBid, decimal? price24Low, decimal? price24High)
         {
             HasVolume24 = volume24 != null;
             HasVolume24Quote = volume24Quote != null;
