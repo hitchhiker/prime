@@ -32,7 +32,7 @@ namespace Prime.Common
             });
 
             task.Start();
-            return await task;
+            return await task.ConfigureAwait(false);
         }
     }
 }
