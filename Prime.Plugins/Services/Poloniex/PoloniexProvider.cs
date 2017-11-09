@@ -354,9 +354,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public Money ParseVolume(object raw)
         {
-            var money = new Money();
-
-            return default(Money);
+            return default;
         }
     }
 }
