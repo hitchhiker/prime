@@ -37,7 +37,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 UpdateAssets(m.Assets);
             });
 
-            Services = Networks.I.WalletProviders;
+            Services = Networks.I.BalanceProviders;
             ServiceSelected = Services.FirstProvider();
 
             ServiceChanged();
@@ -72,8 +72,6 @@ namespace Prime.Ui.Wpf.ViewModel
         {
             M.SendAsync(new WalletAddressRequestMessage(ServiceSelected.Network, AssetSelected), UserContext.Current.Token);
         }
-
-        public WalletProvider WalletProvider => UserContext.Current.WalletProvider;
 
         public IReadOnlyList<IBalanceProvider> Services { get; set; }
 

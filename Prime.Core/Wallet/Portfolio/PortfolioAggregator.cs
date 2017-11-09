@@ -69,7 +69,7 @@ namespace Prime.Common.Wallet
             lock (_lock)
             {
                 _quoteAsset = Context.QuoteAsset;
-                var providers = Networks.I.WalletProviders.WithApi();
+                var providers = Networks.I.BalanceProviders.WithApi();
                 _scanners.Clear();
                 _scanners.AddRange(providers.Select(x => new PortfolioProvider(new PortfolioProviderContext(this.Context, x, _quoteAsset, TimerInterval))).ToList());
                 _scanners.ForEach(x => x.OnChanged += ProviderChanged);

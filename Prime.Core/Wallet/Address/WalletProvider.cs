@@ -19,7 +19,7 @@ namespace Prime.Core.Wallet
 
         public async Task<IReadOnlyList<WalletAddress>> GenerateNewAddressAsync(Network network, Asset asset)
         {
-            var service = network.WalletProviders.Where(x=>x.CanGenerateDepositAddress).FirstProvider();
+            var service = network.DepositProviders.Where(x=>x.CanGenerateDepositAddress).FirstProvider();
             if (service == null)
                 return null;
 

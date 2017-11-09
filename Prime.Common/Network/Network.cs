@@ -49,8 +49,8 @@ namespace Prime.Common
         private IReadOnlyList<IExchangeProvider> _eProviders;
         public IReadOnlyList<IExchangeProvider> ExchangeProviders => _eProviders ?? (_eProviders = Providers.OfList<IExchangeProvider>());
 
-        private IReadOnlyList<IBalanceProvider> _wProviders;
-        public IReadOnlyList<IBalanceProvider> WalletProviders => _wProviders ?? (_wProviders = Providers.OfList<IBalanceProvider>());
+        private IReadOnlyList<IDepositProvider> _depositProviders;
+        public IReadOnlyList<IDepositProvider> DepositProviders => _depositProviders ?? (_depositProviders = Providers.OfList<IDepositProvider>());
 
         private IReadOnlyList<IPublicPriceSuper> _ppProviders;
         public IReadOnlyList<IPublicPriceSuper> PublicPriceProviders => _ppProviders ?? (_ppProviders = Providers.OfList<IPublicPriceSuper>());
