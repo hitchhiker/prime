@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.Korbit
             catch (ApiException ex)
             {
                 if(ex.StatusCode == HttpStatusCode.BadRequest)
-                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                    throw new NoAssetPairException(context.Pair, this);
                 throw;
             }
         }
