@@ -25,6 +25,8 @@ namespace Prime.Common
         {
         }
 
+        public PriceStatistics PriceStatistics { get; set; }
+
         public Asset QuoteAsset => Pair.Asset1;
 
         [Bson]
@@ -49,6 +51,8 @@ namespace Prime.Common
                 return Reverse();
             return null;
         }
+
+        public bool HasStatistics => PriceStatistics != null;
 
         public override string ToString()
         {

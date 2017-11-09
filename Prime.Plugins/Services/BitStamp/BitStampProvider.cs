@@ -12,7 +12,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider
+    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPriceStatistics
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -64,9 +64,12 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTicker(context.Pair.TickerSimple().ToLower());
+            var r = await api.GetTicker(context.Pair.TickerSimple().ToLower()).ConfigureAwait(false);
 
-            return new MarketPrice(context.Pair, r.last);
+            return new MarketPrice(context.Pair, r.last)
+            {
+                PriceStatistics = new PriceStatistics(context, r.volume, r.volume, r.bid, r.ask, r.low, r.high)
+            };
         }
 
         public BuyResult Buy(BuyContext ctx)
@@ -90,7 +93,7 @@ namespace Prime.Plugins.Services.BitStamp
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAccountBalances();
+            var r = await api.GetAccountBalances().ConfigureAwait(false);
 
             var balances = new BalanceResults(this);
 
