@@ -311,7 +311,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation();
+            var r = await api.GetAccountInformation().ConfigureAwait(false);
 
             return r != null;
         }
@@ -319,7 +319,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation();
+            var r = await api.GetAccountInformation().ConfigureAwait(false);
 
             var balances = new BalanceResults();
 
@@ -343,7 +343,7 @@ namespace Prime.Plugins.Services.Binance
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerSimple();
 
-            var r = await api.Get24HrTicker(pairCode);
+            var r = await api.Get24HrTicker(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

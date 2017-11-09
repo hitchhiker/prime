@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.ItBit
             var api = ApiProvider.GetApi(context);
             var pairCode = GetItBitTicker(context.Pair);
 
-            var r = await api.GetTicker(pairCode);
+            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.lastPrice);
         }
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.ItBit
             var api = ApiProvider.GetApi(context);
             var pairCode = GetItBitTicker(context.Pair);
 
-            var r = await api.GetTicker(pairCode);
+            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

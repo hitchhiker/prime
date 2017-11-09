@@ -61,7 +61,7 @@ namespace Prime.Plugins.Services.Korbit
 
             try
             {
-                var r = await api.GetTicker(pairCode);
+                var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
                 var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
@@ -98,7 +98,7 @@ namespace Prime.Plugins.Services.Korbit
             var api = ApiProvider.GetApi(context);
             var pairCode = GetKorbitTicker(context.Pair);
 
-            var r = await api.GetOrderBook(pairCode);
+            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue 
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2) 

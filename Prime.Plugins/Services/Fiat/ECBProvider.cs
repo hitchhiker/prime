@@ -97,7 +97,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public async Task<decimal> GetMultiplierAsync(AssetPair pair)
         {
-            var rates = await GetRatesAsync();
+            var rates = await GetRatesAsync().ConfigureAwait(false);
             return rates.Get(pair, 0);
         }
 
@@ -106,7 +106,7 @@ namespace Prime.Plugins.Services.Fiat
             if (_pairs.Any())
                 return new AssetPairs(_pairs);
 
-            var rates = await GetRatesAsync();
+            var rates = await GetRatesAsync().ConfigureAwait(false);
 
             lock (_lock)
             {
@@ -119,7 +119,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
-            var rates = await GetRatesAsync();
+            var rates = await GetRatesAsync().ConfigureAwait(false);
 
             var lp = new MarketPricesResult();
 
@@ -137,7 +137,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
-            var r = await GetPricesAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L));
+            var r = await GetPricesAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L)).ConfigureAwait(false);
             return r.MarketPrices.FirstOrDefault();
         }
     }
