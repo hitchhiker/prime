@@ -5,6 +5,8 @@ using Prime.Common;
 using Prime.Core;
 using Prime.Plugins.Services.BitMex;
 using Prime.Plugins.Services.Kraken;
+using Prime.TestConsole;
+using Prime.TestConsole.Tools;
 using Prime.Utility;
 using AssetPair = Prime.Common.AssetPair;
 
@@ -14,10 +16,18 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var prime = TypeCatalogue.I.ImplementInstancesI<ICore>().FirstOrDefault();
-            prime.Start(); //INIT PRIME //THIS IS A HACK FOR NOW
+            if (Environment.UserName.Equals("yasko"))
+            {
+                // Run Alyasko code :)
+                new ProviderTools().GenerateProvidersReport();
+            }
+            else
+            {
+                var prime = TypeCatalogue.I.ImplementInstancesI<ICore>().FirstOrDefault();
+                prime.Start(); //INIT PRIME //THIS IS A HACK FOR NOW
 
-            new Prime.TestConsole.Program.FrankTests();
+                new Prime.TestConsole.Program.FrankTests();
+            }
 
             // ----- Kraken -----
 
