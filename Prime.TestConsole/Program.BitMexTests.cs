@@ -19,11 +19,11 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var ctx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+                var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
   
                 try
                 {
-                    var r = AsyncContext.Run(() => provider.TestApiAsync(ctx));
+                    var r = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
 
                     Console.WriteLine($"Api success: {r}");
                 }

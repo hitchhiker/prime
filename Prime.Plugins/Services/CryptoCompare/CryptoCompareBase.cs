@@ -43,6 +43,13 @@ namespace Prime.Plugins.Services.CryptoCompare
             return RestClient.For<ICryptoCompareApi>(legacyEndpoint ? EndpointLegacy : EndpointMinApi) as T;
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         private Network GetNetwork()
         {
             return Networks.I.Get(Name);
@@ -66,7 +73,7 @@ namespace Prime.Plugins.Services.CryptoCompare
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var p = Networks.I.Providers.FirstProviderOf<CryptoCompareProvider>();
-            var r = await p.GetAssetPairsAllNetworksAsync();
+            var r = await p.GetAssetPairsAllNetworksAsync().ConfigureAwait(false);
 
             var d = r.Get(Network);
             if (d == null)
@@ -75,9 +82,9 @@ namespace Prime.Plugins.Services.CryptoCompare
             return d;
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult>  GetPricesAsync(PublicPricesContext context)
@@ -85,7 +92,7 @@ namespace Prime.Plugins.Services.CryptoCompare
             var api = GetApi<ICryptoCompareApi>();
             var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));
             var tos = string.Join(",", context.Pairs.Select(x => x.Asset2).Distinct().Select(x => x.ShortCode));
-            var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false");
+            var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false").ConfigureAwait(false);
             var apir = JsonConvert.DeserializeObject<CryptoCompareSchema.PriceMultiResult>(str);
             var prices = new MarketPricesResult();
 
@@ -118,7 +125,7 @@ namespace Prime.Plugins.Services.CryptoCompare
         public async Task<List<AssetInfo>> GetCoinInformationAsync(NetworkProviderContext context)
         {
             var api = GetApi<ICryptoCompareApi>(true);
-            var apir = await api.GetCoinListAsync();
+            var apir = await api.GetCoinListAsync().ConfigureAwait(false);
 
             if (apir.IsError())
                 throw new ApiResponseException(apir.Response);
@@ -163,13 +170,13 @@ namespace Prime.Plugins.Services.CryptoCompare
             switch (market)
             {
                 case TimeResolution.Hour:
-                    apir = await api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
+                    apir = await api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
                     break;
                 case TimeResolution.Day:
-                    apir = await api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false");
+                    apir = await api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false").ConfigureAwait(false);
                     break;
                 case TimeResolution.Minute:
-                    apir = await api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs);
+                    apir = await api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
                     break;
             }
 

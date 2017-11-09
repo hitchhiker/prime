@@ -13,25 +13,19 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public DataExplorerViewModel()
         {
-            _context = UserContext.Current;
-            Dispatcher = Application.Current.Dispatcher;
             ListDataExplorerItems = new ObservableCollection<DataExplorerItemModel>();
             M.RegisterAsync<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
             M.SendAsync(new AssetPairAllRequestMessage());
 
             FilterSearchCommand = new RelayCommand(() =>
             {
-                var itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
+                CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
 
-                itemsViewOriginal.Filter = ((dataExplorerItemModel) =>
-                {
-                    if (string.IsNullOrWhiteSpace(FilterText)) return true;
-                    return ((DataExplorerItemModel)dataExplorerItemModel).Title.IndexOf(FilterText,
-                               StringComparison.InvariantCultureIgnoreCase) >= 0;
-                });
-            });
+        private void FilterSearch()
+        {
+            _collectionView.Refresh();
         }
-        
+
         public ObservableCollection<DataExplorerItemModel> ListDataExplorerItems { get; private set; }
 
         public string FilterText { get; set; }
@@ -40,8 +34,6 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void RetreiveAllAssets(AssetPairAllResponseMessage m)
         {
-            var msg = DefaultMessenger.I.Default;
-
             UiDispatcher.Invoke(() =>
             {
                 ListDataExplorerItems.Clear();
@@ -49,13 +41,10 @@ namespace Prime.Ui.Wpf.ViewModel
                 foreach (var currentAssetPair in m.Pairs)
                     ListDataExplorerItems.Add(new DataExplorerItemModel(currentAssetPair.Asset1.ShortCode + " -> " + currentAssetPair.Asset2.ShortCode, currentAssetPair));
 
-                msg.Unregister<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
+                M.Unregister<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
             });
         }
-
-        public readonly Dispatcher Dispatcher;
-        private readonly UserContext _context;
-
+        
         public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("data explorer");

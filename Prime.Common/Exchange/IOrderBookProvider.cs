@@ -4,6 +4,6 @@ namespace Prime.Common
 {
     public interface IOrderBookProvider
     {
-        Task<OrderBook> GetOrderBook(OrderBookContext context);
+        Task<OrderBook> GetOrderBookAsync(OrderBookContext context);
     }
 }

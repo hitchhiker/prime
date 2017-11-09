@@ -15,7 +15,7 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -50,6 +50,11 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            return Task.Run(() => true);
+        }
+
         private JsonSerializerSettings CreateJsonSerializerSettings()
         {
             return new JsonSerializerSettings()
@@ -58,12 +63,12 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreateKrakenBody();
 
-            var r = await api.GetBalancesAsync(body);
+            var r = await api.GetBalancesAsync(body).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -77,7 +82,7 @@ namespace Prime.Plugins.Services.Kraken
 
             var remoteCode = GetKrakenTicker(context.Pair);
 
-            var r = await api.GetTickerInformationAsync(remoteCode);
+            var r = await api.GetTickerInformationAsync(remoteCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -99,7 +104,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAssetPairsAsync();
+            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -141,7 +146,7 @@ namespace Prime.Plugins.Services.Kraken
 
             var body = CreateKrakenBody();
 
-            var r = await api.GetBalancesAsync(body);
+            var r = await api.GetBalancesAsync(body).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -177,7 +182,7 @@ namespace Prime.Plugins.Services.Kraken
 
             try
             {
-                var r = await api.GetDepositMethodsAsync(body);
+                var r = await api.GetDepositMethodsAsync(body).ConfigureAwait(false);
 
                 CheckResponseErrors(r);
 
@@ -205,7 +210,7 @@ namespace Prime.Plugins.Services.Kraken
             body.Add("method", fundingMethod);
             body.Add("new", generateNew);
 
-            var r = await api.GetDepositAddresses(body);
+            var r = await api.GetDepositAddresses(body).ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var walletAddresses = new WalletAddresses();
@@ -232,18 +237,18 @@ namespace Prime.Plugins.Services.Kraken
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var assets = await GetAssetPairsAsync(context);
+            var assets = await GetAssetPairsAsync(context).ConfigureAwait(false);
 
             var addresses = new WalletAddresses();
 
             foreach (var pair in assets)
             {
-                var fundingMethod = await GetFundingMethod(context, pair.Asset1);
+                var fundingMethod = await GetFundingMethod(context, pair.Asset1).ConfigureAwait(false);
 
                 if (fundingMethod == null)
                     throw new NullReferenceException("No funding method is found");
 
-                var localAddresses = await GetAddressesLocal(api, fundingMethod, pair.Asset1);
+                var localAddresses = await GetAddressesLocal(api, fundingMethod, pair.Asset1).ConfigureAwait(false);
 
                 addresses.AddRange(localAddresses);
             }
@@ -260,12 +265,12 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = ApiProvider.GetApi(context);
 
-            var fundingMethod = await GetFundingMethod(context, context.Asset);
+            var fundingMethod = await GetFundingMethod(context, context.Asset).ConfigureAwait(false);
 
             if (fundingMethod == null)
                 throw new NullReferenceException("No funding method is found");
 
-            var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset);
+            var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset).ConfigureAwait(false);
 
             return addresses;
         }
@@ -277,7 +282,7 @@ namespace Prime.Plugins.Services.Kraken
             var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
 
             // BUG: "since" is not implemented. Need to be checked.
-            var r = await api.GetOhlcDataAsync(GetKrakenTicker(context.Pair), krakenTimeInterval);
+            var r = await api.GetOhlcDataAsync(GetKrakenTicker(context.Pair), krakenTimeInterval).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -351,10 +356,10 @@ namespace Prime.Plugins.Services.Kraken
             return (price, volume, timeStamp);
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var orderBook = await GetOrderBookLocal(api, context.Pair, context.MaxRecordsCount);
+            var orderBook = await GetOrderBookLocal(api, context.Pair, context.MaxRecordsCount).ConfigureAwait(false);
 
             return orderBook;
         }
@@ -364,7 +369,7 @@ namespace Prime.Plugins.Services.Kraken
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
             
-            var r = await api.GetOrderBook(remotePair.TickerSimple(), maxCount ?? 0);
+            var r = await api.GetOrderBook(remotePair.TickerSimple(), maxCount ?? 0).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -410,7 +415,7 @@ namespace Prime.Plugins.Services.Kraken
 
             var remoteCode = GetKrakenTicker(context.Pair);
 
-            var r = await api.GetTickerInformationAsync(remoteCode);
+            var r = await api.GetTickerInformationAsync(remoteCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

@@ -6,6 +6,6 @@ namespace Prime.Common
     {
         ApiConfiguration GetApiConfiguration { get; }
 
-        Task<bool> TestApiAsync(ApiTestContext context);
+        Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context);
     }
 }

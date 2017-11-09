@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
-    public class BithumbProvider : IExchangeProvider, IPublicPricesProvider
+    public class BithumbProvider : IPublicPricesProvider
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
@@ -22,6 +22,13 @@ namespace Prime.Plugins.Services.Bithumb
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
 
         // 20 requests available per second.
         // See https://www.bithumb.com/u1/US127.
@@ -66,16 +73,16 @@ namespace Prime.Plugins.Services.Bithumb
             var krwAsset = Asset.Krw;
 
             if (!context.Pair.Asset2.Equals(krwAsset))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             var latestPrice = new MarketPrice(context.Pair, r.data.sell_price);
 
             return latestPrice;
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)

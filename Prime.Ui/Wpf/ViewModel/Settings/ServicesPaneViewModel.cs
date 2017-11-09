@@ -24,19 +24,24 @@ namespace Prime.Ui.Wpf.ViewModel
         public bool HasApiKey
         {
             get => _hasApiKey;
-            set => Set(ref _hasApiKey, value);
+            set => SetAfter(ref _hasApiKey, value, (v) => Populate());
         }
 
         private void Populate()
         {
-            ServicesObservable.Clear();
-            var q = Networks.I.Providers.AsEnumerable();
+            UiDispatcher.Invoke(() =>
+            {
+                ServicesObservable.Clear();
+                var q = Networks.I.Providers.AsEnumerable();
 
-            if (HasApiKey)
-                q = q.FilterType<INetworkProvider, INetworkProviderPrivate>();
+                if (HasApiKey)
+                    q = q.FilterType<INetworkProvider, INetworkProviderPrivate>();
 
-            foreach (var i in q.OrderBy(x=>x.Network.Name))
-                ServicesObservable.Add(new ServiceLineItem(i));
+                q = q.Where(x => x.IsDirect);
+
+                foreach (var i in q.OrderBy(x => x.Network.Name))
+                    ServicesObservable.Add(new ServiceLineItem(i));
+            });
         }
 
         public override CommandContent GetPageCommand()

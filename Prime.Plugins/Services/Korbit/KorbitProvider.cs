@@ -13,7 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
-    public class KorbitProvider : IExchangeProvider, IOrderBookProvider, IBalanceProvider
+    public class KorbitProvider : IOrderBookProvider, IBalanceProvider
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
         private static readonly string _pairs = "btckrw,etckrw,ethkrw,xrpkrw";
@@ -46,6 +46,13 @@ namespace Prime.Plugins.Services.Korbit
             ApiProvider = new RestApiClientProvider<IKorbitApi>(KorbitApiUrl, this, k => new KorbitAuthenticator(k).GetRequestModifier);
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -54,7 +61,7 @@ namespace Prime.Plugins.Services.Korbit
 
             try
             {
-                var r = await api.GetTicker(pairCode);
+                var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
                 var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
@@ -63,7 +70,7 @@ namespace Prime.Plugins.Services.Korbit
             catch (ApiException ex)
             {
                 if(ex.StatusCode == HttpStatusCode.BadRequest)
-                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                    throw new NoAssetPairException(context.Pair, this);
                 throw;
             }
         }
@@ -86,12 +93,12 @@ namespace Prime.Plugins.Services.Korbit
             return t;
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetKorbitTicker(context.Pair);
 
-            var r = await api.GetOrderBook(pairCode);
+            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue 
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2) 
@@ -156,7 +163,7 @@ namespace Prime.Plugins.Services.Korbit
             throw new NotImplementedException();
         }
 
-        public Task<bool> TestApiAsync(ApiTestContext context)
+        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             throw new NotImplementedException();
         }

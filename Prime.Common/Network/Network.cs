@@ -45,9 +45,6 @@ namespace Prime.Common
 
         private IReadOnlyList<INetworkProvider> _providers;
         public IReadOnlyList<INetworkProvider> Providers { get { return _providers ?? (_providers = Networks.I.Providers.Where(x=>x.Network.Id == this.Id).ToList());} }
-        
-        private IReadOnlyList<IExchangeProvider> _eProviders;
-        public IReadOnlyList<IExchangeProvider> ExchangeProviders => _eProviders ?? (_eProviders = Providers.OfList<IExchangeProvider>());
 
         private IReadOnlyList<IDepositProvider> _depositProviders;
         public IReadOnlyList<IDepositProvider> DepositProviders => _depositProviders ?? (_depositProviders = Providers.OfList<IDepositProvider>());

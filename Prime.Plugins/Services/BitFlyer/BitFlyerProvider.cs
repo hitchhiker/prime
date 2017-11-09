@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IBalanceProvider, IOrderBookProvider, IExchangeProvider
+    public class BitFlyerProvider : IBalanceProvider, IOrderBookProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -40,6 +40,13 @@ namespace Prime.Plugins.Services.BitFlyer
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -55,22 +62,7 @@ namespace Prime.Plugins.Services.BitFlyer
             return null;
         }
 
-        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> TestApiAsync(ApiTestContext context)
+        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             throw new NotImplementedException();
         }
@@ -80,7 +72,7 @@ namespace Prime.Plugins.Services.BitFlyer
             throw new NotImplementedException();
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetBitFlyerTicker(context.Pair);

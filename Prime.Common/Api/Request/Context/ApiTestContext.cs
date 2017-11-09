@@ -2,11 +2,11 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class ApiTestContext : NetworkProviderPrivateContext
+    public class ApiPrivateTestContext : NetworkProviderPrivateContext
     {
         public readonly ApiKey ApiTestKey;
 
-        public ApiTestContext(ApiKey apiTestKey, ILogger logger = null) : base(null, logger)
+        public ApiPrivateTestContext(ApiKey apiTestKey, ILogger logger = null) : base(null, logger)
         {
             ApiTestKey = apiTestKey;
         }

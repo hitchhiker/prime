@@ -26,6 +26,17 @@ namespace Prime.Plugins.Services.Fiat
         {
             throw new NotImplementedException();
         }
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
+        public IAssetCodeConverter GetAssetCodeConverter()
+        {
+            return null;
+        }
 
         public Network Network => _network;
         public bool Disabled => false;
@@ -41,9 +52,9 @@ namespace Prime.Plugins.Services.Fiat
 
         public static Asset Euro = "EUR".ToAssetRaw();
 
-        public async Task<Dictionary<AssetPair, decimal>> GetRatesAsync()
+        public Task<Dictionary<AssetPair, decimal>> GetRatesAsync()
         {
-            return await new Task<Dictionary<AssetPair, decimal>>(() =>
+            var t = new Task<Dictionary<AssetPair, decimal>>(() =>
             {
                 lock (_lock)
                 {
@@ -52,6 +63,8 @@ namespace Prime.Plugins.Services.Fiat
                     return _lastRates = GetXmlRates();
                 }
             });
+            t.Start();
+            return t;
         }
 
         private Dictionary<AssetPair, decimal> GetXmlRates()
@@ -84,7 +97,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public async Task<decimal> GetMultiplierAsync(AssetPair pair)
         {
-            var rates = await GetRatesAsync();
+            var rates = await GetRatesAsync().ConfigureAwait(false);
             return rates.Get(pair, 0);
         }
 
@@ -93,7 +106,7 @@ namespace Prime.Plugins.Services.Fiat
             if (_pairs.Any())
                 return new AssetPairs(_pairs);
 
-            var rates = await GetRatesAsync();
+            var rates = await GetRatesAsync().ConfigureAwait(false);
 
             lock (_lock)
             {
@@ -106,7 +119,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
-            var rates = await GetRatesAsync();
+            var rates = await GetRatesAsync().ConfigureAwait(false);
 
             var lp = new MarketPricesResult();
 
@@ -124,7 +137,7 @@ namespace Prime.Plugins.Services.Fiat
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
-            var r = await GetPricesAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L));
+            var r = await GetPricesAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L)).ConfigureAwait(false);
             return r.MarketPrices.FirstOrDefault();
         }
     }

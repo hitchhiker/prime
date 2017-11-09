@@ -301,6 +301,11 @@
     <Compile Include="ViewModel\PortfolioPieChartViewModel.cs" />
     <Compile Include="ViewModel\PortfolioViewModel.cs" />
     <Compile Include="ViewModel\StarViewModel.cs" />
+    <Compile Include="ViewModel\Ticker\TickerNewsItemViewModel.cs" />
+    <Compile Include="ViewModel\Ticker\TickerPriceViewModel.cs" />
+    <Compile Include="ViewModel\Ticker\TickerContainerViewModel.cs" />
+    <Compile Include="ViewModel\Ticker\TickerItemBaseViewModel.cs" />
+    <Compile Include="ViewModel\Ticker\TickerViewModel.cs" />
     <Compile Include="ViewModel\Trading\BuySellViewModel.cs" />
     <Compile Include="ViewModel\Charts\ChartHeaderViewModel.cs" />
     <Compile Include="ViewModel\DocumentPaneViewModel.cs" />

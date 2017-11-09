@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Utility;
 
@@ -22,5 +23,7 @@ namespace Prime.Common
         /// This is not a proxy or aggregator service, it connects directly to the service specified
         /// </summary>
         bool IsDirect { get; }
+
+        Task<bool> TestPublicApiAsync();
     }
 }

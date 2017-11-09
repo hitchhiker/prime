@@ -150,11 +150,11 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+                var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
 
                 try
                 {
-                    var result = AsyncContext.Run(() => provider.TestApiAsync(ctx));
+                    var result = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
 
                     Console.WriteLine($"Api test ok: {result}");
                 }

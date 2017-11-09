@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class HitBtcProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -33,27 +33,34 @@ namespace Prime.Plugins.Services.HitBtc
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerSimple();
-            var r = await api.GetTicker(pairCode);
+            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             CheckNullableResult(r.last, String.Format(ErroTextrNoLatestValueForPair, context.Pair.TickerDash()));
 
             return new MarketPrice(context.Pair, r.last.Value);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickers();
+            var r = await api.GetAllTickers().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
@@ -114,7 +121,7 @@ namespace Prime.Plugins.Services.HitBtc
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbols();
+            var r = await api.GetSymbols().ConfigureAwait(false);
 
             var assetPairs = new AssetPairs();
 
@@ -130,7 +137,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetDepositAddress(context.Asset.ShortCode);
+            var r = await api.GetDepositAddress(context.Asset.ShortCode).ConfigureAwait(false);
 
             var walletAddresses = new WalletAddresses();
             walletAddresses.Add(new WalletAddress(this, context.Asset)
@@ -151,10 +158,10 @@ namespace Prime.Plugins.Services.HitBtc
             throw new NotImplementedException();
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalances();
+            var r = await api.GetBalances().ConfigureAwait(false);
 
             return r != null && r.balance.Any();
         }
@@ -162,7 +169,7 @@ namespace Prime.Plugins.Services.HitBtc
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalances();
+            var r = await api.GetBalances().ConfigureAwait(false);
 
             var balances = new BalanceResults(this);
 
@@ -179,7 +186,7 @@ namespace Prime.Plugins.Services.HitBtc
             return balances;
         }
 
-        public Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             throw new NotImplementedException();
         }
@@ -189,7 +196,7 @@ namespace Prime.Plugins.Services.HitBtc
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerSimple();
-            var r = await api.GetTicker(pairCode);
+            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

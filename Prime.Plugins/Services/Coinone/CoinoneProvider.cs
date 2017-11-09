@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinone
 {
-    public class CoinoneProvider : IExchangeProvider, IPublicPricesProvider
+    public class CoinoneProvider : IPublicPricesProvider
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -33,7 +33,12 @@ namespace Prime.Plugins.Services.Coinone
         {
             ApiProvider = new RestApiClientProvider<ICoinoneApi>(CoinoneApiUrl, this, k => null);
         }
-
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
@@ -42,7 +47,7 @@ namespace Prime.Plugins.Services.Coinone
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetTickers();
+            var rRaw = await api.GetTickers().ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 
@@ -112,25 +117,25 @@ namespace Prime.Plugins.Services.Coinone
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.Equals(Asset.Krw))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
-            var r = await api.GetTicker(context.Pair.Asset1.ShortCode);
+            var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
             return new MarketPrice(context.Pair, r.last);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetTickers();
+            var rRaw = await api.GetTickers().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = ParseTicker(rRaw);
@@ -168,9 +173,9 @@ namespace Prime.Plugins.Services.Coinone
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.Equals(Asset.Krw))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
-            var r = await api.GetTicker(context.Pair.Asset1.ShortCode);
+            var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

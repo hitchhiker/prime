@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -37,6 +37,13 @@ namespace Prime.Plugins.Services.Binance
         public BinanceProvider()
         {
             ApiProvider = new RestApiClientProvider<IBinanceApi>(BinanceApiUrl, this, k => new BinanceAuthenticator(k).GetRequestModifier);
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
@@ -106,14 +113,14 @@ namespace Prime.Plugins.Services.Binance
             var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
             if (lpr == null)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new MarketPrice(context.Pair, lpr.price);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
@@ -222,7 +229,7 @@ namespace Prime.Plugins.Services.Binance
             return null;
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             CheckOrderRecordsInputNumber(context.MaxRecordsCount);
 
@@ -301,10 +308,10 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation();
+            var r = await api.GetAccountInformation().ConfigureAwait(false);
 
             return r != null;
         }
@@ -312,7 +319,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation();
+            var r = await api.GetAccountInformation().ConfigureAwait(false);
 
             var balances = new BalanceResults();
 
@@ -336,7 +343,7 @@ namespace Prime.Plugins.Services.Binance
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerSimple();
 
-            var r = await api.Get24HrTicker(pairCode);
+            var r = await api.Get24HrTicker(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

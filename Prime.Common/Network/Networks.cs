@@ -34,9 +34,6 @@ namespace Prime.Common
         private IReadOnlyList<INetworkProvider> _providers;
         public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = TypeCatalogue.I.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).OrderByDescending(x=>x.Priority).ToList());
 
-        private IReadOnlyList<IExchangeProvider> _eProviders;
-        public IReadOnlyList<IExchangeProvider> ExchangeProviders => _eProviders ?? (_eProviders = Providers.OfList<IExchangeProvider>());
-
         private IReadOnlyList<IBalanceProvider> _balanceProviders;
         public IReadOnlyList<IBalanceProvider> BalanceProviders => _balanceProviders ?? (_balanceProviders = Providers.OfList<IBalanceProvider>());
 

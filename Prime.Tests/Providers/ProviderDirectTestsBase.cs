@@ -55,7 +55,7 @@ namespace Prime.Tests.Providers
 
         public virtual async Task TestGetAssetPairsAsync()
         {
-            var p = IsType<IExchangeProvider>();
+            var p = IsType<IAssetPairsProvider>();
             if (p.Success)
                 await GetAssetPairsAsync(p.Provider);
         }
@@ -147,11 +147,11 @@ namespace Prime.Tests.Providers
 
         private async Task TestApiAsync(INetworkProviderPrivate provider)
         {
-            var ctx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+            var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
 
             try
             {
-                var r = await provider.TestApiAsync(ctx);
+                var r = await provider.TestPrivateApiAsync(ctx);
                 Assert.IsTrue(r);
             }
             catch (Exception e)
@@ -275,7 +275,7 @@ namespace Prime.Tests.Providers
 
         protected AssetPairs RequiredAssetPairs { get; set; }
 
-        private async Task GetAssetPairsAsync(IExchangeProvider provider)
+        private async Task GetAssetPairsAsync(IAssetPairsProvider provider)
         {
             var ctx = new NetworkProviderContext();
 
@@ -433,7 +433,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.GetOrderBook(OrderBookContext);
+                var r = await provider.GetOrderBookAsync(OrderBookContext);
                 Assert.IsTrue(r != null);
 
                 if (OrderBookContext.MaxRecordsCount.HasValue)

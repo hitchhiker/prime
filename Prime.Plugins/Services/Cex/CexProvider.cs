@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cex
 {
-    public class CexProvider : IExchangeProvider, IPublicPricesProvider
+    public class CexProvider : IPublicPricesProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
 
@@ -32,6 +32,13 @@ namespace Prime.Plugins.Services.Cex
             ApiProvider = new RestApiClientProvider<ICexApi>(CexApiUrl, this, k => null);
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
@@ -40,7 +47,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers();
+            var r = await api.GetTickers().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -57,7 +64,7 @@ namespace Prime.Plugins.Services.Cex
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCexTicher(context.Pair);
 
-            var r = await api.GetLastPrice(pairCode);
+            var r = await api.GetLastPrice(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.lprice);
         }
@@ -67,15 +74,15 @@ namespace Prime.Plugins.Services.Cex
             return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLastPrices();
+            var r = await api.GetLastPrices().ConfigureAwait(false);
             CheckResponseError(r);
 
             var prices = new MarketPricesResult();
@@ -117,14 +124,14 @@ namespace Prime.Plugins.Services.Cex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers();
+            var r = await api.GetTickers().ConfigureAwait(false);
 
             CheckResponseError(r);
 
             var rTicker = r.data.FirstOrDefault(x => x.pair.ToAssetPair(this, ':').Equals(context.Pair));
 
             if(rTicker == null)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {

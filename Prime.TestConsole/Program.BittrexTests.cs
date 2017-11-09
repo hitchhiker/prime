@@ -17,9 +17,9 @@ namespace Prime.TestConsole
 			public void ApiTest()
 			{
 				var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
-				var apiTestCtx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+				var apiTestCtx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
 
-				var ok = AsyncContext.Run(() => provider.TestApiAsync(apiTestCtx));
+				var ok = AsyncContext.Run(() => provider.TestPrivateApiAsync(apiTestCtx));
 
 
 				try

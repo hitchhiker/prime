@@ -16,7 +16,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider :
-        IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
@@ -49,6 +49,13 @@ namespace Prime.Plugins.Services.BitMex
         public BitMexProvider()
         {
             ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
@@ -110,14 +117,14 @@ namespace Prime.Plugins.Services.BitMex
             var rPrice = r.FirstOrDefault();
 
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new MarketPrice(context.Pair, rPrice.lastPrice.Value);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
@@ -160,24 +167,10 @@ namespace Prime.Plugins.Services.BitMex
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() => Pairs);
-            t.RunSynchronously();
-
-            return t;
-
-            // This code fetches all pairs including futures which are not supported at this moment.
-
-            /* var api = GetApi<IBitMexApi>(context);
-            var r = await api.GetInstrumentsActive();
-            var aps = new AssetPairs();
-            foreach (var i in r)
-            {
-                var ap = new AssetPair(i.underlying.ToAsset(this), i.quoteCurrency.ToAsset(this));
-                aps.Add(ap);
-            } */
+            return Task.Run(() => Pairs);
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetUserInfoAsync().ConfigureAwait(false);
@@ -229,6 +222,7 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
+        [Obsolete] // BUG: review.
         private string AdjustAssetCode(string input)
         {
             // TODO: should be re-factored.
@@ -261,7 +255,7 @@ namespace Prime.Plugins.Services.BitMex
             return results;
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -294,7 +288,7 @@ namespace Prime.Plugins.Services.BitMex
                     Data = new BidAskData()
                     {
                         Price = new Money(buy.price, context.Pair.Asset2),
-                        Time = DateTime.Now, // Since it returnes current state of OrderBook, date time is set to Now.
+                        Time = DateTime.Now, // Since it returns current state of OrderBook, date time is set to Now.
                         Volume = buy.size
                     }
                 });
@@ -349,7 +343,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
         {
             if (!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
-                throw new ApiResponseException($"Exchange does not support {context.Asset.ShortCode} currency", this);
+                throw new NoAssetPairException(context.Asset.ShortCode, this);
 
             var api = ApiProvider.GetApi(context);
             var remoteCode = context.Asset.ToRemoteCode(this);
@@ -432,7 +426,7 @@ namespace Prime.Plugins.Services.BitMex
             var rPrice = r.FirstOrDefault();
 
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {

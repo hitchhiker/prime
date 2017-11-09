@@ -14,7 +14,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Bittrex
 {
     public class BittrexProvider : 
-        IExchangeProvider, IBalanceProvider, IOrderBookProvider, IPublicPricesProvider
+        IBalanceProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -51,10 +51,17 @@ namespace Prime.Plugins.Services.Bittrex
             ApiProvider = new RestApiClientProvider<IBittrexApi>(BittrexApiUrl, this, k => new BittrexAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllBalances();
+            var r = await api.GetAllBalances().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -65,22 +72,22 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
-            var r = await api.GetTicker(pairCode);
+            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
 
             return new MarketPrice(context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketSummaries();
+            var r = await api.GetMarketSummaries().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -122,7 +129,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarkets();
+            var r = await api.GetMarkets().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -141,7 +148,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalances();
+            var r = await api.GetAllBalances().ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var balances = new BalanceResults();
@@ -170,7 +177,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalances();
+            var r = await api.GetAllBalances().ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var addresses = new WalletAddresses();
@@ -195,7 +202,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalances();
+            var r = await api.GetAllBalances().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -219,18 +226,18 @@ namespace Prime.Plugins.Services.Bittrex
             if (response.success == false)
             {
                 if(response.message.Equals("INVALID_MARKET") && pair != null)
-                    throw new ApiResponseException($"Specified currency pair {pair} is not supported by provider", this);
+                    throw new NoAssetPairException(pair, this);
                 throw new ApiResponseException($"API error: {response.message}", this);
             }
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerDash();
 
-            var r = await api.GetOrderBook(pairCode);
+            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
 
@@ -278,12 +285,12 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash().ToLower();
-            var r = await api.GetMarketSummary(pairCode);
+            var r = await api.GetMarketSummary(pairCode).ConfigureAwait(false);
 
             var summary = r.result.FirstOrDefault();
             var remoteMarker = summary.MarketName.ToAssetPair(this, '-');
             if (summary == null || !remoteMarker.Equals(context.Pair))
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {

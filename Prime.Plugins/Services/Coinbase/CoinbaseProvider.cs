@@ -14,7 +14,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseProvider : IExchangeProvider, IBalanceProvider, IOrderBookProvider, IOhlcProvider
+    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -49,13 +49,20 @@ namespace Prime.Plugins.Services.Coinbase
             GdaxApiProvider = new RestApiClientProvider<IGdaxApi>(GdaxApiUrl);
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
-            var r = await api.GetLatestPrice(pairCode);
+            var r = await api.GetLatestPrice(pairCode).ConfigureAwait(false);
 
             var price = new MarketPrice(context.Pair, r.data.amount);
 
@@ -80,7 +87,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
-            var r = await api.GetProducts();
+            var r = await api.GetProducts().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -92,17 +99,17 @@ namespace Prime.Plugins.Services.Coinbase
             return pairs;
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountsAsync();
+            var r = await api.GetAccountsAsync().ConfigureAwait(false);
             return r != null;
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountsAsync();
+            var r = await api.GetAccountsAsync().ConfigureAwait(false);
 
             var results = new BalanceResults(this);
 
@@ -131,7 +138,7 @@ namespace Prime.Plugins.Services.Coinbase
 
             var accid = "";
 
-            var accs = await api.GetAccounts();
+            var accs = await api.GetAccounts().ConfigureAwait(false);
             var ast = context.Asset.ToRemoteCode(this);
 
             var acc = accs.data.FirstOrDefault(x => string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
@@ -143,7 +150,7 @@ namespace Prime.Plugins.Services.Coinbase
             if (accid == null)
                 return null;
 
-            var r = await api.GetAddressesAsync(acc.id);
+            var r = await api.GetAddressesAsync(acc.id).ConfigureAwait(false);
             // TODO: re-implement.
             //if (r.data.Count == 0 && context.CanGenerateAddress)
             //{
@@ -172,14 +179,14 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var accs = await api.GetAccounts();
+            var accs = await api.GetAccounts().ConfigureAwait(false);
             var addresses = new WalletAddresses();
 
             var accountIds = accs.data.Select(x => new KeyValuePair<string, string>(x.currency, x.id));
 
             foreach (var kvp in accountIds)
             {
-                var r = await api.GetAddressesAsync(kvp.Value);
+                var r = await api.GetAddressesAsync(kvp.Value).ConfigureAwait(false);
 
                 foreach (var rAddress in r.data)
                 {
@@ -216,7 +223,7 @@ namespace Prime.Plugins.Services.Coinbase
             }
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
@@ -224,7 +231,7 @@ namespace Prime.Plugins.Services.Coinbase
             // TODO: Check this! Can we use limit when we query all records?
             var recordsLimit = 1000;
 
-            var r = await api.GetProductOrderBook(pairCode, OrderBookDepthLevel.FullNonAggregated);
+            var r = await api.GetProductOrderBook(pairCode, OrderBookDepthLevel.FullNonAggregated).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue 
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2).ToArray() 
@@ -298,7 +305,7 @@ namespace Prime.Plugins.Services.Coinbase
 
             while (currTsTo > tsFrom)
             {
-                var candles = await api.GetCandles(currencyCode, currTsFrom.ToUtcDateTime(), currTsTo.ToUtcDateTime(), granularitySeconds);
+                var candles = await api.GetCandles(currencyCode, currTsFrom.ToUtcDateTime(), currTsTo.ToUtcDateTime(), granularitySeconds).ConfigureAwait(false);
 
                 foreach (var candle in candles)
                 {
