@@ -50,17 +50,17 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetOhlcAsync(provider, context));
         }
 
-        public static ApiResponse<WalletAddresses> GetDepositAddresses(IWalletService provider, WalletAddressAssetContext context)
+        public static ApiResponse<WalletAddresses> GetDepositAddresses(IBalanceProvider provider, WalletAddressAssetContext context)
         {
             return AsyncContext.Run(() => GetDepositAddressesAsync(provider, context));
         }
 
-        public static ApiResponse<WalletAddresses> FetchAllDepositAddresses(IWalletService provider, WalletAddressContext context)
+        public static ApiResponse<WalletAddresses> FetchAllDepositAddresses(IBalanceProvider provider, WalletAddressContext context)
         {
             return AsyncContext.Run(() => GetAllDepositAddressesAsync(provider, context));
         }
 
-        public static ApiResponse<BalanceResults> GetBalances(IWalletService provider, NetworkProviderPrivateContext context)
+        public static ApiResponse<BalanceResults> GetBalances(IBalanceProvider provider, NetworkProviderPrivateContext context)
         {
             return AsyncContext.Run(() => GetBalancesAsync(provider, context));
         }

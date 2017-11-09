@@ -75,14 +75,14 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public WalletProvider WalletProvider => UserContext.Current.WalletProvider;
 
-        public IReadOnlyList<IWalletService> Services { get; set; }
+        public IReadOnlyList<IBalanceProvider> Services { get; set; }
 
         public BindingList<Asset> Assets { get; set; } = new BindingList<Asset>();
 
         public BindingList<WalletAddress> WalletAddresses { get; set; } = new BindingList<WalletAddress>();
 
-        private IWalletService _serviceSelected;
-        public IWalletService ServiceSelected
+        private IBalanceProvider _serviceSelected;
+        public IBalanceProvider ServiceSelected
         {
             get => _serviceSelected;
             set => SetAfter(ref _serviceSelected, value, v => ServiceChanged());

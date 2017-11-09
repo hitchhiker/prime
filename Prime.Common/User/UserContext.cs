@@ -89,7 +89,7 @@ namespace Prime.Common
         private ProviderDatas _providerDatas;
         public ProviderDatas ProviderDatas => _providerDatas ?? (_providerDatas = new ProviderDatas(this));
         
-        public WalletData Data(IWalletService provider) => WalletDatas.GetOrCreate(this, provider);
+        public WalletData Data(IBalanceProvider provider) => WalletDatas.GetOrCreate(this, provider);
 
         public ProviderData Data(INetworkProvider provider) => ProviderDatas.Get(provider);
 
@@ -107,9 +107,6 @@ namespace Prime.Common
         public Radiant.Radiant Radiant => _radiant ?? (_radiant = new Radiant.Radiant(Logging.I.DefaultLogger));
         */
         
-        private WalletProvider _walletProvider;
-        public WalletProvider WalletProvider => _walletProvider ?? (_walletProvider = new WalletProvider(this));
-
         private ApiKeys _apiKeys;
         public ApiKeys ApiKeys => _apiKeys ?? (_apiKeys = new ApiKeys(this));
 

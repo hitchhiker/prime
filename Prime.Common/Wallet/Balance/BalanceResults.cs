@@ -7,12 +7,12 @@ namespace Prime.Common
     {
         public BalanceResults() { }
 
-        public BalanceResults(IWalletService provider)
+        public BalanceResults(IBalanceProvider provider)
         {
             ProviderSource = provider;
         }
 
-        public readonly IWalletService ProviderSource;
+        public readonly IBalanceProvider ProviderSource;
 
         public void AddReserved(Asset asset, decimal value)
         {

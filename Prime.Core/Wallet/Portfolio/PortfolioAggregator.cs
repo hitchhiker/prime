@@ -41,10 +41,10 @@ namespace Prime.Common.Wallet
         private readonly UniqueList<PortfolioNetworkInfoItem> _infoItems= new UniqueList<PortfolioNetworkInfoItem>();
         private readonly List<PortfolioGroupedItem> _groupedAsset = new List<PortfolioGroupedItem>();
 
-        private readonly List<IWalletService> _failingProviders = new List<IWalletService>();
-        private readonly List<IWalletService> _workingProviders= new List<IWalletService>();
-        private readonly List<IWalletService> _queryingProviders = new List<IWalletService>();
-        private readonly List<IWalletService> _hasCollected = new List<IWalletService>();
+        private readonly List<IBalanceProvider> _failingProviders = new List<IBalanceProvider>();
+        private readonly List<IBalanceProvider> _workingProviders= new List<IBalanceProvider>();
+        private readonly List<IBalanceProvider> _queryingProviders = new List<IBalanceProvider>();
+        private readonly List<IBalanceProvider> _hasCollected = new List<IBalanceProvider>();
 
         public ObjectId UserId => Context.Id;
 

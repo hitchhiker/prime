@@ -35,7 +35,7 @@ namespace Prime.Common
             return _ws.Where(x => !x.IsExpired()).OrderByDescending(x => x.UtcCreated).ToList();
         }
 
-        public void KeepFresh(UserContext context, IWalletService provider, Asset asset, bool forceStale = false)
+        public void KeepFresh(UserContext context, IBalanceProvider provider, Asset asset, bool forceStale = false)
         {
             var stale = forceStale || _ws.Any(x => x.Asset == asset && (!x.IsFresh() || x.IsExpired()));
             if (!stale)

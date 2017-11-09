@@ -62,7 +62,7 @@ namespace Prime.Common
             return ApiHelpers.WrapException(() => provider.GetOhlcAsync(context), nameof(GetOhlc), provider, context);
         }
 
-        public static Task<ApiResponse<WalletAddresses>> GetDepositAddressesAsync(IWalletService provider, WalletAddressAssetContext context)
+        public static Task<ApiResponse<WalletAddresses>> GetDepositAddressesAsync(IDepositProvider provider, WalletAddressAssetContext context)
         {
             // TODO: review.
             //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
@@ -71,7 +71,7 @@ namespace Prime.Common
             return ApiHelpers.WrapException(() => provider.GetAddressesForAssetAsync(context), nameof(GetDepositAddresses), provider, context);
         }
 
-        public static Task<ApiResponse<WalletAddresses>> GetAllDepositAddressesAsync(IWalletService provider, WalletAddressContext context)
+        public static Task<ApiResponse<WalletAddresses>> GetAllDepositAddressesAsync(IDepositProvider provider, WalletAddressContext context)
         {
             // TODO: review
             //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
@@ -80,7 +80,7 @@ namespace Prime.Common
             return ApiHelpers.WrapException(() => provider.GetAddressesAsync(context), nameof(GetDepositAddresses), provider, context);
         }
 
-        private static async Task<BalanceResults> CheckedBalancesAsync(IWalletService provider, NetworkProviderPrivateContext context)
+        private static async Task<BalanceResults> CheckedBalancesAsync(IBalanceProvider provider, NetworkProviderPrivateContext context)
         {
             var r = await provider.GetBalancesAsync(context);
             if (r == null)
@@ -90,7 +90,7 @@ namespace Prime.Common
             return r;
         }
 
-        public static Task<ApiResponse<BalanceResults>> GetBalancesAsync(IWalletService provider, NetworkProviderPrivateContext context)
+        public static Task<ApiResponse<BalanceResults>> GetBalancesAsync(IBalanceProvider provider, NetworkProviderPrivateContext context)
         {
             return ApiHelpers.WrapException(() => CheckedBalancesAsync(provider,context), nameof(GetBalances), provider, context);
         }

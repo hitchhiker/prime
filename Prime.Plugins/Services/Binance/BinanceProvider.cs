@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IWalletService, IOhlcProvider, IPublicPricesProvider
+    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.Binance
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
 
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
 

@@ -3,11 +3,20 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
+    public class UserWalletAddresses
+    {
+        [Bson]
+        public DateTime UtcLastChecked { get; set; }
+
+        [Bson]
+        public WalletAddresses Addresses { get; set; }
+    }
+
     public class WalletAddress : IEquatable<WalletAddress>
     {
         private WalletAddress() { }
 
-        public WalletAddress(IWalletService service, Asset asset)
+        public WalletAddress(IBalanceProvider service, Asset asset)
         {
             Network = service.Network;
             UtcCreated = UtcLastChecked = DateTime.UtcNow;

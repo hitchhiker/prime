@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class HitBtcProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -27,7 +27,7 @@ namespace Prime.Plugins.Services.HitBtc
         public string AggregatorName { get; } = null;
         public string Title => Network.Name;
         public IRateLimiter RateLimiter => Limiter;
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;

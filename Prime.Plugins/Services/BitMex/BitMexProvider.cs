@@ -16,7 +16,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider :
-        IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
+        IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
@@ -36,7 +36,7 @@ namespace Prime.Plugins.Services.BitMex
         public bool IsDirect => true;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
         public ObjectId Id => IdHash;

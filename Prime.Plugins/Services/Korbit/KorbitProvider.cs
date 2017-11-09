@@ -13,7 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
-    public class KorbitProvider : IExchangeProvider, IOrderBookProvider, IWalletService
+    public class KorbitProvider : IExchangeProvider, IOrderBookProvider, IBalanceProvider
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
         private static readonly string _pairs = "btckrw,etckrw,ethkrw,xrpkrw";
@@ -37,7 +37,7 @@ namespace Prime.Plugins.Services.Korbit
         public IRateLimiter RateLimiter { get; } = new PerMinuteRateLimiter(60, 1);
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
 

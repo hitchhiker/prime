@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IWalletService : IDepositService, IDescribesAssets, INetworkProviderPrivate
+    public interface IBalanceProvider : IDescribesAssets, INetworkProviderPrivate
     {
         Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context);
     }

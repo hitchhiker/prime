@@ -15,7 +15,7 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider
+    public class KrakenProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Kraken
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1);
         public IRateLimiter RateLimiter => Limiter;
 
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
 

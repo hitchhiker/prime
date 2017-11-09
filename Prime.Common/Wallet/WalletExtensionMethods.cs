@@ -12,7 +12,7 @@ namespace Prime.Common
         /// <param name="provider"></param>
         /// <param name="asset"></param>
         /// <returns></returns>
-        public static WalletAddress GetLatestDepositAddress(this UserContext context, IWalletService provider, Asset asset)
+        public static WalletAddress GetLatestDepositAddress(this UserContext context, IBalanceProvider provider, Asset asset)
         {
             var wd = context.Data(provider);
             var w = wd.GetLatest(asset);

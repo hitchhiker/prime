@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Common
+namespace Prime.Core.Wallet
 {
     public class WalletProvider
     {
@@ -16,13 +17,13 @@ namespace Prime.Common
 
         private UniqueList<WalletAddress> Addresses => _context.UserSettings.Addresses;
 
-        public async Task<IReadOnlyList<WalletAddress>> GenerateNewAddress(Network network, Asset asset)
+        public async Task<IReadOnlyList<WalletAddress>> GenerateNewAddressAsync(Network network, Asset asset)
         {
-            var service = network.WalletProviders.FirstProvider();
-            if (!service.CanGenerateDepositAddress)
+            var service = network.WalletProviders.Where(x=>x.CanGenerateDepositAddress).FirstProvider();
+            if (service == null)
                 return null;
 
-            var r = await ApiCoordinator.GetDepositAddressesAsync(service, new WalletAddressAssetContext(asset, _context));
+            var r = await ApiCoordinator.GetDepositAddressesAsync(service, new WalletAddressAssetContext(asset, _context)).ConfigureAwait(false);
             if (r.IsNull)
                 return null;
 

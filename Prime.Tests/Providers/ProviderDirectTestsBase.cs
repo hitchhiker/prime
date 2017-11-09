@@ -62,21 +62,21 @@ namespace Prime.Tests.Providers
 
         public virtual async Task TestGetBalancesAsync()
         {
-            var p = IsType<IWalletService>();
+            var p = IsType<IBalanceProvider>();
             if (p.Success)
                 await GetBalancesAsync(p.Provider);
         }
 
         public virtual async Task TestGetAddressesAsync()
         {
-            var p = IsType<IDepositService>();
+            var p = IsType<IDepositProvider>();
             if (p.Success)
                 await GetAddressesAsync(p.Provider);
         }
 
         public virtual async Task TestGetAddressesForAssetAsync()
         {
-            var p = IsType<IDepositService>();
+            var p = IsType<IDepositProvider>();
             if (p.Success)
                 await GetAddressesForAssetAsync(p.Provider);
         }
@@ -348,7 +348,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetBalancesAsync(IWalletService provider)
+        private async Task GetBalancesAsync(IBalanceProvider provider)
         {
             var ctx = new NetworkProviderPrivateContext(UserContext.Current);
 
@@ -372,7 +372,7 @@ namespace Prime.Tests.Providers
 
         protected WalletAddressContext WalletAddressContext { get; set; }
 
-        private async Task GetAddressesAsync(IDepositService provider)
+        private async Task GetAddressesAsync(IDepositProvider provider)
         {
             if (WalletAddressContext == null)
             {
@@ -399,7 +399,7 @@ namespace Prime.Tests.Providers
 
         protected WalletAddressAssetContext WalletAddressAssetContext { get; set; }
 
-        private async Task GetAddressesForAssetAsync(IDepositService provider)
+        private async Task GetAddressesForAssetAsync(IDepositProvider provider)
         {
             if (WalletAddressAssetContext == null)
             {

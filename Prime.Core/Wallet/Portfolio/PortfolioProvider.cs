@@ -27,7 +27,7 @@ namespace Prime.Common.Wallet
 
         private readonly NetworkProviderPrivateContext _providerContext;
         private readonly UserContext _context;
-        public readonly IWalletService Provider;
+        public readonly IBalanceProvider Provider;
         public readonly Asset BaseAsset;
         private readonly int _timerFrequency;
         public readonly ILogger L;
@@ -165,7 +165,7 @@ namespace Prime.Common.Wallet
             public bool Finished { get; set; }
         }
 
-        private PortfolioLineItem CreateLineItem(BalanceResult balance, IWalletService provider)
+        private PortfolioLineItem CreateLineItem(BalanceResult balance, IBalanceProvider provider)
         {
             try
             {

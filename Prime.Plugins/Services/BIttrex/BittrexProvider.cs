@@ -14,7 +14,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Bittrex
 {
     public class BittrexProvider : 
-        IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPricesProvider
+        IExchangeProvider, IBalanceProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -35,7 +35,7 @@ namespace Prime.Plugins.Services.Bittrex
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public bool CanMultiDepositAddress => false;
+        
         public bool IsDirect => true;
 
         /// <summary>

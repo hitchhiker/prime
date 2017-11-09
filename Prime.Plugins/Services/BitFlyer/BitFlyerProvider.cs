@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IWalletService, IOrderBookProvider, IExchangeProvider
+    public class BitFlyerProvider : IBalanceProvider, IOrderBookProvider, IExchangeProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
 

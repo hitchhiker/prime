@@ -3,11 +3,8 @@ using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IDepositService : IDescribesAssets
+    public interface IDepositProvider : IDescribesAssets
     {
-        // BUG: consider removing.
-        bool CanMultiDepositAddress { get; }
-
         bool CanGenerateDepositAddress { get; }
 
         bool CanPeekDepositAddress { get; }

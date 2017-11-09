@@ -12,7 +12,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IPublicPriceStatistics
+    public class BitStampProvider : IExchangeProvider, IBalanceProvider, IOrderBookProvider, IPublicPriceStatistics
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.BitStamp
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
 
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
         public AssetPairs Pairs => new AssetPairs(3, _pairs, this);

@@ -14,7 +14,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseProvider : IExchangeProvider, IWalletService, IOrderBookProvider, IOhlcProvider
+    public class CoinbaseProvider : IExchangeProvider, IBalanceProvider, IOrderBookProvider, IOhlcProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -39,8 +39,7 @@ namespace Prime.Plugins.Services.Coinbase
         // https://developers.coinbase.com/api/v2#rate-limiting
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(2, 1);
         public IRateLimiter RateLimiter => Limiter;
-
-        public bool CanMultiDepositAddress => true;
+        
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
 

@@ -17,9 +17,9 @@ namespace Prime.Common.Wallet
         public IReadOnlyList<PortfolioNetworkInfoItem> NetworkItems { get; internal set; }
         public IReadOnlyList<PortfolioGroupedItem> GroupedAsset { get; internal set; }
 
-        public IReadOnlyList<IWalletService> WorkingProviders { get; internal set; }
-        public IReadOnlyList<IWalletService> QueryingProviders { get; internal set; }
-        public IReadOnlyList<IWalletService> FailingProviders { get; internal set; }
+        public IReadOnlyList<IBalanceProvider> WorkingProviders { get; internal set; }
+        public IReadOnlyList<IBalanceProvider> QueryingProviders { get; internal set; }
+        public IReadOnlyList<IBalanceProvider> FailingProviders { get; internal set; }
 
         public Money TotalConverted { get; internal set; }
     }

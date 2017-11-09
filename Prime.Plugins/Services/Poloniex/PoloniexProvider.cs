@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : IExchangeProvider, IWalletService, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class PoloniexProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Poloniex
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
 
-        public bool CanMultiDepositAddress => false;
+        
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
 
