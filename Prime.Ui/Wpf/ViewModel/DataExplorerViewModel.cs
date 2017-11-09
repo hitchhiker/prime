@@ -17,9 +17,25 @@ namespace Prime.Ui.Wpf.ViewModel
             M.RegisterAsync<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
             M.SendAsync(new AssetPairAllRequestMessage());
 
-            FilterSearchCommand = new RelayCommand(() =>
-            {
-                CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
+            _collectionView = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
+
+            _collectionView.Filter = GetFilter;
+
+            FilterSearchCommand = new RelayCommand(FilterSearch);
+        }
+
+        private readonly CollectionView _collectionView;
+
+        private bool GetFilter(object model)
+        {
+            if (string.IsNullOrWhiteSpace(FilterText))
+                return true;
+
+            if (!(model is DataExplorerItemModel m))
+                return false;
+
+            return m.Title.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase);
+        }
 
         private void FilterSearch()
         {
@@ -44,7 +60,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 M.Unregister<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
             });
         }
-        
+
         public override CommandContent GetPageCommand()
         {
             return new SimpleContentCommand("data explorer");
