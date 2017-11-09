@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Gdax
 {
-    public class GdaxProvider : IDescribesAssets
+    public class GdaxProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
         private const string GdaxApiUrl = "https://api.gdax.com";
 
@@ -45,9 +45,7 @@ namespace Prime.Plugins.Services.Gdax
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -73,16 +71,6 @@ namespace Prime.Plugins.Services.Gdax
             var r = await api.GetProductTicker(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.price);
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

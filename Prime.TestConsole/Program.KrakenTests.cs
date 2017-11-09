@@ -63,7 +63,7 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var method = AsyncContext.Run(() => provider.GetFundingMethod(ctx, Asset.Btc));
+                    var method = AsyncContext.Run(() => provider.GetFundingMethodAsync(ctx, Asset.Btc));
 
                     Console.WriteLine($"Funding method: {method}");
                 }

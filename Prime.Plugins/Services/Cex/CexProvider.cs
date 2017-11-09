@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cex
 {
-    public class CexProvider : IPublicPricesProvider
+    public class CexProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IAssetPairVolumeProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
 
@@ -62,14 +62,14 @@ namespace Prime.Plugins.Services.Cex
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetCexTicher(context.Pair);
+            var pairCode = GetCexTicker(context.Pair);
 
             var r = await api.GetLastPrice(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.lprice);
         }
 
-        private string GetCexTicher(AssetPair pair)
+        private string GetCexTicker(AssetPair pair)
         {
             return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
@@ -103,16 +103,6 @@ namespace Prime.Plugins.Services.Cex
             }
 
             return prices;
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         private void CheckResponseError(CexSchema.BaseResponse response)

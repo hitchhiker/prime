@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IBalanceProvider, IOrderBookProvider
+    public class BitFlyerProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -54,22 +54,13 @@ namespace Prime.Plugins.Services.BitFlyer
 
             var r = await api.GetTicker(productCode).ConfigureAwait(false);
 
+            // TODO: implement volume.
             return new MarketPrice(context.Pair, r.ltp);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
@@ -118,16 +109,6 @@ namespace Prime.Plugins.Services.BitFlyer
             }
 
             return orderBook;
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

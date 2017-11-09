@@ -6,6 +6,6 @@ namespace Prime.Common
 {
     public interface IWithdrawalCancelationProvider
     {
-        Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context);
+        Task<WithdrawalCancelationResult> CancelWithdrawalAsync(WithdrawalCancelationContext context);
     }
 }

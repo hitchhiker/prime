@@ -20,6 +20,10 @@ namespace Prime.TestConsole.Tools
             typeof(IPublicPriceProvider),
             typeof(IAssetPairsProvider),
             typeof(IAssetPairVolumeProvider),
+            typeof(IWithdrawalPlacementProviderExtended),
+            typeof(IWithdrawalHistoryProvider),
+            typeof(IWithdrawalCancelationProvider),
+            typeof(IWithdrawalConfirmationProvider),
         };
 
         public ProviderInfo(INetworkProvider baseProvider)

@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class HitBtcProvider : IBalanceProvider, IPublicPricesProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -16,7 +16,6 @@ namespace Prime.Plugins.Services.HitBtc
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
         private const string ErroTextrNoLatestValueForPair = "No latest value for {0} pair";
-        private const string ErrorTextExchangeDoesNotSupportPair = "Exchange does not support {0} pair";
 
         private RestApiClientProvider<IHitBtcApi> ApiProvider { get; }
 
@@ -35,9 +34,7 @@ namespace Prime.Plugins.Services.HitBtc
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
@@ -49,6 +46,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             CheckNullableResult(r.last, String.Format(ErroTextrNoLatestValueForPair, context.Pair.TickerDash()));
 
+            // TODO: implement statistics.
             return new MarketPrice(context.Pair, r.last.Value);
         }
 
@@ -86,7 +84,6 @@ namespace Prime.Plugins.Services.HitBtc
             return prices;
         }
 
-
         private void CheckNullableResult<T>(T? value, string message) where T : struct
         {
             if (value.HasValue == false)
@@ -98,24 +95,9 @@ namespace Prime.Plugins.Services.HitBtc
             ApiProvider = new RestApiClientProvider<IHitBtcApi>(HitBtcApiUrl, this, k => new HitBtcAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<OhlcData> GetOhlcAsync(OhlcContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -153,11 +135,6 @@ namespace Prime.Plugins.Services.HitBtc
             throw new NotImplementedException();
         }
 
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -184,11 +161,6 @@ namespace Prime.Plugins.Services.HitBtc
             }
 
             return balances;
-        }
-
-        public Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

@@ -81,16 +81,6 @@ namespace Prime.Plugins.Services.BitStamp
             };
         }
 
-        public BuyResult Buy(BuyContext ctx)
-        {
-            return null;
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            return null;
-        }
-
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             return Task.Run(() => Pairs);

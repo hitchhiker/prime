@@ -14,7 +14,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider
+    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -72,16 +72,6 @@ namespace Prime.Plugins.Services.Coinbase
         private string GetCoinbaseTicker(Asset baseAsset, Asset asset)
         {
             return new AssetPair(baseAsset.ToRemoteCode(this), asset.ToRemoteCode(this)).TickerDash();
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            return null;
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            return null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -201,11 +191,6 @@ namespace Prime.Plugins.Services.Coinbase
             }
 
             return addresses;
-        }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
         }
 
         private Asset FromNetwork(string network)

@@ -14,7 +14,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Bittrex
 {
     public class BittrexProvider : 
-        IBalanceProvider, IOrderBookProvider, IPublicPricesProvider
+        IBalanceProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -53,9 +53,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
@@ -115,16 +113,6 @@ namespace Prime.Plugins.Services.Bittrex
         public bool DoesMultiplePairs => false;
 
         public bool PricesAsAssetQuotes => false;
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            return null;
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            return null;
-        }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
@@ -191,11 +179,6 @@ namespace Prime.Plugins.Services.Bittrex
             }
 
             return addresses;
-        }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)

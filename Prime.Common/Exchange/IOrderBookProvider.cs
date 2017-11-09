@@ -2,7 +2,7 @@
 
 namespace Prime.Common
 {
-    public interface IOrderBookProvider
+    public interface IOrderBookProvider : IDescribesAssets
     {
         Task<OrderBook> GetOrderBookAsync(OrderBookContext context);
     }

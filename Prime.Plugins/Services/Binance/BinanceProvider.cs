@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IAssetPairVolumeProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -41,9 +41,7 @@ namespace Prime.Plugins.Services.Binance
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
@@ -146,16 +144,6 @@ namespace Prime.Plugins.Services.Binance
             }
 
             return prices;
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -294,18 +282,6 @@ namespace Prime.Plugins.Services.Binance
 
             if (recordsNumber.HasValue && !validRecordsCount.Contains(recordsNumber.Value))
                 throw new ArgumentException("Specified number of order book records is not supported");
-        }
-
-        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
-        {
-            // No API endpoint.
-            throw new NotImplementedException();
-        }
-
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
-        {
-            // No API endpoint.
-            throw new NotImplementedException();
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)

@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMarket
 {
-    public class BitMarketProvider : IDescribesAssets, IAssetPairsProvider
+    public class BitMarketProvider : IAssetPairsProvider, IPublicPriceProvider
     {
         private const string BitMarketApiUrl = "https://www.bitmarket.net/";
 

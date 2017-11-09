@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinone
 {
-    public class CoinoneProvider : IPublicPricesProvider
+    public class CoinoneProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -122,7 +122,7 @@ namespace Prime.Plugins.Services.Coinone
             var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
-
+            // TODO: implement statistics.
             return new MarketPrice(context.Pair, r.last);
         }
 
@@ -156,16 +156,6 @@ namespace Prime.Plugins.Services.Coinone
             }
 
             return prices;
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

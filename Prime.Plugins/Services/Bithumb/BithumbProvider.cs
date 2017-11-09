@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
-    public class BithumbProvider : IPublicPricesProvider
+    public class BithumbProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
@@ -25,9 +25,7 @@ namespace Prime.Plugins.Services.Bithumb
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         // 20 requests available per second.
@@ -130,16 +128,6 @@ namespace Prime.Plugins.Services.Bithumb
             }
 
             return dict;
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

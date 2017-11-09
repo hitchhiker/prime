@@ -468,7 +468,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.GetWithdrawalHistory(WithdrawalHistoryContext);
+                var r = await provider.GetWithdrawalHistoryAsync(WithdrawalHistoryContext);
 
                 foreach (var historyEntry in r)
                 {
@@ -492,7 +492,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.PlaceWithdrawal(WithdrawalPlacementContext);
+                var r = await provider.PlaceWithdrawalAsync(WithdrawalPlacementContext);
 
                 // Assert.IsTrue(r);
             }
@@ -511,7 +511,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.PlaceWithdrawal(WithdrawalPlacementContextExtended);
+                var r = await provider.PlaceWithdrawalAsync(WithdrawalPlacementContextExtended);
 
                 Assert.IsTrue(r != null);
 
@@ -532,7 +532,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.CancelWithdrawal(WithdrawalCancelationContext);
+                var r = await provider.CancelWithdrawalAsync(WithdrawalCancelationContext);
 
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
@@ -556,7 +556,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.ConfirmWithdrawal(WithdrawalConfirmationContext);
+                var r = await provider.ConfirmWithdrawalAsync(WithdrawalConfirmationContext);
 
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");

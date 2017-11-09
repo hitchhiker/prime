@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.ItBit
 {
-    public class ItBitProvider : IDescribesAssets
+    public class ItBitProvider : IAssetPairsProvider, IPublicPriceProvider
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
@@ -35,16 +35,17 @@ namespace Prime.Plugins.Services.ItBit
         }
 
         private static readonly IAssetCodeConverter AssetCodeConverter = new ItBitCodeConverter();
+
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return AssetCodeConverter;
         }
+
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
+
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             return Task.Run(() => Pairs);
@@ -57,22 +58,13 @@ namespace Prime.Plugins.Services.ItBit
 
             var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
+            // TODO: implement statistics.
             return new MarketPrice(context.Pair, r.lastPrice);
         }
 
         private string GetItBitTicker(AssetPair pair)
         {
             return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}";
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

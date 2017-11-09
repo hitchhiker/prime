@@ -5,6 +5,6 @@ namespace Prime.Common
 {
     public interface IWithdrawalConfirmationProvider
     {
-        Task<WithdrawalConfirmationResult> ConfirmWithdrawal(WithdrawalConfirmationContext context);
+        Task<WithdrawalConfirmationResult> ConfirmWithdrawalAsync(WithdrawalConfirmationContext context);
     }
 }

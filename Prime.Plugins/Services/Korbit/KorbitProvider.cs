@@ -13,7 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
-    public class KorbitProvider : IOrderBookProvider, IBalanceProvider
+    public class KorbitProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
         private static readonly string _pairs = "btckrw,etckrw,ethkrw,xrpkrw";
@@ -48,9 +48,7 @@ namespace Prime.Plugins.Services.Korbit
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
@@ -75,22 +73,9 @@ namespace Prime.Plugins.Services.Korbit
             }
         }
 
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() => Pairs);
-            t.RunSynchronously();
-
-            return t;
+            return Task.Run(() => Pairs);
         }
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
@@ -146,31 +131,6 @@ namespace Prime.Plugins.Services.Korbit
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
-        {
-            throw new NotImplementedException();
         }
 
         private string GetKorbitTicker(AssetPair pair)

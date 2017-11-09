@@ -16,7 +16,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider :
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
@@ -152,17 +152,6 @@ namespace Prime.Plugins.Services.BitMex
             }
 
             return prices;
-        }
-
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -318,7 +307,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public bool IsFeeIncluded => false;
 
-        public async Task<WithdrawalPlacementResult> PlaceWithdrawal(WithdrawalPlacementContextExtended context)
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -340,7 +329,7 @@ namespace Prime.Plugins.Services.BitMex
             };
         }
 
-        public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context)
+        public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistoryAsync(WithdrawalHistoryContext context)
         {
             if (!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
                 throw new NoAssetPairException(context.Asset.ShortCode, this);
@@ -384,7 +373,7 @@ namespace Prime.Plugins.Services.BitMex
             }
         }
 
-        public async Task<WithdrawalCancelationResult> CancelWithdrawal(WithdrawalCancelationContext context)
+        public async Task<WithdrawalCancelationResult> CancelWithdrawalAsync(WithdrawalCancelationContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -393,7 +382,7 @@ namespace Prime.Plugins.Services.BitMex
                 { "token", context.WithdrawalRemoteId }
             };
 
-            var r = await api.CancelWithdrawal(body);
+            var r = await api.CancelWithdrawal(body).ConfigureAwait(false);
 
             return new WithdrawalCancelationResult()
             {
@@ -401,7 +390,7 @@ namespace Prime.Plugins.Services.BitMex
             };
         }
 
-        public async Task<WithdrawalConfirmationResult> ConfirmWithdrawal(WithdrawalConfirmationContext context)
+        public async Task<WithdrawalConfirmationResult> ConfirmWithdrawalAsync(WithdrawalConfirmationContext context)
         {
             var api = ApiProvider.GetApi(context);
 

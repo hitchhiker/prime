@@ -15,7 +15,7 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -75,7 +75,6 @@ namespace Prime.Plugins.Services.Kraken
             return r != null;
         }
 
-
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -86,18 +85,8 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
+            // TODO: implement statistics.
             return new MarketPrice(context.Pair, r.result.FirstOrDefault().Value.c[0]);
-        }
-
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -173,7 +162,7 @@ namespace Prime.Plugins.Services.Kraken
             return KrakenCodeConverterBase.I;
         }
 
-        public async Task<string> GetFundingMethod(NetworkProviderPrivateContext context, Asset asset)
+        public async Task<string> GetFundingMethodAsync(NetworkProviderPrivateContext context, Asset asset)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -200,7 +189,7 @@ namespace Prime.Plugins.Services.Kraken
             return null;
         }
 
-        private async Task<WalletAddresses> GetAddressesLocal(IKrakenApi api, string fundingMethod, Asset asset, bool generateNew = false)
+        private async Task<WalletAddresses> GetAddressesLocalAsync(IKrakenApi api, string fundingMethod, Asset asset, bool generateNew = false)
         {
             var body = CreateKrakenBody();
 
@@ -243,12 +232,12 @@ namespace Prime.Plugins.Services.Kraken
 
             foreach (var pair in assets)
             {
-                var fundingMethod = await GetFundingMethod(context, pair.Asset1).ConfigureAwait(false);
+                var fundingMethod = await GetFundingMethodAsync(context, pair.Asset1).ConfigureAwait(false);
 
                 if (fundingMethod == null)
                     throw new NullReferenceException("No funding method is found");
 
-                var localAddresses = await GetAddressesLocal(api, fundingMethod, pair.Asset1).ConfigureAwait(false);
+                var localAddresses = await GetAddressesLocalAsync(api, fundingMethod, pair.Asset1).ConfigureAwait(false);
 
                 addresses.AddRange(localAddresses);
             }
@@ -256,21 +245,16 @@ namespace Prime.Plugins.Services.Kraken
             return addresses;
         }
 
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var fundingMethod = await GetFundingMethod(context, context.Asset).ConfigureAwait(false);
+            var fundingMethod = await GetFundingMethodAsync(context, context.Asset).ConfigureAwait(false);
 
             if (fundingMethod == null)
                 throw new NullReferenceException("No funding method is found");
 
-            var addresses = await GetAddressesLocal(api, fundingMethod, context.Asset).ConfigureAwait(false);
+            var addresses = await GetAddressesLocalAsync(api, fundingMethod, context.Asset).ConfigureAwait(false);
 
             return addresses;
         }
@@ -359,12 +343,12 @@ namespace Prime.Plugins.Services.Kraken
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var orderBook = await GetOrderBookLocal(api, context.Pair, context.MaxRecordsCount).ConfigureAwait(false);
+            var orderBook = await GetOrderBookLocalAsync(api, context.Pair, context.MaxRecordsCount).ConfigureAwait(false);
 
             return orderBook;
         }
 
-        private async Task<OrderBook> GetOrderBookLocal(IKrakenApi api, AssetPair assetPair, int? maxCount)
+        private async Task<OrderBook> GetOrderBookLocalAsync(IKrakenApi api, AssetPair assetPair, int? maxCount)
         {
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));

@@ -6,6 +6,6 @@ namespace Prime.Common
 {
     public interface IWithdrawalHistoryProvider
     {
-        Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistory(WithdrawalHistoryContext context);
+        Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistoryAsync(WithdrawalHistoryContext context);
     }
 }

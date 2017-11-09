@@ -6,6 +6,6 @@ namespace Prime.Common
     {
         bool IsFeeIncluded { get; }
 
-        Task<WithdrawalPlacementResult> PlaceWithdrawal(TWithdrawalContext context);
+        Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(TWithdrawalContext context);
     }
 }

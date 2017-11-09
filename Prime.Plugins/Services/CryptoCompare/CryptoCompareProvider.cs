@@ -23,7 +23,7 @@ namespace plugins
 
             var pair = context.Pair;
             var api = GetApi<ICryptoCompareApi>(true);
-            var apir = await api.GetCoinSnapshotAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
+            var apir = await api.GetCoinSnapshotAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).ConfigureAwait(false);
 
             if (apir.IsError() || apir.Data == null)
                 return null;
@@ -57,7 +57,7 @@ namespace plugins
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
-            var r = await base.GetAssetPricesAsync(context);
+            var r = await base.GetAssetPricesAsync(context).ConfigureAwait(false);
             return r.MarketPrices.FirstOrDefault();
         }
 
@@ -85,7 +85,7 @@ namespace plugins
         private DateTime _cachedApnUtc;
         private readonly object _cachedApnLock = new object();
 
-        public async Task<AssetPairByNetwork> GetAssetPairsAllNetworksAsync()
+        public Task<AssetPairByNetwork> GetAssetPairsAllNetworksAsync()
         {
             var task = new Task<AssetPairByNetwork>(() =>
             {
@@ -115,7 +115,7 @@ namespace plugins
             });
             task.Start();
 
-            return await task;
+            return task;
         }
     }
 }
