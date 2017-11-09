@@ -21,7 +21,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             FilterSearchCommand = new RelayCommand(() =>
             {
-                CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
+                var itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
 
                 itemsViewOriginal.Filter = ((dataExplorerItemModel) =>
                 {
