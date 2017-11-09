@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Gdax
 {
-    public class GdaxProvider : IExchangeProvider
+    public class GdaxProvider : IDescribesAssets
     {
         private const string GdaxApiUrl = "https://api.gdax.com";
 
@@ -41,6 +41,13 @@ namespace Prime.Plugins.Services.Gdax
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

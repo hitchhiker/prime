@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Exchange\ExchangeCommand.cs" />
     <Compile Remove="Messages\RenewingSubscriptionsListener.cs" />
     <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
   </ItemGroup>

@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -30,8 +30,6 @@ namespace Prime.Plugins.Services.Poloniex
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-
-        
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
 
@@ -40,7 +38,14 @@ namespace Prime.Plugins.Services.Poloniex
             ApiProvider = new RestApiClientProvider<IPoloniexApi>(PoloniexApiUrl, this, k => new PoloniexAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnBalances);
@@ -56,23 +61,7 @@ namespace Prime.Plugins.Services.Poloniex
                 return false;
             }
         }
-
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var r = await api.GetTickerAsync().ConfigureAwait(false);
-
-            var assetPairsInfo = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair)).ToList();
-
-            if (assetPairsInfo.Count < 1)
-                throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
-
-            var selectedPair = assetPairsInfo[0];
-
-            return new MarketPrice(context.Pair, 1 / selectedPair.Value.last);
-        }
-
+        
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return GetPricesAsync(context);
@@ -96,8 +85,12 @@ namespace Prime.Plugins.Services.Poloniex
                 }
 
                 var rTicker = rTickers[0];
+                var v = rTicker.Value;
 
-                prices.MarketPrices.Add(new MarketPrice(pair, 1 / rTicker.Value.last));
+                prices.MarketPrices.Add(new MarketPrice(pair, 1 / v.last)
+                {
+                    PriceStatistics = new PriceStatistics(pair.Asset2, v.baseVolume, v.quoteVolume, v.lowestAsk, v.highestBid, v.low24hr, v.high24hr)
+                });
             }
 
             return prices;
@@ -158,12 +151,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             return addresses;
         }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -290,7 +278,7 @@ namespace Prime.Plugins.Services.Poloniex
             }
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerUnderslash();

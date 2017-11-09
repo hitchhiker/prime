@@ -54,8 +54,6 @@ namespace Prime.Common
         private ExchangeDatas _exchangeData;
         public ExchangeDatas ExchangeDatas => _exchangeData ?? (_exchangeData = new ExchangeDatas());
 
-        public ExchangeData Data(IExchangeProvider provider) => ExchangeDatas.GetOrCreate(this, provider);
-
         private readonly object _singletonLock = new object();
         private readonly List<object> _singletons = new List<object>();
 

@@ -15,7 +15,7 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -50,6 +50,13 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
         private JsonSerializerSettings CreateJsonSerializerSettings()
         {
             return new JsonSerializerSettings()
@@ -58,7 +65,7 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreateKrakenBody();
@@ -351,7 +358,7 @@ namespace Prime.Plugins.Services.Kraken
             return (price, volume, timeStamp);
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
             var orderBook = await GetOrderBookLocal(api, context.Pair, context.MaxRecordsCount);

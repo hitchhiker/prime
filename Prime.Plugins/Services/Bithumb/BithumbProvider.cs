@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
-    public class BithumbProvider : IExchangeProvider, IPublicPricesProvider
+    public class BithumbProvider : IPublicPricesProvider
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
@@ -22,6 +22,13 @@ namespace Prime.Plugins.Services.Bithumb
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
 
         // 20 requests available per second.
         // See https://www.bithumb.com/u1/US127.

@@ -9,7 +9,7 @@ namespace Prime.Common
     {
         public void AfterCreation(IDataContext context, IUniqueIdentifier<ObjectId> provider)
         {
-            KeepFresh(context, provider as IExchangeProvider, true);
+            KeepFresh(context, provider as IAssetPairsProvider, true);
         }
 
         public static object Lock = new Object();
@@ -20,7 +20,7 @@ namespace Prime.Common
         [Bson]
         public UniqueList<Asset> Assets { get; set; } = new UniqueList<Asset>();
 
-        public void KeepFresh(IDataContext context, IExchangeProvider exchange, bool ignoreFreshState = false)
+        public void KeepFresh(IDataContext context, IAssetPairsProvider exchange, bool ignoreFreshState = false)
         {
             if (IsFresh(ignoreFreshState))
                 return;

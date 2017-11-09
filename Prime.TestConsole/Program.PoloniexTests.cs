@@ -38,11 +38,11 @@ namespace Prime.TestConsole
             public void ApiTest()
             {
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
-                var apiTestCtx = new ApiTestContext(UserContext.Current.GetApiKey(provider));
+                var apiTestCtx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
 
                 try
                 {
-                    var ok = AsyncContext.Run(() => provider.TestApiAsync(apiTestCtx));
+                    var ok = AsyncContext.Run(() => provider.TestPrivateApiAsync(apiTestCtx));
 
                     Console.WriteLine($"Api test OK: {ok}");
                 }
@@ -66,26 +66,6 @@ namespace Prime.TestConsole
                     {
                         Console.WriteLine($"{pair}");
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }
-
-            public void LatestPrices()
-            {
-                var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
-                var pair = new AssetPair("BTC", "ETH");
-
-                var ctx = new PublicPriceContext(pair);
-
-                try
-                {
-                    var price = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
-
-                    Console.WriteLine($"Latest price for {pair} is {price.Price}");
                 }
                 catch (Exception e)
                 {

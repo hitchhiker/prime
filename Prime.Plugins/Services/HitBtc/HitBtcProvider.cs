@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
+    public class HitBtcProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -32,6 +32,13 @@ namespace Prime.Plugins.Services.HitBtc
         public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
@@ -151,7 +158,7 @@ namespace Prime.Plugins.Services.HitBtc
             throw new NotImplementedException();
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetBalances();
@@ -179,7 +186,7 @@ namespace Prime.Plugins.Services.HitBtc
             return balances;
         }
 
-        public Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             throw new NotImplementedException();
         }

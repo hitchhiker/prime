@@ -14,7 +14,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseProvider : IExchangeProvider, IBalanceProvider, IOrderBookProvider, IOhlcProvider
+    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -47,6 +47,13 @@ namespace Prime.Plugins.Services.Coinbase
         {
             ApiProvider = new RestApiClientProvider<ICoinbaseApi>(CoinbaseApiUrl, this, k => new CoinbaseAuthenticator(k).GetRequestModifier);
             GdaxApiProvider = new RestApiClientProvider<IGdaxApi>(GdaxApiUrl);
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -92,7 +99,7 @@ namespace Prime.Plugins.Services.Coinbase
             return pairs;
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountsAsync();
@@ -216,7 +223,7 @@ namespace Prime.Plugins.Services.Coinbase
             }
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();

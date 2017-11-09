@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.ItBit
 {
-    public class ItBitProvider : IExchangeProvider
+    public class ItBitProvider : IDescribesAssets
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
@@ -39,7 +39,12 @@ namespace Prime.Plugins.Services.ItBit
         {
             return AssetCodeConverter;
         }
-
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             return Task.Run(() => Pairs);

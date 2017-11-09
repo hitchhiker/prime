@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinone
 {
-    public class CoinoneProvider : IExchangeProvider, IPublicPricesProvider
+    public class CoinoneProvider : IPublicPricesProvider
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -33,7 +33,12 @@ namespace Prime.Plugins.Services.Coinone
         {
             ApiProvider = new RestApiClientProvider<ICoinoneApi>(CoinoneApiUrl, this, k => null);
         }
-
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;

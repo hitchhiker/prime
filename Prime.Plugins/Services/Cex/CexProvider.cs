@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cex
 {
-    public class CexProvider : IExchangeProvider, IPublicPricesProvider
+    public class CexProvider : IPublicPricesProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
 
@@ -30,6 +30,13 @@ namespace Prime.Plugins.Services.Cex
         public CexProvider()
         {
             ApiProvider = new RestApiClientProvider<ICexApi>(CexApiUrl, this, k => null);
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

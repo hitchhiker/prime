@@ -19,9 +19,9 @@ namespace Prime.Common
             return null;
         }
 
-        public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiTestContext context)
+        public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiPrivateTestContext context)
         {
-            return ApiHelpers.WrapException(() => provider.TestApiAsync(context), nameof(TestApi), provider, context);
+            return ApiHelpers.WrapException(() => provider.TestPrivateApiAsync(context), nameof(TestApi), provider, context);
         }
 
         public static Task<ApiResponse<AssetPairs>> GetAssetPairsAsync(IAssetPairsProvider provider, NetworkProviderContext context = null)

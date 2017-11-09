@@ -14,7 +14,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Bittrex
 {
     public class BittrexProvider : 
-        IExchangeProvider, IBalanceProvider, IOrderBookProvider, IPublicPricesProvider
+        IBalanceProvider, IOrderBookProvider, IPublicPricesProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -51,7 +51,14 @@ namespace Prime.Plugins.Services.Bittrex
             ApiProvider = new RestApiClientProvider<IBittrexApi>(BittrexApiUrl, this, k => new BittrexAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAllBalances();
@@ -224,7 +231,7 @@ namespace Prime.Plugins.Services.Bittrex
             }
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
 

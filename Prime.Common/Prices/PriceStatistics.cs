@@ -2,7 +2,7 @@
 {
     public class PriceStatistics
     {
-        public PriceStatistics(PublicPriceContext context, decimal? volume24, decimal? volume24Quote, decimal? lowestAsk, decimal? highestBid, decimal? price24Low, decimal? price24High)
+        public PriceStatistics(Asset quoteAsset, decimal? volume24, decimal? volume24Quote, decimal? lowestAsk, decimal? highestBid, decimal? price24Low, decimal? price24High)
         {
             HasVolume24 = volume24 != null;
             HasVolume24Quote = volume24Quote != null;
@@ -10,10 +10,10 @@
             Volume24 = volume24 ?? 0;
             Volume24Quote = volume24Quote ?? 0;
 
-            HighestBid = highestBid == null ? Money.Zero : new Money(highestBid.Value, context.QuoteAsset);
-            LowestAsk = lowestAsk == null ? Money.Zero : new Money(lowestAsk.Value, context.QuoteAsset);
-            Price24Low = price24Low == null ? Money.Zero : new Money(price24Low.Value, context.QuoteAsset);
-            Price24High = price24High == null ? Money.Zero : new Money(price24High.Value, context.QuoteAsset);
+            HighestBid = highestBid == null ? Money.Zero : new Money(highestBid.Value, quoteAsset);
+            LowestAsk = lowestAsk == null ? Money.Zero : new Money(lowestAsk.Value, quoteAsset);
+            Price24Low = price24Low == null ? Money.Zero : new Money(price24Low.Value, quoteAsset);
+            Price24High = price24High == null ? Money.Zero : new Money(price24High.Value, quoteAsset);
         }
 
         public decimal Volume24Quote { get; private set; }

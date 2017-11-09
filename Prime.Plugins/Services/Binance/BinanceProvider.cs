@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IExchangeProvider, IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -37,6 +37,13 @@ namespace Prime.Plugins.Services.Binance
         public BinanceProvider()
         {
             ApiProvider = new RestApiClientProvider<IBinanceApi>(BinanceApiUrl, this, k => new BinanceAuthenticator(k).GetRequestModifier);
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
@@ -222,7 +229,7 @@ namespace Prime.Plugins.Services.Binance
             return null;
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             CheckOrderRecordsInputNumber(context.MaxRecordsCount);
 
@@ -301,7 +308,7 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountInformation();

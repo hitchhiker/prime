@@ -12,13 +12,13 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IBalanceProvider, IDepositProvider, IOrderBookProvider, IPublicPriceStatistics
+    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IPublicPriceStatistics, IAssetPairsProvider, IAssetPairVolumeProvider, IPublicPriceProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
 
         private static readonly ObjectId IdHash = "prime:bitstamp".GetObjectIdHashCode();
-        private static readonly string _pairs = "btcusd,btceur,eurusd,xrpusd,xrpeur,xrpbtc,ltcusd,ltceur,ltcbtc,ethusd,etheur,ethbtc";
+        private const string PairsCsv = "btcusd,btceur,eurusd,xrpusd,xrpeur,xrpbtc,ltcusd,ltceur,ltcbtc,ethusd,etheur,ethbtc";
         private RestApiClientProvider<IBitStampApi> ApiProvider { get; }
 
         // Do not make more than 600 requests per 10 minutes or we will ban your IP address.
@@ -33,10 +33,12 @@ namespace Prime.Plugins.Services.BitStamp
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
 
-        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
-        public AssetPairs Pairs => new AssetPairs(3, _pairs, this);
+
+        private AssetPairs _pairs;
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(3, PairsCsv, this));
+
         public ApiConfiguration GetApiConfiguration => new ApiConfiguration()
         {
             HasSecret = true,
@@ -49,7 +51,14 @@ namespace Prime.Plugins.Services.BitStamp
             ApiProvider = new RestApiClientProvider<IBitStampApi>(BitStampApiUrl, this, (k) => new BitStampAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountBalances().ConfigureAwait(false);
@@ -68,7 +77,7 @@ namespace Prime.Plugins.Services.BitStamp
 
             return new MarketPrice(context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(context, r.volume, null, r.ask, r.bid, r.low, r.high)
+                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, r.low, r.high)
             };
         }
 
@@ -84,9 +93,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() => Pairs);
-            t.Start();
-            return t;
+            return Task.Run(() => Pairs);
         }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -147,18 +154,13 @@ namespace Prime.Plugins.Services.BitStamp
 
             return addresses;
         }
-
-        public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
             var currencyPath = GetCurrencyPath(context.Asset);
 
-            var r = await api.GetDepositAddress(currencyPath);
+            var r = await api.GetDepositAddress(currencyPath).ConfigureAwait(false);
 
             var processedAddress = ProcessAddressResponce(context.Asset, r);
 
@@ -195,7 +197,7 @@ namespace Prime.Plugins.Services.BitStamp
             }
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetBitStampTicker(context.Pair);

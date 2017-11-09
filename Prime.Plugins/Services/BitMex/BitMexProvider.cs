@@ -16,7 +16,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider :
-        IExchangeProvider, IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
@@ -49,6 +49,13 @@ namespace Prime.Plugins.Services.BitMex
         public BitMexProvider()
         {
             ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
@@ -177,7 +184,7 @@ namespace Prime.Plugins.Services.BitMex
             } */
         }
 
-        public async Task<bool> TestApiAsync(ApiTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetUserInfoAsync().ConfigureAwait(false);
@@ -261,7 +268,7 @@ namespace Prime.Plugins.Services.BitMex
             return results;
         }
 
-        public async Task<OrderBook> GetOrderBook(OrderBookContext context)
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
 

@@ -73,7 +73,7 @@ namespace Prime.Ui.Wpf.ViewModel
             StatusText = "Checking the keys now...";
 
             var apikey = new ApiKey(Service.Network, _apiName, _apiKey, _apiSecret, _apiExtra1);
-            var t = ApiCoordinator.TestApiAsync(Service, new ApiTestContext(apikey));
+            var t = ApiCoordinator.TestApiAsync(Service, new ApiPrivateTestContext(apikey));
             t.ContinueWith(task => ApiKeyCheckResult(task, apikey));
         }
 

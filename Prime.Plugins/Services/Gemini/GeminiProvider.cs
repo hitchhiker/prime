@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Gemini
 {
-    public class GeminiProvider : IExchangeProvider
+    public class GeminiProvider : IDescribesAssets
     {
         private const string GemeniApiVerstion = "v1";
         private const string GeminiApiUrl = "https://api.gemini.com/" + GemeniApiVerstion;
@@ -35,7 +35,12 @@ namespace Prime.Plugins.Services.Gemini
         {
             ApiProvider = new RestApiClientProvider<IGeminiApi>(GeminiApiUrl, this, k => null);
         }
-
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,20 +11,16 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMarket
 {
-    public class BitMarketProvider : IExchangeProvider
+    public class BitMarketProvider : IDescribesAssets, IAssetPairsProvider
     {
         private const string BitMarketApiUrl = "https://www.bitmarket.net/";
 
         private RestApiClientProvider<IBitMarketApi> ApiProvider { get; }
 
-        private static readonly AssetPairs Pairs = new AssetPairs(new AssetPair[]
-        {
-            "BTC_PLN".ToAssetPairRaw(),
-            "BTC_EUR".ToAssetPairRaw(),
-            "LTC_PLN".ToAssetPairRaw(),
-            "LTC_BTC".ToAssetPairRaw(),
-            new AssetPair("LiteMineX", "BTC") 
-        });
+        private const string PairsCsv = "BTC_PLN,BTC_EUR,LTC_PLN,LTC_BTC,LiteMineX_BTC";
+
+        private AssetPairs _pairs;
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(PairsCsv.ToCsv().Select(x=> x.ToAssetPairRaw())));
 
         private static readonly ObjectId IdHash = "prime:bitmarket".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
@@ -36,7 +33,7 @@ namespace Prime.Plugins.Services.BitMarket
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => false;
-        private static IAssetCodeConverter AssetCodeConverter = new BitMarketCodeConverter();
+        private static readonly IAssetCodeConverter AssetCodeConverter = new BitMarketCodeConverter();
 
         public BitMarketProvider()
         {
@@ -46,6 +43,11 @@ namespace Prime.Plugins.Services.BitMarket
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return AssetCodeConverter;
+        }
+
+        public Task<bool> TestPublicApiAsync()
+        {
+            return Task.Run(() => true);
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -62,14 +64,12 @@ namespace Prime.Plugins.Services.BitMarket
             try
             {
                 var r = await api.GetTicker(pairCode).ConfigureAwait(false);
-
                 return new MarketPrice(context.Pair, r.last);
             }
             catch (ApiException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound)
-                    throw new ApiResponseException(
-                        $"Specified currency pair {context.Pair} is not supported by provider", this);
+                    throw new ApiResponseException($"Specified currency pair {context.Pair} is not supported by provider", this);
                 throw;
             }
         }
@@ -80,16 +80,6 @@ namespace Prime.Plugins.Services.BitMarket
             var asset2 = pair.Asset2.ToRemoteCode(this);
 
             return $"{asset1}{asset2}";
-        }
-
-        public BuyResult Buy(BuyContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SellResult Sell(SellContext ctx)
-        {
-            throw new NotImplementedException();
         }
     }
 }

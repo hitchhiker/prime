@@ -26,6 +26,17 @@ namespace Prime.Plugins.Services.Fiat
         {
             throw new NotImplementedException();
         }
+        public Task<bool> TestPublicApiAsync()
+        {
+            var t = new Task<bool>(() => true);
+            t.Start();
+            return t;
+        }
+
+        public IAssetCodeConverter GetAssetCodeConverter()
+        {
+            return null;
+        }
 
         public Network Network => _network;
         public bool Disabled => false;
@@ -41,9 +52,9 @@ namespace Prime.Plugins.Services.Fiat
 
         public static Asset Euro = "EUR".ToAssetRaw();
 
-        public async Task<Dictionary<AssetPair, decimal>> GetRatesAsync()
+        public Task<Dictionary<AssetPair, decimal>> GetRatesAsync()
         {
-            return await new Task<Dictionary<AssetPair, decimal>>(() =>
+            var t = new Task<Dictionary<AssetPair, decimal>>(() =>
             {
                 lock (_lock)
                 {
@@ -52,6 +63,8 @@ namespace Prime.Plugins.Services.Fiat
                     return _lastRates = GetXmlRates();
                 }
             });
+            t.Start();
+            return t;
         }
 
         private Dictionary<AssetPair, decimal> GetXmlRates()
