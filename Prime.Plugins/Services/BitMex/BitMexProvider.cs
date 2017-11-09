@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this));
+            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
 
             var rPrice = r.FirstOrDefault();
 
@@ -123,7 +123,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPricesAsync();
+            var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
@@ -180,7 +180,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetUserInfoAsync();
+            var r = await api.GetUserInfoAsync().ConfigureAwait(false);
             return r != null;
         }
 
@@ -189,7 +189,7 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
 
             var remoteAssetCode = context.Asset.ToRemoteCode(this);
-            var depositAddress = await api.GetUserDepositAddressAsync(remoteAssetCode);
+            var depositAddress = await api.GetUserDepositAddressAsync(remoteAssetCode).ConfigureAwait(false);
 
             depositAddress = depositAddress.Trim('\"');
 
@@ -210,7 +210,7 @@ namespace Prime.Plugins.Services.BitMex
             {
                 var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);
 
-                var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode);
+                var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode).ConfigureAwait(false);
 
                 depositAddress = depositAddress.Trim('\"');
 
@@ -243,7 +243,7 @@ namespace Prime.Plugins.Services.BitMex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetUserWalletInfoAsync("XBt");
+            var r = await api.GetUserWalletInfoAsync("XBt").ConfigureAwait(false);
 
             var results = new BalanceResults(this);
 
@@ -268,8 +268,8 @@ namespace Prime.Plugins.Services.BitMex
             var pairCode = GetBitMexTicker(context.Pair);
 
             var r = context.MaxRecordsCount.HasValue
-                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value)
-                : await api.GetOrderBookAsync(pairCode, 0);
+                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false);
 
             var buyAction = "buy";
             var sellAction = "sell";
@@ -338,7 +338,7 @@ namespace Prime.Plugins.Services.BitMex
             body.Add("address", context.Address);
             body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
 
-            var r = await api.RequestWithdrawal(body);
+            var r = await api.RequestWithdrawal(body).ConfigureAwait(false);
 
             return new WithdrawalPlacementResult()
             {
@@ -353,7 +353,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var api = ApiProvider.GetApi(context);
             var remoteCode = context.Asset.ToRemoteCode(this);
-            var r = await api.GetWalletHistory(remoteCode);
+            var r = await api.GetWalletHistory(remoteCode).ConfigureAwait(false);
 
             var history = new List<WithdrawalHistoryEntry>();
 
@@ -416,7 +416,7 @@ namespace Prime.Plugins.Services.BitMex
                 { "token", context.WithdrawalRemoteId }
             };
 
-            var r = await api.ConfirmWithdrawal(body);
+            var r = await api.ConfirmWithdrawal(body).ConfigureAwait(false);
 
             return new WithdrawalConfirmationResult()
             {
@@ -427,7 +427,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this));
+            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
 
             var rPrice = r.FirstOrDefault();
 

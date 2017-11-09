@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
 
-            var r = await api.GetTicker(productCode);
+            var r = await api.GetTicker(productCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.ltp);
         }
@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var pairCode = GetBitFlyerTicker(context.Pair);
 
-            var r = await api.GetBoard(pairCode);
+            var r = await api.GetBoard(pairCode).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2)
@@ -143,7 +143,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var assetPairs = new AssetPairs();
 
-            var r = await api.GetMarkets();
+            var r = await api.GetMarkets().ConfigureAwait(false);
 
             foreach (var rMarket in r)
             {
@@ -167,7 +167,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
 
-            var r = await api.GetTicker(productCode);
+            var r = await api.GetTicker(productCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {
