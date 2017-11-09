@@ -74,7 +74,7 @@ namespace Prime.Plugins.Services.BitMex
             var startDate = context.Range.UtcFrom;
             var endDate = context.Range.UtcTo;
 
-            var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate);
+            var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
 
             var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);

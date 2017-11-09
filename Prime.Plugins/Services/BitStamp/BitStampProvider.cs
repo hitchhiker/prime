@@ -12,7 +12,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IExchangeProvider, IBalanceProvider, IOrderBookProvider, IPublicPriceStatistics
+    public class BitStampProvider : IExchangeProvider, IBalanceProvider, IDepositProvider, IOrderBookProvider, IPublicPriceStatistics
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<bool> TestApiAsync(ApiTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountBalances();
+            var r = await api.GetAccountBalances().ConfigureAwait(false);
 
             return r != null;
         }
@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.BitStamp
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var t = new Task<AssetPairs>(() => Pairs);
-            t.RunSynchronously();
+            t.Start();
             return t;
         }
 
@@ -134,16 +134,16 @@ namespace Prime.Plugins.Services.BitStamp
         {
             var addresses = new WalletAddresses();
             var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.UserContext, context.L);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
 
             wac.Asset = "BTC".ToAsset(this);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
 
             wac.Asset = "XRP".ToAsset(this);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
 
             wac.Asset = "LTC".ToAsset(this);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac));
+            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
 
             return addresses;
         }
@@ -200,7 +200,7 @@ namespace Prime.Plugins.Services.BitStamp
             var api = ApiProvider.GetApi(context);
             var pairCode = GetBitStampTicker(context.Pair);
 
-            var r = await api.GetOrderBook(pairCode);
+            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook();
 
             var date = r.timestamp.ToUtcDateTime();
@@ -276,7 +276,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTicker(GetBitStampTicker(context.Pair));
+            var r = await api.GetTicker(GetBitStampTicker(context.Pair)).ConfigureAwait(false);
 
             return new VolumeResult()
             {
