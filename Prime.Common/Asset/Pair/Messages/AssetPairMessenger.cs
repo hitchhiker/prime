@@ -15,7 +15,7 @@ namespace Prime.Common
 
         private async void AssetPairNetworkRequestMessage(AssetPairNetworkRequestMessage m)
         {
-            var pairs = await AssetPairProvider.I.GetPairsAsync(m.Network);
+            var pairs = await AssetPairProvider.I.GetPairsAsync(m.Network).ConfigureAwait(false);
             if (pairs == null)
                 return;
 
@@ -24,7 +24,7 @@ namespace Prime.Common
 
         private async void AssetPairAllRequestMessage(AssetPairAllRequestMessage m)
         {
-            var pairs = await AssetPairProvider.I.GetPairsAsync();
+            var pairs = await AssetPairProvider.I.GetPairsAsync().ConfigureAwait(false);
             if (pairs == null)
                 return;
 

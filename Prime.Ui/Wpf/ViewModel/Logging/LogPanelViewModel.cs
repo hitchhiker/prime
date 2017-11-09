@@ -10,13 +10,10 @@ namespace Prime.Ui.Wpf.ViewModel
 {
     public class LogPanelViewModel : ToolPaneViewModel
     {
-        private readonly Dispatcher _dispatcher;
-
         public LogPanelViewModel()
         {
             Key = null;
-            _dispatcher = Application.Current.Dispatcher;
-            M.Register<NewLogMessage>(this, Key, AddEntry);
+            M.RegisterAsync<NewLogMessage>(this, Key, AddEntry);
             base.Title = "Event log";
         }
 
@@ -25,7 +22,7 @@ namespace Prime.Ui.Wpf.ViewModel
             LogEntries.Clear();
             Count = LogEntries.Count;
         }
-
+        
         public BindingList<LogEntry> LogEntries { get; private set; } = new BindingList<LogEntry>();
 
         private int _count;
@@ -39,7 +36,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         private void AddEntry(NewLogMessage message)
         {
-            _dispatcher.Invoke(() =>
+            UiDispatcher.Invoke(() =>
             {
                 lock (_lock)
                 {
@@ -60,7 +57,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            M.Unregister<NewLogMessage>(this, AddEntry);
+            M.UnregisterAsync(this);
             base.Dispose();
         }
     }
