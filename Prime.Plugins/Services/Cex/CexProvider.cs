@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers();
+            var r = await api.GetTickers().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.Cex
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCexTicher(context.Pair);
 
-            var r = await api.GetLastPrice(pairCode);
+            var r = await api.GetLastPrice(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.lprice);
         }
@@ -74,15 +74,15 @@ namespace Prime.Plugins.Services.Cex
             return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLastPrices();
+            var r = await api.GetLastPrices().ConfigureAwait(false);
             CheckResponseError(r);
 
             var prices = new MarketPricesResult();
@@ -124,7 +124,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers();
+            var r = await api.GetTickers().ConfigureAwait(false);
 
             CheckResponseError(r);
 

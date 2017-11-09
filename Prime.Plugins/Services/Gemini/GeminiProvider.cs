@@ -50,7 +50,7 @@ namespace Prime.Plugins.Services.Gemini
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbols();
+            var r = await api.GetSymbols().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
             foreach (var rSymbol in r)
@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Gemini
             var api = ApiProvider.GetApi(context);
 
             var pairCode = GetGeminiPair(context.Pair);
-            var r = await api.GetTicker(pairCode);
+            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(context.Pair, r.last);
         }

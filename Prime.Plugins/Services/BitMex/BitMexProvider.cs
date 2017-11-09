@@ -122,9 +122,9 @@ namespace Prime.Plugins.Services.BitMex
             return new MarketPrice(context.Pair, rPrice.lastPrice.Value);
         }
 
-        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return await GetPricesAsync(context);
+            return GetPricesAsync(context);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
@@ -167,21 +167,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var t = new Task<AssetPairs>(() => Pairs);
-            t.RunSynchronously();
-
-            return t;
-
-            // This code fetches all pairs including futures which are not supported at this moment.
-
-            /* var api = GetApi<IBitMexApi>(context);
-            var r = await api.GetInstrumentsActive();
-            var aps = new AssetPairs();
-            foreach (var i in r)
-            {
-                var ap = new AssetPair(i.underlying.ToAsset(this), i.quoteCurrency.ToAsset(this));
-                aps.Add(ap);
-            } */
+            return Task.Run(() => Pairs);
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
@@ -236,6 +222,7 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
+        [Obsolete] // BUG: review.
         private string AdjustAssetCode(string input)
         {
             // TODO: should be re-factored.
@@ -301,7 +288,7 @@ namespace Prime.Plugins.Services.BitMex
                     Data = new BidAskData()
                     {
                         Price = new Money(buy.price, context.Pair.Asset2),
-                        Time = DateTime.Now, // Since it returnes current state of OrderBook, date time is set to Now.
+                        Time = DateTime.Now, // Since it returns current state of OrderBook, date time is set to Now.
                         Volume = buy.size
                     }
                 });
