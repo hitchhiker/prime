@@ -13,18 +13,24 @@ namespace Prime.Ui.Wpf.ViewModel
     {
         public DataExplorerViewModel()
         {
+            _debouncer = new DebouncerDispatched(UiDispatcher);
             ListDataExplorerItems = new ObservableCollection<DataExplorerItemModel>();
             M.RegisterAsync<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
             M.SendAsync(new AssetPairAllRequestMessage());
 
             _collectionView = (CollectionView)CollectionViewSource.GetDefaultView(ListDataExplorerItems);
-
             _collectionView.Filter = GetFilter;
 
-            FilterSearchCommand = new RelayCommand(FilterSearch);
+            FilterSearchCommand = new RelayCommand(AddRequestDebounced);
         }
 
+        private readonly DebouncerDispatched _debouncer;
         private readonly CollectionView _collectionView;
+
+        private void AddRequestDebounced()
+        {
+            _debouncer.Debounce(500, o => FilterSearchDebounced());
+        }
 
         private bool GetFilter(object model)
         {
@@ -37,7 +43,7 @@ namespace Prime.Ui.Wpf.ViewModel
             return m.Title.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private void FilterSearch()
+        private void FilterSearchDebounced()
         {
             _collectionView.Refresh();
         }

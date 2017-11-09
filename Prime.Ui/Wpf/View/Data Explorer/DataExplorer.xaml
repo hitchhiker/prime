@@ -9,10 +9,12 @@
              d:DataContext="{d:DesignInstance viewModel:DataExplorerViewModel}"
              mc:Ignorable="d">
     <DockPanel>
-        <TextBox DockPanel.Dock="Top" Margin="0,10,0,10" Width="200" HorizontalAlignment="Left" Text="{Binding Path=FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Command="{Binding Path=FilterSearchCommand}" Key="Enter" />
-            </TextBox.InputBindings>
+        <TextBox DockPanel.Dock="Top" Margin="0,10,0,10" Width="200" HorizontalAlignment="Left" Text="{Binding Path=FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=350}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="KeyUp">
+                    <i:InvokeCommandAction Command="{Binding Path=FilterSearchCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </TextBox>
         <ListBox DockPanel.Dock="Bottom" Name="lbItems" ItemsSource="{Binding Path=ListDataExplorerItems}" HorizontalAlignment="Stretch">
             <ListBox.ItemTemplate>
