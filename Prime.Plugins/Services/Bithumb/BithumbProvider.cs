@@ -42,7 +42,7 @@ namespace Prime.Plugins.Services.Bithumb
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers();
+            var r = await api.GetTickers().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
             var krwAsset = Asset.Krw;
@@ -61,7 +61,7 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var currency = context.Pair.Asset1.ToRemoteCode(this);
 
-            var r = await api.GetTicker(currency);
+            var r = await api.GetTicker(currency).ConfigureAwait(false);
 
             var krwAsset = Asset.Krw;
 
@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Bithumb
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetTickers();
+            var rRaw = await api.GetTickers().ConfigureAwait(false);
             var r = ParseTickerResponse(rRaw);
 
             var krwAsset = Asset.Krw;

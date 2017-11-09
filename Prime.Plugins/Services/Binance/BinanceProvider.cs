@@ -28,7 +28,6 @@ namespace Prime.Plugins.Services.Binance
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
-
         
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
@@ -50,7 +49,7 @@ namespace Prime.Plugins.Services.Binance
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
             var endDate = (long)(context.Range.UtcTo.ToUnixTimeStamp() * 1000);
 
-            var r = await api.GetCandlestickBars(pairCode, interval, startDate, endDate);
+            var r = await api.GetCandlestickBars(pairCode, interval, startDate, endDate).ConfigureAwait(false);
 
             var ohlc = new OhlcData(context.Market);
 
@@ -100,7 +99,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTicker();
+            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
 
             var lowerPairTicker = context.Pair.TickerSimple().ToLower();
 
@@ -120,7 +119,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTicker();
+            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
@@ -156,7 +155,7 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbolPriceTicker();
+            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
 
             var assetPairs = new AssetPairs();
 
@@ -231,8 +230,8 @@ namespace Prime.Plugins.Services.Binance
             var pairCode = context.Pair.TickerSimple();
 
             var r = context.MaxRecordsCount.HasValue
-                ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2)
-                : await api.GetOrderBook(pairCode);
+                ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
+                : await api.GetOrderBook(pairCode).ConfigureAwait(false);
 
             var orderBook = new OrderBook();
 
