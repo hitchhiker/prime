@@ -35,16 +35,6 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
-        {
-            PublicPriceContext = new PublicPriceContext(new AssetPair("ETH", "BTC"));
-            await base.TestGetPriceAsync();
-
-            PublicPriceContext = new PublicPriceContext(new AssetPair("STRAT", "ETH"));
-            await base.TestGetPriceAsync();
-        }
-
-        [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
             PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
