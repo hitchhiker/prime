@@ -92,7 +92,7 @@ namespace Prime.Ui.Wpf.ViewModel
 
             var ctx = new OhlcResolutionContext()
             {
-                AssetPairProviders = m.Networks,
+                AssetPairProviders = m.DiscoverFirst,
                 Pair = _pair,
                 RequestFullDaily = true,
                 StatusEntry = (s) => UiDispatcher.Invoke(() => DataStatus = s)

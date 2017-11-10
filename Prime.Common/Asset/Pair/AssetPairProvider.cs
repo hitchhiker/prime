@@ -22,14 +22,14 @@ namespace Prime.Common
 
             var tasks = q.Select(x => x.Network).Distinct().Select(async n =>
             {
-                var r = await GetPairsAsync(n);
+                var r = await GetPairsAsync(n).ConfigureAwait(false);
                 if (!r.Contains(pair))
                     return;
 
                 networks.Add(n);
             });
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
 
             return networks.ToUniqueList();
         }
@@ -40,7 +40,7 @@ namespace Prime.Common
             var q = onlyDirect ? Networks.I.AssetPairsProviders.Where(x => x.IsDirect) : Networks.I.AssetPairsProviders;
             var tasks = q.Select(async prov =>
             {
-                var r = await GetPairsAsync(prov.Network);
+                var r = await GetPairsAsync(prov.Network).ConfigureAwait(false);
                 if (r == null)
                     return;
 
@@ -48,7 +48,7 @@ namespace Prime.Common
                     pairs.Add(p);
             });
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
 
             return pairs.ToUniqueList();
         }
@@ -63,7 +63,7 @@ namespace Prime.Common
                 return null;
             }
 
-            var r = await ApiCoordinator.GetAssetPairsAsync(prov);
+            var r = await ApiCoordinator.GetAssetPairsAsync(prov).ConfigureAwait(false);
             return r.IsNull ? null : r.Response;
         }
     }

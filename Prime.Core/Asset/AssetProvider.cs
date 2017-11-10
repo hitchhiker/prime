@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
+using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Common
+namespace Prime.Core
 {
     internal class AssetProvider
     {
@@ -33,6 +33,12 @@ namespace Prime.Common
 
             task.Start();
             return await task.ConfigureAwait(false);
+        }
+
+        public async Task<UniqueList<Asset>> GetAllAsync(bool onlyDirect = false)
+        {
+            var r = await AssetPairProvider.I.GetPairsAsync(onlyDirect).ConfigureAwait(false);
+            return r.Select(x => x.Asset1).Union(r.Select(x => x.Asset2)).ToUniqueList();
         }
     }
 }
