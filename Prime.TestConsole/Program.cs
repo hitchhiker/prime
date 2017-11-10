@@ -16,7 +16,7 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            if (Environment.UserName.Equals("yasko"))
+            if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
                 // Run Alyasko code :)
                 new ProviderTools().GenerateProvidersReport();
