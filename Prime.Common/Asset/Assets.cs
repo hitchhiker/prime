@@ -9,12 +9,6 @@ namespace Prime.Common
 {
     public class Assets
     {
-        private Assets()
-        {
-            None = Asset.InstanceRaw("###");
-            _cache.Add(None.ShortCode, None);
-        }
-
         public static Assets I => Lazy.Value;
         private static readonly Lazy<Assets> Lazy = new Lazy<Assets>(()=>new Assets());
 
@@ -66,7 +60,8 @@ namespace Prime.Common
             return _cache.Values.ToUniqueList();
         }
 
-        public Asset None;
+        private Asset _none;
+        public Asset None => _none ?? (_none = GetRaw("###"));
 
         private Asset _btc;
         public Asset Btc => _btc ?? (_btc = GetRaw("BTC"));
