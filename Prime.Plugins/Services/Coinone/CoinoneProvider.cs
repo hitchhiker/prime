@@ -120,8 +120,11 @@ namespace Prime.Plugins.Services.Coinone
             var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
-            // TODO: implement statistics.
-            return new MarketPrice(context.Pair, r.last);
+            // TODO: test statistics.
+            return new MarketPrice(context.Pair, r.last)
+            {
+                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, null, null, r.low, r.high)
+            };
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
