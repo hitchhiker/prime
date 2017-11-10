@@ -9,7 +9,19 @@ namespace Prime.Common
 {
     public class Assets
     {
-        private Assets() {}
+        private Assets()
+        {
+            None = Asset.InstanceRaw("###");
+            _cache.Add(None.ShortCode, None);
+            Btc = GetRaw("BTC");
+            Eth = GetRaw("ETH");
+            Xrp = GetRaw("XRP");
+            Eur = GetRaw("EUR");
+            Jpy = GetRaw("JPY");
+            Usd = GetRaw("USD");
+            UsdT = GetRaw("USDT");
+            Krw = GetRaw("KRW");
+        }
 
         public static Assets I => Lazy.Value;
         private static readonly Lazy<Assets> Lazy = new Lazy<Assets>(()=>new Assets());
@@ -28,7 +40,7 @@ namespace Prime.Common
         public Asset GetRaw(string assetCode)
         {
             if (string.IsNullOrWhiteSpace(assetCode))
-                return Asset.None;
+                return None;
 
             assetCode = assetCode.ToUpper();
             var contains = _cache.ContainsKey(assetCode);
@@ -62,10 +74,22 @@ namespace Prime.Common
             return _cache.Values.ToUniqueList();
         }
 
-        public async Task<UniqueList<Asset>> GetAllAsync(bool onlyDirect = false)
-        {
-            var r = await AssetPairProvider.I.GetPairsAsync(onlyDirect);
-            return r.Select(x => x.Asset1).Union(r.Select(x => x.Asset2)).ToUniqueList();
-        }
+        public readonly Asset None;
+
+        public readonly Asset Btc;
+
+        public readonly Asset Eth; 
+
+        public readonly Asset Xrp;
+
+        public readonly Asset Eur;
+
+        public readonly Asset Jpy;
+
+        public readonly Asset Usd;
+
+        public readonly Asset UsdT;
+
+        public readonly Asset Krw ;
     }
 }

@@ -95,7 +95,7 @@ namespace Prime.Common
         public static Asset UsdT = Assets.I.GetRaw("USDT");
 
         public static Asset Krw = Assets.I.GetRaw("KRW");
-
+    
         private int? _popularity;
         public int Popularity => _popularity ?? (int)(_popularity = Assets.I.Popular.ToList().IndexOf(this) + 1);
 
