@@ -576,7 +576,7 @@ namespace Prime.Tests.Providers
         protected (bool Success, T Provider) IsType<T>()
         {
             if (!(Provider is T tp))
-                Assert.Fail(Provider.Title + " is not of type " + nameof(INetworkProviderPrivate));
+                Assert.Fail(Provider.Title + " is not of type " + typeof(T).Name);
             else
                 return (true, tp);
             return (false, default(T));
