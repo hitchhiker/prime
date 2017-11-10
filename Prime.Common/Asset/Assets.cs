@@ -13,14 +13,6 @@ namespace Prime.Common
         {
             None = Asset.InstanceRaw("###");
             _cache.Add(None.ShortCode, None);
-            Btc = GetRaw("BTC");
-            Eth = GetRaw("ETH");
-            Xrp = GetRaw("XRP");
-            Eur = GetRaw("EUR");
-            Jpy = GetRaw("JPY");
-            Usd = GetRaw("USD");
-            UsdT = GetRaw("USDT");
-            Krw = GetRaw("KRW");
         }
 
         public static Assets I => Lazy.Value;
@@ -74,22 +66,30 @@ namespace Prime.Common
             return _cache.Values.ToUniqueList();
         }
 
-        public readonly Asset None;
+        public Asset None;
 
-        public readonly Asset Btc;
+        private Asset _btc;
+        public Asset Btc => _btc ?? (_btc = GetRaw("BTC"));
 
-        public readonly Asset Eth; 
+        private Asset _eth;
+        public Asset Eth => _eth ?? (_eth = GetRaw("Eth"));
 
-        public readonly Asset Xrp;
+        private Asset _xrp;
+        public Asset Xrp => _xrp ?? (_xrp = GetRaw("Xrp"));
 
-        public readonly Asset Eur;
+        private Asset _eur;
+        public Asset Eur => _eur ?? (_eur = GetRaw("Eur"));
 
-        public readonly Asset Jpy;
+        private Asset _jpy;
+        public Asset Jpy => _jpy ?? (_jpy = GetRaw("Jpy"));
 
-        public readonly Asset Usd;
+        private Asset _usd;
+        public Asset Usd => _usd ?? (_usd = GetRaw("Usd"));
 
-        public readonly Asset UsdT;
+        private Asset _usdT;
+        public Asset UsdT => _usdT ?? (_usdT = GetRaw("UsdT"));
 
-        public readonly Asset Krw ;
+        private Asset _krw;
+        public Asset Krw => _krw ?? (_krw = GetRaw("Krw"));
     }
 }
