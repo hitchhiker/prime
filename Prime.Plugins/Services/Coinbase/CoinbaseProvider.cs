@@ -51,9 +51,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;

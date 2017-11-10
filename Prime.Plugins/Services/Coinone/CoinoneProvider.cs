@@ -35,9 +35,7 @@ namespace Prime.Plugins.Services.Coinone
         }
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
         public IAssetCodeConverter GetAssetCodeConverter()
         {

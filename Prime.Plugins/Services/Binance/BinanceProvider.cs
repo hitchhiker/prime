@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IAssetPairVolumeProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider, IAssetPairsProvider, IAssetPairVolumeProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -99,21 +99,6 @@ namespace Prime.Plugins.Services.Binance
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
-
-            var lowerPairTicker = context.Pair.TickerSimple().ToLower();
-
-            var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
-
-            if (lpr == null)
-                throw new NoAssetPairException(context.Pair, this);
-
-            return new MarketPrice(context.Pair, lpr.price);
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)

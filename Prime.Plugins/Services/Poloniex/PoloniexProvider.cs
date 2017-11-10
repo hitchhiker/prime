@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Poloniex
 {
     public class PoloniexProvider : 
         IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IAssetPairVolumeProvider,
-        IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
+        IPublicPricesProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -60,16 +60,6 @@ namespace Prime.Plugins.Services.Poloniex
             {
                 return false;
             }
-        }
-
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
-        {
-            var marketPrices = await GetAssetPricesAsync(context).ConfigureAwait(false);
-            var price = marketPrices.MarketPrices.FirstOrDefault(x => x.Pair.Equals(context.Pair));
-            if (price == null)
-                throw new NoAssetPairException(context.Pair, this);
-
-            return price;
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)

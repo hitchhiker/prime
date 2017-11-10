@@ -53,9 +53,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
