@@ -46,8 +46,11 @@ namespace Prime.Plugins.Services.HitBtc
 
             CheckNullableResult(r.last, String.Format(ErroTextrNoLatestValueForPair, context.Pair.TickerDash()));
 
-            // TODO: implement statistics.
-            return new MarketPrice(context.Pair, r.last.Value);
+            // TODO: test statistics.
+            return new MarketPrice(context.Pair, r.last.Value)
+            {
+                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, r.volume_quote, r.ask, r.bid, r.low, r.high)
+            };
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)

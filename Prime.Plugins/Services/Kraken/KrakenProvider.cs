@@ -85,8 +85,13 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            // TODO: implement statistics.
-            return new MarketPrice(context.Pair, r.result.FirstOrDefault().Value.c[0]);
+            var ticker = r.result.FirstOrDefault().Value;
+
+            // TODO: test statistics.
+            return new MarketPrice(context.Pair, ticker.c[0])
+            {
+                PriceStatistics = new PriceStatistics(context.QuoteAsset, ticker.v[1], null, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1])
+            };
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
