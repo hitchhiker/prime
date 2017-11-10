@@ -34,9 +34,7 @@ namespace Prime.Plugins.Services.Cex
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

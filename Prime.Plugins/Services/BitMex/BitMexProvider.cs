@@ -53,9 +53,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)
@@ -426,3 +424,4 @@ namespace Prime.Plugins.Services.BitMex
         }
     }
 }
+
