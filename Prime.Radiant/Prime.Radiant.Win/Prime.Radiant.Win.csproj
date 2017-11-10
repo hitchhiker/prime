@@ -82,6 +82,14 @@
     <Reference Include="Google.Protobuf, Version=3.4.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Protobuf.3.4.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="Ipfs.Api, Version=0.42.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\ipfs\Ipfs.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Ipfs.Core, Version=0.42.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\ipfs\Ipfs.Core.dll</HintPath>
+    </Reference>
     <Reference Include="LiteDB">
       <HintPath>..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>

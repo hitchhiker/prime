@@ -3,7 +3,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Configurations>Debug;Release;Main (Debug);All (Debug)</Configurations>
+    <Configurations>Debug;Release;All_Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
