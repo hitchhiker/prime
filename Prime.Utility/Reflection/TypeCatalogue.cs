@@ -23,39 +23,32 @@ namespace Prime.Utility
 
         private static IEnumerable<Type> Results()
         {
-            try
-            {
-                var result = new List<Type>();
-                var t = typeof(IncludeInTypeCatalogueAttribute);
+            
+            var result = new List<Type>();
+            var t = typeof(IncludeInTypeCatalogueAttribute);
 
-                foreach (var a in AssemblyCatalogue.I.Assemblies)
+            foreach (var a in AssemblyCatalogue.I.Assemblies)
+            {
+                if (a.CustomAttributes.All(x => x.AttributeType != t))
+                    continue;
+
+                try
                 {
-                    if (a.CustomAttributes.All(x => x.AttributeType != t))
-                        continue;
-
-                    try
-                    {
-                        result.AddRange(a.GetTypes());
-                    }
-                    catch (ReflectionTypeLoadException tle)
-                    {
-                        var msgs = tle.LoaderExceptions.Select(x => x.Message).ToList();
-                        msgs.Add("In " + a.GetName());
-                        throw new Exception(string.Join(", ", msgs) +
-                                            " This is normally due to an installation issue or missing extension.");
-                    }
-                    catch (Exception e)
-                    {
-                        throw new Exception("Problem loading types: " + e);
-                    }
+                    result.AddRange(a.GetTypes());
                 }
-                return result;
+                catch (ReflectionTypeLoadException tle)
+                {
+                    var msgs = tle.LoaderExceptions.Select(x => x.Message).ToList();
+                    msgs.Add("In " + a.GetName());
+                    throw new Exception(string.Join(", ", msgs) +
+                                        " This is normally due to an installation issue or missing extension.");
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Problem loading types: " + e);
+                }
             }
-            catch (Exception e)
-            {
-                Thread.Sleep(20000);
-                throw e;
-            }
+            return result;
         }
 
         public Type Get(int? hash)
