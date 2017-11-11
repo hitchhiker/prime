@@ -74,7 +74,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r, context.Pair);
 
-            return new MarketPrice(context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
+            return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -103,7 +103,7 @@ namespace Prime.Plugins.Services.Bittrex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, ms.Last));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / ms.Last));
             }
 
             return prices;

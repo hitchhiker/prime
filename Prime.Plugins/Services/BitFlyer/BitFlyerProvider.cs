@@ -53,7 +53,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var r = await api.GetTicker(productCode).ConfigureAwait(false);
 
             // TODO: implement volume.
-            return new MarketPrice(context.Pair, r.ltp);
+            return new MarketPrice(Network, context.Pair, r.ltp);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

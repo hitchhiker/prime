@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Kraken
             var ticker = r.result.FirstOrDefault().Value;
 
             // TODO: test statistics.
-            return new MarketPrice(context.Pair, ticker.c[0])
+            return new MarketPrice(Network,  context.Pair, ticker.c[0])
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, ticker.v[1], null, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1])
             };

@@ -73,7 +73,7 @@ namespace Prime.Plugins.Services.BitStamp
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTicker(context.Pair.TickerSimple().ToLower()).ConfigureAwait(false);
 
-            return new MarketPrice(context.Pair, r.last)
+            return new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, r.low, r.high)
             };

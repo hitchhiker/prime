@@ -21,68 +21,135 @@ namespace Prime.TestConsole
         {
             private IMessenger _m = DefaultMessenger.I.Default;
 
-            private IDictionary<Network, AssetPairs> _networkGraph; 
-            private IDictionary<IPublicPriceSuper, AssetPairs> _provGraph; 
-            private IDictionary<Network, MarketPricesData> _priceGraph; 
+            private readonly IDictionary<Network, AssetPairs> _assetGraph; 
+            private IDictionary<Network, MarketPricesData> _priceGraph;
+            private List<AssetPairNetworkRoutes> _routes;
+            private readonly bool _flushPrices = false;
+            private readonly AssetPair _testAssetPair = null;
 
             public FrankTests()
             {
+                //_flushPrices = true;
+                //_testAssetPair = "BTC_EMC".ToAssetPairRaw();
+
                 var starta = "BTC".ToAssetRaw();
                 var startn = Networks.I.Get("bitstamp");
 
-                _networkGraph = AsyncContext.Run(() => AssetPairProvider.I.GetNetworksDiskAsync()) as IDictionary<Network, AssetPairs>;
+                _assetGraph = AsyncContext.Run(() => AssetPairProvider.I.GetNetworksDiskAsync()) as IDictionary<Network, AssetPairs>;
 
-                BuildProviderGraph();
-                BuildPriceGraph();
+                if (_testAssetPair!=null)
+                    BuildTestData();
+
+                BuildAndNormalisePriceGraph();
+
+                NormaliseAssetGraph();
 
                 Console.WriteLine("Graphs loaded.");
 
-                var d = new Dictionary<IPublicPriceSuper, MarketPrice>();
+                BuildRoutes();
 
-                DoAssetPairs(startn.Providers.OfType<IPublicPriceSuper>().FirstDirectProvider(), starta);
-
-                /*
-                foreach (var n in pn)
-                {
-                    var r = ApiCoordinator.GetPrice(n, new PublicPriceContext(start));
-                    if (r.IsNull)
-                        continue;
-                    d.Add(n, r.Response);
-                }
-
-                var std = new Money((decimal) d.Values.Select(x => x.Price.ToDoubleValue()).StandardDeviation(), start.Asset2);
-
-                Console.WriteLine("ST Deviation: " + std);*/
-
-                foreach (var i in d.OrderBy(x => x.Value.Price))
-                   Console.WriteLine(i.Key.Title + " " + i.Value.Price);
-
-                Thread.Sleep(20000);
+                foreach (var summary in _routes.Where(x=>x.BestPercentage>=4).OrderByDescending(x=>x.BestPercentage))
+                    Console.WriteLine(summary);
             }
 
-            private void BuildProviderGraph()
+            private void BuildTestData()
             {
-                _provGraph = new Dictionary<IPublicPriceSuper, AssetPairs>();
-                foreach (var kv in _networkGraph)
+                restart:
+                foreach (var kv in _assetGraph)
                 {
-                    var prov = kv.Key.PublicPriceProviders.FirstDirectProvider<IPublicPriceSuper>();
-                    if (prov == null)
+                    var e = _assetGraph[kv.Key].FirstOrDefault(x => x.EqualsOrReversed(_testAssetPair));
+                    if (e==null)
                     {
-                        Console.WriteLine($"No provider found for {kv.Key.Name}");
-                        continue;
+                        _assetGraph.Remove(kv.Key);
+                        goto restart;
                     }
-                    _provGraph.Add(prov, kv.Value);
+                    _assetGraph[kv.Key] = new AssetPairs(new List<AssetPair>() {e});
                 }
             }
 
-            private void BuildPriceGraph()
+            private void BuildRoutes()
+            {
+                var allpairs = _priceGraph.SelectMany(x => x.Value.Prices.Select(p=>p.Pair)).ToUniqueList();
+                _routes = new List<AssetPairNetworkRoutes>();
+                foreach (var pair in allpairs)
+                {
+                    if (!pair.IsNormalised)
+                        throw new Exception("Not normalised");
+
+                    var prices = GetPrices(pair);
+                    if (prices.Count < 2)
+                        continue;
+
+                    prices = prices.OrderBy(x => x.Price).ToList();
+                    _routes.Add(new AssetPairNetworkRoutes(pair, prices));
+                }
+            }
+
+            public void DoAssetPairs(Network network, Asset asset)
+            {
+                var prices = _priceGraph.Get(network);
+                foreach (var i in prices.Prices)
+                    Console.WriteLine(i);
+            }
+
+            private List<MarketPrice> GetPrices(AssetPair pair)
+            {
+                var r = new List<MarketPrice>();
+                var nets = _assetGraph.Where(x => x.Value.Contains(pair)).Select(x => x.Key).ToUniqueList();
+                foreach (var n in nets)
+                {
+                    var p = _priceGraph.Get(n);
+                    var apiM = p?.Prices.FirstOrDefault(x => x.Pair.Equals(pair));
+
+                    if (apiM == null)
+                        continue;
+
+                    r.Add(apiM);
+                }
+                return r;
+            }
+
+            private void NormaliseAssetGraph()
+            {
+                foreach (var kv in _priceGraph)
+                {
+                    var ne = _assetGraph.Get(kv.Key);
+                    if (ne == null)
+                        throw new Exception(nameof(_assetGraph) + " missing " + kv.Key.Name);
+                    
+                    _assetGraph[kv.Key] = new AssetPairs(kv.Value.Prices.Select(x => x.Pair));
+                }
+            }
+
+            private void BuildAndNormalisePriceGraph()
             {
                 _priceGraph = new Dictionary<Network, MarketPricesData>();
-                foreach (var kv in _networkGraph)
+                foreach (var kv in _assetGraph)
                 {
-                    var e = PublicContext.I.As<MarketPricesData>().FirstOrDefault(x => x.Id == MarketPricesData.GetHash(kv.Key)) ?? GrabPriceData(kv);
-                    if (e != null)
-                        _priceGraph.Add(kv.Key, e);
+                    var db = kv.Key.NameLowered!="###" ? PublicContext.I.As<MarketPricesData>().FirstOrDefault(x => x.Id == MarketPricesData.GetHash(kv.Key)) : null;
+
+                    if (_flushPrices)
+                        db = null;
+
+                    var e = db ?? GrabPriceData(kv);
+                    if (e == null)
+                        continue;
+
+                    var prices = e.Prices.ToList();
+                    prices.RemoveAll(x => x.Price == 0);
+
+                    if (_testAssetPair != null)
+                        prices.RemoveAll(x => !x.Pair.EqualsOrReversed(_testAssetPair));
+
+                    var todo = prices.Where(x => !x.Pair.IsNormalised).ToList();
+                    prices.RemoveAll(x => todo.Contains(x));
+
+                    foreach (var i in todo)
+                        prices.Add(i.Reverse());
+
+                    _priceGraph.Add(kv.Key, new MarketPricesData(e.Network, prices));
+
+                    Console.WriteLine($"Retrieved price data for {kv.Key.Name}: {prices.Count} / {kv.Value.Count} pairs.");
                 }
             }
 
@@ -108,13 +175,6 @@ namespace Prime.TestConsole
                 return data;
             }
 
-            public void DoAssetPairs(IPublicPriceSuper prov, Asset asset)
-            {
-                var pairs = _provGraph.Get(prov).Where(x => x.Has(asset));
-                var prices = ApiCoordinator.GetPrices(prov, new PublicPricesContext(pairs.ToList())).Response;
-                foreach (var i in prices.MarketPrices)
-                    Console.WriteLine(i);
-            }
 
             public void Old() { 
             /*

@@ -87,7 +87,7 @@ namespace Prime.Plugins.Services.Poloniex
                 var rTicker = rTickers[0];
                 var v = rTicker.Value;
 
-                prices.MarketPrices.Add(new MarketPrice(pair, 1 / v.last)
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1/v.last)
                 {
                     PriceStatistics = new PriceStatistics(pair.Asset2, v.baseVolume, v.quoteVolume, v.lowestAsk, v.highestBid, v.low24hr, v.high24hr)
                 });

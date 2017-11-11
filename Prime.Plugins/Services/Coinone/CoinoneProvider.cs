@@ -121,7 +121,7 @@ namespace Prime.Plugins.Services.Coinone
 
             CheckResponseErrors(r);
             // TODO: test statistics.
-            return new MarketPrice(context.Pair, r.last)
+            return new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, null, null, r.low, r.high)
             };
@@ -153,7 +153,7 @@ namespace Prime.Plugins.Services.Coinone
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, ticker.last));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.last));
             }
 
             return prices;
