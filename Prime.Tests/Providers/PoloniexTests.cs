@@ -85,7 +85,7 @@ namespace Prime.Tests.Providers
                 "XMR".ToAssetRaw()
             }, "LTC".ToAssetRaw());
 
-            await base.TestGetPricesAsync(context);
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
