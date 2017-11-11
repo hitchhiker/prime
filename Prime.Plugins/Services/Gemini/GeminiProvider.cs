@@ -57,7 +57,8 @@ namespace Prime.Plugins.Services.Gemini
             {
                 var assetPair = ParseAssetPair(rSymbol);
 
-                pairs.Add(assetPair);
+                if(assetPair != null)
+                    pairs.Add(assetPair);
             }
 
             return pairs;
@@ -65,8 +66,8 @@ namespace Prime.Plugins.Services.Gemini
 
         private AssetPair ParseAssetPair(string raw)
         {
-            if(raw.Length != 6)
-                throw new ApiResponseException($"Invalid format of currency pair: {raw}", this);
+            if (raw.Length != 6)
+                return null; //throw new ApiResponseException($"Invalid format of currency pair: {raw}", this);
 
             var asset1 = raw.Substring(0, 3);
             var asset2 = raw.Substring(3);

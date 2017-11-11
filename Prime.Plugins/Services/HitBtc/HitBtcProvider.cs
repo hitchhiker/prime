@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.HitBtc
         private static readonly ObjectId IdHash = "prime:hitbtc".GetObjectIdHashCode();
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private const string ErroTextrNoLatestValueForPair = "No latest value for {0} pair";
+        private const string ErroTextNoLatestValueForPair = "No latest value for {0} pair";
 
         private RestApiClientProvider<IHitBtcApi> ApiProvider { get; }
 
@@ -44,7 +44,8 @@ namespace Prime.Plugins.Services.HitBtc
             var pairCode = context.Pair.TickerSimple();
             var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
-            CheckNullableResult(r.last, String.Format(ErroTextrNoLatestValueForPair, context.Pair.TickerDash()));
+            if (r.last.HasValue == false)
+                throw new NoAssetPairException(context.Pair, this);
 
             // TODO: test statistics.
             return new MarketPrice(context.Pair, r.last.Value)
@@ -82,18 +83,10 @@ namespace Prime.Plugins.Services.HitBtc
                 if (ticker.Value?.last == null)
                     continue;
 
-                //CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
-
                 prices.MarketPrices.Add(new MarketPrice(pair, ticker.Value.last.Value));
             }
 
             return prices;
-        }
-
-        private void CheckNullableResult<T>(T? value, string message) where T : struct
-        {
-            if (value.HasValue == false)
-                throw new ApiResponseException(message, this);
         }
 
         public HitBtcProvider()

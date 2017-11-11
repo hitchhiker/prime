@@ -42,9 +42,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
