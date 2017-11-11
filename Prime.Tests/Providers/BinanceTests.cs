@@ -93,11 +93,10 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            var ctx = new VolumeContext()
+            VolumeContext = new VolumeContext()
             {
                 Pair = "BNT_BTC".ToAssetPairRaw()
             };
-            GetVolumeFunc = () => ((BinanceProvider)Provider).GetVolumeAsync(ctx);
 
             await base.TestGetVolumeAsync();
         }

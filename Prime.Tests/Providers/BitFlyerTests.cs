@@ -50,11 +50,10 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            var ctx = new VolumeContext()
+            VolumeContext = new VolumeContext()
             {
                 Pair = "BTC_JPY".ToAssetPairRaw()
             };
-            GetVolumeFunc = () => ((BitFlyerProvider)Provider).GetVolumeAsync(ctx);
 
             await base.TestGetVolumeAsync();
         }

@@ -123,21 +123,11 @@ namespace Prime.Tests.Providers
                 await ConfirmWithdrawalAsync(p.Provider);
         }
 
-
-
-        protected Func<Task<VolumeResult>> GetVolumeFunc { get; set; }
         public virtual async Task TestGetVolumeAsync()
         {
-            // Temporary stub. Will be removed when IVolumeProvider interface will be implemented.
-
-            await GetVolumeAsync(GetVolumeFunc);
-        }
-
-        private async Task GetVolumeAsync(Func<Task<VolumeResult>> getVolumeFunc)
-        {
-            var r = await getVolumeFunc();
-
-            Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
+            var p = IsType<IAssetPairVolumeProvider>();
+            if (p.Success)
+                await GetVolumeAsync(p.Provider);
         }
 
         #endregion
@@ -562,6 +552,32 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
                 Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        protected VolumeContext VolumeContext { get; set; }
+        private async Task GetVolumeAsync(IAssetPairVolumeProvider provider)
+        {
+            if (VolumeContext == null)
+            {
+                VolumeContext = new VolumeContext()
+                {
+                    Pair = "BTC_USD".ToAssetPairRaw()
+                };
+            }
+
+            try
+            {
+                var r = await provider.GetVolumeAsync(VolumeContext);
+
+                Assert.IsTrue(r != null);
+                Assert.IsTrue(r.Pair.Equals(VolumeContext.Pair), $"Pairs don't match. Input is {VolumeContext.Pair} and returned is {r.Pair}");
+
+                Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
             }
             catch (Exception e)
             {

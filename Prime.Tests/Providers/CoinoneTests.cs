@@ -76,17 +76,5 @@ namespace Prime.Tests.Providers
 
             await base.TestGetAssetPricesAsync();
         }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            var ctx = new VolumeContext()
-            {
-                Pair = "BCH_KRW".ToAssetPairRaw()
-            };
-            GetVolumeFunc = () => ((CoinoneProvider) Provider).GetVolumeAsync(ctx);
-
-            await base.TestGetVolumeAsync();
-        }
     }
 }
