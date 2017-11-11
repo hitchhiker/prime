@@ -96,7 +96,7 @@ namespace Prime.Plugins.Services.Bithumb
             foreach (var pair in context.Pairs)
             {
                 var rTickers = r.Where(x => x.Key.ToAsset(this).Equals(pair.Asset1)).ToArray();
-                if (rTickers.Length < 1 || !pair.Asset2.Equals(krwAsset))
+                if (!rTickers.Any() || !pair.Asset2.Equals(krwAsset))
                 {
                     prices.MissedPairs.Add(pair);
                     continue;

@@ -15,7 +15,7 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPricesProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -94,6 +94,30 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
+        public async Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var pairsCsv = context.Pairs.Aggregate("", (s, pair) => s += GetKrakenTicker(pair) + ",").TrimEnd(',');
+
+            var r = await api.GetTickerInformationAsync(pairsCsv).ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            var prices = new MarketPricesResult();
+            foreach (var pair in context.Pairs)
+            {
+                //var rTicker = r.result.Where(x => x.Key.ToAssetPair(this))
+            }
+
+            return null;
+        }
+
+        public Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -101,11 +125,14 @@ namespace Prime.Plugins.Services.Kraken
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
             CheckResponseErrors(r);
+            
 
             var assetPairs = new AssetPairs();
 
             foreach (var assetPair in r.result)
             {
+                var pair = ParseAssetPair(assetPair);
+
                 var ticker = assetPair.Key;
                 var first = assetPair.Value.base_c;
                 var second = ticker.Replace(first, "");
@@ -114,6 +141,16 @@ namespace Prime.Plugins.Services.Kraken
             }
 
             return assetPairs;
+        }
+
+        private AssetPair ParseAssetPair(KeyValuePair<string, KrakenSchema.AssetPairResponse> rPair)
+        {
+            AssetPair pair = null;
+
+            if (rPair.Key.ToLower().EndsWith(".d"))
+                return null;
+
+            return pair;
         }
 
         private Dictionary<string, object> CreateKrakenBody()
@@ -204,7 +241,7 @@ namespace Prime.Plugins.Services.Kraken
             body.Add("method", fundingMethod);
             body.Add("new", generateNew);
 
-            var r = await api.GetDepositAddresses(body).ConfigureAwait(false);
+            var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var walletAddresses = new WalletAddresses();
@@ -358,7 +395,7 @@ namespace Prime.Plugins.Services.Kraken
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
             
-            var r = await api.GetOrderBook(remotePair.TickerSimple(), maxCount ?? 0).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(remotePair.TickerSimple(), maxCount ?? 0).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
