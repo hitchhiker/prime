@@ -25,117 +25,130 @@ namespace Prime.Tests.Providers
         {
             var p = IsType<INetworkProviderPrivate>();
             if (p.Success)
-                await TestApiAsync(p.Provider);
+                await TestApiAsync(p.Provider).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetOhlcAsync()
+
+        public virtual async Task TestGetOhlcAsync() { }
+        public async Task TestGetOhlcAsync(OhlcContext context)
         {
             var p = IsType<IOhlcProvider>();
             if (p.Success)
-                await GetOhlcAsync(p.Provider);
+                await GetOhlcAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetPriceAsync()
-        {
-
-        }
-
+        public virtual async Task TestGetPriceAsync() { }
         public async Task TestGetPriceAsync(PublicPriceContext context, bool lessThan1)
         {
             var p = IsType<IPublicPriceSuper>();
             if (p.Success)
-                await GetPairPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
+                await GetPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetAssetPricesAsync()
-        {
-            var p = IsType<IPublicAssetPricesProvider>();
-            if (p.Success)
-                await GetAssetPricesAsync(p.Provider);
-        }
-
-        public virtual async Task TestGetPricesAsync()
+        public virtual async Task TestGetAssetPricesAsync() { }
+        public virtual async Task TestGetAssetPricesAsync(PublicAssetPricesContext context, bool lessThan)
         {
             var p = IsType<IPublicPricesProvider>();
             if (p.Success)
-                await GetPricesAsync(p.Provider);
+                await GetAssetPricesAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetAssetPairsAsync()
+        public virtual async Task TestGetPricesAsync() { }
+        public virtual async Task TestGetPricesAsync(PublicPricesContext context)
+        {
+            var p = IsType<IPublicPricesProvider>();
+            if (p.Success)
+                await GetPricesAsync(p.Provider, context).ConfigureAwait(false);
+        }
+
+        public virtual async Task TestGetAssetPairsAsync() { }
+        public async Task TestGetAssetPairsAsync(AssetPairs requiredPairs)
         {
             var p = IsType<IAssetPairsProvider>();
             if (p.Success)
-                await GetAssetPairsAsync(p.Provider);
+                await GetAssetPairsAsync(p.Provider, requiredPairs).ConfigureAwait(false);
         }
 
         public virtual async Task TestGetBalancesAsync()
         {
             var p = IsType<IBalanceProvider>();
             if (p.Success)
-                await GetBalancesAsync(p.Provider);
+                await GetBalancesAsync(p.Provider).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetAddressesAsync()
+        public virtual async Task TestGetAddressesAsync() { }
+        public async Task TestGetAddressesAsync(WalletAddressContext context)
         {
             var p = IsType<IDepositProvider>();
             if (p.Success)
-                await GetAddressesAsync(p.Provider);
+                await GetAddressesAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetAddressesForAssetAsync()
+
+        public virtual async Task TestGetAddressesForAssetAsync() { }
+        public async Task TestGetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var p = IsType<IDepositProvider>();
             if (p.Success)
-                await GetAddressesForAssetAsync(p.Provider);
+                await GetAddressesForAssetAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetOrderBookAsync()
+        public virtual async Task TestGetOrderBookAsync() { }
+        public async Task TestGetOrderBookAsync(OrderBookContext context)
         {
             var p = IsType<IOrderBookProvider>();
             if (p.Success)
-                await GetOrderBookAsync(p.Provider);
+                await GetOrderBookAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetWithdrawalHistoryAsync()
+        public virtual async Task TestGetWithdrawalHistoryAsync() { }
+        public async Task TestGetWithdrawalHistoryAsync(WithdrawalHistoryContext context)
         {
             var p = IsType<IWithdrawalHistoryProvider>();
             if (p.Success)
-                await GetWithdrawalHistoryAsync(p.Provider);
+                await GetWithdrawalHistoryAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestPlaceWithdrawalAsync()
+
+        public virtual async Task TestPlaceWithdrawalAsync() { }
+        public async Task TestPlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var p = IsType<IWithdrawalPlacementProvider>();
             if (p.Success)
-                await PlaceWithdrawalAsync(p.Provider);
+                await PlaceWithdrawalAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestPlaceWithdrawalExtendedAsync()
+        public virtual async Task TestPlaceWithdrawalExtendedAsync() { }
+        public async Task TestPlaceWithdrawalExtendedAsync(WithdrawalPlacementContextExtended context)
         {
             var p = IsType<IWithdrawalPlacementProviderExtended>();
             if (p.Success)
-                await PlaceWithdrawalExtendedAsync(p.Provider);
+                await PlaceWithdrawalExtendedAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestCancelWithdrawalAsync()
+        public virtual async Task TestCancelWithdrawalAsync() { }
+        public async Task TestCancelWithdrawalAsync(WithdrawalCancelationContext context)
         {
             var p = IsType<IWithdrawalCancelationProvider>();
             if (p.Success)
-                await CancelWithdrawalAsync(p.Provider);
+                await CancelWithdrawalAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestConfirmWithdrawalAsync()
+
+        public virtual async Task TestConfirmWithdrawalAsync() { }
+        public async Task TestConfirmWithdrawalAsync(WithdrawalConfirmationContext context)
         {
             var p = IsType<IWithdrawalConfirmationProvider>();
             if (p.Success)
-                await ConfirmWithdrawalAsync(p.Provider);
+                await ConfirmWithdrawalAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetVolumeAsync()
+        public virtual async Task TestGetVolumeAsync() { }
+        public virtual async Task TestGetVolumeAsync(VolumeContext context)
         {
             var p = IsType<IAssetPairVolumeProvider>();
             if (p.Success)
-                await GetVolumeAsync(p.Provider);
+                await GetVolumeAsync(p.Provider, context).ConfigureAwait(false);
         }
 
         #endregion
@@ -149,7 +162,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.TestPrivateApiAsync(ctx);
+                var r = await provider.TestPrivateApiAsync(ctx).ConfigureAwait(false);
                 Assert.IsTrue(r);
             }
             catch (Exception e)
@@ -158,19 +171,17 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected OhlcContext OhlcContext { get; set; }
 
-        private async Task GetOhlcAsync(IOhlcProvider provider)
+        private async Task GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
-            if (OhlcContext == null)
-            {
-                OhlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute,
-                    new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
-            }
+            if (context == null)
+                return;
 
             try
             {
-                var ohlc = await provider.GetOhlcAsync(OhlcContext);
+                var ohlc = await provider.GetOhlcAsync(context).ConfigureAwait(false);
 
                 bool success = true;
                 OhlcEntry ohlcEntryPrev = null;
@@ -183,7 +194,6 @@ namespace Prime.Tests.Providers
                         {
                             success = false;
                             Assert.Fail("Time check is failed.");
-                            break;
                         }
                     }
                     ohlcEntryPrev = ohlcEntry;
@@ -204,7 +214,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context, bool lessThan1)
+        private async Task GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context, bool lessThan1)
         {
             if (context == null)
                 return;
@@ -230,7 +240,7 @@ namespace Prime.Tests.Providers
                 else
                     Assert.IsTrue(c.Price > 1);
 
-                Trace.WriteLine($"Quote asset: {c.QuoteAsset}, Price: {c.Price.Display}");
+                Trace.WriteLine($"Asset: {c.QuoteAsset}, Price: {c.Price.Display}");
             }
             catch (Exception e)
             {
@@ -238,36 +248,22 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected PublicAssetPricesContext PublicAssetPricesContext { get; set; }
 
-        private async Task GetAssetPricesAsync(IPublicAssetPricesProvider provider)
+        private async Task GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
-            if (PublicAssetPricesContext == null)
-            {
-                PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
-                {
-                    "USD".ToAssetRaw(),
-                    "EUR".ToAssetRaw()
-                }, Asset.Btc);
-            }
+            if (context == null)
+                return;
 
             try
             {
-                var c = await provider.GetAssetPricesAsync(PublicAssetPricesContext);
+                var c = await provider.GetAssetPricesAsync(context).ConfigureAwait(false);
 
                 Assert.IsNotNull(c);
-                Assert.IsTrue(c.MarketPrices.Count == PublicAssetPricesContext.Assets.Count);
+                Assert.IsTrue(c.MarketPrices.Count == context.Assets.Count);
 
-                foreach (var requiredAsset in PublicAssetPricesContext.Assets)
-                {
-                    Assert.IsTrue(
-                        c.MarketPrices.Exists(
-                            x => x.QuoteAsset.Equals(requiredAsset) &&
-                                 x.Price.Asset.Equals(PublicAssetPricesContext.QuoteAsset)
-                        ),
-                        $"Provider did not return {requiredAsset.ToPair(PublicAssetPricesContext.QuoteAsset)} price"
-                    );
-                }
+                Assert.IsFalse(c.MissedPairs.Any(), $"Provider did not return:{c.MissedPairs.Aggregate("", (s, pair) => s += $" {pair},").TrimEnd(',')}");
 
                 foreach (var price in c.MarketPrices)
                 {
@@ -280,23 +276,24 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected AssetPairs RequiredAssetPairs { get; set; }
 
-        private async Task GetAssetPairsAsync(IAssetPairsProvider provider)
+        private async Task GetAssetPairsAsync(IAssetPairsProvider provider, AssetPairs requiredPairs)
         {
             var ctx = new NetworkProviderContext();
 
             try
             {
-                var pairs = await provider.GetAssetPairsAsync(ctx);
+                var pairs = await provider.GetAssetPairsAsync(ctx).ConfigureAwait(false);
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.Count > 0);
 
-                if (RequiredAssetPairs != null)
+                if (requiredPairs != null)
                 {
                     Trace.WriteLine("Checked pairs:");
-                    foreach (var requiredPair in RequiredAssetPairs)
+                    foreach (var requiredPair in requiredPairs)
                     {
                         var contains = pairs.Contains(requiredPair);
                         Assert.IsTrue(contains, $"Provider didn't return required {requiredPair} pair.");
@@ -318,30 +315,22 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected PublicPricesContext PublicPricesContext { get; set; }
 
-        private async Task GetPricesAsync(IPublicPricesProvider provider)
+        private async Task GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
         {
-            if (PublicPricesContext == null)
-            {
-                PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
-                {
-                    "BTC_USD".ToAssetPairRaw(),
-                    "BTC_EUR".ToAssetPairRaw()
-                });
-            }
+            if (context == null)
+                return;
 
             try
             {
-                var pairs = await provider.GetPricesAsync(PublicPricesContext);
+                var pairs = await provider.GetPricesAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.MarketPrices.Count > 0);
 
-                foreach (var requiredPair in PublicPricesContext.Pairs)
-                {
-                    Assert.IsTrue(pairs.MarketPrices.Exists(x => x.QuoteAsset.Equals(requiredPair.Asset1)), $"Provider did not return {requiredPair} price");
-                }
+                Assert.IsFalse(pairs.MissedPairs.Any(), $"Provider did not return:{pairs.MissedPairs.Aggregate("", (s, pair) => s +=  $" {pair},").TrimEnd(',')}");
 
                 Trace.WriteLine("Latest prices:");
                 foreach (var pair in pairs.MarketPrices)
@@ -361,7 +350,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var balances = await provider.GetBalancesAsync(ctx);
+                var balances = await provider.GetBalancesAsync(ctx).ConfigureAwait(false);
 
                 Assert.IsTrue(balances != null);
 
@@ -377,22 +366,21 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected WalletAddressContext WalletAddressContext { get; set; }
 
-        private async Task GetAddressesAsync(IDepositProvider provider)
+        private async Task GetAddressesAsync(IDepositProvider provider, WalletAddressContext context)
         {
-            if (WalletAddressContext == null)
-            {
-                WalletAddressContext = new WalletAddressContext(UserContext.Current);
-            }
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.GetAddressesAsync(WalletAddressContext);
+                var r = await provider.GetAddressesAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
 
-                Trace.WriteLine($"All deposit addresses:");
+                Trace.WriteLine("All deposit addresses:");
                 foreach (var walletAddress in r)
                 {
                     Trace.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
@@ -404,22 +392,21 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected WalletAddressAssetContext WalletAddressAssetContext { get; set; }
 
-        private async Task GetAddressesForAssetAsync(IDepositProvider provider)
+        private async Task GetAddressesForAssetAsync(IDepositProvider provider, WalletAddressAssetContext context)
         {
-            if (WalletAddressAssetContext == null)
-            {
-                WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
-            }
+            if(context == null)
+                return;
 
             try
             {
-                var r = await provider.GetAddressesForAssetAsync(WalletAddressAssetContext);
+                var r = await provider.GetAddressesForAssetAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
 
-                Trace.WriteLine($"Deposit addresses for {WalletAddressAssetContext.Asset}:");
+                Trace.WriteLine($"Deposit addresses for {context.Asset}:");
                 foreach (var walletAddress in r)
                 {
                     Trace.WriteLine($"\"{walletAddress.Address}\"");
@@ -431,27 +418,28 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected OrderBookContext OrderBookContext { get; set; }
 
-        private async Task GetOrderBookAsync(IOrderBookProvider provider)
+        private async Task GetOrderBookAsync(IOrderBookProvider provider, OrderBookContext context)
         {
-            if (OrderBookContext == null)
-                OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.GetOrderBookAsync(OrderBookContext);
+                var r = await provider.GetOrderBookAsync(context).ConfigureAwait(false);
                 Assert.IsTrue(r != null);
 
-                if (OrderBookContext.MaxRecordsCount.HasValue)
-                    Assert.IsTrue(r.Count == OrderBookContext.MaxRecordsCount.Value);
+                if (context.MaxRecordsCount.HasValue)
+                    Assert.IsTrue(r.Count == context.MaxRecordsCount.Value);
                 else
                     Assert.IsTrue(r.Count > 0);
 
                 Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderBookType.Ask)} asks, {r.Count(x => x.Type == OrderBookType.Bid)} bids): ");
                 foreach (var obr in r)
                 {
-                    Trace.WriteLine($"{obr.Data.Time} | For {OrderBookContext.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
+                    Trace.WriteLine($"{obr.Data.Time} | For {context.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
                 }
             }
             catch (Exception e)
@@ -460,22 +448,17 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected WithdrawalHistoryContext WithdrawalHistoryContext { get; set; }
 
-        private async Task GetWithdrawalHistoryAsync(IWithdrawalHistoryProvider provider)
+        private async Task GetWithdrawalHistoryAsync(IWithdrawalHistoryProvider provider, WithdrawalHistoryContext context)
         {
-            if (WithdrawalHistoryContext == null)
-            {
-                WithdrawalHistoryContext = new WithdrawalHistoryContext(UserContext.Current)
-                {
-                    Asset = Asset.Btc,
-                    FromTimeUtc = DateTime.UtcNow.AddDays(-7)
-                };
-            }
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.GetWithdrawalHistoryAsync(WithdrawalHistoryContext);
+                var r = await provider.GetWithdrawalHistoryAsync(context).ConfigureAwait(false);
 
                 foreach (var historyEntry in r)
                 {
@@ -490,16 +473,17 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected WithdrawalPlacementContext WithdrawalPlacementContext { get; set; }
 
-        private async Task PlaceWithdrawalAsync(IWithdrawalPlacementProvider provider)
+        private async Task PlaceWithdrawalAsync(IWithdrawalPlacementProvider provider, WithdrawalPlacementContext context)
         {
-            if (WithdrawalPlacementContext == null)
-                throw new NullReferenceException($"{nameof(WithdrawalPlacementContext)} should not be bull");
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.PlaceWithdrawalAsync(WithdrawalPlacementContext);
+                var r = await provider.PlaceWithdrawalAsync(context).ConfigureAwait(false);
 
                 // Assert.IsTrue(r);
             }
@@ -509,16 +493,17 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected WithdrawalPlacementContextExtended WithdrawalPlacementContextExtended { get; set; }
 
-        private async Task PlaceWithdrawalExtendedAsync(IWithdrawalPlacementProviderExtended provider)
+        private async Task PlaceWithdrawalExtendedAsync(IWithdrawalPlacementProviderExtended provider, WithdrawalPlacementContextExtended context)
         {
-            if (WithdrawalPlacementContextExtended == null)
-                throw new NullReferenceException($"{nameof(WithdrawalPlacementContextExtended)} should not be bull");
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.PlaceWithdrawalAsync(WithdrawalPlacementContextExtended);
+                var r = await provider.PlaceWithdrawalAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
 
@@ -530,19 +515,20 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected WithdrawalCancelationContext WithdrawalCancelationContext { get; set; }
 
-        private async Task CancelWithdrawalAsync(IWithdrawalCancelationProvider provider)
+        private async Task CancelWithdrawalAsync(IWithdrawalCancelationProvider provider, WithdrawalCancelationContext context)
         {
-            if (WithdrawalCancelationContext == null)
-                throw new NullReferenceException($"{nameof(WithdrawalCancelationContext)} should not be bull");
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.CancelWithdrawalAsync(WithdrawalCancelationContext);
+                var r = await provider.CancelWithdrawalAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
                 Trace.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
             }
@@ -552,21 +538,20 @@ namespace Prime.Tests.Providers
             }
         }
 
-        // ConfirmWithdrawalAsync
-
+        [Obsolete]
         protected WithdrawalConfirmationContext WithdrawalConfirmationContext { get; set; }
 
-        private async Task ConfirmWithdrawalAsync(IWithdrawalConfirmationProvider provider)
+        private async Task ConfirmWithdrawalAsync(IWithdrawalConfirmationProvider provider, WithdrawalConfirmationContext context)
         {
-            if (WithdrawalConfirmationContext == null)
-                throw new NullReferenceException($"{nameof(WithdrawalConfirmationContext)} should not be bull");
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.ConfirmWithdrawalAsync(WithdrawalConfirmationContext);
+                var r = await provider.ConfirmWithdrawalAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.WithdrawalRemoteId.Equals(WithdrawalCancelationContext.WithdrawalRemoteId), "Withdrawal ids don't match.");
+                Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
                 Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
             }
@@ -576,23 +561,19 @@ namespace Prime.Tests.Providers
             }
         }
 
+        [Obsolete]
         protected VolumeContext VolumeContext { get; set; }
-        private async Task GetVolumeAsync(IAssetPairVolumeProvider provider)
+        private async Task GetVolumeAsync(IAssetPairVolumeProvider provider, VolumeContext context)
         {
-            if (VolumeContext == null)
-            {
-                VolumeContext = new VolumeContext()
-                {
-                    Pair = "BTC_USD".ToAssetPairRaw()
-                };
-            }
+            if (context == null)
+                return;
 
             try
             {
-                var r = await provider.GetVolumeAsync(VolumeContext);
+                var r = await provider.GetVolumeAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Pair.Equals(VolumeContext.Pair), $"Pairs don't match. Input is {VolumeContext.Pair} and returned is {r.Pair}");
+                Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");
 
                 Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
             }
