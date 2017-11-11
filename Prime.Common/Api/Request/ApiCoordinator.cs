@@ -15,6 +15,11 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
 
+        public static ApiResponse<MarketPricesResult> GetPrices(IPublicPriceSuper provider, PublicPricesContext context)
+        {
+            return AsyncContext.Run(() => GetPricesAsync(provider, context));
+        }
+
         public static ApiResponse<bool> TestApi(INetworkProviderPrivate provider, ApiPrivateTestContext context)
         {
             return AsyncContext.Run(() => TestApiAsync(provider, context));

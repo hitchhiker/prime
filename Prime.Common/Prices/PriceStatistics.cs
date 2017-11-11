@@ -2,6 +2,8 @@
 {
     public class PriceStatistics
     {
+        private PriceStatistics() { }
+
         public PriceStatistics(Asset quoteAsset, decimal? volume24, decimal? volume24Quote, decimal? lowestAsk, decimal? highestBid, decimal? price24Low, decimal? price24High)
         {
             HasVolume24 = volume24 != null;
@@ -16,32 +18,40 @@
             Price24High = price24High == null ? Money.Zero : new Money(price24High.Value, quoteAsset);
         }
 
+        [Bson]
         public decimal Volume24Quote { get; private set; }
 
+        [Bson]
         public decimal Volume24 { get; private set; }
 
         /// <summary>
         /// Highest 'Bid' or 'Buy Order'
         /// </summary>
+        [Bson]
         public Money HighestBid { get; private set; }
 
         /// <summary>
         /// Lowest 'Ask' or 'Sell Order'
         /// </summary>
+        [Bson]
         public Money LowestAsk { get; private set; }
 
         /// <summary>
         /// Last 24 hours price low.
         /// </summary>
+        [Bson]
         public Money Price24Low { get; private set; }
 
         /// <summary>
         /// Last 24 hours price high.
         /// </summary>
+        [Bson]
         public Money Price24High { get; private set; }
 
+        [Bson]
         public bool HasVolume24 { get; private set; }
 
+        [Bson]
         public bool HasVolume24Quote { get; private set; }
 
         public bool HasHighestBid => HighestBid != Money.Zero;

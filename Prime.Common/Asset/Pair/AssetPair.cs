@@ -54,6 +54,11 @@ namespace Prime.Common
 
         public static AssetPair Empty => new AssetPair(Asset.None, Asset.None);
 
+        public bool Has(Asset asset)
+        {
+            return Asset1.Equals(asset) || Asset2.Equals(asset);
+        }
+
         public string TickerDash()
         {
             return $"{Asset1.ShortCode}-{Asset2.ShortCode}";

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public class MarketPrices
+    public class MarketBasePrices
     {
         [Bson]
         public DateTime UtcCreated { get; set; }

@@ -816,6 +816,11 @@ namespace Prime.Common
             return _units + _decimalFraction / FractionScale;
         }
 
+        public Double ToDoubleValue()
+        {
+            return (double) (_units + _decimalFraction / FractionScale);
+        }
+
         private static InvalidOperationException differentCurrencies()
         {
             return new InvalidOperationException("Money values are in different " +
