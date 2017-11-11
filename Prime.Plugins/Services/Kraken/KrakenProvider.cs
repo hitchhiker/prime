@@ -121,7 +121,7 @@ namespace Prime.Plugins.Services.Kraken
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, rTicker.First().Value.c[0]));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, rTicker.First().Value.c[0]));
             }
 
             return prices;
