@@ -1,13 +1,23 @@
 ﻿using System;
+using LiteDB;
 using Prime.Utility;
 
 namespace Prime.Common
 {
     public class AssetPairData : ModelBase
     {
-        public AssetPairData(IAssetPairsProvider provider)
+        private AssetPairData() { }
+
+        public AssetPairData(Network network, AssetPairs pairs)
         {
-            Network = provider.Network;
+            Network = network;
+            Id = GetHash(Network);
+            Pairs = pairs;
+        }
+
+        public static ObjectId GetHash(Network network)
+        {
+            return ("assetpairnetworkdata:" + network.Id).GetObjectIdHashCode();
         }
 
         [Bson]
@@ -16,13 +26,13 @@ namespace Prime.Common
         [Bson]
         public AssetPairs Pairs { get; private set; }
 
-        public async void Refresh()
+        public async void RefreshAsync()
         {
             var prov = Network.Providers.FirstProviderOf<IAssetPairsProvider>();
             if (prov==null)
                 throw new Exception($"Cannot 'refresh' {nameof(AssetPairData)} for {Network.Name} as a {nameof(IAssetPairsProvider)} cannot be located.");
 
-            var pairs = await ApiCoordinator.GetAssetPairsAsync(prov);
+            var pairs = await ApiCoordinator.GetAssetPairsAsync(prov).ConfigureAwait(false);
             if (pairs.IsFailed)
                 return;
 

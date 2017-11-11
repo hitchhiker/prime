@@ -16,7 +16,26 @@ namespace Prime.Common
                 case IPublicAssetPricesProvider ips:
                     return GetPriceAsync(ips, context);
             }
-            return null;
+            return Task.FromResult(default(ApiResponse<MarketPrice>));
+        }
+
+        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPriceSuper provider, PublicPricesContext context)
+        {
+            switch (provider)
+            {
+                case IPublicPricesProvider ips:
+                    return GetPricesAsync(ips, context);
+                case IPublicPriceProvider ip:
+                    var r = new MarketPricesResult();
+                    foreach (var i in context.Pairs)
+                    {
+                        var rq = GetPrice(ip, new PublicPriceContext(i));
+                        if (!rq.IsNull)
+                            r.MarketPrices.Add(rq.Response);
+                    }
+                    return Task.FromResult(new ApiResponse<MarketPricesResult>(r));
+            }
+            return Task.FromResult(default(ApiResponse<MarketPricesResult>));
         }
 
         public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiPrivateTestContext context)
@@ -28,9 +47,7 @@ namespace Prime.Common
         {
             context = context ?? new NetworkProviderContext();
 
-            return AssetPairCache.I.TryAsync(provider,
-                async () => await ApiHelpers.WrapException(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs),
-                    provider, context));
+            return AssetPairCache.I.TryAsync(provider, () => ApiHelpers.WrapException(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs), provider, context));
         }
 
         public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)
@@ -42,7 +59,7 @@ namespace Prime.Common
         {
             return ApiHelpers.WrapException(async delegate
             {
-                var r = await provider.GetAssetPricesAsync(context);
+                var r = await provider.GetAssetPricesAsync(context).ConfigureAwait(false);
                 return r.MarketPrices.FirstOrDefault();
             }, "GetPrices (x1)", provider, context);
         }
@@ -82,7 +99,7 @@ namespace Prime.Common
 
         private static async Task<BalanceResults> CheckedBalancesAsync(IBalanceProvider provider, NetworkProviderPrivateContext context)
         {
-            var r = await provider.GetBalancesAsync(context);
+            var r = await provider.GetBalancesAsync(context).ConfigureAwait(false);
             if (r == null)
                 return null;
 

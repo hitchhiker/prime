@@ -61,24 +61,26 @@ namespace Prime.Utility
             KeepAlive.RemoveAll(x => x.Item1 == recipient);
         }
 
-        public static T WaitForMessageResponseHack<T>(this object requestMessage, Func<T, bool> messageCheck)
+        public static T WaitForResponse<TSend, T>(this TSend requestMessage, Func<T, bool> messageCheck = null)
         {
-            var m = DefaultMessenger.I.Default;
-            m.Send(requestMessage);
-            var r = default(T);
-            var obj = new object();
+            var registrationobj = new object();
 
-            m.Register<T>(obj, msg =>
+            var m = DefaultMessenger.I.Default;
+            var r = default(T);
+
+            m.Register<T>(registrationobj, msg =>
             {
                 r = msg;
             });
 
+            m.Send(requestMessage);
+
             do
             {
                 Thread.Sleep(1);
-            } while (Equals(r, default(T)) || messageCheck(r)==false);
+            } while (Equals(r, default) || messageCheck != null && messageCheck(r)==false);
 
-            m.Unregister(obj);
+            m.Unregister(registrationobj);
             return r;
         }
     }

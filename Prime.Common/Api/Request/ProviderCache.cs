@@ -11,15 +11,12 @@ namespace Prime.Common
         {
         }
 
-        public async Task<T2> TryAsync(T provider, Func<Task<T2>> pull)
+        public Task<T2> TryAsync(T provider, Func<Task<T2>> pull)
         {
-            var task = new Task<T2>(() =>
+            return Task.Run(() =>
             {
                 return Try(provider, k => AsyncContext.Run(pull.Invoke));
             });
-
-            task.Start();
-            return await task;
         }
     }
 }

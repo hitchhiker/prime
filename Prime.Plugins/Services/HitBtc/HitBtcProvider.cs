@@ -77,9 +77,12 @@ namespace Prime.Plugins.Services.HitBtc
                     continue;
                 }
 
-                var ticker = tickers.First();
+                var ticker = tickers.FirstOrDefault();
 
-                CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
+                if (ticker.Value?.last == null)
+                    continue;
+
+                //CheckNullableResult(ticker.Value.last, String.Format(ErroTextrNoLatestValueForPair, pair.TickerDash()));
 
                 prices.MarketPrices.Add(new MarketPrice(pair, ticker.Value.last.Value));
             }

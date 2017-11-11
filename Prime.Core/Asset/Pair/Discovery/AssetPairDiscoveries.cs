@@ -23,7 +23,7 @@ namespace Prime.Core
         {
             Context = requestMessage;
             ProcessState = ProcessState.None;
-            new Task(Discover).Start();
+            Task.Run(()=> Discover());
         }
         
         private void Discover()
@@ -38,6 +38,9 @@ namespace Prime.Core
             }
 
             Discover(Context.Pair);
+
+            if (!Discovered.Contains(DiscoverFirst))
+                Discovered.Add(DiscoverFirst);
 
             lock (_lock)
                 ProcessState = ProcessState.Success;

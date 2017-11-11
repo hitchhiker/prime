@@ -164,43 +164,6 @@ namespace Prime.Core
             var resultMsg = new LatestPriceResultMessage(Provider, response);
             _messenger.SendAsync(resultMsg);
         }
-        /*
-        private void SendResults(LatestPrice price, Request request)
-        {
-            if (!request.IsConvertedPart2)
-            {
-                var isreversed = !Equals(request.Pair.Asset2, price.QuoteAsset);
-                var priceNormalised = isreversed ? price.Reverse() : price;
-                var pair = request.Pair;
-
-                var resultMsg = request.LastResult = new LatestPriceResultMessage(Provider, priceNormalised);
-                request.LastPrice = priceNormalised;
-                CheckMessage(resultMsg);
-                _messenger.SendAsync(resultMsg);
-            }
-
-            if (request.IsConverted)
-                SendConverted(request);
-        }
-
-        private void SendConverted(Request request)
-        {
-            /*if (request.ConvertedOther?.LastResult == null || request.ConvertedOther?.LastPrice == null)
-                return;
-
-            var p1 = request.IsConvertedPart1 ? request : request.ConvertedOther;
-            var p2 = request.IsConvertedPart2 ? request : request.ConvertedOther;
-
-            var resultMsg = request.LastResult = new LatestPriceResultMessage(p1.Pair, p1.LastPrice, p2.LastPrice, p1.Discovered.Provider<IPublicPriceSuper>(), p2.Discovered.Provider<IPublicPriceSuper>());
-            CheckMessage(resultMsg);
-            _messenger.SendAsync(resultMsg);
-        }
-
-        public void CheckMessage(LatestPriceResultMessage m)
-        {
-            if (m.Pair.Equals(new AssetPair("BTC", "USD")) && m.Price < 10)
-                throw new Exception("Bad price caught.");
-        }*/
 
         private bool _isDisposed;
         public void Dispose()
