@@ -17,6 +17,6 @@ namespace Prime.Common
         public List<MarketPrice> MarketPrices { get; set; }
         public bool IsCompleted => MissedPairs.Count == 0;
 
-        public AssetPairs MissedPairs { get; set; }
+        public AssetPairs MissedPairs { get; set; } = new AssetPairs();
     }
 }
