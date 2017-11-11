@@ -30,7 +30,7 @@ namespace Prime.Core.Prices.Latest
 
         public bool IsConverted => IsConvertedPart1 || IsConvertedPart2;
 
-        public bool IsReversed => !IsConverted && IsDiscovered && Pair.Equals(Discovered.Pair.Reverse());
+        public bool IsReversed => !IsConverted && IsDiscovered && Pair.Equals(Discovered.Pair.Reversed);
 
         public LatestPriceResultMessage LastConvert1 { get; set; }
 

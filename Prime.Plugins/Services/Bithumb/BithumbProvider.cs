@@ -73,7 +73,7 @@ namespace Prime.Plugins.Services.Bithumb
             if (!context.Pair.Asset2.Equals(krwAsset))
                 throw new NoAssetPairException(context.Pair, this);
 
-            var latestPrice = new MarketPrice(context.Pair, r.data.sell_price);
+            var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price);
 
             return latestPrice;
         }
@@ -103,7 +103,7 @@ namespace Prime.Plugins.Services.Bithumb
                 }
 
                 var rTiker = rTickers[0];
-                prices.MarketPrices.Add(new MarketPrice(pair, rTiker.Value.sell_price));
+                prices.MarketPrices.Add(new MarketPrice(Network,  pair, rTiker.Value.sell_price));
             }
 
             return prices;

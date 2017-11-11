@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.BitMex
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new MarketPrice(context.Pair, rPrice.lastPrice.Value);
+            return new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value);
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -146,7 +146,7 @@ namespace Prime.Plugins.Services.BitMex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, data.lastPrice.Value));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, data.lastPrice.Value));
             }
 
             return prices;

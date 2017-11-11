@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.Gdax
             var pairCode = context.Pair.TickerDash();
             var r = await api.GetProductTicker(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(context.Pair, r.price);
+            return new MarketPrice(Network, context.Pair, r.price);
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.Cex
 
             var r = await api.GetLastPrice(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(context.Pair, r.lprice);
+            return new MarketPrice(Network, context.Pair, r.lprice);
         }
 
         private string GetCexTicker(AssetPair pair)
@@ -97,7 +97,7 @@ namespace Prime.Plugins.Services.Cex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, rPair.lprice));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, rPair.lprice));
             }
 
             return prices;

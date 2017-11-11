@@ -11,17 +11,19 @@ namespace Prime.Common
         /// The result would be a market price in USD, and a QuoteAsset of BTC
         /// Avoid using this constructor unless you are clear with this information.
         /// </summary>
+        /// <param name="network"></param>
         /// <param name="pair"></param>
         /// <param name="value"></param>
         /// <param name="utcCreated"></param>
-        public MarketPrice(AssetPair pair, decimal value, DateTime? utcCreated = null)
+        public MarketPrice(Network network, AssetPair pair, decimal value, DateTime? utcCreated = null)
         {
+            Network = network;
             Pair = pair;
             UtcCreated = utcCreated ?? DateTime.UtcNow;
             Price = new Money(value, pair.Asset2);
         }
 
-        public MarketPrice(Asset quoteAsset, Money price) : this(new AssetPair(quoteAsset, price.Asset), price)
+        public MarketPrice(Network network, Asset quoteAsset, Money price) : this(network, new AssetPair(quoteAsset, price.Asset), price)
         {
         }
 
@@ -29,6 +31,9 @@ namespace Prime.Common
         public PriceStatistics PriceStatistics { get; set; }
 
         public Asset QuoteAsset => Pair.Asset1;
+
+        [Bson]
+        public Network Network { get; private set; }
 
         [Bson]
         public AssetPair Pair { get; private set; }
@@ -41,7 +46,7 @@ namespace Prime.Common
 
         public MarketPrice Reverse()
         {
-            return new MarketPrice(Price.Asset, Price.ReverseAsset(QuoteAsset));
+            return new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset));
         }
 
         public MarketPrice AsQuote(Asset quote)

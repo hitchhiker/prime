@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.Korbit
 
                 var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-                return new MarketPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
+                return new MarketPrice(Network, context.Pair, r.last, sTimeStamp.ToUtcDateTime());
             }
             catch (ApiException ex)
             {

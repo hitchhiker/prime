@@ -48,7 +48,7 @@ namespace Prime.Plugins.Services.HitBtc
                 throw new NoAssetPairException(context.Pair, this);
 
             // TODO: test statistics.
-            return new MarketPrice(context.Pair, r.last.Value)
+            return new MarketPrice(Network, context.Pair, r.last.Value)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, r.volume_quote, r.ask, r.bid, r.low, r.high)
             };
@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.HitBtc
                 if (ticker.Value?.last == null)
                     continue;
 
-                prices.MarketPrices.Add(new MarketPrice(pair, ticker.Value.last.Value));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.Value.last.Value));
             }
 
             return prices;

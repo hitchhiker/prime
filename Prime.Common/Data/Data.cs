@@ -49,6 +49,12 @@ namespace Prime.Common
 
             g.ResolveMember = ResolveMember;
 
+            g.RegisterType<Money>
+            (
+                obj => obj.Serialise(),
+                bson => Money.DeSerialise(bson.AsString)
+            );
+
             g.RegisterType<Asset>
             (
                 obj => obj.ShortCode,

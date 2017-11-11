@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.ItBit
             var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             // TODO: test statistics.
-            return new MarketPrice(context.Pair, r.lastPrice)
+            return new MarketPrice(Network, context.Pair, r.lastPrice)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume24h, null, r.ask, r.bid, r.low24h, r.high24h)
             };

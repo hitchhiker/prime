@@ -129,7 +129,7 @@ namespace Prime.Plugins.Services.Fiat
                 if (rate.Key == null)
                     continue;
 
-                lp.MarketPrices.Add(new MarketPrice(rate.Key, rate.Value));
+                lp.MarketPrices.Add(new MarketPrice(Network, rate.Key, rate.Value));
             }
 
             return lp;

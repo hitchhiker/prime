@@ -125,7 +125,7 @@ namespace Prime.Plugins.Services.Binance
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, lpr.price));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, lpr.price));
             }
 
             return prices;

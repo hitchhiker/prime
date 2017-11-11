@@ -69,7 +69,7 @@ namespace Prime.Core.Prices.Latest
 
         private bool TryConversion(AssetPairNetworks networks, LatestPriceResultMessage m, bool reverse)
         {
-            var pair = reverse ? networks.Pair.Reverse() : networks.Pair;
+            var pair = reverse ? networks.Pair.Reversed : networks.Pair;
             if (!pair.Equals(m.Pair))
                 return false;
 
@@ -97,7 +97,7 @@ namespace Prime.Core.Prices.Latest
             var p2F = reverse2 ? 1 / p2.Price : p2.Price;
 
             var price = new Money(p1F * p2F, _request.Pair.Asset2);
-            var market = new MarketPrice(_request.Pair.Asset1, price);
+            var market = new MarketPrice(p1.Provider.Network, _request.Pair.Asset1, price);
 
             var message = new LatestPriceResultMessage(market, _nets.Intermediary, p1.MarketPrice, p2.MarketPrice, p1.Provider, p2.Provider);
 

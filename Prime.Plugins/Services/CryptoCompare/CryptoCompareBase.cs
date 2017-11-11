@@ -116,7 +116,7 @@ namespace Prime.Plugins.Services.CryptoCompare
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(i, (decimal) r.Value));
+                prices.MarketPrices.Add(new MarketPrice(Network, i, (decimal) r.Value));
             }
 
             return prices;

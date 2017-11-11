@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Gemini
             var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
             // TODO: implement statistics.
-            return new MarketPrice(context.Pair, r.last)
+            return new MarketPrice(Network, context.Pair, r.last)
             {
                 // PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, null, null)
             };
