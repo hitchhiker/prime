@@ -46,7 +46,7 @@ namespace Prime.Common
 
         public MarketPrice Reverse()
         {
-            return new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset));
+            return new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset)) {UtcCreated = UtcCreated};
         }
 
         public MarketPrice AsQuote(Asset quote)

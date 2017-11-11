@@ -32,10 +32,10 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override Task TestGetPriceAsync()
         {
-            PublicPriceContext = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
-            await base.TestGetPriceAsync();
+            var c = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
+            return base.TestGetPriceAsync(c, true);
         }
 
         [TestMethod]

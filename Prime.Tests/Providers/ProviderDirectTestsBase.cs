@@ -14,6 +14,9 @@ namespace Prime.Tests.Providers
 {
     public abstract class ProviderDirectTestsBase
     {
+        [Obsolete]
+        protected PublicPriceContext PublicPriceContext { get; set; }
+
         public INetworkProvider Provider { get; protected set; }
 
         #region Wrappers
@@ -34,9 +37,14 @@ namespace Prime.Tests.Providers
 
         public virtual async Task TestGetPriceAsync()
         {
-            var p = IsType<IPublicPriceProvider>();
+
+        }
+
+        public async Task TestGetPriceAsync(PublicPriceContext context, bool lessThan1)
+        {
+            var p = IsType<IPublicPriceSuper>();
             if (p.Success)
-                await GetPairPriceAsync(p.Provider);
+                await GetPairPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
         }
 
         public virtual async Task TestGetAssetPricesAsync()
@@ -196,22 +204,31 @@ namespace Prime.Tests.Providers
             }
         }
 
-        protected PublicPriceContext PublicPriceContext { get; set; }
-
-        private async Task GetPairPriceAsync(IPublicPriceProvider provider)
+        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context = null, bool lessThan1)
         {
-            if (PublicPriceContext == null)
-            {
-                PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "USD"));
-            }
+            if (context == null)
+                return;
+
+            MarketPrice c = null;
 
             try
             {
-                var c = await provider.GetPriceAsync(PublicPriceContext);
+                if (provider is IPublicPriceProvider ipp)
+                    c = await ipp.GetPriceAsync(context).ConfigureAwait(false);
+                else if (provider is IPublicPricesProvider ips)
+                {
+                    var r = await ips.GetPricesAsync(context).ConfigureAwait(false);
+                    c = r?.MarketPrices?.FirstOrDefault();
+                }
 
                 Assert.IsTrue(c != null);
-                Assert.IsTrue(c.QuoteAsset.Equals(PublicPriceContext.Pair.Asset1));
-                Assert.IsTrue(c.Price.Asset.Equals(PublicPriceContext.Pair.Asset2));
+                Assert.IsTrue(c.QuoteAsset.Equals(context.Pair.Asset1));
+                Assert.IsTrue(c.Price.Asset.Equals(context.Pair.Asset2));
+
+                if (lessThan1)//checks if the pair is reversed (price-wise)
+                    Assert.IsTrue(c.Price < 1);
+                else
+                    Assert.IsTrue(c.Price > 1);
 
                 Trace.WriteLine($"Quote asset: {c.QuoteAsset}, Price: {c.Price.Display}");
             }

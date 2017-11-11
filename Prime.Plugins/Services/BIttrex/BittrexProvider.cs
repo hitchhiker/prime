@@ -103,7 +103,7 @@ namespace Prime.Plugins.Services.Bittrex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, ms.Last));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / ms.Last));
             }
 
             return prices;

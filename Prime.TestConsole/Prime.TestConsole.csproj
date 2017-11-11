@@ -152,6 +152,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.AssetPairNetworkRoute.cs" />
+    <Compile Include="Program.AssetPairNetworksSummary.cs" />
     <Compile Include="Program.Frank.cs" />
     <Compile Include="Program.CoinbaseTests.cs" />
     <Compile Include="Program.cs" />
