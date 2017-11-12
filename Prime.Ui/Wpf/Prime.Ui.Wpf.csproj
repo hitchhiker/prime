@@ -392,6 +392,18 @@
     <Compile Include="View\Sidebar\SidebarFlyoutBar.xaml.cs">
       <DependentUpon>SidebarFlyoutBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Ticker\Ticker.xaml.cs">
+      <DependentUpon>Ticker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ticker\TickerContainer.xaml.cs">
+      <DependentUpon>TickerContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ticker\TickerNewsItem.xaml.cs">
+      <DependentUpon>TickerNewsItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ticker\TickerPrice.xaml.cs">
+      <DependentUpon>TickerPrice.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Trade\BuyControl.xaml.cs">
       <DependentUpon>BuyControl.xaml</DependentUpon>
     </Compile>
@@ -567,6 +579,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Sidebar\SidebarFlyoutBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ticker\Ticker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ticker\TickerContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ticker\TickerNewsItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ticker\TickerPrice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="Prime.Ui.Wpf.View.Ticker.Ticker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Prime.Ui.Wpf.View.Ticker"
+             xmlns:ticker="clr-namespace:Prime.Ui.Wpf.ViewModel.Ticker"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance ticker:TickerViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Orientation="Horizontal" x:Name="Stack">
+        <StackPanel.Resources>
+            <local:NegatingConverter x:Key="NegatingConverter" />
+            <Storyboard x:Key="Slide">
+                <DoubleAnimation From="0" To="{Binding Width, ElementName=Canvas, Converter={StaticResource NegatingConverter}}" Duration="00:00:13"
+                      Storyboard.TargetProperty="X"
+                      Storyboard.TargetName="Transform"
+                      RepeatBehavior="Forever"/>
+            </Storyboard>
+        </StackPanel.Resources>
+        <StackPanel.RenderTransform>
+            <TranslateTransform x:Name="Transform" X="0"/>
+        </StackPanel.RenderTransform>
+        <StackPanel.Triggers>
+            <EventTrigger RoutedEvent="StackPanel.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource Slide}" />
+            </EventTrigger>
+            <EventTrigger RoutedEvent="StackPanel.SizeChanged">
+                <BeginStoryboard Storyboard="{StaticResource Slide}" />
+            </EventTrigger>
+        </StackPanel.Triggers>
+        <Canvas x:Name="Canvas" Width="{Binding ActualWidth, ElementName=Stack}">
+            <ItemsControl Canvas.Left="0" ItemsSource="{Binding ListTickerItems}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type ticker:TickerNewsItemViewModel}">
+                        <local:TickerNewsItem Margin="0,0,50,0"></local:TickerNewsItem>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type ticker:TickerPriceViewModel}">
+                        <local:TickerPrice Margin="0,0,50,0"></local:TickerPrice>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+            </ItemsControl>
+            <ItemsControl Canvas.Left="{Binding Width, ElementName=Canvas}" ItemsSource="{Binding ListTickerItems}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type ticker:TickerNewsItemViewModel}">
+                        <local:TickerNewsItem Margin="0,0,50,0"></local:TickerNewsItem>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type ticker:TickerPriceViewModel}">
+                        <local:TickerPrice Margin="0,0,50,0"></local:TickerPrice>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+            </ItemsControl>
+        </Canvas>
+    </StackPanel>
+</UserControl>
