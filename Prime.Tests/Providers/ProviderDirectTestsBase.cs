@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -224,7 +225,24 @@ namespace Prime.Tests.Providers
             try
             {
                 if (provider is IPublicPriceProvider ipp)
+                {
                     c = await ipp.GetPriceAsync(context).ConfigureAwait(false);
+
+                    if (provider is IPublicPriceStatistics ipps)
+                    {
+                        // Only for single asset is supported
+
+                        Assert.IsTrue(c.HasStatistics, "Market price does not have statistics");
+                        Trace.WriteLine("Market price statistics:");
+
+                        Trace.WriteLine($"Bid: {(c.PriceStatistics.HasHighestBid ? c.PriceStatistics.HighestBid.Display : "-")}");
+                        Trace.WriteLine($"Ask: {(c.PriceStatistics.HasLowestAsk ? c.PriceStatistics.LowestAsk.Display : "-")}");
+                        Trace.WriteLine($"Low: {(c.PriceStatistics.HasPrice24Low ? c.PriceStatistics.Price24Low.Display : "-")}");
+                        Trace.WriteLine($"High: {(c.PriceStatistics.HasPrice24High ? c.PriceStatistics.Price24High.Display : "-")}");
+                        Trace.WriteLine($"Volume 24h: {(c.PriceStatistics.HasVolume24 ? c.PriceStatistics.Volume24.ToString(CultureInfo.InvariantCulture) : "-")}");
+                        Trace.WriteLine($"Quote volume 24h: {(c.PriceStatistics.HasVolume24Quote ? c.PriceStatistics.Volume24Quote.ToString(CultureInfo.InvariantCulture) : "-" )}\n");
+                    }
+                }
                 else if (provider is IPublicPricesProvider ips)
                 {
                     var r = await ips.GetPricesAsync(context).ConfigureAwait(false);
