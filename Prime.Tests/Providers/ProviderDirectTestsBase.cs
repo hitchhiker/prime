@@ -42,7 +42,7 @@ namespace Prime.Tests.Providers
         {
             var p = IsType<IPublicPriceSuper>();
             if (p.Success)
-                await GetPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
+                await GetPairPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
         }
 
         public virtual async Task TestGetAssetPricesAsync() { }
@@ -214,7 +214,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context = null, bool lessThan1)
+        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context, bool lessThan1)
         {
             if (context == null)
                 return;
