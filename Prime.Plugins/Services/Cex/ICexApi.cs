@@ -9,12 +9,12 @@ namespace Prime.Plugins.Services.Cex
     internal interface ICexApi
     {
         [Get("/tickers/USD/EUR/RUB/BTC")]
-        Task<CexSchema.TickersResponse> GetTickers();
+        Task<CexSchema.TickersResponse> GetTickersAsync();
 
         [Get("/last_price/{currencyPair}")]
-        Task<CexSchema.LatestPriceResponse> GetLastPrice([Path(UrlEncode = false)] string currencyPair);
+        Task<CexSchema.LatestPriceResponse> GetLastPriceAsync([Path(UrlEncode = false)] string currencyPair);
 
         [Get("/last_prices/USD/EUR/RUB/BTC")]
-        Task<CexSchema.LatestPricesResponse> GetLastPrices();
+        Task<CexSchema.LatestPricesResponse> GetLastPricesAsync();
     }
 }

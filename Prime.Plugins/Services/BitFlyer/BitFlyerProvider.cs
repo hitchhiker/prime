@@ -42,9 +42,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         public Task<bool> TestPublicApiAsync()
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
@@ -52,10 +50,12 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
 
-            var r = await api.GetTicker(productCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 
-            // TODO: implement volume.
-            return new MarketPrice(context.Pair, r.ltp);
+            return new MarketPrice(Network, context.Pair, r.ltp)
+            {
+                PriceStatistics = new PriceStatistics(context.Pair.Asset2, r.volume, null, r.best_ask, r.best_bid, null, null)
+            };
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -68,7 +68,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var pairCode = GetBitFlyerTicker(context.Pair);
 
-            var r = await api.GetBoard(pairCode).ConfigureAwait(false);
+            var r = await api.GetBoardAsync(pairCode).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2)
@@ -116,7 +116,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var assetPairs = new AssetPairs();
 
-            var r = await api.GetMarkets().ConfigureAwait(false);
+            var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
             foreach (var rMarket in r)
             {
@@ -140,7 +140,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var api = ApiProvider.GetApi(context);
             var productCode = GetBitFlyerTicker(context.Pair);
 
-            var r = await api.GetTicker(productCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

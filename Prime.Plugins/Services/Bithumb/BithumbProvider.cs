@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Bithumb
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
             var krwAsset = Asset.Krw;
@@ -66,14 +66,14 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var currency = context.Pair.Asset1.ToRemoteCode(this);
 
-            var r = await api.GetTicker(currency).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(currency).ConfigureAwait(false);
 
             var krwAsset = Asset.Krw;
 
             if (!context.Pair.Asset2.Equals(krwAsset))
                 throw new NoAssetPairException(context.Pair, this);
 
-            var latestPrice = new MarketPrice(context.Pair, r.data.sell_price);
+            var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price);
 
             return latestPrice;
         }
@@ -86,7 +86,7 @@ namespace Prime.Plugins.Services.Bithumb
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetTickers().ConfigureAwait(false);
+            var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
             var r = ParseTickerResponse(rRaw);
 
             var krwAsset = Asset.Krw;
@@ -96,14 +96,14 @@ namespace Prime.Plugins.Services.Bithumb
             foreach (var pair in context.Pairs)
             {
                 var rTickers = r.Where(x => x.Key.ToAsset(this).Equals(pair.Asset1)).ToArray();
-                if (rTickers.Length < 1 || !pair.Asset2.Equals(krwAsset))
+                if (!rTickers.Any() || !pair.Asset2.Equals(krwAsset))
                 {
                     prices.MissedPairs.Add(pair);
                     continue;
                 }
 
                 var rTiker = rTickers[0];
-                prices.MarketPrices.Add(new MarketPrice(pair, rTiker.Value.sell_price));
+                prices.MarketPrices.Add(new MarketPrice(Network,  pair, rTiker.Value.sell_price));
             }
 
             return prices;

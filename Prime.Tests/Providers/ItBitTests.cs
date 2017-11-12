@@ -33,18 +33,13 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            await base.TestGetPriceAsync();
+            var context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            var ctx = new VolumeContext()
-            {
-                Pair = "BTC_USD".ToAssetPairRaw()
-            };
-            GetVolumeFunc = () => ((ItBitProvider)Provider).GetVolumeAsync(ctx);
-
             await base.TestGetVolumeAsync();
         }
     }

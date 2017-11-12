@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPricesProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -34,7 +35,7 @@ namespace Prime.Plugins.Services.Kraken
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1);
         public IRateLimiter RateLimiter => Limiter;
 
-        
+
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
 
@@ -88,10 +89,59 @@ namespace Prime.Plugins.Services.Kraken
             var ticker = r.result.FirstOrDefault().Value;
 
             // TODO: test statistics.
-            return new MarketPrice(context.Pair, ticker.c[0])
+            return new MarketPrice(Network,  context.Pair, ticker.c[0])
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, ticker.v[1], null, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1])
             };
+        }
+
+        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        {
+            return GetPricesAsync(context);
+        }
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var pairsCsv = context.Pairs.Aggregate("", (s, pair) => s += GetKrakenTicker(pair) + ",").TrimEnd(',');
+
+            var r = await api.GetTickerInformationAsync(pairsCsv).ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            var prices = new MarketPricesResult();
+            foreach (var pair in context.Pairs)
+            {
+                var rTicker = r.result.Where(x => ComparePairs(pair, x.Key)).ToArray();
+
+                if (!rTicker.Any())
+                {
+                    prices.MissedPairs.Add(pair);
+                    continue;
+                }
+
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, rTicker.First().Value.c[0]));
+            }
+
+            return prices;
+        }
+
+        private bool ComparePairs(AssetPair pair, string krakenPairCode)
+        {
+            var pattern = @"^(([X](?<asset10>\w{3}))|((?<asset11>.\w{3})))[XZ](?<asset20>\w{3})$";
+            var matches = Regex.Match(krakenPairCode, pattern);
+
+            if (!matches.Success || !matches.Groups["asset20"].Success || (!matches.Groups["asset10"].Success && !matches.Groups["asset11"].Success))
+                return false;
+
+            var krakenPair = new AssetPair(
+                matches.Groups["asset10"].Success ? matches.Groups["asset10"].Value : matches.Groups["asset11"].Value,
+                matches.Groups["asset20"].Value,
+                this
+                );
+
+            return pair.Equals(krakenPair);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -104,13 +154,22 @@ namespace Prime.Plugins.Services.Kraken
 
             var assetPairs = new AssetPairs();
 
-            foreach (var assetPair in r.result)
+            // BUG: USDTUSD fix. USDTUSD -> USD.T issue.
+            var usdtUsd = "USDTUSD";
+            if (r.result.Any(x => x.Value.altname.Equals(usdtUsd)))
             {
-                var ticker = assetPair.Key;
-                var first = assetPair.Value.base_c;
-                var second = ticker.Replace(first, "");
+                r.result.RemoveAll(x => x.Value.altname.Equals(usdtUsd));
+                assetPairs.Add(new AssetPair("USDT", "USD"));
+            }
 
-                assetPairs.Add(new AssetPair(first, second, this));
+            foreach (var assetPair in r.result.Where(x => !x.Key.ToLower().EndsWith(".d")).OrderBy(x => x.Value.altname.Length))
+            {
+                var pair = AssetsUtilities.GetAssetPair(assetPair.Value.altname, assetPairs);
+
+                if (!pair.HasValue)
+                    continue;
+
+                assetPairs.Add(new AssetPair(pair.Value.AssetCode1.ToAsset(this), pair.Value.AssetCode2.ToAsset(this)));
             }
 
             return assetPairs;
@@ -204,7 +263,7 @@ namespace Prime.Plugins.Services.Kraken
             body.Add("method", fundingMethod);
             body.Add("new", generateNew);
 
-            var r = await api.GetDepositAddresses(body).ConfigureAwait(false);
+            var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var walletAddresses = new WalletAddresses();
@@ -323,7 +382,7 @@ namespace Prime.Plugins.Services.Kraken
 
         private (decimal Price, decimal Volume, DateTime TimeStamp) GetBidAskData(string[] dataArray)
         {
-            if(dataArray == null)
+            if (dataArray == null)
                 throw new ApiResponseException("Invalid order book data response", this);
 
             decimal price;
@@ -337,7 +396,7 @@ namespace Prime.Plugins.Services.Kraken
             if (!decimal.TryParse(dataArray[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out volume))
                 throw new ApiResponseException("Incorrect order book data format", this);
 
-            if(!long.TryParse(dataArray[2], out timeStampUnix))
+            if (!long.TryParse(dataArray[2], out timeStampUnix))
                 throw new ApiResponseException("Incorrect order book data format", this);
 
             timeStamp = timeStampUnix.ToUtcDateTime();
@@ -357,8 +416,8 @@ namespace Prime.Plugins.Services.Kraken
         {
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-            
-            var r = await api.GetOrderBook(remotePair.TickerSimple(), maxCount ?? 0).ConfigureAwait(false);
+
+            var r = await api.GetOrderBookAsync(remotePair.TickerSimple(), maxCount ?? 0).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -366,7 +425,7 @@ namespace Prime.Plugins.Services.Kraken
             var orderBook = new OrderBook();
 
             var asks = maxCount.HasValue ? data.Value.asks.Take(maxCount.Value / 2).ToArray() : data.Value.asks;
-            var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray(): data.Value.bids;
+            var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray() : data.Value.bids;
 
             foreach (var askArray in asks)
             {

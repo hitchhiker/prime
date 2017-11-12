@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -62,9 +62,9 @@ namespace Prime.Plugins.Services.Cex
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCexTicker(context.Pair);
 
-            var r = await api.GetLastPrice(pairCode).ConfigureAwait(false);
+            var r = await api.GetLastPriceAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(context.Pair, r.lprice);
+            return new MarketPrice(Network, context.Pair, r.lprice);
         }
 
         private string GetCexTicker(AssetPair pair)
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLastPrices().ConfigureAwait(false);
+            var r = await api.GetLastPricesAsync().ConfigureAwait(false);
             CheckResponseError(r);
 
             var prices = new MarketPricesResult();
@@ -97,7 +97,7 @@ namespace Prime.Plugins.Services.Cex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, rPair.lprice));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, rPair.lprice));
             }
 
             return prices;
@@ -112,7 +112,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickers().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             CheckResponseError(r);
 

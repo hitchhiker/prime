@@ -60,8 +60,8 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            PublicPriceContext = new PublicPriceContext(new AssetPair("BTC", "LTC"));
-            await base.TestGetPriceAsync();
+            var context = new PublicPriceContext("BTC_LTC".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -102,11 +102,10 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            var ctx = new VolumeContext()
+            VolumeContext = new VolumeContext()
             {
                 Pair = "BTC_LTC".ToAssetPairRaw()
             };
-            GetVolumeFunc = () => ((BittrexProvider) Provider).GetVolumeAsync(ctx);
 
             await base.TestGetVolumeAsync();
         }

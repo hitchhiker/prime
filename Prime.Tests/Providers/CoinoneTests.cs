@@ -37,9 +37,8 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            PublicPriceContext = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
-
-            await base.TestGetPriceAsync();
+            var context = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -75,18 +74,6 @@ namespace Prime.Tests.Providers
             }, "KRW".ToAssetRaw());
 
             await base.TestGetAssetPricesAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            var ctx = new VolumeContext()
-            {
-                Pair = "BCH_KRW".ToAssetPairRaw()
-            };
-            GetVolumeFunc = () => ((CoinoneProvider) Provider).GetVolumeAsync(ctx);
-
-            await base.TestGetVolumeAsync();
         }
     }
 }

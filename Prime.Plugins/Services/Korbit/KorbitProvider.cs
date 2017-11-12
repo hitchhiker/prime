@@ -59,11 +59,11 @@ namespace Prime.Plugins.Services.Korbit
 
             try
             {
-                var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+                var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
                 var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-                return new MarketPrice(context.Pair, r.last, sTimeStamp.ToUtcDateTime());
+                return new MarketPrice(Network, context.Pair, r.last, sTimeStamp.ToUtcDateTime());
             }
             catch (ApiException ex)
             {
@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Korbit
             var api = ApiProvider.GetApi(context);
             var pairCode = GetKorbitTicker(context.Pair);
 
-            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue 
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2) 

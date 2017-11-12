@@ -816,6 +816,11 @@ namespace Prime.Common
             return _units + _decimalFraction / FractionScale;
         }
 
+        public Double ToDoubleValue()
+        {
+            return (double) (_units + _decimalFraction / FractionScale);
+        }
+
         private static InvalidOperationException differentCurrencies()
         {
             return new InvalidOperationException("Money values are in different " +
@@ -855,5 +860,19 @@ namespace Prime.Common
             return new Money((decimal)Rnd.I.Next(low, high), asset);
         }
 
+        public string Serialise()
+        {
+            return Asset.ShortCode + ":" + ToDoubleValue();
+        }
+
+        public static Money DeSerialise(string txt)
+        {
+            var p = txt.Split(':');
+            if (p.Length != 2)
+                return Money.Zero;
+
+            var asset = p[0].ToAssetRaw();
+            return new Money(p[1].ToDecimal(), asset);
+        }
     }
 }

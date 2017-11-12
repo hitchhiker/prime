@@ -23,7 +23,7 @@ namespace Prime.Core
         {
             Context = requestMessage;
             ProcessState = ProcessState.None;
-            new Task(Discover).Start();
+            Task.Run(()=> Discover());
         }
         
         private void Discover()
@@ -38,6 +38,9 @@ namespace Prime.Core
             }
 
             Discover(Context.Pair);
+
+            if (!Discovered.Contains(DiscoverFirst))
+                Discovered.Add(DiscoverFirst);
 
             lock (_lock)
                 ProcessState = ProcessState.Success;
@@ -56,7 +59,7 @@ namespace Prime.Core
             if (Context.Network == null)
                 return null;
 
-            return DiscoverSpecified(pair, Context.Network) ?? (Context.ReversalEnabled ? DiscoverSpecified(pair.Reverse(), Context.Network) : null);
+            return DiscoverSpecified(pair, Context.Network) ?? (Context.ReversalEnabled ? DiscoverSpecified(pair.Reversed, Context.Network) : null);
         }
 
         private static AssetPairNetworks DiscoverSpecified(AssetPair pair, Network network)
@@ -67,7 +70,7 @@ namespace Prime.Core
 
         private static AssetPairNetworks Discover(AssetPair pair, bool canReverse)
         {
-            return DiscoverReversable(pair) ?? (canReverse ? DiscoverReversable(pair.Reverse()) : null);
+            return DiscoverReversable(pair) ?? (canReverse ? DiscoverReversable(pair.Reversed) : null);
         }
 
         private static AssetPairNetworks DiscoverReversable(AssetPair pair)
@@ -81,7 +84,7 @@ namespace Prime.Core
             if (!canPeg)
                 return null;
 
-            return DiscoverPeggedReversable(pair) ?? (canReverse ? DiscoverPeggedReversable(pair.Reverse()) : null);
+            return DiscoverPeggedReversable(pair) ?? (canReverse ? DiscoverPeggedReversable(pair.Reversed) : null);
         }
 
         private static AssetPairNetworks DiscoverPeggedReversable(AssetPair pair)
@@ -115,7 +118,7 @@ namespace Prime.Core
         private AssetPairNetworks DoIntermerdiaryReverseable(AssetPair pair, Asset intermediary)
         {
             var p1 = DiscoverFromIntermediary(pair, intermediary, Context.PeggedEnabled);
-            var p2 = Context.ReversalEnabled ? DiscoverFromIntermediary(pair.Reverse(), intermediary, Context.PeggedEnabled) : null;
+            var p2 = Context.ReversalEnabled ? DiscoverFromIntermediary(pair.Reversed, intermediary, Context.PeggedEnabled) : null;
 
             if (p1 != null)
                 Discovered.Add(p1);

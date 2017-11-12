@@ -17,21 +17,55 @@ namespace Prime.Common
 
         public async Task<IReadOnlyList<Network>> GetNetworksAsync(AssetPair pair, bool onlyDirect = false)
         {
-            var networks = new ConcurrentBag<Network>();
-            var q = onlyDirect ? Networks.I.AssetPairsProviders.Where(x=>x.IsDirect) : (IEnumerable<INetworkProvider>)Networks.I.AssetPairsProviders;
+            var r  = await GetNetworkPairsAsync().ConfigureAwait(false);
+            return r.Select(x => x.Key).ToUniqueList();
+        }
 
-            var tasks = q.Select(x => x.Network).Distinct().Select(async n =>
+        public async Task<IReadOnlyDictionary<Network, AssetPairs>> GetNetworksDiskAsync()
+        {
+            var results = new ConcurrentDictionary<Network, AssetPairs>();
+            var q = Networks.I.AssetPairsProviders.Where(x => x.IsDirect);
+            var nets = q.Select(x => x.Network).ToUniqueList();
+            foreach (var n in nets)
+            {
+                var d = PublicContext.I.As<AssetPairData>().FirstOrDefault(x => x.Id == AssetPairData.GetHash(n));
+                if (d != null)
+                    results.Add(n, d.Pairs);
+            }
+
+            var remain = nets.Where(x => !results.ContainsKey(x)).ToUniqueList();
+
+            if (!remain.Any())
+                return results;
+
+            foreach (var kv in await GetNetworkPairsAsync(remain).ConfigureAwait(false))
+            {
+                results.Add(kv.Key, kv.Value);
+                var ad = new AssetPairData(kv.Key, kv.Value);
+                ad.SavePublic();
+            }
+
+            return results;
+        }
+
+        public Task<IReadOnlyDictionary<Network,AssetPairs>> GetNetworkPairsAsync(bool onlyDirect = true)
+        {
+            var q = onlyDirect ? Networks.I.AssetPairsProviders.Where(x => x.IsDirect) : (IEnumerable<INetworkProvider>)Networks.I.AssetPairsProviders;
+            return GetNetworkPairsAsync(q.Select(x => x.Network).Distinct().ToUniqueList(), onlyDirect);
+        }
+
+        public async Task<IReadOnlyDictionary<Network, AssetPairs>> GetNetworkPairsAsync(UniqueList<Network> networks, bool onlyDirect = true)
+        {
+            var results = new ConcurrentDictionary<Network, AssetPairs>();
+
+            var tasks = networks.Select(async n =>
             {
                 var r = await GetPairsAsync(n).ConfigureAwait(false);
-                if (!r.Contains(pair))
-                    return;
-
-                networks.Add(n);
+                results.TryAdd(n, r);
             });
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            return networks.ToUniqueList();
+            return results.ToDictionary(x => x.Key, y => y.Value);
         }
 
         public async Task<IReadOnlyList<AssetPair>> GetPairsAsync(bool onlyDirect = true)

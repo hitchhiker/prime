@@ -5,7 +5,7 @@ namespace Prime.Plugins.Services.Coinbase
 {
     internal interface ICoinbaseApi
     {
-        [Get("accounts")]
+        [Get("/accounts")]
         Task<CoinbaseSchema.AccountsResponse> GetAccountsAsync();
 
         [Get("/accounts/{account_id}/addresses")]
@@ -17,10 +17,7 @@ namespace Prime.Plugins.Services.Coinbase
         [Get("/accounts/{account_id}/addresses")]
         Task<CoinbaseSchema.CreateWalletAddressResponse> CreateAddressAsync([Path("account_id")] string accountId);
 
-        [Get("/accounts")]
-        Task<CoinbaseSchema.AccountsResponse> GetAccounts();
-
         [Get("/prices/{currencyPair}/spot")]
-        Task<CoinbaseSchema.SpotPriceResponse> GetLatestPrice([Path] string currencyPair);
+        Task<CoinbaseSchema.SpotPriceResponse> GetLatestPriceAsync([Path] string currencyPair);
     }
 }

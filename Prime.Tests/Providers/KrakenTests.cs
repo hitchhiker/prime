@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +26,35 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            await base.TestGetPriceAsync();
+            var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPricesAsync()
+        {
+            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            {
+                "ETH".ToAssetRaw(),
+                "LTC".ToAssetRaw(),
+                "XRP".ToAssetRaw()
+            }, "BTC".ToAssetRaw());
+
+            await base.TestGetAssetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            {
+                "ETC_ETH".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "XRP_BTC".ToAssetPairRaw(),
+            });
+
+            await base.TestGetPricesAsync();
         }
 
         [TestMethod]
@@ -82,12 +111,6 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            var ctx = new VolumeContext()
-            {
-                Pair = "BTC_USD".ToAssetPairRaw()
-            };
-            GetVolumeFunc = () => ((KrakenProvider)Provider).GetVolumeAsync(ctx);
-
             await base.TestGetVolumeAsync();
         }
     }

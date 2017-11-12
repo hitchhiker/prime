@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.Coinone
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetTickers().ConfigureAwait(false);
+            var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 
@@ -117,11 +117,11 @@ namespace Prime.Plugins.Services.Coinone
             if (!context.Pair.Asset2.Equals(Asset.Krw))
                 throw new NoAssetPairException(context.Pair, this);
 
-            var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
             // TODO: test statistics.
-            return new MarketPrice(context.Pair, r.last)
+            return new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, null, null, r.low, r.high)
             };
@@ -136,7 +136,7 @@ namespace Prime.Plugins.Services.Coinone
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetTickers().ConfigureAwait(false);
+            var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = ParseTicker(rRaw);
@@ -153,7 +153,7 @@ namespace Prime.Plugins.Services.Coinone
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, ticker.last));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.last));
             }
 
             return prices;
@@ -166,7 +166,7 @@ namespace Prime.Plugins.Services.Coinone
             if (!context.Pair.Asset2.Equals(Asset.Krw))
                 throw new NoAssetPairException(context.Pair, this);
 
-            var r = await api.GetTicker(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

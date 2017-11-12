@@ -10,9 +10,9 @@ namespace Prime.Plugins.Services.Korbit
     internal interface IKorbitApi
     {
         [Get("/ticker?currency_pair={currencyPair}")]
-        Task<KorbitSchema.TickerResponse> GetTicker([Path] string currencyPair);
+        Task<KorbitSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/orderbook?currency_pair={currencyPair}")]
-        Task<KorbitSchema.OrderBookResponse> GetOrderBook([Path] string currencyPair);
+        Task<KorbitSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

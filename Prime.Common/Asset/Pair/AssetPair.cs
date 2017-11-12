@@ -48,11 +48,32 @@ namespace Prime.Common
         public bool IsNormalised => _isNormalised ?? (bool)(_isNormalised = string.CompareOrdinal(Asset1.ShortCode, Asset2.ShortCode) < 0);
 
         private AssetPair _normalised;
-        public AssetPair Normalised => _normalised ?? (_normalised = IsNormalised ? this : Reverse());
+        public AssetPair Normalised => _normalised ?? (_normalised = IsNormalised ? this : Reversed);
 
-        public AssetPair Reverse() => new AssetPair(Asset2, Asset1);
+        private AssetPair _reversed;
+        public AssetPair Reversed => _reversed ?? (_reversed = new AssetPair(Asset2, Asset1));
 
         public static AssetPair Empty => new AssetPair(Asset.None, Asset.None);
+
+        public bool Has(Asset asset)
+        {
+            return Asset1.Equals(asset) || Asset2.Equals(asset);
+        }
+
+        public Asset Other(Asset asset)
+        {
+            return Asset1.Equals(asset) ? Asset2 : Asset1;
+        }
+
+        public bool EqualsOrReversed(AssetPair pair)
+        {
+            return this.Equals(pair) || this.Equals(pair.Reversed);
+        }
+
+        public bool IsReversed(AssetPair pair)
+        {
+            return this.Equals(pair.Reversed);
+        }
 
         public string TickerDash()
         {

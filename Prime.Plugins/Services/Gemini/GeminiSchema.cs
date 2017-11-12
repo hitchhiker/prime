@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.Gemini
             public decimal ask;
             public decimal bid;
             public decimal last;
-            public object volume; // Is not needed at this point.
+            public Dictionary<string, decimal> volume; // Is not needed at this point.
         }
     }
 }

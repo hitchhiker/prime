@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Binance
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
             var endDate = (long)(context.Range.UtcTo.ToUnixTimeStamp() * 1000);
 
-            var r = await api.GetCandlestickBars(pairCode, interval, startDate, endDate).ConfigureAwait(false);
+            var r = await api.GetCandlestickBarsAsync(pairCode, interval, startDate, endDate).ConfigureAwait(false);
 
             var ohlc = new OhlcData(context.Market);
 
@@ -109,7 +109,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
+            var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
@@ -125,7 +125,7 @@ namespace Prime.Plugins.Services.Binance
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, lpr.price));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, lpr.price));
             }
 
             return prices;
@@ -135,72 +135,22 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
+            var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
 
             var assetPairs = new AssetPairs();
 
             foreach (var rPrice in r.OrderBy(x => x.symbol.Length))
             {
-                var pair = GetAssetPair(rPrice.symbol, assetPairs);
+                var pair = AssetsUtilities.GetAssetPair(rPrice.symbol, assetPairs);
 
-                if (pair == null)
+                if (!pair.HasValue)
                     continue; //throw new ApiResponseException($"Error during {rPrice.symbol} asset pair parsing", this);
 
-                assetPairs.Add(pair);
+                assetPairs.Add(new AssetPair(pair.Value.AssetCode1, pair.Value.AssetCode2));
             }
 
             return assetPairs;
-        }
-
-        private AssetPair GetAssetPair(string pairCode, AssetPairs existingPairs)
-        {
-            AssetPair assetPair = null;
-
-            if (pairCode.Length == 6)
-            {
-                var asset1 = pairCode.Substring(0, 3);
-                var asset2 = pairCode.Substring(3);
-
-                assetPair = new AssetPair(asset1, asset2);
-            }
-            else if (pairCode.Length > 6)
-            {
-                var existingAsset = FindAssetByPairCode(pairCode, existingPairs);
-
-                if (existingAsset == null)
-                    return null;
-
-                var asset1 = pairCode.Replace(existingAsset.ShortCode, "");
-                var asset2 = existingAsset.ShortCode;
-
-                assetPair = pairCode.StartsWith(existingAsset.ShortCode)
-                    ? new AssetPair(asset2, asset1)
-                    : new AssetPair(asset1, asset2);
-            }
-
-            return assetPair;
-        }
-
-        private Asset FindAssetByPairCode(string pairCode, AssetPairs pairs)
-        {
-            var asset = pairs.FirstOrDefault(x => pairCode.StartsWith(x.Asset1.ShortCode))?.Asset1;
-            if (asset != null)
-                return asset;
-
-            asset = pairs.FirstOrDefault(x => pairCode.StartsWith(x.Asset2.ShortCode))?.Asset2;
-            if (asset != null)
-                return asset;
-
-            asset = pairs.FirstOrDefault(x => pairCode.EndsWith(x.Asset1.ShortCode))?.Asset1;
-            if (asset != null)
-                return asset;
-
-            asset = pairs.FirstOrDefault(x => pairCode.EndsWith(x.Asset2.ShortCode))?.Asset2;
-            if (asset != null)
-                return asset;
-
-            return null;
-        }
+        }      
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
@@ -210,8 +160,8 @@ namespace Prime.Plugins.Services.Binance
             var pairCode = context.Pair.TickerSimple();
 
             var r = context.MaxRecordsCount.HasValue
-                ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
-                : await api.GetOrderBook(pairCode).ConfigureAwait(false);
+                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
             var orderBook = new OrderBook();
 
@@ -272,7 +222,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation().ConfigureAwait(false);
+            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
 
             return r != null;
         }
@@ -280,7 +230,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation().ConfigureAwait(false);
+            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
 
             var balances = new BalanceResults();
 
@@ -304,7 +254,7 @@ namespace Prime.Plugins.Services.Binance
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerSimple();
 
-            var r = await api.Get24HrTicker(pairCode).ConfigureAwait(false);
+            var r = await api.Get24HrTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

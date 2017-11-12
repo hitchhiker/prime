@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -50,14 +51,15 @@ namespace Prime.Plugins.Services.Gemini
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbols().ConfigureAwait(false);
+            var r = await api.GetSymbolsAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
             foreach (var rSymbol in r)
             {
                 var assetPair = ParseAssetPair(rSymbol);
 
-                pairs.Add(assetPair);
+                if(assetPair != null)
+                    pairs.Add(assetPair);
             }
 
             return pairs;
@@ -65,8 +67,8 @@ namespace Prime.Plugins.Services.Gemini
 
         private AssetPair ParseAssetPair(string raw)
         {
-            if(raw.Length != 6)
-                throw new ApiResponseException($"Invalid format of currency pair: {raw}", this);
+            if (raw.Length != 6)
+                return null; //throw new ApiResponseException($"Invalid format of currency pair: {raw}", this);
 
             var asset1 = raw.Substring(0, 3);
             var asset2 = raw.Substring(3);
@@ -79,12 +81,21 @@ namespace Prime.Plugins.Services.Gemini
             var api = ApiProvider.GetApi(context);
 
             var pairCode = GetGeminiPair(context.Pair);
-            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            // TODO: implement statistics.
-            return new MarketPrice(context.Pair, r.last)
+            var baseVolumes = r.volume
+                .Where(x => x.Key.ToLower().Equals(context.Pair.Asset1.ToRemoteCode(this).ToLower()))
+                .Select(x => x.Value).ToArray();
+
+            var quoteVolumes = r.volume
+                .Where(x => x.Key.ToLower().Equals(context.Pair.Asset2.ToRemoteCode(this).ToLower()))
+                .Select(x => x.Value).ToArray();
+
+            return new MarketPrice(Network, context.Pair, r.last)
             {
-                // PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, null, null)
+                PriceStatistics = new PriceStatistics(context.QuoteAsset,
+                    baseVolumes.Any() ? baseVolumes.First() : (decimal?) null,
+                    quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null, r.ask, r.bid, null, null)
             };
         }
 

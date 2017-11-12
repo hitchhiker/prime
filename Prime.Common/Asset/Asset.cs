@@ -41,7 +41,7 @@ namespace Prime.Common
         {
             return new AssetPair(this, asset2);
         }
-        
+
         public override string ToString()
         {
             return ShortCode;

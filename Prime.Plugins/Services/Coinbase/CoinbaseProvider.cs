@@ -60,9 +60,9 @@ namespace Prime.Plugins.Services.Coinbase
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
-            var r = await api.GetLatestPrice(pairCode).ConfigureAwait(false);
+            var r = await api.GetLatestPriceAsync(pairCode).ConfigureAwait(false);
 
-            var price = new MarketPrice(context.Pair, r.data.amount);
+            var price = new MarketPrice(Network, context.Pair, r.data.amount);
 
             return price;
         }
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
-            var r = await api.GetProducts().ConfigureAwait(false);
+            var r = await api.GetProductsAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -126,7 +126,7 @@ namespace Prime.Plugins.Services.Coinbase
 
             var accid = "";
 
-            var accs = await api.GetAccounts().ConfigureAwait(false);
+            var accs = await api.GetAccountsAsync().ConfigureAwait(false);
             var ast = context.Asset.ToRemoteCode(this);
 
             var acc = accs.data.FirstOrDefault(x => string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
@@ -167,7 +167,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var accs = await api.GetAccounts().ConfigureAwait(false);
+            var accs = await api.GetAccountsAsync().ConfigureAwait(false);
             var addresses = new WalletAddresses();
 
             var accountIds = accs.data.Select(x => new KeyValuePair<string, string>(x.currency, x.id));
@@ -214,7 +214,7 @@ namespace Prime.Plugins.Services.Coinbase
             // TODO: Check this! Can we use limit when we query all records?
             var recordsLimit = 1000;
 
-            var r = await api.GetProductOrderBook(pairCode, OrderBookDepthLevel.FullNonAggregated).ConfigureAwait(false);
+            var r = await api.GetProductOrderBookAsync(pairCode, OrderBookDepthLevel.FullNonAggregated).ConfigureAwait(false);
 
             var bids = context.MaxRecordsCount.HasValue 
                 ? r.bids.Take(context.MaxRecordsCount.Value / 2).ToArray() 

@@ -95,7 +95,7 @@ namespace plugins
                         return _cachedApn;
 
                     var api = GetApi<ICryptoCompareApi>();
-                    var r = AsyncContext.Run(() => api.GetAssetPairsAllExchanges());
+                    var r = AsyncContext.Run(() => api.GetAssetPairsAllExchangesAsync());
                     var apn = new AssetPairByNetwork();
 
                     foreach (var e in r)

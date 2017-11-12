@@ -9,6 +9,6 @@ namespace Prime.Plugins.Services.ItBit
     internal interface IItBitApi
     {
         [Get("/markets/{pairTicker}/ticker")]
-        Task<ItBitSchema.TickerResponse> GetTicker([Path] string pairTicker);
+        Task<ItBitSchema.TickerResponse> GetTickerAsync([Path] string pairTicker);
     }
 }

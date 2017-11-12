@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.BitMex
             var startDate = context.Range.UtcFrom;
             var endDate = context.Range.UtcTo;
 
-            var r = await api.GetTradeHistory(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
+            var r = await api.GetTradeHistoryAsync(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
 
             var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.BitMex
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new MarketPrice(context.Pair, rPrice.lastPrice.Value);
+            return new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value);
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -146,7 +146,7 @@ namespace Prime.Plugins.Services.BitMex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(pair, data.lastPrice.Value));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, data.lastPrice.Value));
             }
 
             return prices;
@@ -319,7 +319,7 @@ namespace Prime.Plugins.Services.BitMex
             body.Add("address", context.Address);
             body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
 
-            var r = await api.RequestWithdrawal(body).ConfigureAwait(false);
+            var r = await api.RequestWithdrawalAsync(body).ConfigureAwait(false);
 
             return new WithdrawalPlacementResult()
             {
@@ -334,7 +334,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var api = ApiProvider.GetApi(context);
             var remoteCode = context.Asset.ToRemoteCode(this);
-            var r = await api.GetWalletHistory(remoteCode).ConfigureAwait(false);
+            var r = await api.GetWalletHistoryAsync(remoteCode).ConfigureAwait(false);
 
             var history = new List<WithdrawalHistoryEntry>();
 
@@ -380,7 +380,7 @@ namespace Prime.Plugins.Services.BitMex
                 { "token", context.WithdrawalRemoteId }
             };
 
-            var r = await api.CancelWithdrawal(body).ConfigureAwait(false);
+            var r = await api.CancelWithdrawalAsync(body).ConfigureAwait(false);
 
             return new WithdrawalCancelationResult()
             {
@@ -397,7 +397,7 @@ namespace Prime.Plugins.Services.BitMex
                 { "token", context.WithdrawalRemoteId }
             };
 
-            var r = await api.ConfirmWithdrawal(body).ConfigureAwait(false);
+            var r = await api.ConfirmWithdrawalAsync(body).ConfigureAwait(false);
 
             return new WithdrawalConfirmationResult()
             {

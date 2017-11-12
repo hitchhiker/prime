@@ -9,9 +9,9 @@ namespace Prime.Plugins.Services.Gemini
     internal interface IGeminiApi
     {
         [Get("/symbols")]
-        Task<GeminiSchema.SymbolsResponse> GetSymbols();
+        Task<GeminiSchema.SymbolsResponse> GetSymbolsAsync();
 
         [Get("/pubticker/{currencyPair}")]
-        Task<GeminiSchema.TickerResponse> GetTicker([Path] string currencyPair);
+        Task<GeminiSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
     }
 }
