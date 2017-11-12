@@ -34,7 +34,8 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-           //
+            var context = new PublicPriceContext("ETH_BTC".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
         }
 
         [TestMethod]

@@ -214,7 +214,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context = null, bool lessThan1)
+        private async Task GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context, bool lessThan1)
         {
             if (context == null)
                 return;
@@ -236,9 +236,9 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(c.Price.Asset.Equals(context.Pair.Asset2));
 
                 if (lessThan1)//checks if the pair is reversed (price-wise)
-                    Assert.IsTrue(c.Price < 1);
+                    Assert.IsTrue(c.Price < 1, "Reverse check failed");
                 else
-                    Assert.IsTrue(c.Price > 1);
+                    Assert.IsTrue(c.Price > 1, "Reverse check failed");
 
                 Trace.WriteLine($"Asset: {c.QuoteAsset}, Price: {c.Price.Display}");
             }
