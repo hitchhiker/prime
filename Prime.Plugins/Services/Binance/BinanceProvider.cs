@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Binance
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
             var endDate = (long)(context.Range.UtcTo.ToUnixTimeStamp() * 1000);
 
-            var r = await api.GetCandlestickBars(pairCode, interval, startDate, endDate).ConfigureAwait(false);
+            var r = await api.GetCandlestickBarsAsync(pairCode, interval, startDate, endDate).ConfigureAwait(false);
 
             var ohlc = new OhlcData(context.Market);
 
@@ -109,7 +109,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
+            var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
@@ -135,7 +135,7 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbolPriceTicker().ConfigureAwait(false);
+            var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
 
             var assetPairs = new AssetPairs();
 
@@ -160,8 +160,8 @@ namespace Prime.Plugins.Services.Binance
             var pairCode = context.Pair.TickerSimple();
 
             var r = context.MaxRecordsCount.HasValue
-                ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
-                : await api.GetOrderBook(pairCode).ConfigureAwait(false);
+                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
             var orderBook = new OrderBook();
 
@@ -222,7 +222,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation().ConfigureAwait(false);
+            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
 
             return r != null;
         }
@@ -230,7 +230,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformation().ConfigureAwait(false);
+            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
 
             var balances = new BalanceResults();
 
@@ -254,7 +254,7 @@ namespace Prime.Plugins.Services.Binance
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerSimple();
 
-            var r = await api.Get24HrTicker(pairCode).ConfigureAwait(false);
+            var r = await api.Get24HrTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

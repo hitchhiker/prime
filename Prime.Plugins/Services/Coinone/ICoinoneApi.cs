@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Coinone
         /// </summary>
         /// <returns>Tickers for all supported currencies.</returns>
         [Get("/ticker/?currency=all")]
-        Task<CoinoneSchema.TickersResponse> GetTickers();
+        Task<CoinoneSchema.TickersResponse> GetTickersAsync();
 
         /// <summary>
         /// Gets ticker for specified currency.
@@ -23,6 +23,6 @@ namespace Prime.Plugins.Services.Coinone
         /// <param name="currency">Currency which ticker is to be returned.</param>
         /// <returns>Ticker for specified currency</returns>
         [Get("/ticker/?currency={currency}")]
-        Task<CoinoneSchema.TickerResponse> GetTicker([Path] string currency);
+        Task<CoinoneSchema.TickerResponse> GetTickerAsync([Path] string currency);
     }
 }

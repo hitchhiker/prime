@@ -9,10 +9,10 @@ namespace Prime.Plugins.Services.Gdax
     internal interface IGdaxApi
     {
         [Get("/products")]
-        Task<GdaxSchema.ProductsResponse> GetProducts();
+        Task<GdaxSchema.ProductsResponse> GetProductsAsync();
 
         [Get("/products/{productId}/book?level={level}")]
-        Task<GdaxSchema.OrderBookResponse> GetProductOrderBook([Path] string productId, [Path(Format = "D")] OrderBookDepthLevel level);
+        Task<GdaxSchema.OrderBookResponse> GetProductOrderBookAsync([Path] string productId, [Path(Format = "D")] OrderBookDepthLevel level);
 
         [Get("/products/{curencyPair}/candles")]
         Task<decimal[][]> GetCandles(
@@ -28,6 +28,6 @@ namespace Prime.Plugins.Services.Gdax
         /// <param name="currency">Currency pair (separated by dash) which ticker is to be returned.</param>
         /// <returns>Ticker for specified currency.</returns>
         [Get("/products/{currency}/ticker")]
-        Task<GdaxSchema.ProductTickerResponse> GetProductTicker([Path] string currency);
+        Task<GdaxSchema.ProductTickerResponse> GetProductTickerAsync([Path] string currency);
     }
 }

@@ -273,7 +273,7 @@ namespace Prime.Plugins.Services.Poloniex
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerUnderslash();
 
-            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBook(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBook(pairCode).ConfigureAwait(false);
+            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
             if (r.bids == null || r.asks == null)
                 throw new NoAssetPairException(context.Pair, this);
@@ -314,7 +314,7 @@ namespace Prime.Plugins.Services.Poloniex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.Get24HVolume().ConfigureAwait(false);
+            var r = await api.Get24HVolumeAsync().ConfigureAwait(false);
             var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
 
             if (!volumes.Any())

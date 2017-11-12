@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Bithumb
         /// </summary>
         /// <returns></returns>
         [Get("/public/ticker/ALL")]
-        Task<BithumbSchema.TickersResponse> GetTickers();
+        Task<BithumbSchema.TickersResponse> GetTickersAsync();
 
         /// <summary>
         /// Gets single ticker for specified currency code.
@@ -21,6 +21,6 @@ namespace Prime.Plugins.Services.Bithumb
         /// <param name="currency">Currency which ticker is to be returned.</param>
         /// <returns>Ticker for specified currency.</returns>
         [Get("/public/ticker/{currency}")]
-        Task<BithumbSchema.SingleTickerResponse> GetTicker([Path] string currency);
+        Task<BithumbSchema.SingleTickerResponse> GetTickerAsync([Path] string currency);
     }
 }

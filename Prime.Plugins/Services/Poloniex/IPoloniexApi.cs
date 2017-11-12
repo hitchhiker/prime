@@ -19,12 +19,12 @@ namespace Prime.Plugins.Services.Poloniex
         Task<PoloniexSchema.TickerResponse> GetTickerAsync();
 
         [Get("/public?command=return24hVolume")]
-        Task<PoloniexSchema.VolumeResponse> Get24HVolume();
+        Task<PoloniexSchema.VolumeResponse> Get24HVolumeAsync();
 
         [Get("/public?command=returnChartData&currencyPair={currencyPair}&start={timeStampStart}&end={timeStampEnd}&period={period}")]
         Task<PoloniexSchema.ChartEntriesResponse> GetChartDataAsync([Path] string currencyPair, [Path] long timeStampStart, [Path] long timeStampEnd, [Path(Format = "D")] PoloniexTimeInterval period);
 
         [Get("/public?command=returnOrderBook&currencyPair={currencyPair}&depth={depth}")]
-        Task<PoloniexSchema.OrderBookResponse> GetOrderBook([Path] string currencyPair, [Path] int depth = 10000);
+        Task<PoloniexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int depth = 10000);
     }
 }

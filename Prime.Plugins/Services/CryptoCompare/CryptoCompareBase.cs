@@ -170,13 +170,13 @@ namespace Prime.Plugins.Services.CryptoCompare
             switch (market)
             {
                 case TimeResolution.Hour:
-                    apir = await api.GetHistoricalHourly(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
+                    apir = await api.GetHistoricalHourlyAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
                     break;
                 case TimeResolution.Day:
-                    apir = await api.GetHistoricalDay(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false").ConfigureAwait(false);
+                    apir = await api.GetHistoricalDayAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs, "false").ConfigureAwait(false);
                     break;
                 case TimeResolution.Minute:
-                    apir = await api.GetHistoricalMinute(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
+                    apir = await api.GetHistoricalMinuteAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
                     break;
             }
 

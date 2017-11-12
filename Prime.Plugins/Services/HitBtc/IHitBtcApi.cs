@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// </summary>
         /// <returns>List of currency symbols with their characteristics.</returns>
         [Get("/1/public/symbols")]
-        Task<HitBtcSchema.SymbolsResponse> GetSymbols();
+        Task<HitBtcSchema.SymbolsResponse> GetSymbolsAsync();
 
         /// <summary>
         /// Gets deposit address for specified currency. If does not exist, it will be created.
@@ -20,7 +20,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// <param name="currency">Currency code which deposit address is to be returned.</param>
         /// <returns>Deposit address of specified currency.</returns>
         [Get("/1/payment/address/{currency}")]
-        Task<HitBtcSchema.DepositAddressResponse> GetDepositAddress([Path] string currency);
+        Task<HitBtcSchema.DepositAddressResponse> GetDepositAddressAsync([Path] string currency);
 
         /// <summary>
         /// Gets payment balances.
@@ -28,7 +28,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// </summary>
         /// <returns>Multi-currency balance of the main account.</returns>
         [Get("/1/payment/balance")]
-        Task<HitBtcSchema.BalancesResponse> GetBalances();
+        Task<HitBtcSchema.BalancesResponse> GetBalancesAsync();
 
         /// <summary>
         /// Gets tickers for all currencies.
@@ -36,7 +36,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// </summary>
         /// <returns>Associative array of pair code and ticker data</returns>
         [Get("/1/public/ticker")]
-        Task<HitBtcSchema.TickersResponse> GetAllTickers();
+        Task<HitBtcSchema.TickersResponse> GetAllTickersAsync();
 
         /// <summary>
         /// Get ticker for specified currency pair.
@@ -45,6 +45,6 @@ namespace Prime.Plugins.Services.HitBtc
         /// <param name="pairCode">Currency which ticker is to be returned.</param>
         /// <returns>Ticker data.</returns>
         [Get("/1/public/{pairCode}/ticker")]
-        Task<HitBtcSchema.TickerResponse> GetTicker([Path] string pairCode);
+        Task<HitBtcSchema.TickerResponse> GetTickerAsync([Path] string pairCode);
     }
 }

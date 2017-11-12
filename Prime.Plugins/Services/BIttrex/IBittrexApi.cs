@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.Bittrex
     internal interface IBittrexApi
     {
         [Get("/account/getbalances")]
-        Task<BittrexSchema.BalancesResponse> GetAllBalances();
+        Task<BittrexSchema.BalancesResponse> GetAllBalancesAsync();
 
         /// <summary>
         /// Gets or generates new deposit address for specified currency.
@@ -18,21 +18,21 @@ namespace Prime.Plugins.Services.Bittrex
         /// <param name="currency"></param>
         /// <returns></returns>
         [Get("/account/getdepositaddress?currency={currency}")]
-        Task<BittrexSchema.DepositAddressResponse> GetDepositAddress([Path] string currency);
+        Task<BittrexSchema.DepositAddressResponse> GetDepositAddressAsync([Path] string currency);
 
         [Get("/public/getmarkets")]
-        Task<BittrexSchema.MarketEntriesResponse> GetMarkets();
+        Task<BittrexSchema.MarketEntriesResponse> GetMarketsAsync();
 
         [Get("/public/getticker?market={market}")]
-        Task<BittrexSchema.TickerResponse> GetTicker([Path] string market);
+        Task<BittrexSchema.TickerResponse> GetTickerAsync([Path] string market);
 
         [Get("/public/getmarketsummaries")]
-        Task<BittrexSchema.MarketSummariesResponse> GetMarketSummaries();
+        Task<BittrexSchema.MarketSummariesResponse> GetMarketSummariesAsync();
 
         [Get("/public/getmarketsummary?market={market}")]
-        Task<BittrexSchema.MarketSummariesResponse> GetMarketSummary([Path] string market);
+        Task<BittrexSchema.MarketSummariesResponse> GetMarketSummaryAsync([Path] string market);
 
         [Get("/public/getorderbook?market={currenctPair}&type=both")]
-        Task<BittrexSchema.OrderBookResponse> GetOrderBook([Path] string currenctPair);
+        Task<BittrexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currenctPair);
     }
 }

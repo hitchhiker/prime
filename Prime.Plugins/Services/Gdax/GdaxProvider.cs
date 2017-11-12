@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Gdax
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetProducts().ConfigureAwait(false);
+            var r = await api.GetProductsAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -68,7 +68,7 @@ namespace Prime.Plugins.Services.Gdax
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerDash();
-            var r = await api.GetProductTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.price)
             {
@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Gdax
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.TickerDash();
-            var r = await api.GetProductTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {
