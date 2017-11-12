@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountBalances().ConfigureAwait(false);
+            var r = await api.GetAccountBalancesAsync().ConfigureAwait(false);
 
             return r != null;
         }
@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTicker(context.Pair.TickerSimple().ToLower()).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.TickerSimple().ToLower()).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.last)
             {
@@ -88,7 +88,7 @@ namespace Prime.Plugins.Services.BitStamp
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAccountBalances().ConfigureAwait(false);
+            var r = await api.GetAccountBalancesAsync().ConfigureAwait(false);
 
             var balances = new BalanceResults(this);
 
@@ -148,7 +148,7 @@ namespace Prime.Plugins.Services.BitStamp
             var api = ApiProvider.GetApi(context);
             var currencyPath = GetCurrencyPath(context.Asset);
 
-            var r = await api.GetDepositAddress(currencyPath).ConfigureAwait(false);
+            var r = await api.GetDepositAddressAsync(currencyPath).ConfigureAwait(false);
 
             var processedAddress = ProcessAddressResponce(context.Asset, r);
 
@@ -190,7 +190,7 @@ namespace Prime.Plugins.Services.BitStamp
             var api = ApiProvider.GetApi(context);
             var pairCode = GetBitStampTicker(context.Pair);
 
-            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook();
 
             var date = r.timestamp.ToUtcDateTime();
@@ -266,7 +266,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTicker(GetBitStampTicker(context.Pair)).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(GetBitStampTicker(context.Pair)).ConfigureAwait(false);
 
             return new VolumeResult()
             {

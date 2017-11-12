@@ -56,7 +56,7 @@ namespace Prime.Plugins.Services.ItBit
             var api = ApiProvider.GetApi(context);
             var pairCode = GetItBitTicker(context.Pair);
 
-            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             // TODO: test statistics.
             return new MarketPrice(Network, context.Pair, r.lastPrice)
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.ItBit
             var api = ApiProvider.GetApi(context);
             var pairCode = GetItBitTicker(context.Pair);
 
-            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
             {

@@ -17,10 +17,10 @@ namespace Prime.Plugins.Services.BitMex
         Task<BitMexSchema.UserInfoResponse> GetUserInfoAsync();
 
         [Get("/trade/bucketed?binSize={binSize}&partial=false&count=500&symbol={currencySymbol}&reverse=true&startTime={startTime}&endTime={endTime}")]
-        Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistory([Path] string currencySymbol, [Path] string binSize, [Path(Format = "yyyy.MM.dd")] DateTime startTime, [Path(Format = "yyyy.MM.dd")] DateTime endTime);
+        Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistoryAsync([Path] string currencySymbol, [Path] string binSize, [Path(Format = "yyyy.MM.dd")] DateTime startTime, [Path(Format = "yyyy.MM.dd")] DateTime endTime);
 
         [Get("/instrument/active")]
-        Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActive();
+        Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActiveAsync();
 
         [Get("/instrument?symbol={currencySymbol}&columns=[\"lastPrice\",\"timestamp\",\"symbol\",\"volume24h\"]&reverse=true")]
         Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPriceAsync([Path]String currencySymbol);
@@ -32,15 +32,15 @@ namespace Prime.Plugins.Services.BitMex
         Task<BitMexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int depth);
 
         [Get("/user/walletHistory?currency={currency}")]
-        Task<BitMexSchema.WalletHistoryResponse> GetWalletHistory([Path] string currency);
+        Task<BitMexSchema.WalletHistoryResponse> GetWalletHistoryAsync([Path] string currency);
 
         [Post("/user/requestWithdrawal")]
-        Task<BitMexSchema.WithdrawalRequestResponse> RequestWithdrawal([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<BitMexSchema.WithdrawalRequestResponse> RequestWithdrawalAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
         [Post("/user/cancelWithdrawal")]
-        Task<BitMexSchema.WithdrawalCancelationResponse> CancelWithdrawal([Body(BodySerializationMethod.UrlEncoded)]Dictionary<string, object> body);
+        Task<BitMexSchema.WithdrawalCancelationResponse> CancelWithdrawalAsync([Body(BodySerializationMethod.UrlEncoded)]Dictionary<string, object> body);
 
         [Post("/user/confirmWithdrawal")]
-        Task<BitMexSchema.WithdrawalConfirmationResponse> ConfirmWithdrawal([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<BitMexSchema.WithdrawalConfirmationResponse> ConfirmWithdrawalAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

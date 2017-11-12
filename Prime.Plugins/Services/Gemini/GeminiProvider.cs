@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Gemini
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbols().ConfigureAwait(false);
+            var r = await api.GetSymbolsAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
             foreach (var rSymbol in r)
@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Gemini
             var api = ApiProvider.GetApi(context);
 
             var pairCode = GetGeminiPair(context.Pair);
-            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             var baseVolumes = r.volume
                 .Where(x => x.Key.ToLower().Equals(context.Pair.Asset1.ToRemoteCode(this).ToLower()))

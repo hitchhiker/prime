@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Binance
         /// </summary>
         /// <returns></returns>
         [Get("/v1/ticker/allPrices")]
-        Task<BinanceSchema.LatestPricesResponse> GetSymbolPriceTicker();
+        Task<BinanceSchema.LatestPricesResponse> GetSymbolPriceTickerAsync();
 
         /// <summary>
         /// Maximum number of order book records is 100.
@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.Binance
         /// <param name="limit">The maximum number or records to return.</param>
         /// <returns>List of order book entries.</returns>
         [Get("/v1/depth?symbol={symbol}&limit={limit}")]
-        Task<BinanceSchema.OrderBookResponse> GetOrderBook([Path] string symbol, [Path] int limit = 100);
+        Task<BinanceSchema.OrderBookResponse> GetOrderBookAsync([Path] string symbol, [Path] int limit = 100);
 
         /// <summary>
         /// Gets user account information.
@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Binance
         /// </summary>
         /// <returns>Information about user account.</returns>
         [Get("/v3/account")]
-        Task<BinanceSchema.UserInformationResponse> GetAccountInformation();
+        Task<BinanceSchema.UserInformationResponse> GetAccountInformationAsync();
 
         /// <summary>
         /// Gets OHLC data.
@@ -43,7 +43,7 @@ namespace Prime.Plugins.Services.Binance
         /// <param name="limit">Limits the number of records to be returned.</param>
         /// <returns>Array of decimals that represent OHLC record.</returns>
         [Get("/v1/klines?symbol={currency}&interval={interval}")]
-        Task<BinanceSchema.CandlestickResponse> GetCandlestickBars([Path] string currency, [Path] string interval, [Query] long? startTime = null, [Query] long? endTime = null, [Query] int? limit = null);
+        Task<BinanceSchema.CandlestickResponse> GetCandlestickBarsAsync([Path] string currency, [Path] string interval, [Query] long? startTime = null, [Query] long? endTime = null, [Query] int? limit = null);
 
         /// <summary>
         /// Gets 24-hr ticker.
@@ -51,6 +51,6 @@ namespace Prime.Plugins.Services.Binance
         /// <param name="currency">Currency which ticker is to be returned.</param>
         /// <returns>24 hour ticker.</returns>
         [Get("/v1/ticker/24hr?symbol={currency}")]
-        Task<BinanceSchema.Ticker24HrResponse> Get24HrTicker([Path] string currency);
+        Task<BinanceSchema.Ticker24HrResponse> Get24HrTickerAsync([Path] string currency);
     }
 }

@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.BitMarket
 
             try
             {
-                var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+                var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
                 return new MarketPrice(Network, context.Pair, r.last);
             }
             catch (ApiException ex)

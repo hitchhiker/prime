@@ -17,15 +17,15 @@ namespace Prime.Plugins.Services.CryptoCompare
         Task<CryptoCompareSchema.CoinSnapshotResult> GetCoinSnapshotAsync(string fsym, string tsym);
 
         [Get("all/exchanges")]
-        Task<CryptoCompareSchema.AssetPairsAllExchanges> GetAssetPairsAllExchanges();
+        Task<CryptoCompareSchema.AssetPairsAllExchanges> GetAssetPairsAllExchangesAsync();
 
         [Get("histohour")]
-        Task<CryptoCompareSchema.HistoricListResult> GetHistoricalHourly(string fsym, string tsym, string e, string extraParams, string sign, string tryConversion, int aggregate, int limit, long toTs);
+        Task<CryptoCompareSchema.HistoricListResult> GetHistoricalHourlyAsync(string fsym, string tsym, string e, string extraParams, string sign, string tryConversion, int aggregate, int limit, long toTs);
 
         [Get("histominute")]
-        Task<CryptoCompareSchema.HistoricListResult> GetHistoricalMinute(string fsym, string tsym, string e, string extraParams, string sign, string tryConversion, int aggregate, int limit, long toTs);
+        Task<CryptoCompareSchema.HistoricListResult> GetHistoricalMinuteAsync(string fsym, string tsym, string e, string extraParams, string sign, string tryConversion, int aggregate, int limit, long toTs);
 
         [Get("histoday")]
-        Task<CryptoCompareSchema.HistoricListResult> GetHistoricalDay(string fsym, string tsym, string e, string extraParams, string sign, string tryConversion, int aggregate, int limit, long toTs, string allData);
+        Task<CryptoCompareSchema.HistoricListResult> GetHistoricalDayAsync(string fsym, string tsym, string e, string extraParams, string sign, string tryConversion, int aggregate, int limit, long toTs, string allData);
     }
 }

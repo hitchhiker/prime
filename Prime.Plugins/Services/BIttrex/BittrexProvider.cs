@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllBalances().ConfigureAwait(false);
+            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash();
-            var r = await api.GetTicker(pairCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
 
@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketSummaries().ConfigureAwait(false);
+            var r = await api.GetMarketSummariesAsync().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarkets().ConfigureAwait(false);
+            var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -136,7 +136,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalances().ConfigureAwait(false);
+            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var balances = new BalanceResults();
@@ -165,7 +165,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalances().ConfigureAwait(false);
+            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(r);
 
             var addresses = new WalletAddresses();
@@ -185,7 +185,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalances().ConfigureAwait(false);
+            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -220,7 +220,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             var pairCode = context.Pair.TickerDash();
 
-            var r = await api.GetOrderBook(pairCode).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
 
@@ -268,7 +268,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.TickerDash().ToLower();
-            var r = await api.GetMarketSummary(pairCode).ConfigureAwait(false);
+            var r = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
 
             var summary = r.result.FirstOrDefault();
             var remoteMarker = summary.MarketName.ToAssetPair(this, '-');

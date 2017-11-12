@@ -9,6 +9,6 @@ namespace Prime.Plugins.Services.BitMarket
     internal interface IBitMarketApi
     {
         [Get("/json/{currencyPair}/ticker.json")]
-        Task<BitMarketSchema.TickerResponse> GetTicker([Path] string currencyPair);
+        Task<BitMarketSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
     }
 }
