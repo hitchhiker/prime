@@ -34,7 +34,7 @@ namespace Prime.TestConsole
 
             public FrankTests()
             {
-                //_flushPrices = true;
+                _flushPrices = true;
                 //_testAssetPair = "BTC_EMC".ToAssetPairRaw();
 
                 var starta = "BTC".ToAssetRaw();
@@ -57,16 +57,13 @@ namespace Prime.TestConsole
 
                // WriteConsoleSummary();
 
-                var paths = FindPaths(null, startn, starta).Take(10).ToList();
+                var paths = FindPaths(null, startn, starta).Take(100).ToList().OrderByDescending(x => x.GetCompoundPercent()).Take(10);
 
-                foreach (var path in paths.OrderByDescending(x=>x.FirstOrDefault().GetCompoundPercent()))
-                {
-                    var route = path.FirstOrDefault();
-                    Console.WriteLine($"{Environment.NewLine}{path.Id} +{Math.Round(route.GetCompoundPercent() - 100, 2)}% {route.Explain()}");
-                }
+                foreach (var path in paths)
+                    Console.WriteLine(path.Explain());
             }
 
-            private UniqueList<ObjectId> _yielded = new UniqueList<ObjectId>();
+            private readonly UniqueList<ObjectId> _yielded = new UniqueList<ObjectId>();
 
             private IEnumerable<RoutePath> FindPaths(RoutePath path, Network network, Asset assetTransfer)
             {

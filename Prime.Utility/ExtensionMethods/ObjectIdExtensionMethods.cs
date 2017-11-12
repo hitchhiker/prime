@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using LiteDB;
@@ -30,6 +31,14 @@ namespace Prime.Utility
                 var bytes = hash.ToArray().Take(12).ToArray();
                 return new ObjectId(bytes);
             }
+        }
+
+        public static ObjectId GetObjectIdHashCode(this IEnumerable<object> ks, bool autoLower = false, bool autoTrim = false)
+        {
+            var sb = new StringBuilder(); //because string join changes the order in certain locales?
+            foreach (var k in ks)
+                sb.Append($"{k}:");
+            return GetObjectIdHashCode(sb.ToString(), autoLower, autoTrim);
         }
     }
 }
