@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace Prime.TestConsole
 
             public FrankTests()
             {
-                _flushPrices = true;
+                //_flushPrices = true;
                 //_testAssetPair = "BTC_EMC".ToAssetPairRaw();
 
                 var starta = "BTC".ToAssetRaw();
@@ -63,7 +64,7 @@ namespace Prime.TestConsole
                     Console.WriteLine(path.Explain());
             }
 
-            private readonly UniqueList<ObjectId> _yielded = new UniqueList<ObjectId>();
+            private readonly ConcurrentBag<ObjectId> _yielded = new ConcurrentBag<ObjectId>();
 
             private IEnumerable<RoutePath> FindPaths(RoutePath path, Network network, Asset assetTransfer)
             {
@@ -89,8 +90,11 @@ namespace Prime.TestConsole
                         yield return r;
                 }
 
-                if (_yielded.Add(path.Id))
-                    yield return path;
+                if (_yielded.Contains(path.Id))
+                    yield break;
+
+                _yielded.Add(path.Id);
+                yield return path;
             }
 
             private void WriteConsoleSummary()
