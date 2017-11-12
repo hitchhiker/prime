@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -82,10 +83,19 @@ namespace Prime.Plugins.Services.Gemini
             var pairCode = GetGeminiPair(context.Pair);
             var r = await api.GetTicker(pairCode).ConfigureAwait(false);
 
-            // TODO: implement statistics.
+            var baseVolumes = r.volume
+                .Where(x => x.Key.ToLower().Equals(context.Pair.Asset1.ToRemoteCode(this).ToLower()))
+                .Select(x => x.Value).ToArray();
+
+            var quoteVolumes = r.volume
+                .Where(x => x.Key.ToLower().Equals(context.Pair.Asset2.ToRemoteCode(this).ToLower()))
+                .Select(x => x.Value).ToArray();
+
             return new MarketPrice(Network, context.Pair, r.last)
             {
-                // PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, null, null)
+                PriceStatistics = new PriceStatistics(context.QuoteAsset,
+                    baseVolumes.Any() ? baseVolumes.First() : (decimal?) null,
+                    quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null, r.ask, r.bid, null, null)
             };
         }
 

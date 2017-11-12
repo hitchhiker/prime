@@ -34,9 +34,9 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            PublicPriceContext = new PublicPriceContext("LiteMineX_BTC".ToAssetPairRaw());
+            var context = new PublicPriceContext("BTC_EUR".ToAssetPairRaw());
 
-            await base.TestGetPriceAsync();
+            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
     }
 }
