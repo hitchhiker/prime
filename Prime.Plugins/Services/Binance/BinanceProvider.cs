@@ -141,66 +141,16 @@ namespace Prime.Plugins.Services.Binance
 
             foreach (var rPrice in r.OrderBy(x => x.symbol.Length))
             {
-                var pair = GetAssetPair(rPrice.symbol, assetPairs);
+                var pair = AssetsUtilities.GetAssetPair(rPrice.symbol, assetPairs);
 
-                if (pair == null)
+                if (!pair.HasValue)
                     continue; //throw new ApiResponseException($"Error during {rPrice.symbol} asset pair parsing", this);
 
-                assetPairs.Add(pair);
+                assetPairs.Add(new AssetPair(pair.Value.AssetCode1, pair.Value.AssetCode2));
             }
 
             return assetPairs;
-        }
-
-        private AssetPair GetAssetPair(string pairCode, AssetPairs existingPairs)
-        {
-            AssetPair assetPair = null;
-
-            if (pairCode.Length == 6)
-            {
-                var asset1 = pairCode.Substring(0, 3);
-                var asset2 = pairCode.Substring(3);
-
-                assetPair = new AssetPair(asset1, asset2);
-            }
-            else if (pairCode.Length > 6)
-            {
-                var existingAsset = FindAssetByPairCode(pairCode, existingPairs);
-
-                if (existingAsset == null)
-                    return null;
-
-                var asset1 = pairCode.Replace(existingAsset.ShortCode, "");
-                var asset2 = existingAsset.ShortCode;
-
-                assetPair = pairCode.StartsWith(existingAsset.ShortCode)
-                    ? new AssetPair(asset2, asset1)
-                    : new AssetPair(asset1, asset2);
-            }
-
-            return assetPair;
-        }
-
-        private Asset FindAssetByPairCode(string pairCode, AssetPairs pairs)
-        {
-            var asset = pairs.FirstOrDefault(x => pairCode.StartsWith(x.Asset1.ShortCode))?.Asset1;
-            if (asset != null)
-                return asset;
-
-            asset = pairs.FirstOrDefault(x => pairCode.StartsWith(x.Asset2.ShortCode))?.Asset2;
-            if (asset != null)
-                return asset;
-
-            asset = pairs.FirstOrDefault(x => pairCode.EndsWith(x.Asset1.ShortCode))?.Asset1;
-            if (asset != null)
-                return asset;
-
-            asset = pairs.FirstOrDefault(x => pairCode.EndsWith(x.Asset2.ShortCode))?.Asset2;
-            if (asset != null)
-                return asset;
-
-            return null;
-        }
+        }      
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {

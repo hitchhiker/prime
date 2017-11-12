@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,6 +27,33 @@ namespace Prime.Tests.Providers
         public override async Task TestGetPriceAsync()
         {
             await base.TestGetPriceAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetAssetPricesAsync()
+        {
+            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            {
+                "ETH".ToAssetRaw(),
+                "LTC".ToAssetRaw(),
+                "XRP".ToAssetRaw()
+            }, "BTC".ToAssetRaw());
+
+            await base.TestGetAssetPricesAsync();
+        }
+
+        [TestMethod]
+        public override async Task TestGetPricesAsync()
+        {
+            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            {
+                "ETC_ETH".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "XRP_BTC".ToAssetPairRaw(),
+            });
+
+            await base.TestGetPricesAsync();
         }
 
         [TestMethod]
