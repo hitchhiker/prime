@@ -25,36 +25,16 @@ namespace Prime.TestConsole
                 Id = (DestinationTradePair + ":" + hop.NetworkLow.Id + ":" + hop.NetworkHigh.Id).GetObjectIdHashCode();
             }
 
-            public RouteStage Next { get; private set; }
-
-            public RouteStage Before { get; private set; }
-
-            public void SetNext(RouteStage stage)
-            {
-                Next = stage;
-            }
-
-            public void SetBefore(RouteStage stage)
-            {
-                Before = stage;
-            }
-
-            public decimal GetCompoundPercent(decimal percent = 100)
+            public decimal GetPercentChange(decimal percent = 100)
             {
                 var perc = ExchangeHop.Percentage / 100;
-                percent += percent * perc;
-                return Next?.GetCompoundPercent(percent) ?? percent;
+                return percent * perc;
             }
 
-            public string Explain(int step = 1)
+            public string Explain(int step)
             {
                 var s = $"{Environment.NewLine} {step}) ";
                 s += $"{AssetTransfer} @ {ExchangeHop.Low.Network.Name} [{Math.Round(ExchangeHop.Percentage, 2)}%] {AssetFinal} @ {ExchangeHop.High.Network.Name}";
-                
-                if (Next != null)
-                    s += Next.Explain(++step);
-                else
-                    s += $"{Environment.NewLine} == [Completed as {AssetFinal} @ {ExchangeHop.High.Network.Name} ]";
                 return s;
             }
 

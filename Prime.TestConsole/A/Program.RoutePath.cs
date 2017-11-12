@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,7 @@ namespace Prime.TestConsole
             public RoutePath(Network startNetwork)
             {
                 StartNetwork = startNetwork;
-                Id = ObjectId.Empty;
             }
-
-            public ObjectId Id { get; private set; }
 
             public void Add(RouteStage stage)
             {
@@ -30,10 +28,11 @@ namespace Prime.TestConsole
                 if (last == null)
                     return;
 
-                stage.SetBefore(last);
-                last.SetNext(stage);
-                Id = string.Join(":", _stages.Select(x => x.Id)).GetObjectIdHashCode();
+                _id = null;
             }
+
+            private ObjectId _id;
+            public ObjectId Id => _id ?? (_id = _stages.Select(x => x.Id).GetObjectIdHashCode());
 
             public IEnumerator<RouteStage> GetEnumerator()
             {
@@ -59,9 +58,36 @@ namespace Prime.TestConsole
                 var nr = new RoutePath(StartNetwork);
                 foreach (var i in _stages)
                     nr.Add(i);
+                nr._id = _id;
                 return nr;
             }
 
+            public string Explain()
+            {
+                if (_stages.Count == 0)
+                    return null;
+
+                var r = $"{Environment.NewLine} +{Math.Round(GetCompoundPercent() - 100, 2)}%";
+
+                var step = 1;
+                foreach (var s in _stages)
+                    r +=  s.Explain(step++);
+
+                var last = _stages.LastOrDefault();
+                r += $"{Environment.NewLine} == [Completed as {last.AssetFinal} @ {last.ExchangeHop.High.Network.Name} ]";
+
+                return r;
+            }
+
+            public decimal GetCompoundPercent()
+            {
+                decimal percent = 100;
+
+                foreach (var s in _stages)
+                    percent += s.GetPercentChange(percent);
+
+                return percent;
+            }
         }
     }
 }
