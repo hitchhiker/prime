@@ -30,12 +30,18 @@ namespace Prime.Utility
                         _cache.Remove(key);
                     else
                         return ci.Value;
-
-                var o = create(key);
-
-                ci = new CacheItem<T2>(ExpirationSpan, o);
-                _cache.Add(key, ci);
-                return o;
+                try
+                {
+                    var o = create(key);
+                    ci = new CacheItem<T2>(ExpirationSpan, o);
+                    _cache.Add(key, ci);
+                    return o;
+                }
+                catch (Exception e)
+                {
+                    Logging.I.DefaultLogger.Error(e, $"Cache {nameof(Try)} exception");
+                    return default;
+                }
             }
         }
     }

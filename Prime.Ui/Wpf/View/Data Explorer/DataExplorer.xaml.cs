@@ -45,7 +45,7 @@ namespace Prime.Ui.Wpf.View
 
             dialog.Height = 400;
 
-            await mw.ShowMetroDialogAsync(dialog, new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false });
+            await mw.ShowMetroDialogAsync(dialog, new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Inverted, AnimateShow = false }).ConfigureAwait(false);
 
             var content = new AssetPairExplorer() { DataContext = new AssetPairExplorerViewModel(li) };
             var c = dialog.FindChild<Canvas>("Content");
