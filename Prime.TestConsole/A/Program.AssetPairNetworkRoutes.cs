@@ -9,13 +9,13 @@ namespace Prime.TestConsole
 {
     public partial class Program
     {
-        public class AssetPairNetworkRoutes : IEnumerable<AssetPairNetworkRoute>
+        public sealed class AssetPairNetworkRoutes : IEnumerable<ExchangeHop>
         {
             public readonly AssetPair Pair;
 
             public readonly IReadOnlyList<MarketPrice> Prices;
-            private readonly List<AssetPairNetworkRoute> _routes = new List<AssetPairNetworkRoute>();
-            public readonly AssetPairNetworkRoute BestRoute;
+            private readonly List<ExchangeHop> _routes = new List<ExchangeHop>();
+            public readonly ExchangeHop BestRoute;
 
             public decimal BestPercentage => BestRoute.Percentage;
 
@@ -33,14 +33,14 @@ namespace Prime.TestConsole
                     {
                         var p1 = prices.FirstOrDefault(x => Equals(x.Network, n1) && x.Pair.Equals(pair));
                         var p2 = prices.FirstOrDefault(x => Equals(x.Network, n2) && x.Pair.Equals(pair));
-                        _routes.Add(new AssetPairNetworkRoute(pair, p1, p2));
+                        _routes.Add(new ExchangeHop(pair, p1, p2));
                     }
                 }
 
                 BestRoute = _routes.OrderByDescending(x => x.Percentage).FirstOrDefault();
             }
 
-            public IEnumerator<AssetPairNetworkRoute> GetEnumerator()
+            public IEnumerator<ExchangeHop> GetEnumerator()
             {
                 return _routes.GetEnumerator();
             }

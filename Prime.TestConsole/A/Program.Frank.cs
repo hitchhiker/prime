@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI;
 using GalaSoft.MvvmLight.Messaging;
+using LiteDB;
 using Nito.AsyncEx;
 using plugins;
 using Prime.Common;
@@ -21,9 +23,12 @@ namespace Prime.TestConsole
         {
             private IMessenger _m = DefaultMessenger.I.Default;
 
+            private readonly IReadOnlyList<Asset> _fiat = "USD,EUR,JPY".ToCsv().Select(x => x.ToAssetRaw()).ToList();
+
             private readonly IDictionary<Network, AssetPairs> _assetGraph; 
             private IDictionary<Network, MarketPricesData> _priceGraph;
             private List<AssetPairNetworkRoutes> _routes;
+            private IDictionary<Network, ExchangeHops> _knownHops;
             private readonly bool _flushPrices = false;
             private readonly AssetPair _testAssetPair = null;
 
@@ -48,7 +53,64 @@ namespace Prime.TestConsole
 
                 BuildRoutes();
 
-                foreach (var summary in _routes.Where(x=>x.BestPercentage>=4).OrderByDescending(x=>x.BestPercentage))
+                BuildKnownHops();
+
+               // WriteConsoleSummary();
+
+                var paths = FindPaths(null, startn, starta).Take(10).ToList();
+
+                foreach (var path in paths.OrderByDescending(x=>x.FirstOrDefault().GetCompoundPercent()))
+                {
+                    var route = path.FirstOrDefault();
+                    Console.WriteLine($"{Environment.NewLine}{path.Id} +{Math.Round(route.GetCompoundPercent() - 100, 2)}% {route.Explain()}");
+                }
+            }
+
+            private UniqueList<ObjectId> _yielded = new UniqueList<ObjectId>();
+
+            private IEnumerable<RoutePath> FindPaths(RoutePath path, Network network, Asset assetTransfer)
+            {
+                var routes = _knownHops.Get(network);
+                if (routes == null)
+                    yield break;
+
+                var possibleHops = routes.OrderByDescending(x=>x.Percentage).Where(x => x.ForAsset(assetTransfer)).Where(x => Equals(x.NetworkLow, network)).Where(x=> !_fiat.Contains(x.AssetTransfer));
+                if (!possibleHops.Any())
+                    yield break;
+                
+                foreach (var hop in possibleHops)
+                {
+                    var newPath = path == null ? new RoutePath(network) : path.Clone();
+                    var stage = new RouteStage(hop, assetTransfer);
+
+                    if (newPath.Has(stage) || hop.NetworkHigh.Equals(newPath.StartNetwork) || newPath.Count > 30)
+                        continue;
+                    
+                    newPath.Add(stage);
+                    
+                    foreach (var r in FindPaths(newPath, hop.NetworkHigh, stage.AssetFinal))
+                        yield return r;
+                }
+
+                if (_yielded.Add(path.Id))
+                    yield return path;
+            }
+
+            private void WriteConsoleSummary()
+            {
+                Console.WriteLine($"--------------{_routes.Count} ROUTES ------------");
+                Console.WriteLine();
+                Console.WriteLine("---------------ALL USD---------------");
+                Console.WriteLine();
+
+                foreach (var summary in _routes.Where(x => x.Pair.Has(Asset.Usd)).OrderByDescending(x => x.BestPercentage))
+                    Console.WriteLine(summary);
+
+                Console.WriteLine();
+                Console.WriteLine("---------------ABOVE 4%--------------");
+
+                Console.WriteLine();
+                foreach (var summary in _routes.Where(x => x.BestPercentage >= 4).OrderByDescending(x => x.BestPercentage))
                     Console.WriteLine(summary);
             }
 
@@ -82,6 +144,16 @@ namespace Prime.TestConsole
 
                     prices = prices.OrderBy(x => x.Price).ToList();
                     _routes.Add(new AssetPairNetworkRoutes(pair, prices));
+                }
+            }
+
+            private void BuildKnownHops()
+            {
+                _knownHops = new Dictionary<Network, ExchangeHops>();
+                foreach (var i in _routes.SelectMany(x => x))
+                {
+                    var rts =  _knownHops.GetOrAdd(i.NetworkLow, k => new ExchangeHops());
+                    rts.Add(i);
                 }
             }
 
@@ -174,8 +246,7 @@ namespace Prime.TestConsole
                 data.SavePublic();
                 return data;
             }
-
-
+            
             public void Old() { 
             /*
             var msg = new AssetPairAllRequestMessage().WaitForResponse<AssetPairAllRequestMessage, AssetPairAllResponseMessage>();

@@ -60,6 +60,11 @@ namespace Prime.Common
             return Asset1.Equals(asset) || Asset2.Equals(asset);
         }
 
+        public Asset Other(Asset asset)
+        {
+            return Asset1.Equals(asset) ? Asset2 : Asset1;
+        }
+
         public bool EqualsOrReversed(AssetPair pair)
         {
             return this.Equals(pair) || this.Equals(pair.Reversed);

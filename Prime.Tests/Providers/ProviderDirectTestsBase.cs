@@ -204,7 +204,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context = null, bool lessThan1)
+        private async Task GetPairPriceAsync(IPublicPriceSuper provider, PublicPriceContext context, bool lessThan1)
         {
             if (context == null)
                 return;
