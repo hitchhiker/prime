@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Command;
 using Prime.Common;
 using Prime.Utility;
 using System.Windows.Data;
+using Prime.Ui.Wpf.ViewModel.Ticker;
 
 namespace Prime.Ui.Wpf.ViewModel
 {
@@ -14,7 +15,6 @@ namespace Prime.Ui.Wpf.ViewModel
         public DataExplorerViewModel()
         {
             _debouncer = new DebouncerDispatched(UiDispatcher);
-            ListDataExplorerItems = new ObservableCollection<DataExplorerItemModel>();
             M.RegisterAsync<AssetPairAllResponseMessage>(this, RetreiveAllAssets);
             M.SendAsync(new AssetPairAllRequestMessage());
 
@@ -48,7 +48,8 @@ namespace Prime.Ui.Wpf.ViewModel
             _collectionView.Refresh();
         }
 
-        public ObservableCollection<DataExplorerItemModel> ListDataExplorerItems { get; private set; }
+        public TickerContainerViewModel TickerContainerViewModel { get; } = new TickerContainerViewModel();
+        public ObservableCollection<DataExplorerItemModel> ListDataExplorerItems { get; } = new ObservableCollection<DataExplorerItemModel>();
 
         public string FilterText { get; set; }
 

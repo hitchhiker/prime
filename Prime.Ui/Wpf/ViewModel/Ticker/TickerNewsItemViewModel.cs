@@ -1,9 +1,15 @@
-namespace Prime.Ui.Wpf.ViewModel
+namespace Prime.Ui.Wpf.ViewModel.Ticker
 {
     public class TickerNewsItemViewModel : TickerItemBaseViewModel
     {
-        public string Title { get; set; }
+        public TickerNewsItemViewModel(string title, string newsText)
+        {
+            Title = title;
+            NewsText = newsText;
+        }
 
-        public string NewsText { get; set; }
+        public string Title { get; private set; }
+
+        public string NewsText { get; private set; }
     }
 }
