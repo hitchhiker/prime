@@ -24,9 +24,13 @@ namespace TestConsole
                 // Run Alyasko code :)
                 new ProviderTools().GenerateProvidersReport();
             }
+            else if (Environment.UserName.Equals("Sean"))
+            {
+                new ProviderTools().GenerateProvidersReport();
+            }
             else
             {
-                new Prime.TestConsole.Program.FrankTests();
+                //new Prime.TestConsole.Program.FrankTests();
             }
 
             // ----- Kraken -----
