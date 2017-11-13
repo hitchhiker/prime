@@ -12,7 +12,7 @@
         <StackPanel.Resources>
             <local:NegatingConverter x:Key="NegatingConverter" />
             <Storyboard x:Key="Slide">
-                <DoubleAnimation From="0" To="-3000" Duration="00:00:13"
+                <DoubleAnimation From="0" To="{Binding Width, ElementName=Canvas, Converter={StaticResource NegatingConverter}}" Duration="00:00:13"
                       Storyboard.TargetProperty="X"
                       Storyboard.TargetName="Transform"
                       RepeatBehavior="Forever"/>
@@ -30,7 +30,7 @@
             </EventTrigger>
         </StackPanel.Triggers>
         <Canvas x:Name="Canvas" Width="{Binding ActualWidth, ElementName=Stack}">
-            <!--<ItemsControl Canvas.Left="0" ItemsSource="{Binding ListTickerItems}">
+            <ItemsControl Canvas.Left="0" ItemsSource="{Binding ListTickerItems}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
@@ -44,7 +44,7 @@
                         <local:TickerPrice Margin="0,0,50,0"></local:TickerPrice>
                     </DataTemplate>
                 </ItemsControl.Resources>
-            </ItemsControl>-->
+            </ItemsControl>
             <ItemsControl Canvas.Left="{Binding Width, ElementName=Canvas}" ItemsSource="{Binding ListTickerItems}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

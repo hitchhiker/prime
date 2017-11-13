@@ -19,9 +19,6 @@ namespace Prime.Ui.Wpf.ViewModel.Ticker
 
             tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("Breaking", "This is a breaking story"));
             tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is another news item1"));
-            tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is another news item2"));
-            tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is another news item3"));
-            tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is another news item4"));
 
             tickerBottom.ListTickerItems.Add(new TickerPriceViewModel(Asset.Btc, new MarketPrice(null,Asset.Btc, 6000)));
             tickerBottom.ListTickerItems.Add(new TickerPriceViewModel(Asset.Usd, new MarketPrice(null,Asset.Usd, 500)));
@@ -32,7 +29,7 @@ namespace Prime.Ui.Wpf.ViewModel.Ticker
             tickerBottom.ListTickerItems.Add(new TickerPriceViewModel(Asset.Xrp, new MarketPrice(null,Asset.Xrp, 600)));
 
             ListTickers.Add(tickerTop);
-            //ListTickers.Add(tickerBottom);
+            ListTickers.Add(tickerBottom);
         }
 
         public ObservableCollection<TickerViewModel> ListTickers { get; } = new ObservableCollection<TickerViewModel>();
