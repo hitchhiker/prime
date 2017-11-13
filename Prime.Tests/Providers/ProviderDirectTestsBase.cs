@@ -47,7 +47,7 @@ namespace Prime.Tests.Providers
         }
 
         public virtual async Task TestGetAssetPricesAsync() { }
-        public virtual async Task TestGetAssetPricesAsync(PublicAssetPricesContext context, bool lessThan)
+        public virtual async Task TestGetAssetPricesAsync(PublicAssetPricesContext context)
         {
             var p = IsType<IPublicPricesProvider>();
             if (p.Success)
