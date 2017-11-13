@@ -20,7 +20,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var context = new AssetPairs()
             {
                 "BTC_PLN".ToAssetPairRaw(),
                 "BTC_EUR".ToAssetPairRaw(),
@@ -28,7 +28,8 @@ namespace Prime.Tests.Providers
                 "LTC_BTC".ToAssetPairRaw(),
                 new AssetPair("LiteMineX", "BTC")
             };
-            await base.TestGetAssetPairsAsync();
+
+            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
