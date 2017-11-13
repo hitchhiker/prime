@@ -20,7 +20,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var context = new AssetPairs()
             {
                 "BTC_USD".ToAssetPairRaw(),
                 "BTC_EUR".ToAssetPairRaw(),
@@ -28,7 +28,7 @@ namespace Prime.Tests.Providers
                 "ETH_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -41,20 +41,20 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPricesAsync()
         {
-            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            var context = new PublicPricesContext(new List<AssetPair>()
             {
                 "BTC_USD".ToAssetPairRaw(),
                 "BTC_EUR".ToAssetPairRaw(),
                 "BTC_RUB".ToAssetPairRaw(),
                 "ETH_BTC".ToAssetPairRaw()
             });
-            await base.TestGetPricesAsync();
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            var context = new PublicAssetPricesContext(new List<Asset>()
             {
                 "GHS".ToAssetRaw(),
                 "ZEC".ToAssetRaw(),
@@ -62,13 +62,17 @@ namespace Prime.Tests.Providers
                 "BCH".ToAssetRaw()
             }, Asset.Btc);
 
-            await base.TestGetAssetPricesAsync();
+            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            await base.TestGetVolumeAsync();
+            var context = new VolumeContext()
+            {
+                Pair = "BTC_USD".ToAssetPairRaw()
+            };
+            await base.TestGetVolumeAsync(context).ConfigureAwait(false);
         }
     }
 }
