@@ -24,7 +24,8 @@ namespace Prime.TestConsole
         {
             private IMessenger _m = DefaultMessenger.I.Default;
 
-            private readonly IReadOnlyList<Asset> _fiat = "USD,EUR,JPY".ToCsv().Select(x => x.ToAssetRaw()).ToList();
+            private readonly IReadOnlyList<Asset> _badCoins = "USD,EUR,JPY,BCC,BCH".ToCsv().Select(x => x.ToAssetRaw()).ToList();
+            private readonly IReadOnlyList<Network> _badNetworks = "gdax,coinbase,binance".ToCsv().Select(x => Networks.I.Get(x)).ToList();
 
             private readonly IDictionary<Network, AssetPairs> _assetGraph; 
             private IDictionary<Network, MarketPricesData> _priceGraph;
@@ -35,13 +36,20 @@ namespace Prime.TestConsole
 
             public FrankTests()
             {
-                //_flushPrices = true;
+                _flushPrices = true;
                 //_testAssetPair = "BTC_EMC".ToAssetPairRaw();
 
-                var starta = "BTC".ToAssetRaw();
+                var starta = "ETH".ToAssetRaw();
                 var startn = Networks.I.Get("bitstamp");
 
+                /*
+                var starta = "BTG".ToAssetRaw();
+                var startn = Networks.I.Get("hitbtc");
+                */
+
                 _assetGraph = AsyncContext.Run(() => AssetPairProvider.I.GetNetworksDiskAsync()) as IDictionary<Network, AssetPairs>;
+
+                RemoveBad(_badCoins);
 
                 if (_testAssetPair!=null)
                     BuildTestData();
@@ -56,45 +64,101 @@ namespace Prime.TestConsole
 
                 BuildKnownHops();
 
-               // WriteConsoleSummary();
+                /*
+                foreach (var n in _assetGraph.Keys)
+                {
+                    var prices = _priceGraph.Get(n).Prices.Where(x => x.Pair.Has("BTG".ToAssetRaw()));
+                    foreach (var i in prices)
+                        Console.WriteLine($"{n.Name} " + i.ToString());
+                }*/
 
-                var paths = FindPaths(null, startn, starta).Take(100).ToList().OrderByDescending(x => x.GetCompoundPercent()).Take(10);
+                //WriteConsoleSummary();
 
-                foreach (var path in paths)
-                    Console.WriteLine(path.Explain());
+                var initial = FindPaths(null, startn, starta, false).Take(50000).ToList();
+                var paths = initial.Where(x=>Equals(x.StartAsset, x.LastStage().AssetFinal)).ToList();
+
+                /*
+                var pospaths = paths.OrderByDescending(x => x.GetCompoundPercent()).ToList();
+                var negpaths = paths.OrderBy(x => x.GetCompoundPercent()).ToList();
+
+                var circuits = new List<CircuitPaths>();
+                var croutes = new List<RoutePath>();
+                var _found = new List<ObjectId>();
+
+                foreach (var path in pospaths)
+                {
+                    var neg = negpaths.FirstOrDefault(x=> x.Match(path)!=-1);
+                    if (neg == null)
+                        continue;
+
+                    var circ = new CircuitPaths(path, neg);
+                    circuits.Add(circ);
+                    var r = circ.MergeRoutes();
+                    if (_found.Contains(r.Id))
+                        continue;
+
+                    _found.Add(r.Id);
+                    croutes.Add(circ.MergeRoutes());
+                }*/
+
+                foreach (var r in paths.OrderByDescending(x=>x.FinalBalance().ToDecimalValue()).Take(10))
+                    Console.WriteLine(r.Explain());
+
+                Console.WriteLine($"{initial.Count} paths.");
+
+                /*
+                foreach (var path in pospaths.Take(1))
+                {
+                    Console.WriteLine(path.Explain(false, 1));
+                    Console.WriteLine(path.Explain(true, 1));
+                }
+
+                foreach (var path in negpaths.Take(1))
+                {
+                    Console.WriteLine(path.Explain(false, 1));
+                    Console.WriteLine(path.Explain(true, 1));
+                }*/
             }
 
             private readonly ConcurrentBag<ObjectId> _yielded = new ConcurrentBag<ObjectId>();
 
-            private IEnumerable<RoutePath> FindPaths(RoutePath path, Network network, Asset assetTransfer)
+            private IEnumerable<RoutePath> FindPaths(RoutePath path, Network network, Asset assetTransfer, bool reversed)
             {
                 var routes = _knownHops.Get(network);
                 if (routes == null)
                     yield break;
 
-                var possibleHops = routes.OrderByDescending(x=>x.Percentage).Where(x => x.ForAsset(assetTransfer)).Where(x => Equals(x.NetworkLow, network)).Where(x=> !_fiat.Contains(x.AssetTransfer));
+                var possibleHops = FindHops(network, assetTransfer, routes);
                 if (!possibleHops.Any())
                     yield break;
                 
-                foreach (var hop in possibleHops)
+                foreach (var hop in possibleHops.OrderByDescending(x=>x.Percentage))
                 {
-                    var newPath = path == null ? new RoutePath(network) : path.Clone();
+                    var newPath = path == null ? new RoutePath(network, assetTransfer) : path.Clone();
                     var stage = new RouteStage(hop, assetTransfer);
 
-                    if (newPath.Has(stage) || hop.NetworkHigh.Equals(newPath.StartNetwork) || newPath.Count > 30)
+                    if (newPath.Has(stage) || newPath.Count > 30)
                         continue;
                     
                     newPath.Add(stage);
-                    
-                    foreach (var r in FindPaths(newPath, hop.NetworkHigh, stage.AssetFinal))
+
+                    foreach (var r in FindPaths(newPath, hop.NetworkHigh, stage.AssetFinal, reversed))
                         yield return r;
                 }
+
+                if (path == null)
+                    yield break;
 
                 if (_yielded.Contains(path.Id))
                     yield break;
 
                 _yielded.Add(path.Id);
                 yield return path;
+            }
+
+            private IEnumerable<ExchangeHop> FindHops(Network network, Asset assetTransfer, ExchangeHops routes)
+            {
+                return routes.Where(x => x.ForAsset(assetTransfer)).Where(x => Equals(x.NetworkLow, network)).Where(x=> !_badCoins.Contains(x.AssetTransfer));
             }
 
             private void WriteConsoleSummary()
@@ -128,6 +192,14 @@ namespace Prime.TestConsole
                     }
                     _assetGraph[kv.Key] = new AssetPairs(new List<AssetPair>() {e});
                 }
+            }
+
+            private void RemoveBad(IEnumerable<Asset> asset)
+            {
+                _assetGraph.RemoveAll(x => _badNetworks.Contains(x.Key));
+
+                foreach (var kv in _assetGraph)
+                    _assetGraph[kv.Key] = new AssetPairs(kv.Value.Where(x => !asset.Contains(x.Asset1) && !asset.Contains(x.Asset2)));
             }
 
             private void BuildRoutes()
@@ -210,6 +282,7 @@ namespace Prime.TestConsole
 
                     var prices = e.Prices.ToList();
                     prices.RemoveAll(x => x.Price == 0);
+                    prices.RemoveAll(x => !kv.Value.Any(a=>a.EqualsOrReversed(x.Pair)));
 
                     if (_testAssetPair != null)
                         prices.RemoveAll(x => !x.Pair.EqualsOrReversed(_testAssetPair));
