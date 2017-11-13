@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,6 @@ namespace Prime.Utility
 {
     public static class DictionaryExtensions
     {
-
         public static object Get(this IDictionary<string, object> dict, string key, object defaultValue = null)
         {
             if (dict == null || dict.Count == 0)
