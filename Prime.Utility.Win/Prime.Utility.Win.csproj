@@ -121,6 +121,7 @@
     <Compile Include="MvvmLight\Command\RelayCommandGeneric.cs" />
     <Compile Include="PrimeCommonWindows.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\LoadDll.cs" />
     <Compile Include="Thread\DebouncerDispatched.cs" />
     <Compile Include="Thread\SmartThreadPool\CallerThreadContext.cs" />
     <Compile Include="Thread\SmartThreadPool\CanceledWorkItemsGroup.cs" />

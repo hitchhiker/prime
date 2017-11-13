@@ -20,10 +20,8 @@ namespace Prime.Utility
         public static TypeCatalogue I { get { return Lazy.Value; } }
         private static readonly Lazy<TypeCatalogue> Lazy = new Lazy<TypeCatalogue>(() => new TypeCatalogue());
 
-
         private static IEnumerable<Type> Results()
         {
-            
             var result = new List<Type>();
             var t = typeof(IncludeInTypeCatalogueAttribute);
 

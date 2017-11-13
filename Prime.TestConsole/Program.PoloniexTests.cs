@@ -110,7 +110,7 @@ namespace Prime.TestConsole
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
                 var pair = new AssetPair("BTC", "ETH", provider);
 
-                var ctx = new OhlcContext(pair, TimeResolution.Day, new TimeRange(DateTime.UtcNow.AddDays(-5), DateTime.UtcNow, TimeResolution.Day), null);
+                var ctx = new OhlcContext(pair, TimeResolution.Day, new TimeRange(DateTime.UtcNow.AddDays(-5), DateTime.UtcNow, TimeResolution.Day));
 
                 try
                 {

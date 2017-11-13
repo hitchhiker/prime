@@ -44,17 +44,15 @@ namespace Prime.Common
         [Bson]
         public Money Price { get; private set; }
 
-        public MarketPrice Reverse()
-        {
-            return new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset)) {UtcCreated = UtcCreated};
-        }
+        private MarketPrice _reversed;
+        public MarketPrice Reversed => _reversed ?? (_reversed = new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset)) {UtcCreated = UtcCreated, _reversed = this});
 
         public MarketPrice AsQuote(Asset quote)
         {
             if (Equals(Pair.Asset1, quote))
                 return this;
             if (Equals(Pair.Asset2, quote))
-                return Reverse();
+                return Reversed;
             return null;
         }
 

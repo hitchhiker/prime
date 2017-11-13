@@ -4,3 +4,4 @@ using Prime.Utility;
 [assembly: InternalsVisibleTo("Prime.Core")]
 [assembly: InternalsVisibleTo("Prime.TestConsole")]
 [assembly: InternalsVisibleTo("Prime.Tests")]
+[assembly: InternalsVisibleTo("Prime.Arbitrage")]

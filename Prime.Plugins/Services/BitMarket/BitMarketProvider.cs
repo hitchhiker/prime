@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMarket
 {
-    public class BitMarketProvider : IAssetPairsProvider, IPublicPriceProvider
+    public class BitMarketProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
         private const string BitMarketApiUrl = "https://www.bitmarket.net/";
 
@@ -64,7 +64,10 @@ namespace Prime.Plugins.Services.BitMarket
             try
             {
                 var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-                return new MarketPrice(Network, context.Pair, r.last);
+                return new MarketPrice(Network, context.Pair, r.last)
+                {
+                    PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, r.low, r.high)
+                };
             }
             catch (ApiException ex)
             {

@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
+using Prime.Common.Wallet.Withdrawal.History;
 using Prime.Plugins.Services.BitMex;
 
 namespace Prime.Tests.Providers
@@ -22,13 +23,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestApiAsync()
         {
-            await base.TestApiAsync();
+            await base.TestApiAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetOhlcAsync()
         {
-            await base.TestGetOhlcAsync();
+            var context = new OhlcContext("LTC_BTC".ToAssetPairRaw(), TimeResolution.Minute, TimeRange.EveryDayTillNow);
+            await base.TestGetOhlcAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -41,19 +43,20 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            var context = new PublicAssetPricesContext(new List<Asset>()
             {
                 "LTC".ToAssetRaw(),
                 "ETH".ToAssetRaw(),
                 "FCT".ToAssetRaw()
             }, Asset.Btc);
-            await base.TestGetAssetPricesAsync();
+
+            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetPricesAsync()
         {
-            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            var context = new PublicPricesContext(new List<AssetPair>()
             {
                 "BTC_USD".ToAssetPairRaw(),
                 "DAO_ETH".ToAssetPairRaw(),
@@ -61,60 +64,65 @@ namespace Prime.Tests.Providers
                 "ETH_BTC".ToAssetPairRaw(),
                 "FCT_BTC".ToAssetPairRaw()
             });
-            await base.TestGetPricesAsync();
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var requiredPairs = new AssetPairs()
             {
                 "BTC_USD".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetBalancesAsync()
         {
-            await base.TestGetBalancesAsync();
+            await base.TestGetBalancesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAddressesAsync()
         {
-            await base.TestGetAddressesAsync();
+            var context = new WalletAddressContext(UserContext.Current);
+            await base.TestGetAddressesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAddressesForAssetAsync()
         {
-            await base.TestGetAddressesForAssetAsync();
+            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Current);
+
+            await base.TestGetAddressesForAssetAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
-            OrderBookContext = new OrderBookContext(new AssetPair(Asset.Btc, "USD".ToAssetRaw()));
-            await base.TestGetOrderBookAsync();
+            var context = new OrderBookContext(new AssetPair(Asset.Btc, "USD".ToAssetRaw()));
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
 
-            OrderBookContext = new OrderBookContext(new AssetPair(Asset.Btc, "USD".ToAssetRaw()), 100);
-            await base.TestGetOrderBookAsync();
+            context = new OrderBookContext(new AssetPair(Asset.Btc, "USD".ToAssetRaw()), 100);
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetWithdrawalHistoryAsync()
         {
-            await base.TestGetWithdrawalHistoryAsync();
+            var context = new WithdrawalHistoryContext(UserContext.Current);
+
+            await base.TestGetWithdrawalHistoryAsync(context).ConfigureAwait(false);
         }
 
-        [TestMethod]
+        // [TestMethod]
         public override async Task TestPlaceWithdrawalExtendedAsync()
         {
             var token2fa = "249723";
 
-            WithdrawalPlacementContextExtended = new WithdrawalPlacementContextExtended(UserContext.Current)
+            var context = new WithdrawalPlacementContextExtended(UserContext.Current)
             {
                 Price = new Money(0.001m, Asset.Btc),
                 Address = "2NBMEXqYb3FXiui3ZZA5TzHV85LqN7yFDgP",
@@ -123,35 +131,29 @@ namespace Prime.Tests.Providers
                 Description = "Debug payment"
             };
 
-            await base.TestPlaceWithdrawalExtendedAsync();
+            await base.TestPlaceWithdrawalExtendedAsync(context).ConfigureAwait(false);
         }
 
-        [TestMethod]
+        // [TestMethod]
         public override async Task TestCancelWithdrawalAsync()
         {
-            WithdrawalCancelationContext = new WithdrawalCancelationContext()
+            var context = new WithdrawalCancelationContext()
             {
                 WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
             };
 
-            await base.TestCancelWithdrawalAsync();
+            await base.TestCancelWithdrawalAsync(context).ConfigureAwait(false);
         }
 
-        [TestMethod]
+        // [TestMethod]
         public override async Task TestConfirmWithdrawalAsync()
         {
-            WithdrawalConfirmationContext = new WithdrawalConfirmationContext(UserContext.Current)
+            var context = new WithdrawalConfirmationContext(UserContext.Current)
             {
                 WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
             };
 
-            await base.TestConfirmWithdrawalAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            await base.TestGetVolumeAsync();
+            await base.TestConfirmWithdrawalAsync(context).ConfigureAwait(false);
         }
     }
 }

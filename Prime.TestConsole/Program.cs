@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Core;
@@ -16,6 +17,11 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
+            if (args != null && args.Length == 2 && args[0] == "-ext")
+            {
+                var asm = Assembly.LoadFrom(args[1]);
+            }
+
             var prime = TypeCatalogue.I.ImplementInstancesI<ICore>().FirstOrDefault();
             prime.Start(); //INIT PRIME //THIS IS A HACK FOR NOW
 
@@ -24,13 +30,9 @@ namespace TestConsole
                 // Run Alyasko code :)
                 new ProviderTools().GenerateProvidersReport();
             }
-            else if (Environment.UserName.Equals("Sean"))
-            {
-                new ProviderTools().GenerateProvidersReport();
-            }
             else
             {
-                //new Prime.TestConsole.Program.FrankTests();
+                TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault()?.Go();
             }
 
             // ----- Kraken -----

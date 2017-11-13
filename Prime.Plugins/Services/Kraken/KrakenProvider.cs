@@ -16,7 +16,8 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
+
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPricesProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -154,25 +155,35 @@ namespace Prime.Plugins.Services.Kraken
 
             var assetPairs = new AssetPairs();
 
-            // BUG: USDTUSD fix. USDTUSD -> USD.T issue.
-            var usdtUsd = "USDTUSD";
-            if (r.result.Any(x => x.Value.altname.Equals(usdtUsd)))
-            {
-                r.result.RemoveAll(x => x.Value.altname.Equals(usdtUsd));
-                assetPairs.Add(new AssetPair("USDT", "USD"));
-            }
-
             foreach (var assetPair in r.result.Where(x => !x.Key.ToLower().EndsWith(".d")).OrderBy(x => x.Value.altname.Length))
             {
-                var pair = AssetsUtilities.GetAssetPair(assetPair.Value.altname, assetPairs);
+                var pair = ParseAssetPair(assetPair);
 
-                if (!pair.HasValue)
+                if (pair == null)
                     continue;
 
-                assetPairs.Add(new AssetPair(pair.Value.AssetCode1.ToAsset(this), pair.Value.AssetCode2.ToAsset(this)));
+                assetPairs.Add(pair);
             }
 
             return assetPairs;
+        }
+
+        private AssetPair ParseAssetPair(KeyValuePair<string, KrakenSchema.AssetPairResponse> rPair)
+        {
+            var asset1 = ParseAsset(rPair.Value.base_c);
+            var asset2 = ParseAsset(rPair.Value.quote);
+
+            return new AssetPair(asset1.ToAsset(this), asset2.ToAsset(this));
+        }
+
+        private string ParseAsset(string rAsset)
+        {
+            var modifiers = new char[] { 'Z', 'X' };
+
+            if (modifiers.Contains(rAsset[0]))
+                return rAsset.Length <= 3 ? rAsset : rAsset.Remove(0, 1);
+
+            return rAsset;
         }
 
         private Dictionary<string, object> CreateKrakenBody()

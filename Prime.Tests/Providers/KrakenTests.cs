@@ -20,7 +20,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetBalancesAsync()
         {
-            await base.TestGetBalancesAsync();
+            await base.TestGetBalancesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -33,20 +33,20 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            var context = new PublicAssetPricesContext(new List<Asset>()
             {
                 "ETH".ToAssetRaw(),
                 "LTC".ToAssetRaw(),
                 "XRP".ToAssetRaw()
             }, "BTC".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync();
+            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetPricesAsync()
         {
-            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            var context = new PublicPricesContext(new List<AssetPair>()
             {
                 "ETC_ETH".ToAssetPairRaw(),
                 "ETH_BTC".ToAssetPairRaw(),
@@ -54,34 +54,37 @@ namespace Prime.Tests.Providers
                 "XRP_BTC".ToAssetPairRaw(),
             });
 
-            await base.TestGetPricesAsync();
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAddressesAsync()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
-            await base.TestGetAddressesAsync();
+
+            var context = new WalletAddressContext(UserContext.Current);
+            await base.TestGetAddressesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAddressesForAssetAsync()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
-            WalletAddressAssetContext = new WalletAddressAssetContext("MLN".ToAssetRaw(), UserContext.Current);
-            await base.TestGetAddressesForAssetAsync();
+            var context = new WalletAddressAssetContext("MLN".ToAssetRaw(), UserContext.Current);
+            await base.TestGetAddressesForAssetAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetOhlcAsync()
         {
-            await base.TestGetOhlcAsync();
+            var context = new OhlcContext("ETC_ETH".ToAssetPairRaw(), TimeResolution.Minute, TimeRange.EveryDayTillNow);
+            await base.TestGetOhlcAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var pairs = new AssetPairs()
             {
                 "ETC_ETH".ToAssetPairRaw(),
                 "ETH_BTC".ToAssetPairRaw(),
@@ -89,29 +92,23 @@ namespace Prime.Tests.Providers
                 "XRP_BTC".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(pairs).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestApiAsync()
         {
-            await base.TestApiAsync();
+            await base.TestApiAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
-            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
-            await base.TestGetOrderBookAsync();
+            var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
 
-            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
-            await base.TestGetOrderBookAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            await base.TestGetVolumeAsync();
+            context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
         }
     }
 }

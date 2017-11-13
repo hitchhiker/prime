@@ -39,7 +39,7 @@ namespace Prime.Core.Prices.Latest
             lock (_lock)
             {
                 if (_nets.Pair.Equals(m.Pair))
-                    _m.SendAsync(new LatestPriceResultMessage(m.Provider, m.MarketPrice.Reverse()));
+                    _m.SendAsync(new LatestPriceResultMessage(m.Provider, m.MarketPrice.Reversed));
             }
         }
 
@@ -73,7 +73,7 @@ namespace Prime.Core.Prices.Latest
             if (!pair.Equals(m.Pair))
                 return false;
 
-            var message = reverse ? new LatestPriceResultMessage(m.Provider, m.MarketPrice.Reverse()) : m;
+            var message = reverse ? new LatestPriceResultMessage(m.Provider, m.MarketPrice.Reversed) : m;
             if (networks.IsConversionPart1)
                 _request.LastConvert1 = message;
             else

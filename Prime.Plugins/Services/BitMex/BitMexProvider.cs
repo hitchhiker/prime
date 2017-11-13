@@ -16,7 +16,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider :
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider,
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider, IPublicPriceStatistics,
         IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
@@ -48,7 +48,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexTestApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
         public Task<bool> TestPublicApiAsync()
@@ -117,7 +117,10 @@ namespace Prime.Plugins.Services.BitMex
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value);
+            return new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value)
+            {
+                PriceStatistics = new PriceStatistics(context.QuoteAsset, rPrice.volume24h, null, null, null, null, null)
+            };
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
