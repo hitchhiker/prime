@@ -107,7 +107,7 @@ namespace Prime.Tests.Providers
         {
             // BUG: supports only 1 day.
             var context = new OhlcContext(new AssetPair("BTC", "LTC"), TimeResolution.Day,
-                new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Hour), null);
+                new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Hour));
 
             await base.TestGetOhlcAsync(context).ConfigureAwait(false);
         }

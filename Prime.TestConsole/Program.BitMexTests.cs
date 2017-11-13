@@ -80,7 +80,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
+                var ohlcContext = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
 
                 try
                 {

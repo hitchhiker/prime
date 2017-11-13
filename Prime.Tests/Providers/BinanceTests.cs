@@ -28,7 +28,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            var context = new AssetPairs()
+            var requiredPairs = new AssetPairs()
             {
                 "NEO_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
@@ -38,7 +38,7 @@ namespace Prime.Tests.Providers
                 "ETC_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace Prime.Tests.Providers
         public override async Task TestGetOhlcAsync()
         {
             var context = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
-                new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
+                new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
             await base.TestGetOhlcAsync(context).ConfigureAwait(false);
         }
 

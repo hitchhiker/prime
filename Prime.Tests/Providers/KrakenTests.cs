@@ -77,7 +77,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetOhlcAsync()
         {
-            var context = new OhlcContext("ETC_ETH".ToAssetPairRaw(), TimeResolution.Minute, TimeRange.EveryDayTillNow, null);
+            var context = new OhlcContext("ETC_ETH".ToAssetPairRaw(), TimeResolution.Minute, TimeRange.EveryDayTillNow);
             await base.TestGetOhlcAsync(context).ConfigureAwait(false);
         }
 

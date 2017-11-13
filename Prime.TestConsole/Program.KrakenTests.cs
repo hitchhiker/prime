@@ -128,7 +128,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, null, null);
+                var ctx = new OhlcContext(new AssetPair("BTC", "USD"), TimeResolution.Minute, null);
 
                 try
                 {
