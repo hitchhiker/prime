@@ -28,7 +28,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var context = new AssetPairs()
             {
                 "NEO_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
@@ -38,25 +38,25 @@ namespace Prime.Tests.Providers
                 "ETC_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            var context = new PublicAssetPricesContext(new List<Asset>()
             {
                 "BNT".ToAssetRaw(),
                 "ETC".ToAssetRaw()
             }, "BTC".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync();
+            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetPricesAsync()
         {
-            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            var context = new PublicPricesContext(new List<AssetPair>()
             {
                 "BNT_ETH".ToAssetPairRaw(),
                 "BNT_BTC".ToAssetPairRaw(),
@@ -64,48 +64,48 @@ namespace Prime.Tests.Providers
                 "SALT_BTC".ToAssetPairRaw()
             });
 
-            await base.TestGetPricesAsync();
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
-            OrderBookContext = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()));
-            await base.TestGetOrderBookAsync();
+            var context = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()));
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
 
-            OrderBookContext = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()), 20);
-            await base.TestGetOrderBookAsync();
+            context = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()), 20);
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestApiAsync()
         {
-            await base.TestApiAsync();
+            await base.TestApiAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetBalancesAsync()
         {
-            await base.TestGetBalancesAsync();
+            await base.TestGetBalancesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetOhlcAsync()
         {
-            OhlcContext = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
+            var context = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute), null);
-            await base.TestGetOhlcAsync();
+            await base.TestGetOhlcAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            VolumeContext = new VolumeContext()
+            var context = new VolumeContext()
             {
                 Pair = "BNT_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetVolumeAsync();
+            await base.TestGetVolumeAsync(context).ConfigureAwait(false);
         }
     }
 }
