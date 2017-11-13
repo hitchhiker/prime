@@ -170,11 +170,8 @@ namespace Prime.Plugins.Services.Kraken
 
         private AssetPair ParseAssetPair(KeyValuePair<string, KrakenSchema.AssetPairResponse> rPair)
         {
-            var rAsset1 = rPair.Value.base_c;
-            var rAsset2 = rPair.Value.quote;
-
-            var asset1 = ParseAsset(rAsset1);
-            var asset2 = ParseAsset(rAsset2);
+            var asset1 = ParseAsset(rPair.Value.base_c);
+            var asset2 = ParseAsset(rPair.Value.quote);
 
             return new AssetPair(asset1.ToAsset(this), asset2.ToAsset(this));
         }
