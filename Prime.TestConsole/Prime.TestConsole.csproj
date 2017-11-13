@@ -152,6 +152,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A\Program.CircuitPath.cs" />
     <Compile Include="A\Program.RoutePath.cs" />
     <Compile Include="A\Program.ExchangeHop.cs" />
     <Compile Include="A\Program.AssetPairNetworkRoutes.cs" />

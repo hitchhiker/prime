@@ -92,5 +92,12 @@ namespace Prime.Utility
             public SortingDirection Direction { get; set; }
             public bool Initial { get; set; }
         }
+
+        public static IList<T> Reversed<T>(this IEnumerable<T> collection)
+        {
+            var l = new List<T>(collection);
+            l.Reverse();
+            return l;
+        }
     }
 }

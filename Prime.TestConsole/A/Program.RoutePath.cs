@@ -14,11 +14,25 @@ namespace Prime.TestConsole
         {
             private readonly object _lock = new object();
             public readonly Network StartNetwork;
+            public readonly Asset StartAsset;
             private readonly List<RouteStage> _stages = new List<RouteStage>();
+            private readonly List<ObjectId> _positiveHashes = new List<ObjectId>();
+            private readonly List<ObjectId> _negativeHashes = new List<ObjectId>();
+            private readonly int _reversedAt = -1;
 
-            public RoutePath(Network startNetwork)
+            public RoutePath(Network startNetwork, Asset startAsset, int reversedAt =-1)
             {
                 StartNetwork = startNetwork;
+                StartAsset = startAsset;
+                _reversedAt = reversedAt;
+            }
+
+            public Money FinalBalance()
+            {
+                var balance = new Money(1, StartAsset);
+                foreach (var s in _stages)
+                    balance = s.Calculate(IsReversed(s), balance);
+                return balance;
             }
 
             public void Add(RouteStage stage)
@@ -32,6 +46,12 @@ namespace Prime.TestConsole
                         return;
 
                     _id = null;
+
+                    if (_stages.Count > 1)
+                    {
+                        _negativeHashes.Add(stage.DestinationReversedHash);
+                        _positiveHashes.Add(stage.DestinationHash);
+                    }
                 }
             }
 
@@ -81,6 +101,14 @@ namespace Prime.TestConsole
                 }
             }
 
+            public bool IsReversed(RouteStage stage)
+            {
+                if (_reversedAt == -1)
+                    return false;
+
+                return _stages.IndexOf(stage) >= _reversedAt;
+            }
+
             public bool Has(RouteStage stage)
             {
                 lock (_lock)
@@ -91,7 +119,7 @@ namespace Prime.TestConsole
             {
                 lock (_lock)
                 {
-                    var nr = new RoutePath(StartNetwork);
+                    var nr = new RoutePath(StartNetwork, StartAsset);
                     foreach (var i in _stages)
                         nr.Add(i);
                     nr._id = _id;
@@ -106,31 +134,103 @@ namespace Prime.TestConsole
                     if (_stages.Count == 0)
                         return null;
 
-                    var r = $"{Environment.NewLine} +{Math.Round(GetCompoundPercent() - 100, 2)}%";
+                    var balance = new Money(1, FirstStage().AssetTransfer);
 
-                    var step = 1;
-                    foreach (var s in _stages)
-                        r += s.Explain(step++);
+                    var st = $"{Environment.NewLine}{Math.Round(GetCompoundPercentWith() - 100, 2)}%";
 
-                    var last = _stages.LastOrDefault();
-                    r +=
-                        $"{Environment.NewLine} == [Completed as {last.AssetFinal} @ {last.ExchangeHop.High.Network.Name} ]";
+                    var isreversed = false;
+                    for (var index = 0; index < _stages.Count; index++)
+                    {
+                        var s = _stages[index];
+                        if (index >= _reversedAt && _reversedAt != -1)
+                            isreversed = true;
+                        
+                        var pr = s.Explain(index + 1, isreversed, balance);
 
-                    return r;
+                        st += pr.Item1;
+                        balance = pr.Item2;
+                    }
+                    return st;
                 }
             }
 
-            public decimal GetCompoundPercent()
+            public decimal GetCompoundPercent(bool reversed = false)
             {
                 lock (_lock)
                 {
                     decimal percent = 100;
 
                     foreach (var s in _stages)
-                        percent += s.GetPercentChange(percent);
+                        if (reversed)
+                            percent -= s.GetPercentChange(percent);
+                        else
+                            percent += s.GetPercentChange(percent);
 
                     return percent;
                 }
+            }
+
+            public decimal GetCompoundPercentWith()
+            {
+                lock (_lock)
+                {
+                    decimal percent = 100;
+
+                    for (var index = 0; index < _stages.Count; index++)
+                    {
+                        var s = _stages[index];
+                        if (_reversedAt!=-1 && index>=_reversedAt)
+                            percent -= Math.Round(s.GetPercentChange(percent),3);
+                        else
+                            percent += Math.Round(s.GetPercentChange(percent),3);
+                    }
+
+                    return percent;
+                }
+            }
+
+            private decimal? _percentagePositive;
+            public decimal PercentagePositive
+            {
+                get
+                {
+                    lock (_lock)
+                        return _percentagePositive ?? (decimal) (_percentagePositive = GetCompoundPercent(false));
+                }
+            }
+
+            private decimal? _percentageNegative;
+            public decimal PercentageNegative
+            {
+                get
+                {
+                    lock (_lock)
+                        return _percentageNegative ?? (decimal) (_percentageNegative = GetCompoundPercent(true));
+                }
+            }
+
+            public RouteStage FirstStage()
+            {
+                lock (_lock)
+                    return _stages.Any() ? _stages[0] : null;
+            }
+
+            public RouteStage LastStage()
+            {
+                lock (_lock)
+                    return _stages.LastOrDefault();
+            }
+
+            public int Match(RoutePath negativePath)
+            {
+                if (Count < 2 || negativePath.Count < 2)
+                    return -1;
+
+                var f = _positiveHashes.FirstOrDefault(x => negativePath._negativeHashes.Contains(x));
+                if (f == null)
+                    return -1;
+
+                return _positiveHashes.IndexOf(f);
             }
         }
     }

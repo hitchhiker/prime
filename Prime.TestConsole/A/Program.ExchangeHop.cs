@@ -22,7 +22,7 @@ namespace Prime.TestConsole
                 perc = perc * High.Price.ToDecimalValue();
                 Percentage = (perc * 100) - 100;
 
-                AssetTransfer = Low.QuoteAsset;
+                AssetTransfer = pair.Other(Low.QuoteAsset);
             }
 
             public readonly AssetPair Pair;
@@ -50,6 +50,7 @@ namespace Prime.TestConsole
             {
                 return $"{Pair} @ {Low.Network} to {High.Network} [{Math.Round(Percentage, 2)}%]";
             }
+
 
             public ObjectId Id { get; }
         }
