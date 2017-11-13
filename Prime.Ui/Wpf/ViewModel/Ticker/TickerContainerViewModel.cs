@@ -18,8 +18,7 @@ namespace Prime.Ui.Wpf.ViewModel.Ticker
             var tickerBottom = new TickerViewModel();
 
             tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("Breaking", "This is a breaking story"));
-            tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is a news item"));
-            tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is another news item"));
+            tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("News Item", "This is another news item1"));
             tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("Realy Long Item", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."));
             tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("Bitcoin Up 20%", "More stuff about bitcoin"));
             tickerTop.ListTickerItems.Add(new TickerNewsItemViewModel("Ethereum Up 10%", "More stuff about ETH"));
