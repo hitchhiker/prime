@@ -21,14 +21,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var context = new AssetPairs()
             {
                 "BTC_JPY".ToAssetPairRaw(),
                 "ETH_BTC".ToAssetPairRaw(),
                 "BCH_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -41,22 +41,11 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetOrderBookAsync()
         {
-            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()));
-            await base.TestGetOrderBookAsync();
+            var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()));
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
 
-            OrderBookContext = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()), 20);
-            await base.TestGetOrderBookAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            VolumeContext = new VolumeContext()
-            {
-                Pair = "BTC_JPY".ToAssetPairRaw()
-            };
-
-            await base.TestGetVolumeAsync();
+            context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()), 20);
+            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
         }
     }
 }

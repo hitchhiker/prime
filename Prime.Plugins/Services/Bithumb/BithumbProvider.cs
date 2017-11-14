@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
-    public class BithumbProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider
+    public class BithumbProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
@@ -73,7 +73,12 @@ namespace Prime.Plugins.Services.Bithumb
             if (!context.Pair.Asset2.Equals(krwAsset))
                 throw new NoAssetPairException(context.Pair, this);
 
-            var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price);
+            var data = r.data;
+
+            var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
+            {
+                PriceStatistics = new PriceStatistics(context.QuoteAsset, data.volume_1day, null, data.sell_price, data.buy_price, data.min_price, data.max_price)
+            };
 
             return latestPrice;
         }

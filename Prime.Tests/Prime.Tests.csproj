@@ -150,6 +150,7 @@
     <Compile Include="Providers\KrakenTests.cs" />
     <Compile Include="Providers\PoloniexTests.cs" />
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
+    <Compile Include="Providers\QuadrigaCxTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">

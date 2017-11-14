@@ -38,10 +38,10 @@ namespace Prime.TestConsole.Tools
             {
                 var sType = NetworkProvider.GetType();
                 if (sType.GetInterfaces().Contains(type))
-                    info += type.Name + " ";
+                    info += " - " + type.Name + "\n";
             }
 
-            Console.WriteLine($"'{NetworkProvider.Network.Name}': {info}");
+            Console.WriteLine($"'{NetworkProvider.Network.Name}':\n{info}");
         }
 
         public INetworkProvider NetworkProvider { get; set; }
