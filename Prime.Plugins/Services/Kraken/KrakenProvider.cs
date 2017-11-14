@@ -79,21 +79,13 @@ namespace Prime.Plugins.Services.Kraken
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var r = await GetPricesAsync(context).ConfigureAwait(false);
 
-            var remoteCode = GetKrakenTicker(context.Pair);
+            var price = r.MarketPrices.FirstOrDefault(x => x.Pair.Equals(context.Pair));
+            if (price == null)
+                throw new NoAssetPairException(context.Pair, this);
 
-            var r = await api.GetTickerInformationAsync(remoteCode).ConfigureAwait(false);
-
-            CheckResponseErrors(r);
-
-            var ticker = r.result.FirstOrDefault().Value;
-
-            // TODO: test statistics.
-            return new MarketPrice(Network,  context.Pair, ticker.c[0])
-            {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, ticker.v[1], null, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1])
-            };
+            return price;
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
@@ -122,7 +114,12 @@ namespace Prime.Plugins.Services.Kraken
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, rTicker.First().Value.c[0]));
+                var ticker = rTicker.First().Value;
+
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.c[0])
+                {
+                    PriceStatistics = new PriceStatistics(pair.Asset2, ticker.v[1], null, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1])
+                });
             }
 
             return prices;
