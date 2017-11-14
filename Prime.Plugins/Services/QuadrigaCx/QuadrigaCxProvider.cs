@@ -53,7 +53,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerUnderslash();
+            var pairCode = context.Pair.Asset1.ToRemoteCode(this) + "_" + context.Pair.Asset2.ToRemoteCode(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.last, context.Pair.Asset2));
