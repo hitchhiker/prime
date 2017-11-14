@@ -14,6 +14,15 @@ namespace Prime.Plugins.Services.Korbit
             public decimal last;
         }
 
+        internal class DetailedTickerResponse : TickerResponse
+        {
+            public decimal bid;
+            public decimal ask;
+            public decimal low;
+            public decimal high;
+            public decimal volume;
+        }
+
         internal class OrderBookResponse
         {
             public long timestamp;
