@@ -20,14 +20,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs(new List<AssetPair>()
+            var requiredPairs = new AssetPairs(new List<AssetPair>()
             {
                 "BTC_USD".ToAssetPairRaw(),
                 "BTC_SGD".ToAssetPairRaw(),
                 "BTC_EUR".ToAssetPairRaw(),
             });
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }
 
         [TestMethod]

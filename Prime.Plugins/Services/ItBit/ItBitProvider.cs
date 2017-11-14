@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.ItBit
 {
-    public class ItBitProvider : IAssetPairsProvider, IPublicPriceProvider
+    public class ItBitProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
