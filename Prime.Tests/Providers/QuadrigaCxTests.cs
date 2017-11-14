@@ -22,5 +22,19 @@ namespace Prime.Tests.Providers
             var context = new PublicPriceContext("eth_btc".ToAssetPairRaw());
             await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
+
+        [TestMethod]
+        public override async Task TestGetAssetPairsAsync()
+        {
+            var requiredPairs = new AssetPairs()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "BTC_CAD".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "ETH_CAD".ToAssetPairRaw()
+            };
+
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
+        }
     }
 }

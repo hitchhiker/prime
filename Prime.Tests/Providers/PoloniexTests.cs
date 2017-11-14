@@ -117,7 +117,7 @@ namespace Prime.Tests.Providers
         {
             var context = new VolumeContext()
             {
-                Pair = "BTC_LTC".ToAssetPairRaw()
+                Pair = "BTC_ETH".ToAssetPairRaw()
             };
 
             await base.TestGetVolumeAsync(context).ConfigureAwait(false);

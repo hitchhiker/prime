@@ -13,7 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
-    public class KorbitProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider
+    public class KorbitProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
         private static readonly string _pairs = "btckrw,etckrw,ethkrw,xrpkrw";
@@ -37,7 +37,6 @@ namespace Prime.Plugins.Services.Korbit
         public IRateLimiter RateLimiter { get; } = new PerMinuteRateLimiter(60, 1);
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
 
@@ -59,11 +58,14 @@ namespace Prime.Plugins.Services.Korbit
 
             try
             {
-                var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+                var r = await api.GetDetailedTickerAsync(pairCode).ConfigureAwait(false);
 
                 var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-                return new MarketPrice(Network, context.Pair, r.last, sTimeStamp.ToUtcDateTime());
+                return new MarketPrice(Network, context.Pair, r.last, sTimeStamp.ToUtcDateTime())
+                {
+                    PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, r.low, r.high)
+                };
             }
             catch (ApiException ex)
             {
@@ -135,7 +137,7 @@ namespace Prime.Plugins.Services.Korbit
 
         private string GetKorbitTicker(AssetPair pair)
         {
-            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash().ToLower();
+            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash(this).ToLower();
         }
     }
 }

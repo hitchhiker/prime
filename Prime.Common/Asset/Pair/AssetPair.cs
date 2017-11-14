@@ -76,19 +76,37 @@ namespace Prime.Common
             return this.Equals(pair.Reversed);
         }
 
+        [Obsolete]
         public string TickerDash()
         {
             return $"{Asset1.ShortCode}-{Asset2.ShortCode}";
         }
 
+        public string TickerDash(IDescribesAssets converter)
+        {
+            return $"{Asset1.ToRemoteCode(converter)}-{Asset2.ToRemoteCode(converter)}";
+        }
+
+        [Obsolete]
         public string TickerUnderslash()
         {
             return $"{Asset1.ShortCode}_{Asset2.ShortCode}";
         }
 
+        public string TickerUnderslash(IDescribesAssets converter)
+        {
+            return $"{Asset1.ToRemoteCode(converter)}_{Asset2.ToRemoteCode(converter)}";
+        }
+
+        [Obsolete]
         public string TickerSimple()
         {
             return $"{Asset1.ShortCode}{Asset2.ShortCode}";
+        }
+
+        public string TickerSimple(IDescribesAssets converter)
+        {
+            return $"{Asset1.ToRemoteCode(converter)}{Asset2.ToRemoteCode(converter)}";
         }
 
         public bool Equals(AssetPair other)

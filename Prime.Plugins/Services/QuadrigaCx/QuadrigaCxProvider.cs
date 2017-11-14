@@ -13,12 +13,13 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.QuadrigaCX
 {
     public class QuadrigaCxProvider :
-        IPublicPriceProvider
+        IPublicPriceProvider, IAssetPairsProvider
     {
         private const string QuadrigaCxApiVersion = "v2";
         private const string QuadrigaCxApiUrl = "https://api.quadrigacx.com/" + QuadrigaCxApiVersion;
 
         private static readonly ObjectId IdHash = "prime:quadrigacx".GetObjectIdHashCode();
+        private const string PairsCsv = "btccad,btcusd,ethbtc,ethcad";
 
         // No information in API document.
         private static readonly IRateLimiter Limiter = new NoRateLimits();
@@ -40,6 +41,9 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public bool CanPeekDepositAddress => false; //To confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
+        private AssetPairs _pairs;
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(3, PairsCsv, this));
+
         public QuadrigaCxProvider()
         {
             ApiProvider = new RestApiClientProvider<IQuadrigaCxApi>(QuadrigaCxApiUrl, this, (k) => null);
@@ -53,10 +57,15 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.Asset1.ToRemoteCode(this) + "_" + context.Pair.Asset2.ToRemoteCode(this);
+            var pairCode = context.Pair.TickerUnderslash(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.last, context.Pair.Asset2));
+        }
+
+        public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
+        {
+            return Task.Run(() => Pairs);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

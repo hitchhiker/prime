@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerDash();
+            var pairCode = context.Pair.TickerDash(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             foreach (var pair in context.Pairs)
             {
-                var pairCode = pair.TickerDash();
+                var pairCode = pair.TickerDash(this);
 
                 var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
 
@@ -218,7 +218,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerDash();
+            var pairCode = context.Pair.TickerDash(this);
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
@@ -267,7 +267,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerDash().ToLower();
+            var pairCode = context.Pair.TickerDash(this).ToLower();
             var r = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
 
             var summary = r.result.FirstOrDefault();

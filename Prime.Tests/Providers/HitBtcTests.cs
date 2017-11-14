@@ -18,36 +18,34 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var requiredPairs = new AssetPairs()
             {
-                "BTC_EUR".ToAssetPairRaw(),
                 "BTC_USD".ToAssetPairRaw(),
                 "DOGE_BTC".ToAssetPairRaw(),
-                "LTC_EUR".ToAssetPairRaw(),
                 "ETH_USD".ToAssetPairRaw(),
                 "DASH_ETH".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAddressesForAssetAsync()
         {
-            WalletAddressAssetContext = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
-            await base.TestGetAddressesForAssetAsync();
+            var context = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
+            await base.TestGetAddressesForAssetAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestApiAsync()
         {
-            await base.TestApiAsync();
+            await base.TestApiAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetBalancesAsync()
         {
-            await base.TestGetBalancesAsync();
+            await base.TestGetBalancesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -60,26 +58,26 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            var context = new PublicAssetPricesContext(new List<Asset>()
             {
                 "DOGE".ToAssetRaw(),
                 "NXT".ToAssetRaw(),
                 "STEEM".ToAssetRaw()
             }, "BTC".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync();
+            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetPricesAsync()
         {
-            await base.TestGetPricesAsync();
-        }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            await base.TestGetVolumeAsync();
+            var context = new PublicPricesContext(new List<AssetPair>()
+            {
+                "DOGE_BTC".ToAssetPairRaw(),
+                "NXT_BTC".ToAssetPairRaw(),
+                "STEEM_BTC".ToAssetPairRaw()
+            });
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
     }
 }

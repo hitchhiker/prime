@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.Gemini
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = GetGeminiPair(context.Pair);
+            var pairCode = context.Pair.TickerSimple(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             var baseVolumes = r.volume
@@ -97,11 +97,6 @@ namespace Prime.Plugins.Services.Gemini
                     baseVolumes.Any() ? baseVolumes.First() : (decimal?) null,
                     quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null, r.ask, r.bid, null, null)
             };
-        }
-
-        private string GetGeminiPair(AssetPair pair)
-        {
-            return pair.TickerSimple().ToLower();
         }
     }
 }

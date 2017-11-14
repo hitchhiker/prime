@@ -132,7 +132,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         private string GetBitFlyerTicker(AssetPair pair)
         {
-            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash();
+            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash(this);
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

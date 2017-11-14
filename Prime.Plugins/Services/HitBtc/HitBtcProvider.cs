@@ -15,8 +15,6 @@ namespace Prime.Plugins.Services.HitBtc
         private static readonly ObjectId IdHash = "prime:hitbtc".GetObjectIdHashCode();
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private const string ErroTextNoLatestValueForPair = "No latest value for {0} pair";
-
         private RestApiClientProvider<IHitBtcApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
@@ -41,7 +39,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple();
+            var pairCode = context.Pair.TickerSimple(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r.last.HasValue == false)
@@ -68,7 +66,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             foreach (var pair in context.Pairs)
             {
-                var pairCode = pair.TickerSimple();
+                var pairCode = pair.TickerSimple(this);
 
                 var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
 
@@ -166,7 +164,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple();
+            var pairCode = context.Pair.TickerSimple(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()

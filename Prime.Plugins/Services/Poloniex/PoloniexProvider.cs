@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
+using Newtonsoft.Json;
 using Prime.Common;
 using Prime.Common.Exchange;
 using Prime.Utility;
@@ -234,7 +235,7 @@ namespace Prime.Plugins.Services.Poloniex
             var period = ConvertToPoloniexInterval(market);
 
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetChartDataAsync(pair.TickerUnderslash(), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
+            var r = await api.GetChartDataAsync(pair.TickerUnderslash(this), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
 
             var ohlc = new OhlcData(market);
             var seriesid = OhlcUtilities.GetHash(pair, market, Network);
@@ -271,7 +272,7 @@ namespace Prime.Plugins.Services.Poloniex
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerUnderslash();
+            var pairCode = context.Pair.TickerUnderslash(this);
 
             var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
@@ -320,20 +321,16 @@ namespace Prime.Plugins.Services.Poloniex
             if (!volumes.Any())
                 throw new NoAssetPairException(context.Pair, this);
 
-            //var selectedPair = assetPairsInfo[0];
+            var rVolumes = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(volumes.FirstOrDefault().Value.ToString());
+            if(!rVolumes.TryGetValue(context.Pair.Asset1.ShortCode, out var volume))
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {
                 Pair = context.Pair,
-                //Volume = selectedPair.Value.,
+                Volume = volume,
                 Period = VolumePeriod.Day
             };
-        }
-
-        public Money ParseVolume(object raw)
-        {
-            // TODO: implement.
-            return default;
         }
     }
 }
