@@ -48,7 +48,7 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple();
+            var pairCode = context.Pair.TickerSimple(this);
 
             var interval = ConvertToBinanceInterval(context.Market);
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);

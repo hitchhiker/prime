@@ -20,7 +20,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var requiredPairs = new AssetPairs()
             {
                 "BCH_KRW".ToAssetPairRaw(),
                 "QTUM_KRW".ToAssetPairRaw(),
@@ -31,7 +31,7 @@ namespace Prime.Tests.Providers
                 "XRP_KRW".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetPricesAsync()
         {
-            PublicPricesContext = new PublicPricesContext(new List<AssetPair>()
+            var context = new PublicPricesContext(new List<AssetPair>()
             {
                 "BCH_KRW".ToAssetPairRaw(),
                 "QTUM_KRW".ToAssetPairRaw(),
@@ -55,13 +55,13 @@ namespace Prime.Tests.Providers
                 "XRP_KRW".ToAssetPairRaw(),
             });
 
-            await base.TestGetPricesAsync();
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
         }
 
         [TestMethod]
         public override async Task TestGetAssetPricesAsync()
         {
-            PublicAssetPricesContext = new PublicAssetPricesContext(new List<Asset>()
+            var context = new PublicAssetPricesContext(new List<Asset>()
             {
                 "BCH".ToAssetRaw(),
                 "QTUM".ToAssetRaw(),
@@ -73,7 +73,7 @@ namespace Prime.Tests.Providers
 
             }, "KRW".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync();
+            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
         }
     }
 }

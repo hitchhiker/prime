@@ -189,6 +189,8 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
             var addresses = new WalletAddresses();
 
+            // TODO: re-implement, incorrect implementation.
+
             foreach (var assetPair in Pairs)
             {
                 var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);
@@ -215,7 +217,7 @@ namespace Prime.Plugins.Services.BitMex
         [Obsolete] // BUG: review.
         private string AdjustAssetCode(string input)
         {
-            // TODO: should be re-factored.
+            // TODO: should be removed.
             var config = new Dictionary<string, string>();
 
             config.Add("XBT", "XBt");
