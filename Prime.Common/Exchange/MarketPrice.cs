@@ -23,6 +23,12 @@ namespace Prime.Common
             Price = new Money(value, pair.Asset2);
         }
 
+        /// <summary>
+        /// Do not use this constructor unless you are absolutely sure of the order.
+        /// </summary>
+        /// <param name="network"></param>
+        /// <param name="quoteAsset"></param>
+        /// <param name="price"></param>
         public MarketPrice(Network network, Asset quoteAsset, Money price) : this(network, new AssetPair(quoteAsset, price.Asset), price)
         {
         }
