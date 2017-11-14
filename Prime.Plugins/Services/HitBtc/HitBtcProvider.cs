@@ -15,8 +15,6 @@ namespace Prime.Plugins.Services.HitBtc
         private static readonly ObjectId IdHash = "prime:hitbtc".GetObjectIdHashCode();
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private const string ErroTextNoLatestValueForPair = "No latest value for {0} pair";
-
         private RestApiClientProvider<IHitBtcApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
