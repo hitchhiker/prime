@@ -110,7 +110,7 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override Task TestGetWithdrawalHistoryAsync()
+        public override async Task TestGetWithdrawalHistoryAsync()
         {
             var context = new WithdrawalHistoryContext(UserContext.Current);
 

@@ -10,7 +10,7 @@ using Prime.Plugins.Services.Gdax;
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class GdaxTests :ProviderDirectTestsBase
+    public class GdaxTests : ProviderDirectTestsBase
     {
         public GdaxTests()
         {
@@ -20,7 +20,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetAssetPairsAsync()
         {
-            RequiredAssetPairs = new AssetPairs()
+            var requiredPairs = new AssetPairs()
             {
                 "LTC_EUR".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
@@ -33,7 +33,7 @@ namespace Prime.Tests.Providers
                 "BTC_GBP".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync();
+            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -41,17 +41,6 @@ namespace Prime.Tests.Providers
         {
             var context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
             await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
-        }
-
-        [TestMethod]
-        public override async Task TestGetVolumeAsync()
-        {
-            VolumeContext = new VolumeContext()
-            {
-                Pair = "LTC_EUR".ToAssetPairRaw()
-            };
-
-            await base.TestGetVolumeAsync();
         }
     }
 }
