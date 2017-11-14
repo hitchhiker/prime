@@ -42,7 +42,7 @@ namespace Prime.Common
         [Bson]
         public Asset Asset2 { get; private set; }
 
-        public bool IsEmpty => Asset1 == Asset.None || Asset2 == Asset.None;
+        public bool IsEmpty => Equals(Asset1, Asset.None) || Equals(Asset2, Asset.None);
 
         private bool? _isNormalised;
         public bool IsNormalised => _isNormalised ?? (bool)(_isNormalised = string.CompareOrdinal(Asset1.ShortCode, Asset2.ShortCode) < 0);

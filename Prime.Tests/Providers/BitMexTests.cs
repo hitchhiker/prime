@@ -104,9 +104,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestGetWithdrawalHistoryAsync()
+        public override Task TestGetWithdrawalHistoryAsync()
         {
-            await base.TestGetWithdrawalHistoryAsync();
+            return base.TestGetWithdrawalHistoryAsync();
         }
 
         [TestMethod]
