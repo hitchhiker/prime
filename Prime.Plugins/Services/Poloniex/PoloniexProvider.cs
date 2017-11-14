@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
+using Newtonsoft.Json;
 using Prime.Common;
 using Prime.Common.Exchange;
 using Prime.Utility;
@@ -320,20 +321,16 @@ namespace Prime.Plugins.Services.Poloniex
             if (!volumes.Any())
                 throw new NoAssetPairException(context.Pair, this);
 
-            //var selectedPair = assetPairsInfo[0];
+            var rVolumes = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(volumes.FirstOrDefault().Value.ToString());
+            if(!rVolumes.TryGetValue(context.Pair.Asset1.ShortCode, out var volume))
+                throw new NoAssetPairException(context.Pair, this);
 
             return new VolumeResult()
             {
                 Pair = context.Pair,
-                //Volume = selectedPair.Value.,
+                Volume = volume,
                 Period = VolumePeriod.Day
             };
-        }
-
-        public Money ParseVolume(object raw)
-        {
-            // TODO: implement.
-            return default;
         }
     }
 }
