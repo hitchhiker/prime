@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.Binance
 
             foreach (var pair in context.Pairs)
             {
-                var lowerPairTicker = pair.TickerSimple().ToLower();
+                var lowerPairTicker = pair.TickerSimple(this).ToLower();
 
                 var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
@@ -157,7 +157,7 @@ namespace Prime.Plugins.Services.Binance
             CheckOrderRecordsInputNumber(context.MaxRecordsCount);
 
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerSimple();
+            var pairCode = context.Pair.TickerSimple(this);
 
             var r = context.MaxRecordsCount.HasValue
                 ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
@@ -252,7 +252,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerSimple();
+            var pairCode = context.Pair.TickerSimple(this);
 
             var r = await api.Get24HrTickerAsync(pairCode).ConfigureAwait(false);
 
