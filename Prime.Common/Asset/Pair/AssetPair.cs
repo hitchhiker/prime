@@ -98,6 +98,11 @@ namespace Prime.Common
             return $"{Asset1.ToRemoteCode(converter)}_{Asset2.ToRemoteCode(converter)}";
         }
 
+        public string TickerSlash(IDescribesAssets converter)
+        {
+            return $"{Asset1.ToRemoteCode(converter)}/{Asset2.ToRemoteCode(converter)}";
+        }
+
         [Obsolete]
         public string TickerSimple()
         {
@@ -125,7 +130,7 @@ namespace Prime.Common
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is AssetPair && Equals((AssetPair) obj);
+            return obj is AssetPair && Equals((AssetPair)obj);
         }
 
         public override int GetHashCode()
