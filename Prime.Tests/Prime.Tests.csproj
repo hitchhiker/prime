@@ -153,6 +153,7 @@
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
     <Compile Include="Providers\QuadrigaCxTests.cs" />
     <Compile Include="Providers\CoinfloorTests.cs" />
+    <Compile Include="Providers\TheRockTradingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
