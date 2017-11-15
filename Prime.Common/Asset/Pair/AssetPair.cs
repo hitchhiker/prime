@@ -105,6 +105,7 @@ namespace Prime.Common
             return $"{Asset1.ToRemoteCode(converter)}_{Asset2.ToRemoteCode(converter)}";
         }
 
+        [Obsolete]
         public string TickerSlash(IDescribesAssets converter)
         {
             return $"{Asset1.ToRemoteCode(converter)}/{Asset2.ToRemoteCode(converter)}";

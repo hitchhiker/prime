@@ -232,8 +232,8 @@ namespace Prime.Tests.Providers
                     {
                         // Only for single asset is supported
 
-                        Assert.IsTrue(c.HasStatistics, "Market price does not have statistics");
-                        Trace.WriteLine("Market price statistics:");
+                        Assert.IsTrue(c.HasStatistics, $"Market price does not have statistics - {context.Pair}");
+                        Trace.WriteLine($"Market price statistics for {context.Pair}:");
 
                         Trace.WriteLine($"Bid: {(c.PriceStatistics.HasHighestBid ? c.PriceStatistics.HighestBid.Display : "-")}");
                         Trace.WriteLine($"Ask: {(c.PriceStatistics.HasLowestAsk ? c.PriceStatistics.LowestAsk.Display : "-")}");

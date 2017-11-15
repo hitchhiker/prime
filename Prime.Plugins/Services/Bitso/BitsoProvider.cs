@@ -50,7 +50,7 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerUnderslash(this);
+            var pairCode = context.Pair.ToTicker(this, "_");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.last, context.Pair.Asset2));

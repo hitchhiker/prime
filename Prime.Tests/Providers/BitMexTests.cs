@@ -38,6 +38,9 @@ namespace Prime.Tests.Providers
         {
             var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
             await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+
+            context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -112,7 +115,10 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetWithdrawalHistoryAsync()
         {
-            var context = new WithdrawalHistoryContext(UserContext.Current);
+            var context = new WithdrawalHistoryContext(UserContext.Current)
+            {
+                Asset = Asset.Btc
+            };
 
             await base.TestGetWithdrawalHistoryAsync(context).ConfigureAwait(false);
         }
