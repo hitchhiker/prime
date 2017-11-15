@@ -19,6 +19,8 @@ namespace Prime.Plugins.Services.Bittrex
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
 
+        private static readonly IReadOnlyList<Asset> Suspended = "OC,CRYPT,ABY,PIVX,SLING,TROLL,DYN".ToAssetsCsvRaw();
+
         private static readonly ObjectId IdHash = "prime:bittrex".GetObjectIdHashCode();
 
         // No information in API documents.
@@ -163,7 +165,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
-            return Task.FromResult<TransferSuspensions>(null);
+            return Task.FromResult(new TransferSuspensions(Suspended, Suspended));
         }
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
