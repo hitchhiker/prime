@@ -57,9 +57,13 @@ namespace Prime.Plugins.Services.Binance
             ApiProvider = new RestApiClientProvider<IBinanceApi>(BinanceApiUrl, this, k => new BinanceAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public async Task<bool> TestPublicApiAsync()
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi();
+
+            await api.PingAsync().ConfigureAwait(false);
+
+            return true;
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)

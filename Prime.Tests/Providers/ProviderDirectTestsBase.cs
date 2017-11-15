@@ -29,6 +29,13 @@ namespace Prime.Tests.Providers
                 await TestApiAsync(p.Provider).ConfigureAwait(false);
         }
 
+        public virtual async Task TestPublicApiAsync()
+        {
+            var p = IsType<INetworkProvider>();
+            if (p.Success)
+                await TestPublicApiAsync(p.Provider).ConfigureAwait(false);
+        }
+
 
         public virtual async Task TestGetOhlcAsync() { }
         public async Task TestGetOhlcAsync(OhlcContext context)
@@ -164,6 +171,19 @@ namespace Prime.Tests.Providers
             try
             {
                 var r = await provider.TestPrivateApiAsync(ctx).ConfigureAwait(false);
+                Assert.IsTrue(r);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        private async Task TestPublicApiAsync(INetworkProvider provider)
+        {
+            try
+            {
+                var r = await provider.TestPublicApiAsync().ConfigureAwait(false);
                 Assert.IsTrue(r);
             }
             catch (Exception e)

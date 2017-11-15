@@ -52,5 +52,12 @@ namespace Prime.Plugins.Services.Binance
         /// <returns>24 hour ticker.</returns>
         [Get("/v1/ticker/24hr?symbol={currency}")]
         Task<BinanceSchema.Ticker24HrResponse> Get24HrTickerAsync([Path] string currency);
+
+        /// <summary>
+        /// Checks server availability.
+        /// </summary>
+        /// <returns></returns>
+        [Get("/v1/ping")]
+        Task PingAsync();
     }
 }
