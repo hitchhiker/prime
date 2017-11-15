@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.Coinone
         {
             ApiProvider = new RestApiClientProvider<ICoinoneApi>(CoinoneApiUrl, this, k => null);
         }
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

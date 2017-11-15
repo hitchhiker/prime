@@ -40,9 +40,11 @@ namespace Prime.Plugins.Services.BitFlyer
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var pairs = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return pairs.Count > 0;
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)

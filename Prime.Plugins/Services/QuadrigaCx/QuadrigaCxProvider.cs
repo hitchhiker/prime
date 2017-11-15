@@ -49,7 +49,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
             ApiProvider = new RestApiClientProvider<IQuadrigaCxApi>(QuadrigaCxApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

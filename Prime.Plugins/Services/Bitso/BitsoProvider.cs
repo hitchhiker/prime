@@ -42,7 +42,7 @@ namespace Prime.Plugins.Services.Bitso
             ApiProvider = new RestApiClientProvider<IBitsoApi>(BitsoApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

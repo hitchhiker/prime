@@ -49,7 +49,7 @@ namespace Prime.Plugins.Services.Coinbase
             GdaxApiProvider = new RestApiClientProvider<IGdaxApi>(GdaxApiUrl);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

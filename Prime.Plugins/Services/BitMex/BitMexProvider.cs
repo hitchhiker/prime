@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.BitMex
             ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

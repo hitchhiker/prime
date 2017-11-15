@@ -181,9 +181,11 @@ namespace Prime.Tests.Providers
 
         private async Task TestPublicApiAsync(INetworkProvider provider)
         {
+            var ctx = new NetworkProviderContext();
+
             try
             {
-                var r = await provider.TestPublicApiAsync().ConfigureAwait(false);
+                var r = await provider.TestPublicApiAsync(ctx).ConfigureAwait(false);
                 Assert.IsTrue(r);
             }
             catch (Exception e)

@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.Coinfloor
             ApiProvider = new RestApiClientProvider<ICoinfloorApi>(CoinfloorApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

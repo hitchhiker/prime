@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Cex
             ApiProvider = new RestApiClientProvider<ICexApi>(CexApiUrl, this, k => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

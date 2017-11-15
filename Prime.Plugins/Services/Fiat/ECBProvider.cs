@@ -26,7 +26,7 @@ namespace Prime.Plugins.Services.Fiat
         {
             throw new NotImplementedException();
         }
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var t = new Task<bool>(() => true);
             t.Start();

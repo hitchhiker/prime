@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

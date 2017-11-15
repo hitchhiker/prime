@@ -37,7 +37,7 @@ namespace Prime.Plugins.Services.Gemini
             ApiProvider = new RestApiClientProvider<IGeminiApi>(GeminiApiUrl, this, k => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

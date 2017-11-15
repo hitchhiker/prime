@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.BitMarket
             return AssetCodeConverter;
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

@@ -43,7 +43,7 @@ namespace Prime.Plugins.Services.Gdax
             return null;
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

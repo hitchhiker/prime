@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.HitBtc
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

@@ -57,7 +57,7 @@ namespace Prime.Plugins.Services.Binance
             ApiProvider = new RestApiClientProvider<IBinanceApi>(BinanceApiUrl, this, k => new BinanceAuthenticator(k).GetRequestModifier);
         }
 
-        public async Task<bool> TestPublicApiAsync()
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi();
 

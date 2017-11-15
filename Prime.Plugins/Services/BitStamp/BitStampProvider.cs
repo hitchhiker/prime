@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.BitStamp
             ApiProvider = new RestApiClientProvider<IBitStampApi>(BitStampApiUrl, this, (k) => new BitStampAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

@@ -43,7 +43,7 @@ namespace Prime.Plugins.Services.CryptoCompare
             return RestClient.For<ICryptoCompareApi>(legacyEndpoint ? EndpointLegacy : EndpointMinApi) as T;
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var t = new Task<bool>(() => true);
             t.Start();

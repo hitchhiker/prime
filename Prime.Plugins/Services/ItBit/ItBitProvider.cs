@@ -41,7 +41,7 @@ namespace Prime.Plugins.Services.ItBit
             return AssetCodeConverter;
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
