@@ -59,17 +59,12 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetCoinbaseTicker(context.Pair.Asset1, context.Pair.Asset2);
+            var pairCode = context.Pair.ToTicker(this, "-");
             var r = await api.GetLatestPriceAsync(pairCode).ConfigureAwait(false);
 
             var price = new MarketPrice(Network, context.Pair, r.data.amount);
 
             return price;
-        }
-
-        private string GetCoinbaseTicker(Asset baseAsset, Asset asset)
-        {
-            return new AssetPair(baseAsset, asset).ToTicker(this, "-");
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

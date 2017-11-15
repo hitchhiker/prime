@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Korbit
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = GetKorbitTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
 
             try
             {
@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Korbit
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetKorbitTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
@@ -133,11 +133,6 @@ namespace Prime.Plugins.Services.Korbit
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
-        }
-
-        private string GetKorbitTicker(AssetPair pair)
-        {
-            return new AssetPair(pair.Asset1, pair.Asset2).ToTicker(this, "_").ToLower();
         }
     }
 }

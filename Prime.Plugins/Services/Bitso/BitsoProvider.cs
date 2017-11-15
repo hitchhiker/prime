@@ -33,8 +33,8 @@ namespace Prime.Plugins.Services.Bitso
 
         public bool IsDirect => true;
 
-        public bool CanGenerateDepositAddress => true; //To confirm
-        public bool CanPeekDepositAddress => false; //To confirm
+        public bool CanGenerateDepositAddress => true; // TODO: confirm
+        public bool CanPeekDepositAddress => false; // TODO: confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public BitsoProvider()
@@ -77,8 +77,8 @@ namespace Prime.Plugins.Services.Bitso
             return null;
         }
 
-        public bool DoesMultiplePairs => false; //To confirm
+        public bool DoesMultiplePairs => false; // TODO: confirm
 
-        public bool PricesAsAssetQuotes => false; //To confirm
+        public bool PricesAsAssetQuotes => false; // TODO: confirm
     }
 }

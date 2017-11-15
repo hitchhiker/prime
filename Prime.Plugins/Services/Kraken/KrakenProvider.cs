@@ -36,7 +36,6 @@ namespace Prime.Plugins.Services.Kraken
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1);
         public IRateLimiter RateLimiter => Limiter;
 
-
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
 
@@ -97,7 +96,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairsCsv = context.Pairs.Aggregate("", (s, pair) => s += GetKrakenTicker(pair) + ",").TrimEnd(',');
+            var pairsCsv = context.Pairs.Aggregate("", (s, pair) => s += pair.ToTicker(this, "") + ",").TrimEnd(',');
 
             var r = await api.GetTickerInformationAsync(pairsCsv).ConfigureAwait(false);
 
@@ -343,7 +342,7 @@ namespace Prime.Plugins.Services.Kraken
             var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
 
             // BUG: "since" is not implemented. Need to be checked.
-            var r = await api.GetOhlcDataAsync(GetKrakenTicker(context.Pair), krakenTimeInterval).ConfigureAwait(false);
+            var r = await api.GetOhlcDataAsync(context.Pair.ToTicker(this, ""), krakenTimeInterval).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -465,16 +464,11 @@ namespace Prime.Plugins.Services.Kraken
             return orderBook;
         }
 
-        public string GetKrakenTicker(AssetPair pair)
-        {
-            return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}";
-        }
-
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var remoteCode = GetKrakenTicker(context.Pair);
+            var remoteCode = context.Pair.ToTicker(this, "");
 
             var r = await api.GetTickerInformationAsync(remoteCode).ConfigureAwait(false);
 

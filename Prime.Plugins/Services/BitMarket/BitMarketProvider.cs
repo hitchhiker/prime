@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.BitMarket
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = GetBitMarketPairCode(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "");
 
             try
             {
@@ -75,14 +75,6 @@ namespace Prime.Plugins.Services.BitMarket
                     throw new NoAssetPairException(context.Pair, this);
                 throw;
             }
-        }
-
-        private string GetBitMarketPairCode(AssetPair pair)
-        {
-            var asset1 = pair.Asset1.ToRemoteCode(this);
-            var asset2 = pair.Asset2.ToRemoteCode(this);
-
-            return $"{asset1}{asset2}";
         }
     }
 }

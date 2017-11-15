@@ -60,16 +60,11 @@ namespace Prime.Plugins.Services.Cex
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetCexTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "/");
 
             var r = await api.GetLastPriceAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.lprice);
-        }
-
-        private string GetCexTicker(AssetPair pair)
-        {
-            return $"{pair.Asset1.ToRemoteCode(this)}/{pair.Asset2.ToRemoteCode(this)}";
         }
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)

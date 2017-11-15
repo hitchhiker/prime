@@ -45,7 +45,6 @@ namespace Prime.Plugins.Services.HitBtc
             if (r.last.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            // TODO: test statistics.
             return new MarketPrice(Network, context.Pair, r.last.Value)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, r.volume_quote, r.ask, r.bid, r.low, r.high)
