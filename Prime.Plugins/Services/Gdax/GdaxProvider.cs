@@ -67,7 +67,7 @@ namespace Prime.Plugins.Services.Gdax
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerDash(this);
+            var pairCode = context.Pair.ToTicker(this, "-");
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.price)
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.Gdax
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerDash(this);
+            var pairCode = context.Pair.ToTicker(this, "-");
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()

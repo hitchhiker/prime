@@ -235,7 +235,7 @@ namespace Prime.Plugins.Services.Poloniex
             var period = ConvertToPoloniexInterval(market);
 
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetChartDataAsync(pair.TickerUnderslash(this), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
+            var r = await api.GetChartDataAsync(pair.ToTicker(this, "_"), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
 
             var ohlc = new OhlcData(market);
             var seriesid = OhlcUtilities.GetHash(pair, market, Network);
@@ -272,7 +272,7 @@ namespace Prime.Plugins.Services.Poloniex
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerUnderslash(this);
+            var pairCode = context.Pair.ToTicker(this, "_");
 
             var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 

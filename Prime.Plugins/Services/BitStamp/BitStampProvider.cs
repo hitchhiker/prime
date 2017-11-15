@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(context.Pair.TickerSimple(this).ToLower()).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.last)
             {

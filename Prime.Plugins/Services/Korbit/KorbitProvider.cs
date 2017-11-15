@@ -137,7 +137,7 @@ namespace Prime.Plugins.Services.Korbit
 
         private string GetKorbitTicker(AssetPair pair)
         {
-            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash(this).ToLower();
+            return new AssetPair(pair.Asset1, pair.Asset2).ToTicker(this, "_").ToLower();
         }
     }
 }

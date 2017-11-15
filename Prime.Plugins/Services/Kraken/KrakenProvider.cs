@@ -425,7 +425,7 @@ namespace Prime.Plugins.Services.Kraken
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
 
-            var r = await api.GetOrderBookAsync(remotePair.TickerSimple(this), maxCount ?? 0).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(remotePair.ToTicker(this, ""), maxCount ?? 0).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

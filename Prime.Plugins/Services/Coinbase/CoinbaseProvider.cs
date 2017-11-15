@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         private string GetCoinbaseTicker(Asset baseAsset, Asset asset)
         {
-            return new AssetPair(baseAsset, asset).TickerDash(this);
+            return new AssetPair(baseAsset, asset).ToTicker(this, "-");
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -209,7 +209,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerDash(this);
+            var pairCode = context.Pair.ToTicker(this, "-");
 
             // TODO: Check this! Can we use limit when we query all records?
             var recordsLimit = 1000;
@@ -271,7 +271,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
-            var currencyCode = context.Pair.TickerDash(this);
+            var currencyCode = context.Pair.ToTicker(this, "-");
 
             var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);

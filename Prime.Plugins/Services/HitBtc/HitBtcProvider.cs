@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r.last.HasValue == false)
@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             foreach (var pair in context.Pairs)
             {
-                var pairCode = pair.TickerSimple(this);
+                var pairCode = pair.ToTicker(this, "");
 
                 var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
 
@@ -164,7 +164,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()
