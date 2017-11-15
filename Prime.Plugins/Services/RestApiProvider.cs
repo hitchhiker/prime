@@ -40,7 +40,7 @@ namespace Prime.Plugins.Services
             _apiUrl = apiUrl;
         }
 
-        public T GetApi(NetworkProviderContext context)
+        public T GetApi(NetworkProviderContext context = null)
         {
             return new RestClient(_apiUrl)
             {

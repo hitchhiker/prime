@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.HitBtc
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -39,13 +39,12 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r.last.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            // TODO: test statistics.
             return new MarketPrice(Network, context.Pair, r.last.Value)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, r.volume_quote, r.ask, r.bid, r.low, r.high)
@@ -66,7 +65,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             foreach (var pair in context.Pairs)
             {
-                var pairCode = pair.TickerSimple(this);
+                var pairCode = pair.ToTicker(this, "");
 
                 var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
 
@@ -169,7 +168,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new VolumeResult()

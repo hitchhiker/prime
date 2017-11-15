@@ -29,6 +29,13 @@ namespace Prime.Tests.Providers
                 await TestApiAsync(p.Provider).ConfigureAwait(false);
         }
 
+        public virtual async Task TestPublicApiAsync()
+        {
+            var p = IsType<INetworkProvider>();
+            if (p.Success)
+                await TestPublicApiAsync(p.Provider).ConfigureAwait(false);
+        }
+
 
         public virtual async Task TestGetOhlcAsync() { }
         public async Task TestGetOhlcAsync(OhlcContext context)
@@ -172,6 +179,21 @@ namespace Prime.Tests.Providers
             }
         }
 
+        private async Task TestPublicApiAsync(INetworkProvider provider)
+        {
+            var ctx = new NetworkProviderContext();
+
+            try
+            {
+                var r = await provider.TestPublicApiAsync(ctx).ConfigureAwait(false);
+                Assert.IsTrue(r);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
         [Obsolete]
         protected OhlcContext OhlcContext { get; set; }
 
@@ -232,8 +254,8 @@ namespace Prime.Tests.Providers
                     {
                         // Only for single asset is supported
 
-                        Assert.IsTrue(c.HasStatistics, "Market price does not have statistics");
-                        Trace.WriteLine("Market price statistics:");
+                        Assert.IsTrue(c.HasStatistics, $"Market price does not have statistics - {context.Pair}");
+                        Trace.WriteLine($"Market price statistics for {context.Pair}:");
 
                         Trace.WriteLine($"Bid: {(c.PriceStatistics.HasHighestBid ? c.PriceStatistics.HighestBid.Display : "-")}");
                         Trace.WriteLine($"Ask: {(c.PriceStatistics.HasLowestAsk ? c.PriceStatistics.LowestAsk.Display : "-")}");

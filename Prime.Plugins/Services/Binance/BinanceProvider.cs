@@ -57,16 +57,20 @@ namespace Prime.Plugins.Services.Binance
             ApiProvider = new RestApiClientProvider<IBinanceApi>(BinanceApiUrl, this, k => new BinanceAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi();
+
+            await api.PingAsync().ConfigureAwait(false);
+
+            return true;
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
 
             var interval = ConvertToBinanceInterval(context.Market);
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
@@ -133,7 +137,7 @@ namespace Prime.Plugins.Services.Binance
 
             foreach (var pair in context.Pairs)
             {
-                var lowerPairTicker = pair.TickerSimple(this).ToLower();
+                var lowerPairTicker = pair.ToTicker(this, "").ToLower();
 
                 var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
@@ -175,7 +179,7 @@ namespace Prime.Plugins.Services.Binance
             CheckOrderRecordsInputNumber(context.MaxRecordsCount);
 
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
 
             var r = context.MaxRecordsCount.HasValue
                 ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
@@ -270,7 +274,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerSimple(this);
+            var pairCode = context.Pair.ToTicker(this, "");
 
             var r = await api.Get24HrTickerAsync(pairCode).ConfigureAwait(false);
 

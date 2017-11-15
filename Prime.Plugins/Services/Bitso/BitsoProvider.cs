@@ -33,8 +33,8 @@ namespace Prime.Plugins.Services.Bitso
 
         public bool IsDirect => true;
 
-        public bool CanGenerateDepositAddress => true; //To confirm
-        public bool CanPeekDepositAddress => false; //To confirm
+        public bool CanGenerateDepositAddress => true; // TODO: confirm
+        public bool CanPeekDepositAddress => false; // TODO: confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public BitsoProvider()
@@ -42,7 +42,7 @@ namespace Prime.Plugins.Services.Bitso
             ApiProvider = new RestApiClientProvider<IBitsoApi>(BitsoApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -50,10 +50,18 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerUnderslash(this);
+            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.last, context.Pair.Asset2));
+            CheckResponseErrors(r);
+
+            return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2));
+        }
+
+        private void CheckResponseErrors<T>(BitsoSchema.BaseResponse<T> response)
+        {
+            if(!response.success)
+                throw new ApiResponseException("Error occurred", this);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -77,8 +85,8 @@ namespace Prime.Plugins.Services.Bitso
             return null;
         }
 
-        public bool DoesMultiplePairs => false; //To confirm
+        public bool DoesMultiplePairs => false; // TODO: confirm
 
-        public bool PricesAsAssetQuotes => false; //To confirm
+        public bool PricesAsAssetQuotes => false; // TODO: confirm
     }
 }

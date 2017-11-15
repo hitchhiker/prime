@@ -48,10 +48,10 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexTestApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -137,7 +137,7 @@ namespace Prime.Plugins.Services.BitMex
 
             foreach (var pair in context.Pairs)
             {
-                var pairCode = GetBitMexTicker(pair);
+                var pairCode = pair.ToTicker(this, "");
 
                 var data = r.FirstOrDefault(x =>
                     x.symbol.Equals(pairCode)
@@ -191,6 +191,8 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
+            throw new NotImplementedException();
+
             var api = ApiProvider.GetApi(context);
             var addresses = new WalletAddresses();
 
@@ -243,10 +245,12 @@ namespace Prime.Plugins.Services.BitMex
 
             var c = Asset.Btc;
 
-            var balance = new BalanceResult(c);
-            balance.Balance = new Money(btcAmount, c);
-            balance.Available = new Money(btcAmount, c);
-            balance.Reserved = new Money(0, c);
+            var balance = new BalanceResult(c)
+            {
+                Balance = new Money(btcAmount, c),
+                Available = new Money(btcAmount, c),
+                Reserved = new Money(0, c)
+            };
 
             results.Add(balance);
 
@@ -257,7 +261,7 @@ namespace Prime.Plugins.Services.BitMex
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = GetBitMexTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "");
 
             var r = context.MaxRecordsCount.HasValue
                 ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value).ConfigureAwait(false)
@@ -307,11 +311,6 @@ namespace Prime.Plugins.Services.BitMex
             }
 
             return orderBook;
-        }
-
-        private string GetBitMexTicker(AssetPair pair)
-        {
-            return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}".ToUpper();
         }
 
         public bool IsFeeIncluded => false;

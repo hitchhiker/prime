@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.Bithumb
         public string Title => Network.Name;
         public bool IsDirect => true;
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }

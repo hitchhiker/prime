@@ -6,7 +6,18 @@ namespace Prime.Plugins.Services.Bitso
 {
     internal class BitsoSchema
     {
-        internal class TickerResponse
+        internal class BaseResponse<T>
+        {
+            public bool success;
+            public T payload;
+        }
+
+        internal class TickerResponse : BaseResponse<TickerEntryResponse>
+        {
+            
+        }
+
+        internal class TickerEntryResponse
         {
             public decimal last;
             public decimal high;

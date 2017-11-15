@@ -32,8 +32,8 @@ namespace Prime.Plugins.Services.Coinfloor
 
         public bool IsDirect => true;
 
-        public bool CanGenerateDepositAddress => true; //To confirm
-        public bool CanPeekDepositAddress => false; //To confirm
+        public bool CanGenerateDepositAddress => true; // TODO: confirm
+        public bool CanPeekDepositAddress => false; // TODO: confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         private AssetPairs _pairs;
@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.Coinfloor
             ApiProvider = new RestApiClientProvider<ICoinfloorApi>(CoinfloorApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.TickerSlash(this);
+            var pairCode = context.Pair.ToTicker(this, "/");
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
@@ -69,8 +69,8 @@ namespace Prime.Plugins.Services.Coinfloor
             return null;
         }
 
-        public bool DoesMultiplePairs => false; //To confirm
+        public bool DoesMultiplePairs => false; // TODO: confirm
 
-        public bool PricesAsAssetQuotes => false; //To confirm
+        public bool PricesAsAssetQuotes => false; // TODO: confirm
     }
 }

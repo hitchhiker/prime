@@ -24,6 +24,6 @@ namespace Prime.Common
         /// </summary>
         bool IsDirect { get; }
 
-        Task<bool> TestPublicApiAsync();
+        Task<bool> TestPublicApiAsync(NetworkProviderContext context);
     }
 }

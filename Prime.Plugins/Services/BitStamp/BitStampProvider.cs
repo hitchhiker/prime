@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.BitStamp
             ApiProvider = new RestApiClientProvider<IBitStampApi>(BitStampApiUrl, this, (k) => new BitStampAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(context.Pair.TickerSimple(this).ToLower()).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.last)
             {
@@ -193,7 +193,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetBitStampTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "").ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook();
@@ -246,11 +246,6 @@ namespace Prime.Plugins.Services.BitStamp
             return (price, amount);
         }
 
-        private string GetBitStampTicker(AssetPair pair)
-        {
-            return $"{pair.Asset1.ToRemoteCode(this).ToLower()}{pair.Asset2.ToRemoteCode(this).ToLower()}";
-        }
-
         private string GetCurrencyPath(Asset asset)
         {
             switch (asset.ShortCode)
@@ -271,7 +266,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(GetBitStampTicker(context.Pair)).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
 
             return new VolumeResult()
             {

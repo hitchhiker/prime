@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.ItBit
         public string AggregatorName => null;
         public string Title => Network.Name;
 
-        private RestApiClientProvider<IItBitApi> ApiProvider;
+        private RestApiClientProvider<IItBitApi> ApiProvider { get; }
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
@@ -41,7 +41,7 @@ namespace Prime.Plugins.Services.ItBit
             return AssetCodeConverter;
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -54,26 +54,20 @@ namespace Prime.Plugins.Services.ItBit
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetItBitTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "");
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            // TODO: test statistics.
             return new MarketPrice(Network, context.Pair, r.lastPrice)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume24h, null, r.ask, r.bid, r.low24h, r.high24h)
             };
         }
 
-        private string GetItBitTicker(AssetPair pair)
-        {
-            return $"{pair.Asset1.ToRemoteCode(this)}{pair.Asset2.ToRemoteCode(this)}";
-        }
-
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetItBitTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, ""); 
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 

@@ -37,7 +37,7 @@ namespace Prime.Plugins.Services.Gemini
             ApiProvider = new RestApiClientProvider<IGeminiApi>(GeminiApiUrl, this, k => null);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.Gemini
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.TickerSimple(this).ToLower();
+            var pairCode = context.Pair.ToTicker(this, "").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             var baseVolumes = r.volume

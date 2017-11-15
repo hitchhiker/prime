@@ -40,15 +40,17 @@ namespace Prime.Plugins.Services.BitFlyer
             ApiProvider = new RestApiClientProvider<IBitFlyerApi>(BitFlyerApiUrl, this, k => new BitFlyerAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync()
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var pairs = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return pairs.Count > 0;
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var productCode = GetBitFlyerTicker(context.Pair);
+            var productCode = context.Pair.ToTicker(this, "_");
 
             var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 
@@ -66,7 +68,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = GetBitFlyerTicker(context.Pair);
+            var pairCode = context.Pair.ToTicker(this, "_");
 
             var r = await api.GetBoardAsync(pairCode).ConfigureAwait(false);
 
@@ -130,15 +132,10 @@ namespace Prime.Plugins.Services.BitFlyer
             return assetPairs;
         }
 
-        private string GetBitFlyerTicker(AssetPair pair)
-        {
-            return new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).TickerUnderslash(this);
-        }
-
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var productCode = GetBitFlyerTicker(context.Pair);
+            var productCode = context.Pair.ToTicker(this, "_");
 
             var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 

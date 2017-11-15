@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.Coinone
         {
             ApiProvider = new RestApiClientProvider<ICoinoneApi>(CoinoneApiUrl, this, k => null);
         }
-        public Task<bool> TestPublicApiAsync()
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
         }
@@ -114,13 +114,13 @@ namespace Prime.Plugins.Services.Coinone
         {
             var api = ApiProvider.GetApi(context);
 
-            if (!context.Pair.Asset2.Equals(Asset.Krw))
+            if (!context.Pair.Asset2.ToRemoteCode(this).Equals(Asset.Krw.ShortCode))
                 throw new NoAssetPairException(context.Pair, this);
 
             var r = await api.GetTickerAsync(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             CheckResponseErrors(r);
-            // TODO: test statistics.
+
             return new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, null, null, r.low, r.high)
