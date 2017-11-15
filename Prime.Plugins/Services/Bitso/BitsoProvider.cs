@@ -50,10 +50,18 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_");
+            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.last, context.Pair.Asset2));
+            CheckResponseErrors(r);
+
+            return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2));
+        }
+
+        private void CheckResponseErrors<T>(BitsoSchema.BaseResponse<T> response)
+        {
+            if(!response.success)
+                throw new ApiResponseException("Error occurred", this);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
