@@ -115,6 +115,11 @@ namespace Prime.Plugins.Services.Poloniex
             return pairs;
         }
 
+        public Task<List<Asset>> GetSuspendedDepositAssetsAsync()
+        {
+            return Task.FromResult<List<Asset>>(null);
+        }
+
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);

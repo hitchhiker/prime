@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Prime.Common
@@ -12,5 +13,7 @@ namespace Prime.Common
         Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context);
 
         Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context);
+
+        Task<List<Asset>> GetSuspendedDepositAssetsAsync();
     }
 }

@@ -92,15 +92,14 @@ namespace Prime.Common
             if (!Equals(money1.Asset, money2.Asset))
                 return 100;
 
-            if (money1 == 0)
-                return Math.Abs(((decimal)(money1 - money2) / Math.Abs(money2)) * 100);
-
-            return Math.Abs((((decimal)(money2 - money1) / Math.Abs(money1))) * 100);
+            if (money2 == 0)
+                return 0-(((decimal) (money2 - money1) / money2) * 100);
+            return ((decimal)(money2 - money1) / money2) * 100;
         }
 
         public static bool IsWithinPercentage(this Money money1, Money money2, decimal percentageTolerance)
         {
-            return PercentageDifference(money1, money2) <= percentageTolerance;
+            return Math.Abs(PercentageDifference(money1, money2)) <= percentageTolerance;
         }
 
         public static Money ReverseAsset(this Money money1, Asset quote)

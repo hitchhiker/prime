@@ -50,5 +50,16 @@ namespace Prime.Utility
             }
             return -1;
         }
+
+        public static void CrossOnce<T>(this IList<T> source, Action<T, T> process)
+        {
+            var i = 0;
+            foreach (var n1 in source.Take(source.Count-1)) // a -> y
+            {
+                foreach (var n2 in source.Skip(i+1)) // .. -> z
+                    process(n1, n2);
+                i++;
+            }
+        }
     }
 }
