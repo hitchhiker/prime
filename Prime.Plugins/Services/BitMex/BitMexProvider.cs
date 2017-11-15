@@ -209,6 +209,11 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
+        public Task<List<Asset>> GetSuspendedDepositAssetsAsync()
+        {
+            return Task.FromResult<List<Asset>>(null);
+        }
+
         public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
         {
             throw new NotImplementedException();

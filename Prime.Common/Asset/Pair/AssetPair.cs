@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LiteDB;
 using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class AssetPair : IEquatable<AssetPair>
+    public class AssetPair : IEquatable<AssetPair>, IUniqueIdentifier<ObjectId>
     {
         private AssetPair() { }
 
@@ -104,6 +105,11 @@ namespace Prime.Common
             return $"{Asset1.ToRemoteCode(converter)}_{Asset2.ToRemoteCode(converter)}";
         }
 
+        public string TickerSlash(IDescribesAssets converter)
+        {
+            return $"{Asset1.ToRemoteCode(converter)}/{Asset2.ToRemoteCode(converter)}";
+        }
+
         [Obsolete]
         public string TickerSimple()
         {
@@ -132,7 +138,7 @@ namespace Prime.Common
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is AssetPair && Equals((AssetPair) obj);
+            return obj is AssetPair && Equals((AssetPair)obj);
         }
 
         public override int GetHashCode()
@@ -145,7 +151,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return Asset1 + ":" + Asset2;
+            return Asset1.ShortCode + ":" + Asset2.ShortCode;
         }
 
         public static implicit operator AssetPair(string value)
@@ -168,5 +174,8 @@ namespace Prime.Common
 
             return r;
         }
+
+        private ObjectId _id;
+        public ObjectId Id => _id ?? (_id = ToString().GetObjectIdHashCode());
     }
 }

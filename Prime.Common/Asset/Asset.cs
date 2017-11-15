@@ -4,10 +4,11 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Prime.Utility;
 using System.Linq;
+using LiteDB;
 
 namespace Prime.Common
 {
-    public class Asset : IEquatable<Asset>, IFormatProvider
+    public class Asset : IEquatable<Asset>, IFormatProvider, IUniqueIdentifier<ObjectId>
     {
         private Asset(string shortCode)
         {
@@ -100,5 +101,8 @@ namespace Prime.Common
         public int Popularity => _popularity ?? (int)(_popularity = Assets.I.Popular.ToList().IndexOf(this) + 1);
 
         public bool IsPopular => Popularity != 0;
+
+        private ObjectId _id;
+        public ObjectId Id => _id ?? (_id = ShortCode.GetObjectIdHashCode());
     }
 }

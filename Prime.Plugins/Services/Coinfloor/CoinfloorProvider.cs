@@ -1,32 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Common.Exchange;
-using Prime.Plugins.Services.Bittrex;
-using Prime.Plugins.Services.QuadrigaCx;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.QuadrigaCX
+namespace Prime.Plugins.Services.Coinfloor
 {
-    public class QuadrigaCxProvider :
+    public class CoinfloorProvider :
         IPublicPriceProvider, IAssetPairsProvider
     {
-        private const string QuadrigaCxApiVersion = "v2";
-        private const string QuadrigaCxApiUrl = "https://api.quadrigacx.com/" + QuadrigaCxApiVersion;
+        private const string CoinfloorApiUrl = "https://webapi.coinfloor.co.uk:8090/bist/";
 
-        private static readonly ObjectId IdHash = "prime:quadrigacx".GetObjectIdHashCode();
-        private const string PairsCsv = "btccad,btcusd,ethbtc,ethcad";
+        private static readonly ObjectId IdHash = "prime:coinfloor".GetObjectIdHashCode();
+        private const string PairsCsv = "xbteur,xbtgbp,xbtusd,xbtpln";
 
-        // No information in API document.
-        private static readonly IRateLimiter Limiter = new NoRateLimits();
+        // Information requests: 10 per 10 seconds per session
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60,1);
 
-        private RestApiClientProvider<IQuadrigaCxApi> ApiProvider { get; }
+        private RestApiClientProvider<ICoinfloorApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("QuadrigaCX");
+        public Network Network { get; } = Networks.I.Get("Coinfloor");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -36,7 +31,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public IRateLimiter RateLimiter => Limiter;
 
         public bool IsDirect => true;
-        
+
         public bool CanGenerateDepositAddress => true; //To confirm
         public bool CanPeekDepositAddress => false; //To confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -44,9 +39,9 @@ namespace Prime.Plugins.Services.QuadrigaCX
         private AssetPairs _pairs;
         public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(3, PairsCsv, this));
 
-        public QuadrigaCxProvider()
+        public CoinfloorProvider()
         {
-            ApiProvider = new RestApiClientProvider<IQuadrigaCxApi>(QuadrigaCxApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICoinfloorApi>(CoinfloorApiUrl, this, (k) => null);
         }
 
         public Task<bool> TestPublicApiAsync()
@@ -57,7 +52,8 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_");
+            var pairCode = context.Pair.TickerSlash(this);
+
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPrice(Network, context.Pair, r.last);

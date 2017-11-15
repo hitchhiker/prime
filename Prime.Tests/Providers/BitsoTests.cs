@@ -1,25 +1,26 @@
 ﻿using System;
+using System.Text;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.BitStamp;
-using Prime.Plugins.Services.QuadrigaCX;
+using Prime.Plugins.Services.Bitso;
 
 namespace Prime.Tests.Providers
 {
     [TestClass()]
-    public class QuadrigaCxTests : ProviderDirectTestsBase
+    public class BitsoTests : ProviderDirectTestsBase
     {
-        public QuadrigaCxTests()
+        public BitsoTests()
         {
-            Provider = Networks.I.Providers.OfType<QuadrigaCxProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<BitsoProvider>().FirstProvider();
         }
 
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            var context = new PublicPriceContext("btc_usd".ToAssetPairRaw());
+            var context = new PublicPriceContext("btc_mxn".ToAssetPairRaw());
             await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
@@ -28,10 +29,11 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_CAD".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw(),
-                "ETH_CAD".ToAssetPairRaw()
+                "eth_mxn".ToAssetPairRaw(),
+                "xrp_btc".ToAssetPairRaw(),
+                "xrp_mxn".ToAssetPairRaw(),
+                "eth_btc".ToAssetPairRaw(),
+                "bch_btc".ToAssetPairRaw()
             };
 
             await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);

@@ -3,23 +3,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.BitStamp;
-using Prime.Plugins.Services.QuadrigaCX;
+using Prime.Plugins.Services.Coinfloor;
+using Prime.Tests.Providers;
 
-namespace Prime.Tests.Providers
+namespace Prime.Tests
 {
     [TestClass()]
-    public class QuadrigaCxTests : ProviderDirectTestsBase
+    public class CoinfloorTests : ProviderDirectTestsBase
     {
-        public QuadrigaCxTests()
+        public CoinfloorTests()
         {
-            Provider = Networks.I.Providers.OfType<QuadrigaCxProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<CoinfloorProvider>().FirstProvider();
         }
 
         [TestMethod]
         public override async Task TestGetPriceAsync()
         {
-            var context = new PublicPriceContext("btc_usd".ToAssetPairRaw());
+            var context = new PublicPriceContext("xbt_usd".ToAssetPairRaw());
             await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
@@ -27,12 +27,12 @@ namespace Prime.Tests.Providers
         public override async Task TestGetAssetPairsAsync()
         {
             var requiredPairs = new AssetPairs()
-            {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_CAD".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw(),
-                "ETH_CAD".ToAssetPairRaw()
-            };
+                {
+                    "XBT_USD".ToAssetPairRaw(),
+                    "XBT_GBP".ToAssetPairRaw(),
+                    "XBT_EUR".ToAssetPairRaw(),
+                    "XBT_PLN".ToAssetPairRaw()
+                };
 
             await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
         }

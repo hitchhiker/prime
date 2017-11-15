@@ -137,6 +137,7 @@
     <Compile Include="Providers\BithumbTests.cs" />
     <Compile Include="Providers\BitMarketTests.cs" />
     <Compile Include="Providers\BitMexTests.cs" />
+    <Compile Include="Providers\BitsoTests.cs" />
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\CexTests.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Providers\PoloniexTests.cs" />
     <Compile Include="Providers\ProviderDirectTestsBase.cs" />
     <Compile Include="Providers\QuadrigaCxTests.cs" />
+    <Compile Include="Providers\CoinfloorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">

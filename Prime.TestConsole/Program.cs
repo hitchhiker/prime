@@ -6,6 +6,7 @@ using Prime.Common;
 using Prime.Core;
 using Prime.Plugins.Services.BitMex;
 using Prime.Plugins.Services.Kraken;
+using Prime.Plugins.Services.QuadrigaCX;
 using Prime.TestConsole;
 using Prime.TestConsole.Tools;
 using Prime.Utility;
@@ -30,7 +31,10 @@ namespace TestConsole
                 // Run Alyasko code :)
                 new ProviderTools().GenerateProvidersReport();
             }
-            else
+            else if (Environment.UserName.Equals("Sean"))
+            {
+            }
+            else 
             {
                 TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault()?.Go();
             }
