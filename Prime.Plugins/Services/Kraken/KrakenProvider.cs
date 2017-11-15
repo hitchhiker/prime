@@ -295,9 +295,9 @@ namespace Prime.Plugins.Services.Kraken
             return walletAddresses;
         }
 
-        public Task<List<Asset>> GetSuspendedDepositAssetsAsync()
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
-            return Task.FromResult<List<Asset>>(null);
+            return Task.FromResult<TransferSuspensions>(null);
         }
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)

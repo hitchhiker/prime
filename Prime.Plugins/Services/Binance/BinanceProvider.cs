@@ -9,12 +9,15 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider, IAssetPairsProvider, IAssetPairVolumeProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider, IAssetPairsProvider, IAssetPairVolumeProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
 
         private static readonly ObjectId IdHash = "prime:bitflyer".GetObjectIdHashCode();
+
+        private static readonly IReadOnlyList<Asset> SuspendedDeposit = "BTM,HCC,LLT,BTG".ToAssetsCsvRaw();
+        private static readonly IReadOnlyList<Asset> SuspendedWithdrawal = "BTG".ToAssetsCsvRaw();
 
         private RestApiClientProvider<IBinanceApi> ApiProvider { get; }
 
@@ -31,6 +34,21 @@ namespace Prime.Plugins.Services.Binance
         
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
+
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
+        {
+            return Task.FromResult(new TransferSuspensions(SuspendedDeposit, SuspendedWithdrawal));
+        }
+
+        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        {
+            return Task.FromResult<WalletAddresses>(null);
+        }
+
+        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        {
+            return Task.FromResult<WalletAddresses>(null);
+        }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 

@@ -55,6 +55,11 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetOhlcAsync(provider, context));
         }
 
+        public static ApiResponse<TransferSuspensions> GetTransferSuspensions(IDepositProvider provider, NetworkProviderContext context = null)
+        {
+            return AsyncContext.Run(() => GetTransferSuspensionsAsync(provider, context));
+        }
+
         public static ApiResponse<WalletAddresses> GetDepositAddresses(IDepositProvider provider, WalletAddressAssetContext context)
         {
             return AsyncContext.Run(() => GetDepositAddressesAsync(provider, context));

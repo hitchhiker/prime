@@ -127,9 +127,9 @@ namespace Prime.Plugins.Services.HitBtc
             return walletAddresses;
         }
 
-        public Task<List<Asset>> GetSuspendedDepositAssetsAsync()
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
-            return Task.FromResult<List<Asset>>(null);
+            return Task.FromResult<TransferSuspensions>(null);
         }
 
         public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)

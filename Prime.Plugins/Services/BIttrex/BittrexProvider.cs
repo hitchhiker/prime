@@ -161,9 +161,9 @@ namespace Prime.Plugins.Services.Bittrex
             return null;
         }
 
-        public Task<List<Asset>> GetSuspendedDepositAssetsAsync()
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
-            return Task.FromResult<List<Asset>>(null);
+            return Task.FromResult<TransferSuspensions>(null);
         }
 
         public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
