@@ -167,6 +167,11 @@ namespace Prime.Plugins.Services.BitMex
             return r != null;
         }
 
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
+        {
+            return Task.FromResult<TransferSuspensions>(null);
+        }
+
         public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -209,10 +214,6 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
-        public Task<List<Asset>> GetSuspendedDepositAssetsAsync()
-        {
-            return Task.FromResult<List<Asset>>(null);
-        }
 
         public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
         {
