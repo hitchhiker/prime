@@ -33,6 +33,12 @@ namespace Prime.Plugins.Services.BitMex
 
         internal class WithdrawalConfirmationResponse : WithdrawalResponseBase { }
 
+        internal class ConnectedUsersResponse
+        {
+            public int users;
+            public int bots;
+        }
+
         internal class WalletHistoryEntryResponse
         {
             public string transactID;

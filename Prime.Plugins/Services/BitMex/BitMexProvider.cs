@@ -51,9 +51,12 @@ namespace Prime.Plugins.Services.BitMex
             ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetConnectedUsersAsync().ConfigureAwait(false);
+
+            return r != null;
         }
 
         private string ConvertToBitMexInterval(TimeResolution market)

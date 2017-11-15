@@ -42,5 +42,8 @@ namespace Prime.Plugins.Services.BitMex
 
         [Post("/user/confirmWithdrawal")]
         Task<BitMexSchema.WithdrawalConfirmationResponse> ConfirmWithdrawalAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Get("/chat/connected")]
+        Task<BitMexSchema.ConnectedUsersResponse> GetConnectedUsersAsync();
     }
 }
