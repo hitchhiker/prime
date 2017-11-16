@@ -28,6 +28,12 @@ namespace Prime.Plugins.Services.Gdax
             public decimal quote_increment;
         }
 
+        internal class TimeResponse
+        {
+            public DateTime iso;
+            public long epoch;
+        }
+
         internal class OrderBookResponse
         {
             public string sequence;

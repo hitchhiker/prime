@@ -41,9 +41,11 @@ namespace Prime.Plugins.Services.Poloniex
             ApiProvider = new RestApiClientProvider<IPoloniexApi>(PoloniexApiUrl, this, k => new PoloniexAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return r.Count > 0;
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)

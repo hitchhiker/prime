@@ -42,9 +42,11 @@ namespace Prime.Plugins.Services.Bitso
             ApiProvider = new RestApiClientProvider<IBitsoApi>(BitsoApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return r.Count > 0;
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)

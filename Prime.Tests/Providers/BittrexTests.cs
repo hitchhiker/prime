@@ -19,6 +19,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override async Task TestPublicApiAsync()
+        {
+            await base.TestPublicApiAsync().ConfigureAwait(false);
+        }
+
+        [TestMethod]
         public override async Task TestApiAsync()
         {
             await base.TestApiAsync().ConfigureAwait(false);

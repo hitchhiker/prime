@@ -49,9 +49,12 @@ namespace Prime.Plugins.Services.Coinbase
             GdaxApiProvider = new RestApiClientProvider<IGdaxApi>(GdaxApiUrl);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetCurrentServerTimeAsync().ConfigureAwait(false);
+
+            return r != null;
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
@@ -288,7 +291,7 @@ namespace Prime.Plugins.Services.Coinbase
 
             while (currTsTo > tsFrom)
             {
-                var candles = await api.GetCandles(currencyCode, currTsFrom.ToUtcDateTime(), currTsTo.ToUtcDateTime(), granularitySeconds).ConfigureAwait(false);
+                var candles = await api.GetCandlesAsync(currencyCode, currTsFrom.ToUtcDateTime(), currTsTo.ToUtcDateTime(), granularitySeconds).ConfigureAwait(false);
 
                 foreach (var candle in candles)
                 {

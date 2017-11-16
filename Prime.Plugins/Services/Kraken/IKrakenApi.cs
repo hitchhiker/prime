@@ -26,5 +26,8 @@ namespace Prime.Plugins.Services.Kraken
 
         [Get("/public/Depth?pair={currencyPair}&count={depth}")]
         Task<KrakenSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int depth = 0);
+
+        [Get("/public/Time")]
+        Task<KrakenSchema.TimeResponse> GetServerTimeAsync();
     }
 }

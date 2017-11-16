@@ -43,9 +43,12 @@ namespace Prime.Plugins.Services.Gdax
             return null;
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetCurrentServerTimeAsync().ConfigureAwait(false);
+
+            return r != null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

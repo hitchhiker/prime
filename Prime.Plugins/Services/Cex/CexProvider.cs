@@ -32,9 +32,11 @@ namespace Prime.Plugins.Services.Cex
             ApiProvider = new RestApiClientProvider<ICexApi>(CexApiUrl, this, k => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return r.Count > 0;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

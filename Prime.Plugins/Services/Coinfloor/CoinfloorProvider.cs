@@ -44,9 +44,12 @@ namespace Prime.Plugins.Services.Coinfloor
             ApiProvider = new RestApiClientProvider<ICoinfloorApi>(CoinfloorApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var ctx = new PublicPriceContext("XBT_GBP".ToAssetPairRaw());
+            var r = await GetPriceAsync(ctx).ConfigureAwait(false);
+
+            return r != null;
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)

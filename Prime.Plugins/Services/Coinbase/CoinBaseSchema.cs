@@ -25,6 +25,17 @@ namespace Prime.Plugins.Services.Coinbase
             public string next_uri;
         }
 
+        internal class TimeResponse
+        {
+            public TimeDataResponse data;
+        }
+
+        internal class TimeDataResponse
+        {
+            public DateTime iso;
+            public long epoch;
+        }
+
         internal class SpotPriceResponse
         {
             public PriceDataResponse data;

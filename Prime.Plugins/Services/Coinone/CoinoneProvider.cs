@@ -33,9 +33,11 @@ namespace Prime.Plugins.Services.Coinone
         {
             ApiProvider = new RestApiClientProvider<ICoinoneApi>(CoinoneApiUrl, this, k => null);
         }
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return r.Count > 0;
         }
         public IAssetCodeConverter GetAssetCodeConverter()
         {
