@@ -23,17 +23,18 @@ namespace Prime.Common
         }
 
         /// <summary>
-        /// Creates asset pair from 6-chars string.
+        /// Creates asset pair from string basing on base asset length.
         /// </summary>
-        /// <param name="pair">Asset pair code which length is 6.</param>
+        /// <param name="pair">Asset pair code.</param>
         /// <param name="provider">Asset code converter.</param>
+        /// <param name="firstAssetLength">The length of base asset.</param>
         /// <returns>Asset pair from specified string.</returns>
-        public static AssetPair ToAssetPair(this string pair, IDescribesAssets provider)
+        public static AssetPair ToAssetPair(this string pair, IDescribesAssets provider, int firstAssetLength)
         {
-            if (string.IsNullOrWhiteSpace(pair) || pair.Length != 6)
+            if (string.IsNullOrWhiteSpace(pair) || firstAssetLength < 1 || firstAssetLength > pair.Length - 1)
                 return AssetPair.Empty;
 
-            var assetCode1 = pair.Substring(0, 3);
+            var assetCode1 = pair.Substring(0, firstAssetLength);
             var assetCode2 = pair.Replace(assetCode1, "");
 
             return new AssetPair(assetCode1, assetCode2, provider);

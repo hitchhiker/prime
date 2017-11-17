@@ -129,28 +129,17 @@ namespace Prime.Plugins.Services.Kraken
             return prices;
         }
 
-        private AssetPair GetSplittedAssetPair(string pairCode, int splitIndex)
-        {
-            if(splitIndex < 1 || splitIndex > pairCode.Length - 1)
-                return AssetPair.Empty;
-
-            var asset1 = pairCode.Substring(0, splitIndex);
-            var asset2 = pairCode.Replace(asset1, "");
-
-            return new AssetPair(asset1, asset2, this);
-        }
-
         private bool ComparePairs(AssetPair pair, string krakenPairCode)
         {
             var result = false;
             if (krakenPairCode.Length == 6)
             {
-                result = pair.Equals(krakenPairCode.ToAssetPair(this));
+                result = pair.Equals(krakenPairCode.ToAssetPair(this, 3));
             }
             else if (krakenPairCode.Length == 7)
             {
-                result = pair.Equals(GetSplittedAssetPair(krakenPairCode, 3)) ||
-                         pair.Equals(GetSplittedAssetPair(krakenPairCode, 4));
+                result = pair.Equals(krakenPairCode.ToAssetPair(this, 3)) ||
+                         pair.Equals(krakenPairCode.ToAssetPair(this, 4));
             }
             else
             {
