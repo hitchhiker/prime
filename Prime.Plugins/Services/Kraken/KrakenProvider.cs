@@ -132,19 +132,37 @@ namespace Prime.Plugins.Services.Kraken
 
         private bool ComparePairs(AssetPair pair, string krakenPairCode)
         {
-            var pattern = @"^(([X](?<asset10>\w{3}))|((?<asset11>.\w{3})))[XZ](?<asset20>\w{3})$";
-            var matches = Regex.Match(krakenPairCode, pattern);
+            var result = false;
+            if (krakenPairCode.Length == 6)
+            {
+                result = pair.Equals(krakenPairCode.ToAssetPair(this, 3));
+            }
+            else if (krakenPairCode.Length == 7)
+            {
+                result = pair.Equals(krakenPairCode.ToAssetPair(this, 3)) ||
+                         pair.Equals(krakenPairCode.ToAssetPair(this, 4));
+            }
+            else
+            {
+                var pattern = @"^(([X](?<asset10>\w{3}))|((?<asset11>.\w{3})))[XZ](?<asset20>\w{3})$";
+                var matches = Regex.Match(krakenPairCode, pattern);
 
-            if (!matches.Success || !matches.Groups["asset20"].Success || (!matches.Groups["asset10"].Success && !matches.Groups["asset11"].Success))
-                return false;
+                if (!matches.Success || !matches.Groups["asset20"].Success ||
+                    (!matches.Groups["asset10"].Success && !matches.Groups["asset11"].Success))
+                    return false;
 
-            var krakenPair = new AssetPair(
-                matches.Groups["asset10"].Success ? matches.Groups["asset10"].Value : matches.Groups["asset11"].Value,
-                matches.Groups["asset20"].Value,
-                this
+                var krakenPair = new AssetPair(
+                    matches.Groups["asset10"].Success
+                        ? matches.Groups["asset10"].Value
+                        : matches.Groups["asset11"].Value,
+                    matches.Groups["asset20"].Value,
+                    this
                 );
 
-            return pair.Equals(krakenPair);
+                result = pair.Equals(krakenPair);
+            }
+
+            return result;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

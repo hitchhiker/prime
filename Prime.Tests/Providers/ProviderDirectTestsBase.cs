@@ -194,9 +194,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected OhlcContext OhlcContext { get; set; }
-
         private async Task GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
             if (context == null)
@@ -288,9 +285,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected PublicAssetPricesContext PublicAssetPricesContext { get; set; }
-
         private async Task GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             if (context == null)
@@ -316,10 +310,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected AssetPairs RequiredAssetPairs { get; set; }
-
-        private async Task GetAssetPairsAsync(IAssetPairsProvider provider, AssetPairs requiredPairs)
+        protected async Task GetAssetPairsAsync(IAssetPairsProvider provider, AssetPairs requiredPairs)
         {
             var ctx = new NetworkProviderContext();
 
@@ -355,9 +346,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected PublicPricesContext PublicPricesContext { get; set; }
-
         private async Task GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
         {
             if (context == null)
@@ -368,7 +356,7 @@ namespace Prime.Tests.Providers
                 var pairs = await provider.GetPricesAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(pairs != null);
-                Assert.IsTrue(pairs.MarketPrices.Count > 0);
+                Assert.IsTrue(pairs.MarketPrices.Count > 0, "No market prices returned");
 
                 Assert.IsFalse(pairs.MissedPairs.Any(), $"Provider did not return:{pairs.MissedPairs.Aggregate("", (s, pair) => s +=  $" {pair},").TrimEnd(',')}");
 
@@ -406,9 +394,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected WalletAddressContext WalletAddressContext { get; set; }
-
         private async Task GetAddressesAsync(IDepositProvider provider, WalletAddressContext context)
         {
             if (context == null)
@@ -432,9 +417,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected WalletAddressAssetContext WalletAddressAssetContext { get; set; }
-
         private async Task GetAddressesForAssetAsync(IDepositProvider provider, WalletAddressAssetContext context)
         {
             if(context == null)
@@ -457,9 +439,6 @@ namespace Prime.Tests.Providers
                 Assert.Fail(e.Message);
             }
         }
-
-        [Obsolete]
-        protected OrderBookContext OrderBookContext { get; set; }
 
         private async Task GetOrderBookAsync(IOrderBookProvider provider, OrderBookContext context)
         {
@@ -488,9 +467,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected WithdrawalHistoryContext WithdrawalHistoryContext { get; set; }
-
         private async Task GetWithdrawalHistoryAsync(IWithdrawalHistoryProvider provider, WithdrawalHistoryContext context)
         {
             if (context == null)
@@ -513,9 +489,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected WithdrawalPlacementContext WithdrawalPlacementContext { get; set; }
-
         private async Task PlaceWithdrawalAsync(IWithdrawalPlacementProvider provider, WithdrawalPlacementContext context)
         {
             if (context == null)
@@ -532,9 +505,6 @@ namespace Prime.Tests.Providers
                 Assert.Fail(e.Message);
             }
         }
-
-        [Obsolete]
-        protected WithdrawalPlacementContextExtended WithdrawalPlacementContextExtended { get; set; }
 
         private async Task PlaceWithdrawalExtendedAsync(IWithdrawalPlacementProviderExtended provider, WithdrawalPlacementContextExtended context)
         {
@@ -554,9 +524,6 @@ namespace Prime.Tests.Providers
                 Assert.Fail(e.Message);
             }
         }
-
-        [Obsolete]
-        protected WithdrawalCancelationContext WithdrawalCancelationContext { get; set; }
 
         private async Task CancelWithdrawalAsync(IWithdrawalCancelationProvider provider, WithdrawalCancelationContext context)
         {
@@ -578,9 +545,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected WithdrawalConfirmationContext WithdrawalConfirmationContext { get; set; }
-
         private async Task ConfirmWithdrawalAsync(IWithdrawalConfirmationProvider provider, WithdrawalConfirmationContext context)
         {
             if (context == null)
@@ -601,8 +565,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        [Obsolete]
-        protected VolumeContext VolumeContext { get; set; }
         private async Task GetVolumeAsync(IAssetPairVolumeProvider provider, VolumeContext context)
         {
             if (context == null)

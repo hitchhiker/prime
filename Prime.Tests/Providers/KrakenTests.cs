@@ -18,6 +18,18 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public async Task TestAllAssetPairsPrices()
+        {
+            var pairs = await ((IAssetPairsProvider) Provider).GetAssetPairsAsync(new NetworkProviderContext()).ConfigureAwait(false);
+
+            var prices = await ((IPublicPricesProvider) Provider).GetPricesAsync(new PublicPricesContext(pairs.ToList()))
+                .ConfigureAwait(false);
+
+            Assert.IsTrue(!prices.MissedPairs.Any());
+            Assert.IsTrue(pairs.Count == prices.MarketPrices.Count);
+        }
+
+        [TestMethod]
         public override async Task TestPublicApiAsync()
         {
             await base.TestPublicApiAsync().ConfigureAwait(false);
@@ -34,6 +46,9 @@ namespace Prime.Tests.Providers
         {
             var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
             await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+
+            context = new PublicPriceContext("BCH_EUR".ToAssetPairRaw());
+            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -58,6 +73,22 @@ namespace Prime.Tests.Providers
                 "ETH_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
                 "XRP_BTC".ToAssetPairRaw(),
+            });
+
+            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+
+            context = new PublicPricesContext(new List<AssetPair>()
+            {
+                "BCH_EUR".ToAssetPairRaw(),
+                "BCH_USD".ToAssetPairRaw(),
+                "BCH_BTC".ToAssetPairRaw(),
+                "EOS_ETH".ToAssetPairRaw(),
+                "EOS_BTC".ToAssetPairRaw(),
+                "GNO_ETH".ToAssetPairRaw(),
+                "GNO_BTC".ToAssetPairRaw(),
+                "DASH_EUR".ToAssetPairRaw(),
+                "DASH_USD".ToAssetPairRaw(),
+                "DASH_BTC".ToAssetPairRaw()
             });
 
             await base.TestGetPricesAsync(context).ConfigureAwait(false);
