@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.CryptoCompare
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = GetApi<ICryptoCompareApi>();
             var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));

@@ -133,13 +133,13 @@ namespace Prime.Plugins.Services.Coinone
 
         public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            return GetPricesAsync(context);
+            return GetPricingAsync(context);
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 

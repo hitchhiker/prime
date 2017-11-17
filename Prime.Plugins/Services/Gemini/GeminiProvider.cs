@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.Gemini
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 

@@ -87,7 +87,7 @@ namespace Prime.Plugins.Services.Bittrex
             return new MarketPricesResult(price);
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);

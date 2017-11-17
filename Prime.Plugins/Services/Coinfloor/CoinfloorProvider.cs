@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var ctx = new PublicPriceContext("XBT_GBP".ToAssetPairRaw());
-            var r = await GetPricesAsync(ctx).ConfigureAwait(false);
+            var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;
         }
@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.Coinfloor
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "/");

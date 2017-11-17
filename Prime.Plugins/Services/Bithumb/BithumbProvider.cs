@@ -72,7 +72,7 @@ namespace Prime.Plugins.Services.Bithumb
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
         
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);

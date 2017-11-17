@@ -73,7 +73,7 @@ namespace Prime.Plugins.Services.Cex
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lprice));
         }
         
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);

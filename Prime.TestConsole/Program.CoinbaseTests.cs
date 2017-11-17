@@ -24,7 +24,7 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var price = AsyncContext.Run(() => provider.GetPricesAsync(ctx));
+                    var price = AsyncContext.Run(() => provider.GetPricingAsync(ctx));
 
                     Console.WriteLine($"Latest price for {pair} is {price.FirstPrice.Price}");
                 }
