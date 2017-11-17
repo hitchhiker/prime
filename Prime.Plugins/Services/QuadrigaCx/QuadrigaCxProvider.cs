@@ -49,9 +49,12 @@ namespace Prime.Plugins.Services.QuadrigaCX
             ApiProvider = new RestApiClientProvider<IQuadrigaCxApi>(QuadrigaCxApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var ctx = new PublicPriceContext("btc_cad".ToAssetPairRaw());
+            var r = await GetPriceAsync(ctx).ConfigureAwait(false);
+
+            return r != null;
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)

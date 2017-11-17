@@ -41,9 +41,11 @@ namespace Prime.Plugins.Services.ItBit
             return AssetCodeConverter;
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return r.Count > 0;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

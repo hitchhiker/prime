@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Coinbase
 
         [Get("/prices/{currencyPair}/spot")]
         Task<CoinbaseSchema.SpotPriceResponse> GetLatestPriceAsync([Path] string currencyPair);
+
+        [Get("/time")]
+        Task<CoinbaseSchema.TimeResponse> GetCurrentServerTimeAsync();
     }
 }

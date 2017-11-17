@@ -32,6 +32,14 @@ namespace Prime.Plugins.Services.Kraken
 
         internal class OrderBookResponse : BaseResponse<Dictionary<string, OrderBookRecordResponse>> { }
 
+        internal class TimeResponse : BaseResponse<TimeDataResponse> { }
+
+        internal class TimeDataResponse
+        {
+            public long unixtime;
+            public string rfc1123;
+        }
+
         internal class OrderBookRecordResponse
         {
             public string[][] asks;

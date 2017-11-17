@@ -28,9 +28,7 @@ namespace Prime.Plugins.Services.Fiat
         }
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var t = new Task<bool>(() => true);
-            t.Start();
-            return t;
+            return Task.Run(() => true);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -101,7 +99,7 @@ namespace Prime.Plugins.Services.Fiat
             return rates.Get(pair, 0);
         }
 
-        public async Task<AssetPairs> GetAssetPairs(NetworkProviderContext context)
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             if (_pairs.Any())
                 return new AssetPairs(_pairs);

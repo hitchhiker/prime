@@ -51,9 +51,14 @@ namespace Prime.Plugins.Services.Kraken
             };
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetServerTimeAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            return r.result.unixtime > 0;
         }
 
         private JsonSerializerSettings CreateJsonSerializerSettings()

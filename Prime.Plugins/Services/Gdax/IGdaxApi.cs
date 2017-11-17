@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Gdax
         Task<GdaxSchema.OrderBookResponse> GetProductOrderBookAsync([Path] string productId, [Path(Format = "D")] OrderBookDepthLevel level);
 
         [Get("/products/{curencyPair}/candles")]
-        Task<decimal[][]> GetCandles(
+        Task<decimal[][]> GetCandlesAsync(
             [Path] string curencyPair, 
             [Query("start", Format = "o")] DateTime? start = null, 
             [Query("end", Format = "o")] DateTime? end = null, 
@@ -29,5 +29,8 @@ namespace Prime.Plugins.Services.Gdax
         /// <returns>Ticker for specified currency.</returns>
         [Get("/products/{currency}/ticker")]
         Task<GdaxSchema.ProductTickerResponse> GetProductTickerAsync([Path] string currency);
+
+        [Get("/time")]
+        Task<GdaxSchema.TimeResponse> GetCurrentServerTimeAsync();
     }
 }

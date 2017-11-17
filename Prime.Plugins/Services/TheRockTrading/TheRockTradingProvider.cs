@@ -6,23 +6,22 @@ using LiteDB;
 using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.Bitso
+namespace Prime.Plugins.Services.TheRockTrading
 {
-    public class BitsoProvider :
+    public class TheRockTradingProvider :
         IPublicPriceProvider, IAssetPairsProvider
     {
-        private const string BitsoApiVersion = "v3";
-        private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
+        private const string TheRockTradingApiVersion = "v1";
+        private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
 
-        private static readonly ObjectId IdHash = "prime:bitso".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:therocktrading".GetObjectIdHashCode();
 
-        // Rate limits are are based on one minute windows. 
-        // If you do more than 300 requests in five minutes, you get locked out for one minute. 
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(300, 5);
+        //API calls are limited to 10 requests per second. Do not go over this limit or you will be blacklisted.
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1); //TODO - only left like this temporarily
 
-        private RestApiClientProvider<IBitsoApi> ApiProvider { get; }
+        private RestApiClientProvider<ITheRockTradingApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("Bitso");
+        public Network Network { get; } = Networks.I.Get("TheRockTrading");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -37,33 +36,23 @@ namespace Prime.Plugins.Services.Bitso
         public bool CanPeekDepositAddress => false; // TODO: confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public BitsoProvider()
+        public TheRockTradingProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitsoApi>(BitsoApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ITheRockTradingApi>(TheRockTradingApiUrl, this, (k) => null);
         }
 
-        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
-
-            return r.Count > 0;
+            return Task.Run(() => true);
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
+            var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            CheckResponseErrors(r);
-
-            return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2));
-        }
-
-        private void CheckResponseErrors<T>(BitsoSchema.BaseResponse<T> response)
-        {
-            if(!response.success)
-                throw new ApiResponseException("Error occurred", this);
+            return new MarketPrice(Network, context.Pair, r.last);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -74,9 +63,13 @@ namespace Prime.Plugins.Services.Bitso
 
             var pairs = new AssetPairs();
 
-            foreach (var rCurrentPayloadResponse in r.payload)
+            foreach (var rCurrentTicker in r.tickers)
             {
-                pairs.Add(rCurrentPayloadResponse.book.ToAssetPairRaw());
+                if (rCurrentTicker.fund_id.Length >= 6)
+                {
+                    //Adds an underscore between the assets.
+                    pairs.Add(rCurrentTicker.fund_id.Insert(3, "_").ToAssetPairRaw());
+                }
             }
 
             return pairs;

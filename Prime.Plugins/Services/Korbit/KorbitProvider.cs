@@ -45,9 +45,13 @@ namespace Prime.Plugins.Services.Korbit
             ApiProvider = new RestApiClientProvider<IKorbitApi>(KorbitApiUrl, this, k => new KorbitAuthenticator(k).GetRequestModifier);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var ctx = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
+
+            var r = await GetPriceAsync(ctx).ConfigureAwait(false);
+
+            return r != null;
         }
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)

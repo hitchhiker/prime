@@ -23,9 +23,11 @@ namespace Prime.Plugins.Services.Bithumb
         public string Title => Network.Name;
         public bool IsDirect => true;
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+
+            return r.Count > 0;
         }
 
         // 20 requests available per second.
