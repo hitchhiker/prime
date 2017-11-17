@@ -43,8 +43,8 @@ namespace Prime.Common
             }
         }
 
-        private IAssetPairAggregationProvider _aggregationProvider;
-        public IAssetPairAggregationProvider AggregationProvider
+        private ICoinSnapshotAggregationProvider _aggregationProvider;
+        public ICoinSnapshotAggregationProvider AggregationProvider
         {
             get { return _aggregationProvider ?? (_aggregationProvider = Networks.I.AssetPairAggregationProviders.FirstOrDefault(x => x.Id == ProviderId)); }
         }

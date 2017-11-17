@@ -9,11 +9,38 @@ using Prime.Utility;
 // BUG: unable to move to correct namespace because of dynamic assembly loading.
 namespace plugins
 {
-    public class CryptoCompareProvider : CryptoCompareBase, IAssetPairAggregationProvider, ILatestPriceAggregationProvider
+    public class CryptoCompareProvider : CryptoCompareBase, ICoinSnapshotAggregationProvider, ILatestPriceAggregationProvider, IAggVolumeDataProvider
     {
         public override string Name => "CCCAGG";
 
         public override string AggregatorName => null;
+
+        public async Task<VolumeDataExchanges> GetAggVolumeDataAsync(AggVolumeDataContext context)
+        {
+            var pair = context.Pair;
+
+            var api = GetApi<ICryptoCompareApi>();
+            var apir = await api.GetTopExchangesAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this)).ConfigureAwait(false);
+
+            if (apir.IsError() || apir.Data == null)
+                return null;
+
+            var vols = new VolumeDataExchanges(context.Pair);
+
+            foreach (var i in apir.Data)
+            {
+                var pcheck = new AssetPair(i.fromSymbol, i.toSymbol, this);
+                if (pcheck.Id != pair.Id)
+                    continue;
+
+                var vb = new Money((decimal) i.volume24h, pair.Asset1);
+                var vq = new Money((decimal) i.volume24hTo, pair.Asset2);
+                var v = new VolumeDataExchange(Networks.I.Get(i.exchange), pair, vb, vq);
+                vols.Add(v);
+            }
+
+            return vols;
+        }
 
         public async Task<AggregatedAssetPairData> GetCoinSnapshotAsync(AssetPairDataContext context)
         {
@@ -53,7 +80,6 @@ namespace plugins
         }
 
         public override string Title => "CryptoCompare Aggregator";
-
 
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {

@@ -118,6 +118,20 @@ namespace Prime.Plugins.Services.CryptoCompare
             }
         }
 
+        internal class TopExchangesResult : CryptoCompareResponseBase
+        {
+            public class TopExchangesItem
+            {
+                public string exchange;
+                public string fromSymbol;
+                public string toSymbol;
+                public double volume24h;
+                public double volume24hTo;
+            }
+
+            public List<TopExchangesItem> Data;
+        }
+
         internal class PriceMultiResult : Dictionary<string, Dictionary<string, double>> { }
     }
 }

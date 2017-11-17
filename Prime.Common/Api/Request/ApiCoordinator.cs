@@ -80,9 +80,14 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetCoinInformationAsync(provider, context));
         }
 
-        public static ApiResponse<AggregatedAssetPairData> GetCoinSnapshot(IAssetPairAggregationProvider provider, AssetPairDataContext context)
+        public static ApiResponse<AggregatedAssetPairData> GetCoinSnapshot(ICoinSnapshotAggregationProvider provider, AssetPairDataContext context)
         {
             return AsyncContext.Run(() => GetCoinSnapshotAsync(provider, context));
+        }
+
+        public static ApiResponse<VolumeDataExchanges> GetAggVolumeData(IAggVolumeDataProvider provider, AggVolumeDataContext context)
+        {
+            return AsyncContext.Run(() => GetAggVolumeDataAsync(provider, context));
         }
     }
 }

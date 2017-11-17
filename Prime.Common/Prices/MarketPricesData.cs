@@ -15,12 +15,16 @@ namespace Prime.Common.Prices.Latest
             Network = network;
             Id = GetHash(Network);
             Prices = prices;
+            UtcCreated = DateTime.UtcNow;
         }
 
         public static ObjectId GetHash(Network network)
         {
             return ("latestpricenetworkdata:" + network.Id).GetObjectIdHashCode();
         }
+
+        [Bson]
+        public DateTime UtcCreated { get; private set; }
 
         [Bson]
         public Network Network { get; private set; }

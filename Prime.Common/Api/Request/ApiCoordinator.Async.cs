@@ -124,9 +124,14 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(() => provider.GetCoinInformationAsync(context), nameof(GetCoinInformation), provider, context);
         }
 
-        public static Task<ApiResponse<AggregatedAssetPairData>> GetCoinSnapshotAsync(IAssetPairAggregationProvider provider, AssetPairDataContext context)
+        public static Task<ApiResponse<AggregatedAssetPairData>> GetCoinSnapshotAsync(ICoinSnapshotAggregationProvider provider, AssetPairDataContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetCoinSnapshotAsync(context), nameof(GetCoinSnapshot), provider, context);
+        }
+
+        public static Task<ApiResponse<VolumeDataExchanges>> GetAggVolumeDataAsync(IAggVolumeDataProvider provider, AggVolumeDataContext context)
+        {
+            return ApiHelpers.WrapExceptionAsync(() => provider.GetAggVolumeDataAsync(context), nameof(GetAggVolumeData), provider, context);
         }
     }
 }

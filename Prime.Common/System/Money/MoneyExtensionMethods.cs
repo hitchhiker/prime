@@ -104,6 +104,9 @@ namespace Prime.Common
 
         public static Money ReverseAsset(this Money money1, Asset quote)
         {
+            if (quote.Id == money1.Asset.Id)
+                throw new ArgumentException($"Cannot {nameof(ReverseAsset)} into the same asset.");
+
             return new Money(1d / money1, quote);
         }
     }

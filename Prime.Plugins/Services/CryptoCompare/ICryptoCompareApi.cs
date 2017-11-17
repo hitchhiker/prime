@@ -16,6 +16,9 @@ namespace Prime.Plugins.Services.CryptoCompare
         [Get("coinsnapshot")]
         Task<CryptoCompareSchema.CoinSnapshotResult> GetCoinSnapshotAsync(string fsym, string tsym);
 
+        [Get("top/exchanges")]
+        Task<CryptoCompareSchema.TopExchangesResult> GetTopExchangesAsync(string fsym, string tsym);
+
         [Get("all/exchanges")]
         Task<CryptoCompareSchema.AssetPairsAllExchanges> GetAssetPairsAllExchangesAsync();
 

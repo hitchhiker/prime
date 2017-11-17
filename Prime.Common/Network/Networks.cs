@@ -52,8 +52,8 @@ namespace Prime.Common
         private IReadOnlyList<IOhlcProvider> _ohlcProviders;
         public IReadOnlyList<IOhlcProvider> OhlcProviders => _ohlcProviders ?? (_ohlcProviders = Providers.OfList<IOhlcProvider>());
 
-        private IReadOnlyList<IAssetPairAggregationProvider> _apaggProviders;
-        public IReadOnlyList<IAssetPairAggregationProvider> AssetPairAggregationProviders => _apaggProviders ?? (_apaggProviders = Providers.OfList<IAssetPairAggregationProvider>());
+        private IReadOnlyList<ICoinSnapshotAggregationProvider> _apaggProviders;
+        public IReadOnlyList<ICoinSnapshotAggregationProvider> AssetPairAggregationProviders => _apaggProviders ?? (_apaggProviders = Providers.OfList<ICoinSnapshotAggregationProvider>());
 
         public IEnumerator<Network> GetEnumerator()
         {

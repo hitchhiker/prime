@@ -38,6 +38,11 @@ namespace Prime.Common
             return assetCsv.ToCsv(true).Select(x => x.ToAssetRaw()).ToList();
         }
 
+        public static IReadOnlyList<AssetPair> ToAssetPairsCsvRaw(this string assetCsv, char delimiterPair = '_')
+        {
+            return assetCsv.ToCsv(true).Select(x => x.ToAssetPairRaw(delimiterPair)).ToList();
+        }
+
         public static Asset ToAsset(this string assetCode, IDescribesAssets provider)
         {
             if (provider == null)
@@ -85,6 +90,28 @@ namespace Prime.Common
                     return i;
             }
             return null;
+        }
+
+        public static decimal Fx(this IEnumerable<MarketPrice> prices, AssetPair pair)
+        {
+            var m = prices.FirstOrDefault(x => x.Pair.Id == pair.Id)?.Price;
+            if (m != null)
+                return m.Value.ToDecimalValue();
+
+            m = prices.FirstOrDefault(x => x.Pair.Id == pair.Reversed.Id)?.Price;
+            if (m != null)
+                return m.Value.ReverseAsset(pair.Asset2).ToDecimalValue();
+
+            return 0;
+        }
+
+        public static Money FxConvert(this IEnumerable<MarketPrice> prices, Money money, Asset quote)
+        {
+            var fx = prices.Fx(new AssetPair(money.Asset, quote));
+            if (fx == 0)
+                return Money.Zero;
+
+            return new Money(fx * money.ToDecimalValue(), quote);
         }
     }
 }

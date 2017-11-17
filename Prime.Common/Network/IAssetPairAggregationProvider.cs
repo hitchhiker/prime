@@ -2,7 +2,7 @@
 
 namespace Prime.Common
 {
-    public interface IAssetPairAggregationProvider : INetworkProvider
+    public interface ICoinSnapshotAggregationProvider : INetworkProvider
     {
         Task<AggregatedAssetPairData> GetCoinSnapshotAsync(AssetPairDataContext context);
     }
