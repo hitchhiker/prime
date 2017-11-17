@@ -8,8 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bitso
 {
-    public class BitsoProvider :
-        IPublicPriceProvider, IAssetPairsProvider
+    public class BitsoProvider : IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         private const string BitsoApiVersion = "v3";
         private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
@@ -57,7 +56,10 @@ namespace Prime.Plugins.Services.Bitso
 
             CheckResponseErrors(r);
 
-            return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2));
+            return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
+            {
+                PriceStatistics = new PriceStatistics(context.Pair.Asset2, null, r.payload.volume, r.payload.ask, r.payload.bid, r.payload.low, r.payload.high)
+            };
         }
 
         private void CheckResponseErrors<T>(BitsoSchema.BaseResponse<T> response)

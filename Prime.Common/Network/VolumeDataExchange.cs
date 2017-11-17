@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LiteDB;
+using Prime.Utility;
 
 namespace Prime.Common
 {
@@ -43,6 +44,24 @@ namespace Prime.Common
                 return Volume24Quote;
 
             throw new ArgumentException($"'{asset.ShortCode}' is not a member of the pair '{Pair}' in method '{nameof(VolumeFor)}'");
+        }
+
+        public Money MinimumVolume(IEnumerable<MarketPrice> prices, Asset asset)
+        {
+            var v1 = prices.FxConvert(Volume24Base, asset);
+            var v2 = prices.FxConvert(Volume24Quote, asset);
+
+            if (v1 == 0 && v2 != 0)
+                return v2;
+            if (v2 == 0 && v1 != 0)
+                return v1;
+
+            return v1 < v2 ? v1 : v2;
+        }
+
+        public VolumeData AsVolumeData(IEnumerable<MarketPrice> prices, Asset asset)
+        {
+            return new VolumeData(Network, Pair, MinimumVolume(prices, asset), UtcCreated = UtcCreated);
         }
 
         public VolumeDataExchange Reversed()
