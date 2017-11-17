@@ -14,12 +14,6 @@ namespace Prime.Core
     {
         private readonly LatestPriceProviderContext _context;
         public readonly IPublicPricingProvider Provider;
-        private readonly IDELETEPublicPriceProvider _providerP;
-        private readonly IDELETEPublicPricesProvider _providerS;
-        private readonly IDELETEPublicAssetPricesProvider _providerA;
-        private readonly bool _hasPrices;
-        private readonly bool _hasPrice;
-        private readonly bool _hasPriceA;
         //private readonly UniqueList<Request> _verifiedRequests = new UniqueList<Request>();
         private readonly UniqueList<AssetPair> _pairRequests = new UniqueList<AssetPair>();
         private readonly IMessenger _messenger;
@@ -31,16 +25,9 @@ namespace Prime.Core
         {
             _context = context;
             Provider = context.Provider;
-            _providerP = context.Provider as IDELETEPublicPriceProvider;
-            _providerS = context.Provider as IDELETEPublicPricesProvider;
-            _providerA = context.Provider as IDELETEPublicAssetPricesProvider;
 
             if (context.Provider == null)
                 throw new ArgumentException($"{nameof(context.Provider)} is null in {GetType()}");
-
-            _hasPrices = _providerS != null;
-            _hasPriceA = _providerA != null;
-            _hasPrice = _providerP != null || _providerA != null;
 
             Network = Provider.Network;
             _messenger = context.Aggregator.M;
@@ -99,46 +86,20 @@ namespace Prime.Core
             if (_isDisposed)
                 return;
 
-            var hasresult = ((_hasPrices && _pairRequests.Count>1) || !_hasPrice) ? RequestMultipleEntries() : RequestSingleEntries();
+            var hasresult = RequestApi();
 
             if (hasresult && !_isDisposed)
                 _messenger.Send(new LatestPricesUpdatedMessage());
         }
 
-        private bool RequestSingleEntries()
-        {
-            var hasresult = false;
-
-            foreach (var pair in _pairRequests)
-            {
-                if (_isDisposed)
-                    return false;
-
-                var r = _hasPriceA ? ApiCoordinator.GetPrice(_providerA, new PublicPriceContext(pair)) : ApiCoordinator.GetPrice(_providerP, new PublicPriceContext(pair));
-
-                if (r.IsNull)
-                {
-                    IsFailing = true;
-                    continue;
-                }
-
-                if (_isDisposed)
-                    return false;
-
-                hasresult = true;
-                SendResults(r.Response);
-            }
-            return hasresult;
-        }
-        
-        private bool RequestMultipleEntries()
-        {
+        private bool RequestApi()
+        { 
             var hasresult = false;
 
             if (_isDisposed)
                 return false;
 
-            var r = ApiCoordinator.GetPrices(_providerS, new PublicPricesContext(_pairRequests));
+            var r = ApiCoordinator.GetPrices(Provider, new PublicPricesContext(_pairRequests));
             if (r.IsNull)
             {
                 IsFailing = true;

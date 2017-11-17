@@ -13,9 +13,15 @@ namespace Prime.Common
             Pairs = pairs;
         }
 
+        public bool RequestVolume { get; set; }
+
+        public bool RequestStatistics { get; set; }
+
         public AssetPair Pair => Pairs.FirstOrDefault();
 
         public virtual bool UseBulkContext => true;
+
+        public bool IsMultiple => Pairs.Count > 1;
 
         public bool ForSingleMethod => !UseBulkContext;
     }

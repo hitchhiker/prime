@@ -57,7 +57,7 @@ namespace Prime.Common
                         break;
                     }
 
-                if (ApiCoordinator.GetPrice(i, ctx).IsNull)
+                if (ApiCoordinator.GetPrices(i, ctx).IsNull)
                     continue;
 
                 net = i.Network;

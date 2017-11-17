@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
@@ -7,35 +8,48 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPricingProvider provider, PublicPriceContext context)
-        {
-            switch (provider)
-            {
-                case IDELETEPublicPriceProvider ip:
-                    return GetPriceAsync(ip, context);
-                case IDELETEPublicAssetPricesProvider ips:
-                    return GetPriceAsync(ips, context);
-            }
-            return Task.FromResult(default(ApiResponse<MarketPrice>));
-        }
 
-        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPricingProvider provider, PublicPricesContext context)
+        public static async Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPricingProvider provider, PublicPricesContext context)
         {
-            switch (provider)
+            //if (context.IsMultiple && context.ForSingleMethod)
+            //    throw new ArgumentException($"Failed as '{nameof(context.ForSingleMethod)}' is set on '{context.GetType().Name}' but this context requires '{nameof(context.IsMultiple)}'");
+
+            var features = provider.PricingFeatures;
+
+            if (!features.HasBulk && !features.HasSingle)
+                throw new Exception($"Fatal: The provider {provider.Title} supports neither {nameof(features.HasBulk)} nor {nameof(features.HasSingle)}.");
+
+            var tryBulk = context.IsMultiple && !context.ForSingleMethod;
+
+            var channel = tryBulk ? features.Bulk : (PricingFeaturesItemBase)features.Single;
+
+            channel = channel ?? (tryBulk ? features.Single : (PricingFeaturesItemBase)features.Bulk);
+
+            if (context.RequestStatistics && !channel.CanSatistics)
+                throw new ArgumentException($"This provider {provider.Title} cannot provide statistics for '{channel.GetType().Name}'");
+
+            if (context.RequestVolume && !channel.CanVolume)
+                throw new ArgumentException($"This provider {provider.Title} cannot provide volume data for '{channel.GetType().Name}'");
+            
+            switch (channel)
             {
-                case IDELETEPublicPricesProvider ips:
-                    return GetPricesAsync(ips, context);
-                case IDELETEPublicPriceProvider ip:
+                case PricingBulkFeatures bulk:
+                    return await ApiHelpers.WrapExceptionAsync(() => provider.GetPricesAsync(context), nameof(GetPrices) + " [Bulk]", provider, context).ConfigureAwait(false);
+                case PricingSingleFeatures single:
                     var r = new MarketPricesResult();
-                    foreach (var i in context.Pairs)
+                    foreach (var pair in context.Pairs)
                     {
-                        var rq = GetPrice(ip, new PublicPriceContext(i));
-                        if (!rq.IsNull)
-                            r.MarketPrices.Add(rq.Response);
+                        var ctx = new PublicPriceContext(pair);
+                        var rq = await ApiHelpers.WrapExceptionAsync(() => provider.GetPricesAsync(ctx), nameof(GetPrices) + " [Bulk Sim]", provider, context).ConfigureAwait(false);
+                        if (!rq.IsNull && rq.Response.FirstPrice != null)
+                            r.MarketPrices.Add(rq.Response.FirstPrice);
+                        else
+                            r.MissedPairs.Add(pair);
                     }
-                    return Task.FromResult(new ApiResponse<MarketPricesResult>(r));
+                    return new ApiResponse<MarketPricesResult>(r);
             }
-            return Task.FromResult(default(ApiResponse<MarketPricesResult>));
+
+            return default;
         }
 
         public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiPrivateTestContext context)
@@ -50,30 +64,6 @@ namespace Prime.Common
             return AssetPairCache.I.TryAsync(provider, () => ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs), provider, context));
         }
 
-        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IDELETEPublicPriceProvider provider, PublicPriceContext context)
-        {
-            return ApiHelpers.WrapExceptionAsync(()=> provider.GetPriceAsync(context), nameof(GetPrice), provider, context);
-        }
-
-        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IDELETEPublicAssetPricesProvider provider, PublicPriceContext context)
-        {
-            return ApiHelpers.WrapExceptionAsync(async delegate
-            {
-                var r = await provider.GetAssetPricesAsync(context).ConfigureAwait(false);
-                return r.MarketPrices.FirstOrDefault();
-            }, "GetPrices (x1)", provider, context);
-        }
-
-        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IDELETEPublicPricesProvider provider, PublicPricesContext context)
-        {
-            return ApiHelpers.WrapExceptionAsync(() => provider.GetPricesAsync(context), nameof(GetPrices), provider, context);
-        }
-
-        public static Task<ApiResponse<MarketPricesResult>> GetAssetPricesAsync(IDELETEPublicAssetPricesProvider provider, PublicAssetPricesContext context)
-        {
-            return ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPricesAsync(context), nameof(GetAssetPrices), provider, context);
-        }
-        
         public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetOhlcAsync(context), nameof(GetOhlc), provider, context);
