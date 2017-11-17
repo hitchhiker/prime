@@ -92,7 +92,8 @@ namespace Prime.Plugins.Services.Poloniex
 
                 prices.MarketPrices.Add(new MarketPrice(Network, pair, 1/v.last)
                 {
-                    PriceStatistics = new PriceStatistics(pair.Asset2, v.baseVolume, v.quoteVolume, v.lowestAsk, v.highestBid, v.low24hr, v.high24hr)
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, v.lowestAsk, v.highestBid, v.low24hr, v.high24hr),
+                    Volume = new NetworkPairVolume(Network, pair, v.baseVolume, v.quoteVolume)
                 });
             }
 

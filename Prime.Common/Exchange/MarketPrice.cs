@@ -35,6 +35,9 @@ namespace Prime.Common
 
         [Bson]
         public PriceStatistics PriceStatistics { get; set; }
+        
+        [Bson]
+        public NetworkPairVolume Volume { get; set; }
 
         public Asset QuoteAsset => Pair.Asset1;
 

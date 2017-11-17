@@ -75,7 +75,8 @@ namespace Prime.Plugins.Services.Gdax
 
             return new MarketPrice(Network, context.Pair, r.price)
             {
-                PriceStatistics = new PriceStatistics(context.Pair.Asset2, r.volume, null, r.ask, r.bid, null, null)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, null, null),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
         }
 

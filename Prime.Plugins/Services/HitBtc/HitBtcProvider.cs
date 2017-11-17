@@ -49,7 +49,8 @@ namespace Prime.Plugins.Services.HitBtc
 
             return new MarketPrice(Network, context.Pair, r.last.Value)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, r.volume_quote, r.ask, r.bid, r.low, r.high)
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low, r.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, (decimal?) r.volume, r.volume_quote)
             };
         }
 

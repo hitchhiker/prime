@@ -77,7 +77,8 @@ namespace Prime.Plugins.Services.BitStamp
 
             return new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, r.ask, r.bid, r.low, r.high)
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low, r.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
         }
 

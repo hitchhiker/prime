@@ -79,7 +79,8 @@ namespace Prime.Plugins.Services.Bithumb
 
             var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, data.volume_1day, null, data.sell_price, data.buy_price, data.min_price, data.max_price)
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, data.sell_price, data.buy_price, data.min_price, data.max_price),
+                Volume = new NetworkPairVolume(Network, context.Pair, data.volume_1day)
             };
 
             return latestPrice;

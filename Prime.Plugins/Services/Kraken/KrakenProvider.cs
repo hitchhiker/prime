@@ -122,7 +122,8 @@ namespace Prime.Plugins.Services.Kraken
 
                 prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.c[0])
                 {
-                    PriceStatistics = new PriceStatistics(pair.Asset2, ticker.v[1], null, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1])
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1]),
+                    Volume = new NetworkPairVolume(Network, pair, ticker.v[1])
                 });
             }
 
