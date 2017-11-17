@@ -59,7 +59,8 @@ namespace Prime.Plugins.Services.Bitso
 
             return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
             {
-                PriceStatistics = new PriceStatistics(context.Pair.Asset2, null, r.payload.volume, r.payload.ask, r.payload.bid, r.payload.low, r.payload.high)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid, r.payload.low, r.payload.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, null, r.payload.volume)
             };
         }
 

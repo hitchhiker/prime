@@ -63,7 +63,8 @@ namespace Prime.Plugins.Services.ItBit
 
             return new MarketPrice(Network, context.Pair, r.lastPrice)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume24h, null, r.ask, r.bid, r.low24h, r.high24h)
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low24h, r.high24h),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume24h)
             };
         }
 

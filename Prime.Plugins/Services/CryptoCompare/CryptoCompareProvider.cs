@@ -35,7 +35,7 @@ namespace plugins
 
                 var vb = new Money((decimal) i.volume24h, pair.Asset1);
                 var vq = new Money((decimal) i.volume24hTo, pair.Asset2);
-                var v = new VolumeDataExchange(Networks.I.Get(i.exchange), pair, vb, vq);
+                var v = new NetworkPairVolume(Networks.I.Get(i.exchange), pair, vb, vq);
                 vols.Add(v);
             }
 

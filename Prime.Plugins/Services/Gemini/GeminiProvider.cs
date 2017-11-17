@@ -96,9 +96,10 @@ namespace Prime.Plugins.Services.Gemini
 
             return new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset,
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, null, null),
+                Volume = new NetworkPairVolume(Network, context.Pair,
                     baseVolumes.Any() ? baseVolumes.First() : (decimal?) null,
-                    quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null, r.ask, r.bid, null, null)
+                    quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null)
             };
         }
     }

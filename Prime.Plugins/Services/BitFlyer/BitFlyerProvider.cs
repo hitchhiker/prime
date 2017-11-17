@@ -57,7 +57,8 @@ namespace Prime.Plugins.Services.BitFlyer
 
             return new MarketPrice(Network, context.Pair, r.ltp)
             {
-                PriceStatistics = new PriceStatistics(context.Pair.Asset2, r.volume, null, r.best_ask, r.best_bid, null, null)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.best_ask, r.best_bid, null, null),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
         }
 

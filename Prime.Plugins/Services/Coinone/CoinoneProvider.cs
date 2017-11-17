@@ -126,7 +126,8 @@ namespace Prime.Plugins.Services.Coinone
 
             return new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, r.volume, null, null, null, r.low, r.high)
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, null, null, r.low, r.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
         }
 

@@ -5,7 +5,7 @@ using LiteDB;
 
 namespace Prime.Common
 {
-    public class VolumeDataExchanges : ModelBase, IReadOnlyList<VolumeDataExchange>, ISerialiseAsObject
+    public class VolumeDataExchanges : ModelBase, IReadOnlyList<NetworkPairVolume>, ISerialiseAsObject
     {
         private VolumeDataExchanges() { }
 
@@ -21,7 +21,7 @@ namespace Prime.Common
         public AssetPair Pair { get; private set; }
 
         [Bson]
-        private List<VolumeDataExchange> Data { get; set; } = new List<VolumeDataExchange>();
+        private List<NetworkPairVolume> Data { get; set; } = new List<NetworkPairVolume>();
 
         public void AddRange(VolumeDataExchanges data)
         {
@@ -29,18 +29,18 @@ namespace Prime.Common
                 Add(d);
         }
 
-        public void Add(VolumeDataExchange d)
+        public void Add(NetworkPairVolume d)
         {
             if (d.Network == null)
                 return;
 
             if (!d.Pair.EqualsOrReversed(Pair))
-                throw new ArgumentException($"Cannot add {nameof(VolumeDataExchange)} object to {nameof(VolumeDataExchanges)} as it has the wrong {nameof(AssetPair)} '{d.Pair}'");
+                throw new ArgumentException($"Cannot add {nameof(NetworkPairVolume)} object to {nameof(VolumeDataExchanges)} as it has the wrong {nameof(AssetPair)} '{d.Pair}'");
 
             Data.Add(d.Pair.Reversed.Id == Pair.Id ? d.Reversed() : d);
         }
 
-        public IEnumerator<VolumeDataExchange> GetEnumerator()
+        public IEnumerator<NetworkPairVolume> GetEnumerator()
         {
             return Data.GetEnumerator();
         }
@@ -52,6 +52,6 @@ namespace Prime.Common
 
         public int Count => Data.Count;
 
-        public VolumeDataExchange this[int index] => Data[index];
+        public NetworkPairVolume this[int index] => Data[index];
     }
 }

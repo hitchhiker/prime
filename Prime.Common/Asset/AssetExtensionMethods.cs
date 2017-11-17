@@ -113,6 +113,9 @@ namespace Prime.Common
 
         public static decimal Fx(this IEnumerable<MarketPrice> prices, AssetPair pair)
         {
+            if (pair.Asset1.Id == pair.Asset2.Id)
+                return 1;
+
             var m = prices.FirstOrDefault(x => x.Pair.Id == pair.Id)?.Price;
             if (m != null)
                 return m.Value.ToDecimalValue();
@@ -126,6 +129,9 @@ namespace Prime.Common
 
         public static Money FxConvert(this IEnumerable<MarketPrice> prices, Money money, Asset quote)
         {
+            if (money.Asset.Id == quote.Id)
+                return money;
+
             var fx = prices.Fx(new AssetPair(money.Asset, quote));
             if (fx == 0)
                 return Money.Zero;

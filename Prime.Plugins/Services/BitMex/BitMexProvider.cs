@@ -125,7 +125,8 @@ namespace Prime.Plugins.Services.BitMex
 
             return new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value)
             {
-                PriceStatistics = new PriceStatistics(context.QuoteAsset, rPrice.volume24h, null, rPrice.askPrice, rPrice.bidPrice, rPrice.lowPrice, rPrice.highPrice)
+                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, null, null, null, null),
+                Volume = new NetworkPairVolume(Network, context.Pair, rPrice.volume24h)
             };
         }
 
