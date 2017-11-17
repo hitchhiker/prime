@@ -13,7 +13,7 @@ namespace Prime.Common
             {
                 case IDELETEPublicPriceProvider ip:
                     return GetPriceAsync(ip, context);
-                case IPublicAssetPricesProvider ips:
+                case IDELETEPublicAssetPricesProvider ips:
                     return GetPriceAsync(ips, context);
             }
             return Task.FromResult(default(ApiResponse<MarketPrice>));
@@ -55,7 +55,7 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(()=> provider.GetPriceAsync(context), nameof(GetPrice), provider, context);
         }
 
-        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicAssetPricesProvider provider, PublicPriceContext context)
+        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IDELETEPublicAssetPricesProvider provider, PublicPriceContext context)
         {
             return ApiHelpers.WrapExceptionAsync(async delegate
             {
@@ -69,7 +69,7 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(() => provider.GetPricesAsync(context), nameof(GetPrices), provider, context);
         }
 
-        public static Task<ApiResponse<MarketPricesResult>> GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static Task<ApiResponse<MarketPricesResult>> GetAssetPricesAsync(IDELETEPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPricesAsync(context), nameof(GetAssetPrices), provider, context);
         }
