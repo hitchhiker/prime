@@ -17,7 +17,7 @@ using AssetPair = Prime.Common.AssetPair;
 namespace Prime.Plugins.Services.Kraken
 {
 
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPricesProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
@@ -81,21 +81,12 @@ namespace Prime.Plugins.Services.Kraken
             return r != null;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            var r = await GetPricesAsync(context).ConfigureAwait(false);
+            Bulk = new PricingBulkFeatures() { CanSatistics = true, CanVolume = true },
+        };
 
-            var price = r.MarketPrices.FirstOrDefault(x => x.Pair.Equals(context.Pair));
-            if (price == null)
-                throw new NoAssetPairException(context.Pair, this);
-
-            return price;
-        }
-
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
-        }
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {

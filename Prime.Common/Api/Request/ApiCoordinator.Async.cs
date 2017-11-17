@@ -7,11 +7,11 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context)
+        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPricingProvider provider, PublicPriceContext context)
         {
             switch (provider)
             {
-                case IPublicPriceProvider ip:
+                case IDELETEPublicPriceProvider ip:
                     return GetPriceAsync(ip, context);
                 case IPublicAssetPricesProvider ips:
                     return GetPriceAsync(ips, context);
@@ -19,13 +19,13 @@ namespace Prime.Common
             return Task.FromResult(default(ApiResponse<MarketPrice>));
         }
 
-        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPriceSuper provider, PublicPricesContext context)
+        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPricingProvider provider, PublicPricesContext context)
         {
             switch (provider)
             {
-                case IPublicPricesProvider ips:
+                case IDELETEPublicPricesProvider ips:
                     return GetPricesAsync(ips, context);
-                case IPublicPriceProvider ip:
+                case IDELETEPublicPriceProvider ip:
                     var r = new MarketPricesResult();
                     foreach (var i in context.Pairs)
                     {
@@ -50,7 +50,7 @@ namespace Prime.Common
             return AssetPairCache.I.TryAsync(provider, () => ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs), provider, context));
         }
 
-        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IPublicPriceProvider provider, PublicPriceContext context)
+        public static Task<ApiResponse<MarketPrice>> GetPriceAsync(IDELETEPublicPriceProvider provider, PublicPriceContext context)
         {
             return ApiHelpers.WrapExceptionAsync(()=> provider.GetPriceAsync(context), nameof(GetPrice), provider, context);
         }
@@ -64,7 +64,7 @@ namespace Prime.Common
             }, "GetPrices (x1)", provider, context);
         }
 
-        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
+        public static Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IDELETEPublicPricesProvider provider, PublicPricesContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetPricesAsync(context), nameof(GetPrices), provider, context);
         }

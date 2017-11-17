@@ -86,12 +86,12 @@ namespace Prime.Core.Prices.Latest
             }
         }
 
-        private List<IGrouping<IPublicPriceSuper, AssetPairNetworks>> GetPairsByProviderGrouped(List<AssetPairNetworks> requests)
+        private List<IGrouping<IPublicPricingProvider, AssetPairNetworks>> GetPairsByProviderGrouped(List<AssetPairNetworks> requests)
         {
-            return requests.GroupBy(x => x.Provider<IPublicPriceSuper>()).ToList();
+            return requests.GroupBy(x => x.Provider<IPublicPricingProvider>()).ToList();
         }
 
-        private LatestPriceProvider CreateProvider(IPublicPriceSuper provider)
+        private LatestPriceProvider CreateProvider(IPublicPricingProvider provider)
         {
             lock (_commonLock)
             {

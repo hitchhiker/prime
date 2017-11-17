@@ -12,8 +12,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.QuadrigaCX
 {
-    public class QuadrigaCxProvider :
-        IPublicPriceProvider, IAssetPairsProvider
+    public class QuadrigaCxProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string QuadrigaCxApiVersion = "v2";
         private const string QuadrigaCxApiUrl = "https://api.quadrigacx.com/" + QuadrigaCxApiVersion;
@@ -52,18 +51,9 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var ctx = new PublicPriceContext("btc_cad".ToAssetPairRaw());
-            var r = await GetPriceAsync(ctx).ConfigureAwait(false);
+            var r = await GetPricesAsync(ctx).ConfigureAwait(false);
 
             return r != null;
-        }
-
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_");
-            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-
-            return new MarketPrice(Network, context.Pair, r.last);
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -76,8 +66,16 @@ namespace Prime.Plugins.Services.QuadrigaCX
             return null;
         }
 
-        public bool DoesMultiplePairs => false; // TODO: confirm
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public bool PricesAsAssetQuotes => false; // TODO: confirm
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this, "_");
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last));
+        }
     }
 }

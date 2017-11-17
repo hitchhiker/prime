@@ -243,7 +243,7 @@ namespace TestConsole
             try
             {
                 var c = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
-                Console.WriteLine(c.Price.ToString());
+                Console.WriteLine(c.FirstPrice.ToString());
             }
             catch (Exception e)
             {

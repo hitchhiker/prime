@@ -13,10 +13,10 @@ namespace Prime.Core
     internal sealed class LatestPriceProvider : IDisposable
     {
         private readonly LatestPriceProviderContext _context;
-        public readonly IPublicPriceSuper Provider;
-        private readonly IPublicPriceProvider _providerP;
-        private readonly IPublicPricesProvider _providerS;
-        private readonly IPublicAssetPricesProvider _providerA;
+        public readonly IPublicPricingProvider Provider;
+        private readonly IDELETEPublicPriceProvider _providerP;
+        private readonly IDELETEPublicPricesProvider _providerS;
+        private readonly IDELETEPublicAssetPricesProvider _providerA;
         private readonly bool _hasPrices;
         private readonly bool _hasPrice;
         private readonly bool _hasPriceA;
@@ -31,9 +31,9 @@ namespace Prime.Core
         {
             _context = context;
             Provider = context.Provider;
-            _providerP = context.Provider as IPublicPriceProvider;
-            _providerS = context.Provider as IPublicPricesProvider;
-            _providerA = context.Provider as IPublicAssetPricesProvider;
+            _providerP = context.Provider as IDELETEPublicPriceProvider;
+            _providerS = context.Provider as IDELETEPublicPricesProvider;
+            _providerA = context.Provider as IDELETEPublicAssetPricesProvider;
 
             if (context.Provider == null)
                 throw new ArgumentException($"{nameof(context.Provider)} is null in {GetType()}");

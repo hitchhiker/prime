@@ -48,7 +48,7 @@ namespace Prime.Tests.Providers
         public virtual async Task TestGetPriceAsync() { }
         public async Task TestGetPriceAsync(PublicPriceContext context, bool lessThan1)
         {
-            var p = IsType<IPublicPriceSuper>();
+            var p = IsType<IPublicPricingProvider>();
             if (p.Success)
                 await GetPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
         }
@@ -56,7 +56,7 @@ namespace Prime.Tests.Providers
         public virtual async Task TestGetAssetPricesAsync() { }
         public virtual async Task TestGetAssetPricesAsync(PublicAssetPricesContext context)
         {
-            var p = IsType<IPublicPricesProvider>();
+            var p = IsType<IDELETEPublicPricesProvider>();
             if (p.Success)
                 await GetAssetPricesAsync(p.Provider, context).ConfigureAwait(false);
         }
@@ -64,7 +64,7 @@ namespace Prime.Tests.Providers
         public virtual async Task TestGetPricesAsync() { }
         public virtual async Task TestGetPricesAsync(PublicPricesContext context)
         {
-            var p = IsType<IPublicPricesProvider>();
+            var p = IsType<IDELETEPublicPricesProvider>();
             if (p.Success)
                 await GetPricesAsync(p.Provider, context).ConfigureAwait(false);
         }
@@ -234,7 +234,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPriceAsync(IPublicPriceSuper provider, PublicPriceContext context, bool lessThan1)
+        private async Task GetPriceAsync(IPublicPricingProvider provider, PublicPriceContext context, bool lessThan1)
         {
             if (context == null)
                 return;
@@ -243,11 +243,11 @@ namespace Prime.Tests.Providers
 
             try
             {
-                if (provider is IPublicPriceProvider ipp)
+                if (provider is IDELETEPublicPriceProvider ipp)
                 {
                     c = await ipp.GetPriceAsync(context).ConfigureAwait(false);
 
-                    if (provider is IPublicPriceStatistics ipps)
+                    if (provider is IDELETEPublicPriceStatistics ipps)
                     {
                         // Only for single asset is supported
 
@@ -258,11 +258,11 @@ namespace Prime.Tests.Providers
                         Trace.WriteLine($"Ask: {(c.PriceStatistics.HasLowestAsk ? c.PriceStatistics.LowestAsk.Display : "-")}");
                         Trace.WriteLine($"Low: {(c.PriceStatistics.HasPrice24Low ? c.PriceStatistics.Price24Low.Display : "-")}");
                         Trace.WriteLine($"High: {(c.PriceStatistics.HasPrice24High ? c.PriceStatistics.Price24High.Display : "-")}");
-                        Trace.WriteLine($"Volume 24h: {(c.PriceStatistics.HasVolume24 ? c.PriceStatistics.Volume24.ToString(CultureInfo.InvariantCulture) : "-")}");
-                        Trace.WriteLine($"Quote volume 24h: {(c.PriceStatistics.HasVolume24Quote ? c.PriceStatistics.Volume24Quote.ToString(CultureInfo.InvariantCulture) : "-" )}\n");
+                        Trace.WriteLine($"Volume 24h: {(c.Volume.HasVolume24Base ? c.Volume.HasVolume24Base.ToString(CultureInfo.InvariantCulture) : "-")}");
+                        Trace.WriteLine($"Quote volume 24h: {(c.Volume.HasVolume24Quote ? c.Volume.Volume24Quote.ToString(CultureInfo.InvariantCulture) : "-" )}\n");
                     }
                 }
-                else if (provider is IPublicPricesProvider ips)
+                else if (provider is IDELETEPublicPricesProvider ips)
                 {
                     var r = await ips.GetPricesAsync(context).ConfigureAwait(false);
                     c = r?.MarketPrices?.FirstOrDefault();
@@ -285,7 +285,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetAssetPricesAsync(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        private async Task GetAssetPricesAsync(IDELETEPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             if (context == null)
                 return;
@@ -346,7 +346,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPricesAsync(IPublicPricesProvider provider, PublicPricesContext context)
+        private async Task GetPricesAsync(IDELETEPublicPricesProvider provider, PublicPricesContext context)
         {
             if (context == null)
                 return;

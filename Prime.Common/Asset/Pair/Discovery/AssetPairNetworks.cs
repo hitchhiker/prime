@@ -40,11 +40,11 @@ namespace Prime.Common
         }
 
         private readonly object _confirmedLock = new object();
-        private readonly List<Tuple<IPublicPriceSuper, AssetPair>> _confirmed = new List<Tuple<IPublicPriceSuper, AssetPair>>();
+        private readonly List<Tuple<IPublicPricingProvider, AssetPair>> _confirmed = new List<Tuple<IPublicPricingProvider, AssetPair>>();
 
         public Network NetworkConfirmedPricing(AssetPair pair)
         {
-            var provs = Providers.OfList<IPublicPriceSuper>().OrderByVolume(pair).Where(x => x.IsDirect);
+            var provs = Providers.OfList<IPublicPricingProvider>().OrderByVolume(pair).Where(x => x.IsDirect);
             var ctx = new PublicPriceContext(pair);
             Network net = null;
 
@@ -63,7 +63,7 @@ namespace Prime.Common
                 net = i.Network;
 
                 lock (_confirmedLock)
-                    _confirmed.Add(new Tuple<IPublicPriceSuper, AssetPair>(i, pair));
+                    _confirmed.Add(new Tuple<IPublicPricingProvider, AssetPair>(i, pair));
                 break;
             }
 

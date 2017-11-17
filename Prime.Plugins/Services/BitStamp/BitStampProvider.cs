@@ -12,7 +12,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {
-    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IPublicPriceStatistics, IAssetPairsProvider, IPublicPriceProvider
+    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -66,20 +66,26 @@ namespace Prime.Plugins.Services.BitStamp
             return r != null;
         }
 
-        public bool AllowMultiplePairs { get; set; }
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
+            Bulk = new PricingBulkFeatures()
+        };
 
-        public bool AllowMultipleAssets { get; set; }
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair, r.last)
+            var price = new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low, r.high),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
+
+            return new MarketPricesResult(price);
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

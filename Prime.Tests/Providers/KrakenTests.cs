@@ -22,7 +22,7 @@ namespace Prime.Tests.Providers
         {
             var pairs = await ((IAssetPairsProvider) Provider).GetAssetPairsAsync(new NetworkProviderContext()).ConfigureAwait(false);
 
-            var prices = await ((IPublicPricesProvider) Provider).GetPricesAsync(new PublicPricesContext(pairs.ToList()))
+            var prices = await ((IDELETEPublicPricesProvider) Provider).GetPricesAsync(new PublicPricesContext(pairs.ToList()))
                 .ConfigureAwait(false);
 
             Assert.IsTrue(!prices.MissedPairs.Any());

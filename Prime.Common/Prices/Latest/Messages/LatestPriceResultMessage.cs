@@ -13,9 +13,9 @@ namespace Prime.Common.Exchange.Rates
         public AssetPair Pair => MarketPrice.Pair;
         public Money Price => MarketPrice.Price;
 
-        public readonly IPublicPriceSuper Provider;
+        public readonly IPublicPricingProvider Provider;
         public readonly MarketPrice MarketPrice;
-        public readonly IPublicPriceSuper ProviderConversion;
+        public readonly IPublicPricingProvider ProviderConversion;
 
         public Asset AssetIntermediary { get; }
         public MarketPrice MarketPrice1 { get; }
@@ -23,14 +23,14 @@ namespace Prime.Common.Exchange.Rates
 
         public bool IsConverted => ProviderConversion != null;
 
-        public LatestPriceResultMessage(IPublicPriceSuper provider, MarketPrice marketPrice)
+        public LatestPriceResultMessage(IPublicPricingProvider provider, MarketPrice marketPrice)
         {
             UtcCreated = marketPrice.UtcCreated;
             Provider = provider;
             MarketPrice = marketPrice;
         }
 
-        public LatestPriceResultMessage(MarketPrice price, Asset intermediary, MarketPrice price1, MarketPrice price2, IPublicPriceSuper provider, IPublicPriceSuper providerConvert)
+        public LatestPriceResultMessage(MarketPrice price, Asset intermediary, MarketPrice price1, MarketPrice price2, IPublicPricingProvider provider, IPublicPricingProvider providerConvert)
         {
             UtcCreated = price1.UtcCreated > price2.UtcCreated ? price2.UtcCreated : price1.UtcCreated;
             Provider = provider;

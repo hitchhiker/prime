@@ -17,7 +17,7 @@ namespace Prime.Tests
         {
             var ctx = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
 
-            foreach (var provider in Networks.I.Providers.OfType<IPublicPriceProvider>())
+            foreach (var provider in Networks.I.Providers.OfType<IDELETEPublicPriceProvider>())
             {
                 try
                 {

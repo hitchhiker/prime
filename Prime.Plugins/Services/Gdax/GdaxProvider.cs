@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Gdax
 {
-    public class GdaxProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
+    public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider,IDELETEPublicPriceStatistics
     {
         private const string GdaxApiUrl = "https://api.gdax.com";
 
@@ -66,18 +66,21 @@ namespace Prime.Plugins.Services.Gdax
             return pairs;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures {Single = new PricingSingleFeatures{CanSatistics = true, CanVolume = true}};
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this, "-");
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair, r.price)
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, null, null),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
-            };
+            });
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

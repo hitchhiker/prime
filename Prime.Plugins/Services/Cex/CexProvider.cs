@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cex
 {
-    public class CexProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IAssetPairVolumeProvider
+    public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
 
@@ -59,23 +59,24 @@ namespace Prime.Plugins.Services.Cex
             return pairs;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, true);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "/");
 
             var r = await api.GetLastPriceAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair, r.lprice);
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lprice));
         }
-
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
-        }
-
+        
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLastPricesAsync().ConfigureAwait(false);
             CheckResponseError(r);

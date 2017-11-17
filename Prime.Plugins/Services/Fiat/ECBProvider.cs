@@ -11,21 +11,17 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Fiat
 {
-    public class EcbProvider : IPublicPricesProvider
+    public class EcbProvider : IPublicPricingProvider
     {
         private static readonly ObjectId IdHash = "prime:ECB:PROVIDER".GetObjectIdHashCode();
-        private static readonly Network _network = Networks.I.Get("ECB (Fiat)");
-        private static readonly IRateLimiter _limiter = new NoRateLimits();
+        private static readonly Network NetworkStatic = Networks.I.Get("ECB (Fiat)");
+        private static readonly IRateLimiter Limiter = new NoRateLimits();
         private static readonly string _title = "European Central Bank";
 
         public ObjectId Id => IdHash;
-        public IRateLimiter RateLimiter => _limiter;
+        public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
 
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            throw new NotImplementedException();
-        }
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             return Task.Run(() => true);
@@ -36,7 +32,7 @@ namespace Prime.Plugins.Services.Fiat
             return null;
         }
 
-        public Network Network => _network;
+        public Network Network => NetworkStatic;
         public bool Disabled => false;
         public int Priority => 1;
         public string AggregatorName => null;
@@ -114,6 +110,9 @@ namespace Prime.Plugins.Services.Fiat
                 return pairs;
             }
         }
+
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {

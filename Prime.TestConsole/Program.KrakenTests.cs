@@ -44,9 +44,9 @@ namespace Prime.TestConsole
 
                 try
                 {
-                    var price = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
+                    var price = AsyncContext.Run(() => provider.GetPricesAsync(ctx));
 
-                    Console.WriteLine($"Latest {ctx.Pair} value is {price.Price}");
+                    Console.WriteLine($"Latest {ctx.Pair} value is {price.FirstPrice.Price}");
                 }
                 catch (Exception e)
                 {

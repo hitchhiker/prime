@@ -14,7 +14,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider
+    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
@@ -42,6 +42,7 @@ namespace Prime.Plugins.Services.Coinbase
         
         public bool CanGenerateDepositAddress => true;
         public bool CanPeekDepositAddress => true;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public CoinbaseProvider()
         {
@@ -57,9 +58,10 @@ namespace Prime.Plugins.Services.Coinbase
             return r != null;
         }
 
-        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "-");
@@ -67,8 +69,9 @@ namespace Prime.Plugins.Services.Coinbase
 
             var price = new MarketPrice(Network, context.Pair, r.data.amount);
 
-            return price;
+            return new MarketPricesResult(price);
         }
+
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {

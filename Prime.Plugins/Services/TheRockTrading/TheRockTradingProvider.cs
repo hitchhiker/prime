@@ -8,8 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.TheRockTrading
 {
-    public class TheRockTradingProvider :
-        IPublicPriceProvider, IAssetPairsProvider
+    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string TheRockTradingApiVersion = "v1";
         private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
@@ -45,16 +44,7 @@ namespace Prime.Plugins.Services.TheRockTrading
         {
             return Task.Run(() => true);
         }
-
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
-            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-
-            return new MarketPrice(Network, context.Pair, r.last);
-        }
-
+        
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -80,8 +70,16 @@ namespace Prime.Plugins.Services.TheRockTrading
             return null;
         }
 
-        public bool DoesMultiplePairs => false; // TODO: confirm
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public bool PricesAsAssetQuotes => false; // TODO: confirm
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this, "");
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last));
+        }
     }
 }

@@ -1,8 +1,10 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IPublicPriceProvider : IPublicPriceSuper
+    [Obsolete]
+    public interface IDELETEPublicPriceProvider : IPublicPricingProvider
     {
         Task<MarketPrice> GetPriceAsync(PublicPriceContext context);
     }

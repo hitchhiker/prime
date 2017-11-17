@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bitso
 {
-    public class BitsoProvider : IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
+    public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string BitsoApiVersion = "v3";
         private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
@@ -48,7 +48,10 @@ namespace Prime.Plugins.Services.Bitso
             return r.Count > 0;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "_").ToLower();
@@ -56,11 +59,12 @@ namespace Prime.Plugins.Services.Bitso
 
             CheckResponseErrors(r);
 
-            return new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
+            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid, r.payload.low, r.payload.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, null, r.payload.volume)
             };
+            return new MarketPricesResult(price);
         }
 
         private void CheckResponseErrors<T>(BitsoSchema.BaseResponse<T> response)

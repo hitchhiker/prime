@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
-    public class BithumbProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
+    public class BithumbProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
@@ -63,36 +63,19 @@ namespace Prime.Plugins.Services.Bithumb
             return pairs;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            var api = ApiProvider.GetApi(context);
-            var currency = context.Pair.Asset1.ToRemoteCode(this);
+            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
+            Bulk = new PricingBulkFeatures()
+        };
 
-            var r = await api.GetTickerAsync(currency).ConfigureAwait(false);
-
-            var krwAsset = Asset.Krw;
-
-            if (!context.Pair.Asset2.Equals(krwAsset))
-                throw new NoAssetPairException(context.Pair, this);
-
-            var data = r.data;
-
-            var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
-            {
-                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, data.sell_price, data.buy_price, data.min_price, data.max_price),
-                Volume = new NetworkPairVolume(Network, context.Pair, data.volume_1day)
-            };
-
-            return latestPrice;
-        }
-
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
-        }
-
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+        
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
             var r = ParseTickerResponse(rRaw);
@@ -115,6 +98,29 @@ namespace Prime.Plugins.Services.Bithumb
             }
 
             return prices;
+        }
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var currency = context.Pair.Asset1.ToRemoteCode(this);
+
+            var r = await api.GetTickerAsync(currency).ConfigureAwait(false);
+
+            var krwAsset = Asset.Krw;
+
+            if (!context.Pair.Asset2.Equals(krwAsset))
+                throw new NoAssetPairException(context.Pair, this);
+
+            var data = r.data;
+
+            var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, data.sell_price, data.buy_price, data.min_price, data.max_price),
+                Volume = new NetworkPairVolume(Network, context.Pair, data.volume_1day)
+            };
+
+            return new MarketPricesResult(latestPrice);
         }
 
         private Dictionary<string, BithumbSchema.TickerResponse> ParseTickerResponse(BithumbSchema.TickersResponse raw)

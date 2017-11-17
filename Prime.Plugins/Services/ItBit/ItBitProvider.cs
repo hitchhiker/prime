@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.ItBit
 {
-    public class ItBitProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
+    public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
@@ -53,18 +53,27 @@ namespace Prime.Plugins.Services.ItBit
             return Task.Run(() => Pairs);
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true }
+        };
+
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair, r.lastPrice)
+            var price = new MarketPrice(Network, context.Pair, r.lastPrice)
             {
-                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low24h, r.high24h),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low24h, r.high24h),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume24h)
             };
+
+            return new MarketPricesResult(price);
         }
 
         public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)

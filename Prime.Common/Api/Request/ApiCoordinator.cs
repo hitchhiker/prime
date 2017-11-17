@@ -10,12 +10,12 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static ApiResponse<MarketPrice> GetPrice(IPublicPriceSuper provider, PublicPriceContext context)
+        public static ApiResponse<MarketPrice> GetPrice(IPublicPricingProvider provider, PublicPriceContext context)
         {
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
 
-        public static ApiResponse<MarketPricesResult> GetPrices(IPublicPriceSuper provider, PublicPricesContext context)
+        public static ApiResponse<MarketPricesResult> GetPrices(IPublicPricingProvider provider, PublicPricesContext context)
         {
             return AsyncContext.Run(() => GetPricesAsync(provider, context));
         }
@@ -25,7 +25,7 @@ namespace Prime.Common
             return AsyncContext.Run(() => TestApiAsync(provider, context));
         }
 
-        public static ApiResponse<MarketPrice> GetPrice(IPublicPriceProvider provider, PublicPriceContext context)
+        public static ApiResponse<MarketPrice> GetPrice(IDELETEPublicPriceProvider provider, PublicPriceContext context)
         {
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
@@ -35,17 +35,17 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetAssetPairsAsync(provider, context));
         }
 
-        public static ApiResponse<MarketPrice> GetPrice(IPublicAssetPricesProvider provider, PublicPriceContext context)
+        public static ApiResponse<MarketPrice> GetPrice(IDELETEPublicAssetPricesProvider provider, PublicPriceContext context)
         {
             return AsyncContext.Run(() => GetPriceAsync(provider, context));
         }
 
-        public static ApiResponse<MarketPricesResult> GetAssetPrices(IPublicAssetPricesProvider provider, PublicAssetPricesContext context)
+        public static ApiResponse<MarketPricesResult> GetAssetPrices(IDELETEPublicAssetPricesProvider provider, PublicAssetPricesContext context)
         {
             return AsyncContext.Run(() => GetAssetPricesAsync(provider, context));
         }
 
-        public static ApiResponse<MarketPricesResult> GetPrices(IPublicPricesProvider provider, PublicPricesContext context)
+        public static ApiResponse<MarketPricesResult> GetPrices(IDELETEPublicPricesProvider provider, PublicPricesContext context)
         {
             return AsyncContext.Run(() => GetPricesAsync(provider, context));
         }

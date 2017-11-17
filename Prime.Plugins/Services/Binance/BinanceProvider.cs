@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricesProvider, IAssetPairsProvider, IAssetPairVolumeProvider, IDepositProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -122,11 +122,9 @@ namespace Prime.Plugins.Services.Binance
         {
             return null;
         }
-
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
-        }
+        
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {

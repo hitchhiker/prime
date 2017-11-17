@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.CryptoCompare
 {
-    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicPricesProvider, IProxyProvider, IAssetPairsProvider
+    public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicPricingProvider, IProxyProvider, IAssetPairsProvider
     {
         public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
         public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
@@ -82,12 +82,10 @@ namespace Prime.Plugins.Services.CryptoCompare
             return d;
         }
 
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
-        }
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult>  GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = GetApi<ICryptoCompareApi>();
             var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));

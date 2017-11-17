@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public class HitBtcProvider : IBalanceProvider, IPublicPricesProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
+    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -37,7 +37,15 @@ namespace Prime.Plugins.Services.HitBtc
             return r.Count > 0;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
+            Bulk = new PricingBulkFeatures()
+        };
+
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -47,20 +55,20 @@ namespace Prime.Plugins.Services.HitBtc
             if (r.last.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new MarketPrice(Network, context.Pair, r.last.Value)
+            var price = new MarketPrice(Network, context.Pair, r.last.Value)
             {
-                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low, r.high),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, (decimal?) r.volume, r.volume_quote)
             };
-        }
 
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
+            return new MarketPricesResult(price);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAllTickersAsync().ConfigureAwait(false);
 

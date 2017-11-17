@@ -81,12 +81,6 @@ namespace plugins
 
         public override string Title => "CryptoCompare Aggregator";
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
-        {
-            var r = await base.GetAssetPricesAsync(context).ConfigureAwait(false);
-            return r.MarketPrices.FirstOrDefault();
-        }
-
         private AssetExchangeEntry Convert(CryptoCompareSchema.CoinSnapshotDataBlock r)
         {
             var n = Networks.I.FirstOrDefault(x => string.Equals(r.MARKET, x.Name, StringComparison.OrdinalIgnoreCase));

@@ -32,7 +32,7 @@ namespace Prime.Core.Prices.Latest
             if (r == null)
                 return;
 
-            if (!r.DiscoverFirst.Has<IPublicPriceSuper>())
+            if (!r.DiscoverFirst.Has<IPublicPricingProvider>())
                 return;
 
             ProcessDiscovery(_req, r.DiscoverFirst);
@@ -52,7 +52,7 @@ namespace Prime.Core.Prices.Latest
 
         private static void ProcessConverted(Request request, AssetPairNetworks networks)
         {
-            var part2 = new Request(request.Pair, networks.Network<IPublicPriceSuper>())
+            var part2 = new Request(request.Pair, networks.Network<IPublicPricingProvider>())
             {
                 IsConvertedPart1 = false,
                 IsConvertedPart2 = true

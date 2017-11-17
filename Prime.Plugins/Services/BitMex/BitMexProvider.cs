@@ -16,8 +16,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexProvider :
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider, IPublicPriceStatistics,
-        IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider,IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -110,7 +109,15 @@ namespace Prime.Plugins.Services.BitMex
             return AssetCodeConverter;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
+            Bulk = new PricingBulkFeatures()
+        };
+
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
@@ -120,20 +127,20 @@ namespace Prime.Plugins.Services.BitMex
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value)
+            var price = new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value)
             {
-                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, null, null, null, null),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, null, null),
                 Volume = new NetworkPairVolume(Network, context.Pair, rPrice.volume24h)
             };
-        }
 
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
+            return new MarketPricesResult(price);
         }
-
+        
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
 

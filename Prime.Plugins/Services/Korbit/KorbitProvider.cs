@@ -13,7 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
-    public class KorbitProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
+    public class KorbitProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
         private static readonly string _pairs = "btckrw,etckrw,ethkrw,xrpkrw";
@@ -49,15 +49,17 @@ namespace Prime.Plugins.Services.Korbit
         {
             var ctx = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
 
-            var r = await GetPriceAsync(ctx).ConfigureAwait(false);
+            var r = await GetPricesAsync(ctx).ConfigureAwait(false);
 
             return r != null;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-
             var pairCode = context.Pair.ToTicker(this, "_").ToLower();
 
             try
@@ -66,11 +68,13 @@ namespace Prime.Plugins.Services.Korbit
 
                 var sTimeStamp = r.timestamp / 1000; // r.timestamp is returned in ms.
 
-                return new MarketPrice(Network, context.Pair, r.last, sTimeStamp.ToUtcDateTime())
+                var price = new MarketPrice(Network, context.Pair, r.last, sTimeStamp.ToUtcDateTime())
                 {
-                    PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low, r.high),
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                     Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
                 };
+
+                return new MarketPricesResult(price);
             }
             catch (ApiException ex)
             {

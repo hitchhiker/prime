@@ -8,8 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinfloor
 {
-    public class CoinfloorProvider :
-        IPublicPriceProvider, IAssetPairsProvider
+    public class CoinfloorProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string CoinfloorApiUrl = "https://webapi.coinfloor.co.uk:8090/bist/";
 
@@ -47,21 +46,24 @@ namespace Prime.Plugins.Services.Coinfloor
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var ctx = new PublicPriceContext("XBT_GBP".ToAssetPairRaw());
-            var r = await GetPriceAsync(ctx).ConfigureAwait(false);
+            var r = await GetPricesAsync(ctx).ConfigureAwait(false);
 
             return r != null;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "/");
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair, r.last);
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last));
         }
-
+        
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             return Task.Run(() => Pairs);

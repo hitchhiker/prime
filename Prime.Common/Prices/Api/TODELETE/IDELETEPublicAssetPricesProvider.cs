@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prime.Common.Exchange;
 
 namespace Prime.Common
 {
-    public interface IPublicAssetPricesProvider : IPublicPriceSuper
+    [Obsolete]
+    public interface IDELETEPublicAssetPricesProvider : IPublicPricingProvider
     {
         Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context);
     }

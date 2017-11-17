@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Gemini
 {
-    public class GeminiProvider : IAssetPairsProvider, IPublicPriceStatistics, IPublicPriceProvider
+    public class GeminiProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string GemeniApiVerstion = "v1";
         private const string GeminiApiUrl = "https://api.gemini.com/" + GemeniApiVerstion;
@@ -78,7 +78,10 @@ namespace Prime.Plugins.Services.Gemini
             return new AssetPair(asset1, asset2);
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -93,13 +96,15 @@ namespace Prime.Plugins.Services.Gemini
                 .Where(x => x.Key.ToLower().Equals(context.Pair.Asset2.ToRemoteCode(this).ToLower()))
                 .Select(x => x.Value).ToArray();
 
-            return new MarketPrice(Network, context.Pair, r.last)
+            var price = new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, null, null),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, null, null),
                 Volume = new NetworkPairVolume(Network, context.Pair,
                     baseVolumes.Any() ? baseVolumes.First() : (decimal?) null,
                     quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null)
             };
+
+            return new MarketPricesResult(price);
         }
     }
 }

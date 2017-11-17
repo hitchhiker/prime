@@ -10,9 +10,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Poloniex
 {
-    public class PoloniexProvider : 
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IAssetPairVolumeProvider,
-        IPublicPricesProvider, IAssetPairsProvider, IPublicPriceStatistics
+    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IAssetPairVolumeProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -65,10 +63,12 @@ namespace Prime.Plugins.Services.Poloniex
             }
         }
 
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            return GetPricesAsync(context);
-        }
+            Bulk = new PricingBulkFeatures() { CanSatistics = true, CanVolume = true }
+        };
+
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {

@@ -111,7 +111,7 @@ namespace Prime.TestConsole
                     var c = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
 
                     Console.WriteLine($"Base asset: {ctx.QuoteAsset}\n");
-                    Console.WriteLine(c.Price.Display);
+                    Console.WriteLine(c.FirstPrice.Price.Display);
                 }
                 catch (Exception e)
                 {

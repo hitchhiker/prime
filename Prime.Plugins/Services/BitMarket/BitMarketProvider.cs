@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMarket
 {
-    public class BitMarketProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
+    public class BitMarketProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string BitMarketApiUrl = "https://www.bitmarket.net/";
 
@@ -55,7 +55,15 @@ namespace Prime.Plugins.Services.BitMarket
             return Task.Run(() => Pairs);
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
+            Bulk = new PricingBulkFeatures()
+        };
+
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -64,11 +72,13 @@ namespace Prime.Plugins.Services.BitMarket
             try
             {
                 var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-                return new MarketPrice(Network, context.Pair, r.last)
+                var price = new MarketPrice(Network, context.Pair, r.last)
                 {
-                    PriceStatistics = new PriceStatistics(Network, context.QuoteAsset, r.ask, r.bid, r.low, r.high),
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                     Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
                 };
+
+                return new MarketPricesResult(price);
             }
             catch (ApiException ex)
             {

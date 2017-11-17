@@ -11,7 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinone
 {
-    public class CoinoneProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
+    public class CoinoneProvider : IDELETEPublicPricesProvider, IAssetPairsProvider, IPublicPricingProvider,IDELETEPublicPriceStatistics
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -134,6 +134,9 @@ namespace Prime.Plugins.Services.Coinone
         {
             return GetPricesAsync(context);
         }
+
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {

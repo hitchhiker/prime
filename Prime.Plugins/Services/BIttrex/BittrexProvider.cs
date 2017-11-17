@@ -13,8 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public class BittrexProvider : 
-        IBalanceProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
+    public class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
     {
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
@@ -70,7 +69,10 @@ namespace Prime.Plugins.Services.Bittrex
             return r != null && r.success && r.result != null;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, true);
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "-");
@@ -78,16 +80,15 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r, context.Pair);
 
-            return new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
-        }
-
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
-        {
-            return GetPricesAsync(context);
+            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
+            return new MarketPricesResult(price);
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
             var api = ApiProvider.GetApi(context);
             var r = await api.GetMarketSummariesAsync().ConfigureAwait(false);
 

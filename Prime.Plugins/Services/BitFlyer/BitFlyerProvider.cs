@@ -8,7 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
-    public class BitFlyerProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
+    public class BitFlyerProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -47,18 +47,23 @@ namespace Prime.Plugins.Services.BitFlyer
             return pairs.Count > 0;
         }
 
-        public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures() {Single = new PricingSingleFeatures() {CanSatistics = true, CanVolume = true}};
+        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = context.Pair.ToTicker(this, "_");
 
             var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 
-            return new MarketPrice(Network, context.Pair, r.ltp)
+            var price = new MarketPrice(Network, context.Pair, r.ltp)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.best_ask, r.best_bid, null, null),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
+
+            return new MarketPricesResult(price);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Prime.Utility;
 
 namespace Prime.Common
@@ -11,5 +12,11 @@ namespace Prime.Common
         {
             Pairs = pairs;
         }
+
+        public AssetPair Pair => Pairs.FirstOrDefault();
+
+        public virtual bool UseBulkContext => true;
+
+        public bool ForSingleMethod => !UseBulkContext;
     }
 }

@@ -13,6 +13,35 @@ namespace Prime.Utility
 {
     public static class DictionaryExtensions
     {
+        public static T2 Get<T1, T2>(this IReadOnlyCollection<KeyValuePair<T1, T2>> col, T1 key)
+        {
+            if (col is IReadOnlyDictionary<T1, T2> rd)
+                return rd.Get(key);
+
+            if (col is Dictionary<T1, T2> d)
+                return d.Get(key);
+
+            foreach (var kv in col)
+                if (Equals(kv.Key, key))
+                    return kv.Value;
+
+            return default;
+        }
+
+        private static T2 Get<T1, T2>(this IReadOnlyDictionary<T1, T2> dict, T1 key)
+        {
+            if (dict == null || dict.Count == 0)
+                return default(T2);
+            return dict.ContainsKey(key) ? dict[key] : default(T2);
+        }
+
+        private static T2 Get<T1, T2>(this Dictionary<T1, T2> dict, T1 key)
+        {
+            if (dict == null || dict.Count == 0)
+                return default(T2);
+            return dict.ContainsKey(key) ? dict[key] : default(T2);
+        }
+
         public static object Get(this IDictionary<string, object> dict, string key, object defaultValue = null)
         {
             if (dict == null || dict.Count == 0)
@@ -47,14 +76,7 @@ namespace Prime.Utility
                 return defaultValue;
             return dict.ContainsKey(key) ? dict[key] : defaultValue;
         }
-
-        public static T2 Get<T1, T2>(this IDictionary<T1, T2> dict, T1 key)
-        {
-            if (dict == null || dict.Count == 0)
-                return default(T2);
-            return dict.ContainsKey(key) ? dict[key] : default(T2);
-        }
-
+        
         public static T2 Get<T1, T2>(this IDictionary<T1, T2> dict, T1 key, T2 defaultValue)
         {
             if (dict == null || dict.Count == 0)

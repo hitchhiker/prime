@@ -7,14 +7,14 @@ namespace Prime.Core
 {
     internal sealed class LatestPriceProviderContext
     {
-        internal LatestPriceProviderContext(IPublicPriceSuper provider, Aggregator aggregator)
+        internal LatestPriceProviderContext(IPublicPricingProvider provider, Aggregator aggregator)
         {
             Provider = provider;
             Aggregator = aggregator;
         }
 
         internal TimeSpan PollingSpan { get; set; } = new TimeSpan(0, 0, 15);
-        internal IPublicPriceSuper Provider { get; private set; }
+        internal IPublicPricingProvider Provider { get; private set; }
         internal Aggregator Aggregator { get; private set; }
     }
 }
