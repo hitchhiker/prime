@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinfloor
 {
+    // https://github.com/coinfloor/API/blob/master/BIST.md
     public class CoinfloorProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string CoinfloorApiUrl = "https://webapi.coinfloor.co.uk:8090/bist/";

@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cex
 {
+    // https://cex.io/rest-api#public
     public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider
     {
         private const string CexApiUrl = "https://cex.io/api";

@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
+    // https://www.binance.com/restapipub.html
     public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";

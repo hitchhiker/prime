@@ -10,6 +10,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Poloniex
 {
+    // https://poloniex.com/support/api/
     public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IAssetPairVolumeProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
