@@ -8,8 +8,7 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-
-        public static async Task<ApiResponse<MarketPricesResult>> GetPricesAsync(IPublicPricingProvider provider, PublicPricesContext context)
+        public static async Task<ApiResponse<MarketPricesResult>> GetPricingAsync(IPublicPricingProvider provider, PublicPricesContext context)
         {
             //if (context.IsMultiple && context.ForSingleMethod)
             //    throw new ArgumentException($"Failed as '{nameof(context.ForSingleMethod)}' is set on '{context.GetType().Name}' but this context requires '{nameof(context.IsMultiple)}'");
@@ -34,13 +33,13 @@ namespace Prime.Common
             switch (channel)
             {
                 case PricingBulkFeatures bulk:
-                    return await ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(context), nameof(GetPrices) + " [Bulk]", provider, context).ConfigureAwait(false);
+                    return await ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(context), nameof(GetPricing) + " [Bulk]", provider, context).ConfigureAwait(false);
                 case PricingSingleFeatures single:
                     var r = new MarketPricesResult();
                     foreach (var pair in context.Pairs)
                     {
                         var ctx = new PublicPriceContext(pair);
-                        var rq = await ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(ctx), nameof(GetPrices) + " [Bulk Sim]", provider, context).ConfigureAwait(false);
+                        var rq = await ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(ctx), nameof(GetPricing) + " [Bulk Sim]", provider, context).ConfigureAwait(false);
                         if (!rq.IsNull && rq.Response.FirstPrice != null)
                             r.MarketPrices.Add(rq.Response.FirstPrice);
                         else

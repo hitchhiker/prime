@@ -99,7 +99,7 @@ namespace Prime.Core
             if (_isDisposed)
                 return false;
 
-            var r = ApiCoordinator.GetPrices(Provider, new PublicPricesContext(_pairRequests));
+            var r = ApiCoordinator.GetPricing(Provider, new PublicPricesContext(_pairRequests));
             if (r.IsNull)
             {
                 IsFailing = true;
