@@ -9,8 +9,11 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cex
 {
+    // https://cex.io/rest-api#public
     public class CexProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IAssetPairVolumeProvider
     {
+        // TODO: AY implement multi-statistics.
+
         private const string CexApiUrl = "https://cex.io/api";
 
         private static readonly ObjectId IdHash = "prime:cex".GetObjectIdHashCode();

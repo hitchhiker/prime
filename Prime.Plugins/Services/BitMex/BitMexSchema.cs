@@ -172,6 +172,10 @@ namespace Prime.Plugins.Services.BitMex
             public string underlying;
             public string quoteCurrency;
             public decimal volume24h;
+            public decimal askPrice;
+            public decimal bidPrice;
+            public decimal highPrice;
+            public decimal lowPrice;
         }
 
         internal class InstrumentResponse

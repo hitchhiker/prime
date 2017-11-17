@@ -16,9 +16,11 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-
+    // https://www.kraken.com/help/api#public-market-data
     public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPricesProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
+        // TODO: AY implement multi-statistics.
+
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
         private RestApiClientProvider<IKrakenApi> ApiProvider { get; }

@@ -8,8 +8,11 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.HitBtc
 {
+    // https://api.hitbtc.com/
     public class HitBtcProvider : IBalanceProvider, IPublicPricesProvider, IPublicPriceProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
     {
+        // TODO: AY implement multi-statistics.
+
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
         private static readonly ObjectId IdHash = "prime:hitbtc".GetObjectIdHashCode();

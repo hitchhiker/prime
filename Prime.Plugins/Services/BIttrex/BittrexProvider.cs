@@ -13,9 +13,12 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
+    // https://bittrex.com/home/api
     public class BittrexProvider : 
         IBalanceProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
     {
+        // TODO: AY implement multi-statistics.
+
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
 

@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer
 {
+    // https://lightning.bitflyer.jp/docs
     public class BitFlyerProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;

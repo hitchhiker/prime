@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bitso
 {
+    // https://bitso.com/api_info
     public class BitsoProvider : IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         private const string BitsoApiVersion = "v3";

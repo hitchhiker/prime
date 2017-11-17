@@ -9,8 +9,10 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
+    // https://www.bithumb.com/u1/US127
     public class BithumbProvider : IPublicPricesProvider, IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
+        // TODO: AY implement multi-statistics.
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
 

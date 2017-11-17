@@ -13,6 +13,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Korbit
 {
+    // https://apidocs.korbit.co.kr/
     public class KorbitProvider : IOrderBookProvider, IPublicPriceProvider, IAssetPairsProvider, IPublicPriceStatistics
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();

@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Gdax
 {
+    // https://docs.gdax.com/
     public class GdaxProvider : IAssetPairsProvider, IPublicPriceProvider, IPublicPriceStatistics
     {
         private const string GdaxApiUrl = "https://api.gdax.com";

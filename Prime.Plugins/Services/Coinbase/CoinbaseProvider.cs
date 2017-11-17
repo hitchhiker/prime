@@ -14,6 +14,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
+    // https://developers.coinbase.com/api/v2
     public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
