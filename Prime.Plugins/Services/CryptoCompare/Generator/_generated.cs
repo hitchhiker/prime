@@ -6,7 +6,7 @@ namespace plugins
     public class BTCCCryptoCompareProvider : CryptoCompareBase { public override string Name => "BTCC"; }
     //public class BTCECryptoCompareProvider : CryptoCompareBase { public override string Name => "BTCE"; }
     public class BTERCryptoCompareProvider : CryptoCompareBase { public override string Name => "BTER"; }
-    public class _generated : CryptoCompareBase { public override string Name => "Bit2C"; }
+    public class Bit2CCryptoCompareProvider : CryptoCompareBase { public override string Name => "Bit2C"; }
     public class BitfinexCryptoCompareProvider : CryptoCompareBase { public override string Name => "Bitfinex"; }
     public class BitstampCryptoCompareProvider : CryptoCompareBase { public override string Name => "Bitstamp"; }
     public class BittrexCryptoCompareProvider : CryptoCompareBase { public override string Name => "BitTrex"; }
@@ -45,12 +45,12 @@ namespace plugins
     public class BTCXIndiaCryptoCompareProvider : CryptoCompareBase { public override string Name => "BTCXIndia"; }
     public class PaymiumCryptoCompareProvider : CryptoCompareBase { public override string Name => "Paymium"; }
     public class TheRockTradingCryptoCompareProvider : CryptoCompareBase { public override string Name => "TheRockTrading"; }
-    public class bitFlyerCryptoCompareProvider : CryptoCompareBase { public override string Name => "bitFlyer"; }
+    public class BitFlyerCryptoCompareProvider : CryptoCompareBase { public override string Name => "bitFlyer"; }
     public class QuoineCryptoCompareProvider : CryptoCompareBase { public override string Name => "Quoine"; }
     public class LunoCryptoCompareProvider : CryptoCompareBase { public override string Name => "Luno"; }
     public class EtherDeltaCryptoCompareProvider : CryptoCompareBase { public override string Name => "EtherDelta"; }
     public class LiquiCryptoCompareProvider : CryptoCompareBase { public override string Name => "Liqui"; }
-    public class bitFlyerFXCryptoCompareProvider : CryptoCompareBase { public override string Name => "bitFlyerFX"; }
+    public class BitFlyerFXCryptoCompareProvider : CryptoCompareBase { public override string Name => "bitFlyerFX"; }
     public class BitMarketCryptoCompareProvider : CryptoCompareBase { public override string Name => "BitMarket"; }
     public class LiveCoinCryptoCompareProvider : CryptoCompareBase { public override string Name => "LiveCoin"; }
     public class CoinoneCryptoCompareProvider : CryptoCompareBase { public override string Name => "Coinone"; }

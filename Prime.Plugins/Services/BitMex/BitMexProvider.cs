@@ -338,9 +338,9 @@ namespace Prime.Plugins.Services.BitMex
             if (!String.IsNullOrWhiteSpace(context.AuthenticationToken))
                 body.Add("otpToken", context.AuthenticationToken);
 
-            body.Add("currency", context.Price.Asset.ToRemoteCode(this));
-            body.Add("amount", context.Price.ToDecimalValue() / ConversionRate);
-            body.Add("address", context.Address);
+            body.Add("currency", context.Amount.Asset.ToRemoteCode(this));
+            body.Add("amount", context.Amount.ToDecimalValue() / ConversionRate);
+            body.Add("address", context.Address.Address + ":" + context.Address.Tag);
             body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
 
             var r = await api.RequestWithdrawalAsync(body).ConfigureAwait(false);
@@ -362,7 +362,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var history = new List<WithdrawalHistoryEntry>();
 
-            foreach (var rHistory in r.Where(x => x.transactType.Equals("Withdrawal")))
+            foreach (var rHistory in r.Where(x => x.transactType.Equals("Withdrawal", StringComparison.OrdinalIgnoreCase)))
             {
                 history.Add(new WithdrawalHistoryEntry()
                 {

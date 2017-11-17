@@ -11,8 +11,8 @@ namespace Prime.Common
         {
         }
 
-        public string Address { get; set; }
+        public WalletAddress Address { get; set; }
 
-        public Money Price { get; set; }
+        public Money Amount { get; set; }
     }
 }

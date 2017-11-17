@@ -31,6 +31,11 @@ namespace Prime.Plugins.Services.HitBtc
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
 
+        public HitBtcProvider()
+        {
+            ApiProvider = new RestApiClientProvider<IHitBtcApi>(HitBtcApiUrl, this, k => new HitBtcAuthenticator(k).GetRequestModifier);
+        }
+
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
@@ -79,7 +84,7 @@ namespace Prime.Plugins.Services.HitBtc
             {
                 var pairCode = pair.ToTicker(this, "");
 
-                var tickers = r.Where(x => x.Key.Equals(pairCode)).ToArray();
+                var tickers = r.Where(x => x.Key.Equals(pairCode, StringComparison.OrdinalIgnoreCase)).ToArray();
 
                 if (!tickers.Any())
                 {
@@ -98,11 +103,6 @@ namespace Prime.Plugins.Services.HitBtc
             return prices;
         }
 
-        public HitBtcProvider()
-        {
-            ApiProvider = new RestApiClientProvider<IHitBtcApi>(HitBtcApiUrl, this, k => new HitBtcAuthenticator(k).GetRequestModifier);
-        }
-
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return null;
@@ -116,10 +116,8 @@ namespace Prime.Plugins.Services.HitBtc
             var assetPairs = new AssetPairs();
 
             foreach (var symbol in r.symbols)
-            {
-                assetPairs.Add(new AssetPair(symbol.commodity.ToAsset(this), symbol.currency.ToAsset(this)));
-            }
-
+                 assetPairs.Add(new AssetPair(symbol.commodity.ToAsset(this), symbol.currency.ToAsset(this)));
+            
             return assetPairs;
         }
 
@@ -129,11 +127,13 @@ namespace Prime.Plugins.Services.HitBtc
 
             var r = await api.GetDepositAddressAsync(context.Asset.ShortCode).ConfigureAwait(false);
 
-            var walletAddresses = new WalletAddresses();
-            walletAddresses.Add(new WalletAddress(this, context.Asset)
+            var walletAddresses = new WalletAddresses
             {
-                Address = r.address
-            });
+                new WalletAddress(this, context.Asset)
+                {
+                    Address = r.address
+                }
+            };
 
             return walletAddresses;
         }

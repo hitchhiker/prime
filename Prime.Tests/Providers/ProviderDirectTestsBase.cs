@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Common.Exchange;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
@@ -46,6 +47,7 @@ namespace Prime.Tests.Providers
         }
 
         public virtual async Task TestGetPriceAsync() { }
+
         public async Task TestGetPriceAsync(PublicPriceContext context, bool lessThan1)
         {
             var p = IsType<IPublicPricingProvider>();
@@ -264,7 +266,7 @@ namespace Prime.Tests.Providers
                 }
                 else if (provider is IDELETEPublicPricesProvider ips)
                 {
-                    var r = await ips.GetPricesAsync(context).ConfigureAwait(false);
+                    var r = AsyncContext.Run(() => ips.GetPricesAsync(context));
                     c = r?.MarketPrices?.FirstOrDefault();
                 }
 
