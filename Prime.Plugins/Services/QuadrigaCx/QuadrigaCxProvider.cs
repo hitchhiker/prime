@@ -12,6 +12,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.QuadrigaCX
 {
+    // https://www.quadrigacx.com/api_info
     public class QuadrigaCxProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string QuadrigaCxApiVersion = "v2";

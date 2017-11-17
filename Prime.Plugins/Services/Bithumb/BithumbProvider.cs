@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bithumb
 {
+    // https://www.bithumb.com/u1/US127
     public class BithumbProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";

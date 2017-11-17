@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.TheRockTrading
 {
+    // https://api.therocktrading.com/doc/v1/
     public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string TheRockTradingApiVersion = "v1";

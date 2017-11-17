@@ -11,6 +11,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinone
 {
+    // http://doc.coinone.co.kr/#api-Public
     public class CoinoneProvider : IDELETEPublicPricesProvider, IAssetPairsProvider, IPublicPricingProvider,IDELETEPublicPriceStatistics
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
