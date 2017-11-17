@@ -13,7 +13,13 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
+<<<<<<< HEAD
     public class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
+=======
+    // https://bittrex.com/home/api
+    public class BittrexProvider : 
+        IBalanceProvider, IOrderBookProvider, IPublicPricesProvider, IPublicPriceProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
+>>>>>>> cfabb36c36d579ced0b841b4a929c46aef4a5584
     {
         // TODO: AY implement multi-statistics.
 

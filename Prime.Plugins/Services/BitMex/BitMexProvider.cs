@@ -15,9 +15,12 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
+    // https://www.bitmex.com/api/explorer/
     public class BitMexProvider :
         IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider,IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
+        // TODO: AY implement multi-statistics.
+
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";
@@ -148,7 +151,7 @@ namespace Prime.Plugins.Services.BitMex
 
             foreach (var pair in context.Pairs)
             {
-                var pairCode = pair.ToTicker(this, "");
+                var pairCode = pair.ToTicker(this, "").ToUpper();
 
                 var data = r.FirstOrDefault(x =>
                     x.symbol.Equals(pairCode)

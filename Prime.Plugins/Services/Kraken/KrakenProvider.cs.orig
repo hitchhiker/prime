@@ -16,8 +16,13 @@ using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Plugins.Services.Kraken
 {
-    // https://www.kraken.com/help/api#public-market-data
+<<<<<<< HEAD
+
     public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+=======
+    // https://www.kraken.com/help/api#public-market-data
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPriceProvider, IPublicPricesProvider, IPublicPriceStatistics, IAssetPairsProvider, IDepositProvider
+>>>>>>> cfabb36c36d579ced0b841b4a929c46aef4a5584
     {
         // TODO: AY implement multi-statistics.
 
