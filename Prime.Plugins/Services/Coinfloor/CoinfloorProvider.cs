@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinfloor
@@ -17,8 +18,8 @@ namespace Prime.Plugins.Services.Coinfloor
         private const string PairsCsv = "xbteur,xbtgbp,xbtusd,xbtpln";
 
         // Information requests: 10 per 10 seconds per session
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60,1);
-
+        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10,10);
+        
         private RestApiClientProvider<ICoinfloorApi> ApiProvider { get; }
 
         public Network Network { get; } = Networks.I.Get("Coinfloor");

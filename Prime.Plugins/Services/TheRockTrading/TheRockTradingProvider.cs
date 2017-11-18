@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.TheRockTrading
@@ -17,7 +18,7 @@ namespace Prime.Plugins.Services.TheRockTrading
         private static readonly ObjectId IdHash = "prime:therocktrading".GetObjectIdHashCode();
 
         //API calls are limited to 10 requests per second. Do not go over this limit or you will be blacklisted.
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1); //TODO - only left like this temporarily
+        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10, 1);
 
         private RestApiClientProvider<ITheRockTradingApi> ApiProvider { get; }
 
