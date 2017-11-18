@@ -18,13 +18,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var context = new AssetPairs()
             {
@@ -34,25 +34,25 @@ namespace Prime.Tests.Providers
                 "XRP_KRW".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPairs(context);
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
 
-            await base.TestGetPrice(context, false).ConfigureAwait(false);
+            base.TestGetPrice(context, false);
         }
 
         [TestMethod]
-        public override async Task TestGetOrderBookAsync()
+        public override void TestGetOrderBook()
         {
             var context = new OrderBookContext(new AssetPair("BTC", "KRW"), 10);
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
 
             context = new OrderBookContext(new AssetPair("BTC", "KRW"));
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
         }
     }
 }

@@ -18,13 +18,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var context = new AssetPairs()
             {
@@ -34,18 +34,18 @@ namespace Prime.Tests.Providers
                 "ETH_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPairs(context);
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
-            await base.TestGetPrice(context, false).ConfigureAwait(false);
+            base.TestGetPrice(context, false);
         }
 
         [TestMethod]
-        public override async Task TestGetPricesAsync()
+        public override void TestGetPrices()
         {
             var context = new PublicPricesContext(new List<AssetPair>()
             {
@@ -54,11 +54,11 @@ namespace Prime.Tests.Providers
                 "BTC_RUB".ToAssetPairRaw(),
                 "ETH_BTC".ToAssetPairRaw()
             });
-            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
+        public override void TestGetAssetPrices()
         {
             var context = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -68,15 +68,15 @@ namespace Prime.Tests.Providers
                 "BCH".ToAssetRaw()
             }, Asset.Btc);
 
-            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetVolumeAsync()
+        public override void TestGetVolume()
         {
-            var context = new VolumeContext( "BTC_USD".ToAssetPairRaw());
-            
-            await base.TestGetVolumeAsync(context).ConfigureAwait(false);
+            var context = new VolumeContext("BTC_USD".ToAssetPairRaw());
+
+            base.TestGetVolume(context);
         }
     }
 }

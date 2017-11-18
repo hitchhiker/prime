@@ -16,13 +16,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()
             {
@@ -32,37 +32,37 @@ namespace Prime.Tests.Providers
                 "DASH_ETH".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
+            base.TestGetAssetPairs(requiredPairs);
         }
 
         [TestMethod]
-        public override async Task TestGetAddressesForAssetAsync()
+        public override void TestGetAddressesForAsset()
         {
             var context = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
-            await base.TestGetAddressesForAssetAsync(context).ConfigureAwait(false);
+            base.TestGetAddressesForAsset(context);
         }
 
         [TestMethod]
-        public override async Task TestApiAsync()
+        public override void TestApi()
         {
-            await base.TestApiAsync().ConfigureAwait(false);
+            base.TestApi();
         }
 
         [TestMethod]
-        public override async Task TestGetBalancesAsync()
+        public override void TestGetBalances()
         {
-            await base.TestGetBalancesAsync().ConfigureAwait(false);
+            base.TestGetBalances();
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
-            await base.TestGetPrice(context, false).ConfigureAwait(false);
+            base.TestGetPrice(context, false);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
+        public override void TestGetAssetPrices()
         {
             var context = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -71,11 +71,11 @@ namespace Prime.Tests.Providers
                 "STEEM".ToAssetRaw()
             }, "BTC".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetPricesAsync()
+        public override void TestGetPrices()
         {
             var context = new PublicPricesContext(new List<AssetPair>()
             {
@@ -83,7 +83,7 @@ namespace Prime.Tests.Providers
                 "NXT_BTC".ToAssetPairRaw(),
                 "STEEM_BTC".ToAssetPairRaw()
             });
-            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetPrices(context);
         }
     }
 }

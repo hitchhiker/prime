@@ -19,35 +19,35 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestApiAsync()
+        public override void TestApi()
         {
-            await base.TestApiAsync().ConfigureAwait(false);
+            base.TestApi();
         }
 
         [TestMethod]
-        public override async Task TestGetAddressesAsync()
+        public override void TestGetAddresses()
         {
             var context = new WalletAddressContext(UserContext.Current);
 
-            await base.TestGetAddressesAsync(context).ConfigureAwait(false);
+            base.TestGetAddresses(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAddressesForAssetAsync()
+        public override void TestGetAddressesForAsset()
         {
             var context = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
 
-            await base.TestGetAddressesForAssetAsync(context).ConfigureAwait(false);
+            base.TestGetAddressesForAsset(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()
             {
@@ -57,24 +57,24 @@ namespace Prime.Tests.Providers
                 "BTC_ETC".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
+            base.TestGetAssetPairs(requiredPairs);
         }
 
         [TestMethod]
-        public override async Task TestGetBalancesAsync()
+        public override void TestGetBalances()
         {
-            await base.TestGetBalancesAsync();
+            base.TestGetBalances();
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("BTC_LTC".ToAssetPairRaw());
-            await base.TestGetPrice(context, false).ConfigureAwait(false);
+            base.TestGetPrice(context, false);
         }
 
         [TestMethod]
-        public override async Task TestGetPricesAsync()
+        public override void TestGetPrices()
         {
             var context = new PublicPricesContext(new List<AssetPair>()
             {
@@ -83,11 +83,11 @@ namespace Prime.Tests.Providers
                 "BTC_BCC".ToAssetPairRaw()
             });
 
-            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
+        public override void TestGetAssetPrices()
         {
             var context = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -95,25 +95,25 @@ namespace Prime.Tests.Providers
                 "BTC".ToAssetRaw()
             }, "WINGS".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetOrderBookAsync()
+        public override void TestGetOrderBook()
         {
             var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()));
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
 
             context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
         }
 
         [TestMethod]
-        public override async Task TestGetVolumeAsync()
+        public override void TestGetVolume()
         {
             var context = new VolumeContext("BTC_LTC".ToAssetPairRaw());
 
-            await base.TestGetVolumeAsync(context).ConfigureAwait(false);
+            base.TestGetVolume(context);
         }
     }
 }

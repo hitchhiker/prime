@@ -30,13 +30,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var context = new AssetPairs()
             {
@@ -45,24 +45,24 @@ namespace Prime.Tests.Providers
                 "BCH_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPairs(context);
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("ETH_BTC".ToAssetPairRaw());
-            await base.TestGetPrice(context, true).ConfigureAwait(false);
+            base.TestGetPrice(context, true);
         }
 
         [TestMethod]
-        public override async Task TestGetOrderBookAsync()
+        public override void TestGetOrderBook()
         {
             var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()));
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
 
             context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()), 20);
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
         }
     }
 }
