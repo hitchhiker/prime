@@ -11,13 +11,20 @@ namespace Prime.Core.Market
     public class VolumeProvider
     {
         public static VolumeProvider I => Lazy.Value;
-        private static readonly Lazy<VolumeProvider> Lazy = new Lazy<VolumeProvider>(() => new VolumeProvider("VOLUMEDATA_I".GetObjectIdHashCode()));
+        private static readonly Lazy<VolumeProvider> Lazy = new Lazy<VolumeProvider>(() => new VolumeProvider("VOLUMEDATA_I2sda".GetObjectIdHashCode()));
         private readonly object _lock = new object();
+        public readonly bool CanSave;
 
-        public VolumeProvider(ObjectId dataId)
+        public VolumeProvider()
         {
             AggVolumeDataProvider = Networks.I.Providers.OfType<IAggVolumeDataProvider>().FirstOrDefault();
+            Data = new VolumeData();
+        }
+
+        public VolumeProvider(ObjectId dataId) : this()
+        {
             Data = PublicFast.GetCreate(dataId, () => new VolumeData());
+            CanSave = true;
         }
 
         public IAggVolumeDataProvider AggVolumeDataProvider;
@@ -31,13 +38,22 @@ namespace Prime.Core.Market
                 if (v != null)
                     return v;
 
-                var save = Data.PopulateFromAgg(AggVolumeDataProvider, pair); //the agg does bulk, so it goes first.
-                v = Data.Get(network, pair);
+                var canagg = AggVolumeDataProvider.NetworksSupported.Contains(network);
+
+                var save = canagg && Data.PopulateFromAgg(AggVolumeDataProvider, pair); //the agg does bulk, so it goes first.
+                v = canagg ? Data.Get(network, pair) : null;
                 
                 if (v != null)
                     return PostProcess(v, save && !dontSave);
 
                 save = Data.PopulateFromApi(network, pair) || save;
+
+                v = Data.Get(network, pair);
+
+                if (v != null)
+                    return PostProcess(v, save && !dontSave);
+
+                save = Data.PopulateFromPricing(network, pair) || save;
 
                 return PostProcess(Data.Get(network, pair), save && !dontSave);
             }
@@ -45,20 +61,18 @@ namespace Prime.Core.Market
 
         private NetworkPairVolume PostProcess(NetworkPairVolume vol, bool mustSave)
         {
-            if (mustSave)
+            if (mustSave && CanSave)
                 Data.SavePublic();
             return vol;
         }
 
-        public (UniqueList<NetworkPairVolume> volume, Dictionary<AssetPair, UniqueList<Network>> missing) GetAllVolume(IEnumerable<AssetPair> pairs, IEnumerable<Network> networks, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
+        public (UniqueList<NetworkPairVolume> volume, Dictionary<AssetPair, UniqueList<Network>> missing) GetAllVolume(Dictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
         {
-            var pairsl = pairs.AsList();
-            var networksl = networks.AsList();
             var volume = new UniqueList<NetworkPairVolume>();
             var missing = new Dictionary<AssetPair, UniqueList<Network>>();
-            foreach (var network in networksl)
+            foreach (var network in pairsByNetwork.Keys)
             {
-                foreach (var pair in pairsl)
+                foreach (var pair in pairsByNetwork[network])
                 {
                     onPull?.Invoke(network, pair);
                     var r = GetVolume(network, pair, true);
@@ -69,7 +83,8 @@ namespace Prime.Core.Market
                     afterPull?.Invoke(network, pair, r);
                 }
 
-                Data.SavePublic();
+                if (CanSave)
+                    Data.SavePublic();
             }
 
             return (volume , missing);

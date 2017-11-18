@@ -166,7 +166,7 @@ namespace Prime.Plugins.Services.Coinone
             return prices;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 

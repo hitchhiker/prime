@@ -277,7 +277,7 @@ namespace Prime.Plugins.Services.Bittrex
             return orderBook;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "-").ToLower();

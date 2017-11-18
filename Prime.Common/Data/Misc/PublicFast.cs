@@ -19,6 +19,7 @@ namespace Prime.Common
             if (e == null)
                 return e;
 
+            e.Id = id;
             e.SavePublic();
             return e;
         }

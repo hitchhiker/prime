@@ -270,7 +270,7 @@ namespace Prime.Plugins.Services.Binance
             return balances;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");

@@ -176,7 +176,7 @@ namespace Prime.Plugins.Services.HitBtc
             return balances;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 

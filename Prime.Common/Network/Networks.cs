@@ -14,6 +14,7 @@ namespace Prime.Common
         public static Networks I => Lazy.Value;
         private static readonly Lazy<Networks> Lazy = new Lazy<Networks>(()=>new Networks());
         private readonly object _lock = new object();
+        public readonly UniqueList<Network> KnownNetworks = new UniqueList<Network>();
 
         private readonly ConcurrentDictionary<ObjectId, Network> _cache = new ConcurrentDictionary<ObjectId, Network>();
 
@@ -24,7 +25,7 @@ namespace Prime.Common
                 if (!_collected)
                 {
                     _collected = true;
-                    TypeCatalogue.I.ImplementInstances<INetworkProvider>().Select(x => x.Network).ToList();
+                    KnownNetworks.AddRange(TypeCatalogue.I.ImplementInstances<INetworkProvider>().Select(x => x.Network));
                 }
             }
             return _cache.GetOrAdd(Network.GetHash(name), k => new Network(name));

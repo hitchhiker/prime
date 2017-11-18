@@ -5,7 +5,7 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class NetworkPairVolume : UniqueList<NetworkPairVolume>, IEquatable<NetworkPairVolume>
+    public class NetworkPairVolume : IEquatable<NetworkPairVolume>
     {
         private NetworkPairVolume() { }
 
@@ -34,7 +34,7 @@ namespace Prime.Common
                 Volume24Quote = new Money(vol24Quote.Value, pair.Asset2);
         }
 
-        public NetworkPairVolume(Network network, AssetPair pair, Money vol24Base, Money vol24Quote) : this(network,pair)
+        public NetworkPairVolume(Network network, Money vol24Base, Money vol24Quote) : this(network, new AssetPair(vol24Base.Asset, vol24Quote.Asset))
         {
             Volume24Base = vol24Base;
             Volume24Quote = vol24Quote;
@@ -102,7 +102,7 @@ namespace Prime.Common
         }
 
         private NetworkPairVolume _reversed;
-        public NetworkPairVolume Reversed => _reversed ?? (_reversed = new NetworkPairVolume(Network, Pair.Reversed, Volume24Quote, Volume24Base) {UtcCreated = UtcCreated, _reversed = this});
+        public NetworkPairVolume Reversed => _reversed ?? (_reversed = new NetworkPairVolume(Network, Pair.Reversed, HasVolume24Quote ? Volume24Quote : (decimal?)null, HasVolume24Base ? Volume24Base : (decimal?)null) {UtcCreated = UtcCreated, _reversed = this});
 
         public bool Equals(NetworkPairVolume other)
         {
@@ -129,7 +129,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"{Network.Name} {Pair}";
+            return $"{Network?.Name} {Pair}";
         }
     }
 }

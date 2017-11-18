@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
@@ -80,6 +81,9 @@ namespace plugins
         }
 
         public override string Title => "CryptoCompare Aggregator";
+
+        private UniqueList<Network> _networksSupported;
+        public UniqueList<Network> NetworksSupported => _networksSupported ?? (_networksSupported = Networks.I.Providers.OfType<CryptoCompareBase>().Select(x => x.Network).OrderBy(x=>x.Name).ToUniqueList());
 
         private AssetExchangeEntry Convert(CryptoCompareSchema.CoinSnapshotDataBlock r)
         {

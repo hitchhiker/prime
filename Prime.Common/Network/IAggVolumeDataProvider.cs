@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IAggVolumeDataProvider : INetworkProvider
+    public interface IAggVolumeDataProvider : IAggregator
     {
         Task<NetworkPairVolumeData> GetAggVolumeDataAsync(AggVolumeDataContext context);
     }

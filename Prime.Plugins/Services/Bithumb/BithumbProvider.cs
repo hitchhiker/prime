@@ -100,12 +100,18 @@ namespace Prime.Plugins.Services.Bithumb
                 }
 
                 var rTiker = rTickers[0];
-                prices.MarketPrices.Add(new MarketPrice(Network,  pair, rTiker.Value.sell_price));
+                var vals = rTiker.Value;
+                prices.MarketPrices.Add(new MarketPrice(Network,  pair, vals.sell_price)
+                {
+                    Volume = new NetworkPairVolume(Network, pair, vals.volume_1day),
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, null, null, vals.min_price, vals.max_price)
+                });
             }
 
             return prices;
         }
 
+        [Obsolete("READ NOTE")]
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -122,6 +128,7 @@ namespace Prime.Plugins.Services.Bithumb
 
             var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
             {
+                //TODO: HH: Are you sure 'sell_price' == Lowest Ask -> I don't think it does. Leave null if not
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, data.sell_price, data.buy_price, data.min_price, data.max_price),
                 Volume = new NetworkPairVolume(Network, context.Pair, data.volume_1day)
             };

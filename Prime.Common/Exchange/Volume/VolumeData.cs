@@ -60,10 +60,13 @@ namespace Prime.Common
         public IReadOnlyDictionary<AssetPair, IReadOnlyList<NetworkPairVolume>> ByPair => _byPair ?? (_byPair = _data.GroupBy(x => x.Pair).ToDictionary(x => x.Key, y => y.AsReadOnlyList()));
 
         [Bson]
-        private Dictionary<ObjectId, DateTime> _utcAggs = new Dictionary<ObjectId, DateTime>();
+        private Dictionary<ObjectId, DateTime> _utcAggLatest { get; set; } = new Dictionary<ObjectId, DateTime>();
 
         [Bson]
-        private Dictionary<string, DateTime> _utcDirects = new Dictionary<string, DateTime>();
+        private Dictionary<string, DateTime> _utcDirectLatest { get; set; } = new Dictionary<string, DateTime>();
+
+        [Bson]
+        private Dictionary<string, DateTime> _utcPricingLatest { get; set; } = new Dictionary<string, DateTime>();
 
         [Bson]
         private UniqueList<NetworkPairVolume> _data { get; set; } = new UniqueList<NetworkPairVolume>();
@@ -91,14 +94,17 @@ namespace Prime.Common
             return pair.IsNormalised ? vol : vol.Reversed;
         }
         
-        public bool PopulateFromApi(Network network, AssetPair pair)
+        public bool PopulateFromApi(Network network, AssetPair pair, bool isRecurse = false)
         {
-            var ids = network.Id + ":" + pair.Normalised.Id;
+            if (!isRecurse)
+            {
+                var ids = network.Id + ":" + pair.Normalised.Id;
 
-            if (_utcDirects.Get(ids).IsWithinTheLast(TimeSpan.FromDays(10)))
-                return false;
+                if (_utcDirectLatest.Get(ids).IsWithinTheLast(TimeSpan.FromDays(10)))
+                    return false;
 
-            _utcDirects.Add(ids, DateTime.UtcNow);
+                _utcDirectLatest.Add(ids, DateTime.UtcNow);
+            }
 
             var ntp = network.AssetPairVolumeProviders.FirstDirectProvider();
             if (ntp == null)
@@ -108,7 +114,32 @@ namespace Prime.Common
             if (!r.IsNull)
                 Add(r.Response);
             else if (pair.IsNormalised)
-                return PopulateFromApi(network, pair.Reversed) || true;
+                return PopulateFromApi(network, pair.Reversed, true) || true;
+
+            return true;
+        }
+
+        public bool PopulateFromPricing(Network network, AssetPair pair, bool isRecurse = false)
+        {
+            if (!isRecurse)
+            {
+                var ids = network.Id + ":" + pair.Normalised.Id;
+
+                if (_utcPricingLatest.Get(ids).IsWithinTheLast(TimeSpan.FromDays(10)))
+                    return false;
+
+                _utcPricingLatest.Add(ids, DateTime.UtcNow);
+            }
+
+            var ntp = network.PublicPriceProviders.Where(x=>x.PricingFeatures.HasVolume).FirstDirectProvider();
+            if (ntp == null)
+                return true;
+
+            var r = ApiCoordinator.GetPricing(ntp, new PublicPriceContext(pair));
+            if (!r.IsNull && r.Response.FirstPrice?.Volume!=null)
+                Add(r.Response.FirstPrice.Volume);
+            else if (pair.IsNormalised)
+                return PopulateFromPricing(network, pair.Reversed, true) || true;
 
             return true;
         }
@@ -120,16 +151,16 @@ namespace Prime.Common
 
             var norm = pair.Normalised;
 
-            if (_utcAggs.Get(norm.Id).IsWithinTheLast(TimeSpan.FromDays(10)))
+            if (_utcAggLatest.Get(norm.Id).IsWithinTheLast(TimeSpan.FromDays(10)))
                 return false;
 
             var aggn = GetVolumeDataAgg(prov, norm);
             var aggr = GetVolumeDataAgg(prov, norm.Reversed);
-
+            
             AddRange(aggr);
             AddRange(aggn);
 
-            _utcAggs.Add(norm.Id, DateTime.UtcNow);
+            _utcAggLatest.Add(norm.Id, DateTime.UtcNow);
             return true;
         }
 

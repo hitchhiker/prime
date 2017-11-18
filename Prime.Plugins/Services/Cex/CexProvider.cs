@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.Cex
                 throw new ApiResponseException($"Error occurred in provider: {response.ok}", this);
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);

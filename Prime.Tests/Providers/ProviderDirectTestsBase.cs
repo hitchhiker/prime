@@ -574,7 +574,7 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.GetAssetPairVolume(context).ConfigureAwait(false);
+                var r = await provider.GetAssetPairVolumeAsync(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");

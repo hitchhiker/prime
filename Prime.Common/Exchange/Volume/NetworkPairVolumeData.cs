@@ -44,7 +44,7 @@ namespace Prime.Common
         /// <returns></returns>
         public bool Add(NetworkPairVolume d)
         {
-            if (d.Network == null)
+            if (d.Network == null || !Networks.I.KnownNetworks.Contains(d.Network))
                 return false;
 
             if (!d.Pair.EqualsOrReversed(Pair))

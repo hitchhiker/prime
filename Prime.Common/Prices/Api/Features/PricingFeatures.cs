@@ -17,5 +17,7 @@ namespace Prime.Common
         public PricingBulkFeatures Bulk { get; set; }
 
         public PricingSingleFeatures Single { get; set; }
+
+        public bool HasVolume => Bulk?.CanVolume == true || Single?.CanVolume == true;
     }
 }
