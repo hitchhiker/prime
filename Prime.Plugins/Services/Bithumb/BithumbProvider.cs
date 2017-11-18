@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.Bithumb
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
             Bulk = new PricingBulkFeatures()
         };
 

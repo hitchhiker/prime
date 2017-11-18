@@ -78,7 +78,7 @@ namespace Prime.Tests.Providers
         public override async Task TestGetPriceAsync()
         {
             var context = new PublicPriceContext(new AssetPair("USDT", "BTC"));
-            await TestGetPriceAsync(context, true).ConfigureAwait(false);
+            await TestGetPrice(context, true).ConfigureAwait(false);
         }
 
         [TestMethod]

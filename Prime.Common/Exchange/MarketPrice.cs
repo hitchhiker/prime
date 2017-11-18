@@ -67,6 +67,8 @@ namespace Prime.Common
 
         public bool HasStatistics => PriceStatistics != null;
 
+        public bool HasVolume => Volume != null;
+
         public override string ToString()
         {
             return $"1 {QuoteAsset} = {Price.Display}";

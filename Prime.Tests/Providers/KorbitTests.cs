@@ -42,7 +42,7 @@ namespace Prime.Tests.Providers
         {
             var context = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
 
-            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
+            await base.TestGetPrice(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]

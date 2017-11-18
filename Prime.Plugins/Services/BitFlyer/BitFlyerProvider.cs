@@ -50,7 +50,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Single = new PricingSingleFeatures() {CanSatistics = true, CanVolume = true}
+            Single = new PricingSingleFeatures() {CanStatistics = true, CanVolume = true}
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;

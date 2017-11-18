@@ -46,13 +46,23 @@ namespace Prime.Tests.Providers
                 await GetOhlcAsync(p.Provider, context).ConfigureAwait(false);
         }
 
-        public virtual async Task TestGetPriceAsync() { }
-
-        public async Task TestGetPriceAsync(PublicPriceContext context, bool lessThan1)
+        public virtual void TestGetPricing() { }
+        public void TestGetPricing(List<AssetPair> pairs, bool firstPriceLessThan1)
         {
             var p = IsType<IPublicPricingProvider>();
             if (p.Success)
-                await GetPriceAsync(p.Provider, context, lessThan1).ConfigureAwait(false);
+                GetPricing(p.Provider, pairs, firstPriceLessThan1);
+        }
+
+        public virtual async Task TestGetPriceAsync() { }
+        [Obsolete("Don't run this, it will break. Will be deleted soon.")]
+        public Task TestGetPrice(PublicPriceContext context, bool lessThan1)
+        {
+            var p = IsType<IPublicPricingProvider>();
+            if (p.Success)
+                GetPricing(p.Provider, null, lessThan1);
+
+            return Task.CompletedTask;
         }
 
         public virtual async Task TestGetAssetPricesAsync() { }
@@ -236,50 +246,84 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private async Task GetPriceAsync(IPublicPricingProvider provider, PublicPriceContext context, bool lessThan1)
+        private void InternalGetPriceAsync(IPublicPricingProvider provider, PublicPricesContext context, bool firstPriceLessThan1, bool runSingle)
         {
-            if (context == null)
-                return;
+            var r = AsyncContext.Run(() => provider.GetPricingAsync(context));
 
-            MarketPrice c = null;
+            Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod, "Single price request was completed using multiple prices endpoint");
+            Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + r.MissedPairs.Aggregate("", (s, pair) => s += pair + ", ").TrimEnd(','));
 
+            Assert.IsTrue(r.FirstPrice != null);
+            Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
+            Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+
+            if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
+                Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed");
+            else
+                Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed");
+
+            Trace.WriteLine($"First asset: {r.FirstPrice}");
+
+            var pricingFeatures = runSingle ? provider.PricingFeatures.Single : provider.PricingFeatures.Bulk as PricingFeaturesItemBase;
+
+            foreach (var p in r.MarketPrices)
+            {
+                Trace.WriteLine($"Market price: {p}");
+
+                if (pricingFeatures.CanStatistics)
+                {
+                    Assert.IsTrue(p.HasStatistics,
+                        $"Market price does not have statistics but provider supports it - {context.Pair}");
+
+                    Trace.WriteLine($"Market price statistics for {context.Pair}:");
+
+                    Trace.WriteLine($"Bid: {(p.PriceStatistics.HasHighestBid ? p.PriceStatistics.HighestBid.Display : "-")}");
+                    Trace.WriteLine($"Ask: {(p.PriceStatistics.HasLowestAsk ? p.PriceStatistics.LowestAsk.Display : "-")}");
+                    Trace.WriteLine($"Low: {(p.PriceStatistics.HasPrice24Low ? p.PriceStatistics.Price24Low.Display : "-")}");
+                    Trace.WriteLine($"High: {(p.PriceStatistics.HasPrice24High ? p.PriceStatistics.Price24High.Display : "-")}");
+                    Trace.WriteLine($"Volume 24h: {(p.Volume.HasVolume24Base ? p.Volume.HasVolume24Base.ToString(CultureInfo.InvariantCulture) : "-")}");
+                    Trace.WriteLine($"Quote volume 24h: {(p.Volume.HasVolume24Quote ? p.Volume.Volume24Quote.ToString(CultureInfo.InvariantCulture) : "-")}\n");
+                }
+
+                if (pricingFeatures.CanVolume)
+                {
+                    Assert.IsTrue(p.HasVolume,
+                        $"Market price does not have volume but provider supports it - {context.Pair}");
+
+                    if (p.Volume.HasVolume24Base)
+                        Trace.WriteLine($"Base 24h volume: {p.Volume.Volume24Base}");
+
+                    if (p.Volume.HasVolume24Quote)
+                        Trace.WriteLine($"Quote 24h volume: {p.Volume.Volume24Quote}");
+                }
+            }
+        }
+
+        private void GetPricing(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1)
+        {
             try
             {
-                if (provider is IDELETEPublicPriceProvider ipp)
+                if (provider.PricingFeatures.HasSingle)
                 {
-                    c = await ipp.GetPriceAsync(context).ConfigureAwait(false);
-
-                    if (provider is IDELETEPublicPriceStatistics ipps)
+                    var context = new PublicPricesContext(pairs)
                     {
-                        // Only for single asset is supported
+                        RequestStatistics = provider.PricingFeatures.Single.CanStatistics,
+                        RequestVolume = provider.PricingFeatures.Single.CanVolume
+                    };
 
-                        Assert.IsTrue(c.HasStatistics, $"Market price does not have statistics - {context.Pair}");
-                        Trace.WriteLine($"Market price statistics for {context.Pair}:");
-
-                        Trace.WriteLine($"Bid: {(c.PriceStatistics.HasHighestBid ? c.PriceStatistics.HighestBid.Display : "-")}");
-                        Trace.WriteLine($"Ask: {(c.PriceStatistics.HasLowestAsk ? c.PriceStatistics.LowestAsk.Display : "-")}");
-                        Trace.WriteLine($"Low: {(c.PriceStatistics.HasPrice24Low ? c.PriceStatistics.Price24Low.Display : "-")}");
-                        Trace.WriteLine($"High: {(c.PriceStatistics.HasPrice24High ? c.PriceStatistics.Price24High.Display : "-")}");
-                        Trace.WriteLine($"Volume 24h: {(c.Volume.HasVolume24Base ? c.Volume.HasVolume24Base.ToString(CultureInfo.InvariantCulture) : "-")}");
-                        Trace.WriteLine($"Quote volume 24h: {(c.Volume.HasVolume24Quote ? c.Volume.Volume24Quote.ToString(CultureInfo.InvariantCulture) : "-" )}\n");
-                    }
+                    InternalGetPriceAsync(provider, context, firstPriceLessThan1, true);
                 }
-                else if (provider is IDELETEPublicPricesProvider ips)
+
+                if (provider.PricingFeatures.HasBulk)
                 {
-                    var r = AsyncContext.Run(() => ips.GetPricesAsync(context));
-                    c = r?.MarketPrices?.FirstOrDefault();
+                    var context = new PublicPricesContext(pairs)
+                    {
+                        RequestStatistics = provider.PricingFeatures.Bulk.CanStatistics,
+                        RequestVolume = provider.PricingFeatures.Bulk.CanVolume
+                    };
+
+                    InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
                 }
-
-                Assert.IsTrue(c != null);
-                Assert.IsTrue(c.QuoteAsset.Equals(context.Pair.Asset1));
-                Assert.IsTrue(c.Price.Asset.Equals(context.Pair.Asset2));
-
-                if (lessThan1)//checks if the pair is reversed (price-wise)
-                    Assert.IsTrue(c.Price < 1, "Reverse check failed");
-                else
-                    Assert.IsTrue(c.Price > 1, "Reverse check failed");
-
-                Trace.WriteLine($"Asset: {c.QuoteAsset}, Price: {c.Price.Display}");
             }
             catch (Exception e)
             {
@@ -360,7 +404,7 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(pairs != null);
                 Assert.IsTrue(pairs.MarketPrices.Count > 0, "No market prices returned");
 
-                Assert.IsFalse(pairs.MissedPairs.Any(), $"Provider did not return:{pairs.MissedPairs.Aggregate("", (s, pair) => s +=  $" {pair},").TrimEnd(',')}");
+                Assert.IsFalse(pairs.MissedPairs.Any(), $"Provider did not return:{pairs.MissedPairs.Aggregate("", (s, pair) => s += $" {pair},").TrimEnd(',')}");
 
                 Trace.WriteLine("Latest prices:");
                 foreach (var pair in pairs.MarketPrices)
@@ -421,7 +465,7 @@ namespace Prime.Tests.Providers
 
         private async Task GetAddressesForAssetAsync(IDepositProvider provider, WalletAddressAssetContext context)
         {
-            if(context == null)
+            if (context == null)
                 return;
 
             try

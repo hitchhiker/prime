@@ -43,10 +43,10 @@ namespace Prime.Tests.Providers
         public override async Task TestGetPriceAsync()
         {
             var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
-            await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+            await base.TestGetPrice(context, true).ConfigureAwait(false);
 
             context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
-            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
+            await base.TestGetPrice(context, false).ConfigureAwait(false);
         }
 
         [TestMethod]

@@ -67,7 +67,7 @@ namespace Prime.Plugins.Services.Gdax
             return pairs;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures {Single = new PricingSingleFeatures{CanSatistics = true, CanVolume = true}};
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures {Single = new PricingSingleFeatures{CanStatistics = true, CanVolume = true}};
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)

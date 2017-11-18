@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.Kraken
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Bulk = new PricingBulkFeatures() { CanSatistics = true, CanVolume = true },
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true },
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;

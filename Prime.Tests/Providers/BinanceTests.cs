@@ -25,10 +25,24 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "LTC_BTC".ToAssetPairRaw(),
+                "BNT_BTC".ToAssetPairRaw(),
+                "SALT_ETH".ToAssetPairRaw(),
+                "SALT_BTC".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, true);
+        }
+
+        [TestMethod]
         public override async Task TestGetPriceAsync()
         {
             var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
-            await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+            await base.TestGetPrice(context, true).ConfigureAwait(false);
         }
 
         [TestMethod]
