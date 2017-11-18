@@ -118,7 +118,7 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(() => provider.GetCoinSnapshotAsync(context), nameof(GetCoinSnapshot), provider, context);
         }
 
-        public static Task<ApiResponse<VolumeDataExchanges>> GetAggVolumeDataAsync(IAggVolumeDataProvider provider, AggVolumeDataContext context)
+        public static Task<ApiResponse<NetworkPairVolumeData>> GetAggVolumeDataAsync(IAggVolumeDataProvider provider, AggVolumeDataContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetAggVolumeDataAsync(context), nameof(GetAggVolumeData), provider, context);
         }

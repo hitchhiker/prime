@@ -15,7 +15,7 @@ namespace plugins
 
         public override string AggregatorName => null;
 
-        public async Task<VolumeDataExchanges> GetAggVolumeDataAsync(AggVolumeDataContext context)
+        public async Task<NetworkPairVolumeData> GetAggVolumeDataAsync(AggVolumeDataContext context)
         {
             var pair = context.Pair;
 
@@ -25,7 +25,7 @@ namespace plugins
             if (apir.IsError() || apir.Data == null)
                 return null;
 
-            var vols = new VolumeDataExchanges(context.Pair);
+            var vols = new NetworkPairVolumeData(context.Pair);
 
             foreach (var i in apir.Data)
             {

@@ -28,7 +28,12 @@ namespace Prime.Core.Market
                 return dbn;
 
             var apidata = GetVolumeData(network, pair);
-            var rs = apidata?.ByNetworks.Get(network);
+            if (apidata == null)
+                return null;
+
+            data.Add(apidata);
+            data.SavePublic();
+            return apidata;
         }
 
         private NetworkPairVolume GetVolumeData(Network network, AssetPair pair)
