@@ -281,8 +281,6 @@ namespace Prime.Tests.Providers
                     Trace.WriteLine($"Ask: {(p.PriceStatistics.HasLowestAsk ? p.PriceStatistics.LowestAsk.Display : "-")}");
                     Trace.WriteLine($"Low: {(p.PriceStatistics.HasPrice24Low ? p.PriceStatistics.Price24Low.Display : "-")}");
                     Trace.WriteLine($"High: {(p.PriceStatistics.HasPrice24High ? p.PriceStatistics.Price24High.Display : "-")}");
-                    Trace.WriteLine($"Volume 24h: {(p.Volume.HasVolume24Base ? p.Volume.HasVolume24Base.ToString(CultureInfo.InvariantCulture) : "-")}");
-                    Trace.WriteLine($"Quote volume 24h: {(p.Volume.HasVolume24Quote ? p.Volume.Volume24Quote.ToString(CultureInfo.InvariantCulture) : "-")}\n");
                 }
 
                 if (pricingFeatures.CanVolume)
@@ -296,6 +294,8 @@ namespace Prime.Tests.Providers
                     if (p.Volume.HasVolume24Quote)
                         Trace.WriteLine($"Quote 24h volume: {p.Volume.Volume24Quote}");
                 }
+
+                Trace.WriteLine("");
             }
         }
 
@@ -305,7 +305,8 @@ namespace Prime.Tests.Providers
             {
                 if (provider.PricingFeatures.HasSingle)
                 {
-                    var context = new PublicPricesContext(pairs)
+                    Trace.WriteLine("\nSingle features test\n");
+                    var context = new PublicPriceContext(pairs.First())
                     {
                         RequestStatistics = provider.PricingFeatures.Single.CanStatistics,
                         RequestVolume = provider.PricingFeatures.Single.CanVolume
@@ -316,6 +317,7 @@ namespace Prime.Tests.Providers
 
                 if (provider.PricingFeatures.HasBulk)
                 {
+                    Trace.WriteLine("\nBulk features test\n");
                     var context = new PublicPricesContext(pairs)
                     {
                         RequestStatistics = provider.PricingFeatures.Bulk.CanStatistics,

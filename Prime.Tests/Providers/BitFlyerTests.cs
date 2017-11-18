@@ -19,6 +19,17 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetPricing()
+        { 
+            var pairs = new List<AssetPair>()
+            {
+                "ETH_BTC".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, true);
+        }
+
+        [TestMethod]
         public override async Task TestPublicApiAsync()
         {
             await base.TestPublicApiAsync().ConfigureAwait(false);
