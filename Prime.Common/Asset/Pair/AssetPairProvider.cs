@@ -40,6 +40,9 @@ namespace Prime.Common
 
             foreach (var kv in await GetNetworkPairsAsync(remain).ConfigureAwait(false))
             {
+                if (kv.Value == null)
+                    continue;
+
                 results.Add(kv.Key, kv.Value);
                 var ad = new AssetPairData(kv.Key, kv.Value);
                 ad.SavePublic();

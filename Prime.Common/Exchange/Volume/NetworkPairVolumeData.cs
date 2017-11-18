@@ -24,24 +24,37 @@ namespace Prime.Common
         [Bson]
         private List<NetworkPairVolume> Data { get; set; } = new List<NetworkPairVolume>();
 
-        public void AddRange(NetworkPairVolumeData data)
+        /// <summary>
+        /// return true if an insert occured
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public bool AddRange(NetworkPairVolumeData data)
         {
+            var i = false;
             foreach (var d in data)
-                Add(d);
+                i = i || Add(d);
+            return i;
         }
 
-        public void Add(NetworkPairVolume d)
+        /// <summary>
+        /// return true if an insert occured
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public bool Add(NetworkPairVolume d)
         {
             if (d.Network == null)
-                return;
+                return false;
 
             if (!d.Pair.EqualsOrReversed(Pair))
                 throw new ArgumentException($"Cannot add {nameof(NetworkPairVolume)} object to {nameof(NetworkPairVolumeData)} as it has the wrong {nameof(AssetPair)} '{d.Pair}'");
 
             Data.RemoveAll(x => x.Network.Id == d.Network.Id);
-            Data.Add(d.Pair.Reversed.Id == Pair.Id ? d.Reversed() : d);
+            Data.Add(d.Pair.Reversed.Id == Pair.Id ? d.Reversed : d);
 
             _byNetworks = null;
+            return true;
         }
 
         private Dictionary<Network, NetworkPairVolume> _byNetworks;
