@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.BitMex
 {
     // https://www.bitmex.com/api/explorer/
     public class BitMexProvider :
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider,IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider,IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider, IAssetPairVolumeProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -429,7 +429,7 @@ namespace Prime.Plugins.Services.BitMex
             };
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
@@ -439,12 +439,7 @@ namespace Prime.Plugins.Services.BitMex
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = rPrice.volume24h,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, rPrice.volume24h);
         }
     }
 }

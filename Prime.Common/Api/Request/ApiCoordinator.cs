@@ -64,5 +64,10 @@ namespace Prime.Common
         {
             return AsyncContext.Run(() => GetAggVolumeDataAsync(provider, context));
         }
+
+        public static ApiResponse<NetworkPairVolume> GetAssetPairVolume(IAssetPairVolumeProvider provider, VolumeContext context)
+        {
+            return AsyncContext.Run(() => GetAssetPairVolumeAsync(provider, context));
+        }
     }
 }

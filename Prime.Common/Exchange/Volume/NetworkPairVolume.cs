@@ -16,6 +16,12 @@ namespace Prime.Common
             Pair = pair;
         }
 
+        public NetworkPairVolume(Network network, AssetPair pair, decimal volume24) : this(network, pair)
+        {
+            HasVolume24Base = true;
+            Volume24Base = new Money(volume24, pair.Asset1);
+        }
+
         public NetworkPairVolume(Network network, AssetPair pair, decimal? vol24Base, decimal? vol24Quote = null) : this(network, pair)
         {
             HasVolume24Base = vol24Base != null;

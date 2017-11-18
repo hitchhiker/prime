@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Gdax
 {
     // https://docs.gdax.com/
-    public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider,IDELETEPublicPriceStatistics
+    public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider, IAssetPairVolumeProvider
     {
         private const string GdaxApiUrl = "https://api.gdax.com";
 
@@ -84,19 +84,14 @@ namespace Prime.Plugins.Services.Gdax
             });
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this, "-");
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = r.volume,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
     }
 }

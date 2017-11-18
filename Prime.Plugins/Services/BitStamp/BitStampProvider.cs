@@ -13,7 +13,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitStamp
 {
     // https://www.bitstamp.net/api/
-    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider
+    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider, IAssetPairVolumeProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
@@ -273,17 +273,12 @@ namespace Prime.Plugins.Services.BitStamp
             }
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = r.volume,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
     }
 }

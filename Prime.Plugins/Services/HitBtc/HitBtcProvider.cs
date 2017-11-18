@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.HitBtc
 {
     // https://api.hitbtc.com/
-    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -176,19 +176,14 @@ namespace Prime.Plugins.Services.HitBtc
             return balances;
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = r.volume,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, r.volume, r.volume_quote);
         }
     }
 }

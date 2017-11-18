@@ -15,6 +15,9 @@ namespace Prime.Utility
     {
         public static T2 Get<T1, T2>(this IReadOnlyCollection<KeyValuePair<T1, T2>> col, T1 key)
         {
+            if (col == null)
+                throw new ArgumentNullException("Collection is null when 'Getting' from Dictionary");
+
             if (col is IReadOnlyDictionary<T1, T2> rd)
                 return rd.Get(key);
 

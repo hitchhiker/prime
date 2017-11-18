@@ -121,10 +121,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override async Task TestGetVolumeAsync()
         {
-            var context = new VolumeContext()
-            {
-                Pair = "BTC_ETH".ToAssetPairRaw()
-            };
+            var context = new VolumeContext("BTC_ETH".ToAssetPairRaw());
 
             await base.TestGetVolumeAsync(context).ConfigureAwait(false);
         }

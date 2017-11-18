@@ -4,6 +4,6 @@ namespace Prime.Common
 {
     public interface IAssetPairVolumeProvider : IDescribesAssets
     {
-        Task<VolumeResult> GetVolumeAsync(VolumeContext context);
+        Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context);
     }
 }

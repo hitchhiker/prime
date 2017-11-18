@@ -11,7 +11,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Poloniex
 {
     // https://poloniex.com/support/api/
-    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IAssetPairVolumeProvider, IPublicPricingProvider, IAssetPairsProvider
+    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -321,7 +321,7 @@ namespace Prime.Plugins.Services.Poloniex
             return orderBook;
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);
@@ -334,12 +334,7 @@ namespace Prime.Plugins.Services.Poloniex
             if(!rVolumes.TryGetValue(context.Pair.Asset1.ShortCode, out var volume))
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = volume,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, volume);
         }
     }
 }

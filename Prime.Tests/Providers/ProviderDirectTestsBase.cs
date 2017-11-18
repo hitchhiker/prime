@@ -574,12 +574,12 @@ namespace Prime.Tests.Providers
 
             try
             {
-                var r = await provider.GetVolumeAsync(context).ConfigureAwait(false);
+                var r = await provider.GetAssetPairVolume(context).ConfigureAwait(false);
 
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");
 
-                Trace.WriteLine($"Period: {r.Period}, Pair: {r.Pair}, Volume: {r.Volume}");
+                Trace.WriteLine($"Network: {r.Network.Name}, Pair: {r.Pair}, Volume: {r.Volume24}");
             }
             catch (Exception e)
             {

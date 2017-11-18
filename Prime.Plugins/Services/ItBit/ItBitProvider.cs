@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.ItBit
 {
     // https://api.itbit.com/docs
-    public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider
+    public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider, IAssetPairVolumeProvider
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
@@ -77,19 +77,14 @@ namespace Prime.Plugins.Services.ItBit
             return new MarketPricesResult(price);
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, ""); 
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = r.volume24h,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, r.volume24h);
         }
     }
 }

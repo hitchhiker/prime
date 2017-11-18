@@ -122,5 +122,10 @@ namespace Prime.Common
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetAggVolumeDataAsync(context), nameof(GetAggVolumeData), provider, context);
         }
+
+        public static Task<ApiResponse<NetworkPairVolume>> GetAssetPairVolumeAsync(IAssetPairVolumeProvider provider, VolumeContext context)
+        {
+            return ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPairVolume(context), nameof(GetAssetPairVolume), provider, context);
+        }
     }
 }

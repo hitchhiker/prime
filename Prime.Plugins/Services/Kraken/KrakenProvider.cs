@@ -17,7 +17,7 @@ using AssetPair = Prime.Common.AssetPair;
 namespace Prime.Plugins.Services.Kraken
 {
     // https://www.kraken.com/help/api#public-market-data
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -481,7 +481,7 @@ namespace Prime.Plugins.Services.Kraken
             return orderBook;
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -491,12 +491,7 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = r.result.FirstOrDefault().Value.v[0],
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, r.result.FirstOrDefault().Value.v[0]);
         }
     }
 }

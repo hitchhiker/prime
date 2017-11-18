@@ -277,7 +277,7 @@ namespace Prime.Plugins.Services.Bittrex
             return orderBook;
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "-").ToLower();
@@ -288,12 +288,7 @@ namespace Prime.Plugins.Services.Bittrex
             if (summary == null || !remoteMarker.Equals(context.Pair))
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = summary.BaseVolume,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, summary.BaseVolume, summary.Volume);
         }
     }
 }

@@ -12,7 +12,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Coinone
 {
     // http://doc.coinone.co.kr/#api-Public
-    public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider
+    public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider, IAssetPairVolumeProvider
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -166,7 +166,7 @@ namespace Prime.Plugins.Services.Coinone
             return prices;
         }
 
-        public async Task<VolumeResult> GetVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -177,12 +177,7 @@ namespace Prime.Plugins.Services.Coinone
 
             CheckResponseErrors(r);
 
-            return new VolumeResult()
-            {
-                Pair = context.Pair,
-                Volume = r.volume,
-                Period = VolumePeriod.Day
-            };
+            return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
     }
 }
