@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Plugins.Services.Kraken;
 using AssetPair = Prime.Common.AssetPair;
@@ -18,41 +19,41 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public async Task TestAllAssetPairsPrices()
+        public void TestAllAssetPairsPrices()
         {
-            var pairs = await ((IAssetPairsProvider) Provider).GetAssetPairsAsync(new NetworkProviderContext()).ConfigureAwait(false);
+            var pairs = AsyncContext.Run(() => (IAssetPairsProvider) Provider).GetAssetPairsAsync(new NetworkProviderContext()).Result;
 
-            var prices = await ((IDELETEPublicPricesProvider) Provider).GetPricesAsync(new PublicPricesContext(pairs.ToList()))
-                .ConfigureAwait(false);
+            var prices = AsyncContext.Run(() => (IDELETEPublicPricesProvider) Provider).GetPricesAsync(new PublicPricesContext(pairs.ToList())).Result;
+                ;
 
             Assert.IsTrue(!prices.MissedPairs.Any());
             Assert.IsTrue(pairs.Count == prices.MarketPrices.Count);
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestGetBalancesAsync()
+        public override void TestGetBalances()
         {
-            await base.TestGetBalancesAsync().ConfigureAwait(false);
+            base.TestGetBalances();
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
-            await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+            base.TestGetPrice(context, true);
 
             context = new PublicPriceContext("BCH_EUR".ToAssetPairRaw());
-            await base.TestGetPriceAsync(context, false).ConfigureAwait(false);
+            base.TestGetPrice(context, false);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
+        public override void TestGetAssetPrices()
         {
             var context = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -61,11 +62,11 @@ namespace Prime.Tests.Providers
                 "XRP".ToAssetRaw()
             }, "BTC".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetPricesAsync()
+        public override void TestGetPrices()
         {
             var context = new PublicPricesContext(new List<AssetPair>()
             {
@@ -75,7 +76,7 @@ namespace Prime.Tests.Providers
                 "XRP_BTC".ToAssetPairRaw(),
             });
 
-            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetPrices(context);
 
             context = new PublicPricesContext(new List<AssetPair>()
             {
@@ -91,35 +92,35 @@ namespace Prime.Tests.Providers
                 "DASH_BTC".ToAssetPairRaw()
             });
 
-            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAddressesAsync()
+        public override void TestGetAddresses()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
 
             var context = new WalletAddressContext(UserContext.Current);
-            await base.TestGetAddressesAsync(context).ConfigureAwait(false);
+            base.TestGetAddresses(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAddressesForAssetAsync()
+        public override void TestGetAddressesForAsset()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
             var context = new WalletAddressAssetContext("MLN".ToAssetRaw(), UserContext.Current);
-            await base.TestGetAddressesForAssetAsync(context).ConfigureAwait(false);
+            base.TestGetAddressesForAsset(context);
         }
 
         [TestMethod]
-        public override async Task TestGetOhlcAsync()
+        public override void TestGetOhlc()
         {
             var context = new OhlcContext("ETC_ETH".ToAssetPairRaw(), TimeResolution.Minute, TimeRange.EveryDayTillNow);
-            await base.TestGetOhlcAsync(context).ConfigureAwait(false);
+            base.TestGetOhlc(context);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var pairs = new AssetPairs()
             {
@@ -129,23 +130,23 @@ namespace Prime.Tests.Providers
                 "XRP_BTC".ToAssetPairRaw(),
             };
 
-            await base.TestGetAssetPairsAsync(pairs).ConfigureAwait(false);
+            base.TestGetAssetPairs(pairs);
         }
 
         [TestMethod]
-        public override async Task TestApiAsync()
+        public override void TestApi()
         {
-            await base.TestApiAsync().ConfigureAwait(false);
+            base.TestApi();
         }
 
         [TestMethod]
-        public override async Task TestGetOrderBookAsync()
+        public override void TestGetOrderBook()
         {
             var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()));
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
 
             context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "USD".ToAssetRaw()), 100);
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
         }
     }
 }

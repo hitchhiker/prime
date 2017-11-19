@@ -58,8 +58,9 @@ namespace Prime.Plugins.Services.BitMarket
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Single = new PricingSingleFeatures() { CanSatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures()
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
+            // Bulk = new PricingBulkFeatures()
+            // BUG: why do we set PricingBulkFeatures if it supports only GetTickerAsync for 1 asset pair?
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;

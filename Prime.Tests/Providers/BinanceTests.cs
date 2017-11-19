@@ -11,7 +11,7 @@ using Prime.Plugins.Services.Binance;
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class BinanceTests : ProviderDirectTestsBase
+    public class BinanceTests : ProviderDirectTestsBase 
     {
         public BinanceTests()
         {
@@ -19,20 +19,34 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override async Task TestPublicApiAsync()
+        public override void TestPublicApi()
         {
-            await base.TestPublicApiAsync().ConfigureAwait(false);
+            base.TestPublicApi();
         }
 
         [TestMethod]
-        public override async Task TestGetPriceAsync()
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "LTC_BTC".ToAssetPairRaw(),
+                "BNT_BTC".ToAssetPairRaw(),
+                "SALT_ETH".ToAssetPairRaw(),
+                "SALT_BTC".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, true);
+        }
+
+        [TestMethod]
+        public override void TestGetPrice()
         {
             var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
-            await base.TestGetPriceAsync(context, true).ConfigureAwait(false);
+            base.TestGetPrice(context, true);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPairsAsync()
+        public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()
             {
@@ -44,11 +58,11 @@ namespace Prime.Tests.Providers
                 "ETC_BTC".ToAssetPairRaw()
             };
 
-            await base.TestGetAssetPairsAsync(requiredPairs).ConfigureAwait(false);
+            base.TestGetAssetPairs(requiredPairs);
         }
 
         [TestMethod]
-        public override async Task TestGetAssetPricesAsync()
+        public override void TestGetAssetPrices()
         {
             var context = new PublicAssetPricesContext(new List<Asset>()
             {
@@ -56,11 +70,11 @@ namespace Prime.Tests.Providers
                 "ETC".ToAssetRaw()
             }, "BTC".ToAssetRaw());
 
-            await base.TestGetAssetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetAssetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetPricesAsync()
+        public override void TestGetPrices()
         {
             var context = new PublicPricesContext(new List<AssetPair>()
             {
@@ -70,45 +84,45 @@ namespace Prime.Tests.Providers
                 "SALT_BTC".ToAssetPairRaw()
             });
 
-            await base.TestGetPricesAsync(context).ConfigureAwait(false);
+            base.TestGetPrices(context);
         }
 
         [TestMethod]
-        public override async Task TestGetOrderBookAsync()
+        public override void TestGetOrderBook()
         {
             var context = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()));
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
 
             context = new OrderBookContext(new AssetPair("BNT".ToAssetRaw(), "BTC".ToAssetRaw()), 20);
-            await base.TestGetOrderBookAsync(context).ConfigureAwait(false);
+            base.TestGetOrderBook(context);
         }
 
         [TestMethod]
-        public override async Task TestApiAsync()
+        public override void TestApi()
         {
-            await base.TestApiAsync().ConfigureAwait(false);
+            base.TestApi();
         }
 
         [TestMethod]
-        public override async Task TestGetBalancesAsync()
+        public override void TestGetBalances()
         {
-            await base.TestGetBalancesAsync().ConfigureAwait(false);
+            base.TestGetBalances();
         }
 
         [TestMethod]
-        public override async Task TestGetOhlcAsync()
+        public override void TestGetOhlc()
         {
             var context = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
-            await base.TestGetOhlcAsync(context).ConfigureAwait(false);
+            base.TestGetOhlc(context);
         }
 
         [TestMethod]
-        public override async Task TestGetVolumeAsync()
+        public override void TestGetVolume()
         {
             var context = new VolumeContext("BNT_BTC".ToAssetPairRaw());
-            
-            await base.TestGetVolumeAsync(context).ConfigureAwait(false);
+
+            base.TestGetVolume(context);
         }
     }
 }

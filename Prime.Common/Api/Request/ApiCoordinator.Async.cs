@@ -24,7 +24,7 @@ namespace Prime.Common
 
             channel = channel ?? (tryBulk ? features.Single : (PricingFeaturesItemBase)features.Bulk);
 
-            if (context.RequestStatistics && !channel.CanSatistics)
+            if (context.RequestStatistics && !channel.CanStatistics)
                 throw new ArgumentException($"This provider {provider.Title} cannot provide statistics for '{channel.GetType().Name}'");
 
             if (context.RequestVolume && !channel.CanVolume)
