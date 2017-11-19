@@ -70,7 +70,8 @@ namespace Prime.Plugins.Services.BitStamp
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures()
+            // Bulk = new PricingBulkFeatures()
+            // TODO: commented out because there is no multiple prices end point.
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;

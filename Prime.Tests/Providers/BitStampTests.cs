@@ -24,6 +24,17 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "BTC_USD".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, false);
+        }
+
+        [TestMethod]
         public override void TestApi()
         {
            base.TestApi();
