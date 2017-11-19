@@ -4,7 +4,7 @@
     {
         private PriceStatistics() { }
 
-        public PriceStatistics(Network network, Asset quoteAsset, decimal? lowestAsk, decimal? highestBid, decimal? price24Low, decimal? price24High)
+        public PriceStatistics(Network network, Asset quoteAsset, decimal? lowestAsk = null, decimal? highestBid = null, decimal? price24Low = null, decimal? price24High = null)
         {
             Network = network;
 
