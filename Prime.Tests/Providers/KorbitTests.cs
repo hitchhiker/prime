@@ -38,14 +38,6 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("BTC_KRW".ToAssetPairRaw());
-
-            base.TestGetPrice(context, false);
-        }
-
-        [TestMethod]
         public override void TestGetOrderBook()
         {
             var context = new OrderBookContext(new AssetPair("BTC", "KRW"), 10);

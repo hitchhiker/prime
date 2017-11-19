@@ -125,7 +125,7 @@ namespace Prime.Plugins.Services.Bithumb
                 throw new NoAssetPairException(context.Pair, this);
 
             var data = r.data;
-
+            
             var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
             {
                 //TODO: HH: Are you sure 'sell_price' == Lowest Ask -> I don't think it does. Leave null if not

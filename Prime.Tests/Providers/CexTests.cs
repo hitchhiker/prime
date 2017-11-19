@@ -38,40 +38,6 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
-            base.TestGetPrice(context, false);
-        }
-
-        [TestMethod]
-        public override void TestGetPrices()
-        {
-            var context = new PublicPricesContext(new List<AssetPair>()
-            {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_EUR".ToAssetPairRaw(),
-                "BTC_RUB".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw()
-            });
-            base.TestGetPrices(context);
-        }
-
-        [TestMethod]
-        public override void TestGetAssetPrices()
-        {
-            var context = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "GHS".ToAssetRaw(),
-                "ZEC".ToAssetRaw(),
-                "DASH".ToAssetRaw(),
-                "BCH".ToAssetRaw()
-            }, Asset.Btc);
-
-            base.TestGetAssetPrices(context);
-        }
-
-        [TestMethod]
         public override void TestGetVolume()
         {
             var context = new VolumeContext("BTC_USD".ToAssetPairRaw());

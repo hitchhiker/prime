@@ -70,7 +70,11 @@ namespace Prime.Plugins.Services.TheRockTrading
             return null;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true }
+        };
+
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)

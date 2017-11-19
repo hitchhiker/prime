@@ -18,16 +18,19 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestPublicApi()
+        public override void TestGetPricing()
         {
-            base.TestPublicApi();
+            var pairs = new List<AssetPair>()
+            {
+                "eth_btc".ToAssetPairRaw()
+            };
+            base.TestGetPricing(pairs, true);
         }
 
         [TestMethod]
-        public override void TestGetPrice()
+        public override void TestPublicApi()
         {
-            var context = new PublicPriceContext("eth_btc".ToAssetPairRaw());
-            base.TestGetPrice(context, true);
+            base.TestPublicApi();
         }
 
         [TestMethod]

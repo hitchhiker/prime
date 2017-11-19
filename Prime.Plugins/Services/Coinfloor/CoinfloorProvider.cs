@@ -53,7 +53,11 @@ namespace Prime.Plugins.Services.Coinfloor
             return r != null;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true }
+        };
+
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
@@ -63,7 +67,11 @@ namespace Prime.Plugins.Services.Coinfloor
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last));
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
+            });
         }
         
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

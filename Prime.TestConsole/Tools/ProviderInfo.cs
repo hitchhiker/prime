@@ -11,13 +11,11 @@ namespace Prime.TestConsole.Tools
     {
         private List<Type> _supportedInterfaces = new List<Type>()
         {
-            typeof(IDELETEPublicPriceStatistics),
+            typeof(IPublicPricingProvider),
             typeof(IDepositProvider),
             typeof(IOrderBookProvider),
             typeof(IBalanceProvider),
             typeof(IOhlcProvider),
-            typeof(IDELETEPublicPricesProvider),
-            typeof(IDELETEPublicPriceProvider),
             typeof(IAssetPairsProvider),
             typeof(IAssetPairVolumeProvider),
             typeof(IWithdrawalPlacementProviderExtended),

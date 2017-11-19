@@ -42,13 +42,5 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(context);
         }
-
-        [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("BTC_EUR".ToAssetPairRaw());
-
-            base.TestGetPrice(context, false);
-        }
     }
 }

@@ -24,10 +24,16 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestGetPrice()
+        public override void TestGetPricing()
         {
-            var context = new PublicPriceContext("BTC_BLR".ToAssetPairRaw());
-            base.TestGetPrice(context, false);
+            var pairs = new List<AssetPair>()
+            {
+                "BTC_BLR".ToAssetPairRaw(),
+                "LTC_BLR".ToAssetPairRaw(),
+                "BCH_BLR".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, false);
         }
 
         [TestMethod]
