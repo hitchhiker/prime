@@ -39,13 +39,6 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
-            base.TestGetPrice(context, true);
-        }
-
-        [TestMethod]
         public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()
@@ -59,32 +52,6 @@ namespace Prime.Tests.Providers
             };
 
             base.TestGetAssetPairs(requiredPairs);
-        }
-
-        [TestMethod]
-        public override void TestGetAssetPrices()
-        {
-            var context = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "BNT".ToAssetRaw(),
-                "ETC".ToAssetRaw()
-            }, "BTC".ToAssetRaw());
-
-            base.TestGetAssetPrices(context);
-        }
-
-        [TestMethod]
-        public override void TestGetPrices()
-        {
-            var context = new PublicPricesContext(new List<AssetPair>()
-            {
-                "BNT_ETH".ToAssetPairRaw(),
-                "BNT_BTC".ToAssetPairRaw(),
-                "SALT_ETH".ToAssetPairRaw(),
-                "SALT_BTC".ToAssetPairRaw()
-            });
-
-            base.TestGetPrices(context);
         }
 
         [TestMethod]

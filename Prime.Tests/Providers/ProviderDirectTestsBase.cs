@@ -16,9 +16,6 @@ namespace Prime.Tests.Providers
 {
     public abstract class ProviderDirectTestsBase
     {
-        [Obsolete]
-        protected PublicPriceContext PublicPriceContext { get; set; }
-
         public INetworkProvider Provider { get; protected set; }
 
         #region Wrappers
@@ -52,31 +49,6 @@ namespace Prime.Tests.Providers
             var p = IsType<IPublicPricingProvider>();
             if (p.Success)
                 GetPricing(p.Provider, pairs, firstPriceLessThan1);
-        }
-
-        public virtual void TestGetPrice() { }
-        [Obsolete("Do not run this, it will break. Will be deleted soon.")]
-        public void TestGetPrice(PublicPriceContext context, bool lessThan1)
-        {
-            var p = IsType<IPublicPricingProvider>();
-            if (p.Success)
-                GetPricing(p.Provider, null, lessThan1);
-        }
-
-        public virtual void TestGetAssetPrices() { }
-        public virtual void TestGetAssetPrices(PublicAssetPricesContext context)
-        {
-            var p = IsType<IDELETEPublicPricesProvider>();
-            if (p.Success)
-                GetAssetPrices(p.Provider, context);
-        }
-
-        public virtual void TestGetPrices() { }
-        public virtual void TestGetPrices(PublicPricesContext context)
-        {
-            var p = IsType<IDELETEPublicPricesProvider>();
-            if (p.Success)
-                GetPrices(p.Provider, context);
         }
 
         public virtual void TestGetAssetPairs() { }
@@ -346,31 +318,6 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void GetAssetPrices(IDELETEPublicAssetPricesProvider provider, PublicAssetPricesContext context)
-        {
-            if (context == null)
-                return;
-
-            try
-            {
-                var c = AsyncContext.Run(() => provider.GetAssetPricesAsync(context));
-
-                Assert.IsNotNull(c);
-                Assert.IsTrue(c.MarketPrices.Count == context.Assets.Count);
-
-                Assert.IsFalse(c.MissedPairs.Any(), $"Provider did not return:{c.MissedPairs.Aggregate("", (s, pair) => s += $" {pair},").TrimEnd(',')}");
-
-                foreach (var price in c.MarketPrices)
-                {
-                    Trace.WriteLine($"Latest price for {price.QuoteAsset}: {price.Price.Display}");
-                }
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
         protected void GetAssetPairs(IAssetPairsProvider provider, AssetPairs requiredPairs)
         {
             var ctx = new NetworkProviderContext();
@@ -399,32 +346,6 @@ namespace Prime.Tests.Providers
                 foreach (var pair in pairs)
                 {
                     Trace.WriteLine(pair);
-                }
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
-        private void GetPrices(IDELETEPublicPricesProvider provider, PublicPricesContext context)
-        {
-            if (context == null)
-                return;
-
-            try
-            {
-                var pairs = AsyncContext.Run(() => provider.GetPricesAsync(context));
-
-                Assert.IsTrue(pairs != null);
-                Assert.IsTrue(pairs.MarketPrices.Count > 0, "No market prices returned");
-
-                Assert.IsFalse(pairs.MissedPairs.Any(), $"Provider did not return:{pairs.MissedPairs.Aggregate("", (s, pair) => s += $" {pair},").TrimEnd(',')}");
-
-                Trace.WriteLine("Latest prices:");
-                foreach (var pair in pairs.MarketPrices)
-                {
-                    Trace.WriteLine($"Quote asset: {pair.QuoteAsset}, Price: {pair.Price.Display}");
                 }
             }
             catch (Exception e)

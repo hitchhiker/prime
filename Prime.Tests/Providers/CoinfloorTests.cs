@@ -23,13 +23,6 @@ namespace Prime.Tests
         }
 
         [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("xbt_usd".ToAssetPairRaw());
-            base.TestGetPrice(context, false);
-        }
-
-        [TestMethod]
         public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()

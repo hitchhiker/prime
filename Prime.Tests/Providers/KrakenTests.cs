@@ -23,8 +23,7 @@ namespace Prime.Tests.Providers
         {
             var pairs = AsyncContext.Run(() => (IAssetPairsProvider) Provider).GetAssetPairsAsync(new NetworkProviderContext()).Result;
 
-            var prices = AsyncContext.Run(() => (IDELETEPublicPricesProvider) Provider).GetPricesAsync(new PublicPricesContext(pairs.ToList())).Result;
-                ;
+            var prices = AsyncContext.Run(() => (IPublicPricingProvider) Provider).GetPricingAsync(new PublicPricesContext(pairs.ToList())).Result;
 
             Assert.IsTrue(!prices.MissedPairs.Any());
             Assert.IsTrue(pairs.Count == prices.MarketPrices.Count);
@@ -40,59 +39,6 @@ namespace Prime.Tests.Providers
         public override void TestGetBalances()
         {
             base.TestGetBalances();
-        }
-
-        [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("LTC_BTC".ToAssetPairRaw());
-            base.TestGetPrice(context, true);
-
-            context = new PublicPriceContext("BCH_EUR".ToAssetPairRaw());
-            base.TestGetPrice(context, false);
-        }
-
-        [TestMethod]
-        public override void TestGetAssetPrices()
-        {
-            var context = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "ETH".ToAssetRaw(),
-                "LTC".ToAssetRaw(),
-                "XRP".ToAssetRaw()
-            }, "BTC".ToAssetRaw());
-
-            base.TestGetAssetPrices(context);
-        }
-
-        [TestMethod]
-        public override void TestGetPrices()
-        {
-            var context = new PublicPricesContext(new List<AssetPair>()
-            {
-                "ETC_ETH".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "XRP_BTC".ToAssetPairRaw(),
-            });
-
-            base.TestGetPrices(context);
-
-            context = new PublicPricesContext(new List<AssetPair>()
-            {
-                "BCH_EUR".ToAssetPairRaw(),
-                "BCH_USD".ToAssetPairRaw(),
-                "BCH_BTC".ToAssetPairRaw(),
-                "EOS_ETH".ToAssetPairRaw(),
-                "EOS_BTC".ToAssetPairRaw(),
-                "GNO_ETH".ToAssetPairRaw(),
-                "GNO_BTC".ToAssetPairRaw(),
-                "DASH_EUR".ToAssetPairRaw(),
-                "DASH_USD".ToAssetPairRaw(),
-                "DASH_BTC".ToAssetPairRaw()
-            });
-
-            base.TestGetPrices(context);
         }
 
         [TestMethod]

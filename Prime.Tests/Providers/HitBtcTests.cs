@@ -53,37 +53,5 @@ namespace Prime.Tests.Providers
         {
             base.TestGetBalances();
         }
-
-        [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
-            base.TestGetPrice(context, false);
-        }
-
-        [TestMethod]
-        public override void TestGetAssetPrices()
-        {
-            var context = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "DOGE".ToAssetRaw(),
-                "NXT".ToAssetRaw(),
-                "STEEM".ToAssetRaw()
-            }, "BTC".ToAssetRaw());
-
-            base.TestGetAssetPrices(context);
-        }
-
-        [TestMethod]
-        public override void TestGetPrices()
-        {
-            var context = new PublicPricesContext(new List<AssetPair>()
-            {
-                "DOGE_BTC".ToAssetPairRaw(),
-                "NXT_BTC".ToAssetPairRaw(),
-                "STEEM_BTC".ToAssetPairRaw()
-            });
-            base.TestGetPrices(context);
-        }
     }
 }

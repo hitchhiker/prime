@@ -89,40 +89,6 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestGetPrice()
-        {
-            var context = new PublicPriceContext(new AssetPair("USDT", "BTC"));
-            TestGetPrice(context, true);
-        }
-
-        [TestMethod]
-        public override void TestGetAssetPrices()
-        {
-            var context = new PublicAssetPricesContext(new List<Asset>()
-            {
-                "BTC".ToAssetRaw(),
-                "USDT".ToAssetRaw(),
-                "XMR".ToAssetRaw()
-            }, "LTC".ToAssetRaw());
-
-            base.TestGetPrices(context);
-        }
-
-        [TestMethod]
-        public override void TestGetPrices()
-        {
-            var context = new PublicPricesContext(new List<AssetPair>()
-            {
-                "BTC_LTC".ToAssetPairRaw(),
-                "BTC_NXT".ToAssetPairRaw(),
-                "BTC_ETH".ToAssetPairRaw()
-            });
-
-            // TODO: re-implement.
-            base.TestGetPrices(context);
-        }
-
-        [TestMethod]
         public override void TestGetOhlc()
         {
             // BUG: supports only 1 day.
