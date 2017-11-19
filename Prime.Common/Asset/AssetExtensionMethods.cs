@@ -127,14 +127,14 @@ namespace Prime.Common
             return 0;
         }
 
-        public static Money FxConvert(this IEnumerable<MarketPrice> prices, Money money, Asset quote)
+        public static Money? FxConvert(this IEnumerable<MarketPrice> prices, Money money, Asset quote, Money? defaultValue = null)
         {
             if (money.Asset.Id == quote.Id)
                 return money;
 
             var fx = prices.Fx(new AssetPair(money.Asset, quote));
             if (fx == 0)
-                return Money.Zero;
+                return defaultValue;
 
             return new Money(fx * money.ToDecimalValue(), quote);
         }

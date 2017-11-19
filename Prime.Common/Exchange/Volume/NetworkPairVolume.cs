@@ -9,7 +9,7 @@ namespace Prime.Common
     {
         private NetworkPairVolume() { }
 
-        public NetworkPairVolume(Network network, AssetPair pair)
+        private NetworkPairVolume(Network network, AssetPair pair)
         {
             UtcCreated = DateTime.UtcNow;
             Network = network;
@@ -69,12 +69,30 @@ namespace Prime.Common
         [Bson]
         public bool HasVolume24Quote { get; private set; }
 
+        [Bson]
+        public bool HasVolume24BaseBtc { get; private set; }
+
+        [Bson]
+        public bool HasVolume24QuoteBtc { get; private set; }
+
         public Money Volume24 => HasVolume24Base ? Volume24Base : Volume24Quote;
 
-        public void ApplyBtcVolume(IEnumerable<MarketPrice> prices)
+        public Money? Volume24Btc => HasVolume24BaseBtc ? Volume24BaseBtc : (HasVolume24QuoteBtc ? Volume24QuoteBtc : null);
+
+        public bool ApplyBtcVolume(IEnumerable<MarketPrice> prices)
         {
-            Volume24BaseBtc = prices.FxConvert(Volume24Base, Asset.Btc);
-            Volume24QuoteBtc = prices.FxConvert(Volume24Quote, Asset.Btc);
+            var failed = false;
+
+            if (HasVolume24Base && !HasVolume24BaseBtc)
+                failed = (Volume24BaseBtc = prices.FxConvert(Volume24Base, Asset.Btc)) == null;
+
+            if (HasVolume24Quote && !HasVolume24QuoteBtc)
+                failed = (Volume24QuoteBtc = prices.FxConvert(Volume24Quote, Asset.Btc)) == null || failed;
+
+            HasVolume24BaseBtc = Volume24BaseBtc != null;
+            HasVolume24QuoteBtc = Volume24QuoteBtc != null;
+
+            return !failed;
         }
 
         public Money VolumeFor(Asset asset)
@@ -87,20 +105,7 @@ namespace Prime.Common
 
             throw new ArgumentException($"'{asset.ShortCode}' is not a member of the pair '{Pair}' in method '{nameof(VolumeFor)}'");
         }
-
-        public Money MinimumVolume(IEnumerable<MarketPrice> prices, Asset asset)
-        {
-            var v1 = prices.FxConvert(Volume24Base, asset);
-            var v2 = prices.FxConvert(Volume24Quote, asset);
-
-            if (v1 == 0 && v2 != 0)
-                return v2;
-            if (v2 == 0 && v1 != 0)
-                return v1;
-
-            return v1 < v2 ? v1 : v2;
-        }
-
+        
         private NetworkPairVolume _reversed;
         public NetworkPairVolume Reversed => _reversed ?? (_reversed = new NetworkPairVolume(Network, Pair.Reversed, HasVolume24Quote ? Volume24Quote : (decimal?)null, HasVolume24Base ? Volume24Base : (decimal?)null) {UtcCreated = UtcCreated, _reversed = this});
 
