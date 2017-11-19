@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -44,12 +45,12 @@ namespace Prime.Plugins.Services.TheRockTrading
         {
             return Task.Run(() => true);
         }
-        
+
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
+            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -76,6 +77,14 @@ namespace Prime.Plugins.Services.TheRockTrading
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
+            return await GetPricesAsync(context).ConfigureAwait(false);
+        }
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
@@ -85,6 +94,34 @@ namespace Prime.Plugins.Services.TheRockTrading
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
+        }
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+
+            var prices = new MarketPricesResult();
+
+            foreach (var pair in context.Pairs)
+            {
+                var currentTicker = r.tickers.FirstOrDefault(x => x.fund_id.ToAssetPair(this, 3).Equals(pair));
+
+                if (currentTicker == null)
+                {
+                    prices.MissedPairs.Add(pair);
+                }
+                else
+                {
+                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                    {
+                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
+                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
+                    });
+                }
+            }
+
+            return prices;
         }
     }
 }

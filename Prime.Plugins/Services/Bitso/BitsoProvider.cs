@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -59,32 +60,62 @@ namespace Prime.Plugins.Services.Bitso
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
+            return await GetPricesAsync(context).ConfigureAwait(false);
+        }
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+
+            var prices = new MarketPricesResult();
+
+            foreach (var pair in context.Pairs)
+            {
+                var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this, '_').Equals(pair));
+
+                if (currentTicker == null)
+                {
+                    prices.MissedPairs.Add(pair);
+                }
+                else
+                {
+                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                    {
+                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
+                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
+                    });
+                }
+            }
+
+            return prices;
+        }
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            CheckResponseErrors(r);
-
             var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid, r.payload.low, r.payload.high),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid,
+                    r.payload.low, r.payload.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, null, r.payload.volume)
             };
 
             return new MarketPricesResult(price);
         }
 
-        private void CheckResponseErrors<T>(BitsoSchema.BaseResponse<T> response)
-        {
-            if(!response.success)
-                throw new ApiResponseException("Error occurred", this);
-        }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
+            var r = await api.GetAssetPairs().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 

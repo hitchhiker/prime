@@ -12,6 +12,6 @@ namespace Prime.Plugins.Services.TheRockTrading
         Task<TheRockTradingSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/funds/tickers")]
-        Task<TheRockTradingSchema.AllTickersResponse> GetAssetPairsAsync();
+        Task<TheRockTradingSchema.AllTickersResponse> GetAllTickersAsync();
     }
 }

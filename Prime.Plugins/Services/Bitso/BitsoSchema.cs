@@ -12,13 +12,19 @@ namespace Prime.Plugins.Services.Bitso
             public T payload;
         }
 
-        internal class TickerResponse : BaseResponse<TickerEntryResponse>
+        internal class AllTickerResponse : BaseResponse<TickerEntryResponse[]>
         {
             
         }
 
+        internal class TickerResponse : BaseResponse<TickerEntryResponse>
+        {
+
+        }
+
         internal class TickerEntryResponse
         {
+            public string book;
             public decimal last;
             public decimal high;
             public decimal low;
