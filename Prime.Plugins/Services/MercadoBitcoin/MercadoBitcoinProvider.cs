@@ -58,7 +58,11 @@ namespace Prime.Plugins.Services.MercadoBitcoin
             return null;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true }
+        };
+
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
@@ -67,7 +71,11 @@ namespace Prime.Plugins.Services.MercadoBitcoin
             var baseAsset = context.Pair.Asset1;
             var r = await api.GetTickerAsync(baseAsset.ShortCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last));
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell, r.ticker.buy, r.ticker.low, r.ticker.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.vol)
+            });
         }
     }
 }

@@ -49,7 +49,11 @@ namespace Prime.Plugins.Services.Bitso
             return r.Count > 0;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true }
+        };
+
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
@@ -65,6 +69,7 @@ namespace Prime.Plugins.Services.Bitso
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid, r.payload.low, r.payload.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, null, r.payload.volume)
             };
+
             return new MarketPricesResult(price);
         }
 

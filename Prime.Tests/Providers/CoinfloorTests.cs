@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +21,20 @@ namespace Prime.Tests
         public override void TestPublicApi()
         {
             base.TestPublicApi();
+        }
+
+        [TestMethod]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "XBT_USD".ToAssetPairRaw(),
+                "XBT_GBP".ToAssetPairRaw(),
+                "XBT_EUR".ToAssetPairRaw(),
+                "XBT_PLN".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, false);
         }
 
         [TestMethod]

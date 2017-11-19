@@ -24,6 +24,19 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "BTC_BLR".ToAssetPairRaw(),
+                "LTC_BLR".ToAssetPairRaw(),
+                "BCH_BLR".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, false);
+        }
+
+        [TestMethod]
         public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()

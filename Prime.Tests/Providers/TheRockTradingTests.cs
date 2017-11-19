@@ -18,6 +18,29 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "LTC_EUR".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "BTC_XRP".ToAssetPairRaw(),
+                "EUR_XRP".ToAssetPairRaw(),
+                "USD_XRP".ToAssetPairRaw(),
+                "PPC_EUR".ToAssetPairRaw(),
+                "PPC_BTC".ToAssetPairRaw(),
+                "ETH_EUR".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "ZEC_BTC".ToAssetPairRaw(),
+                "ZEC_EUR".ToAssetPairRaw(),
+                "BCH_BTC".ToAssetPairRaw()
+            };
+
+            base.TestGetPricing(pairs, false);
+        }
+
+        [TestMethod]
         public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()
