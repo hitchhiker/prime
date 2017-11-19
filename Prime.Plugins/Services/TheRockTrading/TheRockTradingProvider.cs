@@ -55,11 +55,7 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             foreach (var rCurrentTicker in r.tickers)
             {
-                if (rCurrentTicker.fund_id.Length >= 6)
-                {
-                    //Adds an underscore between the assets.
-                    pairs.Add(rCurrentTicker.fund_id.Insert(3, "_").ToAssetPairRaw());
-                }
+                pairs.Add(rCurrentTicker.fund_id.ToAssetPair(this, 3));
             }
 
             return pairs;
