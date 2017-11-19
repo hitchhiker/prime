@@ -248,7 +248,10 @@ namespace Prime.Tests.Providers
         {
             var r = AsyncContext.Run(() => provider.GetPricingAsync(context));
 
-            Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod, "Single price request was completed using multiple prices endpoint");
+            Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod,
+                runSingle
+                    ? "Single price request was completed using multiple prices endpoint"
+                    : "Multiple price request was completed using single price endpoint");
             Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + r.MissedPairs.Aggregate("", (s, pair) => s += pair + ", ").TrimEnd(','));
 
             Assert.IsTrue(r.FirstPrice != null);
@@ -256,9 +259,9 @@ namespace Prime.Tests.Providers
             Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
 
             if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
-                Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed");
+                Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
             else
-                Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed");
+                Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
 
             Trace.WriteLine($"First asset: {r.FirstPrice}");
 
@@ -275,10 +278,18 @@ namespace Prime.Tests.Providers
 
                     Trace.WriteLine($"Market price statistics for {context.Pair}:");
 
-                    Trace.WriteLine($"Bid: {(p.PriceStatistics.HasHighestBid ? p.PriceStatistics.HighestBid.Display : "-")}");
-                    Trace.WriteLine($"Ask: {(p.PriceStatistics.HasLowestAsk ? p.PriceStatistics.LowestAsk.Display : "-")}");
-                    Trace.WriteLine($"Low: {(p.PriceStatistics.HasPrice24Low ? p.PriceStatistics.Price24Low.Display : "-")}");
-                    Trace.WriteLine($"High: {(p.PriceStatistics.HasPrice24High ? p.PriceStatistics.Price24High.Display : "-")}");
+                    Trace.WriteLine(
+                        $"Bid: {(p.PriceStatistics.HasHighestBid ? p.PriceStatistics.HighestBid.Display : "-")}");
+                    Trace.WriteLine(
+                        $"Ask: {(p.PriceStatistics.HasLowestAsk ? p.PriceStatistics.LowestAsk.Display : "-")}");
+                    Trace.WriteLine(
+                        $"Low: {(p.PriceStatistics.HasPrice24Low ? p.PriceStatistics.Price24Low.Display : "-")}");
+                    Trace.WriteLine(
+                        $"High: {(p.PriceStatistics.HasPrice24High ? p.PriceStatistics.Price24High.Display : "-")}");
+                }
+                else
+                {
+                    Assert.IsTrue(!p.HasStatistics, $"Provider returns statistics but did not announce it - {context.Pair}");
                 }
 
                 if (pricingFeatures.CanVolume)
@@ -291,6 +302,10 @@ namespace Prime.Tests.Providers
 
                     if (p.Volume.HasVolume24Quote)
                         Trace.WriteLine($"Quote 24h volume: {p.Volume.Volume24Quote}");
+                }
+                else
+                {
+                    Assert.IsTrue(!p.HasVolume, $"Provider returns volume but did not announce it - {context.Pair}");
                 }
 
                 Trace.WriteLine("");
