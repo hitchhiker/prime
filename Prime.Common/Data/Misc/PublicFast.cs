@@ -5,6 +5,11 @@ namespace Prime.Common
 {
     public class PublicFast
     {
+        public static void Delete<T>(ObjectId id)
+        {
+            PublicContext.I.GetCollection<T>().Delete(id);
+        }
+
         public static T GetCreate<T>(ObjectId id, Func<T> create = null, Func<T,bool> confirm = null) where T : IModelBase
         {
             var e = PublicContext.I.As<T>().FirstOrDefault(x => x.Id == id);

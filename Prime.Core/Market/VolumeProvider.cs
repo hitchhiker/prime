@@ -66,10 +66,10 @@ namespace Prime.Core.Market
             return vol;
         }
 
-        public (UniqueList<NetworkPairVolume> volume, Dictionary<AssetPair, UniqueList<Network>> missing) GetAllVolume(Dictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
+        public (UniqueList<NetworkPairVolume> volume, Dictionary<Network, UniqueList<AssetPair>> missing) GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
         {
             var volume = new UniqueList<NetworkPairVolume>();
-            var missing = new Dictionary<AssetPair, UniqueList<Network>>();
+            var missing = new Dictionary<Network, UniqueList<AssetPair>>();
             foreach (var network in pairsByNetwork.Keys)
             {
                 foreach (var pair in pairsByNetwork[network])
@@ -77,7 +77,7 @@ namespace Prime.Core.Market
                     onPull?.Invoke(network, pair);
                     var r = GetVolume(network, pair, true);
                     if (r == null)
-                        missing.GetOrAdd(pair, (k) => new UniqueList<Network>()).Add(network);
+                        missing.GetOrAdd(network, (k) => new UniqueList<AssetPair>()).Add(pair);
                     else
                         volume.Add(r);
                     afterPull?.Invoke(network, pair, r);
@@ -88,6 +88,11 @@ namespace Prime.Core.Market
             }
 
             return (volume , missing);
+        }
+
+        public static void Clear(ObjectId id)
+        {
+            PublicFast.Delete<VolumeData>(id);
         }
     }
 }
