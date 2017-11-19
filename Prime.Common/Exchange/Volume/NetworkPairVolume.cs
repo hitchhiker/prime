@@ -107,7 +107,14 @@ namespace Prime.Common
         }
         
         private NetworkPairVolume _reversed;
-        public NetworkPairVolume Reversed => _reversed ?? (_reversed = new NetworkPairVolume(Network, Pair.Reversed, HasVolume24Quote ? Volume24Quote : (decimal?)null, HasVolume24Base ? Volume24Base : (decimal?)null) {UtcCreated = UtcCreated, _reversed = this});
+        public NetworkPairVolume Reversed => _reversed ?? (_reversed = new NetworkPairVolume(Network, Pair.Reversed, HasVolume24Quote ? Volume24Quote : (decimal?)null, HasVolume24Base ? Volume24Base : (decimal?)null)
+        {
+            UtcCreated = UtcCreated, _reversed = this,
+            Volume24BaseBtc = HasVolume24QuoteBtc ? Volume24QuoteBtc : null,
+            HasVolume24BaseBtc = HasVolume24QuoteBtc,
+            Volume24QuoteBtc = HasVolume24BaseBtc ? Volume24BaseBtc : null,
+            HasVolume24QuoteBtc = HasVolume24BaseBtc
+        });
 
         public bool Equals(NetworkPairVolume other)
         {

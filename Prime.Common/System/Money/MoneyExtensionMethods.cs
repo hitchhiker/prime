@@ -84,22 +84,20 @@ namespace Prime.Common
             return new MoneyDistributor(money, fractionReceivers, roundingPlaces).Distribute(count);
         }
 
-        public static decimal PercentageDifference(this Money money1, Money money2)
+        public static decimal PercentageProfit(this Money money1, Money money2)
         {
             if (money1 == 0 && money2 == 0)
                 return 0;
 
             if (!Equals(money1.Asset, money2.Asset))
-                return 100;
+                throw new Exception("Cannot calculate percentage profit for Money objects with different assets.");
 
-            if (money2 == 0)
-                return 0-(((decimal) (money2 - money1) / money2) * 100);
-            return ((decimal)(money2 - money1) / money2) * 100;
+            return new Money((100 / money1) * (money2 - money1), money1.Asset);
         }
 
         public static bool IsWithinPercentage(this Money money1, Money money2, decimal percentageTolerance)
         {
-            return Math.Abs(PercentageDifference(money1, money2)) <= percentageTolerance;
+            return Math.Abs(PercentageProfit(money1, money2)) <= percentageTolerance;
         }
 
         public static Money ReverseAsset(this Money money1, Asset quote)

@@ -645,6 +645,11 @@ namespace Prime.Common
             return _asset?.ShortCode + " " + ToDecimalValue().ToString("N" + PrimeCommon.I.DecimalPlaces.Get(Asset, (uint)6));
         }
 
+        public string ToString(int decimalPlaces)
+        {
+            return _asset?.ShortCode + " " + ToDecimalValue().ToString("N" + decimalPlaces);
+        }
+
         public string Display => ToDecimalValue() == 0 ? "" : ToString();
 
         public string ToString(string format)
