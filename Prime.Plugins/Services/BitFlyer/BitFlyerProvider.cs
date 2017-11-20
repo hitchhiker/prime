@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.BitFlyer
 {
     // https://lightning.bitflyer.jp/docs
-    public class BitFlyerProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider
+    public class BitFlyerProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -143,7 +143,7 @@ namespace Prime.Plugins.Services.BitFlyer
             return assetPairs;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = context.Pair.ToTicker(this, "_");

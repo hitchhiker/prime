@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IAssetPairVolumeProvider : IDescribesAssets
+    public interface IPublicVolumeProvider : IDescribesAssets
     {
-        Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context);
+        Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context);
     }
 }

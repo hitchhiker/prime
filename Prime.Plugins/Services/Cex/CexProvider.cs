@@ -10,7 +10,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Cex
 {
     // https://cex.io/rest-api#public
-    public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider
+    public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
 
@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.Cex
                 throw new ApiResponseException($"Error occurred in provider: {response.ok}", this);
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);

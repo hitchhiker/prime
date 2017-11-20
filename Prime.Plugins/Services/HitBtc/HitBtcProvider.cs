@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.HitBtc
 {
     // https://api.hitbtc.com/
-    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IAssetPairVolumeProvider
+    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IPublicVolumeProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
@@ -46,7 +46,7 @@ namespace Prime.Plugins.Services.HitBtc
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures()
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.HitBtc
             var price = new MarketPrice(Network, context.Pair, r.last.Value)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, (decimal?) r.volume, r.volume_quote)
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume, r.volume_quote)
             };
 
             return new MarketPricesResult(price);
@@ -97,7 +97,11 @@ namespace Prime.Plugins.Services.HitBtc
                 if (ticker.Value?.last == null)
                     continue;
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.Value.last.Value));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.Value.last.Value)
+                {
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, ticker.Value.ask, ticker.Value.bid, ticker.Value.low, ticker.Value.high),
+                    Volume = new NetworkPairVolume(Network, context.Pair, ticker.Value.volume, ticker.Value.volume_quote)
+                });
             }
 
             return prices;
@@ -176,7 +180,7 @@ namespace Prime.Plugins.Services.HitBtc
             return balances;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 

@@ -17,7 +17,7 @@ namespace Prime.TestConsole.Tools
             typeof(IBalanceProvider),
             typeof(IOhlcProvider),
             typeof(IAssetPairsProvider),
-            typeof(IAssetPairVolumeProvider),
+            typeof(IPublicVolumeProvider),
             typeof(IWithdrawalPlacementProviderExtended),
             typeof(IWithdrawalHistoryProvider),
             typeof(IWithdrawalCancelationProvider),

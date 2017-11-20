@@ -12,7 +12,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Coinone
 {
     // http://doc.coinone.co.kr/#api-Public
-    public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider, IAssetPairVolumeProvider
+    public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider, IPublicVolumeProvider
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -166,7 +166,7 @@ namespace Prime.Plugins.Services.Coinone
             return prices;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
