@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.Bitso
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this, '_').Equals(pair));
+                var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
 
                 if (currentTicker == null)
                 {
@@ -121,7 +121,7 @@ namespace Prime.Plugins.Services.Bitso
 
             foreach (var rCurrentPayloadResponse in r.payload)
             {
-                pairs.Add(rCurrentPayloadResponse.book.ToAssetPairRaw());
+                pairs.Add(rCurrentPayloadResponse.book.ToAssetPair(this));
             }
 
             return pairs;
