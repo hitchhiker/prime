@@ -10,7 +10,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Binance
 {
     // https://www.binance.com/restapipub.html
-    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IDepositProvider
+    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -296,19 +296,5 @@ namespace Prime.Plugins.Services.Binance
 
             return balances;
         }
-
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
-
-            var r = await api.Get24HrTickerAsync(pairCode).ConfigureAwait(false);
-
-            return new NetworkPairVolume(Network, context.Pair, r.volume);
-        }
-
-        private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures(false, false);
-
-        public VolumeFeatures VolumeFeatures => StaticVolumeFeatures;
     }
 }
