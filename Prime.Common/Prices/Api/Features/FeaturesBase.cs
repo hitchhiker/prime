@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Prime.Common
 {
-    public abstract class FeaturesBase<TSingleFeatures, TBulkFeatures> 
-        where TSingleFeatures : class, new()  
-        where TBulkFeatures : class, new()
+    public abstract class FeaturesBase<TSingleFeatures, TBulkFeatures> where TSingleFeatures : class, new() where TBulkFeatures : class, new()
     {
         protected FeaturesBase()
         {
@@ -24,5 +22,6 @@ namespace Prime.Common
 
         public TSingleFeatures Single { get; set; }
         public TBulkFeatures Bulk { get; set; }
+
     }
 }

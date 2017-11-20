@@ -11,13 +11,22 @@ namespace Prime.Core.Market
     public class VolumeProvider
     {
         public static VolumeProvider I => Lazy.Value;
-        private static readonly Lazy<VolumeProvider> Lazy = new Lazy<VolumeProvider>(() => new VolumeProvider("VOLUMEDATA_I2sda".GetObjectIdHashCode()));
+        private static readonly Lazy<VolumeProvider> Lazy = new Lazy<VolumeProvider>(() => new VolumeProvider("VOLUMEDATA_I".GetObjectIdHashCode()));
         private readonly object _lock = new object();
         public readonly bool CanSave;
 
+        public readonly IAggVolumeDataProvider ProviderAggVolumeData;
+        public readonly IReadOnlyList<IAssetPairVolumeProvider> ProvidersAssetPairVolume;
+        public readonly IReadOnlyList<IPublicPricingProvider> ProvidersPublicPricing;
+
+        public readonly VolumeData Data;
+
         public VolumeProvider()
         {
-            AggVolumeDataProvider = Networks.I.Providers.OfType<IAggVolumeDataProvider>().FirstOrDefault();
+            ProviderAggVolumeData = Networks.I.Providers.OfType<IAggVolumeDataProvider>().FirstOrDefault();
+            ProvidersAssetPairVolume = Networks.I.Providers.OfType<IAssetPairVolumeProvider>().Where(x => x.IsDirect).ToList();
+            ProvidersPublicPricing = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x=>x.IsDirect && x.PricingFeatures.HasVolume).ToList();
+
             Data = new VolumeData();
         }
 
@@ -27,9 +36,6 @@ namespace Prime.Core.Market
             CanSave = true;
         }
 
-        public IAggVolumeDataProvider AggVolumeDataProvider;
-        public VolumeData Data;
-
         public NetworkPairVolume GetVolume(Network network, AssetPair pair, bool dontSave = false)
         {
             lock (_lock)
@@ -38,9 +44,9 @@ namespace Prime.Core.Market
                 if (v != null)
                     return v;
 
-                var canagg = AggVolumeDataProvider.NetworksSupported.Contains(network);
+                var canagg = ProviderAggVolumeData.NetworksSupported.Contains(network);
 
-                var save = canagg && Data.PopulateFromAgg(AggVolumeDataProvider, pair); //the agg does bulk, so it goes first.
+                var save = canagg && Data.PopulateFromAgg(ProviderAggVolumeData, pair); //the agg does bulk, so it goes up the list.
                 v = canagg ? Data.Get(network, pair) : null;
                 
                 if (v != null)
@@ -65,14 +71,16 @@ namespace Prime.Core.Market
                 Data.SavePublic();
             return vol;
         }
-
-        public (UniqueList<NetworkPairVolume> volume, Dictionary<Network, UniqueList<AssetPair>> missing) GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
+        
+        public VolumeProviderReturn GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
         {
             var volume = new UniqueList<NetworkPairVolume>();
             var missing = new Dictionary<Network, UniqueList<AssetPair>>();
             foreach (var network in pairsByNetwork.Keys)
             {
-                foreach (var pair in pairsByNetwork[network])
+                var pairs = pairsByNetwork[network];
+
+                foreach (var pair in pairs)
                 {
                     onPull?.Invoke(network, pair);
                     var r = GetVolume(network, pair, true);
@@ -87,7 +95,7 @@ namespace Prime.Core.Market
                     Data.SavePublic();
             }
 
-            return (volume , missing);
+            return new VolumeProviderReturn(volume , missing);
         }
 
         public static void Clear(ObjectId id)
