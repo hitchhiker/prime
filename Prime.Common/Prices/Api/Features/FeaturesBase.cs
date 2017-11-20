@@ -22,6 +22,5 @@ namespace Prime.Common
 
         public TSingleFeatures Single { get; set; }
         public TBulkFeatures Bulk { get; set; }
-
     }
 }
