@@ -127,7 +127,7 @@ namespace Prime.Plugins.Services.Binance
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true},
-            Bulk = new PricingBulkFeatures()
+            Bulk = new PricingBulkFeatures() { CanReturnAll = true }
         };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
@@ -145,20 +145,40 @@ namespace Prime.Plugins.Services.Binance
             var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
+            var knownPairs = new AssetPairs();
 
-            foreach (var pair in context.Pairs)
+            if (context.IsRequestAll)
             {
-                var lowerPairTicker = pair.ToTicker(this, "").ToLower();
-
-                var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
-
-                if (lpr == null)
+                foreach (var rPrice in r.OrderBy(x => x.symbol.Length))
                 {
-                    prices.MissedPairs.Add(pair);
-                    continue;
-                }
+                    var tPair = AssetsUtilities.GetAssetPair(rPrice.symbol, knownPairs);
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, lpr.price));
+                    if (!tPair.HasValue)
+                        continue;
+
+                    var pair = new AssetPair(tPair.Value.AssetCode1, tPair.Value.AssetCode2, this);
+
+                    knownPairs.Add(pair);
+
+                    prices.MarketPrices.Add(new MarketPrice(Network, pair, rPrice.price));
+                }
+            }
+            else
+            {
+                foreach (var pair in context.Pairs)
+                {
+                    var lowerPairTicker = pair.ToTicker(this, "").ToLower();
+
+                    var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
+
+                    if (lpr == null)
+                    {
+                        prices.MissedPairs.Add(pair);
+                        continue;
+                    }
+
+                    prices.MarketPrices.Add(new MarketPrice(Network, pair, lpr.price));
+                }
             }
 
             return prices;
@@ -192,9 +212,9 @@ namespace Prime.Plugins.Services.Binance
                 var pair = AssetsUtilities.GetAssetPair(rPrice.symbol, assetPairs);
 
                 if (!pair.HasValue)
-                    continue; //throw new ApiResponseException($"Error during {rPrice.symbol} asset pair parsing", this);
+                    continue;
 
-                assetPairs.Add(new AssetPair(pair.Value.AssetCode1, pair.Value.AssetCode2));
+                assetPairs.Add(new AssetPair(pair.Value.AssetCode1, pair.Value.AssetCode2, this));
             }
 
             return assetPairs;

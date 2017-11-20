@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Handlers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nito.AsyncEx;
 using Prime.Common;
@@ -227,8 +228,14 @@ namespace Prime.Tests.Providers
             Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + r.MissedPairs.Aggregate("", (s, pair) => s += pair + ", ").TrimEnd(','));
 
             Assert.IsTrue(r.FirstPrice != null);
-            Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
-            Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+
+            if(context.IsRequestAll)
+                Assert.IsNull(context.Pairs, "Context should not have any pairs when requesting prices for all supported by exchange pairs");
+            else
+            { 
+                Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
+                Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+            }
 
             if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
                 Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
@@ -246,9 +253,9 @@ namespace Prime.Tests.Providers
                 if (pricingFeatures.CanStatistics)
                 {
                     Assert.IsTrue(p.HasStatistics,
-                        $"Market price does not have statistics but provider supports it - {context.Pair}");
+                        $"Market price does not have statistics but provider supports it - {p.Pair}");
 
-                    Trace.WriteLine($"Market price statistics for {context.Pair}:");
+                    Trace.WriteLine($"Market price statistics for {p.Pair}:");
 
                     Trace.WriteLine(
                         $"Bid: {(p.PriceStatistics.HasHighestBid ? p.PriceStatistics.HighestBid.Display : "-")}");
@@ -261,13 +268,13 @@ namespace Prime.Tests.Providers
                 }
                 else
                 {
-                    Assert.IsTrue(!p.HasStatistics, $"Provider returns statistics but did not announce it - {context.Pair}");
+                    Assert.IsTrue(!p.HasStatistics, $"Provider returns statistics but did not announce it - {p.Pair}");
                 }
 
                 if (pricingFeatures.CanVolume)
                 {
                     Assert.IsTrue(p.HasVolume,
-                        $"Market price does not have volume but provider supports it - {context.Pair}");
+                        $"Market price does not have volume but provider supports it - {p.Pair}");
 
                     if (p.Volume.HasVolume24Base)
                         Trace.WriteLine($"Base 24h volume: {p.Volume.Volume24Base}");
@@ -277,7 +284,7 @@ namespace Prime.Tests.Providers
                 }
                 else
                 {
-                    Assert.IsTrue(!p.HasVolume, $"Provider returns volume but did not announce it - {context.Pair}");
+                    Assert.IsTrue(!p.HasVolume, $"Provider returns volume but did not announce it - {p.Pair}");
                 }
 
                 Trace.WriteLine("");
@@ -302,7 +309,7 @@ namespace Prime.Tests.Providers
 
                 if (provider.PricingFeatures.HasBulk)
                 {
-                    Trace.WriteLine("\nBulk features test\n");
+                    Trace.WriteLine("\nBulk features test with pairs selection\n");
                     var context = new PublicPricesContext(pairs)
                     {
                         RequestStatistics = provider.PricingFeatures.Bulk.CanStatistics,
@@ -310,6 +317,14 @@ namespace Prime.Tests.Providers
                     };
 
                     InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
+
+                    if (provider.PricingFeatures.Bulk.CanReturnAll)
+                    {
+                        Trace.WriteLine("\nBulk features test (provider can return all prices)\n");
+                        context = new PublicPricesContext();
+
+                        InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
+                    }
                 }
             }
             catch (Exception e)
@@ -549,6 +564,8 @@ namespace Prime.Tests.Providers
 
         private void GetVolume(IPublicVolumeProvider provider, PublicVolumeContext context)
         {
+            throw new NotImplementedException("To be done soon");
+
             if (context == null)
                 return;
 
@@ -557,9 +574,9 @@ namespace Prime.Tests.Providers
                 var r = AsyncContext.Run(() => provider.GetPublicVolumeAsync(context));
 
                 Assert.IsTrue(r != null);
-                Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");
+                // Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");
 
-                Trace.WriteLine($"Network: {r.Network.Name}, Pair: {r.Pair}, Volume: {r.Volume24}");
+                // Trace.WriteLine($"Network: {r.Network.Name}, Pair: {r.Pair}, Volume: {r.Volume24}");
             }
             catch (Exception e)
             {
