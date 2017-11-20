@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
 
 namespace Prime.Core.Market
 {
-    public class VolumeProvider
+    public class VolumeDbProvider
     {
-        public static VolumeProvider I => Lazy.Value;
-        private static readonly Lazy<VolumeProvider> Lazy = new Lazy<VolumeProvider>(() => new VolumeProvider("VOLUMEDATA_I".GetObjectIdHashCode()));
+        public static VolumeDbProvider I => Lazy.Value;
+        private static readonly Lazy<VolumeDbProvider> Lazy = new Lazy<VolumeDbProvider>(() => new VolumeDbProvider("VOLUMEDATA_I".GetObjectIdHashCode()));
         private readonly object _lock = new object();
         public readonly bool CanSave;
 
@@ -21,7 +20,7 @@ namespace Prime.Core.Market
 
         public readonly VolumeData Data;
 
-        public VolumeProvider()
+        public VolumeDbProvider()
         {
             ProviderAggVolumeData = Networks.I.Providers.OfType<IAggVolumeDataProvider>().FirstOrDefault();
             ProvidersPublicVolume = Networks.I.Providers.OfType<IPublicVolumeProvider>().Where(x => x.IsDirect).ToList();
@@ -30,7 +29,7 @@ namespace Prime.Core.Market
             Data = new VolumeData();
         }
 
-        public VolumeProvider(ObjectId dataId) : this()
+        public VolumeDbProvider(ObjectId dataId) : this()
         {
             Data = PublicFast.GetCreate(dataId, () => new VolumeData());
             CanSave = true;
