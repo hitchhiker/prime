@@ -321,7 +321,7 @@ namespace Prime.Plugins.Services.Poloniex
             return orderBook;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);

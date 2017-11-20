@@ -134,7 +134,7 @@ namespace Prime.Tests.Providers
         }
 
         public virtual void TestGetVolume() { }
-        public void TestGetVolume(VolumeContext context)
+        public void TestGetVolume(PublicVolumeContext context)
         {
             var p = IsType<IPublicVolumeProvider>();
             if (p.Success)
@@ -547,7 +547,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void GetVolume(IPublicVolumeProvider provider, VolumeContext context)
+        private void GetVolume(IPublicVolumeProvider provider, PublicVolumeContext context)
         {
             if (context == null)
                 return;

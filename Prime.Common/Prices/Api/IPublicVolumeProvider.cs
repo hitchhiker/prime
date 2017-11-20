@@ -4,7 +4,7 @@ namespace Prime.Common
 {
     public interface IPublicVolumeProvider : IDescribesAssets
     {
-        Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context);
+        Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context);
 
         VolumeFeatures VolumeFeatures { get; }
     }

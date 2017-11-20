@@ -481,7 +481,7 @@ namespace Prime.Plugins.Services.Kraken
             return orderBook;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 

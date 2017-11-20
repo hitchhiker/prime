@@ -65,7 +65,7 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetAggVolumeDataAsync(provider, context));
         }
 
-        public static ApiResponse<NetworkPairVolume> GetPublicVolume(IPublicVolumeProvider provider, VolumeContext context)
+        public static ApiResponse<NetworkPairVolume> GetPublicVolume(IPublicVolumeProvider provider, PublicVolumeContext context)
         {
             return AsyncContext.Run(() => GetPublicVolumeAsync(provider, context));
         }

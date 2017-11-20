@@ -4,18 +4,14 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class PublicPricesContext : NetworkProviderContext
+    public abstract class PublicContextBase : NetworkProviderContext
     {
-        public readonly IList<AssetPair> Pairs;
+        public IList<AssetPair> Pairs { get; protected set; }
 
-        public PublicPricesContext(IList<AssetPair> pairs, ILogger logger = null) : base(logger)
+        protected PublicContextBase(IList<AssetPair> pairs, ILogger logger = null) : base(logger)
         {
             Pairs = pairs;
         }
-
-        public bool RequestVolume { get; set; }
-
-        public bool RequestStatistics { get; set; }
 
         public AssetPair Pair => Pairs.FirstOrDefault();
 

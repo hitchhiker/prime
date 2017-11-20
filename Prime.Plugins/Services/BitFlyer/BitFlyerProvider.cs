@@ -143,7 +143,7 @@ namespace Prime.Plugins.Services.BitFlyer
             return assetPairs;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = context.Pair.ToTicker(this, "_");
