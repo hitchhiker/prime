@@ -99,8 +99,8 @@ namespace Prime.Plugins.Services.Bithumb
                     continue;
                 }
 
-                var rTiker = rTickers[0];
-                var vals = rTiker.Value;
+                var rTicker = rTickers[0];
+                var vals = rTicker.Value;
                 prices.MarketPrices.Add(new MarketPrice(Network,  pair, vals.sell_price)
                 {
                     Volume = new NetworkPairVolume(Network, pair, vals.volume_1day),
