@@ -24,16 +24,25 @@ namespace Prime.Core.Market
 
         public PublicVolumeResponse Get(Network network)
         {
-            var prov = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
-            if (prov != null)
+            PublicVolumeResponse r;
+            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
+            var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
+
+            var pricing = pp?.PricingFeatures;
+            var volume = pv?.VolumeFeatures;
+
+            if (pricing?.HasVolume == true && pricing.HasBulk && pricing.Bulk.CanReturnAll)
             {
-                var f = prov.PricingFeatures;
-                if (f.HasVolume && f.HasBulk && f.Bulk.CanReturnAll)
-                {
-                    ApiCoordinator.GetPricing(prov, new PublicPricesContext());
-                }
-                AssetPairProvider.I.GetNetworkPairsAsync();
+                var pr = ApiCoordinator.GetPricing(pp, new PublicPricesContext());
+                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
             }
+
+            if (volume?.HasBulk == true && volume.Bulk.CanReturnAll)
+            {
+                var vr = ApiCoordinator.GetPublicVolume(pv, new PublicVolumesContext());
+                return vr.IsNull ? null : vr.Response;
+            }
+
             return null;
         }
 
