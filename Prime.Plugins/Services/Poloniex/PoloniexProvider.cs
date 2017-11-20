@@ -11,7 +11,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Poloniex
 {
     // https://poloniex.com/support/api/
-    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider, IAssetPairVolumeProvider
+    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -321,7 +321,7 @@ namespace Prime.Plugins.Services.Poloniex
             return orderBook;
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);

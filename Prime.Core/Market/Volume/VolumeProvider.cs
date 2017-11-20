@@ -16,7 +16,7 @@ namespace Prime.Core.Market
         public readonly bool CanSave;
 
         public readonly IAggVolumeDataProvider ProviderAggVolumeData;
-        public readonly IReadOnlyList<IAssetPairVolumeProvider> ProvidersAssetPairVolume;
+        public readonly IReadOnlyList<IPublicVolumeProvider> ProvidersPublicVolume;
         public readonly IReadOnlyList<IPublicPricingProvider> ProvidersPublicPricing;
 
         public readonly VolumeData Data;
@@ -24,7 +24,7 @@ namespace Prime.Core.Market
         public VolumeProvider()
         {
             ProviderAggVolumeData = Networks.I.Providers.OfType<IAggVolumeDataProvider>().FirstOrDefault();
-            ProvidersAssetPairVolume = Networks.I.Providers.OfType<IAssetPairVolumeProvider>().Where(x => x.IsDirect).ToList();
+            ProvidersPublicVolume = Networks.I.Providers.OfType<IPublicVolumeProvider>().Where(x => x.IsDirect).ToList();
             ProvidersPublicPricing = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x=>x.IsDirect && x.PricingFeatures.HasVolume).ToList();
 
             Data = new VolumeData();
@@ -72,7 +72,7 @@ namespace Prime.Core.Market
             return vol;
         }
         
-        public VolumeProviderReturn GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
+        public VolumeCollection GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
         {
             var volume = new UniqueList<NetworkPairVolume>();
             var missing = new Dictionary<Network, UniqueList<AssetPair>>();
@@ -95,7 +95,7 @@ namespace Prime.Core.Market
                     Data.SavePublic();
             }
 
-            return new VolumeProviderReturn(volume , missing);
+            return new VolumeCollection(volume , missing);
         }
 
         public static void Clear(ObjectId id)

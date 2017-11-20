@@ -136,7 +136,7 @@ namespace Prime.Tests.Providers
         public virtual void TestGetVolume() { }
         public void TestGetVolume(VolumeContext context)
         {
-            var p = IsType<IAssetPairVolumeProvider>();
+            var p = IsType<IPublicVolumeProvider>();
             if (p.Success)
                 GetVolume(p.Provider, context);
         }
@@ -547,14 +547,14 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void GetVolume(IAssetPairVolumeProvider provider, VolumeContext context)
+        private void GetVolume(IPublicVolumeProvider provider, VolumeContext context)
         {
             if (context == null)
                 return;
 
             try
             {
-                var r = AsyncContext.Run(() => provider.GetAssetPairVolumeAsync(context));
+                var r = AsyncContext.Run(() => provider.GetPublicVolumeAsync(context));
 
                 Assert.IsTrue(r != null);
                 Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");

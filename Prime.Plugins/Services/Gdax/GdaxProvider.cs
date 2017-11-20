@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Gdax
 {
     // https://docs.gdax.com/
-    public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider, IAssetPairVolumeProvider
+    public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider, IPublicVolumeProvider
     {
         private const string GdaxApiUrl = "https://api.gdax.com";
 
@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Gdax
             });
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
