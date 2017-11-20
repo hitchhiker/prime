@@ -106,7 +106,7 @@ namespace Prime.Common
                 _utcDirectLatest.Add(ids, DateTime.UtcNow);
             }
 
-            var ntp = network.AssetPairVolumeProviders.FirstDirectProvider();
+            var ntp = network.PublicVolumeProviders.FirstDirectProvider();
             if (ntp == null)
                 return true;
             

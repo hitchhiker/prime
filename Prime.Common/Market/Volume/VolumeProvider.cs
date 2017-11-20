@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Nito.AsyncEx;
 using Prime.Common;
+using Prime.Utility;
 
 namespace Prime.Core.Market
 {
@@ -23,54 +25,77 @@ namespace Prime.Core.Market
             ProvidersPublicPricing = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x => x.IsDirect && x.PricingFeatures.HasVolume).ToList();
         }
 
-        public PublicVolumeResponse Get(Network network)
+        public async Task<PublicVolumeResponse> GetAsync(Network network)
         {
-            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
-
-            var pricing = pp?.PricingFeatures;
             var volume = pv?.VolumeFeatures;
 
             if (volume?.HasBulk == true && volume.Bulk.CanReturnAll)
             {
-                var vr = ApiCoordinator.GetPublicVolume(pv, new PublicVolumesContext());
+                var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumesContext()).ConfigureAwait(false);
                 return vr.IsNull ? null : vr.Response;
             }
 
+            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
+            var pricing = pp?.PricingFeatures;
+
             if (pricing?.HasVolume == true && pricing.HasBulk && pricing.Bulk.CanReturnAll)
             {
-                var pr = ApiCoordinator.GetPricing(pp, new PublicPricesContext());
+                var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext()).ConfigureAwait(false);
                 return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
             }
 
             var pairs = AsyncContext.Run(() => AssetPairProvider.I.GetPairsAsync(network));
 
-            return Get(network, pairs);
+            return await GetAsync(network, pairs).ConfigureAwait(false);
         }
 
-        public PublicVolumeResponse Get(Network network, IEnumerable<AssetPair> pairs)
+        public async Task<PublicVolumeResponse> GetAsync(Network network, IEnumerable<AssetPair> pairs)
         {
-            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
-
-            var pricing = pp?.PricingFeatures;
             var volume = pv?.VolumeFeatures;
 
             if (volume?.HasBulk == true)
             {
-                var vr = ApiCoordinator.GetPublicVolume(pv, new PublicVolumesContext(pairs.ToList()));
+                var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumesContext(pairs.AsList())).ConfigureAwait(false);
                 return vr.IsNull ? null : vr.Response;
             }
 
+            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
+            var pricing = pp?.PricingFeatures;
+
             if (pricing?.HasBulk == true)
             {
-                var pr = ApiCoordinator.GetPricing(pp, new PublicPricesContext(pairs.ToList()));
+                var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext(pairs.AsList())).ConfigureAwait(false);
                 return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
             }
+
+            var tasks = pairs.Select(x => GetAsync(network, x));
+
+            var r = await tasks.WhenAll().ConfigureAwait(false);
+
+            return r != null ? new PublicVolumeResponse(r) : null;
         }
 
-        public PublicVolumeResponse Get(Network network, AssetPair pair)
+        public async Task<PublicVolumeResponse> GetAsync(Network network, AssetPair pair)
         {
+            var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
+
+            if (pv != null)
+            {
+                var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumeContext(pair)).ConfigureAwait(false);
+                return vr.IsNull ? null : vr.Response;
+            }
+
+            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
+            var pricing = pp?.PricingFeatures;
+
+            if (pricing?.HasVolume == true)
+            {
+                var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPriceContext(pair)).ConfigureAwait(false);
+                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
+            }
+
             return null;
         }
     }

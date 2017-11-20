@@ -59,7 +59,7 @@ namespace Prime.Common
         public IReadOnlyList<IOhlcProvider> OhlcProviders => _ohlcProviders ?? (_ohlcProviders = Providers.OfList<IOhlcProvider>());
 
         private IReadOnlyList<IPublicVolumeProvider> _volProviders;
-        public IReadOnlyList<IPublicVolumeProvider> AssetPairVolumeProviders => _volProviders ?? (_volProviders = Providers.OfList<IPublicVolumeProvider>());
+        public IReadOnlyList<IPublicVolumeProvider> PublicVolumeProviders => _volProviders ?? (_volProviders = Providers.OfList<IPublicVolumeProvider>());
 
         private NetworkData _publicData;
         public NetworkData Data => _publicData ?? (_publicData = NetworkDatas.I.GetOrCreate(PublicContext.I, this));
