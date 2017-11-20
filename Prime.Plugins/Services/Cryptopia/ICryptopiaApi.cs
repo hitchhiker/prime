@@ -9,9 +9,9 @@ namespace Prime.Plugins.Services.Cryptopia
     internal interface ICryptopiaApi
     {
         [Get("/GetMarket/{assetPair}")]
-        Task<CryptopiaSchema.MarketResponse> GetMarketAsync([Path] string assetPair);
+        Task<CryptopiaSchema.MarketResponse> GetTickerAsync([Path] string assetPair);
 
         [Get("/GetMarkets")]
-        Task<CryptopiaSchema.MarketResponse> GetAssetPairsAsync();
+        Task<CryptopiaSchema.MarketResponse> GetTickersAsync();
     }
 }

@@ -50,7 +50,7 @@ namespace Prime.Plugins.Services.TheRockTrading
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -99,7 +99,7 @@ namespace Prime.Plugins.Services.TheRockTrading
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 

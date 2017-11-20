@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
