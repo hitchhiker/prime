@@ -124,10 +124,22 @@ namespace Prime.Plugins.Services.Binance
             return null;
         }
         
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true},
+            Bulk = new PricingBulkFeatures()
+        };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
+            return await GetPricesAsync(context).ConfigureAwait(false);
+        }
+
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
@@ -150,6 +162,21 @@ namespace Prime.Plugins.Services.Binance
             }
 
             return prices;
+        }
+
+        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var ticker = context.Pair.ToTicker(this, "");
+            var r = await api.Get24HrTickerAsync(ticker).ConfigureAwait(false);
+
+            var marketPrice = new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lastPrice)
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.askPrice, r.bidPrice, r.lowPrice, r.highPrice),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
+            });
+
+            return marketPrice;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -280,6 +307,8 @@ namespace Prime.Plugins.Services.Binance
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
 
-        public VolumeFeatures VolumeFeatures { get; }
+        private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures(false, false);
+
+        public VolumeFeatures VolumeFeatures => StaticVolumeFeatures;
     }
 }
