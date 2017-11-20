@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Bitso
         Task<BitsoSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/ticker/")]
-        Task<BitsoSchema.AllTickerResponse> GetAllTickersAsync();
+        Task<BitsoSchema.AllTickerResponse> GetTickersAsync();
 
         [Get("/available_books/")]
         Task<BitsoSchema.AvailableBooksResponse> GetAssetPairs();

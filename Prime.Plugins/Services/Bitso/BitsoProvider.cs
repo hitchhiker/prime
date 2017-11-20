@@ -69,13 +69,15 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            // TODO: check r.success, throw ApiResponseException if false.
 
             var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this, '_').Equals(pair));
+                var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
 
                 if (currentTicker == null)
                 {
@@ -100,11 +102,13 @@ namespace Prime.Plugins.Services.Bitso
             var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
+            // TODO: check r.success, throw ApiResponseException if false.
+
             var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid,
                     r.payload.low, r.payload.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, null, r.payload.volume)
+                Volume = new NetworkPairVolume(Network, context.Pair, r.payload.volume, null)
             };
 
             return new MarketPricesResult(price);
@@ -121,7 +125,7 @@ namespace Prime.Plugins.Services.Bitso
 
             foreach (var rCurrentPayloadResponse in r.payload)
             {
-                pairs.Add(rCurrentPayloadResponse.book.ToAssetPairRaw());
+                pairs.Add(rCurrentPayloadResponse.book.ToAssetPair(this));
             }
 
             return pairs;

@@ -8,22 +8,21 @@ using Prime.Common;
 using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.TheRockTrading
+namespace Prime.Plugins.Services.Cryptopia
 {
-    // https://api.therocktrading.com/doc/v1/
-    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://www.cryptopia.co.nz/Forum/Thread/255
+    public class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string TheRockTradingApiVersion = "v1";
-        private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
+        private const string CryptopiaApiUrl = "https://www.cryptopia.co.nz/api/";
 
-        private static readonly ObjectId IdHash = "prime:therocktrading".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:cryptopia".GetObjectIdHashCode();
 
-        //API calls are limited to 10 requests per second. Do not go over this limit or you will be blacklisted.
-        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10, 1);
+        //Could not find any documentation about rate limit.
+        private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<ITheRockTradingApi> ApiProvider { get; }
+        private RestApiClientProvider<ICryptopiaApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("TheRockTrading");
+        public Network Network { get; } = Networks.I.Get("Cryptopia");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -36,9 +35,9 @@ namespace Prime.Plugins.Services.TheRockTrading
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public TheRockTradingProvider()
+        public CryptopiaProvider()
         {
-            ApiProvider = new RestApiClientProvider<ITheRockTradingApi>(TheRockTradingApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICryptopiaApi>(CryptopiaApiUrl, this, (k) => null);
         }
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -54,9 +53,9 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             var pairs = new AssetPairs();
 
-            foreach (var rCurrentTicker in r.tickers)
+            foreach (var rCurrentTicker in r.Data)
             {
-                pairs.Add(rCurrentTicker.fund_id.ToAssetPair(this, 3));
+                pairs.Add(rCurrentTicker.Label.ToAssetPair(this, '/'));
             }
 
             return pairs;
@@ -86,13 +85,13 @@ namespace Prime.Plugins.Services.TheRockTrading
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this, "_");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.Data.LastPrice)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.Data.AskPrice, r.Data.BidPrice, r.Data.Low, r.Data.High),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.Data.Volume)
             });
         }
 
@@ -105,7 +104,7 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.tickers.FirstOrDefault(x => x.fund_id.ToAssetPair(this, 3).Equals(pair));
+                var currentTicker = r.Data.FirstOrDefault(x => x.Label.ToAssetPair(this, '/').Equals(pair));
 
                 if (currentTicker == null)
                 {
@@ -113,10 +112,10 @@ namespace Prime.Plugins.Services.TheRockTrading
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.LastPrice)
                     {
-                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
+                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.AskPrice, currentTicker.BidPrice, currentTicker.Low, currentTicker.High),
+                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.Volume)
                     });
                 }
             }
