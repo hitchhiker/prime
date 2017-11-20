@@ -71,6 +71,8 @@ namespace Prime.Plugins.Services.Bitso
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
+            // TODO: check r.success, throw ApiResponseException if false.
+
             var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
@@ -100,11 +102,13 @@ namespace Prime.Plugins.Services.Bitso
             var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
+            // TODO: check r.success, throw ApiResponseException if false.
+
             var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid,
                     r.payload.low, r.payload.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, null, r.payload.volume)
+                Volume = new NetworkPairVolume(Network, context.Pair, r.payload.volume, null)
             };
 
             return new MarketPricesResult(price);
