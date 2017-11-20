@@ -71,29 +71,35 @@ namespace Prime.Plugins.Services.Bitso
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            // TODO: check r.success, throw ApiResponseException if false.
-            
-            var prices = new MarketPricesResult();
-
-            foreach (var pair in context.Pairs)
+            if (r.success)
             {
-                var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
+                var prices = new MarketPricesResult();
 
-                if (currentTicker == null)
+                foreach (var pair in context.Pairs)
                 {
-                    prices.MissedPairs.Add(pair);
-                }
-                else
-                {
-                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                    var currentTicker = r.data.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
+
+                    if (currentTicker == null)
                     {
-                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
-                    });
+                        prices.MissedPairs.Add(pair);
+                    }
+                    else
+                    {
+                        prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                        {
+                            PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask,
+                                currentTicker.bid, currentTicker.low, currentTicker.high),
+                            Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
+                        });
+                    }
                 }
-            }
 
-            return prices;
+                return prices;
+            }
+            else
+            {
+                throw new ApiResponseException("Error processing request", this);
+            }
         }
 
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
@@ -102,33 +108,44 @@ namespace Prime.Plugins.Services.Bitso
             var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            // TODO: check r.success, throw ApiResponseException if false.
-
-            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
+            if (r.success)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid,
-                    r.payload.low, r.payload.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.payload.volume, null)
-            };
+                var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.data.last, context.Pair.Asset2))
+                {
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.data.ask, r.data.bid,
+                        r.data.low, r.data.high),
+                    Volume = new NetworkPairVolume(Network, context.Pair, r.data.volume, null)
+                };
 
-            return new MarketPricesResult(price);
+                return new MarketPricesResult(price);
+            }
+            else
+            {
+                throw new ApiResponseException("Error processing request", this);
+            }
         }
-
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAssetPairs().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            var pairs = new AssetPairs();
-
-            foreach (var rCurrentPayloadResponse in r.payload)
+            if (r.success)
             {
-                pairs.Add(rCurrentPayloadResponse.book.ToAssetPair(this));
-            }
+                var pairs = new AssetPairs();
 
-            return pairs;
+                foreach (var rCurrentResponse in r.data)
+                {
+                    pairs.Add(rCurrentResponse.book.ToAssetPair(this));
+                }
+
+                return pairs;
+            }
+            else
+            {
+                throw new ApiResponseException("Error processing request", this);
+            }
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
