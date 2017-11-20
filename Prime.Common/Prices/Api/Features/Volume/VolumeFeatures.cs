@@ -9,6 +9,5 @@ namespace Prime.Common
         public VolumeFeatures() { }
 
         public VolumeFeatures(bool single, bool bulk) : base(single, bulk) { }
-
     }
 }
