@@ -152,5 +152,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

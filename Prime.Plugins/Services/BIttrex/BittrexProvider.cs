@@ -290,5 +290,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             return new NetworkPairVolume(Network, context.Pair, summary.BaseVolume, summary.Volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

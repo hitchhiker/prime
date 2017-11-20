@@ -493,5 +493,7 @@ namespace Prime.Plugins.Services.Kraken
 
             return new NetworkPairVolume(Network, context.Pair, r.result.FirstOrDefault().Value.v[0]);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

@@ -86,5 +86,7 @@ namespace Prime.Plugins.Services.ItBit
 
             return new NetworkPairVolume(Network, context.Pair, r.volume24h);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

@@ -179,5 +179,7 @@ namespace Prime.Plugins.Services.Coinone
 
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

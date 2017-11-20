@@ -336,5 +336,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             return new NetworkPairVolume(Network, context.Pair, volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

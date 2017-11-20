@@ -189,5 +189,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             return new NetworkPairVolume(Network, context.Pair, r.volume, r.volume_quote);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace Prime.Common
 {
-    public interface IPublicVolumeProvider
+    public interface IPublicVolumeProvider : IDescribesAssets
     {
-        VolumeFeatures VolumeFeatures { get; }
+        Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context);
 
-        Task<NetworkPairVolume> GetVolumeAsync();
+        VolumeFeatures VolumeFeatures { get; }
     }
 }

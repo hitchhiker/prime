@@ -279,5 +279,7 @@ namespace Prime.Plugins.Services.Binance
 
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

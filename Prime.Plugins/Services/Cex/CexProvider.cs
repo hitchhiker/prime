@@ -122,5 +122,7 @@ namespace Prime.Plugins.Services.Cex
 
             return new NetworkPairVolume(Network, context.Pair, rTicker.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }
