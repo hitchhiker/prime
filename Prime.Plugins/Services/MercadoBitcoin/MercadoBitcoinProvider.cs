@@ -68,8 +68,7 @@ namespace Prime.Plugins.Services.MercadoBitcoin
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var baseAsset = context.Pair.Asset1;
-            var r = await api.GetTickerAsync(baseAsset.ShortCode).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
             {
