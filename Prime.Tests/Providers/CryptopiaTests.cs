@@ -21,13 +21,14 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
+                "USD_BTC".ToAssetPairRaw(),
                 "BTC_USDT".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
                 "BCH_BTC".ToAssetPairRaw(),
                 "BCH_USDT".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, true);
         }
 
         [TestMethod]
@@ -35,6 +36,7 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
+                "USD_BTC".ToAssetPairRaw(),
                 "BTC_USDT".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
                 "BCH_BTC".ToAssetPairRaw(),

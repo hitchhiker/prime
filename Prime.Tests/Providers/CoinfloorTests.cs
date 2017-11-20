@@ -28,10 +28,10 @@ namespace Prime.Tests
         {
             var pairs = new List<AssetPair>()
             {
-                "XBT_USD".ToAssetPairRaw(),
-                "XBT_GBP".ToAssetPairRaw(),
-                "XBT_EUR".ToAssetPairRaw(),
-                "XBT_PLN".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw(),
+                "BTC_GBP".ToAssetPairRaw(),
+                "BTC_EUR".ToAssetPairRaw(),
+                "BTC_PLN".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, false);
@@ -42,10 +42,10 @@ namespace Prime.Tests
         {
             var requiredPairs = new AssetPairs()
                 {
-                    "XBT_USD".ToAssetPairRaw(),
-                    "XBT_GBP".ToAssetPairRaw(),
-                    "XBT_EUR".ToAssetPairRaw(),
-                    "XBT_PLN".ToAssetPairRaw()
+                    "BTC_USD".ToAssetPairRaw(),
+                    "BTC_GBP".ToAssetPairRaw(),
+                    "BTC_EUR".ToAssetPairRaw(),
+                    "BTC_PLN".ToAssetPairRaw()
                 };
 
             base.TestGetAssetPairs(requiredPairs);

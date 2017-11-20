@@ -13,8 +13,5 @@ namespace Prime.Plugins.Services.Bitso
 
         [Get("/ticker/")]
         Task<BitsoSchema.AllTickerResponse> GetTickersAsync();
-
-        [Get("/available_books/")]
-        Task<BitsoSchema.AvailableBooksResponse> GetAssetPairs();
     }
 }

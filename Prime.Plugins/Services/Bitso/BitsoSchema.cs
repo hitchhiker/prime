@@ -34,21 +34,5 @@ namespace Prime.Plugins.Services.Bitso
             public decimal ask;
             public DateTime created_at;
         }
-
-        internal class PayloadResponse
-        {
-            public string book;
-            public decimal minimum_amount;
-            public decimal maximum_amount;
-            public decimal minimum_price;
-            public decimal maximum_price;
-            public decimal minimum_value;
-            public decimal maximum_value;
-        }
-
-        internal class AvailableBooksResponse
-        {
-            public List<PayloadResponse> payload;
-        }
     }
 }
