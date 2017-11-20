@@ -180,7 +180,7 @@ namespace Prime.Plugins.Services.HitBtc
             return balances;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -189,5 +189,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             return new NetworkPairVolume(Network, context.Pair, r.volume, r.volume_quote);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

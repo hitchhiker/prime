@@ -272,12 +272,14 @@ namespace Prime.Plugins.Services.BitStamp
             }
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
 
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

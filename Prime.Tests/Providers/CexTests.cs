@@ -40,7 +40,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetVolume()
         {
-            var context = new VolumeContext("BTC_USD".ToAssetPairRaw());
+            var context = new PublicVolumeContext("BTC_USD".ToAssetPairRaw());
 
             base.TestGetVolume(context);
         }

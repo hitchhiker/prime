@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Gdax
             });
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -93,5 +93,7 @@ namespace Prime.Plugins.Services.Gdax
 
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

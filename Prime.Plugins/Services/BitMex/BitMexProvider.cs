@@ -429,7 +429,7 @@ namespace Prime.Plugins.Services.BitMex
             };
         }
 
-        public async Task<NetworkPairVolume> GetAssetPairVolume(VolumeContext context)
+        public async Task<NetworkPairVolume> GetAssetPairVolume(PublicVolumeContext context)
         {
             //**HH -> For volume, you need a PAIR, this method is returning only for a single ASSET
 

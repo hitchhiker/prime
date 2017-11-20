@@ -87,7 +87,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetVolume()
         {
-            var context = new VolumeContext("BNT_BTC".ToAssetPairRaw());
+            var context = new PublicVolumeContext("BNT_BTC".ToAssetPairRaw());
 
             base.TestGetVolume(context);
         }

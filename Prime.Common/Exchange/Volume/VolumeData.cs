@@ -110,7 +110,7 @@ namespace Prime.Common
             if (ntp == null)
                 return true;
             
-            var r = ApiCoordinator.GetPublicVolume(ntp, new VolumeContext(pair));
+            var r = ApiCoordinator.GetPublicVolume(ntp, new PublicVolumeContext(pair));
             if (!r.IsNull)
                 Add(r.Response);
             else if (pair.IsNormalised)

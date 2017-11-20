@@ -166,7 +166,7 @@ namespace Prime.Plugins.Services.Coinone
             return prices;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(VolumeContext context)
+        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -179,5 +179,7 @@ namespace Prime.Plugins.Services.Coinone
 
             return new NetworkPairVolume(Network, context.Pair, r.volume);
         }
+
+        public VolumeFeatures VolumeFeatures { get; }
     }
 }

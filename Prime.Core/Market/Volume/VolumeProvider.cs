@@ -72,7 +72,7 @@ namespace Prime.Core.Market
             return vol;
         }
         
-        public VolumeCollection GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
+        public PublicVolumeResponse GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
         {
             var volume = new UniqueList<NetworkPairVolume>();
             var missing = new Dictionary<Network, UniqueList<AssetPair>>();
@@ -95,7 +95,7 @@ namespace Prime.Core.Market
                     Data.SavePublic();
             }
 
-            return new VolumeCollection(volume , missing);
+            return new PublicVolumeResponse(volume , missing);
         }
 
         public static void Clear(ObjectId id)
