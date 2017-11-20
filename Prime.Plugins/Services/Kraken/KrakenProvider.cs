@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairsCsv = string.Join(",", context.Pairs.Select(x => x.ToTicker(this)));
+            var pairsCsv = string.Join(",", context.Pairs.Select(x => x.ToTicker(this, "")));
 
             var r = await api.GetTickerInformationAsync(pairsCsv).ConfigureAwait(false);
 
