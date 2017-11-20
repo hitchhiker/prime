@@ -11,6 +11,7 @@ namespace Prime.Common
         protected PublicContextBase(ILogger logger = null) : base(logger)
         {
             IsRequestAll = true;
+            Pairs = new List<AssetPair>();
         }
 
         protected PublicContextBase(IList<AssetPair> pairs, ILogger logger = null) : base(logger)
@@ -22,7 +23,7 @@ namespace Prime.Common
 
         public virtual bool UseBulkContext => true;
 
-        public bool IsMultiple => Pairs.Count > 1;
+        public bool IsMultiple => IsRequestAll || Pairs.Count > 1;
 
         public bool ForSingleMethod => !UseBulkContext;
 

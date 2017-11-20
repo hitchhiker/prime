@@ -141,7 +141,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"{Network?.Name} {Pair}";
+            return $"{Network?.Name} {Pair} {Volume24}";
         }
     }
 }

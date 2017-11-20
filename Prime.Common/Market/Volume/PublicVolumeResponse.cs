@@ -30,6 +30,8 @@ namespace Prime.Common
             Missing = m.ToDictionary(x=>x.Key, y=>y.Value.AsReadOnlyList());
         }
 
+        public PublicVolumeResponse(Network network, IEnumerable<AssetPair> missing) : this(null, network, missing) { }
+
         public PublicVolumeResponse(Network network, MarketPricesResult marketPricesResult) : this(marketPricesResult.MarketPrices.Select(x => x.Volume), network, marketPricesResult.MissedPairs) {}
 
         public PublicVolumeResponse(Network network, AssetPair pair, decimal volume24) : this(new NetworkPairVolume(network, pair, volume24)) { }
@@ -38,7 +40,7 @@ namespace Prime.Common
 
         public PublicVolumeResponse(IEnumerable<NetworkPairVolume> volume, Network network, IEnumerable<AssetPair> missing)
         {
-            Volume = volume.ToUniqueList();
+            Volume = volume?.ToUniqueList() ?? new UniqueList<NetworkPairVolume>();
             Missing = new Dictionary<Network, IReadOnlyList<AssetPair>> {{network, missing.ToUniqueList()}};
         }
 

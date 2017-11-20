@@ -39,7 +39,7 @@ namespace Prime.Core.Market
             var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
             var pricing = pp?.PricingFeatures;
 
-            if (pricing?.HasVolume == true && pricing.HasBulk && pricing.Bulk.CanReturnAll)
+            if (pricing?.HasBulk == true && pricing.Bulk.CanVolume && pricing.Bulk.CanReturnAll)
             {
                 var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext()).ConfigureAwait(false);
                 return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
@@ -64,10 +64,10 @@ namespace Prime.Core.Market
             var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
             var pricing = pp?.PricingFeatures;
 
-            if (pricing?.HasBulk == true)
+            if (pricing?.HasBulk == true && pricing.Bulk.CanVolume)
             {
                 var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext(pairs.AsList())).ConfigureAwait(false);
-                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
+                return pr.IsNull ? null : new PublicVolumeResponse(network, pr.Response);
             }
 
             var tasks = pairs.Select(x => GetAsync(network, x));
@@ -93,7 +93,7 @@ namespace Prime.Core.Market
             if (pricing?.HasVolume == true)
             {
                 var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPriceContext(pair)).ConfigureAwait(false);
-                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
+                return pr.IsNull ? null : new PublicVolumeResponse(network, pr.Response);
             }
 
             return null;
