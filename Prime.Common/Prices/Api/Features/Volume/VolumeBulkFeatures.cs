@@ -6,6 +6,6 @@ namespace Prime.Common
 {
     public class VolumeBulkFeatures : VolumeFeaturesItemBase
     {
-
+        public bool CanReturnAll { get; set; }
     }
 }
