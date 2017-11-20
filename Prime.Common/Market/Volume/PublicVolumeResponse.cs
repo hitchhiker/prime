@@ -16,6 +16,8 @@ namespace Prime.Common
             Missing = new Dictionary<Network, IReadOnlyList<AssetPair>>();
         }
 
+        public PublicVolumeResponse(Network network, MarketPricesResult marketPricesResult) : this(marketPricesResult.MarketPrices.Select(x => x.Volume), network, marketPricesResult.MissedPairs) {}
+
         public PublicVolumeResponse(Network network, AssetPair pair, decimal volume24) : this(new NetworkPairVolume(network, pair, volume24)) { }
 
         public PublicVolumeResponse(Network network, AssetPair pair, decimal? vol24Base, decimal? vol24Quote = null) : this(new NetworkPairVolume(network, pair, vol24Base, vol24Quote)) { }

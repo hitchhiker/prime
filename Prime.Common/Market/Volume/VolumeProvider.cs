@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Nito.AsyncEx;
 using Prime.Common;
 
 namespace Prime.Core.Market
@@ -24,17 +25,48 @@ namespace Prime.Core.Market
 
         public PublicVolumeResponse Get(Network network)
         {
-            var prov = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
-            if (prov != null)
+            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
+            var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
+
+            var pricing = pp?.PricingFeatures;
+            var volume = pv?.VolumeFeatures;
+
+            if (volume?.HasBulk == true && volume.Bulk.CanReturnAll)
             {
-                var f = prov.PricingFeatures;
-                if (f.HasVolume && f.HasBulk && f.Bulk.CanReturnAll)
-                {
-                    ApiCoordinator.GetPricing(prov, new PublicPricesContext());
-                }
-                AssetPairProvider.I.GetNetworkPairsAsync();
+                var vr = ApiCoordinator.GetPublicVolume(pv, new PublicVolumesContext());
+                return vr.IsNull ? null : vr.Response;
             }
-            return null;
+
+            if (pricing?.HasVolume == true && pricing.HasBulk && pricing.Bulk.CanReturnAll)
+            {
+                var pr = ApiCoordinator.GetPricing(pp, new PublicPricesContext());
+                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
+            }
+
+            var pairs = AsyncContext.Run(() => AssetPairProvider.I.GetPairsAsync(network));
+
+            return Get(network, pairs);
+        }
+
+        public PublicVolumeResponse Get(Network network, IEnumerable<AssetPair> pairs)
+        {
+            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
+            var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
+
+            var pricing = pp?.PricingFeatures;
+            var volume = pv?.VolumeFeatures;
+
+            if (volume?.HasBulk == true)
+            {
+                var vr = ApiCoordinator.GetPublicVolume(pv, new PublicVolumesContext(pairs.ToList()));
+                return vr.IsNull ? null : vr.Response;
+            }
+
+            if (pricing?.HasBulk == true)
+            {
+                var pr = ApiCoordinator.GetPricing(pp, new PublicPricesContext(pairs.ToList()));
+                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
+            }
         }
 
         public PublicVolumeResponse Get(Network network, AssetPair pair)
