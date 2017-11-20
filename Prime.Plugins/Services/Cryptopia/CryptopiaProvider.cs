@@ -30,6 +30,7 @@ namespace Prime.Plugins.Services.Cryptopia
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        private static readonly IAssetCodeConverter AssetCodeConverter = new CryptopiaCodeConverter();
 
         public bool IsDirect => true;
 
@@ -63,7 +64,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-            return null;
+            return AssetCodeConverter;
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()

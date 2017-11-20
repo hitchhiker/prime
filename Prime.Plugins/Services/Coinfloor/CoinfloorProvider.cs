@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Coinfloor
         private const string CoinfloorApiUrl = "https://webapi.coinfloor.co.uk:8090/bist/";
 
         private static readonly ObjectId IdHash = "prime:coinfloor".GetObjectIdHashCode();
-        private const string PairsCsv = "xbteur,xbtgbp,xbtusd,xbtpln";
+        private const string PairsCsv = "BTCeur,BTCgbp,BTCusd,BTCpln";
 
         // Information requests: 10 per 10 seconds per session
         private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10,10);
@@ -30,6 +30,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        private static readonly IAssetCodeConverter AssetCodeConverter = new CoinfloorCodeConverter();
 
         public bool IsDirect => true;
 
@@ -47,7 +48,7 @@ namespace Prime.Plugins.Services.Coinfloor
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var ctx = new PublicPriceContext("XBT_GBP".ToAssetPairRaw());
+            var ctx = new PublicPriceContext("BTC_GBP".ToAssetPairRaw());
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;
@@ -81,7 +82,7 @@ namespace Prime.Plugins.Services.Coinfloor
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-            return null;
+            return AssetCodeConverter;
         }
 
         public bool DoesMultiplePairs => false; // TODO: confirm

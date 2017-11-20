@@ -72,7 +72,7 @@ namespace Prime.Plugins.Services.Bitso
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             // TODO: check r.success, throw ApiResponseException if false.
-
+            
             var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
