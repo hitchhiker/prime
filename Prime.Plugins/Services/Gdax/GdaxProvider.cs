@@ -84,14 +84,14 @@ namespace Prime.Plugins.Services.Gdax
             });
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
+        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this, "-");
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new NetworkPairVolume(Network, context.Pair, r.volume);
+            return new PublicVolumeResponse(Network, context.Pair, r.volume);
         }
 
         public VolumeFeatures VolumeFeatures { get; }

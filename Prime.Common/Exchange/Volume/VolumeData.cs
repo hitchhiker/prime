@@ -111,8 +111,8 @@ namespace Prime.Common
                 return true;
             
             var r = ApiCoordinator.GetPublicVolume(ntp, new PublicVolumeContext(pair));
-            if (!r.IsNull)
-                Add(r.Response);
+            if (!r.IsNull && r.Response.FirstOrDefault() !=null)
+                Add(r.Response.FirstOrDefault());
             else if (pair.IsNormalised)
                 return PopulateFromApi(network, pair.Reversed, true) || true;
 

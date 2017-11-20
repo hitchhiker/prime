@@ -123,7 +123,7 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(() => provider.GetAggVolumeDataAsync(context), nameof(GetAggVolumeData), provider, context);
         }
 
-        public static Task<ApiResponse<NetworkPairVolume>> GetPublicVolumeAsync(IPublicVolumeProvider provider, PublicVolumeContext context)
+        public static Task<ApiResponse<PublicVolumeResponse>> GetPublicVolumeAsync(IPublicVolumeProvider provider, PublicVolumesContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetPublicVolumeAsync(context), nameof(GetPublicVolume), provider, context);
         }

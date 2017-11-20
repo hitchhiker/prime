@@ -27,6 +27,11 @@ namespace Prime.Core.Market
             var prov = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
             if (prov != null)
             {
+                var f = prov.PricingFeatures;
+                if (f.HasVolume && f.HasBulk && f.Bulk.CanReturnAll)
+                {
+                    ApiCoordinator.GetPricing(prov, new PublicPricesContext());
+                }
                 AssetPairProvider.I.GetNetworkPairsAsync();
             }
             return null;

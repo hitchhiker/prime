@@ -481,7 +481,7 @@ namespace Prime.Plugins.Services.Kraken
             return orderBook;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
+        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -491,7 +491,7 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            return new NetworkPairVolume(Network, context.Pair, r.result.FirstOrDefault().Value.v[0]);
+            return new PublicVolumeResponse(Network, context.Pair, r.result.FirstOrDefault().Value.v[0]);
         }
 
         public VolumeFeatures VolumeFeatures { get; }

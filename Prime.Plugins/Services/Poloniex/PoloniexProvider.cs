@@ -321,7 +321,7 @@ namespace Prime.Plugins.Services.Poloniex
             return orderBook;
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
+        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);
@@ -334,7 +334,7 @@ namespace Prime.Plugins.Services.Poloniex
             if(!rVolumes.TryGetValue(context.Pair.Asset1.ShortCode, out var volume))
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new NetworkPairVolume(Network, context.Pair, volume);
+            return new PublicVolumeResponse(Network, context.Pair, volume);
         }
 
         public VolumeFeatures VolumeFeatures { get; }

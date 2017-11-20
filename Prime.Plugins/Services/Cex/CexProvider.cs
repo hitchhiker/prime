@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.Cex
                 throw new ApiResponseException($"Error occurred in provider: {response.ok}", this);
         }
 
-        public async Task<NetworkPairVolume> GetPublicVolumeAsync(PublicVolumeContext context)
+        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -120,7 +120,7 @@ namespace Prime.Plugins.Services.Cex
             if(rTicker == null)
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new NetworkPairVolume(Network, context.Pair, rTicker.volume);
+            return new PublicVolumeResponse(Network, context.Pair, rTicker.volume);
         }
 
         public VolumeFeatures VolumeFeatures { get; }
