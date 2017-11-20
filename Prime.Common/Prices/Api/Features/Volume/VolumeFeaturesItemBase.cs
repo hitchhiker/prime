@@ -6,7 +6,8 @@ namespace Prime.Common
 {
     public class VolumeFeaturesItemBase
     {
-        public bool CanBaseVolume { get; set; }
-        public bool CanQuoteVolume { get; set; }
+        public bool CanVolumeBase { get; set; }
+        public bool CanVolumeQuote { get; set; }
+        public bool CanVolume => CanVolumeBase || CanVolumeQuote;
     }
 }
