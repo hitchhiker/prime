@@ -52,14 +52,22 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            var pairs = new AssetPairs();
-
-            foreach (var rCurrentTicker in r.Data)
+            if (r.Success)
             {
-                pairs.Add(rCurrentTicker.Label.ToAssetPair(this, '/'));
-            }
 
-            return pairs;
+                var pairs = new AssetPairs();
+
+                foreach (var rCurrentTicker in r.Data)
+                {
+                    pairs.Add(rCurrentTicker.Label.ToAssetPair(this, '/'));
+                }
+
+                return pairs;
+            }
+            else
+            {
+                throw new ApiResponseException("Error processing request. " + r.Message, this);
+            }
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -89,11 +97,19 @@ namespace Prime.Plugins.Services.Cryptopia
             var pairCode = context.Pair.ToTicker(this, "_");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.Data.LastPrice)
+            if (r.Success)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.Data.AskPrice, r.Data.BidPrice, r.Data.Low, r.Data.High),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.Data.Volume)
-            });
+
+                return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.Data.LastPrice)
+                {
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.Data.AskPrice, r.Data.BidPrice, r.Data.Low, r.Data.High),
+                    Volume = new NetworkPairVolume(Network, context.Pair, r.Data.Volume)
+                });
+            }
+            else
+            {
+                throw new ApiResponseException("Error processing request. " + r.Message, this);
+            }
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
@@ -101,27 +117,35 @@ namespace Prime.Plugins.Services.Cryptopia
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            var prices = new MarketPricesResult();
-
-            foreach (var pair in context.Pairs)
+            if (r.Success)
             {
-                var currentTicker = r.Data.FirstOrDefault(x => x.Label.ToAssetPair(this, '/').Equals(pair));
 
-                if (currentTicker == null)
+                var prices = new MarketPricesResult();
+
+                foreach (var pair in context.Pairs)
                 {
-                    prices.MissedPairs.Add(pair);
-                }
-                else
-                {
-                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.LastPrice)
+                    var currentTicker = r.Data.FirstOrDefault(x => x.Label.ToAssetPair(this, '/').Equals(pair));
+
+                    if (currentTicker == null)
                     {
-                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.AskPrice, currentTicker.BidPrice, currentTicker.Low, currentTicker.High),
-                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.Volume)
-                    });
+                        prices.MissedPairs.Add(pair);
+                    }
+                    else
+                    {
+                        prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.LastPrice)
+                        {
+                            PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.AskPrice, currentTicker.BidPrice, currentTicker.Low, currentTicker.High),
+                            Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.Volume)
+                        });
+                    }
                 }
-            }
 
-            return prices;
+                return prices;
+            }
+            else
+            {
+                throw new ApiResponseException("Error processing request. " + r.Message, this);
+            }
         }
     }
 }

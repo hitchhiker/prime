@@ -9,7 +9,7 @@ namespace Prime.Plugins.Services.Bitso
         internal class BaseResponse<T>
         {
             public bool success;
-            public T data;
+            public T payload;
         }
 
         internal class AllTickerResponse : BaseResponse<TickerEntryResponse[]>

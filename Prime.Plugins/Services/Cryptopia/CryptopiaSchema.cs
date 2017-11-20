@@ -6,14 +6,19 @@ namespace Prime.Plugins.Services.Cryptopia
 {
     internal class CryptopiaSchema
     {
-        internal class AllTickersResponse
+        public class BaseResponse<T>
         {
-            public TickerEntryResponse[] Data;
+            public bool Success;
+            public string Message;
+            public T Data;
         }
 
-        internal class TickerResponse
+        internal class AllTickersResponse : BaseResponse<TickerEntryResponse[]>
         {
-            public TickerEntryResponse Data;
+        }
+
+        internal class TickerResponse : BaseResponse<TickerEntryResponse>
+        {
         }
 
         internal class TickerEntryResponse

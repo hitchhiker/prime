@@ -77,7 +77,7 @@ namespace Prime.Plugins.Services.Bitso
 
                 foreach (var pair in context.Pairs)
                 {
-                    var currentTicker = r.data.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
+                    var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
 
                     if (currentTicker == null)
                     {
@@ -110,11 +110,11 @@ namespace Prime.Plugins.Services.Bitso
 
             if (r.success)
             {
-                var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.data.last, context.Pair.Asset2))
+                var price = new MarketPrice(Network, context.Pair.Asset1, new Money(r.payload.last, context.Pair.Asset2))
                 {
-                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.data.ask, r.data.bid,
-                        r.data.low, r.data.high),
-                    Volume = new NetworkPairVolume(Network, context.Pair, r.data.volume, null)
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.payload.ask, r.payload.bid,
+                        r.payload.low, r.payload.high),
+                    Volume = new NetworkPairVolume(Network, context.Pair, r.payload.volume, null)
                 };
 
                 return new MarketPricesResult(price);
@@ -135,7 +135,7 @@ namespace Prime.Plugins.Services.Bitso
             {
                 var pairs = new AssetPairs();
 
-                foreach (var rCurrentResponse in r.data)
+                foreach (var rCurrentResponse in r.payload)
                 {
                     pairs.Add(rCurrentResponse.book.ToAssetPair(this));
                 }
