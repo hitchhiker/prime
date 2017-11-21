@@ -29,4 +29,9 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\BTCXIndia\" />
+    <Folder Include="Services\Gatecoin\" />
+  </ItemGroup>
+
 </Project>

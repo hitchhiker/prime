@@ -68,14 +68,14 @@ namespace Prime.Plugins.Services.Bitso
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
-
-            // TODO: implement context.IsRequestAll.
-
+            
             if (r.success)
             {
                 var prices = new MarketPricesResult();
+                
+                var pairsQueryable = context.IsRequestAll ? r.payload.Select(x => x.book.ToAssetPair(this)) : context.Pairs;
 
-                foreach (var pair in context.Pairs)
+                foreach (var pair in pairsQueryable)
                 {
                     var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
 
@@ -85,11 +85,11 @@ namespace Prime.Plugins.Services.Bitso
                     }
                     else
                     {
-                        prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                        prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
                         {
-                            PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask,
+                            PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask,
                                 currentTicker.bid, currentTicker.low, currentTicker.high),
-                            Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
+                            Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
                         });
                     }
                 }
