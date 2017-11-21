@@ -10,6 +10,6 @@ namespace Prime.Plugins.Services.Exmo
     internal interface IExmoApi
     {
         [Get("/ticker")]
-        Task<Dictionary<string,ExmoSchema.TickerData>> GetTickersAsync();
+        Task<Dictionary<string,ExmoSchema.TickerResponse>> GetTickersAsync();
     }
 }

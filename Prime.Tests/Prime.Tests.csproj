@@ -158,6 +158,7 @@
     <Compile Include="Providers\QuadrigaCxTests.cs" />
     <Compile Include="Providers\CoinfloorTests.cs" />
     <Compile Include="Providers\TheRockTradingTests.cs" />
+    <Compile Include="Providers\TidexTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">

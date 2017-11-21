@@ -6,7 +6,7 @@ namespace Prime.Plugins.Services.Exmo
 {
     internal class ExmoSchema
     {
-        internal class TickerData
+        internal class TickerResponse
         {
             public decimal avg;
             public decimal high;
