@@ -40,9 +40,15 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetVolume()
         {
-            var context = new PublicVolumeContext("BTC_USD".ToAssetPairRaw());
+            var pairs = new List<AssetPair>()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "BTC_EUR".ToAssetPairRaw(),
+                "BTC_RUB".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw()
+            };
 
-            base.TestGetVolume(context);
+            base.TestGetVolume(pairs);
         }
     }
 }

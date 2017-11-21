@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            // TODO: add "status" field checking.
+            CheckResponseErrors(r);
 
             var pairs = new AssetPairs();
             var krwAsset = Asset.Krw;
@@ -66,10 +66,16 @@ namespace Prime.Plugins.Services.Bithumb
             return pairs;
         }
 
+        private void CheckResponseErrors<T>(BithumbSchema.BaseResponse<T> r)
+        {
+            if(r.status != 0)
+                throw new ApiResponseException($"API error {r.status:D4} - {r.message}", this);
+        }
+
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, SupportsMultipleQuotes = false}
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, SupportsMultipleQuotes = false, CanReturnAll = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -87,7 +93,7 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
 
-            // TODO: add "status" field checking.
+            CheckResponseErrors(rRaw);
 
             var r = ParseTickerResponse(rRaw);
 
@@ -95,7 +101,11 @@ namespace Prime.Plugins.Services.Bithumb
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            var pairsQueryable = context.IsRequestAll
+                ? r.Select(x => new AssetPair(x.Key.ToAsset(this), krwAsset)).ToList()
+                : context.Pairs;
+
+            foreach (var pair in pairsQueryable)
             {
                 var rTickers = r.Where(x => x.Key.ToAsset(this).Equals(pair.Asset1)).ToArray();
                 if (!rTickers.Any() || !pair.Asset2.Equals(krwAsset))
@@ -124,7 +134,7 @@ namespace Prime.Plugins.Services.Bithumb
 
             var r = await api.GetTickerAsync(currency).ConfigureAwait(false);
 
-            // TODO: add "status" field checking.
+            CheckResponseErrors(r);
 
             var krwAsset = Asset.Krw;
 
@@ -155,10 +165,7 @@ namespace Prime.Plugins.Services.Bithumb
 
                     dict.Add(rPair.Key, parsedValue);
                 }
-                catch
-                {
-                    continue;
-                }
+                catch { /* ignored */ }
             }
 
             return dict;

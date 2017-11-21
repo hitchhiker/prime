@@ -145,6 +145,7 @@
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\CryptopiaTests.cs" />
+    <Compile Include="Providers\ExmoTests.cs" />
     <Compile Include="Providers\GdaxTests.cs" />
     <Compile Include="Providers\GeminiTests.cs" />
     <Compile Include="Providers\HitBtcTests.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Providers\QuadrigaCxTests.cs" />
     <Compile Include="Providers\CoinfloorTests.cs" />
     <Compile Include="Providers\TheRockTradingTests.cs" />
+    <Compile Include="Providers\TidexTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">

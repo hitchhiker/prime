@@ -13,7 +13,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitStamp
 {
     // https://www.bitstamp.net/api/
-    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider, IPublicVolumeProvider
+    public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";

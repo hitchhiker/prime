@@ -97,13 +97,5 @@ namespace Prime.Tests.Providers
 
             base.TestGetOhlc(context);
         }
-
-        [TestMethod]
-        public override void TestGetVolume()
-        {
-            var context = new PublicVolumeContext("BTC_ETH".ToAssetPairRaw());
-
-            base.TestGetVolume(context);
-        }
     }
 }

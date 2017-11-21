@@ -75,13 +75,5 @@ namespace Prime.Tests.Providers
             context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
             base.TestGetOrderBook(context);
         }
-
-        [TestMethod]
-        public override void TestGetVolume()
-        {
-            var context = new PublicVolumeContext("BTC_LTC".ToAssetPairRaw());
-
-            base.TestGetVolume(context);
-        }
     }
 }
