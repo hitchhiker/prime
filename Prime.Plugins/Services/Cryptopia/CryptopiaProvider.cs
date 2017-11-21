@@ -132,10 +132,10 @@ namespace Prime.Plugins.Services.Cryptopia
                     }
                     else
                     {
-                        prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.LastPrice)
+                        prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.LastPrice)
                         {
-                            PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.AskPrice, currentTicker.BidPrice, currentTicker.Low, currentTicker.High),
-                            Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.Volume)
+                            PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.AskPrice, currentTicker.BidPrice, currentTicker.Low, currentTicker.High),
+                            Volume = new NetworkPairVolume(Network, pair, currentTicker.Volume)
                         });
                     }
                 }
