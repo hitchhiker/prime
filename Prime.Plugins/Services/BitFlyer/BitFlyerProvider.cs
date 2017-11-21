@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.BitFlyer
 {
     // https://lightning.bitflyer.jp/docs
-    public class BitFlyerProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class BitFlyerProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
@@ -65,7 +65,7 @@ namespace Prime.Plugins.Services.BitFlyer
             var price = new MarketPrice(Network, context.Pair, r.ltp)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.best_ask, r.best_bid),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume_by_product)
             };
 
             return new MarketPricesResult(price);

@@ -227,7 +227,7 @@ namespace Prime.Tests.Providers
                     : "Multiple price request was completed using single price endpoint");
             Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + r.MissedPairs.Aggregate("", (s, pair) => s += pair + ", ").TrimEnd(','));
 
-            Assert.IsTrue(r.FirstPrice != null);
+            Assert.IsTrue(r.FirstPrice != null, "First price is null");
 
             if(context.IsRequestAll)
                 Assert.IsNull(context.Pairs, "Context should not have any pairs when requesting prices for all supported by exchange pairs");

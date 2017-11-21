@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.BitMex
 {
     // https://www.bitmex.com/api/explorer/
     public class BitMexProvider :
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider,IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -38,7 +38,7 @@ namespace Prime.Plugins.Services.BitMex
         public bool IsDirect => true;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-        
+
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
         public ObjectId Id => IdHash;
@@ -78,7 +78,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
-            var api = ApiProvider.GetApi(context);//  GetApi<IBitMexApi>(context);
+            var api = ApiProvider.GetApi(context);
 
             var resolution = ConvertToBitMexInterval(context.Market);
             var startDate = context.Range.UtcFrom;
@@ -115,15 +115,23 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures()
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true, SupportsMultipleQuotes = false }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
+            return await GetPricesAsync(context).ConfigureAwait(false);
+        }
+
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
+            var r = await api.GetLatestPricesAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
 
             var rPrice = r.FirstOrDefault();
 
@@ -132,20 +140,19 @@ namespace Prime.Plugins.Services.BitMex
 
             var price = new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, null, null),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, rPrice.askPrice, rPrice.bidPrice, rPrice.lowPrice, rPrice.highPrice),
                 Volume = new NetworkPairVolume(Network, context.Pair, rPrice.volume24h)
             };
 
             return new MarketPricesResult(price);
         }
-        
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
-        {
-            if (context.ForSingleMethod)
-                return await GetPriceAsync(context).ConfigureAwait(false);
 
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
+
+            // TODO: implement context.IsRequestAll.
 
             var prices = new MarketPricesResult();
 
@@ -163,7 +170,11 @@ namespace Prime.Plugins.Services.BitMex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, data.lastPrice.Value));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, data.lastPrice.Value)
+                {
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, data.askPrice, data.bidPrice, data.lowPrice, data.highPrice),
+                    Volume = new NetworkPairVolume(Network, context.Pair, data.volume24h)
+                });
             }
 
             return prices;

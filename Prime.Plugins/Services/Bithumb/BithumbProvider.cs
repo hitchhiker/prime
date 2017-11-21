@@ -27,7 +27,7 @@ namespace Prime.Plugins.Services.Bithumb
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
-
+            
             return r.Count > 0;
         }
 
@@ -52,6 +52,8 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
+            // TODO: add "status" field checking.
+
             var pairs = new AssetPairs();
             var krwAsset = Asset.Krw;
 
@@ -67,7 +69,7 @@ namespace Prime.Plugins.Services.Bithumb
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, SupportsMultipleQuotes = false}
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -84,6 +86,9 @@ namespace Prime.Plugins.Services.Bithumb
         {
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
+
+            // TODO: add "status" field checking.
+
             var r = ParseTickerResponse(rRaw);
 
             var krwAsset = Asset.Krw;
@@ -118,6 +123,8 @@ namespace Prime.Plugins.Services.Bithumb
             var currency = context.Pair.Asset1.ToRemoteCode(this);
 
             var r = await api.GetTickerAsync(currency).ConfigureAwait(false);
+
+            // TODO: add "status" field checking.
 
             var krwAsset = Asset.Krw;
 
