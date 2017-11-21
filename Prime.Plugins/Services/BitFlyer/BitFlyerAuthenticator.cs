@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            // TODO: implement.
+            
         }
     }
 }

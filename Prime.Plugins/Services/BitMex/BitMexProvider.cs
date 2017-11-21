@@ -19,8 +19,6 @@ namespace Prime.Plugins.Services.BitMex
     public class BitMexProvider :
         IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
-        // TODO: AY implement multi-statistics.
-
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";
@@ -247,10 +245,9 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        [Obsolete] // BUG: review.
+        [Obsolete] // BUG: review, should be removed.
         private string AdjustAssetCode(string input)
         {
-            // TODO: should be removed.
             var config = new Dictionary<string, string>();
 
             config.Add("XBT", "XBt");
