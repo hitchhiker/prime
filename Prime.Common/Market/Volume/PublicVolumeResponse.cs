@@ -10,10 +10,14 @@ namespace Prime.Common
         public readonly IReadOnlyList<NetworkPairVolume> Volume;
         public readonly IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> Missing;
 
+        public bool WasViaSingleMethod { get; set; }
+
         public PublicVolumeResponse(NetworkPairVolume volume)
         {
             Volume = new UniqueList<NetworkPairVolume>() { volume };
             Missing = new Dictionary<Network, IReadOnlyList<AssetPair>>();
+
+            WasViaSingleMethod = true;
         }
 
         public PublicVolumeResponse(IEnumerable<PublicVolumeResponse> responses)
@@ -35,7 +39,7 @@ namespace Prime.Common
 
         public PublicVolumeResponse(Network network, IEnumerable<AssetPair> missing) : this(null, network, missing) { }
 
-        public PublicVolumeResponse(Network network, MarketPricesResult marketPricesResult) : this(marketPricesResult.MarketPrices.Select(x => x.Volume), network, marketPricesResult.MissedPairs) {}
+        public PublicVolumeResponse(Network network, MarketPricesResult marketPricesResult) : this(marketPricesResult.MarketPrices.Select(x => x.Volume), network, marketPricesResult.MissedPairs) { }
 
         public PublicVolumeResponse(Network network, AssetPair pair, decimal volume24) : this(new NetworkPairVolume(network, pair, volume24)) { }
 

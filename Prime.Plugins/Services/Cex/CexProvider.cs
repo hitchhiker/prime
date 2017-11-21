@@ -60,8 +60,20 @@ namespace Prime.Plugins.Services.Cex
             return pairs;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, true);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Bulk = new PricingBulkFeatures() { CanReturnAll = true },
+            Single = new PricingSingleFeatures()
+        };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
+
+        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        {
+            if (context.ForSingleMethod)
+                return await GetPriceAsync(context).ConfigureAwait(false);
+
+            return await GetPricesAsync(context).ConfigureAwait(false);
+        }
 
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
@@ -72,22 +84,21 @@ namespace Prime.Plugins.Services.Cex
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lprice));
         }
-        
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
-        {
-            if (context.ForSingleMethod)
-                return await GetPriceAsync(context).ConfigureAwait(false);
 
+        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLastPricesAsync().ConfigureAwait(false);
             CheckResponseError(r);
+
+            // TODO: implement context.IsRequestAll.
 
             var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
                 var rPair = r.data.FirstOrDefault(x =>
-                    x.symbol1.ToAsset(this).Equals(pair.Asset1) && 
+                    x.symbol1.ToAsset(this).Equals(pair.Asset1) &&
                     x.symbol2.ToAsset(this).Equals(pair.Asset2));
 
                 if (rPair == null)
@@ -104,25 +115,68 @@ namespace Prime.Plugins.Services.Cex
 
         private void CheckResponseError(CexSchema.BaseResponse response)
         {
-            if(!response.ok.Equals("ok")) 
-                throw new ApiResponseException($"Error occurred in provider: {response.ok}", this);
+            if (!response.ok.Equals("ok", StringComparison.OrdinalIgnoreCase))
+                throw new ApiResponseException($"Error occurred in provider - {response.ok}", this);
         }
 
-        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
+        public async Task<PublicVolumeResponse> GetVolumeAsync(PublicVolumesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var pairCode = context.Pair.ToTicker(this, "/");
+
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            return new PublicVolumeResponse(Network, context.Pair, r.volume);
+        }
+
+        public async Task<PublicVolumeResponse> GetVolumesAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             CheckResponseError(r);
 
-            var rTicker = r.data.FirstOrDefault(x => x.pair.ToAssetPair(this, ':').Equals(context.Pair));
+            var pairsQueryable = context.IsRequestAll
+                ? r.data.Select(x => x.pair.ToAssetPair(this, ':')).ToList()
+                : context.Pairs;
 
-            if(rTicker == null)
-                throw new NoAssetPairException(context.Pair, this);
+            var volumes = new MarketPricesResult();
 
-            return new PublicVolumeResponse(Network, context.Pair, rTicker.volume);
+            foreach (var pair in pairsQueryable)
+            {
+                var ticker = r.data.FirstOrDefault(x => x.pair.ToAssetPair(this, ':').Equals(pair));
+
+                if (ticker == null)
+                {
+                    volumes.MissedPairs.Add(pair);
+                    continue;
+                }
+
+                // BUG: don't know how to construct this object.
+                volumes.MarketPrices.Add(new MarketPrice(Network, pair, 0)
+                {
+                    Volume = new NetworkPairVolume(Network, pair, ticker.volume)
+                });
+            }
+
+            return new PublicVolumeResponse(Network, volumes);
         }
 
-        public VolumeFeatures VolumeFeatures { get; }
+        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
+        {
+            if (context.ForSingleMethod)
+                return await GetVolumeAsync(context).ConfigureAwait(false);
+
+            return await GetVolumesAsync(context).ConfigureAwait(false);
+        }
+
+        private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures()
+        {
+            Single = new VolumeSingleFeatures() { CanVolumeBase = true },
+            Bulk = new VolumeBulkFeatures() { CanReturnAll = true, CanVolumeBase = true }
+        };
+
+        public VolumeFeatures VolumeFeatures => StaticVolumeFeatures;
     }
 }

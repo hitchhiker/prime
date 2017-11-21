@@ -8,6 +8,9 @@ namespace Prime.Plugins.Services.Cex
 {
     internal interface ICexApi
     {
+        [Get("/ticker/{currencyPair}")]
+        Task<CexSchema.TickerResponse> GetTickerAsync([Path(UrlEncode = false)] string currencyPair);
+
         [Get("/tickers/USD/EUR/RUB/BTC")]
         Task<CexSchema.TickersResponse> GetTickersAsync();
 

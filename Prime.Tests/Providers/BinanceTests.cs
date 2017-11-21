@@ -83,13 +83,5 @@ namespace Prime.Tests.Providers
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
             base.TestGetOhlc(context);
         }
-
-        [TestMethod]
-        public override void TestGetVolume()
-        {
-            var context = new PublicVolumeContext("BNT_BTC".ToAssetPairRaw());
-
-            base.TestGetVolume(context);
-        }
     }
 }

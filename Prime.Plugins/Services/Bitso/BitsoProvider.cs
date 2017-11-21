@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Bitso
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -68,6 +68,8 @@ namespace Prime.Plugins.Services.Bitso
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            // TODO: implement context.IsRequestAll.
 
             if (r.success)
             {

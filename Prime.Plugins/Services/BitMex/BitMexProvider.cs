@@ -150,11 +150,16 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
 
-            // TODO: implement context.IsRequestAll.
+            if(context.IsRequestAll)
+                throw new NotImplementedException("IsRequestAll is not implemented yet. Asset pairs are of random format and contain futures.");
+
+            var pairsQueryable = context.IsRequestAll
+                ? r.Select(x => new AssetPair(x.underlying, x.quoteCurrency, this)).ToList()
+                : context.Pairs;
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            foreach (var pair in pairsQueryable)
             {
                 var pairCode = pair.ToTicker(this, "").ToUpper();
 

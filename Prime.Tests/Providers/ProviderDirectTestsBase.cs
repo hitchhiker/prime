@@ -52,6 +52,14 @@ namespace Prime.Tests.Providers
                 GetPricing(p.Provider, pairs, firstPriceLessThan1);
         }
 
+        public virtual void TestGetVolume() { }
+        public void TestGetVolume(List<AssetPair> pairs)
+        {
+            var p = IsType<IPublicVolumeProvider>();
+            if (p.Success)
+                GetVolume(p.Provider, pairs);
+        }
+
         public virtual void TestGetAssetPairs() { }
         public void TestGetAssetPairs(AssetPairs requiredPairs)
         {
@@ -132,14 +140,6 @@ namespace Prime.Tests.Providers
             var p = IsType<IWithdrawalConfirmationProvider>();
             if (p.Success)
                 ConfirmWithdrawal(p.Provider, context);
-        }
-
-        public virtual void TestGetVolume() { }
-        public void TestGetVolume(PublicVolumeContext context)
-        {
-            var p = IsType<IPublicVolumeProvider>();
-            if (p.Success)
-                GetVolume(p.Provider, context);
         }
 
         #endregion
@@ -295,6 +295,8 @@ namespace Prime.Tests.Providers
         {
             try
             {
+                Trace.WriteLine("Pricing interface test\n\n");
+
                 if (provider.PricingFeatures.HasSingle)
                 {
                     Trace.WriteLine("\nSingle features test\n");
@@ -324,6 +326,54 @@ namespace Prime.Tests.Providers
                         context = new PublicPricesContext();
 
                         InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+
+        private void InternalGetVolumeAsync(IPublicVolumeProvider provider, PublicVolumesContext context, bool runSingle)
+        {
+            var r = AsyncContext.Run(() => provider.GetPublicVolumeAsync(context));
+
+            Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod,
+                runSingle
+                    ? "Single volume request was completed using multiple prices endpoint"
+                    : "Multiple volume request was completed using single price endpoint");
+        }
+
+        private void GetVolume(IPublicVolumeProvider provider, List<AssetPair> pairs)
+        {
+            try
+            {
+                Trace.WriteLine("Volume interface test\n\n");
+
+                if (provider.VolumeFeatures.HasSingle)
+                {
+                    Trace.WriteLine("\nSingle features test\n");
+
+                    var context = new PublicVolumeContext(pairs.First());
+
+                    InternalGetVolumeAsync(provider, context, true);
+                }
+
+                if (provider.VolumeFeatures.HasBulk)
+                {
+                    Trace.WriteLine("\nBulk features test with pairs selection\n");
+                    var context = new PublicVolumesContext(pairs);
+
+                    InternalGetVolumeAsync(provider, context, false);
+
+                    if (provider.VolumeFeatures.Bulk.CanReturnAll)
+                    {
+                        Trace.WriteLine("\nBulk features test (provider can return all volumes)\n");
+                        context = new PublicVolumesContext();
+
+                        InternalGetVolumeAsync(provider, context, false);
                     }
                 }
             }
@@ -555,28 +605,6 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
                 Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
-        private void GetVolume(IPublicVolumeProvider provider, PublicVolumeContext context)
-        {
-            throw new NotImplementedException("To be done soon");
-
-            if (context == null)
-                return;
-
-            try
-            {
-                var r = AsyncContext.Run(() => provider.GetPublicVolumeAsync(context));
-
-                Assert.IsTrue(r != null);
-                // Assert.IsTrue(r.Pair.Equals(context.Pair), $"Pairs don't match. Input is {context.Pair} and returned is {r.Pair}");
-
-                // Trace.WriteLine($"Network: {r.Network.Name}, Pair: {r.Pair}, Volume: {r.Volume24}");
             }
             catch (Exception e)
             {
