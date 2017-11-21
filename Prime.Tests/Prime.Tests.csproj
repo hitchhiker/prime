@@ -145,6 +145,7 @@
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\CryptopiaTests.cs" />
+    <Compile Include="Providers\ExmoTests.cs" />
     <Compile Include="Providers\GdaxTests.cs" />
     <Compile Include="Providers\GeminiTests.cs" />
     <Compile Include="Providers\HitBtcTests.cs" />

@@ -54,7 +54,6 @@ namespace Prime.Plugins.Services.Cryptopia
 
             if (r.Success)
             {
-
                 var pairs = new AssetPairs();
 
                 foreach (var rCurrentTicker in r.Data)
@@ -99,7 +98,6 @@ namespace Prime.Plugins.Services.Cryptopia
 
             if (r.Success)
             {
-
                 return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.Data.LastPrice)
                 {
                     PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.Data.AskPrice, r.Data.BidPrice, r.Data.Low, r.Data.High),
@@ -119,7 +117,6 @@ namespace Prime.Plugins.Services.Cryptopia
 
             if (r.Success)
             {
-
                 var prices = new MarketPricesResult();
 
                 foreach (var pair in context.Pairs)
