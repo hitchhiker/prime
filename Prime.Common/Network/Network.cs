@@ -61,6 +61,9 @@ namespace Prime.Common
         private IReadOnlyList<IPublicVolumeProvider> _volProviders;
         public IReadOnlyList<IPublicVolumeProvider> PublicVolumeProviders => _volProviders ?? (_volProviders = Providers.OfList<IPublicVolumeProvider>());
 
+        private bool? _hasDirect;
+        public bool HasDirect => _hasDirect ?? (bool)(_hasDirect = Providers.Any(x=>x.IsDirect));
+
         private NetworkData _publicData;
         public NetworkData Data => _publicData ?? (_publicData = NetworkDatas.I.GetOrCreate(PublicContext.I, this));
 

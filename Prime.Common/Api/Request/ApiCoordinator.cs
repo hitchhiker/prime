@@ -60,7 +60,7 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetCoinSnapshotAsync(provider, context));
         }
 
-        public static ApiResponse<NetworkPairVolumeData> GetAggVolumeData(IAggVolumeDataProvider provider, AggVolumeDataContext context)
+        public static ApiResponse<PublicVolumeResponse> GetAggVolumeData(IAggVolumeDataProvider provider, AggVolumeDataContext context)
         {
             return AsyncContext.Run(() => GetAggVolumeDataAsync(provider, context));
         }

@@ -111,8 +111,8 @@ namespace Prime.Common
                 return true;
             
             var r = ApiCoordinator.GetPublicVolume(ntp, new PublicVolumeContext(pair));
-            if (!r.IsNull && r.Response.FirstOrDefault() !=null)
-                Add(r.Response.FirstOrDefault());
+            if (!r.IsNull && r.Response.GetWithReversed(network, pair)!=null)
+                Add(r.Response.GetWithReversed(network, pair));
             else if (pair.IsNormalised)
                 return PopulateFromApi(network, pair.Reversed, true) || true;
 
@@ -157,14 +157,16 @@ namespace Prime.Common
             var aggn = GetVolumeDataAgg(prov, norm);
             var aggr = GetVolumeDataAgg(prov, norm.Reversed);
             
-            AddRange(aggr);
-            AddRange(aggn);
+            if (aggr!=null)
+                AddRange(aggr.Volume);
+            if (aggn!=null)
+                AddRange(aggn.Volume);
 
             _utcAggLatest.Add(norm.Id, DateTime.UtcNow);
             return true;
         }
 
-        private NetworkPairVolumeData GetVolumeDataAgg(IAggVolumeDataProvider prov, AssetPair pair)
+        private PublicVolumeResponse GetVolumeDataAgg(IAggVolumeDataProvider prov, AssetPair pair)
         {
             var apir = ApiCoordinator.GetAggVolumeData(prov, new AggVolumeDataContext(pair));
             return apir.IsNull ? null : apir.Response;

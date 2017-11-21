@@ -10,5 +10,15 @@ namespace Prime.Core.Market
         public bool? UseReturnAll { get; set; }
         
         public bool OnlyBulk { get; set; }
+
+        public VolumeProviderContext Clone()
+        {
+            return new VolumeProviderContext()
+            {
+                AfterData = AfterData,
+                UseReturnAll = UseReturnAll,
+                OnlyBulk = OnlyBulk
+            };
+        }
     }
 }
