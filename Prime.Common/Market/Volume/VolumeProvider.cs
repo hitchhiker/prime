@@ -70,11 +70,9 @@ namespace Prime.Core.Market
                 return pr.IsNull ? null : new PublicVolumeResponse(network, pr.Response);
             }
 
-            var tasks = pairs.Select(x => GetAsync(network, x));
+            var singles = await pairs.Select(x => GetAsync(network, x)).WhenAll().ConfigureAwait(false);
 
-            var r = await tasks.WhenAll().ConfigureAwait(false);
-
-            return r != null ? new PublicVolumeResponse(r) : null;
+            return singles != null ? new PublicVolumeResponse(singles) : null;
         }
 
         public async Task<PublicVolumeResponse> GetAsync(Network network, AssetPair pair)
