@@ -8,6 +8,7 @@ namespace Prime.Plugins.Services.Bithumb
         {
             public short status;
             public TData data;
+            public string message;
         }
 
         internal class TickersResponse : BaseResponse<Dictionary<string, object>> { }

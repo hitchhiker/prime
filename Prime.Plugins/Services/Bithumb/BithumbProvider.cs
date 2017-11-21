@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            // TODO: add "status" field checking.
+            CheckResponseErrors(r);
 
             var pairs = new AssetPairs();
             var krwAsset = Asset.Krw;
@@ -64,6 +64,12 @@ namespace Prime.Plugins.Services.Bithumb
             }
 
             return pairs;
+        }
+
+        private void CheckResponseErrors<T>(BithumbSchema.BaseResponse<T> r)
+        {
+            if(r.status != 0)
+                throw new ApiResponseException($"API error {r.status:D4} - {r.message}", this);
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
@@ -87,7 +93,7 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
 
-            // TODO: add "status" field checking.
+            CheckResponseErrors(rRaw);
 
             var r = ParseTickerResponse(rRaw);
 
@@ -124,7 +130,7 @@ namespace Prime.Plugins.Services.Bithumb
 
             var r = await api.GetTickerAsync(currency).ConfigureAwait(false);
 
-            // TODO: add "status" field checking.
+            CheckResponseErrors(r);
 
             var krwAsset = Asset.Krw;
 
@@ -155,10 +161,7 @@ namespace Prime.Plugins.Services.Bithumb
 
                     dict.Add(rPair.Key, parsedValue);
                 }
-                catch
-                {
-                    continue;
-                }
+                catch { /* ignored */ }
             }
 
             return dict;
