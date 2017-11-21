@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Prime.Utility;
 
 namespace Prime.Common
 {
@@ -17,9 +18,11 @@ namespace Prime.Common
             WasViaSingleMethod = true;
         }
 
-        public MarketPricesResult(List<MarketPrice> prices)
+        public MarketPricesResult(IEnumerable<MarketPricesResult> prices) : this(prices.SelectMany(x=>x.MarketPrices)) { }
+
+        public MarketPricesResult(IEnumerable<MarketPrice> prices)
         {
-            MarketPrices = prices;
+            MarketPrices = prices.AsList();
         }
 
         public List<MarketPrice> MarketPrices { get; set; } = new List<MarketPrice>();

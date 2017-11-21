@@ -8,7 +8,7 @@ namespace Prime.Common
 {
     public static class ApiHelpers
     {
-        public static async Task<ApiResponse<T>> WrapExceptionAsync<T>(Func<Task<T>> t, string name, INetworkProvider provider, NetworkProviderContext context)
+        public static async Task<ApiResponse<T>> WrapExceptionAsync<T>(Func<Task<T>> t, string name, INetworkProvider provider, NetworkProviderContext context, Action<T> afterSuccess = null)
         {
             if (t == null)
                 return new ApiResponse<T>("Not implemented");
@@ -21,6 +21,8 @@ namespace Prime.Common
                 context.L.Trace("Api: " + provider.Title + " " + name);
                 var response = await t.Invoke().ConfigureAwait(false);
                 context.L.Trace("Api finished @ " + sw.ToElapsed() + " : " + provider.Title + " " + name);
+                if (response!=null)
+                    afterSuccess?.Invoke(response);
                 return new ApiResponse<T>(response);
             }
             catch (ApiResponseException ae)

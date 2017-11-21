@@ -3,52 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
+using Prime.Utility;
 
 namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static async Task<ApiResponse<MarketPricesResult>> GetPricingAsync(IPublicPricingProvider provider, PublicPricesContext context)
+        public static Task<ApiResponse<MarketPricesResult>> GetPricingAsync(IPublicPricingProvider provider, PublicPricesContext context)
         {
-            //if (context.IsMultiple && context.ForSingleMethod)
-            //    throw new ArgumentException($"Failed as '{nameof(context.ForSingleMethod)}' is set on '{context.GetType().Name}' but this context requires '{nameof(context.IsMultiple)}'");
-
-            var features = provider.PricingFeatures;
-
-            if (!features.HasBulk && !features.HasSingle)
-                throw new Exception($"Fatal: The provider {provider.Title} supports neither {nameof(features.HasBulk)} nor {nameof(features.HasSingle)}.");
-
-            var tryBulk = context.IsMultiple && !context.ForSingleMethod;
-
-            var channel = tryBulk ? features.Bulk : (PricingFeaturesItemBase)features.Single;
-
-            channel = channel ?? (tryBulk ? features.Single : (PricingFeaturesItemBase)features.Bulk);
-
-            if (context.RequestStatistics && !channel.CanStatistics)
-                throw new ArgumentException($"This provider {provider.Title} cannot provide statistics for '{channel.GetType().Name}'");
-
-            if (context.RequestVolume && !channel.CanVolume)
-                throw new ArgumentException($"This provider {provider.Title} cannot provide volume data for '{channel.GetType().Name}'");
-            
-            switch (channel)
-            {
-                case PricingBulkFeatures bulk:
-                    return await ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(context), nameof(GetPricing) + " [Bulk]", provider, context).ConfigureAwait(false);
-                case PricingSingleFeatures single:
-                    var r = new MarketPricesResult();
-                    foreach (var pair in context.Pairs)
-                    {
-                        var ctx = new PublicPriceContext(pair);
-                        var rq = await ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(ctx), nameof(GetPricing) + " [Bulk Sim]", provider, context).ConfigureAwait(false);
-                        if (!rq.IsNull && rq.Response.FirstPrice != null)
-                            r.MarketPrices.Add(rq.Response.FirstPrice);
-                        else
-                            r.MissedPairs.Add(pair);
-                    }
-                    return new ApiResponse<MarketPricesResult>(r);
-            }
-
-            return default;
+            return ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(context), nameof(GetPricing), provider, context);
         }
 
         public static Task<ApiResponse<bool>> TestApiAsync(INetworkProviderPrivate provider, ApiPrivateTestContext context)
@@ -125,7 +88,11 @@ namespace Prime.Common
 
         public static Task<ApiResponse<PublicVolumeResponse>> GetPublicVolumeAsync(IPublicVolumeProvider provider, PublicVolumesContext context)
         {
-            return ApiHelpers.WrapExceptionAsync(() => provider.GetPublicVolumeAsync(context), nameof(GetPublicVolume), provider, context);
+            return ApiHelpers.WrapExceptionAsync(() => provider.GetPublicVolumeAsync(context), nameof(GetPublicVolume), provider, context, r =>
+            {
+                var s = new VolumeSource(provider, typeof(IPublicVolumeProvider));
+                r.Volume.ForEach(x => x.Source = s);
+            });
         }
     }
 }

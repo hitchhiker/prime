@@ -86,7 +86,7 @@ namespace Prime.Core.Market
                 {
                     onPull?.Invoke(network, pair);
 
-                    var f = rb?.Volume?.FirstOrDefault(x => x.Network.Id == network.Id && x.Pair.EqualsOrReversed(pair));
+                    var f = rb.Volume?.FirstOrDefault(x => x.Network.Id == network.Id && x.Pair.EqualsOrReversed(pair));
                     var r = f ?? GetVolume(network, pair, true);
 
                     if (r!=null && Equals(r.Pair, pair.Reversed))

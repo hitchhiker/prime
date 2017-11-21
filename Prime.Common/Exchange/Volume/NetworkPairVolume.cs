@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using LiteDB;
-using Prime.Utility;
 
 namespace Prime.Common
 {
@@ -41,6 +40,9 @@ namespace Prime.Common
         }
 
         public AssetPair PairN => Pair.Normalised;
+
+        [Bson]
+        public VolumeSource Source { get; set; }
 
         [Bson]
         public DateTime UtcCreated { get; private set; }

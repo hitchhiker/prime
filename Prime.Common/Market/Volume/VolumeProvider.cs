@@ -27,107 +27,139 @@ namespace Prime.Core.Market
 
         public async Task<PublicVolumeResponse> GetAsync(Network network, VolumeProviderContext context = null)
         {
+            var t = GetTask(network, context);
+            if (t == null)
+                return null;
+            return await t.ConfigureAwait(false);
+        }
+
+        public async Task<PublicVolumeResponse> GetAsync(Network network, IEnumerable<AssetPair> pairs, VolumeProviderContext context = null)
+        {
+            var t = GetTask(network, pairs, context);
+            if (t == null)
+                return null;
+            return await t.ConfigureAwait(false);
+        }
+
+        public async Task<PublicVolumeResponse> GetAsync(VolumeProviderContext context = null)
+        {
+            var t = GetTask(context);
+            if (t == null)
+                return null;
+            return await t.ConfigureAwait(false);
+        }
+
+        public async Task<PublicVolumeResponse> GetAsync(IEnumerable<Network> networks, VolumeProviderContext context = null)
+        {
+            var t = GetTask(networks, context);
+            if (t == null)
+                return null;
+            return await t.ConfigureAwait(false);
+        }
+
+        public async Task<PublicVolumeResponse> GetAsync(Network network, AssetPair pair,VolumeProviderContext context = null)
+        {
+            var t = GetTask(network, pair, context);
+            if (t == null)
+                return null;
+            return await t.ConfigureAwait(false);
+        }
+
+        public Task<PublicVolumeResponse> GetTask(IEnumerable<Network> networks, VolumeProviderContext context = null)
+        {
+            var nets = networks.ToList();
+            var tasks = nets.Select(x => GetAsync(x, context)).Where(x => x != null);
+            return tasks.WhenAll().ContinueWith(r => After(new PublicVolumeResponse(r.Result), context));
+        }
+
+        public Task<PublicVolumeResponse> GetTask(Network network, VolumeProviderContext context = null)
+        {
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
             var volume = pv?.VolumeFeatures;
 
             if (volume?.HasBulk == true && volume.Bulk.CanReturnAll)
-            {
-                var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumesContext()).ConfigureAwait(false);
-                return vr.IsNull ? null : After(vr.Response, context);
-            }
+                return CoordinatorTask(pv, new PublicVolumesContext());
 
-            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
-            var pricing = pp?.PricingFeatures;
-
-            if (pricing?.HasBulk == true && pricing.Bulk.CanVolume && pricing.Bulk.CanReturnAll)
-            {
-                var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext()).ConfigureAwait(false);
-                return pr.IsNull ? null : After(new PublicVolumeResponse(pp.Network, pr.Response), context);
-            }
+            var pp = PricingProvider.I.GetTask(network, new PricingProviderContext() { OnlyBulk = true, RequestVolume = true, UseReturnAll = true });
+            if (pp != null)
+                return pp.ContinueWith(r => After(new PublicVolumeResponse(network, r.Result), context));
 
             if (context?.UseReturnAll == true)
-                return null;
+                return default;
 
             var newContext = context?.Clone() ?? new VolumeProviderContext();
             newContext.UseReturnAll = false;
 
             var pairs = AsyncContext.Run(() => AssetPairProvider.I.GetPairsAsync(network));
             if (pairs == null)
-                return null;
+                return default;
 
-            return await GetAsync(network, pairs, newContext).ConfigureAwait(false);
+            return GetTask(network, pairs, newContext);
         }
 
-        public async Task<PublicVolumeResponse> GetAsync(Network network, IEnumerable<AssetPair> pairs, VolumeProviderContext context = null)
+        public Task<PublicVolumeResponse> GetTask(Network network, IEnumerable<AssetPair> pairs, VolumeProviderContext context = null)
         {
             if (pairs == null)
-                return null;
+                return default;
 
             if (pairs.Count() > 1 && context?.UseReturnAll != false)
-                return await GetAsync(network, context).ConfigureAwait(false);
+                return GetTask(network, context);
             
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
             var volume = pv?.VolumeFeatures;
 
             if (volume?.HasBulk == true)
-            {
-                var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumesContext(pairs.AsList())).ConfigureAwait(false);
-                return vr.IsNull ? null : After(vr.Response, context);
-            }
-
-            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
-            var pricing = pp?.PricingFeatures;
-
-            if (pricing?.HasBulk == true && pricing.Bulk.CanVolume)
-            {
-                var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext(pairs.AsList())).ConfigureAwait(false);
-                return pr.IsNull ? null : After(new PublicVolumeResponse(network, pr.Response), context);
-            }
-
+                return CoordinatorTask(pv, new PublicVolumesContext(pairs.AsList()));
+            
+            var pp = PricingProvider.I.GetTask(network, pairs, new PricingProviderContext() {OnlyBulk = true, RequestVolume = true});
+            if (pp != null)
+                return pp.ContinueWith(r => After(r.Result == null ? null : new PublicVolumeResponse(network, r.Result), context));
+            
             if (context?.OnlyBulk == true)
-                return null;
+                return default;
 
-            var singles = await pairs.Select(x => GetAsync(network, x, context)).Where(x => x != null).WhenAll().ConfigureAwait(false);
-
-            return singles != null ? After(new PublicVolumeResponse(singles),context) : null;
+            var singles = pairs.Select(x => GetAsync(network, x, context)).Where(x => x != null).WhenAll();
+            return singles.ContinueWith(r => After(r.Result == null ? null : new PublicVolumeResponse(r.Result), context));
         }
 
-        public async Task<PublicVolumeResponse> GetAsync(VolumeProviderContext context = null)
+        public Task<PublicVolumeResponse> GetTask(VolumeProviderContext context = null)
         {
             var nets = Networks.I.ToList();
-
-            nets.Remove(Networks.I.Get("bittrex"));
-
-            var tasks = nets.Select(x => GetAsync(x, context)).Where(x=>x!=null);
-            var results = await tasks.WhenAll().ConfigureAwait(false);
-            return new PublicVolumeResponse(results);
+            return GetAsync(nets, context);
         }
 
-        public async Task<PublicVolumeResponse> GetAsync(Network network, AssetPair pair, VolumeProviderContext context = null)
+        public Task<PublicVolumeResponse> GetTask(Network network, AssetPair pair, VolumeProviderContext context = null)
         {
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
             if (pv != null)
-            {
-                var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumeContext(pair)).ConfigureAwait(false);
-                return vr.IsNull ? null : After(vr.Response, context);
-            }
-
-            var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
-            var pricing = pp?.PricingFeatures;
-
-            if (pricing?.HasVolume == true)
-            {
-                var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPriceContext(pair)).ConfigureAwait(false);
-                return pr.IsNull ? null : After(new PublicVolumeResponse(network, pr.Response), context);
-            }
-
+                return CoordinatorTask(pv, new PublicVolumeContext(pair));
+            
+            var pp = PricingProvider.I.GetTask(network, pair, new PricingProviderContext() { RequestVolume = true });
+            if (pp != null)
+                return pp.ContinueWith(r => After(r.Result == null ? null : new PublicVolumeResponse(network, r.Result), context));
+            
             if (ProviderAggVolumeData != null && ProviderAggVolumeData.NetworksSupported.Contains(network))
-            {
-                var av = await ApiCoordinator.GetAggVolumeDataAsync(ProviderAggVolumeData, new AggVolumeDataContext(pair)).ConfigureAwait(false);
-                return av.IsNull ? null : After(av.Response, context);
-            }
+                return CoordinatorTask(new AggVolumeDataContext(pair), context);
+            
+            return default;
+        }
 
-            return null;
+        private Task<PublicVolumeResponse> CoordinatorTask(AggVolumeDataContext vContext, VolumeProviderContext context = null)
+        {
+            return ApiCoordinator.GetAggVolumeDataAsync(ProviderAggVolumeData, vContext).ContinueWith(x =>
+            {
+                var r = x.Result;
+                return r.IsNull ? null : After(r.Response, context);
+            });
+        }
+
+        private Task<PublicVolumeResponse> CoordinatorTask(IPublicVolumeProvider prov, PublicVolumesContext vContext, VolumeProviderContext context = null)
+        {
+            return ApiCoordinator.GetPublicVolumeAsync(prov, vContext).ContinueWith(x =>
+            {
+                var r = x.Result;
+                return r.IsNull ? null : After(r.Response, context);
+            });
         }
 
         private PublicVolumeResponse After(PublicVolumeResponse response, VolumeProviderContext context)
