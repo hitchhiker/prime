@@ -34,8 +34,6 @@ namespace Prime.Plugins.Services.Bitso
 
         public bool IsDirect => true;
 
-        public bool CanGenerateDepositAddress => true; // TODO: confirm
-        public bool CanPeekDepositAddress => false; // TODO: confirm
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         public BitsoProvider()
