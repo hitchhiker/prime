@@ -22,11 +22,8 @@ namespace Prime.Plugins.Services.BitMex
         [Get("/instrument/active")]
         Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActiveAsync();
 
-        [Get("/instrument?symbol={currencySymbol}&columns=[\"lastPrice\",\"highPrice\",\"lowPrice\",\"bidPrice\",\"askPrice\",\"timestamp\",\"symbol\",\"volume24h\"]&reverse=true")]
-        Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPriceAsync([Path]String currencySymbol);
-
-        [Get("/instrument?columns=[\"lastPrice\",\"timestamp\",\"symbol\",\"underlying\",\"quoteCurrency\"]&reverse=true&count=500")]
-        Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPricesAsync();
+        [Get("/instrument?columns=[\"lastPrice\",\"highPrice\",\"lowPrice\",\"bidPrice\",\"askPrice\",\"timestamp\",\"symbol\",\"volume24h\"]&reverse=true&count=500")]
+        Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPricesAsync([Query("symbol")] string pairCode = null);
 
         [Get("/orderBook/L2?symbol={currencyPair}&depth={depth}")]
         Task<BitMexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int depth);
