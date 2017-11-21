@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Bulk = new PricingBulkFeatures() {CanStatistics = true, CanVolume = true}
+            Bulk = new PricingBulkFeatures() {CanStatistics = true, CanVolume = true, CanReturnAll = true}
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -76,11 +76,14 @@ namespace Prime.Plugins.Services.Poloniex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync().ConfigureAwait(false);
 
+            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this), y => y.Value);
+            var pairsQueryable = context.IsRequestAll ? rPaired.Select(x => x.Key) : context.Pairs;
+                
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            foreach (var pair in pairsQueryable)
             {
-                var rTickers = r.Where(x => x.Key.ToAssetPair(this).Equals(pair)).ToList();
+                var rTickers = rPaired.Where(x => x.Key.Equals(pair)).ToList();
 
                 if (rTickers.Count == 0)
                 {

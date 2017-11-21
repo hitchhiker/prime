@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LiteDB;
+using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Utility;
 
@@ -79,10 +80,18 @@ namespace Prime.Core.Market
             {
                 var pairs = pairsByNetwork[network];
 
+                var rb = AsyncContext.Run(() => VolumeProvider.I.GetAsync(network, new VolumeProviderContext() { UseReturnAll = true }));
+              
                 foreach (var pair in pairs)
                 {
                     onPull?.Invoke(network, pair);
-                    var r = GetVolume(network, pair, true);
+
+                    var f = rb?.Volume?.FirstOrDefault(x => x.Network.Id == network.Id && x.Pair.EqualsOrReversed(pair));
+                    var r = f ?? GetVolume(network, pair, true);
+
+                    if (r!=null && Equals(r.Pair, pair.Reversed))
+                        r = r.Reversed;
+
                     if (r == null)
                         missing.GetOrAdd(network, (k) => new UniqueList<AssetPair>()).Add(pair);
                     else

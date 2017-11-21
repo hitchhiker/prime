@@ -25,7 +25,7 @@ namespace Prime.Core.Market
             ProvidersPublicPricing = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x => x.IsDirect && x.PricingFeatures.HasVolume).ToList();
         }
 
-        public async Task<PublicVolumeResponse> GetAsync(Network network)
+        public async Task<PublicVolumeResponse> GetAsync(Network network, VolumeProviderContext context = null)
         {
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
             var volume = pv?.VolumeFeatures;
@@ -33,7 +33,7 @@ namespace Prime.Core.Market
             if (volume?.HasBulk == true && volume.Bulk.CanReturnAll)
             {
                 var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumesContext()).ConfigureAwait(false);
-                return vr.IsNull ? null : vr.Response;
+                return vr.IsNull ? null : After(vr.Response, context);
             }
 
             var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
@@ -42,23 +42,31 @@ namespace Prime.Core.Market
             if (pricing?.HasBulk == true && pricing.Bulk.CanVolume && pricing.Bulk.CanReturnAll)
             {
                 var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext()).ConfigureAwait(false);
-                return pr.IsNull ? null : new PublicVolumeResponse(pp.Network, pr.Response);
+                return pr.IsNull ? null : After(new PublicVolumeResponse(pp.Network, pr.Response), context);
             }
+
+            if (context?.UseReturnAll == true)
+                return null;
+
+            context.UseReturnAll = false;
 
             var pairs = AsyncContext.Run(() => AssetPairProvider.I.GetPairsAsync(network));
 
-            return await GetAsync(network, pairs).ConfigureAwait(false);
+            return await GetAsync(network, pairs, context).ConfigureAwait(false);
         }
 
-        public async Task<PublicVolumeResponse> GetAsync(Network network, IEnumerable<AssetPair> pairs)
+        public async Task<PublicVolumeResponse> GetAsync(Network network, IEnumerable<AssetPair> pairs, VolumeProviderContext context = null)
         {
+            if (pairs.Count() > 1 && context.UseReturnAll != false)
+                return await GetAsync(network, context).ConfigureAwait(false);
+            
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
             var volume = pv?.VolumeFeatures;
 
             if (volume?.HasBulk == true)
             {
                 var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumesContext(pairs.AsList())).ConfigureAwait(false);
-                return vr.IsNull ? null : vr.Response;
+                return vr.IsNull ? null : After(vr.Response, context);
             }
 
             var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
@@ -67,22 +75,25 @@ namespace Prime.Core.Market
             if (pricing?.HasBulk == true && pricing.Bulk.CanVolume)
             {
                 var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPricesContext(pairs.AsList())).ConfigureAwait(false);
-                return pr.IsNull ? null : new PublicVolumeResponse(network, pr.Response);
+                return pr.IsNull ? null : After(new PublicVolumeResponse(network, pr.Response), context);
             }
 
-            var singles = await pairs.Select(x => GetAsync(network, x)).WhenAll().ConfigureAwait(false);
+            if (context?.OnlyBulk == true)
+                return null;
 
-            return singles != null ? new PublicVolumeResponse(singles) : null;
+            var singles = await pairs.Select(x => GetAsync(network, x, context)).WhenAll().ConfigureAwait(false);
+
+            return singles != null ? After(new PublicVolumeResponse(singles),context) : null;
         }
 
-        public async Task<PublicVolumeResponse> GetAsync(Network network, AssetPair pair)
+        public async Task<PublicVolumeResponse> GetAsync(Network network, AssetPair pair, VolumeProviderContext context = null)
         {
             var pv = network.PublicVolumeProviders.FirstOrDefault(x => x.IsDirect);
 
             if (pv != null)
             {
                 var vr = await ApiCoordinator.GetPublicVolumeAsync(pv, new PublicVolumeContext(pair)).ConfigureAwait(false);
-                return vr.IsNull ? null : vr.Response;
+                return vr.IsNull ? null : After(vr.Response, context);
             }
 
             var pp = network.PublicPriceProviders.FirstOrDefault(x => x.PricingFeatures.HasVolume && x.IsDirect);
@@ -91,10 +102,19 @@ namespace Prime.Core.Market
             if (pricing?.HasVolume == true)
             {
                 var pr = await ApiCoordinator.GetPricingAsync(pp, new PublicPriceContext(pair)).ConfigureAwait(false);
-                return pr.IsNull ? null : new PublicVolumeResponse(network, pr.Response);
+                return pr.IsNull ? null : After(new PublicVolumeResponse(network, pr.Response), context);
             }
 
             return null;
+        }
+
+        private PublicVolumeResponse After(PublicVolumeResponse response, VolumeProviderContext context)
+        {
+            if (response == null || context?.AfterData == null)
+                return response;
+
+            context?.AfterData?.Invoke(response);
+            return response;
         }
     }
 }
