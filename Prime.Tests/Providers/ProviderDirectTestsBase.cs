@@ -225,12 +225,12 @@ namespace Prime.Tests.Providers
                 runSingle
                     ? "Single price request was completed using multiple prices endpoint"
                     : "Multiple price request was completed using single price endpoint");
-            Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + r.MissedPairs.Aggregate("", (s, pair) => s += pair + ", ").TrimEnd(','));
+            Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + string.Join(",", r.MissedPairs));
 
             Assert.IsTrue(r.FirstPrice != null, "First price is null");
 
             if(context.IsRequestAll)
-                Assert.IsNull(context.Pairs, "Context should not have any pairs when requesting prices for all supported by exchange pairs");
+                Assert.IsTrue(!context.Pairs.Any(), "Context should not have any pairs when requesting prices for all supported by exchange pairs");
             else
             { 
                 Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");

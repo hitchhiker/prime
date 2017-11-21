@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.Bithumb
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, SupportsMultipleQuotes = false}
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, SupportsMultipleQuotes = false, CanReturnAll = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -101,7 +101,11 @@ namespace Prime.Plugins.Services.Bithumb
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            var pairsQueryable = context.IsRequestAll
+                ? r.Select(x => new AssetPair(x.Key.ToAsset(this), krwAsset)).ToList()
+                : context.Pairs;
+
+            foreach (var pair in pairsQueryable)
             {
                 var rTickers = r.Where(x => x.Key.ToAsset(this).Equals(pair.Asset1)).ToArray();
                 if (!rTickers.Any() || !pair.Asset2.Equals(krwAsset))
