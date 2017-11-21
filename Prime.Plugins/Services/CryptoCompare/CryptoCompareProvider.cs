@@ -16,7 +16,7 @@ namespace plugins
 
         public override string AggregatorName => null;
 
-        public async Task<NetworkPairVolumeData> GetAggVolumeDataAsync(AggVolumeDataContext context)
+        public async Task<PublicVolumeResponse> GetAggVolumeDataAsync(AggVolumeDataContext context)
         {
             var pair = context.Pair;
 
@@ -26,7 +26,7 @@ namespace plugins
             if (apir.IsError() || apir.Data == null)
                 return null;
 
-            var vols = new NetworkPairVolumeData(context.Pair);
+            var vols = new List<NetworkPairVolume>();
 
             foreach (var i in apir.Data)
             {
@@ -40,7 +40,7 @@ namespace plugins
                 vols.Add(v);
             }
 
-            return vols;
+            return new PublicVolumeResponse(vols);
         }
 
         public async Task<AggregatedAssetPairData> GetCoinSnapshotAsync(AssetPairDataContext context)

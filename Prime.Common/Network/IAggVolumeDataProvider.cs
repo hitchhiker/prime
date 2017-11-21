@@ -5,6 +5,6 @@ namespace Prime.Common
 {
     public interface IAggVolumeDataProvider : IAggregator
     {
-        Task<NetworkPairVolumeData> GetAggVolumeDataAsync(AggVolumeDataContext context);
+        Task<PublicVolumeResponse> GetAggVolumeDataAsync(AggVolumeDataContext context);
     }
 }

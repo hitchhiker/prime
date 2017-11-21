@@ -18,17 +18,20 @@ namespace Prime.Common
 
         public PublicVolumeResponse(IEnumerable<PublicVolumeResponse> responses)
         {
-            var m = new Dictionary<Network, UniqueList<AssetPair>>();
-            Volume = new UniqueList<NetworkPairVolume>(responses.SelectMany(x => x.Volume));
+            var list = responses.Where(x => x != null).ToList();
 
-            foreach (var n in responses.SelectMany(x => x.Missing.Select(mm => mm.Key)).ToUniqueList())
+            var m = new Dictionary<Network, UniqueList<AssetPair>>();
+            Volume = new UniqueList<NetworkPairVolume>(list.SelectMany(x => x.Volume));
+
+            foreach (var n in list.SelectMany(x => x.Missing.Select(mm => mm.Key)).ToUniqueList())
                 m.Add(n, new UniqueList<AssetPair>());
 
-            foreach (var mi in responses.SelectMany(x => x.Missing))
+            foreach (var mi in list.SelectMany(x => x.Missing))
                 m[mi.Key].AddRange(mi.Value);
         
             Missing = m.ToDictionary(x=>x.Key, y=>y.Value.AsReadOnlyList());
         }
+
 
         public PublicVolumeResponse(Network network, IEnumerable<AssetPair> missing) : this(null, network, missing) { }
 
@@ -44,15 +47,19 @@ namespace Prime.Common
             Missing = new Dictionary<Network, IReadOnlyList<AssetPair>> {{network, missing.ToUniqueList()}};
         }
 
-        public PublicVolumeResponse(UniqueList<NetworkPairVolume> volume, Dictionary<Network, UniqueList<AssetPair>> missing)
+        public PublicVolumeResponse(IEnumerable<NetworkPairVolume> volume, Dictionary<Network, UniqueList<AssetPair>> missing = null)
         {
-            Volume = volume;
-            Missing = missing.ToDictionary(x => x.Key, y => y.Value.AsReadOnlyList());
+            Volume = volume.ToUniqueList();
+            Missing = missing == null ? new Dictionary<Network, IReadOnlyList<AssetPair>>() : missing.ToDictionary(x => x.Key, y => y.Value.AsReadOnlyList());
         }
-
-        public NetworkPairVolume FirstOrDefault()
+        
+        public NetworkPairVolume GetWithReversed(Network network, AssetPair pair)
         {
-            return Volume.FirstOrDefault();
+            var v = Volume.FirstOrDefault(x=>x.Network.Id == network.Id && x.Pair.EqualsOrReversed(pair));
+            if (v == null)
+                return null;
+
+            return v.Pair.Id == pair.Id ? v : v.Reversed;
         }
     }
 }
