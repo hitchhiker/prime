@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
 using Prime.Utility;
@@ -9,11 +10,15 @@ namespace Prime.Common
     {
         public readonly IReadOnlyList<NetworkPairVolume> Volume;
         public readonly IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> Missing;
+        
+        [Obsolete("We're going to have a better way to do this shortly.")]
+        public bool WasViaSingleMethod { get; set; }
 
         public PublicVolumeResponse(NetworkPairVolume volume)
         {
             Volume = new UniqueList<NetworkPairVolume>() { volume };
             Missing = new Dictionary<Network, IReadOnlyList<AssetPair>>();
+            WasViaSingleMethod = true;
         }
 
         public PublicVolumeResponse(IEnumerable<PublicVolumeResponse> responses)
@@ -31,7 +36,6 @@ namespace Prime.Common
         
             Missing = m.ToDictionary(x=>x.Key, y=>y.Value.AsReadOnlyList());
         }
-
 
         public PublicVolumeResponse(Network network, IEnumerable<AssetPair> missing) : this(null, network, missing) { }
 
