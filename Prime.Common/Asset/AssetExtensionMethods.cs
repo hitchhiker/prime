@@ -7,7 +7,7 @@ namespace Prime.Common
 {
     public static class AssetExtensionMethods
     {
-        public static AssetPair ToAssetPair(this string pair, IDescribesAssets provider, char delimiter = '_')
+        public static AssetPair ToAssetPair(this string pair, IDescribesAssets provider, char delimiter)
         {
             if (string.IsNullOrWhiteSpace(pair) || pair.IndexOf(delimiter) == -1)
                 return AssetPair.Empty;
