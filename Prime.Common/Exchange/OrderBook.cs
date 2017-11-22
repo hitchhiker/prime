@@ -68,7 +68,10 @@ namespace Prime.Common
         }
 
         private Money? _spread;
-        public Money Spread => _spread ?? (Money)(_spread = Money.Zero);
+        public Money Spread => _spread ?? (Money)(_spread = LowestAsk.Price - HighestBid.Price);
+
+        private decimal? _spreadPercentage;
+        public decimal SpreadPercentage => _spreadPercentage ?? (decimal)(_spreadPercentage = HighestBid.Price.PercentageProfit(LowestAsk.Price));
 
         private OrderBookRecord _lowestAsk;
         public OrderBookRecord LowestAsk => _lowestAsk ?? (_lowestAsk = _asks.OrderBy(x => x.Price).FirstOrDefault());
