@@ -101,17 +101,17 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            // TODO: implement context.IsRequestAll.
+            var rPairsDict = r.result.ToDictionary(x => x.MarketName.ToAssetPair(this, '-'), x => x);
+
+            var pairsQueryable = context.IsRequestAll
+                ? rPairsDict.Keys.ToList()
+                : context.Pairs;
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            foreach (var pair in pairsQueryable)
             {
-                var pairCode = pair.ToTicker(this, "-");
-
-                var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
-
-                if (ms == null)
+                if (!rPairsDict.TryGetValue(pair, out var ms))
                 {
                     prices.MissedPairs.Add(pair);
                     continue;
@@ -129,31 +129,7 @@ namespace Prime.Plugins.Services.Bittrex
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
 
-            // TODO: implement context.IsRequestAll.
-
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketSummariesAsync().ConfigureAwait(false);
-
-            CheckResponseErrors(r);
-
-            var prices = new MarketPricesResult();
-
-            foreach (var pair in context.Pairs)
-            {
-                var pairCode = pair.ToTicker(this, "-");
-
-                var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
-
-                if (ms == null)
-                {
-                    prices.MissedPairs.Add(pair);
-                    continue;
-                }
-
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / ms.Last));
-            }
-
-            return prices;
+            return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
 
