@@ -50,27 +50,61 @@ namespace Prime.Plugins.Services.Bittrex
             public string uuid;
         }
 
-        internal class OpenOrdersResponse : BaseResponse<IList<OpenOrdersEntry>> { }
+        internal class OpenOrdersResponse : BaseResponse<IList<GetOpenOrdersEntry>> { }
 
-        internal class OpenOrdersEntry
+        internal class GetOrderResponse : BaseResponse<GetOrderEntry> { }
+
+        internal class GetOrderHistoryResponse : BaseResponse<IList<GetOrderHistoryEntry>> { }
+
+        internal class OrderCommonBase
         {
-            public string Uuid;
             public string OrderUuid;
             public string Exchange;
-            public string OrderType;
             public decimal Quantity;
             public decimal QuantityRemaining;
             public decimal Limit;
-            public decimal CommissionPaid;
             public decimal Price;
             public decimal? PricePerUnit;
-            public DateTime? Opened;
-            public DateTime? Closed;
-            public bool CancelInitiated;
-            public bool ImmediateOrCancel;
             public bool IsConditional;
             public string Condition;
             public string ConditionTarget;
+            public bool ImmediateOrCancel;
+        }
+
+        internal class GetOpenOrdersEntry : OrderCommonBase
+        {
+            public string Type => OrderType;
+            public string OrderType;
+
+            public string Uuid;
+            public decimal CommissionPaid;
+            public DateTime? Opened;
+            public DateTime? Closed;
+            public bool CancelInitiated;
+        }
+
+        internal class GetOrderEntry : OrderCommonBase
+        {
+            public string Type;
+            public string OrderType => Type;
+
+            public string AccountId;
+            public decimal CommissionPaid;
+            public decimal CommissionReserved;
+            public decimal CommissionReservedRemaining;
+            public bool IsOpen;
+            public string Sentinel;
+            public DateTime? Opened;
+            public DateTime? Closed;
+            public bool CancelInitiated;
+        }
+
+        internal class GetOrderHistoryEntry : OrderCommonBase
+        {
+            public string Type => OrderType;
+            public string OrderType;
+            public string TimeStamp;
+            public decimal Commission;
         }
 
         internal class OrderBookDataResponse

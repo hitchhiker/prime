@@ -6,7 +6,7 @@ namespace Prime.Common
     {
         public readonly AssetPair Pair;
 
-        public PrivatePairContext(UserContext userContext, AssetPair pair, ILogger logger) : base(userContext, logger)
+        public PrivatePairContext(UserContext userContext, AssetPair pair, ILogger logger = null) : base(userContext, logger)
         {
             Pair = pair;
         }

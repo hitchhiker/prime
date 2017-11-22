@@ -57,7 +57,7 @@ namespace Prime.Plugins.Services.Exmo
 
             foreach (var entry in r)
             {
-                pairs.Add(entry.Key.ToAssetPair(this));
+                pairs.Add(entry.Key.ToAssetPair(this, '_'));
             }
 
             return pairs;
@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Exmo
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
+                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;
 
                 if (currentTicker == null)
                 {

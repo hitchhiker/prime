@@ -116,7 +116,7 @@ namespace Prime.Plugins.Services.BitFlyer
                 if (pieces.Length != 2)
                     continue;
 
-                assetPairs.Add(rMarket.product_code.ToAssetPair(this));
+                assetPairs.Add(rMarket.product_code.ToAssetPair(this, '_'));
             }
 
             return assetPairs;

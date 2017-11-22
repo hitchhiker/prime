@@ -44,13 +44,13 @@ namespace Prime.Plugins.Services.Bittrex
         [Get("/market/cancel?uuid={uuid}")]
         Task<BittrexSchema.UuidResponse> GetMarketCancel([Path] string uuid);
 
-        [Get("/market/getopenorders?market={currencyPair}")]
-        Task<BittrexSchema.OpenOrdersResponse> GetMarketOpenOrders([Path] string currencyPair);
+        [Get("/market/getopenorders")]
+        Task<BittrexSchema.OpenOrdersResponse> GetMarketOpenOrders([Query] string currencyPair = null);
 
         [Get("/account/getorder?uuid={uuid}")]
-        Task<BittrexSchema.OpenOrdersResponse> GetAccountOrder([Path] string uuid);
+        Task<BittrexSchema.GetOrderResponse> GetAccountOrder([Path] string uuid);
 
         [Get("/account/getorderhistory")]
-        Task<BittrexSchema.OpenOrdersResponse> GetAccountHistory([Query] string currencyPair = null);
+        Task<BittrexSchema.GetOrderHistoryResponse> GetAccountHistory([Query] string currencyPair = null);
     }
 }

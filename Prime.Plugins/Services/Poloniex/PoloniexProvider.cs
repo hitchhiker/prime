@@ -77,7 +77,7 @@ namespace Prime.Plugins.Services.Poloniex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync().ConfigureAwait(false);
 
-            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this), y => y.Value);
+            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this, '_'), y => y.Value);
             var pairsQueryable = context.IsRequestAll ? rPaired.Select(x => x.Key) : context.Pairs;
                 
             var prices = new MarketPricesResult();
@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             foreach (var rPair in r)
             {
-                var pair = rPair.Key.ToAssetPair(this);
+                var pair = rPair.Key.ToAssetPair(this, '_');
 
                 pairs.Add(pair);
             }
@@ -307,7 +307,7 @@ namespace Prime.Plugins.Services.Poloniex
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);
-            var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
+            var volumes = r.Where(x => x.Key.ToAssetPair(this, '_').Equals(context.Pair));
 
             if (!volumes.Any())
                 throw new NoAssetPairException(context.Pair, this);

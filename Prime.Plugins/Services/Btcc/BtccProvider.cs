@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Btcc
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         private AssetPairs _pairs;
-        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs() { "BTC_USD".ToAssetPair(this) });
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs() { "BTC_USD".ToAssetPair(this, '_') });
 
         public BtccProvider()
         {
