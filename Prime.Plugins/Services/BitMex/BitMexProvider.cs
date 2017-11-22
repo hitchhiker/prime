@@ -175,8 +175,8 @@ namespace Prime.Plugins.Services.BitMex
 
                 prices.MarketPrices.Add(new MarketPrice(Network, pair, data.lastPrice.Value)
                 {
-                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, data.askPrice, data.bidPrice, data.lowPrice, data.highPrice),
-                    Volume = new NetworkPairVolume(Network, context.Pair, data.volume24h)
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, data.askPrice, data.bidPrice, data.lowPrice, data.highPrice),
+                    Volume = new NetworkPairVolume(Network, pair, data.volume24h)
                 });
             }
 
