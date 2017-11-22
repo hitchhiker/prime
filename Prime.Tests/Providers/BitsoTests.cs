@@ -22,7 +22,11 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "eth_btc".ToAssetPairRaw()
+                "eth_btc".ToAssetPairRaw(),
+                "eth_mxn".ToAssetPairRaw(),
+                "xrp_btc".ToAssetPairRaw(),
+                "xrp_mxn".ToAssetPairRaw(),
+                "bch_btc".ToAssetPairRaw()
             };
             base.TestGetPricing(pairs, true);
         }
