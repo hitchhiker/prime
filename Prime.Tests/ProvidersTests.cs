@@ -30,9 +30,13 @@ namespace Prime.Tests
         [TestMethod]
         public void GetPricesFromProvidersTest()
         {
+            // TODO: Sean check your providers here.
+
             var ctx = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
 
-            foreach (var provider in Networks.I.Providers.OfType<IPublicPricingProvider>())
+            var providers = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x => x.IsDirect).ToList();
+
+            foreach (var provider in providers)
             {
                 try
                 {
