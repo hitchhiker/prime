@@ -457,10 +457,10 @@ namespace Prime.Plugins.Services.Kraken
             var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray() : data.Value.bids;
 
             foreach (var i in bids.Select(GetBidAskData))
-                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Price, assetPair.Asset2), i.Volume, i.TimeStamp));
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Price, assetPair.Asset2), i.Volume));
 
             foreach (var i in asks.Select(GetBidAskData))
-                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Price, assetPair.Asset2), i.Volume, i.TimeStamp));
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Price, assetPair.Asset2), i.Volume));
 
             return orderBook;
         }

@@ -107,13 +107,11 @@ namespace Prime.Plugins.Services.Korbit
 
             var orderBook = new OrderBook(Network);
 
-            var dateTime = (r.timestamp / 1000).ToUtcDateTime();
-
             foreach (var i in bids)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i[0], context.Pair.Asset2), i[1], dateTime));
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i[0], context.Pair.Asset2), i[1]));
 
             foreach (var i in asks)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i[0], context.Pair.Asset2), i[1], dateTime));
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i[0], context.Pair.Asset2), i[1]));
 
             return orderBook;
         }

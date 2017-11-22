@@ -8,11 +8,13 @@ namespace Prime.Common.Exchange
 {
     public abstract class BidAskData
     {
-        protected BidAskData(Money price, decimal volume, DateTime? utcUpdated = null)
+        protected BidAskData() { }
+
+        protected BidAskData(Money price, decimal volume)
         {
             Price = price;
             Volume = volume;
-            UtcUpdated = utcUpdated ?? DateTime.UtcNow;
+            UtcUpdated = DateTime.UtcNow;
         }
 
         public Money Price { get; private set; }
