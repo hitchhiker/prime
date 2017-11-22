@@ -8,23 +8,21 @@ using Prime.Common;
 using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.TheRockTrading
+namespace Prime.Plugins.Services.Bisq
 {
-    // https://api.therocktrading.com/doc/v1/
-    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://markets.bisq.network/api/
+    public class BisqProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string TheRockTradingApiVersion = "v1";
-        private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
+        private const string BisqApiUrl = "https://markets.bisq.network/api/";
 
-        private static readonly ObjectId IdHash = "prime:therocktrading".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:bisq".GetObjectIdHashCode();
 
-        //API calls are limited to 10 requests per second. Do not go over this limit or you will be blacklisted.
-        //https://api.therocktrading.com/doc/v1/
-        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10, 1);
+        //No rate limit found in documentation.
+        private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<ITheRockTradingApi> ApiProvider { get; }
+        private RestApiClientProvider<IBisqApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("TheRockTrading");
+        public Network Network { get; } = Networks.I.Get("Bisq");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -37,9 +35,9 @@ namespace Prime.Plugins.Services.TheRockTrading
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public TheRockTradingProvider()
+        public BisqProvider()
         {
-            ApiProvider = new RestApiClientProvider<ITheRockTradingApi>(TheRockTradingApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBisqApi>(BisqApiUrl, this, (k) => null);
         }
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -51,13 +49,13 @@ namespace Prime.Plugins.Services.TheRockTrading
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var r = await api.GetAllTickers().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
-            foreach (var rCurrentTicker in r.tickers)
+            foreach (var rCurrentTicker in r.Keys)
             {
-                pairs.Add(rCurrentTicker.fund_id.ToAssetPair(this, 3));
+                pairs.Add(rCurrentTicker.ToAssetPair(this));
             }
 
             return pairs;
@@ -87,26 +85,36 @@ namespace Prime.Plugins.Services.TheRockTrading
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            var ticker = r.FirstOrDefault();
+
+            if (ticker?.last != null)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
-            });
+                return new MarketPricesResult(new MarketPrice(Network, context.Pair, ticker.last.Value)
+                {
+                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, ticker.sell, ticker.buy,
+                        ticker.low, ticker.high),
+                    Volume = new NetworkPairVolume(Network, context.Pair, ticker.volume_left, ticker.volume_right)
+                });
+            }
+            else
+            {
+                throw new ApiResponseException("'last' has been returned as null");
+            }
         }
 
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var r = await api.GetAllTickers().ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.tickers.FirstOrDefault(x => x.fund_id.ToAssetPair(this, 3).Equals(pair));
+                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
 
                 if (currentTicker == null)
                 {
@@ -114,11 +122,20 @@ namespace Prime.Plugins.Services.TheRockTrading
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    if (currentTicker.last != null)
                     {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
-                    });
+                        prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last.Value)
+                        {
+                            PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell,
+                                currentTicker.buy, currentTicker.low, currentTicker.high),
+                            Volume = new NetworkPairVolume(Network, pair, currentTicker.volume_left,
+                                currentTicker.volume_right)
+                        });
+                    }
+                    else
+                    {
+                        prices.MissedPairs.Add(pair);
+                    }
                 }
             }
 

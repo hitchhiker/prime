@@ -19,6 +19,7 @@ namespace Prime.Plugins.Services.Bitso
 
         // Rate limits are are based on one minute windows. 
         // If you do more than 300 requests in five minutes, you get locked out for one minute. 
+        //https://bitso.com/api_info
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(300, 5);
 
         private RestApiClientProvider<IBitsoApi> ApiProvider { get; }

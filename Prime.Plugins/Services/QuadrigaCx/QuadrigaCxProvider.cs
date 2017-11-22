@@ -49,7 +49,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var ctx = new PublicPriceContext("btc_cad".ToAssetPairRaw());
+            var ctx = new PublicPriceContext("btc_cad".ToAssetPair(this));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;

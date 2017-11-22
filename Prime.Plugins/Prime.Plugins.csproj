@@ -30,8 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\BTCXIndia\" />
-    <Folder Include="Services\Gatecoin\" />
+    <Folder Include="Services\BitBay\" />
   </ItemGroup>
 
 </Project>

@@ -18,6 +18,7 @@ namespace Prime.Plugins.Services.Coinfloor
         private const string PairsCsv = "BTCeur,BTCgbp,BTCusd,BTCpln";
 
         // Information requests: 10 per 10 seconds per session
+        //https://github.com/coinfloor/API/blob/master/BIST.md
         private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10,10);
         
         private RestApiClientProvider<ICoinfloorApi> ApiProvider { get; }
