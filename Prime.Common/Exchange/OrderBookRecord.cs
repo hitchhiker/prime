@@ -22,7 +22,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return Type + " " + base.ToString();
+            return Type + " " + Price.ToString() + " [" + Volume + "]";
         }
     }
 }

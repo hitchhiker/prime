@@ -13,12 +13,12 @@ namespace Prime.Common.Exchange
         protected BidAskData(Money price, decimal volume)
         {
             Price = price;
-            Volume = volume;
+            Volume = new Money(volume, price.Asset);
             UtcUpdated = DateTime.UtcNow;
         }
 
         public Money Price { get; private set; }
-        public decimal Volume { get; private set; }
+        public Money Volume { get; private set; }
         public DateTime UtcUpdated { get; private set; }
 
         public override string ToString()

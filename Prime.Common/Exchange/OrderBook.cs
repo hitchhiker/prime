@@ -48,6 +48,9 @@ namespace Prime.Common
 
         public void Add(OrderBookRecord record)
         {
+            if (record.Price == 0 || record.Volume == 0)
+                return;
+
             if (record.Price.Asset.Id!= Pair.Asset2.Id)
                 throw new System.Exception($"You cant add this {nameof(OrderBookRecord)} as it has the wrong asset: {record.Price.Asset} -> should be: {Pair.Asset2}");
 
@@ -67,11 +70,11 @@ namespace Prime.Common
         private Money? _spread;
         public Money Spread => _spread ?? (Money)(_spread = Money.Zero);
 
-        private OrderBookRecord _highestAsk;
-        public OrderBookRecord HighestAsk => _highestAsk ?? (_highestAsk = _asks.OrderByDescending(x => x.Price).FirstOrDefault());
+        private OrderBookRecord _lowestAsk;
+        public OrderBookRecord LowestAsk => _lowestAsk ?? (_lowestAsk = _asks.OrderBy(x => x.Price).FirstOrDefault());
 
-        private OrderBookRecord _lowestBid;
-        public OrderBookRecord LowestBid => _lowestBid ?? (_lowestBid = _bids.OrderBy(x => x.Price).FirstOrDefault());
+        private OrderBookRecord _highestBid;
+        public OrderBookRecord HighestBid => _highestBid ?? (_highestBid = _bids.OrderByDescending(x => x.Price).FirstOrDefault());
 
         public IEnumerator<OrderBookRecord> GetEnumerator() => _records.GetEnumerator();
 

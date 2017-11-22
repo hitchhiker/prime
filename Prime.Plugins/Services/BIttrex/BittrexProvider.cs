@@ -286,10 +286,10 @@ namespace Prime.Plugins.Services.Bittrex
                 : r.result.sell;
 
             foreach (var i in bids)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Rate, context.Pair.Asset2), i.Quantity));
+                orderBook.AddBid(i.Rate, i.Quantity);
 
             foreach (var i in asks)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Rate, context.Pair.Asset2), i.Quantity));
+                orderBook.AddAsk(i.Rate, i.Quantity);
 
             return orderBook;
         }
