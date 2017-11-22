@@ -99,8 +99,8 @@ namespace Prime.Plugins.Services.HitBtc
 
                 prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.Value.last.Value)
                 {
-                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, ticker.Value.ask, ticker.Value.bid, ticker.Value.low, ticker.Value.high),
-                    Volume = new NetworkPairVolume(Network, context.Pair, ticker.Value.volume, ticker.Value.volume_quote)
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, ticker.Value.ask, ticker.Value.bid, ticker.Value.low, ticker.Value.high),
+                    Volume = new NetworkPairVolume(Network, pair, ticker.Value.volume, ticker.Value.volume_quote)
                 });
             }
 

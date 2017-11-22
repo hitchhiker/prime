@@ -14,6 +14,20 @@ namespace Prime.Tests
     public class ProvidersTests
     {
         [TestMethod]
+        public void TestProviderFeatureSanity()
+        {
+            foreach (var prov in Networks.I.Providers.OfType<IPublicVolumeProvider>())
+            {
+                Assert.IsNotNull(prov.VolumeFeatures, prov.Title + " features is null.");
+            }
+
+            foreach (var prov in Networks.I.Providers.OfType<IPublicPricingProvider>())
+            {
+                Assert.IsNotNull(prov.PricingFeatures, prov.Title + " features is null.");
+            }
+        }
+
+        [TestMethod]
         public void GetPricesFromProvidersTest()
         {
             var ctx = new PublicPriceContext("BTC_USD".ToAssetPairRaw());

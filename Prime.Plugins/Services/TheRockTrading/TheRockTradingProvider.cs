@@ -113,10 +113,10 @@ namespace Prime.Plugins.Services.TheRockTrading
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
-                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.volume)
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
+                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
                     });
                 }
             }

@@ -111,7 +111,7 @@ namespace Prime.Core.Market
             if (volume?.HasBulk == true)
                 return CoordinatorTask(pv, new PublicVolumesContext(pairs.AsList()));
             
-            var pp = PricingProvider.I.GetTask(network, pairs, new PricingProviderContext() {OnlyBulk = true, RequestVolume = true});
+            var pp = PricingProvider.I.GetTask(network, pairs, new PricingProviderContext() {OnlyBulk = true, RequestVolume = true, UseReturnAll = context.UseReturnAll});
             if (pp != null)
                 return pp.ContinueWith(r => After(r.Result == null ? null : new PublicVolumeResponse(network, r.Result), context));
             
@@ -119,7 +119,7 @@ namespace Prime.Core.Market
                 return default;
 
             var singles = pairs.Select(x => GetAsync(network, x, context)).Where(x => x != null).WhenAll();
-            return singles.ContinueWith(r => After(r.Result == null ? null : new PublicVolumeResponse(r.Result), context));
+            return singles.ContinueWith(r => r.Result == null ? null : new PublicVolumeResponse(r.Result));
         }
 
         public Task<PublicVolumeResponse> GetTask(VolumeProviderContext context = null)
@@ -139,17 +139,21 @@ namespace Prime.Core.Market
                 return pp.ContinueWith(r => After(r.Result == null ? null : new PublicVolumeResponse(network, r.Result), context));
             
             if (ProviderAggVolumeData != null && ProviderAggVolumeData.NetworksSupported.Contains(network))
-                return CoordinatorTask(new AggVolumeDataContext(pair), context);
+                return CoordinatorTask(network, new AggVolumeDataContext(pair), context);
             
             return default;
         }
 
-        private Task<PublicVolumeResponse> CoordinatorTask(AggVolumeDataContext vContext, VolumeProviderContext context = null)
+        private Task<PublicVolumeResponse> CoordinatorTask(Network network, AggVolumeDataContext vContext, VolumeProviderContext context, bool isSwap = false)
         {
             return ApiCoordinator.GetAggVolumeDataAsync(ProviderAggVolumeData, vContext).ContinueWith(x =>
             {
                 var r = x.Result;
-                return r.IsNull ? null : After(r.Response, context);
+                var re = r.IsNull ? null : After(r.Response, context);
+                //if (re != null && re.Volume?.Any(v=>v.Network.Id == network.Id && v.Pair.Id == vContext.Pair.Id)==true)
+                    return re;
+                //var vswap = new AggVolumeDataContext(vContext.Pair.Reversed);
+                //return After(CoordinatorTask(network, vswap, context, true).Result, context);
             });
         }
 

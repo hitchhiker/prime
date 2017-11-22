@@ -124,10 +124,10 @@ namespace Prime.Plugins.Services.Tidex
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, context.Pair, currentTicker.last)
+                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
-                        PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.vol)
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
+                        Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)
                     });
                 }
             }
