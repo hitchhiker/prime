@@ -35,7 +35,7 @@ namespace Prime.Common
             NetworkContext = networkGraph.Context;
             NetworkGraph = networkGraph;
 
-            _dN.BuildData(networkGraph.PairsByNetwork);
+            _dN.BuildData(networkGraph.PairsByNetworkN);
 
             var source = _dN.DeNormalise(NetworkGraph.PairsByNetworkRaw);
 

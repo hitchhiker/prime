@@ -14,7 +14,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Bittrex
 {
     // https://bittrex.com/home/api
-    public class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public partial class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -39,7 +39,9 @@ namespace Prime.Plugins.Services.Bittrex
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        
+        private static string _commonPairSep = "-";
+        public string CommonPairSeparator => _commonPairSep;
+
         public bool IsDirect => true;
 
         /// <summary>
@@ -101,17 +103,17 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            // TODO: implement context.IsRequestAll.
+            var rPairsDict = r.result.ToDictionary(x => x.MarketName.ToAssetPair(this, '-'), x => x);
+
+            var pairsQueryable = context.IsRequestAll
+                ? rPairsDict.Keys.ToList()
+                : context.Pairs;
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            foreach (var pair in pairsQueryable)
             {
-                var pairCode = pair.ToTicker(this, "-");
-
-                var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
-
-                if (ms == null)
+                if (!rPairsDict.TryGetValue(pair, out var ms))
                 {
                     prices.MissedPairs.Add(pair);
                     continue;
@@ -129,31 +131,7 @@ namespace Prime.Plugins.Services.Bittrex
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
 
-            // TODO: implement context.IsRequestAll.
-
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketSummariesAsync().ConfigureAwait(false);
-
-            CheckResponseErrors(r);
-
-            var prices = new MarketPricesResult();
-
-            foreach (var pair in context.Pairs)
-            {
-                var pairCode = pair.ToTicker(this, "-");
-
-                var ms = r.result.FirstOrDefault(x => x.MarketName.Equals(pairCode));
-
-                if (ms == null)
-                {
-                    prices.MissedPairs.Add(pair);
-                    continue;
-                }
-
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / ms.Last));
-            }
-
-            return prices;
+            return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
 
@@ -276,42 +254,20 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r, context.Pair);
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network, context.Pair);
 
-            var buys = context.MaxRecordsCount.HasValue
+            var bids = context.MaxRecordsCount.HasValue
                 ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)
                 : r.result.buy;
-            var sells = context.MaxRecordsCount.HasValue
+            var asks = context.MaxRecordsCount.HasValue
                 ? r.result.sell.Take(context.MaxRecordsCount.Value / 2)
                 : r.result.sell;
 
-            foreach (var rBuy in buys)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(1 / rBuy.Rate, context.Pair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rBuy.Quantity
-                    }
-                });
-            }
+            foreach (var i in bids)
+                orderBook.AddBid(i.Rate, i.Quantity);
 
-            foreach (var rSell in sells)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(1 / rSell.Rate, context.Pair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rSell.Quantity
-                    }
-                });
-            }
+            foreach (var i in asks)
+                orderBook.AddAsk(i.Rate, i.Quantity);
 
             return orderBook;
         }

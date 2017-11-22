@@ -33,6 +33,7 @@ namespace Prime.Plugins.Services.BitStamp
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
@@ -205,44 +206,18 @@ namespace Prime.Plugins.Services.BitStamp
             var pairCode = context.Pair.ToTicker(this, "").ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network, context.Pair);
 
             var date = r.timestamp.ToUtcDateTime();
 
             var asks = context.MaxRecordsCount.HasValue ? r.asks.Take(context.MaxRecordsCount.Value / 2) : r.asks;
             var bids = context.MaxRecordsCount.HasValue ? r.bids.Take(context.MaxRecordsCount.Value / 2) : r.bids;
 
-            foreach (var rAsk in asks)
-            {
-                var data = GetBidAskData(rAsk);
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.Add(new OrderBookRecord(OrderType.Bid, new Money(i.Price, context.Pair.Asset2), i.Amount));
 
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(data.Price, context.Pair.Asset2),
-                        Volume = data.Amount,
-                        Time = date
-                    },
-                    Type = OrderBookType.Ask
-                });
-            }
-
-            foreach (var rBid in bids)
-            {
-                var data = GetBidAskData(rBid);
-
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(data.Price, context.Pair.Asset2),
-                        Volume = data.Amount,
-                        Time = date
-                    },
-                    Type = OrderBookType.Bid
-                });
-            }
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.Add(new OrderBookRecord(OrderType.Ask, new Money(i.Price, context.Pair.Asset2), i.Amount));
 
             return orderBook;
         }

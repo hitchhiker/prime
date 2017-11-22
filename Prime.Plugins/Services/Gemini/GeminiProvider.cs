@@ -32,6 +32,7 @@ namespace Prime.Plugins.Services.Gemini
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60, 1, 300, 1);
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public GeminiProvider()
         {

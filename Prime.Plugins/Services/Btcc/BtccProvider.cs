@@ -28,13 +28,13 @@ namespace Prime.Plugins.Services.Btcc
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
         private AssetPairs _pairs;
-        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs() { "BTC_USD".ToAssetPair(this) });
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs() { "BTC_USD".ToAssetPair(this, '_') });
 
         public BtccProvider()
         {
@@ -43,6 +43,8 @@ namespace Prime.Plugins.Services.Btcc
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
+
             return Task.Run(() => true);
         }
 

@@ -32,6 +32,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         private static readonly IAssetCodeConverter AssetCodeConverter = new CoinfloorCodeConverter();
+        public string CommonPairSeparator => "";
 
         public bool IsDirect => true;
 
@@ -63,7 +64,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "/");
+            var pairCode = context.Pair.ToTicker(this);
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 

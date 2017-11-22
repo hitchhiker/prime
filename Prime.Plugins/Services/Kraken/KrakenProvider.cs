@@ -17,7 +17,7 @@ using AssetPair = Prime.Common.AssetPair;
 namespace Prime.Plugins.Services.Kraken
 {
     // https://www.kraken.com/help/api#public-market-data
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IPublicVolumeProvider
+    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -31,6 +31,7 @@ namespace Prime.Plugins.Services.Kraken
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         // 'Ledger/trade history calls increase the counter by 2. ... Tier 2 users have a maximum of 15 and their count gets reduced by 1 every 3 seconds.'
         // Worst case scenario is considered here.
@@ -451,32 +452,16 @@ namespace Prime.Plugins.Services.Kraken
             CheckResponseErrors(r);
 
             var data = r.result.FirstOrDefault();
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network, assetPair);
 
             var asks = maxCount.HasValue ? data.Value.asks.Take(maxCount.Value / 2).ToArray() : data.Value.asks;
             var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray() : data.Value.bids;
 
-            foreach (var askArray in asks)
-            {
-                var askData = GetBidAskData(askArray);
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.Add(OrderType.Bid, i.Price, i.Volume);
 
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData(new Money(askData.Price, assetPair.Asset2), askData.Price, askData.TimeStamp),
-                    Type = OrderBookType.Ask
-                });
-            }
-
-            foreach (var bidArray in bids)
-            {
-                var bidData = GetBidAskData(bidArray);
-
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData(new Money(bidData.Price, assetPair.Asset2), bidData.Price, bidData.TimeStamp),
-                    Type = OrderBookType.Bid
-                });
-            }
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.Add(OrderType.Ask, i.Price, i.Volume);
 
             return orderBook;
         }

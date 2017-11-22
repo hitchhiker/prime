@@ -32,8 +32,8 @@ namespace Prime.Plugins.Services.Tidex
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -44,6 +44,8 @@ namespace Prime.Plugins.Services.Tidex
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
+
             return Task.Run(() => true);
         }
 
@@ -57,7 +59,7 @@ namespace Prime.Plugins.Services.Tidex
 
             foreach (string entry in r.pairs.Keys)
             {
-                pairs.Add(entry.ToAssetPair(this));
+                pairs.Add(entry.ToAssetPair(this, '_'));
             }
 
             return pairs;
@@ -117,7 +119,7 @@ namespace Prime.Plugins.Services.Tidex
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
+                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;
 
                 if (currentTicker == null)
                 {

@@ -12,6 +12,7 @@ using Prime.Common.Exchange;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
+using Prime.Utility;
 
 namespace Prime.Tests.Providers
 {
@@ -235,12 +236,17 @@ namespace Prime.Tests.Providers
             { 
                 Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
                 Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+
+                Assert.IsTrue(r.MarketPrices.DistinctBy(x => x.Pair).Count() == context.Pairs.Count, "Pair duplicates found");
             }
 
-            if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
-                Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
-            else
-                Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+            if (context.IsRequestAll == false)
+            {
+                if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
+                    Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
+                else
+                    Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+            }
 
             Trace.WriteLine($"First asset: {r.FirstPrice}");
 
@@ -502,10 +508,10 @@ namespace Prime.Tests.Providers
                 else
                     Assert.IsTrue(r.Count > 0);
 
-                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderBookType.Ask)} asks, {r.Count(x => x.Type == OrderBookType.Bid)} bids): ");
+                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderType.Ask)} asks, {r.Count(x => x.Type == OrderType.Bid)} bids): ");
                 foreach (var obr in r)
                 {
-                    Trace.WriteLine($"{obr.Data.Time} | For {context.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
+                    Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");
                 }
             }
             catch (Exception e)

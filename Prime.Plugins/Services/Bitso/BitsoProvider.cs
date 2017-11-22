@@ -32,6 +32,7 @@ namespace Prime.Plugins.Services.Bitso
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        public string CommonPairSeparator { get; }
 
         public bool IsDirect => true;
 
@@ -74,11 +75,11 @@ namespace Prime.Plugins.Services.Bitso
             {
                 var prices = new MarketPricesResult();
                 
-                var pairsQueryable = context.IsRequestAll ? r.payload.Select(x => x.book.ToAssetPair(this)) : context.Pairs;
+                var pairsQueryable = context.IsRequestAll ? r.payload.Select(x => x.book.ToAssetPair(this, '_')) : context.Pairs;
 
                 foreach (var pair in pairsQueryable)
                 {
-                    var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
+                    var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this, '_').Equals(pair));
 
                     if (currentTicker == null)
                     {
@@ -138,7 +139,7 @@ namespace Prime.Plugins.Services.Bitso
 
                 foreach (var rCurrentResponse in r.payload)
                 {
-                    pairs.Add(rCurrentResponse.book.ToAssetPair(this));
+                    pairs.Add(rCurrentResponse.book.ToAssetPair(this, '_'));
                 }
 
                 return pairs;

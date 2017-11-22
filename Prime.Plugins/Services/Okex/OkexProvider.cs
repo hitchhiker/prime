@@ -32,8 +32,8 @@ namespace Prime.Plugins.Services.Okex
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -47,6 +47,8 @@ namespace Prime.Plugins.Services.Okex
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
+
             return Task.Run(() => true);
         }
 

@@ -76,51 +76,10 @@ namespace Prime.Common
             return this.Equals(pair.Reversed);
         }
 
-        public string ToTicker(IDescribesAssets converter, string separator = ":")
+        public string ToTicker(IDescribesAssets converter, string separator = null)
         {
+            separator = separator ?? converter.CommonPairSeparator ?? ":";
             return $"{Asset1.ToRemoteCode(converter)}{separator}{Asset2.ToRemoteCode(converter)}";
-        }
-
-        [Obsolete]
-        public string TickerDash()
-        {
-            return $"{Asset1.ShortCode}-{Asset2.ShortCode}";
-        }
-
-        [Obsolete]
-        public string TickerDash(IDescribesAssets converter)
-        {
-            return $"{Asset1.ToRemoteCode(converter)}-{Asset2.ToRemoteCode(converter)}";
-        }
-
-        [Obsolete]
-        public string TickerUnderslash()
-        {
-            return $"{Asset1.ShortCode}_{Asset2.ShortCode}";
-        }
-
-        [Obsolete]
-        public string TickerUnderslash(IDescribesAssets converter)
-        {
-            return $"{Asset1.ToRemoteCode(converter)}_{Asset2.ToRemoteCode(converter)}";
-        }
-
-        [Obsolete]
-        public string TickerSlash(IDescribesAssets converter)
-        {
-            return $"{Asset1.ToRemoteCode(converter)}/{Asset2.ToRemoteCode(converter)}";
-        }
-
-        [Obsolete]
-        public string TickerSimple()
-        {
-            return $"{Asset1.ShortCode}{Asset2.ShortCode}";
-        }
-
-        [Obsolete]
-        public string TickerSimple(IDescribesAssets converter)
-        {
-            return $"{Asset1.ToRemoteCode(converter)}{Asset2.ToRemoteCode(converter)}";
         }
 
         public bool Equals(AssetPair other)

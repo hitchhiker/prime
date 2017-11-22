@@ -32,6 +32,7 @@ namespace Prime.Plugins.Services.Korbit
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         // https://apidocs.korbit.co.kr/#first_section
         // ... Ticker calls are limited to 60 calls per 60 seconds. ...
@@ -105,37 +106,13 @@ namespace Prime.Plugins.Services.Korbit
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2)
                 : r.asks;
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network, context.Pair);
 
-            var dateTime = (r.timestamp / 1000).ToUtcDateTime();
+            foreach (var i in bids)
+                orderBook.AddBid(i[0], i[1]);
 
-            foreach (var rBid in bids)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(rBid[0], context.Pair.Asset2),
-                        Time = dateTime,
-                        Volume = rBid[1]
-                    }
-                });
-            }
-
-            foreach (var rAsk in asks)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(rAsk[0], context.Pair.Asset2),
-                        Time = dateTime,
-                        Volume = rAsk[1]
-                    }
-                });
-            }
+            foreach (var i in asks)
+                orderBook.AddAsk(i[0], i[1]);
 
             return orderBook;
         }

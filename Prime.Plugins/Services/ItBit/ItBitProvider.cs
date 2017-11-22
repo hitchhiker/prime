@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.ItBit
 {
     // https://api.itbit.com/docs
-    public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider, IPublicVolumeProvider
+    public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
@@ -29,6 +29,7 @@ namespace Prime.Plugins.Services.ItBit
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ItBitProvider()
         {

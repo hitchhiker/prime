@@ -32,7 +32,25 @@ namespace Prime.Plugins.Services.Bittrex
         [Get("/public/getmarketsummary?market={market}")]
         Task<BittrexSchema.MarketSummariesResponse> GetMarketSummaryAsync([Path] string market);
 
-        [Get("/public/getorderbook?market={currenctPair}&type=both")]
-        Task<BittrexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currenctPair);
+        [Get("/public/getorderbook?market={currencyPair}&type=both")]
+        Task<BittrexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Get("/market/buylimit?market={currencyPair}&quantity={quantity}&rate={rate}")]
+        Task<BittrexSchema.UuidResponse> GetMarketBuyLimit([Path] string currencyPair, [Path] decimal quantity, [Path] decimal rate);
+
+        [Get("/market/selllimit?market={currencyPair}&quantity={quantity}&rate={rate}")]
+        Task<BittrexSchema.UuidResponse> GetMarketSellLimit([Path] string currencyPair, [Path] decimal quantity, [Path] decimal rate);
+
+        [Get("/market/cancel?uuid={uuid}")]
+        Task<BittrexSchema.UuidResponse> GetMarketCancel([Path] string uuid);
+
+        [Get("/market/getopenorders")]
+        Task<BittrexSchema.OpenOrdersResponse> GetMarketOpenOrders([Query] string currencyPair = null);
+
+        [Get("/account/getorder?uuid={uuid}")]
+        Task<BittrexSchema.GetOrderResponse> GetAccountOrder([Path] string uuid);
+
+        [Get("/account/getorderhistory")]
+        Task<BittrexSchema.GetOrderHistoryResponse> GetAccountHistory([Query] string currencyPair = null);
     }
 }

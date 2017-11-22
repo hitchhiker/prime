@@ -25,6 +25,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         // Each IP address is limited to approx. 500 queries per minute.
         // https://lightning.bitflyer.jp/docs?lang=en#api-limits
@@ -91,35 +92,13 @@ namespace Prime.Plugins.Services.BitFlyer
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2)
                 : r.asks;
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network, context.Pair);
 
-            foreach (var rBid in bids)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Time = DateTime.UtcNow,
-                        Price = new Money(rBid.price, context.Pair.Asset2),
-                        Volume = rBid.size
-                    }
-                });
-            }
-
-            foreach (var rAsk in asks)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Time = DateTime.UtcNow,
-                        Price = new Money(rAsk.price, context.Pair.Asset2),
-                        Volume = rAsk.size
-                    }
-                });
-            }
+            foreach (var i in bids)
+                orderBook.Add(new OrderBookRecord(OrderType.Bid, new Money(i.price, context.Pair.Asset2), i.size));
+            
+            foreach (var i in asks)
+                orderBook.Add(new OrderBookRecord(OrderType.Ask, new Money(i.price, context.Pair.Asset2), i.size));
 
             return orderBook;
         }
@@ -137,7 +116,7 @@ namespace Prime.Plugins.Services.BitFlyer
                 if (pieces.Length != 2)
                     continue;
 
-                assetPairs.Add(rMarket.product_code.ToAssetPair(this));
+                assetPairs.Add(rMarket.product_code.ToAssetPair(this, '_'));
             }
 
             return assetPairs;

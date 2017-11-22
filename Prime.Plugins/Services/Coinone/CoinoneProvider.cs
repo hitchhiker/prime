@@ -12,7 +12,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Coinone
 {
     // http://doc.coinone.co.kr/#api-Public
-    public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider, IPublicVolumeProvider
+    public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
@@ -27,6 +27,7 @@ namespace Prime.Plugins.Services.Coinone
 
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(90, 1);
         public IRateLimiter RateLimiter => Limiter;
+        public string CommonPairSeparator { get; }
 
         private RestApiClientProvider<ICoinoneApi> ApiProvider { get; }
 

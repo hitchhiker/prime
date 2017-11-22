@@ -11,7 +11,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Poloniex
 {
     // https://poloniex.com/support/api/
-    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -29,6 +29,7 @@ namespace Prime.Plugins.Services.Poloniex
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -76,7 +77,7 @@ namespace Prime.Plugins.Services.Poloniex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync().ConfigureAwait(false);
 
-            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this), y => y.Value);
+            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this, '_'), y => y.Value);
             var pairsQueryable = context.IsRequestAll ? rPaired.Select(x => x.Key) : context.Pairs;
                 
             var prices = new MarketPricesResult();
@@ -114,7 +115,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             foreach (var rPair in r)
             {
-                var pair = rPair.Key.ToAssetPair(this);
+                var pair = rPair.Key.ToAssetPair(this, '_');
 
                 pairs.Add(pair);
             }
@@ -291,35 +292,13 @@ namespace Prime.Plugins.Services.Poloniex
             if (r.bids == null || r.asks == null)
                 throw new NoAssetPairException(context.Pair, this);
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network, context.Pair);
 
-            foreach (var rBid in r.bids)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(rBid[0], context.Pair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rBid[1]
-                    },
-                    Type = OrderBookType.Bid
-                });
-            }
+            foreach (var i in r.bids)
+                orderBook.Add(new OrderBookRecord(OrderType.Bid, new Money(i[0], context.Pair.Asset2), i[1]));
 
-            foreach (var rAsk in r.asks)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(rAsk[0], context.Pair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rAsk[1]
-                    },
-                    Type = OrderBookType.Ask
-                });
-            }
+            foreach (var i in r.asks)
+                orderBook.Add(new OrderBookRecord(OrderType.Ask, new Money(i[0], context.Pair.Asset2), i[1]));
 
             return orderBook;
         }
@@ -328,7 +307,7 @@ namespace Prime.Plugins.Services.Poloniex
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);
-            var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
+            var volumes = r.Where(x => x.Key.ToAssetPair(this, '_').Equals(context.Pair));
 
             if (!volumes.Any())
                 throw new NoAssetPairException(context.Pair, this);

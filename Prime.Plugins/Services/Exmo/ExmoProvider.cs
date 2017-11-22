@@ -31,8 +31,8 @@ namespace Prime.Plugins.Services.Exmo
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -43,6 +43,8 @@ namespace Prime.Plugins.Services.Exmo
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
+
             return Task.Run(() => true);
         }
 
@@ -56,7 +58,7 @@ namespace Prime.Plugins.Services.Exmo
 
             foreach (var entry in r)
             {
-                pairs.Add(entry.Key.ToAssetPair(this));
+                pairs.Add(entry.Key.ToAssetPair(this, '_'));
             }
 
             return pairs;
@@ -83,7 +85,7 @@ namespace Prime.Plugins.Services.Exmo
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
+                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;
 
                 if (currentTicker == null)
                 {
