@@ -45,6 +45,8 @@ namespace Prime.Plugins.Services.MercadoBitcoin
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
+
             return Task.Run(() => true);
         }
 

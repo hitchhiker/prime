@@ -137,23 +137,22 @@ namespace Prime.Plugins.Services.Cex
 
             CheckResponseError(r);
 
+            var rPairsDict = r.data.ToDictionary(x => x.pair.ToAssetPair(this, ':'), x => x);
+
             var pairsQueryable = context.IsRequestAll
-                ? r.data.Select(x => x.pair.ToAssetPair(this, ':')).ToList()
+                ? rPairsDict.Keys.ToList()
                 : context.Pairs;
 
             var volumes = new MarketPricesResult();
 
             foreach (var pair in pairsQueryable)
             {
-                var ticker = r.data.FirstOrDefault(x => x.pair.ToAssetPair(this, ':').Equals(pair));
-
-                if (ticker == null)
+                if (!rPairsDict.TryGetValue(pair, out var ticker))
                 {
                     volumes.MissedPairs.Add(pair);
                     continue;
                 }
 
-                // BUG: don't know how to construct this object.
                 volumes.MarketPrices.Add(new MarketPrice(Network, pair, 0)
                 {
                     Volume = new NetworkPairVolume(Network, pair, ticker.volume)

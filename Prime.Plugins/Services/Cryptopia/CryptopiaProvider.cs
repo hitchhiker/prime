@@ -43,6 +43,8 @@ namespace Prime.Plugins.Services.Cryptopia
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
+
             return Task.Run(() => true);
         }
 

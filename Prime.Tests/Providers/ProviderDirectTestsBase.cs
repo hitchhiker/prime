@@ -237,10 +237,13 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
             }
 
-            if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
-                Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
-            else
-                Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+            if (context.IsRequestAll == false)
+            {
+                if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
+                    Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
+                else
+                    Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+            }
 
             Trace.WriteLine($"First asset: {r.FirstPrice}");
 
