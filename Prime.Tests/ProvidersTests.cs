@@ -18,12 +18,12 @@ namespace Prime.Tests
         {
             foreach (var prov in Networks.I.Providers.OfType<IPublicVolumeProvider>())
             {
-                Assert.IsNotNull(prov.VolumeFeatures, prov.Title + " features is null.");
+                Assert.IsNotNull(prov.VolumeFeatures, prov.Title + " volume features is null.");
             }
 
             foreach (var prov in Networks.I.Providers.OfType<IPublicPricingProvider>())
             {
-                Assert.IsNotNull(prov.PricingFeatures, prov.Title + " features is null.");
+                Assert.IsNotNull(prov.PricingFeatures, prov.Title + " pricing features is null.");
             }
         }
 
