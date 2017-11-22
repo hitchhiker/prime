@@ -48,6 +48,7 @@ namespace Prime.Plugins.Services.BitMarket
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
+            // TODO: implement public api test.
             return Task.Run(() => true);
         }
 
