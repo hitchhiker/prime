@@ -27,6 +27,7 @@ namespace Prime.Plugins.Services.Coinone
 
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(90, 1);
         public IRateLimiter RateLimiter => Limiter;
+        public string CommonPairSeparator { get; }
 
         private RestApiClientProvider<ICoinoneApi> ApiProvider { get; }
 

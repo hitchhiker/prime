@@ -23,6 +23,7 @@ namespace Prime.Plugins.Services.Bithumb
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {

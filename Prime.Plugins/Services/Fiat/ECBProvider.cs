@@ -21,6 +21,7 @@ namespace Prime.Plugins.Services.Fiat
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {

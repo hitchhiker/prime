@@ -25,6 +25,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         // Each IP address is limited to approx. 500 queries per minute.
         // https://lightning.bitflyer.jp/docs?lang=en#api-limits

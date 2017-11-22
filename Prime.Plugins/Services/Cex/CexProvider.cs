@@ -22,6 +22,7 @@ namespace Prime.Plugins.Services.Cex
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         private RestApiClientProvider<ICexApi> ApiProvider { get; }
 
@@ -139,9 +140,7 @@ namespace Prime.Plugins.Services.Cex
 
             var rPairsDict = r.data.ToDictionary(x => x.pair.ToAssetPair(this, ':'), x => x);
 
-            var pairsQueryable = context.IsRequestAll
-                ? rPairsDict.Keys.ToList()
-                : context.Pairs;
+            var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             var volumes = new MarketPricesResult();
 

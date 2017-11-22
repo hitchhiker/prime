@@ -15,6 +15,7 @@ namespace plugins
         public override string Name => "CCCAGG";
 
         public override string AggregatorName => null;
+        public string CommonPairSeparator { get; }
 
         public async Task<PublicVolumeResponse> GetAggVolumeDataAsync(AggVolumeDataContext context)
         {

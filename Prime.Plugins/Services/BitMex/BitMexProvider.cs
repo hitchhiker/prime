@@ -34,6 +34,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 

@@ -35,6 +35,7 @@ namespace Prime.Plugins.Services.Coinbase
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         // 10000 per hour.
         // https://developers.coinbase.com/api/v2#rate-limiting

@@ -31,8 +31,8 @@ namespace Prime.Plugins.Services.TheRockTrading
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 

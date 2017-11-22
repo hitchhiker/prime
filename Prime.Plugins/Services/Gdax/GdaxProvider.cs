@@ -31,6 +31,7 @@ namespace Prime.Plugins.Services.Gdax
 
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         private RestApiClientProvider<IGdaxApi> ApiProvider { get; }
 

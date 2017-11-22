@@ -76,8 +76,9 @@ namespace Prime.Common
             return this.Equals(pair.Reversed);
         }
 
-        public string ToTicker(IDescribesAssets converter, string separator = ":")
+        public string ToTicker(IDescribesAssets converter, string separator = null)
         {
+            separator = separator ?? converter.CommonPairSeparator ?? ":";
             return $"{Asset1.ToRemoteCode(converter)}{separator}{Asset2.ToRemoteCode(converter)}";
         }
 

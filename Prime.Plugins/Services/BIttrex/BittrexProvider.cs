@@ -14,7 +14,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Bittrex
 {
     // https://bittrex.com/home/api
-    public class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public partial class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -39,7 +39,9 @@ namespace Prime.Plugins.Services.Bittrex
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        
+        private static string _commonPairSep = "-";
+        public string CommonPairSeparator => _commonPairSep;
+
         public bool IsDirect => true;
 
         /// <summary>

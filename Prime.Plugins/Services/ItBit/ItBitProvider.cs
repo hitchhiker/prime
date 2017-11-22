@@ -29,6 +29,7 @@ namespace Prime.Plugins.Services.ItBit
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
+        public string CommonPairSeparator { get; }
 
         public ItBitProvider()
         {

@@ -45,6 +45,34 @@ namespace Prime.Plugins.Services.Bittrex
             public object DisplayMarketName;
         }
 
+        internal class UuidResponse : BaseResponse<UuidResponse>
+        {
+            public string uuid;
+        }
+
+        internal class OpenOrdersResponse : BaseResponse<IList<OpenOrdersEntry>> { }
+
+        internal class OpenOrdersEntry
+        {
+            public string Uuid;
+            public string OrderUuid;
+            public string Exchange;
+            public string OrderType;
+            public decimal Quantity;
+            public decimal QuantityRemaining;
+            public decimal Limit;
+            public decimal CommissionPaid;
+            public decimal Price;
+            public decimal? PricePerUnit;
+            public DateTime? Opened;
+            public DateTime? Closed;
+            public bool CancelInitiated;
+            public bool ImmediateOrCancel;
+            public bool IsConditional;
+            public string Condition;
+            public string ConditionTarget;
+        }
+
         internal class OrderBookDataResponse
         {
             public OrderBookEntryResponse[] buy;

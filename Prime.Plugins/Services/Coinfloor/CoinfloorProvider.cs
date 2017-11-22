@@ -31,6 +31,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         private static readonly IAssetCodeConverter AssetCodeConverter = new CoinfloorCodeConverter();
+        public string CommonPairSeparator { get; }
 
         public bool IsDirect => true;
 

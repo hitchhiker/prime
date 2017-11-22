@@ -19,6 +19,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
         //Could not find any documentation about rate limit.
         private static readonly IRateLimiter Limiter = new NoRateLimits();
+        public string CommonPairSeparator { get; }
 
         private RestApiClientProvider<ICryptopiaApi> ApiProvider { get; }
 
