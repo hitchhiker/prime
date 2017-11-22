@@ -205,7 +205,7 @@ namespace Prime.Plugins.Services.BitStamp
             var pairCode = context.Pair.ToTicker(this, "").ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             var date = r.timestamp.ToUtcDateTime();
 

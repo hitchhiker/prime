@@ -91,7 +91,7 @@ namespace Prime.Plugins.Services.BitFlyer
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2)
                 : r.asks;
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in bids)
                 orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.price, context.Pair.Asset2), i.size));

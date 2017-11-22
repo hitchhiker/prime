@@ -231,7 +231,7 @@ namespace Prime.Plugins.Services.Binance
                 ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
                 : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in r.bids.Select(GetOrderBookRecordData))
                 orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Price, context.Pair.Asset2), i.Volume));

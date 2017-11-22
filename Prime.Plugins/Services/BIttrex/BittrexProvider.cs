@@ -276,7 +276,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r, context.Pair);
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             var bids = context.MaxRecordsCount.HasValue
                 ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)

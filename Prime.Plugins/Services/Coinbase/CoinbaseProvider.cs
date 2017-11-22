@@ -230,13 +230,13 @@ namespace Prime.Plugins.Services.Coinbase
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2).ToArray()
                 : r.asks.Take(recordsLimit).ToArray();
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in bids.Select(ConvertToOrderBookRecord))
-                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Price, context.Pair.Asset2), i.Size));
+                orderBook.AddBid(i.Price, i.Size);
 
             foreach (var i in asks.Select(ConvertToOrderBookRecord))
-                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Price, context.Pair.Asset2), i.Size));
+                orderBook.AddAsk(i.Price, i.Size);
 
             return orderBook;
         }

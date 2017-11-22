@@ -105,13 +105,13 @@ namespace Prime.Plugins.Services.Korbit
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2)
                 : r.asks;
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in bids)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i[0], context.Pair.Asset2), i[1]));
+                orderBook.AddBid(i[0], i[1]);
 
             foreach (var i in asks)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i[0], context.Pair.Asset2), i[1]));
+                orderBook.AddAsk(i[0], i[1]);
 
             return orderBook;
         }

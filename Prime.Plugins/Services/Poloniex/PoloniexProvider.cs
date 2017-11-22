@@ -291,7 +291,7 @@ namespace Prime.Plugins.Services.Poloniex
             if (r.bids == null || r.asks == null)
                 throw new NoAssetPairException(context.Pair, this);
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in r.bids)
                 orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i[0], context.Pair.Asset2), i[1]));

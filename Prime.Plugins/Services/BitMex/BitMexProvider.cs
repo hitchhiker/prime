@@ -307,7 +307,7 @@ namespace Prime.Plugins.Services.BitMex
                     .Take(context.MaxRecordsCount.Value / 2).ToList()
                 : r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
 
-            var orderBook = new OrderBook(Network);
+            var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in buys)
                 orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.price, context.Pair.Asset2), i.size));
