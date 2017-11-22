@@ -30,6 +30,7 @@ namespace Prime.Plugins.Services.Bisq
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        public string CommonPairSeparator { get; }
 
         public bool IsDirect => true;
 
@@ -55,7 +56,7 @@ namespace Prime.Plugins.Services.Bisq
 
             foreach (var rCurrentTicker in r.Keys)
             {
-                pairs.Add(rCurrentTicker.ToAssetPair(this));
+                pairs.Add(rCurrentTicker.ToAssetPair(this,'_'));
             }
 
             return pairs;
@@ -114,7 +115,7 @@ namespace Prime.Plugins.Services.Bisq
 
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
+                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this,'_').Equals(pair)).Value;
 
                 if (currentTicker == null)
                 {

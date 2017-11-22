@@ -29,6 +29,7 @@ namespace Prime.Plugins.Services.BTCXIndia
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
+        public string CommonPairSeparator { get; }
 
         public bool IsDirect => true;
 
