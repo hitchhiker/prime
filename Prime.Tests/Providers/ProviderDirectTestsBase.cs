@@ -505,7 +505,7 @@ namespace Prime.Tests.Providers
                 Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderBookType.Ask)} asks, {r.Count(x => x.Type == OrderBookType.Bid)} bids): ");
                 foreach (var obr in r)
                 {
-                    Trace.WriteLine($"{obr.Data.Time} | For {context.Pair.Asset1}: {obr.Type} {obr.Data.Price.Display}, {obr.Data.Volume} ");
+                    Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");
                 }
             }
             catch (Exception e)

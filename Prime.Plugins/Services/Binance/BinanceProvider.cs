@@ -231,40 +231,14 @@ namespace Prime.Plugins.Services.Binance
                 ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
                 : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network);
 
-            foreach (var rBid in r.asks)
-            {
-                var bid = GetOrderBookRecordData(rBid);
-
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Time = DateTime.UtcNow,
-                        Price = new Money(bid.Price, context.Pair.Asset2),
-                        Volume = bid.Volume
-                    }
-                });
-            }
-
-            foreach (var rAsk in r.asks)
-            {
-                var ask = GetOrderBookRecordData(rAsk);
-
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Time = DateTime.UtcNow,
-                        Price = new Money(ask.Price, context.Pair.Asset2),
-                        Volume = ask.Volume
-                    }
-                });
-            }
-
+            foreach (var i in r.bids.Select(GetOrderBookRecordData))
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Price, context.Pair.Asset2), i.Volume));
+            
+            foreach (var i in r.asks.Select(GetOrderBookRecordData))
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Price, context.Pair.Asset2), i.Volume));
+            
             return orderBook;
         }
 

@@ -18,10 +18,10 @@ namespace Prime.Common
         public readonly PriceGraph PriceGraph;
         
         public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetworkRaw => _dR.PairsByNetwork;
-        public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetwork => _dN.PairsByNetwork;
-        public IReadOnlyDictionary<AssetPair, IReadOnlyList<Network>> NetworksByPair => _dN.NetworksByPair;
-        public IReadOnlyList<Asset> Assets => _dN.Assets;
-        public IReadOnlyList<AssetPair> AssetPairs => _dN.AssetPairs;
+        public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetworkN => _dN.PairsByNetwork;
+        public IReadOnlyDictionary<AssetPair, IReadOnlyList<Network>> NetworksByPairN => _dN.NetworksByPair;
+        public IReadOnlyList<Asset> AssetsN => _dN.Assets;
+        public IReadOnlyList<AssetPair> AssetPairsN => _dN.AssetPairs;
         public IReadOnlyList<Network> Networks => _dN.Networks;
         
         public NetworkGraph(NetworkContext context, PriceGraph priceGraph)

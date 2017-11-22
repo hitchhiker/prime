@@ -307,35 +307,13 @@ namespace Prime.Plugins.Services.BitMex
                     .Take(context.MaxRecordsCount.Value / 2).ToList()
                 : r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network);
 
-            foreach (var buy in buys)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(buy.price, context.Pair.Asset2),
-                        Time = DateTime.Now, // Since it returns current state of OrderBook, date time is set to Now.
-                        Volume = buy.size
-                    }
-                });
-            }
+            foreach (var i in buys)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.price, context.Pair.Asset2), i.size));
 
-            foreach (var sell in sells)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(sell.price, context.Pair.Asset2),
-                        Time = DateTime.Now,
-                        Volume = sell.size
-                    }
-                });
-            }
+            foreach (var i in sells)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.price, context.Pair.Asset2), i.size));
 
             return orderBook;
         }

@@ -451,32 +451,16 @@ namespace Prime.Plugins.Services.Kraken
             CheckResponseErrors(r);
 
             var data = r.result.FirstOrDefault();
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network);
 
             var asks = maxCount.HasValue ? data.Value.asks.Take(maxCount.Value / 2).ToArray() : data.Value.asks;
             var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray() : data.Value.bids;
 
-            foreach (var askArray in asks)
-            {
-                var askData = GetBidAskData(askArray);
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Price, assetPair.Asset2), i.Volume, i.TimeStamp));
 
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData(new Money(askData.Price, assetPair.Asset2), askData.Price, askData.TimeStamp),
-                    Type = OrderBookType.Ask
-                });
-            }
-
-            foreach (var bidArray in bids)
-            {
-                var bidData = GetBidAskData(bidArray);
-
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Data = new BidAskData(new Money(bidData.Price, assetPair.Asset2), bidData.Price, bidData.TimeStamp),
-                    Type = OrderBookType.Bid
-                });
-            }
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Price, assetPair.Asset2), i.Volume, i.TimeStamp));
 
             return orderBook;
         }

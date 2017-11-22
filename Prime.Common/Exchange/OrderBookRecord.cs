@@ -3,47 +3,23 @@ using Prime.Common.Exchange;
 
 namespace Prime.Common
 {
-    public class OrderBookRecord : IEquatable<OrderBookRecord>
+    public class OrderBookRecord : BidAskData
     {
-        public OrderBookRecord()
+        /// <summary>
+        /// Alex: Moved the type to the constructor, made the set properties private, made the empty constructor private (for deserialisation only)
+        /// Also only use 'IEquatable' if you have a specific need, as it was here it served no purpose (that I can see)
+        /// </summary>
+
+        public OrderBookRecord(OrderBookType type, Money price, decimal volume, DateTime? utcUpdated = null) : base(price, volume, utcUpdated)
         {
-            
+            Type = type;
         }
 
-        public OrderBookRecord(BidAskData data)
-        {
-            Data = data;
-        }
-
-        public BidAskData Data { get; set; }
-        public OrderBookType Type { get; set; }
+        public OrderBookType Type { get; private set; }
 
         public override string ToString()
         {
-            return $"{Enum.GetName(typeof(OrderBookType), Type)}: {Data.Price.Display}";
-        }
-
-        public bool Equals(OrderBookRecord other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(Data, other.Data) && Type == other.Type;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((OrderBookRecord) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((Data != null ? Data.GetHashCode() : 0) * 397) ^ (int) Type;
-            }
+            return Type + " " + base.ToString();
         }
     }
 }

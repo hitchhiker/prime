@@ -276,42 +276,20 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r, context.Pair);
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network);
 
-            var buys = context.MaxRecordsCount.HasValue
+            var bids = context.MaxRecordsCount.HasValue
                 ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)
                 : r.result.buy;
-            var sells = context.MaxRecordsCount.HasValue
+            var asks = context.MaxRecordsCount.HasValue
                 ? r.result.sell.Take(context.MaxRecordsCount.Value / 2)
                 : r.result.sell;
 
-            foreach (var rBuy in buys)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(1 / rBuy.Rate, context.Pair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rBuy.Quantity
-                    }
-                });
-            }
+            foreach (var i in bids)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.Rate, context.Pair.Asset2), i.Quantity));
 
-            foreach (var rSell in sells)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(1 / rSell.Rate, context.Pair.Asset2),
-                        Time = DateTime.UtcNow,
-                        Volume = rSell.Quantity
-                    }
-                });
-            }
+            foreach (var i in asks)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.Rate, context.Pair.Asset2), i.Quantity));
 
             return orderBook;
         }

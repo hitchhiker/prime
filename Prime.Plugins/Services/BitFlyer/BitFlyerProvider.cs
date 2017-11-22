@@ -91,35 +91,13 @@ namespace Prime.Plugins.Services.BitFlyer
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2)
                 : r.asks;
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network);
 
-            foreach (var rBid in bids)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Time = DateTime.UtcNow,
-                        Price = new Money(rBid.price, context.Pair.Asset2),
-                        Volume = rBid.size
-                    }
-                });
-            }
-
-            foreach (var rAsk in asks)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Time = DateTime.UtcNow,
-                        Price = new Money(rAsk.price, context.Pair.Asset2),
-                        Volume = rAsk.size
-                    }
-                });
-            }
+            foreach (var i in bids)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i.price, context.Pair.Asset2), i.size));
+            
+            foreach (var i in asks)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i.price, context.Pair.Asset2), i.size));
 
             return orderBook;
         }

@@ -105,37 +105,15 @@ namespace Prime.Plugins.Services.Korbit
                 ? r.asks.Take(context.MaxRecordsCount.Value / 2)
                 : r.asks;
 
-            var orderBook = new OrderBook();
+            var orderBook = new OrderBook(Network);
 
             var dateTime = (r.timestamp / 1000).ToUtcDateTime();
 
-            foreach (var rBid in bids)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Bid,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(rBid[0], context.Pair.Asset2),
-                        Time = dateTime,
-                        Volume = rBid[1]
-                    }
-                });
-            }
+            foreach (var i in bids)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i[0], context.Pair.Asset2), i[1], dateTime));
 
-            foreach (var rAsk in asks)
-            {
-                orderBook.Add(new OrderBookRecord()
-                {
-                    Type = OrderBookType.Ask,
-                    Data = new BidAskData()
-                    {
-                        Price = new Money(rAsk[0], context.Pair.Asset2),
-                        Time = dateTime,
-                        Volume = rAsk[1]
-                    }
-                });
-            }
+            foreach (var i in asks)
+                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i[0], context.Pair.Asset2), i[1], dateTime));
 
             return orderBook;
         }
