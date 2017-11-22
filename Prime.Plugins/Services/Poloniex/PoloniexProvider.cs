@@ -294,10 +294,10 @@ namespace Prime.Plugins.Services.Poloniex
             var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in r.bids)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Bid, new Money(i[0], context.Pair.Asset2), i[1]));
+                orderBook.Add(new OrderBookRecord(OrderType.Bid, new Money(i[0], context.Pair.Asset2), i[1]));
 
             foreach (var i in r.asks)
-                orderBook.Add(new OrderBookRecord(OrderBookType.Ask, new Money(i[0], context.Pair.Asset2), i[1]));
+                orderBook.Add(new OrderBookRecord(OrderType.Ask, new Money(i[0], context.Pair.Asset2), i[1]));
 
             return orderBook;
         }

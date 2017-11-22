@@ -33,15 +33,15 @@ namespace Prime.Common
 
         public void AddAsk(Money price, decimal volume)
         {
-            Add(new OrderBookRecord(OrderBookType.Ask, new Money(price, Pair.Asset2), volume));
+            Add(new OrderBookRecord(OrderType.Ask, new Money(price, Pair.Asset2), volume));
         }
 
         public void AddBid(Money price, decimal volume)
         {
-            Add(new OrderBookRecord(OrderBookType.Bid, new Money(price, Pair.Asset2), volume));
+            Add(new OrderBookRecord(OrderType.Bid, new Money(price, Pair.Asset2), volume));
         }
 
-        public void Add(OrderBookType type, Money price, decimal volume)
+        public void Add(OrderType type, Money price, decimal volume)
         {
             Add(new OrderBookRecord(type, new Money(price, Pair.Asset2), volume));
         }
@@ -54,7 +54,7 @@ namespace Prime.Common
             if (record.Price.Asset.Id!= Pair.Asset2.Id)
                 throw new System.Exception($"You cant add this {nameof(OrderBookRecord)} as it has the wrong asset: {record.Price.Asset} -> should be: {Pair.Asset2}");
 
-            if (record.Type == Exchange.OrderBookType.Ask)
+            if (record.Type == OrderType.Ask)
                 _asks.Add(record);
             else
                 _bids.Add(record);
@@ -75,6 +75,25 @@ namespace Prime.Common
 
         private OrderBookRecord _highestBid;
         public OrderBookRecord HighestBid => _highestBid ?? (_highestBid = _bids.OrderByDescending(x => x.Price).FirstOrDefault());
+
+        public Money PriceAtPercentage(OrderType type, decimal percentage)
+        {
+            var top = type == OrderType.Ask ? LowestAsk : HighestBid;
+            var price = type == OrderType.Ask ? top.Price.PercentageAdd(percentage) : top.Price.PercentageAdd(-percentage);
+            return price;
+        }
+
+        public Money VolumeAt(OrderType type, Money price)
+        {
+            return type == OrderType.Ask
+                ? _asks.Where(x => x.Price <= price).Select(x => x.Volume).Sum(price.Asset)
+                : _bids.Where(x => x.Price >= price).Select(x => x.Volume).Sum(price.Asset);
+        }
+
+        public Money VolumeAtPercentage(OrderType type, decimal percentage)
+        {
+            return VolumeAt(type, PriceAtPercentage(type, percentage));
+        }
 
         public IEnumerator<OrderBookRecord> GetEnumerator() => _records.GetEnumerator();
 

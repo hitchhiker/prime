@@ -502,7 +502,7 @@ namespace Prime.Tests.Providers
                 else
                     Assert.IsTrue(r.Count > 0);
 
-                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderBookType.Ask)} asks, {r.Count(x => x.Type == OrderBookType.Bid)} bids): ");
+                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderType.Ask)} asks, {r.Count(x => x.Type == OrderType.Bid)} bids): ");
                 foreach (var obr in r)
                 {
                     Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");

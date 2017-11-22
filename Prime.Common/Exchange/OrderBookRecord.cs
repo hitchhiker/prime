@@ -13,12 +13,12 @@ namespace Prime.Common
 
         private OrderBookRecord() : base() { }
 
-        public OrderBookRecord(OrderBookType type, Money price, decimal volume) : base(price, volume)
+        public OrderBookRecord(OrderType type, Money price, decimal volume) : base(price, volume)
         {
             Type = type;
         }
 
-        public OrderBookType Type { get; private set; }
+        public OrderType Type { get; private set; }
 
         public override string ToString()
         {

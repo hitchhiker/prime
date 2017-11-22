@@ -100,6 +100,11 @@ namespace Prime.Common
             return Math.Abs(PercentageProfit(money1, money2)) <= percentageTolerance;
         }
 
+        public static Money PercentageAdd(this Money money, decimal percentage)
+        {
+            return new Money(money + (money * (percentage / 100)), money.Asset);
+        }
+
         public static Money ReverseAsset(this Money money1, Asset quote)
         {
             if (quote.Id == money1.Asset.Id)

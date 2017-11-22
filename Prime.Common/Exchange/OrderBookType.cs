@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prime.Common.Exchange
+namespace Prime.Common
 {
-    public enum OrderBookType
+    public enum OrderType
     {
         Ask,    // Sell
         Bid     // Buy
