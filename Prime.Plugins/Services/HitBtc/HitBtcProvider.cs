@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.HitBtc
 {
     // https://api.hitbtc.com/
-    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IPublicVolumeProvider
+    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api";
 
