@@ -5,12 +5,13 @@ namespace Prime.Common
 {
     public class TradeOrder
     {
-        public TradeOrder(string remoteOrderId, Network network, AssetPair pair, TradeOrderType orderType)
+        public TradeOrder(string remoteOrderId, Network network, AssetPair pair, TradeOrderType orderType, decimal price)
         {
             Network = network;
             RemoteOrderId = remoteOrderId.Trim();
             Pair = pair;
             OrderType = orderType;
+            Price = new Money(price, pair.Asset2);
         }
 
         [Bson]
@@ -66,7 +67,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"{Network.Name} {Pair} {Quantity} {Price}";
+            return $"{RemoteOrderId} {Network.Name} {Pair} {Quantity} {Price}";
         }
     }
 }

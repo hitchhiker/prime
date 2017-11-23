@@ -7,8 +7,10 @@ using Prime.Common;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public partial class BittrexProvider
+    public partial class BittrexProvider : ITradeProvider
     {
+        public decimal MiniumumTradeVolume { get; } = 0.011m; //50K Satoshi /4 USD
+
         private TradeOrderType GetTradeOrderType(string tradeOrderTypeSchema)
         {
             if (tradeOrderTypeSchema.Equals("LIMIT_BUY", StringComparison.OrdinalIgnoreCase))
@@ -18,20 +20,32 @@ namespace Prime.Plugins.Services.Bittrex
             return TradeOrderType.None;
         }
 
-        public async Task<TradeOrders> GetOpenOrdersAsync(PrivatePairContext context)
+        public async Task<PlacedTradeResponse> PlaceTradeAsync(PlaceTradeContext context)
         {
             var api = ApiProvider.GetApi(context);
             var remotePair = context.Pair.ToTicker(this);
 
-            var r = await api.GetMarketOpenOrders().ConfigureAwait(false);
+            var r = context.IsSell ? 
+                await api.GetMarketSellLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false) : 
+                await api.GetMarketBuyLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            return new PlacedTradeResponse(r.result.uuid);
+        }
+
+        public async Task<TradeOrders> GetOpenOrdersAsync(PrivatePairContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var remotePair = context.RemotePairOrNull(this);
+            var r = await api.GetMarketOpenOrders(remotePair).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
             var orders = new TradeOrders(Network);
-
             foreach (var order in r.result)
             {
-                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type))
+                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type), order.Price)
                 {
                     Quantity = order.Quantity,
                     QuantityRemaining = order.QuantityRemaining
@@ -44,17 +58,15 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<TradeOrders> GetOrderHistoryAsync(PrivatePairContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var remotePair = context.Pair.ToTicker(this);
-
-            var r = await api.GetAccountHistory().ConfigureAwait(false);
+            var remotePair = context.RemotePairOrNull(this);
+            var r = await api.GetAccountHistory(remotePair).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
             var orders = new TradeOrders(Network);
-
             foreach (var order in r.result)
             {
-                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type))
+                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type), order.Price)
                 {
                     Quantity = order.Quantity,
                     QuantityRemaining = order.QuantityRemaining
@@ -63,5 +75,31 @@ namespace Prime.Plugins.Services.Bittrex
 
             return orders;
         }
+
+        public async Task<TradeOrder> GetOrderDetails(RemoteIdContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAccountOrder(context.RemoteId).ConfigureAwait(false);
+            var order = r.result;
+
+            CheckResponseErrors(r);
+
+            return new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type), order.Price)
+            {
+                Quantity = order.Quantity,
+                QuantityRemaining = order.QuantityRemaining
+            };
+        }
+
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAccountOrder(context.RemoteId).ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            return r?.result == null ? new TradeOrderStatus() : new TradeOrderStatus(r.result.OrderUuid, r.result.IsOpen);
+        }
+
     }
 }
