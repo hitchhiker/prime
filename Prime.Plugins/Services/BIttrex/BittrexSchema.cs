@@ -45,16 +45,18 @@ namespace Prime.Plugins.Services.Bittrex
             public object DisplayMarketName;
         }
 
-        internal class UuidResponse : BaseResponse<UuidResponse>
-        {
-            public string uuid;
-        }
+        internal class UuidResponse : BaseResponse<UuidEntry> { }
 
         internal class OpenOrdersResponse : BaseResponse<IList<GetOpenOrdersEntry>> { }
 
         internal class GetOrderResponse : BaseResponse<GetOrderEntry> { }
 
         internal class GetOrderHistoryResponse : BaseResponse<IList<GetOrderHistoryEntry>> { }
+
+        internal class UuidEntry
+        {
+            public string uuid;
+        }
 
         internal class OrderCommonBase
         {
