@@ -76,10 +76,24 @@ namespace Prime.Common
             return this.Equals(pair.Reversed);
         }
 
-        public string ToTicker(IDescribesAssets converter, string separator = null)
+        public string ToTicker(IDescribesAssets converter, string separator)
         {
-            separator = separator ?? converter.CommonPairSeparator ?? ":";
-            return $"{Asset1.ToRemoteCode(converter)}{separator}{Asset2.ToRemoteCode(converter)}";
+            return separator == string.Empty ? 
+                ToTicker(converter, '\0') : 
+                $"{Asset1.ToRemoteCode(converter)}{separator}{Asset2.ToRemoteCode(converter)}";
+        }
+
+        public string ToTicker(IDescribesAssets converter)
+        {
+            var separator = converter.CommonPairSeparator ?? '\0';
+            return ToTicker(converter, separator);
+        }
+
+        public string ToTicker(IDescribesAssets converter, char separator)
+        {
+            return separator == '\0' ? 
+                $"{Asset1.ToRemoteCode(converter)}{Asset2.ToRemoteCode(converter)}" : 
+                $"{Asset1.ToRemoteCode(converter)}{separator}{Asset2.ToRemoteCode(converter)}";
         }
 
         [Obsolete]

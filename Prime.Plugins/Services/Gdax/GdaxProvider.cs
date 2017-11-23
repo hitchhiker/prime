@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Gdax
 
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         private RestApiClientProvider<IGdaxApi> ApiProvider { get; }
 
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.Gdax
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.ToTicker(this, "-");
+            var pairCode = context.Pair.ToTicker(this, '-');
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.price)
@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Gdax
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.ToTicker(this, "-");
+            var pairCode = context.Pair.ToTicker(this, '-');
             var r = await api.GetProductTickerAsync(pairCode).ConfigureAwait(false);
 
             return new PublicVolumeResponse(Network, context.Pair, r.volume);

@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Korbit
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         // https://apidocs.korbit.co.kr/#first_section
         // ... Ticker calls are limited to 60 calls per 60 seconds. ...
@@ -62,7 +62,7 @@ namespace Prime.Plugins.Services.Korbit
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
+            var pairCode = context.Pair.ToTicker(this, '_').ToLower();
 
             try
             {
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Korbit
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
+            var pairCode = context.Pair.ToTicker(this, '_').ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 

@@ -63,5 +63,10 @@ namespace Prime.Common
 
         [Bson]
         public string ConditionTarget {get; set;}
+
+        public override string ToString()
+        {
+            return $"{Network.Name} {Pair} {Quantity} {Price}";
+        }
     }
 }

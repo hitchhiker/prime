@@ -39,8 +39,8 @@ namespace Prime.Plugins.Services.Bittrex
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        private static string _commonPairSep = "-";
-        public string CommonPairSeparator => _commonPairSep;
+        private static char _commonPairSep = '-';
+        public char? CommonPairSeparator => _commonPairSep;
 
         public bool IsDirect => true;
 
@@ -87,7 +87,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "-");
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
@@ -103,7 +103,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            var rPairsDict = r.result.ToDictionary(x => x.MarketName.ToAssetPair(this, '-'), x => x);
+            var rPairsDict = r.result.ToDictionary(x => x.MarketName.ToAssetPair(this), x => x);
 
             var pairsQueryable = context.IsRequestAll
                 ? rPairsDict.Keys.ToList()
@@ -248,7 +248,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.ToTicker(this, "-");
+            var pairCode = context.Pair.ToTicker(this);
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
@@ -275,11 +275,11 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "-").ToLower();
+            var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
 
             var summary = r.result.FirstOrDefault();
-            var remoteMarker = summary.MarketName.ToAssetPair(this, '-');
+            var remoteMarker = summary.MarketName.ToAssetPair(this);
             if (summary == null || !remoteMarker.Equals(context.Pair))
                 throw new NoAssetPairException(context.Pair, this);
 

@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.TheRockTrading
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 

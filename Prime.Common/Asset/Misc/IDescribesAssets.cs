@@ -4,6 +4,6 @@
     {
         IAssetCodeConverter GetAssetCodeConverter();
 
-        string CommonPairSeparator { get; }
+        char? CommonPairSeparator { get; }
     }
 }

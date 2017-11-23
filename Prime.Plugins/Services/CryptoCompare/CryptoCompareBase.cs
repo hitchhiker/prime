@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.CryptoCompare
         public virtual string ProxyName => "CryptoCompare";
 
         public bool IsDirect => false;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         private string _title;
         public virtual string Title => _title ?? (_title = Name + " (" + AggregatorName + ")");

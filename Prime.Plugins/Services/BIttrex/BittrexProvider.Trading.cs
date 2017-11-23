@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             foreach (var order in r.result)
             {
-                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this, '_'), GetTradeOrderType(order.Type))
+                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type))
                 {
                     Quantity = order.Quantity,
                     QuantityRemaining = order.QuantityRemaining
@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             foreach (var order in r.result)
             {
-                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this, '_'), GetTradeOrderType(order.Type))
+                orders.Add(new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type))
                 {
                     Quantity = order.Quantity,
                     QuantityRemaining = order.QuantityRemaining

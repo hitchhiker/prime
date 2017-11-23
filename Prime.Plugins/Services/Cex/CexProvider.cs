@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.Cex
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         private RestApiClientProvider<ICexApi> ApiProvider { get; }
 
@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Cex
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "/");
+            var pairCode = context.Pair.ToTicker(this, '/');
 
             var r = await api.GetLastPriceAsync(pairCode).ConfigureAwait(false);
 
@@ -124,7 +124,7 @@ namespace Prime.Plugins.Services.Cex
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.ToTicker(this, "/");
+            var pairCode = context.Pair.ToTicker(this, '/');
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 

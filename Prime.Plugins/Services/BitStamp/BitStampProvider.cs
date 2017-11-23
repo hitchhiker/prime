@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.BitStamp
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;

@@ -5,9 +5,11 @@ namespace Prime.Common
 {
     public class TradeOrders : IReadOnlyList<TradeOrder>
     {
+        public readonly Network Network;
+
         public TradeOrders(Network network)
         {
-            
+            Network = network;
         }
 
         private readonly List<TradeOrder> _orders = new List<TradeOrder>();

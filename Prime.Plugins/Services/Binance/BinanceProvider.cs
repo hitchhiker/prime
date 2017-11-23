@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.Binance
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;

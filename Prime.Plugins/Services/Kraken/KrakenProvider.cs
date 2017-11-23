@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Kraken
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         // 'Ledger/trade history calls increase the counter by 2. ... Tier 2 users have a maximum of 15 and their count gets reduced by 1 every 3 seconds.'
         // Worst case scenario is considered here.
@@ -447,7 +447,7 @@ namespace Prime.Plugins.Services.Kraken
             var pair = assetPair;
             var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
 
-            var r = await api.GetOrderBookAsync(remotePair.ToTicker(this, ""), maxCount ?? 0).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(remotePair.ToTicker(this), maxCount ?? 0).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

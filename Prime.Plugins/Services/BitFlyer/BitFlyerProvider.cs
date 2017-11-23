@@ -25,7 +25,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         // Each IP address is limited to approx. 500 queries per minute.
         // https://lightning.bitflyer.jp/docs?lang=en#api-limits
@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var productCode = context.Pair.ToTicker(this, "_");
+            var productCode = context.Pair.ToTicker(this, '_');
 
             var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_");
+            var pairCode = context.Pair.ToTicker(this, '_');
 
             var r = await api.GetBoardAsync(pairCode).ConfigureAwait(false);
 
@@ -125,7 +125,7 @@ namespace Prime.Plugins.Services.BitFlyer
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var productCode = context.Pair.ToTicker(this, "_");
+            var productCode = context.Pair.ToTicker(this, '_');
 
             var r = await api.GetTickerAsync(productCode).ConfigureAwait(false);
 

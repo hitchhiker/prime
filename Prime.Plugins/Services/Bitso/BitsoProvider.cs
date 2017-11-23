@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Bitso
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         public bool IsDirect => true;
 
@@ -106,7 +106,7 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
+            var pairCode = context.Pair.ToTicker(this, '_').ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r.success)

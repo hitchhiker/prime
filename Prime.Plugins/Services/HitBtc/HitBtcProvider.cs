@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.HitBtc
         public bool CanPeekDepositAddress => false;
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         public HitBtcProvider()
         {

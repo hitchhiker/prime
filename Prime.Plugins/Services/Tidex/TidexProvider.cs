@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Tidex
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public string CommonPairSeparator { get; }
+        public char? CommonPairSeparator { get; }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Tidex
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, "_").ToLower()));
+            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, '_').ToLower()));
             var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             var ticker = r?.FirstOrDefault().Value;
@@ -111,7 +111,7 @@ namespace Prime.Plugins.Services.Tidex
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, "_").ToLower()));
+            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, '_').ToLower()));
             var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             var prices = new MarketPricesResult();
