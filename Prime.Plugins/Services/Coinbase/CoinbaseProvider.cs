@@ -35,7 +35,7 @@ namespace Prime.Plugins.Services.Coinbase
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '-';
 
         // 10000 per hour.
         // https://developers.coinbase.com/api/v2#rate-limiting
@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '-');
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetLatestPriceAsync(pairCode).ConfigureAwait(false);
 
             var price = new MarketPrice(Network, context.Pair, r.data.amount);
@@ -217,7 +217,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '-');
+            var pairCode = context.Pair.ToTicker(this);
 
             // TODO: Check this! Can we use limit when we query all records?
             var recordsLimit = 1000;
@@ -253,7 +253,7 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
-            var currencyCode = context.Pair.ToTicker(this, '-');
+            var currencyCode = context.Pair.ToTicker(this);
 
             var ohlc = new OhlcData(context.Market);
             var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);

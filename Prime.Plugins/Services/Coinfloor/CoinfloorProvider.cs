@@ -18,6 +18,7 @@ namespace Prime.Plugins.Services.Coinfloor
         private const string PairsCsv = "BTCeur,BTCgbp,BTCusd,BTCpln";
 
         // Information requests: 10 per 10 seconds per session
+        //https://github.com/coinfloor/API/blob/master/BIST.md
         private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10,10);
         
         private RestApiClientProvider<ICoinfloorApi> ApiProvider { get; }
@@ -31,7 +32,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         private static readonly IAssetCodeConverter AssetCodeConverter = new CoinfloorCodeConverter();
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '\0';
 
         public bool IsDirect => true;
 
@@ -47,7 +48,7 @@ namespace Prime.Plugins.Services.Coinfloor
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var ctx = new PublicPriceContext("BTC_GBP".ToAssetPairRaw());
+            var ctx = new PublicPriceContext("BTC_GBP".ToAssetPair(this,'_'));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;
@@ -63,7 +64,7 @@ namespace Prime.Plugins.Services.Coinfloor
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '/');
+            var pairCode = context.Pair.ToTicker(this,'/');
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 

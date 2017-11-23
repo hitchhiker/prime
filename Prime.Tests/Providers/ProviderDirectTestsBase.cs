@@ -12,6 +12,7 @@ using Prime.Common.Exchange;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
+using Prime.Utility;
 
 namespace Prime.Tests.Providers
 {
@@ -235,6 +236,8 @@ namespace Prime.Tests.Providers
             { 
                 Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
                 Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+
+                Assert.IsTrue(r.MarketPrices.DistinctBy(x => x.Pair).Count() == context.Pairs.Count, "Pair duplicates found");
             }
 
             if (context.IsRequestAll == false)

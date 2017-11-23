@@ -19,6 +19,7 @@ namespace Prime.Plugins.Services.Okex
 
         //Each IP can send maximum of 3000 https requests within 5 minutes. 
         //If the 3000 limit is exceeded, the system will automatically block the IP for one hour. After that hour, the IP will be automatically unfrozen.
+        //https://www.okex.com/rest_faq.html
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(3000, 5);
 
         private RestApiClientProvider<IOkexApi> ApiProvider { get; }

@@ -18,6 +18,7 @@ namespace Prime.Plugins.Services.Exmo
         private static readonly ObjectId IdHash = "prime:exmo".GetObjectIdHashCode();
 
         //The number of API requests is limited to 180 per/minute from one IP address or by a single user.
+        //https://exmo.com/en/api#/public_api
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(180, 1);
 
         private RestApiClientProvider<IExmoApi> ApiProvider { get; }

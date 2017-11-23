@@ -133,6 +133,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvidersTests.cs" />
     <Compile Include="Providers\BinanceTests.cs" />
+    <Compile Include="Providers\BisqTests.cs" />
     <Compile Include="Providers\BitFlyerTests.cs" />
     <Compile Include="Providers\BithumbTests.cs" />
     <Compile Include="Providers\BitMarketTests.cs" />
@@ -141,11 +142,13 @@
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\BtccTests.cs" />
+    <Compile Include="Providers\BtcxIndiaTests.cs" />
     <Compile Include="Providers\CexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\CryptopiaTests.cs" />
     <Compile Include="Providers\ExmoTests.cs" />
+    <Compile Include="Providers\GatecoinTests.cs" />
     <Compile Include="Providers\GdaxTests.cs" />
     <Compile Include="Providers\GeminiTests.cs" />
     <Compile Include="Providers\HitBtcTests.cs" />

@@ -19,6 +19,7 @@ namespace Prime.Plugins.Services.Tidex
         private static readonly ObjectId IdHash = "prime:tidex".GetObjectIdHashCode();
 
         //From doc: All information is cached every 2 seconds, so there's no point in making more frequent requests.
+        //https://tidex.com/public-api
         private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(1, 2);
 
         private RestApiClientProvider<ITidexApi> ApiProvider { get; }
