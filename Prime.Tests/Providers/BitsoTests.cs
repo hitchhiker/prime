@@ -18,6 +18,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestPublicApi()
+        {
+            base.TestPublicApi();
+        }
+
+        [TestMethod]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()
@@ -29,12 +35,6 @@ namespace Prime.Tests.Providers
                 "bch_btc".ToAssetPairRaw()
             };
             base.TestGetPricing(pairs, true);
-        }
-
-        [TestMethod]
-        public override void TestPublicApi()
-        {
-            base.TestPublicApi();
         }
 
         [TestMethod]

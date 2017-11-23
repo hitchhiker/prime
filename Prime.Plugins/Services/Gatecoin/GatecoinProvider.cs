@@ -42,9 +42,12 @@ namespace Prime.Plugins.Services.Gatecoin
             ApiProvider = new RestApiClientProvider<IGatecoinApi>(GatecoinApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickerAsync("BTCUSD").ConfigureAwait(false);
+
+            return r?.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == true;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -53,11 +56,16 @@ namespace Prime.Plugins.Services.Gatecoin
 
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
+            if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.tickers == null || r.tickers.Length == 0)
+            {
+                throw new ApiResponseException("No asset pairs returned.", this);
+            }
+
             var pairs = new AssetPairs();
 
             foreach (var rCurrentTicker in r.tickers)
             {
-                pairs.Add(rCurrentTicker.currencyPair.ToAssetPair(this,3));
+                pairs.Add(rCurrentTicker.currencyPair.ToAssetPair(this, 3));
             }
 
             return pairs;
@@ -87,8 +95,13 @@ namespace Prime.Plugins.Services.Gatecoin
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this,"");
+            var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.ticker == null)
+            {
+                throw new ApiResponseException("No asset pairs returned.", this);
+            }
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
             {
@@ -101,6 +114,11 @@ namespace Prime.Plugins.Services.Gatecoin
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.tickers == null || r.tickers.Length == 0)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             var prices = new MarketPricesResult();
 

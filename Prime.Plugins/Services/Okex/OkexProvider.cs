@@ -45,11 +45,12 @@ namespace Prime.Plugins.Services.Okex
             ApiProvider = new RestApiClientProvider<IOkexApi>(OkexApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetExchangeRate().ConfigureAwait(false);
 
-            return Task.Run(() => true);
+            return r?.rate > 0;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -74,6 +75,11 @@ namespace Prime.Plugins.Services.Okex
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this,"_");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            if (r?.ticker == null)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
             {

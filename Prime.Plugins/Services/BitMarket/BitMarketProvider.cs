@@ -21,7 +21,7 @@ namespace Prime.Plugins.Services.BitMarket
         private const string PairsCsv = "BTC_PLN,BTC_EUR,LTC_PLN,LTC_BTC,LiteMineX_BTC";
 
         private AssetPairs _pairs;
-        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(PairsCsv.ToCsv().Select(x=> x.ToAssetPairRaw())));
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(PairsCsv.ToCsv().Select(x => x.ToAssetPairRaw())));
 
         private static readonly ObjectId IdHash = "prime:bitmarket".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
@@ -47,10 +47,12 @@ namespace Prime.Plugins.Services.BitMarket
             return AssetCodeConverter;
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickerAsync("BTCPLN").ConfigureAwait(false);
+
+            return r != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

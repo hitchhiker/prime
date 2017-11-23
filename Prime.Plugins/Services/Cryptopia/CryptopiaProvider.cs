@@ -42,11 +42,12 @@ namespace Prime.Plugins.Services.Cryptopia
             ApiProvider = new RestApiClientProvider<ICryptopiaApi>(CryptopiaApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            return Task.Run(() => true);
+            return r.Success;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

@@ -12,6 +12,11 @@ namespace Prime.Plugins.Services.Okex
             public TickerEntryResponse ticker;
         }
 
+        internal class ExchangeRateResponse
+        {
+            public decimal rate;
+        }
+
         internal class TickerEntryResponse
         {
             public decimal buy;

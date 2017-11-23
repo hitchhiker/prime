@@ -49,7 +49,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var ctx = new PublicPriceContext("btc_cad".ToAssetPair(this,3));
+            var ctx = new PublicPriceContext("btc_cad".ToAssetPair(this, 3));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;
@@ -77,6 +77,11 @@ namespace Prime.Plugins.Services.QuadrigaCX
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, '_');
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            if (r == null)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
             {

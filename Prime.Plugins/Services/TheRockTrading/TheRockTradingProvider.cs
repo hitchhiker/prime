@@ -42,11 +42,12 @@ namespace Prime.Plugins.Services.TheRockTrading
             ApiProvider = new RestApiClientProvider<ITheRockTradingApi>(TheRockTradingApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            return Task.Run(() => true);
+            return r?.tickers?.Length > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -54,6 +55,11 @@ namespace Prime.Plugins.Services.TheRockTrading
             var api = ApiProvider.GetApi(context);
 
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            if (r?.tickers == null || r.tickers.Length == 0)
+            {
+                throw new ApiResponseException("No asset pairs returned.", this);
+            }
 
             var pairs = new AssetPairs();
 
@@ -92,6 +98,11 @@ namespace Prime.Plugins.Services.TheRockTrading
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
+            if (r == null)
+            {
+                throw new ApiResponseException("No ticker returned.", this);
+            }
+
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
@@ -103,6 +114,11 @@ namespace Prime.Plugins.Services.TheRockTrading
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            if (r?.tickers == null || r.tickers.Length == 0)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             var prices = new MarketPricesResult();
 

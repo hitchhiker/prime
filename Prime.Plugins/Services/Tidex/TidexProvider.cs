@@ -42,11 +42,12 @@ namespace Prime.Plugins.Services.Tidex
             ApiProvider = new RestApiClientProvider<ITidexApi>(TidexApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
-            return Task.Run(() => true);
+            return r?.pairs?.Count > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -54,6 +55,11 @@ namespace Prime.Plugins.Services.Tidex
             var api = ApiProvider.GetApi(context);
 
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
+
+            if (r == null || r.pairs.Count == 0)
+            {
+                throw new ApiResponseException("No asset pairs returned.", this);
+            }
 
             var pairs = new AssetPairs();
 
@@ -93,7 +99,12 @@ namespace Prime.Plugins.Services.Tidex
             var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, '_').ToLower()));
             var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
-            var ticker = r?.FirstOrDefault().Value;
+            if (r == null || r.Count == 0)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
+
+            var ticker = r.FirstOrDefault().Value;
 
             if (ticker != null)
             {
@@ -114,6 +125,11 @@ namespace Prime.Plugins.Services.Tidex
             var api = ApiProvider.GetApi(context);
             var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, '_').ToLower()));
             var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
+
+            if (r == null || r.Count == 0)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             var prices = new MarketPricesResult();
 

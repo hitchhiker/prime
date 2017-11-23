@@ -41,11 +41,12 @@ namespace Prime.Plugins.Services.Exmo
             ApiProvider = new RestApiClientProvider<IExmoApi>(ExmoApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetCurrencyAsync().ConfigureAwait(false);
 
-            return Task.Run(() => true);
+            return r?.Length > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -53,6 +54,11 @@ namespace Prime.Plugins.Services.Exmo
             var api = ApiProvider.GetApi(context);
 
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            if (r == null || r.Count == 0)
+            {
+                throw new ApiResponseException("No asset pairs returned.", this);
+            }
 
             var pairs = new AssetPairs();
 
@@ -80,6 +86,11 @@ namespace Prime.Plugins.Services.Exmo
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            if (r == null || r.Count == 0)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             var prices = new MarketPricesResult();
 

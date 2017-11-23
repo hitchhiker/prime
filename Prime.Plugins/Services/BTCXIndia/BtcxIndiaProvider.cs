@@ -43,9 +43,12 @@ namespace Prime.Plugins.Services.BTCXIndia
         private AssetPairs _pairs;
         public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(3, PairsCsv, this));
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            return Task.Run(() => true);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            return r != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -69,6 +72,11 @@ namespace Prime.Plugins.Services.BTCXIndia
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            if (r == null)
+            {
+                throw new ApiResponseException("No ticker returned.", this);
+            }
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last_traded_price)
             {

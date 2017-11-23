@@ -6,23 +6,22 @@ using LiteDB;
 using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.MercadoBitcoin
+namespace Prime.Plugins.Services.Coincheck
 {
-    // https://www.mercadobitcoin.com.br/api-doc/
-    public class MercadoBitcoinProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://coincheck.com/documents/exchange/api#public
+    public class CoincheckProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string MercadoBitcoinApiVersion = "v3"; //Not actually used in the API calls.
-        private const string MercadoBitcoinApiUrl = "https://www.mercadobitcoin.net/api/";
+        private const string CoincheckApiUrl = "https://coincheck.com/api/";
 
-        private static readonly ObjectId IdHash = "prime:mercadobitcoin".GetObjectIdHashCode();
-        private const string PairsCsv = "btcblr,ltcblr,bchblr";
+        private static readonly ObjectId IdHash = "prime:coincheck".GetObjectIdHashCode();
+        private const string PairsCsv = "btcjpy,ethjpy,etcjpy,daojpy,lskjpy,fctjpy,xmrjpy,repjpy,xrpjpy,zecjpy,xemjpy,ltcjpy,dashjpy,bchjpy,ethbtc,etcbtc,lskbtc,fctbtc,xmrbtc,repbtc,xrpbtc,zecbtc,xembtc,ltcbtc,dashbtc,bchbtc";
 
-        //Could not find a rate limiter in official documentation.
+        // No information in API document.
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<IMercadoBitcoinApi> ApiProvider { get; }
+        private RestApiClientProvider<ICoincheckApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("MercadoBitcoin");
+        public Network Network { get; } = Networks.I.Get("Coincheck");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -38,17 +37,17 @@ namespace Prime.Plugins.Services.MercadoBitcoin
         private AssetPairs _pairs;
         public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(3, PairsCsv, this));
 
-        public MercadoBitcoinProvider()
+        public CoincheckProvider()
         {
-            ApiProvider = new RestApiClientProvider<IMercadoBitcoinApi>(MercadoBitcoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICoincheckApi>(CoincheckApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync("BTC").ConfigureAwait(false);
+            var ctx = new PublicPriceContext("btc_jpy".ToAssetPair(this, '_'));
+            var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
-            return r?.ticker != null;
+            return r != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -71,17 +70,18 @@ namespace Prime.Plugins.Services.MercadoBitcoin
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
+            var pairCode = context.Pair.ToTicker(this, '_').ToLower();
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            if (r?.ticker == null)
+            if (r == null)
             {
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell, r.ticker.buy, r.ticker.low, r.ticker.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.vol)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
         }
     }

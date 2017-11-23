@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.Okex
     {
         [Get("/ticker.do?symbol={currencyPair}")]
         Task<OkexSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+
+        [Get("/exchange_rate.do")]
+        Task<OkexSchema.ExchangeRateResponse> GetExchangeRate();
     }
 }

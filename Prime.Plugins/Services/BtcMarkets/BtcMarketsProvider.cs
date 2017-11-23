@@ -4,25 +4,26 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.MercadoBitcoin
+namespace Prime.Plugins.Services.BtcMarkets
 {
-    // https://www.mercadobitcoin.com.br/api-doc/
-    public class MercadoBitcoinProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://github.com/BTCMarkets/API/wiki/Market-data-API
+    public class BtcMarketsProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string MercadoBitcoinApiVersion = "v3"; //Not actually used in the API calls.
-        private const string MercadoBitcoinApiUrl = "https://www.mercadobitcoin.net/api/";
+        private const string BtcMarketsApiUrl = "https://api.btcmarkets.net/";
 
-        private static readonly ObjectId IdHash = "prime:mercadobitcoin".GetObjectIdHashCode();
-        private const string PairsCsv = "btcblr,ltcblr,bchblr";
+        private static readonly ObjectId IdHash = "prime:btcmarkets".GetObjectIdHashCode();
+        private const string PairsCsv = "bchaud,btcaud,ethaud,ltcaud,xrpaud,etcaud";
 
-        //Could not find a rate limiter in official documentation.
-        private static readonly IRateLimiter Limiter = new NoRateLimits();
+        // From doc: "Default limit: 25 calls per 10 seconds"
+        // https://github.com/BTCMarkets/API/wiki/faq
+        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(25, 10);
 
-        private RestApiClientProvider<IMercadoBitcoinApi> ApiProvider { get; }
+        private RestApiClientProvider<IBtcMarketsApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("MercadoBitcoin");
+        public Network Network { get; } = Networks.I.Get("BtcMarkets");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -38,17 +39,17 @@ namespace Prime.Plugins.Services.MercadoBitcoin
         private AssetPairs _pairs;
         public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(3, PairsCsv, this));
 
-        public MercadoBitcoinProvider()
+        public BtcMarketsProvider()
         {
-            ApiProvider = new RestApiClientProvider<IMercadoBitcoinApi>(MercadoBitcoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBtcMarketsApi>(BtcMarketsApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync("BTC").ConfigureAwait(false);
+            var ctx = new PublicPriceContext("BTC/AUD".ToAssetPair(this, '/'));
+            var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
-            return r?.ticker != null;
+            return r != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -71,17 +72,18 @@ namespace Prime.Plugins.Services.MercadoBitcoin
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
+            var pairCode = context.Pair.ToTicker(this, '/');
+            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            if (r?.ticker == null)
+            if (r == null)
             {
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lastPrice)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell, r.ticker.buy, r.ticker.low, r.ticker.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.vol)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.bestAsk, r.bestBid),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.volume24h)
             });
         }
     }

@@ -11,5 +11,8 @@ namespace Prime.Plugins.Services.Exmo
     {
         [Get("/ticker")]
         Task<Dictionary<string,ExmoSchema.TickerResponse>> GetTickersAsync();
+
+        [Get("/currency")]
+        Task<string[]> GetCurrencyAsync();
     }
 }
