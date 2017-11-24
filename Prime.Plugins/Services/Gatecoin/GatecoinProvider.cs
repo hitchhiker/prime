@@ -122,11 +122,12 @@ namespace Prime.Plugins.Services.Gatecoin
 
             var prices = new MarketPricesResult();
 
-            var pairsQueryable = context.IsRequestAll ? r.tickers.Select(x => x.currencyPair.ToAssetPair(this, 3)) : context.Pairs;
+            var rPairsDict = r.tickers.ToDictionary(x => x.currencyPair.ToAssetPair(this, 3), x => x);
+            var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
             {
-                var currentTicker = r.tickers.FirstOrDefault(x => x.currencyPair.ToAssetPair(this, 3).Equals(pair));
+                rPairsDict.TryGetValue(pair, out var currentTicker);
 
                 if (currentTicker == null)
                 {

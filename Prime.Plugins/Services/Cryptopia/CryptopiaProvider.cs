@@ -122,12 +122,13 @@ namespace Prime.Plugins.Services.Cryptopia
             if (r.Success)
             {
                 var prices = new MarketPricesResult();
-
-                var pairsQueryable = context.IsRequestAll ? r.Data.Select(x => x.Label.ToAssetPair(this, '/')) : context.Pairs;
+                
+                var rPairsDict = r.Data.ToDictionary(x => x.Label.ToAssetPair(this,'/'), x => x);
+                var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
                 foreach (var pair in pairsQueryable)
                 {
-                    var currentTicker = r.Data.FirstOrDefault(x => x.Label.ToAssetPair(this, '/').Equals(pair));
+                    rPairsDict.TryGetValue(pair, out var currentTicker);
 
                     if (currentTicker == null)
                     {
