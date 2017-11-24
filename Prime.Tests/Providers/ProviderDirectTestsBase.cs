@@ -220,6 +220,8 @@ namespace Prime.Tests.Providers
 
         private void InternalGetPriceAsync(IPublicPricingProvider provider, PublicPricesContext context, bool firstPriceLessThan1, bool runSingle)
         {
+            Assert.IsTrue(provider.PricingFeatures != null, "Pricing features object is null");
+
             var r = AsyncContext.Run(() => provider.GetPricingAsync(context));
 
             Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod,
@@ -344,6 +346,8 @@ namespace Prime.Tests.Providers
 
         private void InternalGetVolumeAsync(IPublicVolumeProvider provider, PublicVolumesContext context, bool runSingle)
         {
+            Assert.IsTrue(provider.VolumeFeatures != null, "Volume features object is null");
+
             var r = AsyncContext.Run(() => provider.GetPublicVolumeAsync(context));
 
             Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod,

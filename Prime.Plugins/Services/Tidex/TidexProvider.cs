@@ -132,7 +132,7 @@ namespace Prime.Plugins.Services.Tidex
             }
 
             var prices = new MarketPricesResult();
-
+            
             foreach (var pair in context.Pairs)
             {
                 var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;

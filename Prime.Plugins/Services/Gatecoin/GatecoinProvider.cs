@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Gatecoin
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -122,7 +122,9 @@ namespace Prime.Plugins.Services.Gatecoin
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            var pairsQueryable = context.IsRequestAll ? r.tickers.Select(x => x.currencyPair.ToAssetPair(this, 3)) : context.Pairs;
+
+            foreach (var pair in pairsQueryable)
             {
                 var currentTicker = r.tickers.FirstOrDefault(x => x.currencyPair.ToAssetPair(this, 3).Equals(pair));
 

@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Cryptopia
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -123,7 +123,9 @@ namespace Prime.Plugins.Services.Cryptopia
             {
                 var prices = new MarketPricesResult();
 
-                foreach (var pair in context.Pairs)
+                var pairsQueryable = context.IsRequestAll ? r.Data.Select(x => x.Label.ToAssetPair(this, '/')) : context.Pairs;
+
+                foreach (var pair in pairsQueryable)
                 {
                     var currentTicker = r.Data.FirstOrDefault(x => x.Label.ToAssetPair(this, '/').Equals(pair));
 
