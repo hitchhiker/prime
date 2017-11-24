@@ -93,12 +93,14 @@ namespace Prime.Plugins.Services.Exmo
             }
 
             var prices = new MarketPricesResult();
+            
+            var rPairsDict = r.ToDictionary(x => x.Key.ToAssetPair(this), x => x.Value);
 
-            var pairsQueryable = context.IsRequestAll ? r.Select(x => x.Key.ToAssetPair(this, '_')) : context.Pairs;
+            var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
             {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;
+                rPairsDict.TryGetValue(pair, out var currentTicker);
 
                 if (currentTicker == null)
                 {
