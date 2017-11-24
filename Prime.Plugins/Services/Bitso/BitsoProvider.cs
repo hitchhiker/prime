@@ -45,9 +45,10 @@ namespace Prime.Plugins.Services.Bitso
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var r = await GetAssetPairsAsync(context).ConfigureAwait(false);
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickerAsync("btc_mxn").ConfigureAwait(false);
 
-            return r.Count > 0;
+            return r.success;
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()

@@ -41,11 +41,12 @@ namespace Prime.Plugins.Services.Btcc
             ApiProvider = new RestApiClientProvider<IBtccApi>(BtccApiUrl, this, (k) => null);
         }
 
-        public Task<bool> TestPublicApiAsync(NetworkProviderContext context)
+        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            // TODO: implement public api test.
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetTickerAsync("BTCUSD").ConfigureAwait(false);
 
-            return Task.Run(() => true);
+            return r?.ticker != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -70,6 +71,11 @@ namespace Prime.Plugins.Services.Btcc
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            if (r == null)
+            {
+                throw new ApiResponseException("No tickers returned.", this);
+            }
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.Last)
             {
