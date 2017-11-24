@@ -110,7 +110,7 @@ namespace Prime.Common
             if (quote.Id == money1.Asset.Id)
                 throw new ArgumentException($"Cannot {nameof(ReverseAsset)} into the same asset.");
 
-            return new Money(1d / money1, quote);
+            return money1 == 0 ? new Money(0, quote) : new Money(1d / money1, quote);
         }
     }
 }

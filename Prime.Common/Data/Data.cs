@@ -40,9 +40,14 @@ namespace Prime.Common
             File.WriteAllBytes(path, bytesb);
         }
 
+        public static BsonMapper BsonMapper = new BsonMapper((t) =>
+        {
+            return Reflection.InstanceAny(t);
+        });
+
         private Data()
         {
-            var g = BsonMapper.Global;
+            var g = BsonMapper;
 
             g.UseCamelCase();
             g.IncludeNonPublic = true;
@@ -115,7 +120,7 @@ namespace Prime.Common
                 if (!Directory.Exists(fi.Directory.FullName))
                     Directory.CreateDirectory(fi.Directory.FullName);
 
-                return new LiteRepository(loc);
+                return new LiteRepository(loc, Data.BsonMapper);
             });
         }
 

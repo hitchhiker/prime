@@ -109,10 +109,10 @@ namespace Prime.Core.Market
                             volume.Add(r);
                         afterPull?.Invoke(network, pair, r);
                     }
-
-                    if (CanSave)
-                        Data.SavePublic();
                 }
+
+                if (CanSave)
+                    Data.SavePublic();
 
                 return new PublicVolumeResponse(volume, missing);
             }
