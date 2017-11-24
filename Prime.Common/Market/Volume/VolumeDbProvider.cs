@@ -36,32 +36,45 @@ namespace Prime.Core.Market
             CanSave = true;
         }
 
+        public IReadOnlyList<NetworkPairVolume> GetVolume(Network network, bool dontSave = false)
+        {
+            lock (_lock)
+            {
+                var v = Data.GetNormalised(network);
+                if (v != null)
+                    return v;
+
+                var save = Data.PopulateFromApi(network);
+
+                v = Data.GetNormalised(network);
+
+                if (save && CanSave)
+                    Data.SavePublic();
+                return v;
+            }
+        }
+
         public NetworkPairVolume GetVolume(Network network, AssetPair pair, bool dontSave = false)
         {
             lock (_lock)
             {
-                var v = Data.Get(network, pair);
+                var v = Data.GetNormalised(network, pair);
                 if (v != null)
                     return v;
 
                 var canagg = ProviderAggVolumeData.NetworksSupported.Contains(network);
 
                 var save = canagg && Data.PopulateFromAgg(ProviderAggVolumeData, pair); //the agg does bulk, so it goes up the list.
-                v = canagg ? Data.Get(network, pair) : null;
+                v = canagg ? Data.GetNormalised(network, pair) : null;
                 
                 if (v != null)
                     return PostProcess(v, save && !dontSave);
 
-                save = Data.PopulateFromApi(network, pair) || save;
+                save = Data.PopulateFromApi(network) || save;
 
-                v = Data.Get(network, pair);
+                v = Data.GetNormalised(network, pair);
 
-                if (v != null)
-                    return PostProcess(v, save && !dontSave);
-
-                save = Data.PopulateFromPricing(network, pair) || save;
-
-                return PostProcess(Data.Get(network, pair), save && !dontSave);
+                return v != null ? PostProcess(v, save && !dontSave) : v;
             }
         }
 
@@ -74,38 +87,35 @@ namespace Prime.Core.Market
         
         public PublicVolumeResponse GetAllVolume(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> pairsByNetwork, Action<Network, AssetPair> onPull = null, Action<Network, AssetPair, NetworkPairVolume> afterPull = null)
         {
-            var volume = new UniqueList<NetworkPairVolume>();
-            var missing = new Dictionary<Network, UniqueList<AssetPair>>();
-            foreach (var network in pairsByNetwork.Keys)
+            lock (_lock)
             {
-                var pairs = pairsByNetwork[network];
-
-                var rb = AsyncContext.Run(() => VolumeProvider.I.GetAsync(network, new VolumeProviderContext() { UseReturnAll = true }));
-                if (rb == null)
-                    continue;
-
-                foreach (var pair in pairs)
+                var volume = new UniqueList<NetworkPairVolume>();
+                var missing = new Dictionary<Network, UniqueList<AssetPair>>();
+                foreach (var network in pairsByNetwork.Keys)
                 {
-                    onPull?.Invoke(network, pair);
+                    var pairs = pairsByNetwork[network];
 
-                    var f = rb.Volume?.FirstOrDefault(x => x.Network.Id == network.Id && x.Pair.EqualsOrReversed(pair));
-                    var r = f ?? GetVolume(network, pair, true);
+                    foreach (var pair in pairs)
+                    {
+                        onPull?.Invoke(network, pair);
+                        var r = GetVolume(network, pair, true);
 
-                    if (r!=null && Equals(r.Pair, pair.Reversed))
-                        r = r.Reversed;
+                        if (r != null && Equals(r.Pair, pair.Reversed))
+                            r = r.Reversed;
 
-                    if (r == null)
-                        missing.GetOrAdd(network, (k) => new UniqueList<AssetPair>()).Add(pair);
-                    else
-                        volume.Add(r);
-                    afterPull?.Invoke(network, pair, r);
+                        if (r == null)
+                            missing.GetOrAdd(network, (k) => new UniqueList<AssetPair>()).Add(pair);
+                        else
+                            volume.Add(r);
+                        afterPull?.Invoke(network, pair, r);
+                    }
+
+                    if (CanSave)
+                        Data.SavePublic();
                 }
 
-                if (CanSave)
-                    Data.SavePublic();
+                return new PublicVolumeResponse(volume, missing);
             }
-
-            return new PublicVolumeResponse(volume , missing);
         }
 
         public static void Clear(ObjectId id)
