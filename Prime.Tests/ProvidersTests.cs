@@ -28,6 +28,17 @@ namespace Prime.Tests
         }
 
         [TestMethod]
+        public void GetVolumeAndPricingProviders()
+        {
+            var providers = Networks.I.Providers.OfType<IPublicPricingProvider>().OfType<IPublicVolumeProvider>();
+
+            foreach (var provider in providers)
+            {
+                Trace.WriteLine($"Provider: {provider.Network.Name}");
+            }
+        }
+
+        [TestMethod]
         public void GetPricesFromProvidersTest()
         {
             // TODO: Sean check your providers here.

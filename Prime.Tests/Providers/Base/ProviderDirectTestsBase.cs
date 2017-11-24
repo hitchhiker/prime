@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Handlers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Common.Exchange;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
-using Prime.Utility;
 
 namespace Prime.Tests.Providers
 {
     public abstract partial class ProviderDirectTestsBase
     {
         public INetworkProvider Provider { get; protected set; }
+
+        private bool IsVolumePricingSanityTested { get; set; }
 
         #region Wrappers
 
@@ -131,6 +128,55 @@ namespace Prime.Tests.Providers
 
         #region Test methods
 
+
+        private void TestVolumePricingSanity(INetworkProvider provider, List<AssetPair> pairs)
+        {
+            if(IsVolumePricingSanityTested)
+                return;
+
+            IsVolumePricingSanityTested = true;
+
+            if (provider is IPublicVolumeProvider volumeProvider && provider is IPublicPricingProvider pricingProvider)
+            {
+                // Single test.
+
+                if(pricingProvider.PricingFeatures.Single == null || volumeProvider.VolumeFeatures.Single == null)
+                    return;
+
+                if (pricingProvider.PricingFeatures.Single.CanVolume ^ volumeProvider.VolumeFeatures.Single.CanVolume)
+                    return;
+
+                var priceCtx = new PublicPriceContext(pairs.First());
+                var rPrice = AsyncContext.Run(() => pricingProvider.GetPricingAsync(priceCtx));
+
+                AssetPrice(rPrice, volumeProvider.VolumeFeatures.Single.CanVolumeBase, volumeProvider.VolumeFeatures.Single.CanVolumeQuote);
+
+                // Multiple pairs test.
+
+                if (pricingProvider.PricingFeatures.Bulk == null || volumeProvider.VolumeFeatures.Bulk == null)
+                    return;
+
+                if (pricingProvider.PricingFeatures.Bulk.CanVolume ^ volumeProvider.VolumeFeatures.Bulk.CanVolume) 
+                    return;
+
+                var pricesCtx = new PublicPricesContext(pairs);
+                var rPrices = AsyncContext.Run(() => pricingProvider.GetPricingAsync(pricesCtx));
+
+                AssetPrice(rPrices, volumeProvider.VolumeFeatures.Bulk.CanVolumeBase, volumeProvider.VolumeFeatures.Bulk.CanVolumeQuote);
+            }
+        }
+
+        private void AssetPrice(MarketPricesResult price, bool canVolumeBase, bool canVolumeQuote)
+        {
+            Assert.IsFalse(
+                price.FirstPrice.Volume.HasVolume24Base &&
+                canVolumeBase,
+                "Provider returns base volume using both pricing and volume interfaces");
+            Assert.IsFalse(
+                price.FirstPrice.Volume.HasVolume24Quote &&
+                canVolumeQuote,
+                "Provider returns quote volume using both pricing and volume interfaces");
+        }
 
         private void TestApi(INetworkProviderPrivate provider)
         {

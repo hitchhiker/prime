@@ -58,6 +58,8 @@ namespace Prime.Tests.Providers
                         InternalGetVolumeAsync(provider, context, false);
                     }
                 }
+
+                TestVolumePricingSanity(provider, pairs);
             }
             catch (Exception e)
             {

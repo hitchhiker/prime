@@ -66,6 +66,7 @@ namespace Prime.Plugins.Services.Cex
             Bulk = new PricingBulkFeatures() { CanReturnAll = true },
             Single = new PricingSingleFeatures()
         };
+
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
@@ -92,17 +93,14 @@ namespace Prime.Plugins.Services.Cex
             var r = await api.GetLastPricesAsync().ConfigureAwait(false);
             CheckResponseError(r);
 
-            // TODO: implement context.IsRequestAll.
+            var dictPairsPrices = r.data.ToDictionary(x => new AssetPair(x.symbol1, x.symbol2, this), x => x);
+            var pairsQueryable = context.IsRequestAll ? dictPairsPrices.Keys.ToList() : context.Pairs;
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            foreach (var pair in pairsQueryable)
             {
-                var rPair = r.data.FirstOrDefault(x =>
-                    x.symbol1.ToAsset(this).Equals(pair.Asset1) &&
-                    x.symbol2.ToAsset(this).Equals(pair.Asset2));
-
-                if (rPair == null)
+                if (!dictPairsPrices.TryGetValue(pair, out var rPair))
                 {
                     prices.MissedPairs.Add(pair);
                     continue;

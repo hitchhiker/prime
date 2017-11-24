@@ -139,6 +139,8 @@ namespace Prime.Tests.Providers
                         InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
                     }
                 }
+
+                TestVolumePricingSanity(provider, pairs);
             }
             catch (Exception e)
             {
