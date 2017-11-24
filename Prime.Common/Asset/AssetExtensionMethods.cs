@@ -117,20 +117,54 @@ namespace Prime.Common
             return null;
         }
 
+        /// <summary>
+        /// Will search for the price in both directions (normal / reversed).
+        /// </summary>
+        public static MarketPrice GetPrice(this PriceGraph graph, AssetPair pair)
+        {
+            return graph?.Prices?.GetPrice(pair);
+        }        
+        
+        /// <summary>
+        /// Will search for the price in both directions (normal / reversed).
+        /// </summary>
+        public static MarketPrice GetPrice(this PriceGraph graph, Network network, AssetPair pair)
+        {
+            return graph?.PricesByNetwork?.Get(network)?.GetPrice(pair);
+        }
+
+        /// <summary>
+        /// Will search for the price in both directions (normal / reversed).
+        /// </summary>
+        public static MarketPrice GetPrice(this IEnumerable<MarketPrice> prices, AssetPair pair)
+        {
+            var m = prices.FirstOrDefault(x => x.Pair.Id == pair.Id);
+            if (m != null)
+                return m;
+
+            m = prices.FirstOrDefault(x => x.Pair.Id == pair.Reversed.Id);
+            return m?.Reversed;
+        }
+        
+        /// <summary>
+        /// Will search for the price in both directions (normal / reversed).
+        /// </summary>
+        public static MarketPrice GetPrice(this IEnumerable<MarketPrice> prices, Network network, AssetPair pair)
+        {
+            var m = prices.FirstOrDefault(x => x.Pair.Id == pair.Id && x.Network.Id == network.Id);
+            if (m != null)
+                return m;
+
+            m = prices.FirstOrDefault(x => x.Pair.Id == pair.Reversed.Id && x.Network.Id == network.Id);
+            return m?.Reversed;
+        }
+
         public static decimal Fx(this IEnumerable<MarketPrice> prices, AssetPair pair)
         {
             if (pair.Asset1.Id == pair.Asset2.Id)
                 return 1;
 
-            var m = prices.FirstOrDefault(x => x.Pair.Id == pair.Id)?.Price;
-            if (m != null)
-                return m.Value.ToDecimalValue();
-
-            m = prices.FirstOrDefault(x => x.Pair.Id == pair.Reversed.Id)?.Price;
-            if (m != null)
-                return m.Value.ReverseAsset(pair.Asset2).ToDecimalValue();
-
-            return 0;
+            return GetPrice(prices, pair)?.Price.ToDecimalValue() ?? 0;
         }
 
         public static Money? FxConvert(this IEnumerable<MarketPrice> prices, Money money, Asset quote, Money? defaultValue = null)

@@ -20,7 +20,7 @@ namespace TestConsole
         {
             if (args != null && args.Length == 2 && args[0] == "-ext")
             {
-                var asm = Assembly.LoadFrom(args[1]);
+               // var asm = Assembly.LoadFrom(args[1]);
             }
 
             var prime = TypeCatalogue.I.ImplementInstancesI<ICore>().FirstOrDefault();
