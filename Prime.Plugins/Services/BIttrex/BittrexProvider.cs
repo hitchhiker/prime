@@ -76,23 +76,34 @@ namespace Prime.Plugins.Services.Bittrex
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Single = new PricingSingleFeatures(),
+            Single = new PricingSingleFeatures() {CanVolume = true, CanStatistics = true},
             Bulk = new PricingBulkFeatures()
             {
-                CanReturnAll = true
+                CanReturnAll = true,
+                CanStatistics = true,
+                CanVolume = true
             }
         };
+
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
-            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+            var r = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
 
             CheckResponseErrors(r, context.Pair);
 
-            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(1 / r.result.Last, context.Pair.Asset2));
+            var e = r.result.FirstOrDefault();
+            if (e == null)
+                throw new NoAssetPairException(context.Pair, this);
+
+            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(1 / e.Last, context.Pair.Asset2))
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
+                Volume = new NetworkPairVolume(Network, context.Pair, e.BaseVolume, e.Volume)
+            };
             return new MarketPricesResult(price);
         }
 
@@ -113,18 +124,21 @@ namespace Prime.Plugins.Services.Bittrex
 
             foreach (var pair in pairsQueryable)
             {
-                if (!rPairsDict.TryGetValue(pair, out var ms))
+                if (!rPairsDict.TryGetValue(pair, out var e))
                 {
                     prices.MissedPairs.Add(pair);
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / ms.Last));
+                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / e.Last)
+                {
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
+                    Volume = new NetworkPairVolume(Network, pair, e.BaseVolume, e.Volume)
+                });
             }
 
             return prices;
         }
-
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
@@ -133,7 +147,6 @@ namespace Prime.Plugins.Services.Bittrex
 
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
-
 
         public bool DoesMultiplePairs => false;
 

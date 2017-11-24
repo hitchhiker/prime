@@ -150,10 +150,12 @@ namespace Prime.Core.Market
             {
                 var r = x.Result;
                 var re = r.IsNull ? null : After(r.Response, context);
-                //if (re != null && re.Volume?.Any(v=>v.Network.Id == network.Id && v.Pair.Id == vContext.Pair.Id)==true)
+                if (isSwap)
                     return re;
-                //var vswap = new AggVolumeDataContext(vContext.Pair.Reversed);
-                //return After(CoordinatorTask(network, vswap, context, true).Result, context);
+                if (re != null && re.Volume?.Any(v=>v.Network.Id == network.Id && v.Pair.Id == vContext.Pair.Id)==true)
+                    return re;
+                var vswap = new AggVolumeDataContext(vContext.Pair.Reversed);
+                return After(CoordinatorTask(network, vswap, context, true).Result, context);
             });
         }
 
