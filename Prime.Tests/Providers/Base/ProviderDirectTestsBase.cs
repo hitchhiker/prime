@@ -131,6 +131,8 @@ namespace Prime.Tests.Providers
 
         private void TestVolumePricingSanity(INetworkProvider provider, List<AssetPair> pairs)
         {
+            // TODO: to be reviewed and tested when there will be new providers that support Volume and Pricing interfaces.
+
             if(IsVolumePricingSanityTested)
                 return;
 
