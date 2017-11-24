@@ -4,6 +4,8 @@ namespace Prime.Common
 {
     public class VolumeSource : ApiSource
     {
+        private VolumeSource() { }
+
         public VolumeSource(INetworkProvider provider, Type interfaceType) : base(provider, interfaceType)
         {
         }

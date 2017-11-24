@@ -81,7 +81,9 @@ namespace Prime.Core.Market
                 var pairs = pairsByNetwork[network];
 
                 var rb = AsyncContext.Run(() => VolumeProvider.I.GetAsync(network, new VolumeProviderContext() { UseReturnAll = true }));
-              
+                if (rb == null)
+                    continue;
+
                 foreach (var pair in pairs)
                 {
                     onPull?.Invoke(network, pair);

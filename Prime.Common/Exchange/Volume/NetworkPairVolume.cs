@@ -122,7 +122,7 @@ namespace Prime.Common
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Network.Id, other.Network.Id) && Equals(Pair.Id, other.Pair.Id);
+            return Equals(Network?.Id, other.Network?.Id) && Equals(Pair.Id, other.Pair.Id);
         }
 
         public override bool Equals(object obj)

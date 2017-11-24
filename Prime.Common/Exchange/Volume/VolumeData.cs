@@ -86,7 +86,7 @@ namespace Prime.Common
 
         public NetworkPairVolume Get(Network network, AssetPair pair)
         {
-            var vol = Get(pair.Normalised)?.FirstOrDefault(x => x.Network.Id == network.Id);
+            var vol = Get(pair.Normalised)?.FirstOrDefault(x => x.Network?.Id == network.Id);
 
             if (vol == null)
                 return null;

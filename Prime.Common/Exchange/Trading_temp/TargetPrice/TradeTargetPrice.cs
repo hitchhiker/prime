@@ -30,16 +30,17 @@ namespace Prime.Common.Exchange.Trading_temp
             var r = AsyncContext.Run(()=> Provider.PlaceTradeAsync(new PlaceTradeContext(_ctx.UserContext, _ctx.Pair, _ctx.IsBuy, _ctx.Quantity, price)));
             RemoteTradeId = r.RemoteTradeId;
 
-            Task.Run(()=> WaitForComplete(r.RemoteTradeId));
+            Task.Run(()=> WaitForEnd(r.RemoteTradeId));
         }
 
-        private async void WaitForComplete(string tradeId)
+        private async void WaitForEnd(string tradeId)
         {
+            TradeOrderStatus lastStatus = null;
             var finished = false;
             do
             {
-                var r = await Provider.GetOrderStatusAsync(new RemoteIdContext(Context.UserContext, tradeId)).ConfigureAwait(false);
-                finished = finished || r.IsClosed;
+                lastStatus = await Provider.GetOrderStatusAsync(new RemoteIdContext(Context.UserContext, tradeId)).ConfigureAwait(false);
+                finished = finished || lastStatus.IsClosed;
                 if (!finished)
                     Thread.Sleep(1000);
             } while (!finished);

@@ -5,6 +5,8 @@ namespace Prime.Common
 {
     public class ApiSource
     {
+        public ApiSource() { }
+
         public ApiSource(INetworkProvider provider, Type interfaceType)
         {
             Provider = provider;
