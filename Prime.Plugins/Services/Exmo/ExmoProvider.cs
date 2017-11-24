@@ -77,7 +77,7 @@ namespace Prime.Plugins.Services.Exmo
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -94,7 +94,9 @@ namespace Prime.Plugins.Services.Exmo
 
             var prices = new MarketPricesResult();
 
-            foreach (var pair in context.Pairs)
+            var pairsQueryable = context.IsRequestAll ? r.Select(x => x.Key.ToAssetPair(this, '_')) : context.Pairs;
+
+            foreach (var pair in pairsQueryable)
             {
                 var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;
 
