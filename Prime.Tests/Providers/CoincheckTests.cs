@@ -27,19 +27,19 @@ namespace Prime.Tests.Providers
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()
-        {
-            "btc_jpy".ToAssetPairRaw(),
-            "eth_jpy".ToAssetPairRaw(),
-            "etc_jpy".ToAssetPairRaw(),
-            "dao_jpy".ToAssetPairRaw(),
-            "lsk_jpy".ToAssetPairRaw(),
-            "fct_jpy".ToAssetPairRaw(),
-            "xmr_jpy".ToAssetPairRaw(),
-            "rep_jpy".ToAssetPairRaw(),
-            "xrp_jpy".ToAssetPairRaw(),
-            "zec_jpy".ToAssetPairRaw(),
-            "xem_jpy".ToAssetPairRaw()
-        };
+            {
+                "btc_jpy".ToAssetPairRaw(),
+                "eth_jpy".ToAssetPairRaw(),
+                "etc_jpy".ToAssetPairRaw(),
+                "dao_jpy".ToAssetPairRaw(),
+                "lsk_jpy".ToAssetPairRaw(),
+                "fct_jpy".ToAssetPairRaw(),
+                "xmr_jpy".ToAssetPairRaw(),
+                "rep_jpy".ToAssetPairRaw(),
+                "xrp_jpy".ToAssetPairRaw(),
+                "zec_jpy".ToAssetPairRaw(),
+                "xem_jpy".ToAssetPairRaw()
+            };
 
             base.TestGetPricing(pairs, false);
         }

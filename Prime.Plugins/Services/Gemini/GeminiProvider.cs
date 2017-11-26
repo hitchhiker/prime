@@ -80,7 +80,10 @@ namespace Prime.Plugins.Services.Gemini
             return new AssetPair(asset1, asset2);
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(true, false);
+        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        {
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true }
+        };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)

@@ -23,7 +23,9 @@ namespace Prime.Tests.Providers
         { 
             var pairs = new List<AssetPair>()
             {
-                "ETH_BTC".ToAssetPairRaw()
+                "ETH_BTC".ToAssetPairRaw(),
+                "ETH_BTC".ToAssetPairRaw(),
+                "BCH_BTC".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, true);
