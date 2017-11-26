@@ -62,7 +62,7 @@ namespace Prime.Tests.Providers
                 "ETH_BTC".ToAssetPairRaw()
             };
 
-            base.TestGetVolume(pairs);
+            base.TestGetVolume(pairs, false);
         }
     }
 }

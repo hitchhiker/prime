@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.Cex
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '/';
 
         private RestApiClientProvider<ICexApi> ApiProvider { get; }
 
@@ -122,7 +122,7 @@ namespace Prime.Plugins.Services.Cex
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.ToTicker(this, '/');
+            var pairCode = context.Pair.ToTicker(this);
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 

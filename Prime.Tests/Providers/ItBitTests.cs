@@ -48,11 +48,5 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
-
-        [TestMethod]
-        public override void TestGetVolume()
-        {
-            base.TestGetVolume();
-        }
     }
 }
