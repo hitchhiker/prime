@@ -136,6 +136,7 @@
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Volume.cs" />
     <Compile Include="Providers\BinanceTests.cs" />
     <Compile Include="Providers\BisqTests.cs" />
+    <Compile Include="Providers\BitBayTests.cs" />
     <Compile Include="Providers\BitFlyerTests.cs" />
     <Compile Include="Providers\BithumbTests.cs" />
     <Compile Include="Providers\BitMarketTests.cs" />
