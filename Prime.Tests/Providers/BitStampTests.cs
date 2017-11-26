@@ -28,7 +28,11 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "BTC_USD".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw(),
+                "BTC_EUR".ToAssetPairRaw(),
+                "EUR_USD".ToAssetPairRaw(),
+                "XRP_USD".ToAssetPairRaw(),
+                "XRP_EUR".ToAssetPairRaw(),
             };
 
             base.TestGetPricing(pairs, false);
