@@ -74,12 +74,7 @@ namespace Prime.Plugins.Services.BtcMarkets
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, '/');
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-
-            if (r == null)
-            {
-                throw new ApiResponseException("No tickers returned.", this);
-            }
-
+            
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lastPrice)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.bestAsk, r.bestBid),

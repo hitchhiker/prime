@@ -97,12 +97,7 @@ namespace Prime.Plugins.Services.Luno
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-
-            if (r == null)
-            {
-                throw new ApiResponseException("No ticker returned.", this);
-            }
-
+            
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last_trade)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, null, null),

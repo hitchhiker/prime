@@ -8,23 +8,23 @@ using Prime.Common;
 using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.Exmo
+namespace Prime.Plugins.Services.LakeBtc
 {
-    // https://exmo.com/en/api#/public_api
-    public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://www.lakebtc.com/s/api_v2
+    public class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string ExmoApiVersion = "v1";
-        private const string ExmoApiUrl = "https://api.exmo.com/" + ExmoApiVersion;
+        private const string LakeBtcApiVersion = "v2";
+        private const string LakeBtcApiUrl = "https://api.LakeBTC.com/api_" + LakeBtcApiVersion;
 
-        private static readonly ObjectId IdHash = "prime:exmo".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:lakebtc".GetObjectIdHashCode();
 
-        //The number of API requests is limited to 180 per/minute from one IP address or by a single user.
-        //https://exmo.com/en/api#/public_api
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(180, 1);
+        //Data is cached on the server-side so it is unnecessary to make frequent visits.
+        //https://www.lakebtc.com/s/api_v2
+        private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<IExmoApi> ApiProvider { get; }
+        private RestApiClientProvider<ILakeBtcApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("Exmo");
+        public Network Network { get; } = Networks.I.Get("LakeBTC");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -37,17 +37,17 @@ namespace Prime.Plugins.Services.Exmo
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public ExmoProvider()
+        public LakeBtcProvider()
         {
-            ApiProvider = new RestApiClientProvider<IExmoApi>(ExmoApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ILakeBtcApi>(LakeBtcApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetCurrencyAsync().ConfigureAwait(false);
+            var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            return r?.Length > 0;
+            return r?.Count > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -63,9 +63,9 @@ namespace Prime.Plugins.Services.Exmo
 
             var pairs = new AssetPairs();
 
-            foreach (var entry in r)
+            foreach (var rCurrentTicker in r)
             {
-                pairs.Add(entry.Key.ToAssetPair(this, '_'));
+                pairs.Add(rCurrentTicker.Key.ToAssetPair(this, 3));
             }
 
             return pairs;
@@ -94,14 +94,12 @@ namespace Prime.Plugins.Services.Exmo
             }
 
             var prices = new MarketPricesResult();
-            
-            var rPairsDict = r.ToDictionary(x => x.Key.ToAssetPair(this), x => x.Value);
 
-            var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
+            var pairsQueryable = context.IsRequestAll ? r.Keys.Select(x => x.ToAssetPair(this, 3)).ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
             {
-                rPairsDict.TryGetValue(pair, out var currentTicker);
+                r.TryGetValue(pair.ToTicker(this).ToLower(), out var currentTicker);
 
                 if (currentTicker == null)
                 {
@@ -109,10 +107,10 @@ namespace Prime.Plugins.Services.Exmo
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last_trade)
+                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell_price, currentTicker.buy_price, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
+                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
                     });
                 }
             }

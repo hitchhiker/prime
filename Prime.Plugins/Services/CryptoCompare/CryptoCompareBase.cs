@@ -6,6 +6,7 @@ using LiteDB;
 using Newtonsoft.Json;
 using plugins;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 using RestEase;
 

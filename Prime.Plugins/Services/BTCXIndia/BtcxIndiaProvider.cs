@@ -72,12 +72,7 @@ namespace Prime.Plugins.Services.BTCXIndia
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
-
-            if (r == null)
-            {
-                throw new ApiResponseException("No ticker returned.", this);
-            }
-
+            
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last_traded_price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),

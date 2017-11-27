@@ -71,12 +71,7 @@ namespace Prime.Plugins.Services.Btcc
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-
-            if (r == null)
-            {
-                throw new ApiResponseException("No tickers returned.", this);
-            }
-
+            
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.Last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.AskPrice, r.ticker.BidPrice, r.ticker.Low, r.ticker.High),

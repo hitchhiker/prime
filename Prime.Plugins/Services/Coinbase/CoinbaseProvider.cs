@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using plugins;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Common.Exchange;
 using Prime.Plugins.Services.Gdax;
 using Prime.Utility;

@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
-using Prime.Utility;
 
 namespace Prime.Common.Api.Request.RateLimits
 {
-    public class PerMinuteRateLimiter : IRateLimiter
+    public class PerDayRateLimiter : IRateLimiter
     {
         private readonly int _anonyRequests;
-        private readonly int _anonyPerMinutes;
+        private readonly int _anonyPerDays;
         private readonly int _requests;
-        private readonly int _perMinutes;
+        private readonly int _perDays;
 
         private readonly List<DateTime> _hits = new List<DateTime>();
         private readonly object _lock = new object();
 
-        public PerMinuteRateLimiter(int requests, int perMinutes)
+        public PerDayRateLimiter(int requests, int perDays)
         {
             _anonyRequests = requests;
-            _anonyPerMinutes = perMinutes;
+            _anonyPerDays = perDays;
             _requests = requests;
-            _perMinutes = perMinutes;
+            _perDays = perDays;
         }
 
-        public PerMinuteRateLimiter(int anonyRequests, int anonyPerMinutes, int requests, int perMinutes)
+        public PerDayRateLimiter(int anonyRequests, int anonyPerDays, int requests, int perDays)
         {
             _anonyRequests = anonyRequests;
-            _anonyPerMinutes = anonyPerMinutes;
+            _anonyPerDays = anonyPerDays;
             _requests = requests;
-            _perMinutes = perMinutes;
+            _perDays = perDays;
         }
 
         public void Limit()
@@ -41,7 +41,7 @@ namespace Prime.Common.Api.Request.RateLimits
             lock (_lock)
             {
                 _hits.Add(DateTime.UtcNow);
-                var expired = DateTime.UtcNow.AddMinutes(-_perMinutes);
+                var expired = DateTime.UtcNow.AddDays(-_perDays);
                 _hits.RemoveAll(x => x <= expired);
                 return _hits.Count < _requests;
             }

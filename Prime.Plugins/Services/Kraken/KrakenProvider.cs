@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Common.Exchange;
 using Prime.Plugins.Services.Base;
 using Prime.Plugins.Services.Kraken.Converters;

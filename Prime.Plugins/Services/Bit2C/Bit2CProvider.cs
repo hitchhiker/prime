@@ -4,25 +4,26 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
+using Prime.Plugins.Services.Bit2c;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.BitBay
+namespace Prime.Plugins.Services.Bit2C
 {
-    // https://bitbay.net/en/api-public#details
-    public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://www.bit2c.co.il/home/api
+    public class Bit2CProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string BitBayApiUrl = "https://bitbay.net/API/Public/";
+        private const string Bit2CApiUrl = "https://www.bit2c.co.il/";
 
-        private static readonly ObjectId IdHash = "prime:bitbay".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:bit2c".GetObjectIdHashCode();
 
         //Nothing mentioned in documentation.
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<IBitBayApi> ApiProvider { get; }
-        //List was not found anywhere - just put together based on crypto currencies supported by BitBay according to https://en.bitcoin.it/wiki/BitBay.
-        private const string PairsCsv = "LTCPLN,LTCUSD,LTCEUR,BTCPLN,BTCUSD,BTCEUR,ETHPLN,ETHUSD,ETHEUR,LSKPLN,LSKUSD,LSKEUR,BCCPLN,BCCUSD,BCCEUR";
+        private RestApiClientProvider<IBit2CApi> ApiProvider { get; }
+        //From doc: BtcNis/LtcNis/BchNis - https://www.bit2c.co.il/home/api.
+        private const string PairsCsv = "BtcNis,LtcNis,BchNis";
 
-        public Network Network { get; } = Networks.I.Get("BitBay");
+        public Network Network { get; } = Networks.I.Get("Bit2C");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -36,9 +37,9 @@ namespace Prime.Plugins.Services.BitBay
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public BitBayProvider()
+        public Bit2CProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitBayApi>(BitBayApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBit2CApi>(Bit2CApiUrl, this, (k) => null);
         }
 
         private AssetPairs _pairs;
@@ -47,7 +48,7 @@ namespace Prime.Plugins.Services.BitBay
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync("BTCUSD").ConfigureAwait(false);
+            var r = await api.GetTickerAsync("BtcNis").ConfigureAwait(false);
 
             return r != null;
         }
@@ -75,10 +76,10 @@ namespace Prime.Plugins.Services.BitBay
             var pairCode = context.Pair.ToTicker(this, "");
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ll)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.min, r.max),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, r.l, r.h),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.a)
             });
         }
     }

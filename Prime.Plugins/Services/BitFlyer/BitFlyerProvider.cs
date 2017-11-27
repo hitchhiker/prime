@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
+using Prime.Common.Api.Request.RateLimits;
 using Prime.Common.Exchange;
 using Prime.Utility;
 
