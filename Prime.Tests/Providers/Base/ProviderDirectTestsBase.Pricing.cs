@@ -40,40 +40,53 @@ namespace Prime.Tests.Providers
 
             var r = AsyncContext.Run(() => provider.GetPricingAsync(context));
 
+            // General.
             Assert.IsTrue(runSingle ? r.WasViaSingleMethod : !r.WasViaSingleMethod,
                 runSingle
                     ? "Single price request was completed using multiple prices endpoint"
                     : "Multiple price request was completed using single price endpoint");
+
             Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + string.Join(", ", r.MissedPairs));
 
-            Assert.IsTrue(r.FirstPrice != null, "First price is null");
-
+            // Multiple prices.
             if (context.IsRequestAll)
-                Assert.IsTrue(!context.Pairs.Any(), "Context should not have any pairs when requesting prices for all supported by exchange pairs");
+                Assert.IsTrue(!context.Pairs.Any(),
+                    "Context should not have any pairs when requesting prices for all supported by exchange pairs");
             else
+                Assert.IsTrue(r.MarketPrices.DistinctBy(x => x.Pair).Count() == context.Pairs.Count,
+                    "Pair duplicates found");
+
+            // First price, price value.
+            Assert.IsTrue(r.FirstPrice != null, "First price is null");
+            Trace.WriteLine($"First asset price: {r.FirstPrice}");
+
+            if (!context.IsRequestAll)
             {
                 Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
                 Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
 
-                Assert.IsTrue(r.MarketPrices.DistinctBy(x => x.Pair).Count() == context.Pairs.Count, "Pair duplicates found");
-            }
-
-            if (context.IsRequestAll == false)
-            {
                 if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
                     Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
                 else
                     Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
             }
 
-            Trace.WriteLine($"First asset: {r.FirstPrice}");
+            // First price. Volume base/quote relation.
+            var canAllVolume = r.FirstPrice.HasVolume && r.FirstPrice.Volume.HasVolume24Base && r.FirstPrice.Volume.HasVolume24Quote;
 
+            if (provider.PricingFeatures.HasSingle && provider.PricingFeatures.Single.CanVolume && canAllVolume)
+                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
+            if (provider.PricingFeatures.HasBulk && provider.PricingFeatures.Bulk.CanVolume && canAllVolume)
+                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
+
+            // All market prices and pricing features.
             var pricingFeatures = runSingle ? provider.PricingFeatures.Single : provider.PricingFeatures.Bulk as PricingFeaturesItemBase;
 
             foreach (var p in r.MarketPrices)
             {
                 Trace.WriteLine($"Market price: {p}");
 
+                // Statistics.
                 if (pricingFeatures.CanStatistics)
                 {
                     Assert.IsTrue(p.HasStatistics,
@@ -95,6 +108,7 @@ namespace Prime.Tests.Providers
                     Assert.IsTrue(!p.HasStatistics, $"Provider returns statistics but did not announce it - {p.Pair}");
                 }
 
+                // Volume.
                 if (pricingFeatures.CanVolume)
                 {
                     Assert.IsTrue(p.HasVolume,
@@ -113,13 +127,6 @@ namespace Prime.Tests.Providers
 
                 Trace.WriteLine("");
             }
-
-            var canAllVolume = r.FirstPrice.HasVolume && r.FirstPrice.Volume.HasVolume24Base && r.FirstPrice.Volume.HasVolume24Quote;
-
-            if (provider.PricingFeatures.HasSingle && provider.PricingFeatures.Single.CanVolume && canAllVolume)
-                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
-            if (provider.PricingFeatures.HasBulk && provider.PricingFeatures.Bulk.CanVolume && canAllVolume)
-                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
         }
 
         private void GetPricing(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)

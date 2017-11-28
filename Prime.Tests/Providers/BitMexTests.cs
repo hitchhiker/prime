@@ -26,10 +26,6 @@ namespace Prime.Tests.Providers
             var pairs = new List<AssetPair>()
             {
                 "BTC_USD".ToAssetPairRaw(),
-                "DAO_ETH".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw(),
-                "FCT_BTC".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, false);

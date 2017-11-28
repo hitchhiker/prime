@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.BitMex
         [Get("/instrument/active")]
         Task<BitMexSchema.InstrumentsActiveResponse> GetInstrumentsActiveAsync();
 
-        [Get("/instrument?columns=[\"lastPrice\",\"highPrice\",\"lowPrice\",\"bidPrice\",\"askPrice\",\"timestamp\",\"symbol\",\"volume24h\"]&reverse=true&count=500")]
+        [Get("/instrument?columns=[\"underlying\",\"quoteCurrency\",\"lastPrice\",\"highPrice\",\"lowPrice\",\"bidPrice\",\"askPrice\",\"timestamp\",\"symbol\",\"volume24h\"]&reverse=true&count=500&filter=%7B\"state\": \"Open\", \"typ\": \"FFWCSX\"%7D")]
         Task<BitMexSchema.InstrumentLatestPricesResponse> GetLatestPricesAsync([Query("symbol")] string pairCode = null);
 
         [Get("/orderBook/L2?symbol={currencyPair}&depth={depth}")]

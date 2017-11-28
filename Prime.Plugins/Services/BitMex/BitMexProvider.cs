@@ -128,7 +128,7 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
 
-            var rPrice = r.FirstOrDefault();
+            var rPrice = r.FirstOrDefault(x => x.symbol.Equals(context.Pair.ToTicker(this, "")));
 
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
                 throw new NoAssetPairException(context.Pair, this);
@@ -147,24 +147,17 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
 
-            if(context.IsRequestAll)
-                throw new NotImplementedException("IsRequestAll is not implemented yet. Asset pairs are of random format and contain futures.");
+            var pairsDict = r.ToDictionary(x => new AssetPair(x.underlying, x.quoteCurrency, this), x => x);
 
             var pairsQueryable = context.IsRequestAll
-                ? r.Select(x => new AssetPair(x.underlying, x.quoteCurrency, this)).ToList()
+                ? pairsDict.Keys.ToList()
                 : context.Pairs;
 
             var prices = new MarketPricesResult();
 
             foreach (var pair in pairsQueryable)
             {
-                var pairCode = pair.ToTicker(this, "").ToUpper();
-
-                var data = r.FirstOrDefault(x =>
-                    x.symbol.Equals(pairCode)
-                );
-
-                if (data == null || data.lastPrice.HasValue == false)
+                if (!pairsDict.TryGetValue(pair, out var data) || data.lastPrice.HasValue == false)
                 {
                     prices.MissedPairs.Add(pair);
                     continue;

@@ -27,6 +27,7 @@ namespace Prime.Tests.Providers
 
             var r = AsyncContext.Run(() => provider.GetPublicVolumeAsync(context));
 
+            // First volume, IsRequestAll.
             var volume = r.Volume.FirstOrDefault();
             Assert.IsTrue(volume != null, "Provider returned no volume records");
 
@@ -39,6 +40,7 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(volume.Pair.Asset2.Equals(context.Pair.Asset2), "Incorrect quote asset");
             }
 
+            // First volume, base/quote volumes relation.
             if (volume.HasVolume24Base && volume.HasVolume24Quote)
             {
                 if (firstVolumeBaseBiggerThanQuote)
@@ -47,23 +49,24 @@ namespace Prime.Tests.Providers
                     Assert.IsTrue(volume.Volume24Base.ToDecimal(null) < volume.Volume24Quote.ToDecimal(null), "Base volume is bigger than quote (within volume)");
             }
 
+            // All volume.
             foreach (var networkPairVolume in r.Volume)
             {
-                if (volume.HasVolume24Base)
+                if (networkPairVolume.HasVolume24Base)
                 {
-                    Assert.IsFalse(networkPairVolume.Volume24Base == 0,
+                    Assert.IsFalse(networkPairVolume.Volume24Base.ToDecimal(null) == 0,
                         $"Base volume of {networkPairVolume.Pair} is 0");
                     Trace.WriteLine($"Base volume for {networkPairVolume.Pair} pair is {networkPairVolume.Volume24Base}");
                 }
 
-                if (volume.HasVolume24Quote)
+                if (networkPairVolume.HasVolume24Quote)
                 {
-                    Assert.IsFalse(networkPairVolume.Volume24Quote == 0,
+                    Assert.IsFalse(networkPairVolume.Volume24Quote.ToDecimal(null) == 0,
                         $"Quote volume of {networkPairVolume.Pair} is 0");
                     Trace.WriteLine($"Quote volume for {networkPairVolume.Pair} pair is {networkPairVolume.Volume24Quote}");
                 }
 
-                if (volume.HasVolume24Base && volume.HasVolume24Quote)
+                if (networkPairVolume.HasVolume24Base && networkPairVolume.HasVolume24Quote)
                 {
                     Assert.IsTrue(volume.Volume24Base.ToDecimal(null) != volume.Volume24Quote.ToDecimal(null), "Base and quote volume are the same");
                 }
