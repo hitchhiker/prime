@@ -20,7 +20,7 @@ namespace Prime.Tests.Providers
 
         [TestMethod]
         public override void TestGetPricing()
-        { 
+        {
             var pairs = new List<AssetPair>()
             {
                 "ETH_BTC".ToAssetPairRaw(),

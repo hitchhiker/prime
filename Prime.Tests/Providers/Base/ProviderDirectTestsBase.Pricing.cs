@@ -14,14 +14,27 @@ namespace Prime.Tests.Providers
     public abstract partial class ProviderDirectTestsBase
     {
         public virtual void TestGetPricing() { }
-        public void TestGetPricing(List<AssetPair> pairs, bool firstPriceLessThan1)
+        public void TestGetPricing(List<AssetPair> pairs, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)
         {
             var p = IsType<IPublicPricingProvider>();
             if (p.Success)
-                GetPricing(p.Provider, pairs, firstPriceLessThan1);
+                GetPricing(p.Provider, pairs, firstPriceLessThan1, firstVolumeBaseBiggerThanQuote);
         }
 
-        private void InternalGetPriceAsync(IPublicPricingProvider provider, PublicPricesContext context, bool firstPriceLessThan1, bool runSingle)
+        private void TestVolumesRelationWithinPricing(MarketPrice firstPrice, bool? firstVolumeBaseBiggerThanQuote)
+        {
+            if (!firstVolumeBaseBiggerThanQuote.HasValue)
+                Assert.Fail("Relation of base and quote volumes is not set even though provider returned them within pricing request");
+
+            Assert.IsTrue(firstPrice.Volume.Volume24Base.ToDecimal(null) != firstPrice.Volume.Volume24Quote.ToDecimal(null), "Base and quote volumes are same (within pricing)");
+
+            if (firstVolumeBaseBiggerThanQuote.Value)
+                Assert.IsTrue(firstPrice.Volume.Volume24Base.ToDecimal(null) > firstPrice.Volume.Volume24Quote.ToDecimal(null), "Quote volume is bigger than base (within pricing)");
+            else
+                Assert.IsTrue(firstPrice.Volume.Volume24Base.ToDecimal(null) < firstPrice.Volume.Volume24Quote.ToDecimal(null), "Base volume is bigger than quote (within pricing)");
+        }
+
+        private void InternalGetPriceAsync(IPublicPricingProvider provider, PublicPricesContext context, bool runSingle, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)
         {
             Assert.IsTrue(provider.PricingFeatures != null, "Pricing features object is null");
 
@@ -31,7 +44,7 @@ namespace Prime.Tests.Providers
                 runSingle
                     ? "Single price request was completed using multiple prices endpoint"
                     : "Multiple price request was completed using single price endpoint");
-            Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + string.Join(",", r.MissedPairs));
+            Assert.IsTrue(r.IsCompleted, "Request is not completed. Missing pairs: " + string.Join(", ", r.MissedPairs));
 
             Assert.IsTrue(r.FirstPrice != null, "First price is null");
 
@@ -100,9 +113,16 @@ namespace Prime.Tests.Providers
 
                 Trace.WriteLine("");
             }
+
+            var canAllVolume = r.FirstPrice.HasVolume && r.FirstPrice.Volume.HasVolume24Base && r.FirstPrice.Volume.HasVolume24Quote;
+
+            if (provider.PricingFeatures.HasSingle && provider.PricingFeatures.Single.CanVolume && canAllVolume)
+                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
+            if (provider.PricingFeatures.HasBulk && provider.PricingFeatures.Bulk.CanVolume && canAllVolume)
+                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
         }
 
-        private void GetPricing(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1)
+        private void GetPricing(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)
         {
             try
             {
@@ -117,7 +137,7 @@ namespace Prime.Tests.Providers
                         RequestVolume = provider.PricingFeatures.Single.CanVolume
                     };
 
-                    InternalGetPriceAsync(provider, context, firstPriceLessThan1, true);
+                    InternalGetPriceAsync(provider, context, true, firstPriceLessThan1, firstVolumeBaseBiggerThanQuote);
                 }
 
                 if (provider.PricingFeatures.HasBulk)
@@ -129,14 +149,14 @@ namespace Prime.Tests.Providers
                         RequestVolume = provider.PricingFeatures.Bulk.CanVolume
                     };
 
-                    InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
+                    InternalGetPriceAsync(provider, context, false, firstPriceLessThan1, firstVolumeBaseBiggerThanQuote);
 
                     if (provider.PricingFeatures.Bulk.CanReturnAll)
                     {
                         Trace.WriteLine("\nBulk features test (provider can return all prices)\n");
                         context = new PublicPricesContext();
 
-                        InternalGetPriceAsync(provider, context, firstPriceLessThan1, false);
+                        InternalGetPriceAsync(provider, context, false, firstPriceLessThan1, firstVolumeBaseBiggerThanQuote);
                     }
                 }
 

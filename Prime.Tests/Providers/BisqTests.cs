@@ -33,7 +33,7 @@ namespace Prime.Tests.Providers
                 "etc_btc".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]

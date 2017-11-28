@@ -33,7 +33,7 @@ namespace Prime.Tests.Providers
                 "ETH_BTC".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]

@@ -26,7 +26,7 @@ namespace Prime.Tests.Providers
                 "DASH_ETH".ToAssetPairRaw(),
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]

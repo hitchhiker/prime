@@ -42,9 +42,9 @@ namespace Prime.Tests.Providers
             if (volume.HasVolume24Base && volume.HasVolume24Quote)
             {
                 if (firstVolumeBaseBiggerThanQuote)
-                    Assert.IsTrue(volume.Volume24Base.ToDecimal(null) > volume.Volume24Quote.ToDecimal(null), "Quote volume is bigger than base");
+                    Assert.IsTrue(volume.Volume24Base.ToDecimal(null) > volume.Volume24Quote.ToDecimal(null), "Quote volume is bigger than base (within volume)");
                 else
-                    Assert.IsTrue(volume.Volume24Base.ToDecimal(null) < volume.Volume24Quote.ToDecimal(null), "Base volume is bigger than quote");
+                    Assert.IsTrue(volume.Volume24Base.ToDecimal(null) < volume.Volume24Quote.ToDecimal(null), "Base volume is bigger than quote (within volume)");
             }
 
             foreach (var networkPairVolume in r.Volume)

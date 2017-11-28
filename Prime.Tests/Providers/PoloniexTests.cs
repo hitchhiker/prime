@@ -28,7 +28,7 @@ namespace Prime.Tests.Providers
                 "USDT_BTC".ToAssetPairRaw(),
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]

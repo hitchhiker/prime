@@ -23,13 +23,13 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "BTC_LTC".ToAssetPairRaw(),
                 "BTC_XRP".ToAssetPairRaw(),
+                "BTC_LTC".ToAssetPairRaw(),
                 "BTC_ETH".ToAssetPairRaw(),
                 "BTC_ETC".ToAssetPairRaw(),
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]
