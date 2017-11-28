@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using System.Linq;
 
-namespace Prime.Plugins.Services.TheRockTrading
+namespace Prime.Plugins.Services.LiveCoin
 {
-    // https://api.therocktrading.com/doc/v1/
-    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://www.livecoin.net/api/public
+    public class LiveCoinProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string TheRockTradingApiVersion = "v1";
-        private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
+        private const string LiveCoinApiUrl = "https://api.livecoin.net/exchange/";
 
-        private static readonly ObjectId IdHash = "prime:therocktrading".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:livecoin".GetObjectIdHashCode();
 
-        //API calls are limited to 10 requests per second. Do not go over this limit or you will be blacklisted.
-        //https://api.therocktrading.com/doc/v1/
-        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10, 1);
+        //Only 60 API calls (any calls) are allowed over a period of 60 seconds from one IP address.
+        //https://www.livecoin.net/api/common
+        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(60, 60);
 
-        private RestApiClientProvider<ITheRockTradingApi> ApiProvider { get; }
+        private RestApiClientProvider<ILiveCoinApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("TheRockTrading");
+        public Network Network { get; } = Networks.I.Get("LiveCoin");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -36,17 +35,17 @@ namespace Prime.Plugins.Services.TheRockTrading
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public TheRockTradingProvider()
+        public LiveCoinProvider()
         {
-            ApiProvider = new RestApiClientProvider<ITheRockTradingApi>(TheRockTradingApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ILiveCoinApi>(LiveCoinApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var r = await api.GetTickerAsync("BTC/USD").ConfigureAwait(false);
 
-            return r?.tickers?.Length > 0;
+            return r?.last > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -55,16 +54,16 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            if (r?.tickers == null || r.tickers.Length == 0)
+            if (r == null || r.Length == 0)
             {
                 throw new ApiResponseException("No asset pairs returned.", this);
             }
 
             var pairs = new AssetPairs();
 
-            foreach (var rCurrentTicker in r.tickers)
+            foreach (var rCurrentTicker in r)
             {
-                pairs.Add(rCurrentTicker.fund_id.ToAssetPair(this, 3));
+                pairs.Add(rCurrentTicker.symbol.ToAssetPair(this, '/'));
             }
 
             return pairs;
@@ -94,12 +93,12 @@ namespace Prime.Plugins.Services.TheRockTrading
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this, '/');
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.min_ask, r.max_bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
         }
@@ -109,14 +108,14 @@ namespace Prime.Plugins.Services.TheRockTrading
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            if (r?.tickers == null || r.tickers.Length == 0)
+            if (r == null || r.Length == 0)
             {
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
             var prices = new MarketPricesResult();
 
-            var rPairsDict = r.tickers.ToDictionary(x => x.fund_id.ToAssetPair(this, 3), x => x);
+            var rPairsDict = r.ToDictionary(x => x.symbol.ToAssetPair(this, '/'), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
@@ -131,7 +130,7 @@ namespace Prime.Plugins.Services.TheRockTrading
                 {
                     prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.min_ask, currentTicker.max_bid, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
                     });
                 }
