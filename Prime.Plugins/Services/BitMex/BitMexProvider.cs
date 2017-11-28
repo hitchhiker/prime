@@ -4,15 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Common.Api.Request.RateLimits;
-using Prime.Common.Exchange;
-using Prime.Common.Wallet.Withdrawal;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
-using Prime.Plugins.Services.Base;
 using Prime.Utility;
-using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {

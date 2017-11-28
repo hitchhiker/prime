@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Common.Api.Request.RateLimits;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Tidex

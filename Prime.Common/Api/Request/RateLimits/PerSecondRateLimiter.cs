@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace Prime.Common.Api.Request.RateLimits
+namespace Prime.Common
 {
     public class PerSecondRateLimiter : IRateLimiter
     {

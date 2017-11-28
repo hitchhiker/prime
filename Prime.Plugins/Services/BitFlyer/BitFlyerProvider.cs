@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Common.Api.Request.RateLimits;
-using Prime.Common.Exchange;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitFlyer

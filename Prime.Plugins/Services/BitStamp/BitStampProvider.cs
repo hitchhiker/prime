@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Utility;
 using LiteDB;
 using Newtonsoft.Json;
-using Prime.Common.Api.Request.RateLimits;
-using Prime.Common.Exchange;
-using Prime.Plugins.Services.Base;
-using RestEase;
 
 namespace Prime.Plugins.Services.BitStamp
 {

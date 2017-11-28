@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
-using plugins;
 using Prime.Common;
-using Prime.Common.Api.Request.RateLimits;
-using Prime.Common.Exchange;
 using Prime.Plugins.Services.Gdax;
 using Prime.Utility;
-using RestEase;
 using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
