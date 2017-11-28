@@ -146,7 +146,6 @@ namespace Prime.Plugins.Services.Bithumb
             
             var latestPrice = new MarketPrice(Network, context.Pair, r.data.sell_price)
             {
-                //TODO: HH: Are you sure 'sell_price' == Lowest Ask -> I don't think it does. Leave null if not
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, data.sell_price, data.buy_price, data.min_price, data.max_price),
                 Volume = new NetworkPairVolume(Network, context.Pair, data.volume_1day)
             };
