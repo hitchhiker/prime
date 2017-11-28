@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.BitMex
             // Remote codes are case sensitive.
             return new Dictionary<string, string>
             {
-                {"XBt", "BTC"}
+                {"XBT", "BTC"}
             };
         }
     }
