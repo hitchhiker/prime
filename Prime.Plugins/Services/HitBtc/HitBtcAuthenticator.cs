@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             var oldQuery = String.IsNullOrEmpty(request.RequestUri.Query) ? "?" : request.RequestUri.Query;
 
-            var uri = request.RequestUri.AbsolutePath + oldQuery + properties.Aggregate("", (s, cur) => s += cur + "&").TrimEnd('&');
+            var uri = request.RequestUri.AbsolutePath + oldQuery + string.Join("&", properties);
 
             var message = uri + postData;
 

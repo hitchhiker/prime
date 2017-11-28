@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Bittrex
                 ? "?"
                 : request.RequestUri.Query + "&";
 
-            var queryParams = properties.Aggregate(aggrInitialValue, (s, cur) => s += cur + "&").TrimEnd('&');
+            var queryParams = aggrInitialValue + string.Join("&", properties);
             request.RequestUri = new Uri(request.RequestUri, queryParams);
 
             var sign = HashHMACSHA512Hex(request.RequestUri.OriginalString, ApiKey.Secret);
