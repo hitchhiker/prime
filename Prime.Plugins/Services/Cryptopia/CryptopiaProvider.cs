@@ -18,7 +18,8 @@ namespace Prime.Plugins.Services.Cryptopia
 
         //Could not find any documentation about rate limit.
         private static readonly IRateLimiter Limiter = new NoRateLimits();
-        public char? CommonPairSeparator { get; }
+
+        public char? CommonPairSeparator => '_';
 
         private RestApiClientProvider<ICryptopiaApi> ApiProvider { get; }
 
@@ -96,7 +97,7 @@ namespace Prime.Plugins.Services.Cryptopia
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '_');
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r.Success)

@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using System.Linq;
 
 namespace Prime.Plugins.Services.Abucoins
 {
     // https://docs.abucoins.com
-    public class AbucoinsProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class AbucoinsProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {
         private const string AbucoinsApiUrl = "https://api.abucoins.com/";
 
@@ -62,7 +63,7 @@ namespace Prime.Plugins.Services.Abucoins
 
             foreach (var rCurrentTicker in r)
             {
-                pairs.Add(rCurrentTicker.id.ToAssetPair(this, '-'));
+                pairs.Add(rCurrentTicker.id.ToAssetPair(this));
             }
 
             return pairs;
@@ -92,5 +93,41 @@ namespace Prime.Plugins.Services.Abucoins
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
         }
+
+        public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetVolumesAsync().ConfigureAwait(false);
+
+            var rPairsDict = r.ToDictionary(x => x.product_id.ToAssetPair(this), x => x);
+
+            var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
+
+            var volumes = new MarketPricesResult();
+
+            foreach (var pair in pairsQueryable)
+            {
+                if (!rPairsDict.TryGetValue(pair, out var ticker))
+                {
+                    volumes.MissedPairs.Add(pair);
+                    continue;
+                }
+
+                volumes.MarketPrices.Add(new MarketPrice(Network, pair, 0)
+                {
+                    Volume = new NetworkPairVolume(Network, pair, ticker.volume_BTC, ticker.volume_USD)
+                });
+            }
+
+            return new PublicVolumeResponse(Network, volumes);
+        }
+
+        private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures()
+        {
+            Bulk = new VolumeBulkFeatures() { CanReturnAll = true, CanVolumeBase = true, CanVolumeQuote = true }
+        };
+
+        public VolumeFeatures VolumeFeatures => StaticVolumeFeatures;
+
     }
 }

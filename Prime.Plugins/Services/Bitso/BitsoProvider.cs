@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.Bitso
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public bool IsDirect => true;
 
@@ -73,11 +73,11 @@ namespace Prime.Plugins.Services.Bitso
             {
                 var prices = new MarketPricesResult();
                 
-                var pairsQueryable = context.IsRequestAll ? r.payload.Select(x => x.book.ToAssetPair(this, '_')) : context.Pairs;
+                var pairsQueryable = context.IsRequestAll ? r.payload.Select(x => x.book.ToAssetPair(this)) : context.Pairs;
 
                 foreach (var pair in pairsQueryable)
                 {
-                    var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this, '_').Equals(pair));
+                    var currentTicker = r.payload.FirstOrDefault(x => x.book.ToAssetPair(this).Equals(pair));
 
                     if (currentTicker == null)
                     {
@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.Bitso
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '_').ToLower();
+            var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r.success)
@@ -137,7 +137,7 @@ namespace Prime.Plugins.Services.Bitso
 
                 foreach (var rCurrentResponse in r.payload)
                 {
-                    pairs.Add(rCurrentResponse.book.ToAssetPair(this, '_'));
+                    pairs.Add(rCurrentResponse.book.ToAssetPair(this));
                 }
 
                 return pairs;

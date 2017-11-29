@@ -11,7 +11,6 @@ namespace Prime.Plugins.Services.MercadoBitcoin
     // https://www.mercadobitcoin.com.br/api-doc/
     public class MercadoBitcoinProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string MercadoBitcoinApiVersion = "v3"; //Not actually used in the API calls.
         private const string MercadoBitcoinApiUrl = "https://www.mercadobitcoin.net/api/";
 
         private static readonly ObjectId IdHash = "prime:mercadobitcoin".GetObjectIdHashCode();
@@ -31,7 +30,7 @@ namespace Prime.Plugins.Services.MercadoBitcoin
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 

@@ -35,7 +35,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.QuadrigaCX
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '_');
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)

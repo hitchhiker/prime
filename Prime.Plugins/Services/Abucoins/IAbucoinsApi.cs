@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Abucoins
 
         [Get("/products")]
         Task<AbucoinsSchema.ProductResponse[]> GetAssetsAsync();
+
+        [Get("/products/stats")]
+        Task<AbucoinsSchema.VolumeResponse[]> GetVolumesAsync();
     }
 }

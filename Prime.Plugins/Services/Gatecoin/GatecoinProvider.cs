@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.Gatecoin
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public bool IsDirect => true;
 
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Gatecoin
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.ticker == null)

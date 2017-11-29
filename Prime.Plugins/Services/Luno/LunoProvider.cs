@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Luno
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Luno
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last_trade)
@@ -131,7 +131,7 @@ namespace Prime.Plugins.Services.Luno
                 {
                     prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last_trade)
                     {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, null, null),
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.rolling_24_hour_volume)
                     });
                 }

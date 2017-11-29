@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.Exmo
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -61,7 +61,7 @@ namespace Prime.Plugins.Services.Exmo
 
             foreach (var entry in r)
             {
-                pairs.Add(entry.Key.ToAssetPair(this, '_'));
+                pairs.Add(entry.Key.ToAssetPair(this));
             }
 
             return pairs;

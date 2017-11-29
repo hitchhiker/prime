@@ -28,7 +28,7 @@ namespace Prime.Plugins.Services.BtcMarkets
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '/';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -42,7 +42,7 @@ namespace Prime.Plugins.Services.BtcMarkets
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var ctx = new PublicPriceContext("BTC/AUD".ToAssetPair(this, '/'));
+            var ctx = new PublicPriceContext("BTC/AUD".ToAssetPair(this));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;
@@ -68,7 +68,7 @@ namespace Prime.Plugins.Services.BtcMarkets
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '/');
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lastPrice)

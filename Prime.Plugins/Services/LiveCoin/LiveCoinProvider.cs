@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.LiveCoin
 
             foreach (var rCurrentTicker in r)
             {
-                pairs.Add(rCurrentTicker.symbol.ToAssetPair(this, '/'));
+                pairs.Add(rCurrentTicker.symbol.ToAssetPair(this));
             }
 
             return pairs;

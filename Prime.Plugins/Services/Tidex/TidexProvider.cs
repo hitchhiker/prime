@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Tidex
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.Tidex
 
             foreach (string entry in r.pairs.Keys)
             {
-                pairs.Add(entry.ToAssetPair(this, '_'));
+                pairs.Add(entry.ToAssetPair(this));
             }
 
             return pairs;
@@ -95,7 +95,7 @@ namespace Prime.Plugins.Services.Tidex
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, '_').ToLower()));
+            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
             var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             if (r == null || r.Count == 0)
@@ -122,7 +122,7 @@ namespace Prime.Plugins.Services.Tidex
         public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this, '_').ToLower()));
+            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
             var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             if (r == null || r.Count == 0)
@@ -131,10 +131,10 @@ namespace Prime.Plugins.Services.Tidex
             }
 
             var prices = new MarketPricesResult();
-            
+
             foreach (var pair in context.Pairs)
             {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this, '_').Equals(pair)).Value;
+                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
 
                 if (currentTicker == null)
                 {

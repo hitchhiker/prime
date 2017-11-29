@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.OkCoin
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public bool IsDirect => true;
 
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.OkCoin
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this,"_");
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)

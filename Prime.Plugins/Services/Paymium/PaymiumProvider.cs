@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Paymium
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public bool IsDirect => true;
 

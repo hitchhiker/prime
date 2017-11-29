@@ -27,5 +27,20 @@ namespace Prime.Plugins.Services.Abucoins
             public decimal ask;
             public DateTime time;
         }
+
+        internal class VolumeResponse
+        {
+            public string product_id;
+            public decimal last;
+            public decimal open;
+            public decimal high;
+            public decimal low;
+            public decimal volume;
+            public decimal volume_BTC;
+            public decimal volume_USD;
+            public decimal volume_7d;
+            public decimal volume_30d;
+            public decimal change;
+        }
     }
 }

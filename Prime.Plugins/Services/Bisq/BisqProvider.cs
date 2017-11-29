@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.Bisq
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public bool IsDirect => true;
 
@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.Bisq
 
             foreach (var rCurrentTicker in r.Keys)
             {
-                pairs.Add(rCurrentTicker.ToAssetPair(this,'_'));
+                pairs.Add(rCurrentTicker.ToAssetPair(this));
             }
 
             return pairs;
@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.Bisq
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "_").ToLower();
+            var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             var ticker = r.FirstOrDefault();
@@ -112,7 +112,7 @@ namespace Prime.Plugins.Services.Bisq
 
             var prices = new MarketPricesResult();
 
-            var rPairsDict = r.ToDictionary(x => x.Key.ToAssetPair(this, '_'), x => x.Value);
+            var rPairsDict = r.ToDictionary(x => x.Key.ToAssetPair(this), x => x.Value);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
