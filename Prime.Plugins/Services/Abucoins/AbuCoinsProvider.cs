@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.Abucoins
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '-';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -83,12 +83,12 @@ namespace Prime.Plugins.Services.Abucoins
         public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '-');
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.price)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, null, null),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
         }

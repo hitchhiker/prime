@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.LiveCoin
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '/';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.LiveCoin
         public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '/');
+            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
             return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.LiveCoin
 
             var prices = new MarketPricesResult();
 
-            var rPairsDict = r.ToDictionary(x => x.symbol.ToAssetPair(this, '/'), x => x);
+            var rPairsDict = r.ToDictionary(x => x.symbol.ToAssetPair(this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
