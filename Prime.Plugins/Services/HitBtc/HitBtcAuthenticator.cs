@@ -18,26 +18,32 @@ namespace Prime.Plugins.Services.HitBtc
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var headers = request.Headers;
-            var nonce = GetLongNonce();
-            var postData = request.Content != null ? request.Content.ReadAsStringAsync().Result : "";
+            //var headers = request.Headers;
+            //var nonce = GetLongNonce();
+            //var postData = request.Content != null ? request.Content.ReadAsStringAsync().Result : "";
 
-            var properties = new string[]
-            {
-                $"nonce={nonce}",
-                $"apikey={ApiKey.Key}"
-            };
+            //var properties = new string[]
+            //{
+            //    $"nonce={nonce}",
+            //    $"apikey={ApiKey.Key}"
+            //};
 
-            var oldQuery = String.IsNullOrEmpty(request.RequestUri.Query) ? "?" : request.RequestUri.Query;
+            //var oldQuery = String.IsNullOrEmpty(request.RequestUri.Query) ? "?" : request.RequestUri.Query;
 
-            var uri = request.RequestUri.AbsolutePath + oldQuery + string.Join("&", properties);
+            //var uri = request.RequestUri.AbsolutePath + oldQuery + string.Join("&", properties);
 
-            var message = uri + postData;
+            //var message = uri + postData;
 
-            var signature = HashHMACSHA512Hex(message, ApiKey.Secret).ToLower();
-            headers.Add("X-Signature", signature);
+            //var signature = HashHMACSHA512Hex(message, ApiKey.Secret).ToLower();
+            //headers.Add("X-Signature", signature);
 
-            request.RequestUri = new Uri(request.RequestUri, uri);
+
+
+            //request.RequestUri = new Uri(request.RequestUri, uri);
+
+            request.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(FromUtf8($"{ApiKey.Key}:{ApiKey.Secret}"))}");
+
+            //request.Content = new StringContent($"{ApiKey.Key}:{ApiKey.Secret}");
         }
     }
 }
