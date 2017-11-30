@@ -69,15 +69,15 @@ namespace Prime.Tests.Providers
                     Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
                 else
                     Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+
+                // First price. Volume base/quote relation.
+                var canAllVolume = r.FirstPrice.HasVolume && r.FirstPrice.Volume.HasVolume24Base && r.FirstPrice.Volume.HasVolume24Quote;
+
+                if (provider.PricingFeatures.HasSingle && provider.PricingFeatures.Single.CanVolume && canAllVolume)
+                    TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
+                if (provider.PricingFeatures.HasBulk && provider.PricingFeatures.Bulk.CanVolume && canAllVolume)
+                    TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
             }
-
-            // First price. Volume base/quote relation.
-            var canAllVolume = r.FirstPrice.HasVolume && r.FirstPrice.Volume.HasVolume24Base && r.FirstPrice.Volume.HasVolume24Quote;
-
-            if (provider.PricingFeatures.HasSingle && provider.PricingFeatures.Single.CanVolume && canAllVolume)
-                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
-            if (provider.PricingFeatures.HasBulk && provider.PricingFeatures.Bulk.CanVolume && canAllVolume)
-                TestVolumesRelationWithinPricing(r.FirstPrice, firstVolumeBaseBiggerThanQuote);
 
             // All market prices and pricing features.
             var pricingFeatures = runSingle ? provider.PricingFeatures.Single : provider.PricingFeatures.Bulk as PricingFeaturesItemBase;

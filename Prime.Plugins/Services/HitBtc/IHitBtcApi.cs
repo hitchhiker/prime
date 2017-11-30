@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// See https://hitbtc.com/api#symbols.
         /// </summary>
         /// <returns>List of currency symbols with their characteristics.</returns>
-        [Get("/1/public/symbols")]
+        [Get("/public/symbol")]
         Task<HitBtcSchema.SymbolsResponse> GetSymbolsAsync();
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// </summary>
         /// <param name="currency">Currency code which deposit address is to be returned.</param>
         /// <returns>Deposit address of specified currency.</returns>
-        [Get("/1/payment/address/{currency}")]
+        [Get("/account/crypto/address/{currency}")]
         Task<HitBtcSchema.DepositAddressResponse> GetDepositAddressAsync([Path] string currency);
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// See https://hitbtc.com/api#paymentbalance.
         /// </summary>
         /// <returns>Multi-currency balance of the main account.</returns>
-        [Get("/1/payment/balance")]
+        [Get("/account/balance")]
         Task<HitBtcSchema.BalancesResponse> GetBalancesAsync();
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// See https://hitbtc.com/api#alltickers.
         /// </summary>
         /// <returns>Associative array of pair code and ticker data</returns>
-        [Get("/1/public/ticker")]
+        [Get("/public/ticker")]
         Task<HitBtcSchema.TickersResponse> GetAllTickersAsync();
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// </summary>
         /// <param name="pairCode">Currency which ticker is to be returned.</param>
         /// <returns>Ticker data.</returns>
-        [Get("/1/public/{pairCode}/ticker")]
+        [Get("/public/ticker/{pairCode}")]
         Task<HitBtcSchema.TickerResponse> GetTickerAsync([Path] string pairCode);
     }
 }
