@@ -149,10 +149,12 @@
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\BtccTests.cs" />
     <Compile Include="Providers\BtcxIndiaTests.cs" />
+    <Compile Include="Providers\BxInThTests.cs" />
     <Compile Include="Providers\CexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoincheckTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
+    <Compile Include="Providers\CoinroomTests.cs" />
     <Compile Include="Providers\CryptopiaTests.cs" />
     <Compile Include="Providers\EthexIndiaTests.cs" />
     <Compile Include="Providers\ExmoTests.cs" />

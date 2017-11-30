@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.Abucoins
 
                 volumes.MarketPrices.Add(new MarketPrice(Network, pair, 0)
                 {
-                    Volume = new NetworkPairVolume(Network, pair, ticker.volume_BTC, ticker.volume_USD)
+                    Volume = new NetworkPairVolume(Network, pair, ticker.volume, null)
                 });
             }
 
