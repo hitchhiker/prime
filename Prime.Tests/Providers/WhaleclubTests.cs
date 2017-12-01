@@ -9,6 +9,7 @@ using Prime.Plugins.Services.Whaleclub;
 
 namespace Prime.Tests.Providers
 {
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     [TestClass]
     public class WhaleclubTests : ProviderDirectTestsBase
     {
