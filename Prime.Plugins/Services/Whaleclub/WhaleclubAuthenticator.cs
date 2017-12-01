@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Whaleclub
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            request.Headers.Add("Authorization", $"Bearer {ApiKey.Key}");
         }
     }
 }
