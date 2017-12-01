@@ -8,7 +8,7 @@ using Prime.Plugins.Services.Coinroom;
 
 namespace Prime.Tests.Providers
 {
-    [TestClass()]
+    [TestClass]
     public class CoinroomTests : ProviderDirectTestsBase
     {
         public CoinroomTests()
