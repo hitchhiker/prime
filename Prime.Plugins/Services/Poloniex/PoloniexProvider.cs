@@ -72,7 +72,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync().ConfigureAwait(false);
@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.Poloniex
             var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this, '_'), y => y.Value);
             var pairsQueryable = context.IsRequestAll ? rPaired.Select(x => x.Key) : context.Pairs;
                 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -95,7 +95,7 @@ namespace Prime.Plugins.Services.Poloniex
                 var rTicker = rTickers[0];
                 var v = rTicker.Value;
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1/v.last)
+                prices.Add(new MarketPrice(Network, pair, 1/v.last)
                 {
                     PriceStatistics = new PriceStatistics(Network, pair.Asset2, v.lowestAsk, v.highestBid, v.low24hr, v.high24hr),
                     Volume = new NetworkPairVolume(Network, pair, v.baseVolume, v.quoteVolume)

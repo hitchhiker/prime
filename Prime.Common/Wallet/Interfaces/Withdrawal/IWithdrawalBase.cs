@@ -2,7 +2,7 @@
 
 namespace Prime.Common
 {
-    public interface IWithdrawalBase<TWithdrawalContext> where TWithdrawalContext : WithdrawalPlacementContext
+    public interface IWithdrawalBase<in TWithdrawalContext> where TWithdrawalContext : WithdrawalPlacementContext
     {
         bool IsFeeIncluded { get; }
 

@@ -24,7 +24,7 @@ namespace Prime.Utility
             return string.IsNullOrEmpty(item) ? items.Any(string.IsNullOrEmpty) : items.Any(x => item.Equals(x, comparisonType));
         }
         
-        public static ObjectId EmptyObjectId { get { return new ObjectId(); } }
+        public static ObjectId EmptyObjectId => new ObjectId();
 
         /// <summary>
         /// Get's the default value of either the reference type (null) or the given value type.
@@ -38,7 +38,12 @@ namespace Prime.Utility
         
         public static bool IsEmpty(this ObjectId objectid)
         {
-            return objectid == EmptyObjectId;
+            return Equals(objectid, ObjectId.Empty);
+        }
+
+        public static bool IsNullOrEmpty(this ObjectId objectid)
+        {
+            return objectid== null || Equals(objectid, ObjectId.Empty);
         }
 
         public static string ToWebString(this ObjectId objectid)

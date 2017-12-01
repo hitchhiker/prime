@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.Cex
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -77,17 +77,17 @@ namespace Prime.Plugins.Services.Cex
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, '/');
 
             var r = await api.GetLastPriceAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lprice));
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.lprice));
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLastPricesAsync().ConfigureAwait(false);
@@ -96,7 +96,7 @@ namespace Prime.Plugins.Services.Cex
             var dictPairsPrices = r.data.ToDictionary(x => new AssetPair(x.symbol1, x.symbol2, this), x => x);
             var pairsQueryable = context.IsRequestAll ? dictPairsPrices.Keys.ToList() : context.Pairs;
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -106,7 +106,7 @@ namespace Prime.Plugins.Services.Cex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, rPair.lprice));
+                prices.Add(new MarketPrice(Network, pair, rPair.lprice));
             }
 
             return prices;
@@ -140,7 +140,7 @@ namespace Prime.Plugins.Services.Cex
 
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
-            var volumes = new MarketPricesResult();
+            var volumes = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -150,7 +150,7 @@ namespace Prime.Plugins.Services.Cex
                     continue;
                 }
 
-                volumes.MarketPrices.Add(new MarketPrice(Network, pair, 0)
+                volumes.Add(new MarketPrice(Network, pair, 0)
                 {
                     Volume = new NetworkPairVolume(Network, pair, ticker.volume)
                 });

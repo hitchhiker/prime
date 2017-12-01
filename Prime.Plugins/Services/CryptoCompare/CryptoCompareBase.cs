@@ -86,14 +86,14 @@ namespace Prime.Plugins.Services.CryptoCompare
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = GetApi<ICryptoCompareApi>();
             var froms = string.Join(",", context.Pairs.Select(x => x.Asset1).Distinct().Select(x => x.ShortCode));
             var tos = string.Join(",", context.Pairs.Select(x => x.Asset2).Distinct().Select(x => x.ShortCode));
             var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false").ConfigureAwait(false);
             var apir = JsonConvert.DeserializeObject<CryptoCompareSchema.PriceMultiResult>(str);
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var i in context.Pairs)
             {
@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.CryptoCompare
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, i, (decimal) r.Value));
+                prices.Add(new MarketPrice(Network, i, (decimal) r.Value));
             }
 
             return prices;

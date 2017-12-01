@@ -39,7 +39,7 @@ namespace Prime.Common
 
         public PublicVolumeResponse(Network network, IEnumerable<AssetPair> missing) : this(null, network, missing) { }
 
-        public PublicVolumeResponse(Network network, MarketPricesResult marketPricesResult) : this(marketPricesResult?.MarketPrices?.Select(x => x?.Volume), network, marketPricesResult?.MissedPairs) {}
+        public PublicVolumeResponse(Network network, MarketPrices marketPrices) : this(marketPrices?.Select(x => x?.Volume), network, marketPrices?.MissedPairs) {}
 
         public PublicVolumeResponse(Network network, AssetPair pair, decimal volume24) : this(new NetworkPairVolume(network, pair, volume24)) { }
 

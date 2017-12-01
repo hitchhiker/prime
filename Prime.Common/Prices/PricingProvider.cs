@@ -21,8 +21,15 @@ namespace Prime.Common
             ProviderAggVolumeData = Networks.I.Providers.OfType<IAggVolumeDataProvider>().FirstOrDefault();
             ProvidersPublicPricing = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x => x.IsDirect).ToList();
         }
-        
-        public async Task<MarketPricesResult> GetAsync(Network network, PricingProviderContext context = null)
+
+        public async Task<MarketPrices> GetAsync(IEnumerable<Network> networks, PricingProviderContext context = null)
+        {
+            var t = networks.Select(x => GetTask(x, context));
+            var r = await t.WhenAll().ConfigureAwait(false);
+            return new MarketPrices(r);
+        }
+
+        public async Task<MarketPrices> GetAsync(Network network, PricingProviderContext context = null)
         {
             var t = GetTask(network, context);
             if (t == null)
@@ -30,7 +37,7 @@ namespace Prime.Common
             return await t.ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetAsync(Network network, IEnumerable<AssetPair> pairs, PricingProviderContext context = null)
+        public async Task<MarketPrices> GetAsync(Network network, IEnumerable<AssetPair> pairs, PricingProviderContext context = null)
         {
             var t = GetTask(network, pairs, context);
             if (t == null)
@@ -38,7 +45,7 @@ namespace Prime.Common
             return await t.ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetAsync(Network network, AssetPair pair, PricingProviderContext context = null)
+        public async Task<MarketPrices> GetAsync(Network network, AssetPair pair, PricingProviderContext context = null)
         {
             var t = GetTask(network, pair, context);
             if (t == null)
@@ -46,7 +53,7 @@ namespace Prime.Common
             return await t.ConfigureAwait(false);
         }
 
-        public Task<MarketPricesResult> GetTask(Network network, PricingProviderContext context = null)
+        public Task<MarketPrices> GetTask(Network network, PricingProviderContext context = null)
         {
             var provs = network.PublicPriceProviders.Where(x => x.PricingFeatures?.HasBulk == true && x.PricingFeatures.Bulk.CanReturnAll);
 
@@ -63,7 +70,7 @@ namespace Prime.Common
             if (context?.UseReturnAll == true)
                 return default;
             
-            async Task<MarketPricesResult> Pairs()
+            async Task<MarketPrices> Pairs()
             {
                 var newContext = context?.Clone() ?? new PricingProviderContext();
                 newContext.UseReturnAll = false;
@@ -77,7 +84,7 @@ namespace Prime.Common
             return Pairs();
         }
 
-        public Task<MarketPricesResult> GetTask(Network network, IEnumerable<AssetPair> pairs, PricingProviderContext context = null)
+        public Task<MarketPrices> GetTask(Network network, IEnumerable<AssetPair> pairs, PricingProviderContext context = null)
         {
             if (pairs == null)
                 return default;
@@ -101,10 +108,10 @@ namespace Prime.Common
                 return default;
 
             var singles = pairs.Select(pair => GetTask(network, pair, context)).Where(x => x != null);
-            return singles.WhenAll().ContinueWith(r => new MarketPricesResult(r.Result));
+            return singles.WhenAll().ContinueWith(r => r?.Result == null ? new MarketPrices() : new MarketPrices(r.Result));
         }
 
-        public Task<MarketPricesResult> GetTask(Network network, AssetPair pair, PricingProviderContext context = null)
+        public Task<MarketPrices> GetTask(Network network, AssetPair pair, PricingProviderContext context = null)
         {
             var provs = network.PublicPriceProviders.AsEnumerable();
 
@@ -121,7 +128,7 @@ namespace Prime.Common
             return default;
         }
 
-        private Task<MarketPricesResult> DirectChoiceTask(IEnumerable<IPublicPricingProvider> provs, PublicPricesContext pContext, PricingProviderContext context = null)
+        private Task<MarketPrices> DirectChoiceTask(IEnumerable<IPublicPricingProvider> provs, PublicPricesContext pContext, PricingProviderContext context = null)
         {
             if (!provs.Any())
                 return default;
@@ -143,7 +150,7 @@ namespace Prime.Common
             return default;
         }
 
-        private Task<MarketPricesResult> CoordinatorTask(IPublicPricingProvider prov, PublicPricesContext pContext, PricingProviderContext context = null)
+        private Task<MarketPrices> CoordinatorTask(IPublicPricingProvider prov, PublicPricesContext pContext, PricingProviderContext context = null)
         {
             return ApiCoordinator.GetPricingAsync(prov, pContext).ContinueWith(x =>
             {
@@ -152,7 +159,7 @@ namespace Prime.Common
             });
         }
 
-        private MarketPricesResult After(MarketPricesResult response, PricingProviderContext context)
+        private MarketPrices After(MarketPrices response, PricingProviderContext context)
         {
             if (response == null || context?.AfterData == null)
                 return response;

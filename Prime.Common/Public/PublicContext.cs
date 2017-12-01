@@ -9,7 +9,7 @@ namespace Prime.Common
 {
     public class PublicContext : IDataContext
     {
-        public static string Version = "v0.01"; 
+        public static string Version = "v0.02"; 
 
         public static PublicContext I => Lazy.Value;
         private static readonly Lazy<PublicContext> Lazy = new Lazy<PublicContext>(()=>new PublicContext());

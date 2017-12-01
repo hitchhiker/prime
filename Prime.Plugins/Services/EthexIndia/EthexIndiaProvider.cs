@@ -67,12 +67,12 @@ namespace Prime.Plugins.Services.EthexIndia
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
             
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             //Treats results as dictionary just incase the API add more asset pairs later on.
             var rPairsDict = r.ToDictionary(x => x.ticker.ToAssetPair(this, 3), x => x);
@@ -88,7 +88,7 @@ namespace Prime.Plugins.Services.EthexIndia
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last_traded_price)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last_traded_price)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.total_volume_24h)

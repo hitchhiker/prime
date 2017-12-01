@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.LiveCoin
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -90,20 +90,20 @@ namespace Prime.Plugins.Services.LiveCoin
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.min_ask, r.max_bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -113,7 +113,7 @@ namespace Prime.Plugins.Services.LiveCoin
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             var rPairsDict = r.ToDictionary(x => x.symbol.ToAssetPair(this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
@@ -128,7 +128,7 @@ namespace Prime.Plugins.Services.LiveCoin
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.min_ask, currentTicker.max_bid, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)

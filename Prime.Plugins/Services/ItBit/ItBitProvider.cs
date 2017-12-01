@@ -62,7 +62,7 @@ namespace Prime.Plugins.Services.ItBit
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.ItBit
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume24h)
             };
 
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
 
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)

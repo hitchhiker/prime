@@ -168,7 +168,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void AssetPrice(MarketPricesResult price, bool canVolumeBase, bool canVolumeQuote)
+        private void AssetPrice(MarketPrices price, bool canVolumeBase, bool canVolumeQuote)
         {
             Assert.IsFalse(
                 price.FirstPrice.Volume.HasVolume24Base &&

@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -123,7 +123,7 @@ namespace Prime.Plugins.Services.BitMex
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
@@ -139,10 +139,10 @@ namespace Prime.Plugins.Services.BitMex
                 Volume = new NetworkPairVolume(Network, context.Pair, rPrice.volume24h)
             };
 
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
@@ -153,7 +153,7 @@ namespace Prime.Plugins.Services.BitMex
                 ? pairsDict.Keys.ToList()
                 : context.Pairs;
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -163,7 +163,7 @@ namespace Prime.Plugins.Services.BitMex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, data.lastPrice.Value)
+                prices.Add(new MarketPrice(Network, pair, data.lastPrice.Value)
                 {
                     PriceStatistics = new PriceStatistics(Network, pair.Asset2, data.askPrice, data.bidPrice, data.lowPrice, data.highPrice),
                     Volume = new NetworkPairVolume(Network, pair, data.volume24h)

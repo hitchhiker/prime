@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
@@ -98,10 +98,10 @@ namespace Prime.Plugins.Services.Bittrex
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
                 Volume = new NetworkPairVolume(Network, context.Pair, e.BaseVolume, e.Volume)
             };
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetMarketSummariesAsync().ConfigureAwait(false);
@@ -114,7 +114,7 @@ namespace Prime.Plugins.Services.Bittrex
                 ? rPairsDict.Keys.ToList()
                 : context.Pairs;
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -124,7 +124,7 @@ namespace Prime.Plugins.Services.Bittrex
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / e.Last)
+                prices.Add(new MarketPrice(Network, pair, 1 / e.Last)
                 {
                     PriceStatistics = new PriceStatistics(Network, pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
                     Volume = new NetworkPairVolume(Network, pair, e.BaseVolume, e.Volume)
@@ -134,7 +134,7 @@ namespace Prime.Plugins.Services.Bittrex
             return prices;
         }
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);

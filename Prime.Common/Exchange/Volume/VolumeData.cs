@@ -34,6 +34,9 @@ namespace Prime.Common
             }
 
             var pair = volume.Pair;
+
+            Data.RemoveAll(x => x.Network == null);
+
             var e = Data.FirstOrDefault(x => x.Pair.Id == pair.Id && x.Network.Id == volume.Network.Id);
 
             if (!ShouldReplace(e, volume))
