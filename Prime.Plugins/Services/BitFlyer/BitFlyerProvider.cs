@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.BitFlyer
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var productCode = context.Pair.ToTicker(this, '_');
@@ -67,7 +67,7 @@ namespace Prime.Plugins.Services.BitFlyer
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume_by_product)
             };
 
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

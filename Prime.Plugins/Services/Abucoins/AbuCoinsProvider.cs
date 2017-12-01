@@ -81,13 +81,13 @@ namespace Prime.Plugins.Services.Abucoins
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.price)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
@@ -103,7 +103,7 @@ namespace Prime.Plugins.Services.Abucoins
 
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
-            var volumes = new MarketPricesResult();
+            var volumes = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -113,7 +113,7 @@ namespace Prime.Plugins.Services.Abucoins
                     continue;
                 }
 
-                volumes.MarketPrices.Add(new MarketPrice(Network, pair, 0)
+                volumes.Add(new MarketPrice(Network, pair, 0)
                 {
                     Volume = new NetworkPairVolume(Network, pair, ticker.volume, null)
                 });

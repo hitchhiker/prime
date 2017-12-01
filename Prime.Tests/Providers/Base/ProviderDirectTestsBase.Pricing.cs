@@ -53,7 +53,7 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(!context.Pairs.Any(),
                     "Context should not have any pairs when requesting prices for all supported by exchange pairs");
             else
-                Assert.IsTrue(r.MarketPrices.DistinctBy(x => x.Pair).Count() == context.Pairs.Count,
+                Assert.IsTrue(r.DistinctBy(x => x.Pair).Count() == context.Pairs.Count,
                     "Pair duplicates found");
 
             // First price, price value.
@@ -82,7 +82,7 @@ namespace Prime.Tests.Providers
             // All market prices and pricing features.
             var pricingFeatures = runSingle ? provider.PricingFeatures.Single : provider.PricingFeatures.Bulk as PricingFeaturesItemBase;
 
-            foreach (var p in r.MarketPrices)
+            foreach (var p in r)
             {
                 Trace.WriteLine($"Market price: {p}");
 

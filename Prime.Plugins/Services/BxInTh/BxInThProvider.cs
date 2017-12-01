@@ -80,7 +80,7 @@ namespace Prime.Plugins.Services.BxInTh
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -90,7 +90,7 @@ namespace Prime.Plugins.Services.BxInTh
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             var rPairsDict = r.Values.ToDictionary(x =>  new AssetPair(x.primary_currency, x.secondary_currency, this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.BxInTh
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
+                    prices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.orderbook.asks.highbid, currentTicker.orderbook.bids.highbid),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume_24hours)

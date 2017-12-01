@@ -67,7 +67,7 @@ namespace Prime.Plugins.Services.BitMarket
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.BitMarket
                     Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
                 };
 
-                return new MarketPricesResult(price);
+                return new MarketPrices(price);
             }
             catch (ApiException ex)
             {

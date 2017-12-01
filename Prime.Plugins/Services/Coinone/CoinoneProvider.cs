@@ -130,7 +130,7 @@ namespace Prime.Plugins.Services.Coinone
             };
         }
 
-        public Task<MarketPricesResult> GetAssetPricesAsync(PublicAssetPricesContext context)
+        public Task<MarketPrices> GetAssetPricesAsync(PublicAssetPricesContext context)
         {
             return GetPricingAsync(context);
         }
@@ -138,7 +138,7 @@ namespace Prime.Plugins.Services.Coinone
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -147,7 +147,7 @@ namespace Prime.Plugins.Services.Coinone
 
             var r = ParseTicker(rRaw);
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
             var krwAsset = Asset.Krw;
 
             foreach (var pair in context.Pairs)
@@ -159,7 +159,7 @@ namespace Prime.Plugins.Services.Coinone
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.last));
+                prices.Add(new MarketPrice(Network, pair, ticker.last));
             }
 
             return prices;

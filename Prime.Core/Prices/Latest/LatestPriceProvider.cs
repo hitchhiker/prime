@@ -109,7 +109,7 @@ namespace Prime.Core
             if (_isDisposed)
                 return false;
 
-            foreach (var lp in r.Response.MarketPrices)
+            foreach (var lp in r.Response)
             {
                 if (_isDisposed)
                     return false;

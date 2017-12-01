@@ -133,7 +133,7 @@ namespace Prime.Plugins.Services.Binance
         };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -141,12 +141,12 @@ namespace Prime.Plugins.Services.Binance
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
             var knownPairs = new AssetPairs();
 
             if (context.IsRequestAll)
@@ -162,7 +162,7 @@ namespace Prime.Plugins.Services.Binance
 
                     knownPairs.Add(pair);
 
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, rPrice.price));
+                    prices.Add(new MarketPrice(Network, pair, rPrice.price));
                 }
             }
             else
@@ -179,20 +179,20 @@ namespace Prime.Plugins.Services.Binance
                         continue;
                     }
 
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, lpr.price));
+                    prices.Add(new MarketPrice(Network, pair, lpr.price));
                 }
             }
 
             return prices;
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var ticker = context.Pair.ToTicker(this, "");
             var r = await api.Get24HrTickerAsync(ticker).ConfigureAwait(false);
 
-            var marketPrice = new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lastPrice)
+            var marketPrice = new MarketPrices(new MarketPrice(Network, context.Pair, r.lastPrice)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.askPrice, r.bidPrice, r.lowPrice, r.highPrice),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)

@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Tidex
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -92,7 +92,7 @@ namespace Prime.Plugins.Services.Tidex
 
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
@@ -107,7 +107,7 @@ namespace Prime.Plugins.Services.Tidex
 
             if (ticker != null)
             {
-                return new MarketPricesResult(new MarketPrice(Network, context.Pair, ticker.last)
+                return new MarketPrices(new MarketPrice(Network, context.Pair, ticker.last)
                 {
                     PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, ticker.sell, ticker.buy, ticker.low, ticker.high),
                     Volume = new NetworkPairVolume(Network, context.Pair, ticker.vol)
@@ -119,7 +119,7 @@ namespace Prime.Plugins.Services.Tidex
             }
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
@@ -130,7 +130,7 @@ namespace Prime.Plugins.Services.Tidex
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in context.Pairs)
             {
@@ -142,7 +142,7 @@ namespace Prime.Plugins.Services.Tidex
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)

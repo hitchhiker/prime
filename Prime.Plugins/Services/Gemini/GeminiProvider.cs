@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Gemini
         };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -106,7 +106,7 @@ namespace Prime.Plugins.Services.Gemini
                     quoteVolumes.Any() ? quoteVolumes.First() : (decimal?) null)
             };
 
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
     }
 }

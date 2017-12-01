@@ -115,11 +115,11 @@ namespace Prime.Plugins.Services.Fiat
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures(false, true);
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var rates = await GetRatesAsync().ConfigureAwait(false);
 
-            var lp = new MarketPricesResult();
+            var lp = new MarketPrices();
 
             foreach (var pair in context.Pairs)
             {
@@ -127,7 +127,7 @@ namespace Prime.Plugins.Services.Fiat
                 if (rate.Key == null)
                     continue;
 
-                lp.MarketPrices.Add(new MarketPrice(Network, rate.Key, rate.Value));
+                lp.Add(new MarketPrice(Network, rate.Key, rate.Value));
             }
 
             return lp;
@@ -136,7 +136,7 @@ namespace Prime.Plugins.Services.Fiat
         public async Task<MarketPrice> GetPriceAsync(PublicPriceContext context)
         {
             var r = await GetPricingAsync(new PublicPricesContext(new List<AssetPair>() {context.Pair}, context.L)).ConfigureAwait(false);
-            return r.MarketPrices.FirstOrDefault();
+            return r.FirstOrDefault();
         }
     }
 }

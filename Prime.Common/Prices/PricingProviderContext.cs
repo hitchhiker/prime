@@ -4,7 +4,7 @@ namespace Prime.Common
 {
     public class PricingProviderContext
     {
-        public Action<MarketPricesResult> AfterData { get; set; }
+        public Func<MarketPrices, MarketPrices> AfterData { get; set; }
 
         public bool? UseReturnAll { get; set; }
 

@@ -65,12 +65,12 @@ namespace Prime.Plugins.Services.BTCXIndia
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
             
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last_traded_price)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last_traded_price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.total_volume_24h)

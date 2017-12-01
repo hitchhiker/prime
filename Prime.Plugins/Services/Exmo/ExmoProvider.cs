@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Exmo
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Exmo
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
             
             var rPairsDict = r.ToDictionary(x => x.Key.ToAssetPair(this), x => x.Value);
 
@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.Exmo
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last_trade)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last_trade)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell_price, currentTicker.buy_price, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)
