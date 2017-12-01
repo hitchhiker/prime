@@ -7,6 +7,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Whaleclub
 {
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class WhaleclubProvider : IAssetPairsProvider, INetworkProviderPrivate, IPublicPricingProvider
     {
         private const string WhaleclubApiVersion = "v1";
@@ -71,9 +72,10 @@ namespace Prime.Plugins.Services.Whaleclub
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.KeyOnly;
-        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            throw new System.NotImplementedException();
+            // TODO: implement.
+            return true;
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
@@ -83,7 +85,7 @@ namespace Prime.Plugins.Services.Whaleclub
         };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -91,7 +93,7 @@ namespace Prime.Plugins.Services.Whaleclub
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        private async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        private async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var privateCtx = new NetworkProviderPrivateContext(UserContext.Current);
             var api = ApiProvider.GetApi(privateCtx);
@@ -100,7 +102,7 @@ namespace Prime.Plugins.Services.Whaleclub
 
             var r = await api.GetPrices(pairsCsv).ConfigureAwait(false);
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in context.Pairs)
             {
@@ -110,7 +112,7 @@ namespace Prime.Plugins.Services.Whaleclub
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, (price.ask + price.bid) / 2)
+                prices.Add(new MarketPrice(Network, pair, (price.ask + price.bid) / 2)
                 {
                     PriceStatistics = new PriceStatistics(Network, pair.Asset2, price.ask, price.bid)
                 });
@@ -119,7 +121,7 @@ namespace Prime.Plugins.Services.Whaleclub
             return prices;
         }
 
-        private async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        private async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var privateCtx = new NetworkProviderPrivateContext(UserContext.Current);
 
@@ -131,7 +133,7 @@ namespace Prime.Plugins.Services.Whaleclub
             if (!r.TryGetValue(context.Pair.ToTicker(this), out var price))
                 throw new NoAssetPairException(context.Pair, this);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, (price.ask + price.bid) / 2)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, (price.ask + price.bid) / 2)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, price.ask, price.bid)
             });
