@@ -9,6 +9,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Korbit
 {
     // https://apidocs.korbit.co.kr/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class KorbitProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
