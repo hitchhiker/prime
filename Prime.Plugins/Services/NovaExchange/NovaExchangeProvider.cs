@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using System.Linq;
 
-namespace Prime.Plugins.Services.TheRockTrading
+namespace Prime.Plugins.Services.NovaExchange
 {
-    // https://api.therocktrading.com/doc/v1/
-    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://novaexchange.com/remote/faq/
+    public class NovaExchangeProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string TheRockTradingApiVersion = "v1";
-        private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
+        private const string NovaExchangeApiVersion = "v2";
+        private const string NovaExchangeApiUrl = "https://novaexchange.com/remote/" + NovaExchangeApiVersion;
 
-        private static readonly ObjectId IdHash = "prime:therocktrading".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:novaexchange".GetObjectIdHashCode();
 
-        //API calls are limited to 10 requests per second. Do not go over this limit or you will be blacklisted.
-        //https://api.therocktrading.com/doc/v1/
-        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(10, 1);
+        //Limited to 1 request per minute
+        //https://novaexchange.com/remote/faq/
+        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(1, 1);
 
-        private RestApiClientProvider<ITheRockTradingApi> ApiProvider { get; }
+        private RestApiClientProvider<INovaExchangeApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("TheRockTrading");
+        public Network Network { get; } = Networks.I.Get("NovaExchange");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -32,13 +32,13 @@ namespace Prime.Plugins.Services.TheRockTrading
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator => null;
+        public char? CommonPairSeparator => '_';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public TheRockTradingProvider()
+        public NovaExchangeProvider()
         {
-            ApiProvider = new RestApiClientProvider<ITheRockTradingApi>(TheRockTradingApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<INovaExchangeApi>(NovaExchangeApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -46,7 +46,7 @@ namespace Prime.Plugins.Services.TheRockTrading
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            return r?.tickers?.Length > 0;
+            return r.status?.Equals("success", StringComparison.InvariantCultureIgnoreCase) == true;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -55,16 +55,16 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            if (r?.tickers == null || r.tickers.Length == 0)
+            if (r.status?.Equals("success", StringComparison.InvariantCultureIgnoreCase) == false)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException(r.message, this);
             }
 
             var pairs = new AssetPairs();
 
-            foreach (var rCurrentTicker in r.tickers)
+            foreach (var rCurrentTicker in r.markets)
             {
-                pairs.Add(rCurrentTicker.fund_id.ToAssetPair(this, 3));
+                pairs.Add(rCurrentTicker.marketname.ToAssetPair(this));
             }
 
             return pairs;
@@ -97,10 +97,15 @@ namespace Prime.Plugins.Services.TheRockTrading
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            if (r.status?.Equals("success", StringComparison.InvariantCultureIgnoreCase) == false)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
+                throw new ApiResponseException(r.message, this);
+            }
+
+            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.markets[0].last_price)
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.markets[0].ask, r.markets[0].bid, r.markets[0].low24h, r.markets[0].high24h),
+                Volume = new NetworkPairVolume(Network, context.Pair, r.markets[0].volume24h)
             });
         }
 
@@ -109,14 +114,14 @@ namespace Prime.Plugins.Services.TheRockTrading
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            if (r?.tickers == null || r.tickers.Length == 0)
+            if (r.status?.Equals("success", StringComparison.InvariantCultureIgnoreCase) == false)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException(r.message, this);
             }
 
             var prices = new MarketPricesResult();
-
-            var rPairsDict = r.tickers.ToDictionary(x => x.fund_id.ToAssetPair(this, 3), x => x);
+            
+            var rPairsDict = r.markets.ToDictionary(x => x.marketname.ToAssetPair(this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
@@ -129,10 +134,10 @@ namespace Prime.Plugins.Services.TheRockTrading
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last_price)
                     {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low24h, currentTicker.high24h),
+                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume24h)
                     });
                 }
             }

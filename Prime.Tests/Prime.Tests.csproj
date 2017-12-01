@@ -166,9 +166,11 @@
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
     <Compile Include="Providers\LakeBtcTests.cs" />
+    <Compile Include="Providers\LiquiTests.cs" />
     <Compile Include="Providers\LiveCoinTests.cs" />
     <Compile Include="Providers\LunoTests.cs" />
     <Compile Include="Providers\MercadoBitcoinTests.cs" />
+    <Compile Include="Providers\NovaExchangeTests.cs" />
     <Compile Include="Providers\OkCoinTests.cs" />
     <Compile Include="Providers\OkexTests.cs" />
     <Compile Include="Providers\PaymiumTests.cs" />
