@@ -61,7 +61,8 @@ namespace Prime.Plugins.Services.BxInTh
 
             foreach (var rCurrentTicker in r)
             {
-                pairs.Add(string.Concat(rCurrentTicker.Value.primary_currency, rCurrentTicker.Value.secondary_currency).ToAssetPair(this, 3));
+                var t = rCurrentTicker.Value;
+                pairs.Add(new AssetPair(t.primary_currency, t.secondary_currency, this));
             }
 
             return pairs;
@@ -91,7 +92,7 @@ namespace Prime.Plugins.Services.BxInTh
 
             var prices = new MarketPricesResult();
 
-            var rPairsDict = r.Values.ToDictionary(x => (string.Concat(x.primary_currency, x.secondary_currency)).ToAssetPair(this, 3), x => x);
+            var rPairsDict = r.Values.ToDictionary(x =>  new AssetPair(x.primary_currency, x.secondary_currency, this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)

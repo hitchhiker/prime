@@ -8,7 +8,7 @@ using Prime.Plugins.Services.BxInTh;
 
 namespace Prime.Tests.Providers
 {
-    [TestClass()]
+    [TestClass]
     public class BxInThTests : ProviderDirectTestsBase
     {
         public BxInThTests()
