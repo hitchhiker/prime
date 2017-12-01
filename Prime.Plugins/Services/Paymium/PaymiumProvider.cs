@@ -71,13 +71,13 @@ namespace Prime.Plugins.Services.Paymium
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var currencyCode = context.Pair.Asset1.ToRemoteCode(this);
             var r = await api.GetTickerAsync(currencyCode).ConfigureAwait(false);
             
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.price)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)

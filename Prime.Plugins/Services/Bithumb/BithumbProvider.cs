@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Bithumb
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Bithumb
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetTickersAsync().ConfigureAwait(false);
@@ -100,7 +100,7 @@ namespace Prime.Plugins.Services.Bithumb
 
             var krwAsset = Asset.Krw;
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             var pairsQueryable = context.IsRequestAll
                 ? r.Select(x => new AssetPair(x.Key.ToAsset(this), krwAsset)).ToList()
@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Bithumb
 
                 var rTicker = rTickers[0];
                 var vals = rTicker.Value;
-                prices.MarketPrices.Add(new MarketPrice(Network,  pair, vals.sell_price)
+                prices.Add(new MarketPrice(Network,  pair, vals.sell_price)
                 {
                     Volume = new NetworkPairVolume(Network, pair, vals.volume_1day),
                     PriceStatistics = new PriceStatistics(Network, pair.Asset2, null, null, vals.min_price, vals.max_price)
@@ -128,7 +128,7 @@ namespace Prime.Plugins.Services.Bithumb
         }
 
         [Obsolete("READ NOTE")]
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var currency = context.Pair.Asset1.ToRemoteCode(this);
@@ -150,7 +150,7 @@ namespace Prime.Plugins.Services.Bithumb
                 Volume = new NetworkPairVolume(Network, context.Pair, data.volume_1day)
             };
 
-            return new MarketPricesResult(latestPrice);
+            return new MarketPrices(latestPrice);
         }
 
         private Dictionary<string, BithumbSchema.TickerResponse> ParseTickerResponse(BithumbSchema.TickersResponse raw)

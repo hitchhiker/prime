@@ -86,7 +86,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Cryptopia
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
@@ -102,7 +102,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             if (r.Success)
             {
-                return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.Data.LastPrice)
+                return new MarketPrices(new MarketPrice(Network, context.Pair, r.Data.LastPrice)
                 {
                     PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.Data.AskPrice, r.Data.BidPrice, r.Data.Low, r.Data.High),
                     Volume = new NetworkPairVolume(Network, context.Pair, r.Data.Volume)
@@ -114,14 +114,14 @@ namespace Prime.Plugins.Services.Cryptopia
             }
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             if (r.Success)
             {
-                var prices = new MarketPricesResult();
+                var prices = new MarketPrices();
                 
                 var rPairsDict = r.Data.ToDictionary(x => x.Label.ToAssetPair(this,'/'), x => x);
                 var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
@@ -136,7 +136,7 @@ namespace Prime.Plugins.Services.Cryptopia
                     }
                     else
                     {
-                        prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.LastPrice)
+                        prices.Add(new MarketPrice(Network, pair, currentTicker.LastPrice)
                         {
                             PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.AskPrice, currentTicker.BidPrice, currentTicker.Low, currentTicker.High),
                             Volume = new NetworkPairVolume(Network, pair, currentTicker.Volume)

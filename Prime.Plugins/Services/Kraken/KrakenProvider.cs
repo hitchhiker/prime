@@ -13,6 +13,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Kraken
 {
     // https://www.kraken.com/help/api#public-market-data
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // TODO: AY implement multi-statistics.
@@ -87,7 +88,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -97,7 +98,7 @@ namespace Prime.Plugins.Services.Kraken
 
             CheckResponseErrors(r);
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
             foreach (var pair in context.Pairs)
             {
                 var rTicker = r.result.Where(x => ComparePairs(pair, x.Key)).ToArray();
@@ -110,7 +111,7 @@ namespace Prime.Plugins.Services.Kraken
 
                 var ticker = rTicker.First().Value;
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.c[0])
+                prices.Add(new MarketPrice(Network, pair, ticker.c[0])
                 {
                     PriceStatistics = new PriceStatistics(Network, pair.Asset2, ticker.a[0], ticker.b[0], ticker.l[1], ticker.h[1]),
                     Volume = new NetworkPairVolume(Network, pair, ticker.v[1])

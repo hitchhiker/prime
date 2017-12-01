@@ -53,7 +53,7 @@ namespace Prime.Plugins.Services.HitBtc
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -69,15 +69,15 @@ namespace Prime.Plugins.Services.HitBtc
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume, r.volumeQuote)
             };
 
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAllTickersAsync().ConfigureAwait(false);
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             if (context.IsRequestAll)
             {
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.HitBtc
 
                     knownPairs.Add(pair);
 
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.last.Value)
+                    prices.Add(new MarketPrice(Network, pair, ticker.last.Value)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, ticker.ask, ticker.bid, ticker.low, ticker.high),
                         Volume = new NetworkPairVolume(Network, pair, ticker.volume, ticker.volumeQuote)
@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.HitBtc
                         continue;
                     }
 
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, ticker.last.Value)
+                    prices.Add(new MarketPrice(Network, pair, ticker.last.Value)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, ticker.ask, ticker.bid, ticker.low, ticker.high),
                         Volume = new NetworkPairVolume(Network, pair, ticker.volume, ticker.volumeQuote)
@@ -126,7 +126,7 @@ namespace Prime.Plugins.Services.HitBtc
             return prices;
         }
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);

@@ -9,9 +9,9 @@ namespace Prime.Plugins.Services.BxInTh
     internal interface IBxInThApi
     {
         [Get("/")]
-        Task<Dictionary<int, BxInThSchema.TickerResponse>> GetTickersAsync();
+        Task<BxInThSchema.TickersResponse> GetTickersAsync();
 
         [Get("/pairing/")]
-        Task<Dictionary<int, BxInThSchema.CurrencyResponse>> GetCurrenciesAsync();
+        Task<BxInThSchema.CurrenciesResponse> GetCurrenciesAsync();
     }
 }

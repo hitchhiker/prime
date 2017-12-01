@@ -67,7 +67,7 @@ namespace Prime.Plugins.Services.MercadoBitcoin
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
@@ -77,7 +77,7 @@ namespace Prime.Plugins.Services.MercadoBitcoin
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.ticker.last)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.ticker.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell, r.ticker.buy, r.ticker.low, r.ticker.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.vol)

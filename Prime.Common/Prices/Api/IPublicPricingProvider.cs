@@ -6,6 +6,6 @@ namespace Prime.Common
     {
         PricingFeatures PricingFeatures { get; }
 
-        Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context);
+        Task<MarketPrices> GetPricingAsync(PublicPricesContext context);
     }
 }

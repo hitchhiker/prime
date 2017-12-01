@@ -9,6 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Bitfinex
 {
     // https://bitfinex.readme.io/v1/reference
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string BitfinexApiVersion = "v1";
@@ -82,13 +83,13 @@ namespace Prime.Plugins.Services.Bitfinex
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last_price)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last_price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)

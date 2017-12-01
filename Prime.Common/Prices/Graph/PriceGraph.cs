@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Common.Prices.Latest;
 using Prime.Utility;
 
 namespace Prime.Common
@@ -39,7 +39,7 @@ namespace Prime.Common
 
             var source = _dN.DeNormalise(NetworkGraph.PairsByNetworkRaw);
 
-            _pricesByNetwork = PopulatePriceGraph(source).ToDictionary(x=>x.Key, y=>y.Value.AsReadOnlyList());
+            _pricesByNetwork = PopulatePriceGraph(source).GroupBy(x => x.Network).ToDictionary(x => x.Key, y => y.AsReadOnlyList());
 
             RemoveEmptyPricing(_pricesByNetwork);
 
@@ -55,65 +55,68 @@ namespace Prime.Common
             pbn.RemoveAll(x => emptyNets.Contains(x.Key));
         }
 
-        private Dictionary<Network, List<MarketPrice>> PopulatePriceGraph(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> source)
+        private MarketPrices PopulatePriceGraph(IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> source)
         {
-            var result = new Dictionary<Network, List<MarketPrice>>();
+            var networks = new List<Network>();
+            var results = new List<MarketPrice>();
             foreach (var kv in source)
             {
                 if (NetworkContext.BadNetworks.Contains(kv.Key))
                     continue;
 
-                var db = kv.Key.NameLowered != "###" ? PublicContext.I.As<MarketPricesData>().FirstOrDefault(x => x.Id == MarketPricesData.GetHash(kv.Key)) : null;
-
-                if (db != null && !db.UtcCreated.IsWithinTheLast(TimeSpan.FromHours(1)))
-                    db = null;
-
-                if (PricesContext.FlushPrices)
-                    db = null;
-
-                var e = db ?? GrabPriceDataAndSave(kv);
-                if (e == null)
+                var db = PricesContext.FlushPrices ? null : GetDbPrices(kv.Key);
+                if (db != null)
+                {
+                    Console.WriteLine("Pricing retrieved from DB: " + kv.Key.Name);
+                    results.AddRange(db);
                     continue;
-
-                var normalised = e.Prices.ToList();
-
-                normalised.RemoveAll(x => x.Price == 0);
-                normalised.RemoveAll(x => !kv.Value.Any(a => a.EqualsOrReversed(x.Pair)));
-
-                var forNormalisation = normalised.Where(x => !x.Pair.IsNormalised).ToList();
-                normalised.RemoveAll(x => forNormalisation.Contains(x));
-
-                foreach (var i in forNormalisation)
-                    normalised.Add(i.Reversed);
-
-                result.Add(kv.Key, normalised);
-
-                Console.WriteLine($"Retrieved price data for {kv.Key.Name}: {normalised.Count} / {kv.Value.Count} pairs.");
+                }
+                networks.Add(kv.Key);
             }
 
-            return result;
+            if (!networks.Any())
+                return new MarketPrices(results);
+
+            var ctx = new PricingProviderContext
+            {
+                UseDirect = true,
+                AfterData = p =>
+                {
+                    p = p.AsNormalised();
+
+                    if (p.Count>1)
+                        Console.WriteLine("Pricing retrieved from BULK API: " + p.FirstOrDefault()?.Network?.Name + " [" + p.Count + "]");
+                    else
+                        Console.WriteLine("Pricing retrieved from Single API: " + p.FirstOrDefault()?.ToString());
+                    return p;
+                }
+            };
+
+            var prices = AsyncContext.Run(() => PricingProvider.I.GetAsync(networks, ctx));
+
+            Save(prices);
+
+            results.AddRange(prices);
+            return new MarketPrices(results);
         }
 
-        private static MarketPricesData GrabPriceDataAndSave(KeyValuePair<Network, IReadOnlyList<AssetPair>> kv)
+        private MarketPrices GetDbPrices(Network network)
         {
-            Console.WriteLine($"Getting price data for {kv.Key.Name} from {kv.Value.Count} pairs.");
+            var fromDb = network.NameLowered != "###" ? PublicContext.I.As<MarketPrices>().FirstOrDefault(x => x.Id == MarketPrices.GetHash(network)) : null;
 
-            var prov = kv.Key.PublicPriceProviders.FirstDirectProvider<IPublicPricingProvider>();
-            if (prov == null)
-            {
-                Console.WriteLine($"No provider found for {kv.Key.Name}");
+            if (fromDb != null && !fromDb.UtcCreated.IsWithinTheLast(TimeSpan.FromHours(1)))
                 return null;
-            }
-            var r = ApiCoordinator.GetPricing(prov, new PublicPricesContext(kv.Value.ToList()));
-            if (r.IsNull)
-            {
-                Console.WriteLine($"No prices found for {kv.Key.Name}");
-                return null;
-            }
 
-            var data = new MarketPricesData(kv.Key, r.Response.MarketPrices);
-            data.SavePublic();
-            return data;
+            return fromDb;
+        }
+
+        private void Save(MarketPrices prices)
+        {
+            foreach (var kv in prices.GroupBy(x => x.Network))
+            {
+                var p = new MarketPrices(kv);
+                p.SavePublic();
+            }
         }
     }
 }

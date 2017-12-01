@@ -26,7 +26,7 @@ namespace Prime.Tests.Providers
             var prices = AsyncContext.Run(() => (IPublicPricingProvider) Provider).GetPricingAsync(new PublicPricesContext(pairs.ToList())).Result;
 
             Assert.IsTrue(!prices.MissedPairs.Any());
-            Assert.IsTrue(pairs.Count == prices.MarketPrices.Count);
+            Assert.IsTrue(pairs.Count == prices.Count);
         }
 
         [TestMethod]

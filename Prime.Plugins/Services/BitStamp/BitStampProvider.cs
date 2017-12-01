@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.BitStamp
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             };
 
-            return new MarketPricesResult(price);
+            return new MarketPrices(price);
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

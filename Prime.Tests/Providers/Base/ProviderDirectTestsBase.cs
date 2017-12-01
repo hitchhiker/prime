@@ -133,7 +133,7 @@ namespace Prime.Tests.Providers
         {
             // TODO: to be reviewed and tested when there will be new providers that support Volume and Pricing interfaces.
 
-            if(IsVolumePricingSanityTested)
+            if (IsVolumePricingSanityTested)
                 return;
 
             IsVolumePricingSanityTested = true;
@@ -142,7 +142,7 @@ namespace Prime.Tests.Providers
             {
                 // Single test.
 
-                if(pricingProvider.PricingFeatures.Single == null || volumeProvider.VolumeFeatures.Single == null)
+                if (pricingProvider.PricingFeatures.Single == null || volumeProvider.VolumeFeatures.Single == null)
                     return;
 
                 if (pricingProvider.PricingFeatures.Single.CanVolume ^ volumeProvider.VolumeFeatures.Single.CanVolume)
@@ -158,7 +158,7 @@ namespace Prime.Tests.Providers
                 if (pricingProvider.PricingFeatures.Bulk == null || volumeProvider.VolumeFeatures.Bulk == null)
                     return;
 
-                if (pricingProvider.PricingFeatures.Bulk.CanVolume ^ volumeProvider.VolumeFeatures.Bulk.CanVolume) 
+                if (pricingProvider.PricingFeatures.Bulk.CanVolume ^ volumeProvider.VolumeFeatures.Bulk.CanVolume)
                     return;
 
                 var pricesCtx = new PublicPricesContext(pairs);
@@ -168,7 +168,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void AssetPrice(MarketPricesResult price, bool canVolumeBase, bool canVolumeQuote)
+        private void AssetPrice(MarketPrices price, bool canVolumeBase, bool canVolumeQuote)
         {
             Assert.IsFalse(
                 price.FirstPrice.Volume.HasVolume24Base &&
@@ -269,8 +269,7 @@ namespace Prime.Tests.Providers
                         var contains = pairs.Contains(requiredPair);
                         Assert.IsTrue(contains, $"Provider didn't return required {requiredPair} pair.");
 
-                        if (contains)
-                            Trace.WriteLine(requiredPair);
+                        Trace.WriteLine(requiredPair);
                     }
                 }
 

@@ -9,7 +9,7 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static Task<ApiResponse<MarketPricesResult>> GetPricingAsync(IPublicPricingProvider provider, PublicPricesContext context)
+        public static Task<ApiResponse<MarketPrices>> GetPricingAsync(IPublicPricingProvider provider, PublicPricesContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetPricingAsync(context), nameof(GetPricing), provider, context);
         }

@@ -71,7 +71,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"1 {QuoteAsset} = {Price.Display}";
+            return $"{Network?.Name}: 1 {QuoteAsset} = {Price.Display}";
         }
     }
 }

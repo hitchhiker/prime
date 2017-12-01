@@ -10,7 +10,7 @@ namespace Prime.Common
 {
     public static partial class ApiCoordinator
     {
-        public static ApiResponse<MarketPricesResult> GetPricing(IPublicPricingProvider provider, PublicPricesContext context)
+        public static ApiResponse<MarketPrices> GetPricing(IPublicPricingProvider provider, PublicPricesContext context)
         {
             return AsyncContext.Run(() => GetPricingAsync(provider, context));
         }

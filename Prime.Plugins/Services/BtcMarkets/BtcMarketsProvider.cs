@@ -65,13 +65,13 @@ namespace Prime.Plugins.Services.BtcMarkets
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
             
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.lastPrice)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.lastPrice)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.bestAsk, r.bestBid),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume24h)

@@ -9,6 +9,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Korbit
 {
     // https://apidocs.korbit.co.kr/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class KorbitProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
@@ -57,7 +58,7 @@ namespace Prime.Plugins.Services.Korbit
         };
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, '_').ToLower();
@@ -74,7 +75,7 @@ namespace Prime.Plugins.Services.Korbit
                     Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
                 };
 
-                return new MarketPricesResult(price);
+                return new MarketPrices(price);
             }
             catch (ApiException ex)
             {

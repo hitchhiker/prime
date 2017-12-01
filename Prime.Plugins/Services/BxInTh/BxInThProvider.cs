@@ -61,7 +61,8 @@ namespace Prime.Plugins.Services.BxInTh
 
             foreach (var rCurrentTicker in r)
             {
-                pairs.Add(string.Concat(rCurrentTicker.Value.primary_currency, rCurrentTicker.Value.secondary_currency).ToAssetPair(this, 3));
+                var t = rCurrentTicker.Value;
+                pairs.Add(new AssetPair(t.primary_currency, t.secondary_currency, this));
             }
 
             return pairs;
@@ -79,7 +80,7 @@ namespace Prime.Plugins.Services.BxInTh
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -89,9 +90,9 @@ namespace Prime.Plugins.Services.BxInTh
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
-            var rPairsDict = r.Values.ToDictionary(x => (string.Concat(x.primary_currency, x.secondary_currency)).ToAssetPair(this, 3), x => x);
+            var rPairsDict = r.Values.ToDictionary(x =>  new AssetPair(x.primary_currency, x.secondary_currency, this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
@@ -104,7 +105,7 @@ namespace Prime.Plugins.Services.BxInTh
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
+                    prices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.orderbook.asks.highbid, currentTicker.orderbook.bids.highbid),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume_24hours)

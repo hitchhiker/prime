@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.LakeBtc
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.LakeBtc
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             var pairsQueryable = context.IsRequestAll ? r.Keys.Select(x => x.ToAssetPair(this, 3)).ToList() : context.Pairs;
 
@@ -103,7 +103,7 @@ namespace Prime.Plugins.Services.LakeBtc
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)

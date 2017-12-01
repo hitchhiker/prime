@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.ShapeShift
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -62,17 +62,17 @@ namespace Prime.Plugins.Services.ShapeShift
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        private async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        private async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetMarketInfo(pairCode).ConfigureAwait(false);
             
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.rate));
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.rate));
         }
 
-        private async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        private async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.ShapeShift
                 ? pairsDict.Keys.ToArray()
                 : context.Pairs;
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in pairsQueryable)
             {
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.ShapeShift
                     continue;
                 }
 
-                prices.MarketPrices.Add(new MarketPrice(Network, pair, price.rate));
+                prices.Add(new MarketPrice(Network, pair, price.rate));
             }
 
             return prices;
