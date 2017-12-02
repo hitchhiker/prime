@@ -181,6 +181,7 @@
     <Compile Include="Providers\ShapeShiftTests.cs" />
     <Compile Include="Providers\TheRockTradingTests.cs" />
     <Compile Include="Providers\TidexTests.cs" />
+    <Compile Include="Providers\TuxExchangeTests.cs" />
     <Compile Include="Providers\WhaleclubTests.cs" />
   </ItemGroup>
   <ItemGroup>

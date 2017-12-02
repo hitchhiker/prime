@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Luno
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     //https://www.luno.com/en/api
     public class LunoProvider : IPublicPricingProvider, IAssetPairsProvider
     {

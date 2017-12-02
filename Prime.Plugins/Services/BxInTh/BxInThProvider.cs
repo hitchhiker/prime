@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace Prime.Plugins.Services.BxInTh
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bx.in.th/info/api/
     public class BxInThProvider : IPublicPricingProvider, IAssetPairsProvider
     {

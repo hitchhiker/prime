@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace Prime.Plugins.Services.Gatecoin
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://gatecoin.com/api/
     public class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider
     {

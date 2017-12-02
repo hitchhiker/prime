@@ -29,7 +29,7 @@ namespace Prime.Tests.Providers
         {
             "BTC_USD".ToAssetPairRaw(),
             "LTC_EUR".ToAssetPairRaw(),
-            "LTC_BTC".ToAssetPairRaw()
+            "BTC_EUR".ToAssetPairRaw()
         };
 
             base.TestGetPricing(pairs, false);
@@ -42,7 +42,7 @@ namespace Prime.Tests.Providers
         {
             "BTC_USD".ToAssetPairRaw(),
             "LTC_EUR".ToAssetPairRaw(),
-            "LTC_BTC".ToAssetPairRaw()
+            "BTC_EUR".ToAssetPairRaw()
         };
 
             base.TestGetAssetPairs(requiredPairs);

@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Paymium
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://github.com/Paymium/api-documentation
     public class PaymiumProvider : IPublicPricingProvider, IAssetPairsProvider
     {

@@ -6,6 +6,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bit2C
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.bit2c.co.il/home/api
     public class Bit2CProvider : IPublicPricingProvider, IAssetPairsProvider
     {

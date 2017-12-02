@@ -6,6 +6,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bitso
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitso.com/api_info
     public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider
     {

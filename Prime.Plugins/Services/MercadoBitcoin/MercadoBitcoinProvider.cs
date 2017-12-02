@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.MercadoBitcoin
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.mercadobitcoin.com.br/api-doc/
     public class MercadoBitcoinProvider : IPublicPricingProvider, IAssetPairsProvider
     {

@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Tidex
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://tidex.com/public-api
     public class TidexProvider : IPublicPricingProvider, IAssetPairsProvider
     {

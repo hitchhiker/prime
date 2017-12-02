@@ -9,7 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Bitfinex
 {
     // https://bitfinex.readme.io/v1/reference
-    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     public class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string BitfinexApiVersion = "v1";

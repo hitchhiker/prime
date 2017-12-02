@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace Prime.Plugins.Services.Abucoins
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://docs.abucoins.com
     public class AbucoinsProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {

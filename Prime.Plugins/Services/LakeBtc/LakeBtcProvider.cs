@@ -6,6 +6,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.LakeBtc
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.lakebtc.com/s/api_v2
     public class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider
     {

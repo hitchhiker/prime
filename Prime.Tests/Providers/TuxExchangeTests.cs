@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.Abucoins;
+using Prime.Plugins.Services.TuxExchange;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class AbucoinsTests : ProviderDirectTestsBase
+    public class TuxExchangeTests : ProviderDirectTestsBase
     {
-        public AbucoinsTests()
+        public TuxExchangeTests()
         {
-            Provider = Networks.I.Providers.OfType<AbucoinsProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<TuxExchangeProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -27,12 +27,12 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "ETH_BTC".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "ETC_BTC".ToAssetPairRaw()
+                "BTC_LTC".ToAssetPairRaw(),
+                "BTC_ICN".ToAssetPairRaw(),
+                "BTC_PPC".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, true);
+            base.TestGetPricing(pairs, true, false);
         }
 
         [TestMethod]
@@ -40,9 +40,9 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "ETH_BTC".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "ETC_BTC".ToAssetPairRaw()
+                "BTC_LTC".ToAssetPairRaw(),
+                "BTC_ICN".ToAssetPairRaw(),
+                "BTC_PPC".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);
@@ -53,9 +53,9 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "ETH_BTC".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "ETC_BTC".ToAssetPairRaw()
+                "BTC_LTC".ToAssetPairRaw(),
+                "BTC_ICN".ToAssetPairRaw(),
+                "BTC_PPC".ToAssetPairRaw()
             };
 
             base.TestGetVolume(pairs, false);

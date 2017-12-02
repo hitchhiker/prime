@@ -5,6 +5,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BtcMarkets
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://github.com/BTCMarkets/API/wiki/Market-data-API
     public class BtcMarketsProvider : IPublicPricingProvider, IAssetPairsProvider
     {

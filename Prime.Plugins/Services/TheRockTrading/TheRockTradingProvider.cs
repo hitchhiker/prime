@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.TheRockTrading
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.therocktrading.com/doc/v1/
     public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
     {

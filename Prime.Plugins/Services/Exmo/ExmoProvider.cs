@@ -6,6 +6,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Exmo
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://exmo.com/en/api#/public_api
     public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider
     {

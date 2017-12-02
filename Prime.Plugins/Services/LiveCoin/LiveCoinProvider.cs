@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace Prime.Plugins.Services.LiveCoin
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.livecoin.net/api/public
     public class LiveCoinProvider : IPublicPricingProvider, IAssetPairsProvider
     {

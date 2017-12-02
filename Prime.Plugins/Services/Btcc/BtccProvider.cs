@@ -5,6 +5,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Btcc
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.btcc.com/apidocs/usd-spot-exchange-market-data-rest-api
     public class BtccProvider : IPublicPricingProvider, IAssetPairsProvider
     {

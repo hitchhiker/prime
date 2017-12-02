@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.OkCoin
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.okcoin.com/rest_api.html
     public class OkCoinProvider : IPublicPricingProvider, IAssetPairsProvider
     {

@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinfloor
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://github.com/coinfloor/API/blob/master/BIST.md
     public class CoinfloorProvider : IPublicPricingProvider, IAssetPairsProvider
     {

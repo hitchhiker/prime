@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coincheck
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coincheck.com/documents/exchange/api#public
     public class CoincheckProvider : IPublicPricingProvider, IAssetPairsProvider
     {

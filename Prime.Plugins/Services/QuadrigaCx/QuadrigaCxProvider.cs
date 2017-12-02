@@ -12,6 +12,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.QuadrigaCX
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.quadrigacx.com/api_info
     public class QuadrigaCxProvider : IPublicPricingProvider, IAssetPairsProvider
     {

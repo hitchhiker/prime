@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Cryptopia
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.cryptopia.co.nz/Forum/Thread/255
     public class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {

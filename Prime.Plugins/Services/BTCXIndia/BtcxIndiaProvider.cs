@@ -5,6 +5,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BTCXIndia
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://m.btcxindia.com/api/
     public class BtcxIndiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {

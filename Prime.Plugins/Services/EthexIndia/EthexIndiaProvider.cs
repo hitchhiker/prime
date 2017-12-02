@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.EthexIndia
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.ethexindia.com/
     public class EthexIndiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {

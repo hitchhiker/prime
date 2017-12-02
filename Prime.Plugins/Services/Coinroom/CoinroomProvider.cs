@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -8,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Coinroom
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coinroom.com/public-api
     public class CoinroomProvider : IPublicPricingProvider, IAssetPairsProvider
     {
@@ -47,8 +49,22 @@ namespace Prime.Plugins.Services.Coinroom
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            //TODO: Implement GetAssetPairsAsync in Coinroom
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetCurrenciesAsync().ConfigureAwait(false);
+
+            var pairs = new AssetPairs();
+
+            if (r.crypto.Length <= 0 || r.real.Length <= 0) return pairs;
+
+            foreach (string currentCrypto in r.crypto)
+            {
+                foreach (string currentReal in r.real)
+                {
+                    pairs.Add(new AssetPair(currentCrypto, currentReal));
+                }
+            }
+
+            return pairs;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

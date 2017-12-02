@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Bisq
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://markets.bisq.network/api/
     public class BisqProvider : IPublicPricingProvider, IAssetPairsProvider
     {

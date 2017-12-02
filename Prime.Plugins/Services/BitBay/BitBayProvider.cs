@@ -8,6 +8,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.BitBay
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitbay.net/en/api-public#details
     public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider
     {
