@@ -7,5 +7,8 @@ namespace Prime.Plugins.Services.Whaleclub
     {
         [Get("/markets")]
         Task<WhaleclubSchema.MarketsResponse> GetMarkets();
+
+        [Get("/price/{pairsCsv}")]
+        Task<WhaleclubSchema.PricesResponse> GetPrices([Path] string pairsCsv);
     }
 }

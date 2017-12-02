@@ -129,7 +129,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void GetPricing(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)
+        protected void GetPricing(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)
         {
             try
             {

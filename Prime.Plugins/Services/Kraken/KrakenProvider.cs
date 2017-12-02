@@ -13,6 +13,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Kraken
 {
     // https://www.kraken.com/help/api#public-market-data
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // TODO: AY implement multi-statistics.
