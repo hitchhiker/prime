@@ -20,6 +20,8 @@ namespace Prime.Ui.Wpf
 
         private readonly Debouncer _debouncer = new Debouncer();
 
+        private Dispatcher _dispatcher;
+
         public void CreateNewWindow()
         {
             var psh = SystemParameters.PrimaryScreenHeight;
@@ -34,8 +36,10 @@ namespace Prime.Ui.Wpf
             Update();
         }
 
-        public void Init()
+        public void Init(object state)
         {
+            _dispatcher = state as Dispatcher ?? Dispatcher.CurrentDispatcher;
+
             var savedInstances = WindowInstances.I.Get<MetroWindowInstance>(_context);
             if (savedInstances.Count == 0)
             {
@@ -93,14 +97,16 @@ namespace Prime.Ui.Wpf
 
         public void UpdateDebounced()
         {
-            _instances.ForEach(x => x.Sync());
-            WindowInstances.I.Save(_context, _instances);
+            _dispatcher.Invoke(() =>
+            {
+                _instances.ForEach(x => x.Sync());
+                WindowInstances.I.Save(_context, _instances);
+            });
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var metro = sender as MetroWindow;
-            if (metro == null)
+            if (!(sender is MetroWindow metro))
                 return;
             _instances.RemoveAll(x => Equals(x.MetroWindow, metro));
             Update();

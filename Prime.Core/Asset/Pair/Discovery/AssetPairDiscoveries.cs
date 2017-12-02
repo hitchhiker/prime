@@ -35,6 +35,8 @@ namespace Prime.Core
                     
                 if (ProcessState != ProcessState.None)
                     return;
+
+                ProcessState = ProcessState.Processing;
             }
 
             Discover(Context.Pair);

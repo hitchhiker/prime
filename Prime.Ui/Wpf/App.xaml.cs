@@ -37,7 +37,7 @@ namespace prime
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
-            UserContext.Current.WindowManager.Init();
+            UserContext.Current.WindowManager.Init(Dispatcher);
         }
         
         

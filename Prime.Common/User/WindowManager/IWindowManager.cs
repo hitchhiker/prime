@@ -5,7 +5,7 @@ namespace Prime.Common
 {
     public interface IWindowManager
     {
-        void Init();
+        void Init(object state);
 
         void CreateNewWindow();
 

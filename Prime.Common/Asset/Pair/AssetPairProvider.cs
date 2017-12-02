@@ -17,8 +17,15 @@ namespace Prime.Common
 
         public async Task<IReadOnlyList<Network>> GetNetworksAsync(AssetPair pair, bool onlyDirect = false)
         {
-            var r  = await GetNetworkPairsAsync().ConfigureAwait(false);
-            return r.Select(x => x.Key).ToUniqueList();
+            try
+            {
+                var r = await GetNetworkPairsAsync().ConfigureAwait(false);
+                return r.Where(x => x.Value!=null && x.Value.Contains(pair)).Select(x => x.Key).ToUniqueList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public async Task<IReadOnlyDictionary<Network, AssetPairs>> GetNetworksDiskAsync()

@@ -4,6 +4,7 @@ using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Utility;
 using System.Linq;
+using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
 using Prime.Core.Prices.Latest;
@@ -99,8 +100,8 @@ namespace Prime.Core
             if (_isDisposed)
                 return false;
 
-            var r = ApiCoordinator.GetPricing(Provider, new PublicPricesContext(_pairRequests));
-            if (r.IsNull)
+            var r = AsyncContext.Run(()=> PricingProvider.I.GetAsync(Provider.Network, _pairRequests, new PricingProviderContext(){UseDirect = true}));
+            if (r==null)
             {
                 IsFailing = true;
                 return false;
@@ -109,7 +110,7 @@ namespace Prime.Core
             if (_isDisposed)
                 return false;
 
-            foreach (var lp in r.Response)
+            foreach (var lp in r)
             {
                 if (_isDisposed)
                     return false;

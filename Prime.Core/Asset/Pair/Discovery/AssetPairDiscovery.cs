@@ -25,7 +25,7 @@ namespace Prime.Core
         internal AssetPairDiscoveries Discover(AssetPairDiscoveryRequestMessage request)
         {
             var i = GetOrCreateInstance(request);
-            i.Wait(TimeSpan.FromSeconds(20));
+            i.Wait(TimeSpan.FromSeconds(120));
             return !i.IsFinished() ? null : i;
         }
     }

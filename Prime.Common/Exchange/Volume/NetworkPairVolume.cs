@@ -60,10 +60,7 @@ namespace Prime.Common
         public Money Volume24Quote { get; private set; }
 
         [Bson]
-        public Money? Volume24BaseBtc { get; private set; }
-
-        [Bson]
-        public Money? Volume24QuoteBtc { get; private set; }
+        public Money? Volume24Btc { get; private set; }
 
         [Bson]
         public bool HasVolume24Base { get; private set; }
@@ -72,27 +69,23 @@ namespace Prime.Common
         public bool HasVolume24Quote { get; private set; }
 
         [Bson]
-        public bool HasVolume24BaseBtc { get; private set; }
-
-        [Bson]
-        public bool HasVolume24QuoteBtc { get; private set; }
-
+        public bool HasVolume24Btc { get; private set; }
+        
         public Money Volume24 => HasVolume24Base ? Volume24Base : Volume24Quote;
-
-        public Money? Volume24Btc => HasVolume24BaseBtc ? Volume24BaseBtc : (HasVolume24QuoteBtc ? Volume24QuoteBtc : null);
 
         public bool ApplyBtcVolume(IEnumerable<MarketPrice> prices)
         {
             var failed = false;
 
-            if (HasVolume24Base && !HasVolume24BaseBtc)
-                failed = (Volume24BaseBtc = prices.FxConvert(Volume24Base, Asset.Btc)) == null;
+            if (HasVolume24Base && !HasVolume24Btc)
+                failed = (Volume24Btc = prices.FxConvert(Volume24Base, Asset.Btc)) == null;
 
-            if (HasVolume24Quote && !HasVolume24QuoteBtc)
-                failed = (Volume24QuoteBtc = prices.FxConvert(Volume24Quote, Asset.Btc)) == null || failed;
+            HasVolume24Btc = Volume24Btc != null;
 
-            HasVolume24BaseBtc = Volume24BaseBtc != null;
-            HasVolume24QuoteBtc = Volume24QuoteBtc != null;
+            if (HasVolume24Quote && !HasVolume24Btc)
+                failed = (Volume24Btc = prices.FxConvert(Volume24Quote, Asset.Btc)) == null || failed;
+
+            HasVolume24Btc = Volume24Btc != null;
 
             return !failed;
         }
@@ -112,10 +105,8 @@ namespace Prime.Common
         public NetworkPairVolume Reversed => _reversed ?? (_reversed = new NetworkPairVolume(Network, Pair.Reversed, HasVolume24Quote ? Volume24Quote : (decimal?)null, HasVolume24Base ? Volume24Base : (decimal?)null)
         {
             UtcCreated = UtcCreated, _reversed = this,
-            Volume24BaseBtc = HasVolume24QuoteBtc ? Volume24QuoteBtc : null,
-            HasVolume24BaseBtc = HasVolume24QuoteBtc,
-            Volume24QuoteBtc = HasVolume24BaseBtc ? Volume24BaseBtc : null,
-            HasVolume24QuoteBtc = HasVolume24BaseBtc
+            Volume24Btc = Volume24Btc,
+            HasVolume24Btc = HasVolume24Btc
         });
 
         public bool Equals(NetworkPairVolume other)

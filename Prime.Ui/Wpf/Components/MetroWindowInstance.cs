@@ -65,23 +65,27 @@ namespace Prime.Ui.Wpf
 
         public void Sync()
         {
-            //switch (_win.WindowState)
-            //{
-            //    case WindowState.Maximized:
-            //        SetState(WindowOpenState.Maximised);
-            //        break;
-            //    case WindowState.Normal:
-            //        SetState(WindowOpenState.Normal);
-            //        break;
-            //    case WindowState.Minimized:
-            //        SetState(WindowOpenState.None);
-            //        break;
-            //}
+            try
+            {
+                switch (_win.WindowState)
+                {
+                    case WindowState.Maximized:
+                        SetState(WindowOpenState.Maximised);
+                        break;
+                    case WindowState.Normal:
+                        SetState(WindowOpenState.Normal);
+                        break;
+                    case WindowState.Minimized:
+                        SetState(WindowOpenState.None);
+                        break;
+                }
 
-            //Top = _win.Top;
-            //Left = _win.Left;
-            //Width = _win.Width;
-            //Height = _win.Height;
+                Top = _win.Top;
+                Left = _win.Left;
+                Width = _win.Width;
+                Height = _win.Height;
+            }
+            catch { }
         }
 
         public void ToTop()

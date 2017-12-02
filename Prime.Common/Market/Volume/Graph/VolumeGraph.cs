@@ -82,7 +82,7 @@ namespace Prime.Common
         private void ApplyBtc()
         {
             foreach (var i in _volume)
-                if (!i.ApplyBtcVolume(PriceGraph.Prices) && !i.HasVolume24BaseBtc && !i.HasVolume24QuoteBtc)
+                if (!i.ApplyBtcVolume(PriceGraph.Prices) && !i.HasVolume24Btc)
                     _failedBtc.Add(i.Pair);
         }
 
@@ -120,13 +120,7 @@ namespace Prime.Common
                 return false;
             }
 
-            var vol1 = pairVolume.Volume24QuoteBtc ?? pairVolume.Volume24BaseBtc;
-            var vol2 = pairVolume.Volume24BaseBtc ?? pairVolume.Volume24QuoteBtc;
-
-            vol1 = vol2 = vol1 ?? vol2;
-            var minBtc = vol1 < vol2 ? vol1 : vol2;
-
-            var hasvolume = minBtc > 40;
+            var hasvolume = pairVolume.Volume24Btc > 40;
             if (hasvolume)
                 return true;
 

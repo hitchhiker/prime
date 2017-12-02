@@ -15,7 +15,6 @@ namespace Prime.Common
 
         public readonly NetworkContext Context;
         public readonly GraphMeta Meta;
-        public readonly PriceGraph PriceGraph;
         
         public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetworkRaw => _dR.PairsByNetwork;
         public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetworkN => _dN.PairsByNetwork;
@@ -24,6 +23,7 @@ namespace Prime.Common
         public IReadOnlyList<AssetPair> AssetPairsN => _dN.AssetPairs;
         public IReadOnlyList<Network> Networks => _dN.Networks;
         
+        /*
         public NetworkGraph(NetworkContext context, PriceGraph priceGraph)
         {
             Context = context;
@@ -34,7 +34,7 @@ namespace Prime.Common
 
             _dR.BuildData(fromPrices);
             _dN.BuildData(_dR, true);
-        }
+        }*/
 
         public NetworkGraph(NetworkContext context)
         {
