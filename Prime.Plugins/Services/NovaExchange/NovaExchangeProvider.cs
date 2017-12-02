@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.NovaExchange
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -91,7 +91,7 @@ namespace Prime.Plugins.Services.NovaExchange
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
@@ -102,14 +102,14 @@ namespace Prime.Plugins.Services.NovaExchange
                 throw new ApiResponseException(r.message, this);
             }
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.markets[0].last_price)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.markets[0].last_price)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.markets[0].ask, r.markets[0].bid, r.markets[0].low24h, r.markets[0].high24h),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.markets[0].volume24h)
             });
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickersAsync().ConfigureAwait(false);
@@ -119,7 +119,7 @@ namespace Prime.Plugins.Services.NovaExchange
                 throw new ApiResponseException(r.message, this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
             
             var rPairsDict = r.markets.ToDictionary(x => x.marketname.ToAssetPair(this), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
@@ -134,7 +134,7 @@ namespace Prime.Plugins.Services.NovaExchange
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last_price)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last_price)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low24h, currentTicker.high24h),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume24h)

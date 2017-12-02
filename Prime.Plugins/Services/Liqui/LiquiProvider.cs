@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Liqui
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPricesResult> GetPricingAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             if (context.ForSingleMethod)
                 return await GetPriceAsync(context).ConfigureAwait(false);
@@ -92,20 +92,20 @@ namespace Prime.Plugins.Services.Liqui
 
         }
 
-        public async Task<MarketPricesResult> GetPriceAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPricesResult(new MarketPrice(Network, context.Pair, r.last)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.sell, r.buy, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.vol)
             });
         }
 
-        public async Task<MarketPricesResult> GetPricesAsync(PublicPricesContext context)
+        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
@@ -116,7 +116,7 @@ namespace Prime.Plugins.Services.Liqui
                 throw new ApiResponseException("No tickers returned.", this);
             }
 
-            var prices = new MarketPricesResult();
+            var prices = new MarketPrices();
 
             foreach (var pair in context.Pairs)
             {
@@ -128,7 +128,7 @@ namespace Prime.Plugins.Services.Liqui
                 }
                 else
                 {
-                    prices.MarketPrices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)
