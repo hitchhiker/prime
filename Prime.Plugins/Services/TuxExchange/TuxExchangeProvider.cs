@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.TuxExchange
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://tuxexchange.com/docs#
-    public class TuxExchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class TuxExchangeProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string TuxExchangeApiUrl = "https://tuxexchange.com/";
 
@@ -125,26 +125,24 @@ namespace Prime.Plugins.Services.TuxExchange
 
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
-            var volumes = new MarketPrices();
+            var volumes = new List<NetworkPairVolume>();
+            var missingPairs = new List<AssetPair>();
 
             foreach (var pair in pairsQueryable)
             {
                 if (!rPairsDict.TryGetValue(pair, out var volumeInfo))
                 {
-                    volumes.MissedPairs.Add(pair);
+                    missingPairs.Add(pair);
                     continue;
                 }
 
                 var baseVolume = volumeInfo.FirstOrDefault(x => x.Key.Equals(pair.Asset1.ShortCode)).Value;
                 var quoteVolume = volumeInfo.FirstOrDefault(x => x.Key.Equals(pair.Asset2.ShortCode)).Value;
-                
-                volumes.Add(new MarketPrice(Network, pair, 0)
-                {
-                    Volume = new NetworkPairVolume(Network, pair, baseVolume, quoteVolume)
-                });
+
+                volumes.Add(new NetworkPairVolume(Network, pair, baseVolume, quoteVolume));
             }
 
-            return new PublicVolumeResponse(Network, volumes);
+            return new PublicVolumeResponse(Network, volumes, missingPairs);
         }
 
         private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures()

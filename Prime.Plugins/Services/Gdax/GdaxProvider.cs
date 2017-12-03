@@ -6,6 +6,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Gdax
 {
     // https://docs.gdax.com/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string GdaxApiUrl = "https://api.gdax.com";

@@ -153,23 +153,21 @@ namespace Prime.Plugins.Services.Gate
 
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
-            var volumes = new MarketPrices();
+            var volumes = new List<NetworkPairVolume>();
+            var missingPairs = new List<AssetPair>();
 
             foreach (var pair in pairsQueryable)
             {
                 if (!rPairsDict.TryGetValue(pair, out var volumeInfo))
                 {
-                    volumes.MissedPairs.Add(pair);
+                    missingPairs.Add(pair);
                     continue;
                 }
 
-                volumes.Add(new MarketPrice(Network, pair, 0)
-                {
-                    Volume = new NetworkPairVolume(Network, pair, volumeInfo.vol_a, volumeInfo.vol_b)
-                });
+                volumes.Add(new NetworkPairVolume(Network, pair,volumeInfo.vol_a, volumeInfo.vol_b));
             }
 
-            return new PublicVolumeResponse(Network, volumes);
+            return new PublicVolumeResponse(Network, volumes, missingPairs);
         }
 
         private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures()

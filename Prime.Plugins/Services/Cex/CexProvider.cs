@@ -10,6 +10,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Cex
 {
     // https://cex.io/rest-api#public
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
@@ -140,23 +141,21 @@ namespace Prime.Plugins.Services.Cex
 
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
-            var volumes = new MarketPrices();
+            var missing = new List<AssetPair>();
+            var volumes = new List<NetworkPairVolume>();
 
             foreach (var pair in pairsQueryable)
             {
                 if (!rPairsDict.TryGetValue(pair, out var ticker))
                 {
-                    volumes.MissedPairs.Add(pair);
+                    missing.Add(pair);
                     continue;
                 }
 
-                volumes.Add(new MarketPrice(Network, pair, 0)
-                {
-                    Volume = new NetworkPairVolume(Network, pair, ticker.volume)
-                });
+                volumes.Add(new NetworkPairVolume(Network, pair, ticker.volume));
             }
 
-            return new PublicVolumeResponse(Network, volumes);
+            return new PublicVolumeResponse(Network, volumes, missing);
         }
 
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)

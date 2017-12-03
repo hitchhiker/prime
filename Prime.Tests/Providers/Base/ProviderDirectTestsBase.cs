@@ -142,33 +142,36 @@ namespace Prime.Tests.Providers
             {
                 // Single test.
 
-                if (pricingProvider.PricingFeatures.Single == null || volumeProvider.VolumeFeatures.Single == null)
-                    return;
+                if (pricingProvider.PricingFeatures.Single != null && volumeProvider.VolumeFeatures.Single != null)
+                {
+                    if (pricingProvider.PricingFeatures.Single.CanVolume ^
+                        volumeProvider.VolumeFeatures.Single.CanVolume)
+                        return;
 
-                if (pricingProvider.PricingFeatures.Single.CanVolume ^ volumeProvider.VolumeFeatures.Single.CanVolume)
-                    return;
+                    var priceCtx = new PublicPriceContext(pairs.First());
+                    var rPrice = AsyncContext.Run(() => pricingProvider.GetPricingAsync(priceCtx));
 
-                var priceCtx = new PublicPriceContext(pairs.First());
-                var rPrice = AsyncContext.Run(() => pricingProvider.GetPricingAsync(priceCtx));
-
-                AssetPrice(rPrice, volumeProvider.VolumeFeatures.Single.CanVolumeBase, volumeProvider.VolumeFeatures.Single.CanVolumeQuote);
+                    AssertPrice(rPrice, volumeProvider.VolumeFeatures.Single.CanVolumeBase,
+                        volumeProvider.VolumeFeatures.Single.CanVolumeQuote);
+                }
 
                 // Multiple pairs test.
 
-                if (pricingProvider.PricingFeatures.Bulk == null || volumeProvider.VolumeFeatures.Bulk == null)
-                    return;
+                if (pricingProvider.PricingFeatures.Bulk != null && volumeProvider.VolumeFeatures.Bulk != null)
+                {
+                    if (pricingProvider.PricingFeatures.Bulk.CanVolume ^ volumeProvider.VolumeFeatures.Bulk.CanVolume)
+                        return;
 
-                if (pricingProvider.PricingFeatures.Bulk.CanVolume ^ volumeProvider.VolumeFeatures.Bulk.CanVolume)
-                    return;
+                    var pricesCtx = new PublicPricesContext(pairs);
+                    var rPrices = AsyncContext.Run(() => pricingProvider.GetPricingAsync(pricesCtx));
 
-                var pricesCtx = new PublicPricesContext(pairs);
-                var rPrices = AsyncContext.Run(() => pricingProvider.GetPricingAsync(pricesCtx));
-
-                AssetPrice(rPrices, volumeProvider.VolumeFeatures.Bulk.CanVolumeBase, volumeProvider.VolumeFeatures.Bulk.CanVolumeQuote);
+                    AssertPrice(rPrices, volumeProvider.VolumeFeatures.Bulk.CanVolumeBase,
+                        volumeProvider.VolumeFeatures.Bulk.CanVolumeQuote);
+                }
             }
         }
 
-        private void AssetPrice(MarketPrices price, bool canVolumeBase, bool canVolumeQuote)
+        private void AssertPrice(MarketPrices price, bool canVolumeBase, bool canVolumeQuote)
         {
             Assert.IsFalse(
                 price.FirstPrice.Volume.HasVolume24Base &&
