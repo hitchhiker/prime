@@ -10,6 +10,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Cex
 {
     // https://cex.io/rest-api#public
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
     {
         private const string CexApiUrl = "https://cex.io/api";

@@ -10,6 +10,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Binance
 {
     // https://www.binance.com/restapipub.html
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";

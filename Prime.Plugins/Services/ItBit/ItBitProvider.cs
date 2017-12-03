@@ -9,6 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.ItBit
 {
     // https://api.itbit.com/docs
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";

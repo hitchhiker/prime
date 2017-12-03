@@ -7,6 +7,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Gemini
 {
     // https://docs.gemini.com/rest-api/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class GeminiProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string GemeniApiVerstion = "v1";

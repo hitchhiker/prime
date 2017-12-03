@@ -12,6 +12,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.BitMex
 {
     // https://www.bitmex.com/api/explorer/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitMexProvider :
         IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
