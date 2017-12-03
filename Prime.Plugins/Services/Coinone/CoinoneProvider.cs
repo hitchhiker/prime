@@ -10,6 +10,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Coinone
 {
     // http://doc.coinone.co.kr/#api-Public
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";

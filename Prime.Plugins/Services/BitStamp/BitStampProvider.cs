@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 namespace Prime.Plugins.Services.BitStamp
 {
     // https://www.bitstamp.net/api/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider
     {
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";

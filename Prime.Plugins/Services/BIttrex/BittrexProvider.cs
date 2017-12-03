@@ -8,6 +8,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Bittrex
 {
     // https://bittrex.com/home/api
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // TODO: AY implement multi-statistics.

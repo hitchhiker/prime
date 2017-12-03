@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.TuxExchange
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://tuxexchange.com/docs#
-    public class TuxExchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class TuxExchangeProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string TuxExchangeApiUrl = "https://tuxexchange.com/";
 

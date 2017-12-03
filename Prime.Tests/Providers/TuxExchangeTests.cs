@@ -47,18 +47,5 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
-
-        [TestMethod]
-        public override void TestGetVolume()
-        {
-            var pairs = new List<AssetPair>()
-            {
-                "BTC_LTC".ToAssetPairRaw(),
-                "BTC_ICN".ToAssetPairRaw(),
-                "BTC_PPC".ToAssetPairRaw()
-            };
-
-            base.TestGetVolume(pairs, false);
-        }
     }
 }

@@ -11,6 +11,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Poloniex
 {
     // https://poloniex.com/support/api/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";

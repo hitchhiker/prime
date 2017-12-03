@@ -9,6 +9,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.HitBtc
 {
     // https://api.hitbtc.com/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         private const string ApiVersion = "2";
