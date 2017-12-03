@@ -4,7 +4,7 @@ namespace Prime.Common
     {
         public void Limit() { }
 
-        public bool IsSafe(NetworkProviderContext context)
+        public bool IsSafe()
         {
             return true;
         }

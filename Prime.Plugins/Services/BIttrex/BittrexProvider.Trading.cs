@@ -7,9 +7,9 @@ using Prime.Common;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public partial class BittrexProvider : ITradeProvider
+    public partial class BittrexProvider : IOrderLimitProvider
     {
-        public decimal MiniumumTradeVolume { get; } = 0.011m; //50K Satoshi /4 USD
+        public decimal MinimumTradeVolume { get; } = 0.011m; //50K Satoshi /4 USD
 
         private TradeOrderType GetTradeOrderType(string tradeOrderTypeSchema)
         {
@@ -20,7 +20,7 @@ namespace Prime.Plugins.Services.Bittrex
             return TradeOrderType.None;
         }
 
-        public async Task<PlacedTradeResponse> PlaceTradeAsync(PlaceTradeContext context)
+        public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProvider.GetApi(context);
             var remotePair = context.Pair.ToTicker(this);
@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            return new PlacedTradeResponse(r.result.uuid);
+            return new PlacedOrderLimitResponse(r.result.uuid);
         }
 
         public async Task<TradeOrders> GetOpenOrdersAsync(PrivatePairContext context)

@@ -40,7 +40,7 @@ namespace Prime.Common
         public static void EnterRate(INetworkProvider provider, NetworkProviderContext context)
         {
             var limiter = provider.RateLimiter;
-            if (limiter.IsSafe(context))
+            if (limiter.IsSafe())
                 return;
 
             limiter.Limit();

@@ -10,7 +10,7 @@ namespace Prime.Common.Exchange.Trading_temp
     public abstract class TradeStrategyBase : ITradeStrategy
     {
         protected readonly IMessenger M = DefaultMessenger.I.Default;
-        protected readonly ITradeProvider Provider;
+        protected readonly IOrderLimitProvider Provider;
         protected TradeStrategyStatus Status;
         public ObjectId Id { get; }
         public string RemoteTradeId { get; protected set; }
@@ -19,7 +19,7 @@ namespace Prime.Common.Exchange.Trading_temp
         {
             Context = context;
             Id = ObjectId.NewObjectId();
-            Provider = Context.Network.Providers.Where(x=>x.IsDirect).FirstProviderOf<ITradeProvider>();
+            Provider = Context.Network.Providers.Where(x=>x.IsDirect).FirstProviderOf<IOrderLimitProvider>();
         }
 
         public TradeStrategyContext Context { get; }

@@ -3,9 +3,9 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class PlaceTradeContext : NetworkProviderPrivateContext
+    public class PlaceOrderLimitContext : NetworkProviderPrivateContext
     {
-        public PlaceTradeContext(UserContext userContext, AssetPair pair, bool isBuy, decimal quantity, Money rate, ILogger logger = null) : base(userContext, logger)
+        public PlaceOrderLimitContext(UserContext userContext, AssetPair pair, bool isBuy, decimal quantity, Money rate, ILogger logger = null) : base(userContext, logger)
         {
             Pair = pair;
             IsBuy = isBuy;

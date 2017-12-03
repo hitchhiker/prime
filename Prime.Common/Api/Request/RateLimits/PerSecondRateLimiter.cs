@@ -33,14 +33,24 @@ namespace Prime.Common
 
         public void Limit()
         {
-            Thread.Sleep(1000);
+            do
+            {
+                Thread.Sleep(100);
+            } while (!IsSafe(false));
         }
 
-        public bool IsSafe(NetworkProviderContext context)
+        public bool IsSafe()
+        {
+            return IsSafe(true);
+        }
+
+        private bool IsSafe(bool hit)
         {
             lock (_lock)
             {
-                _hits.Add(DateTime.UtcNow);
+                if (hit)
+                    _hits.Add(DateTime.UtcNow);
+
                 var expired = DateTime.UtcNow.AddSeconds(-_perSeconds);
                 _hits.RemoveAll(x => x <= expired);
                 return _hits.Count < _requests;

@@ -1,34 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Prime.Common
 {
-    public class PerDayRateLimiter : IRateLimiter
+    public class PerHourRateLimiter : IRateLimiter
     {
         private readonly int _anonyRequests;
-        private readonly int _anonyPerDays;
+        private readonly int _anonyPerHour;
         private readonly int _requests;
-        private readonly int _perDays;
+        private readonly int _perHour;
 
         private readonly List<DateTime> _hits = new List<DateTime>();
         private readonly object _lock = new object();
 
-        public PerDayRateLimiter(int requests, int perDays)
+        public PerHourRateLimiter(int requests, int perHour)
         {
             _anonyRequests = requests;
-            _anonyPerDays = perDays;
+            _anonyPerHour = perHour;
             _requests = requests;
-            _perDays = perDays;
+            _perHour = perHour;
         }
 
-        public PerDayRateLimiter(int anonyRequests, int anonyPerDays, int requests, int perDays)
+        public PerHourRateLimiter(int anonyRequests, int anonyPerHour, int requests, int perHour)
         {
             _anonyRequests = anonyRequests;
-            _anonyPerDays = anonyPerDays;
+            _anonyPerHour = anonyPerHour;
             _requests = requests;
-            _perDays = perDays;
+            _perHour = perHour;
         }
 
         public void Limit()
@@ -51,7 +50,7 @@ namespace Prime.Common
                 if (hit)
                     _hits.Add(DateTime.UtcNow);
 
-                var expired = DateTime.UtcNow.AddDays(-_perDays);
+                var expired = DateTime.UtcNow.AddHours(-_perHour);
                 _hits.RemoveAll(x => x <= expired);
                 return _hits.Count < _requests;
             }

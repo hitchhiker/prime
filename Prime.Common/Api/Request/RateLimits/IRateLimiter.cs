@@ -4,6 +4,6 @@
     {
         void Limit();
 
-        bool IsSafe(NetworkProviderContext context);
+        bool IsSafe();
     }
 }

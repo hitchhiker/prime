@@ -23,11 +23,9 @@ namespace Prime.Common.Exchange.Trading_temp
             var price = _ctx.Price;
 
             if (_ctx.IsTesting)
-                price = _ctx.IsBuy ? 
-                    new Money(price * .9m, _ctx.Price.Asset) : 
-                    new Money(price * 1.1m, _ctx.Price.Asset);
+                price = _ctx.IsBuy ? new Money(price * .9m, _ctx.Price.Asset) : new Money(price * 1.1m, _ctx.Price.Asset);
 
-            var r = AsyncContext.Run(()=> Provider.PlaceTradeAsync(new PlaceTradeContext(_ctx.UserContext, _ctx.Pair, _ctx.IsBuy, _ctx.Quantity, price)));
+            var r = AsyncContext.Run(()=> Provider.PlaceOrderLimitAsync(new PlaceOrderLimitContext(_ctx.UserContext, _ctx.Pair, _ctx.IsBuy, _ctx.Quantity, price)));
             RemoteTradeId = r.RemoteTradeId;
 
             Task.Run(()=> WaitForEnd(r.RemoteTradeId));

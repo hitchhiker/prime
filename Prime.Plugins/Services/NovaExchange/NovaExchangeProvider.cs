@@ -10,8 +10,9 @@ using System.Linq;
 namespace Prime.Plugins.Services.NovaExchange
 {
     // https://novaexchange.com/remote/faq/
-    public class NovaExchangeProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class NovaExchangeProvider // : IPublicPricingProvider, IAssetPairsProvider //DISABLED DUE TO RIDICULOUS RATE LIMIT ON MARKET API.
     {
+        /*
         private const string NovaExchangeApiVersion = "v2";
         private const string NovaExchangeApiUrl = "https://novaexchange.com/remote/" + NovaExchangeApiVersion;
 
@@ -143,6 +144,6 @@ namespace Prime.Plugins.Services.NovaExchange
             }
 
             return prices;
-        }
+        }*/
     }
 }

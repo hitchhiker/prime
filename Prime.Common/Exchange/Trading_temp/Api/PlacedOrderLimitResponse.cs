@@ -1,8 +1,8 @@
 ﻿namespace Prime.Common
 {
-    public class PlacedTradeResponse
+    public class PlacedOrderLimitResponse
     {
-        public PlacedTradeResponse(string remoteTradeId)
+        public PlacedOrderLimitResponse(string remoteTradeId)
         {
             RemoteTradeId = remoteTradeId;
         }

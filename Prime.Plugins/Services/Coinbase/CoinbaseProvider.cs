@@ -35,7 +35,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         // 10000 per hour.
         // https://developers.coinbase.com/api/v2#rate-limiting
-        private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(2, 1);
+        private static readonly IRateLimiter Limiter = new PerHourRateLimiter(10000, 1);
         public IRateLimiter RateLimiter => Limiter;
         
         public bool CanGenerateDepositAddress => true;

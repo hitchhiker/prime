@@ -11,7 +11,7 @@ namespace Prime.Tests.Providers
 {
     [TestClass]
     public class NovaExchangeTests : ProviderDirectTestsBase
-    {
+    {/*
         public NovaExchangeTests()
         {
             Provider = Networks.I.Providers.OfType<NovaExchangeProvider>().FirstProvider();
@@ -47,6 +47,6 @@ namespace Prime.Tests.Providers
             };
 
             base.TestGetAssetPairs(requiredPairs);
-        }
+        }*/
     }
 }
