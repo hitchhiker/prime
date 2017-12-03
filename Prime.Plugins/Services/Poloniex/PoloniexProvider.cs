@@ -318,7 +318,6 @@ namespace Prime.Plugins.Services.Poloniex
 
             return new PublicVolumeResponse(Network, context.Pair, volume);
         }
-
-        public VolumeFeatures VolumeFeatures { get; }
+        
     }
 }
