@@ -4,22 +4,31 @@ namespace Prime.Common
 {
     public class BalanceResult : IEquatable<BalanceResult>
     {
-        public readonly Asset Asset;
+        public Asset Asset => !Balance.Asset.IsNone() ? Balance.Asset : (!Available.Asset.IsNone() ? Available.Asset : Reserved.Asset);
 
         public Money Balance { get; set; }
         public Money Available { get; set; }
         public Money Reserved { get; set; }
 
-        public BalanceResult(Asset asset)
+        public Network Network { get; private set; }
+
+        public BalanceResult(INetworkProvider provider) : this(provider.Network) { }
+
+        public BalanceResult(Network network)
         {
-            Asset = asset;
+            Network = network;
+        }
+
+        public override string ToString()
+        {
+            return "A: " + Available + " B: " + Balance + " R: " + Reserved;
         }
 
         public bool Equals(BalanceResult other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Asset.Equals(other.Asset);
+            return Equals(Asset, other.Asset) && Equals(Network, other.Network);
         }
 
         public override bool Equals(object obj)
@@ -32,12 +41,10 @@ namespace Prime.Common
 
         public override int GetHashCode()
         {
-            return Asset.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return "A: " + Available + " B: " + Balance + " R: " + Reserved;
+            unchecked
+            {
+                return ((Asset != null ? Asset.GetHashCode() : 0) * 397) ^ (Network != null ? Network.GetHashCode() : 0);
+            }
         }
     }
 }

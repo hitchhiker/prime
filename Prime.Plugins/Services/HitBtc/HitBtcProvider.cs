@@ -197,7 +197,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             foreach (var rBalance in r)
             {
-                balances.Add(new BalanceResult(rBalance.currency.ToAsset(this))
+                balances.Add(new BalanceResult(this)
                 {
                     Available = rBalance.available,
                     Balance = rBalance.available,
