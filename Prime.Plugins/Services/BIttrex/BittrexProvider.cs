@@ -178,7 +178,7 @@ namespace Prime.Plugins.Services.Bittrex
             {
                 var asset = rBalance.Currency.ToAsset(this);
 
-                balances.Add(new BalanceResult(asset)
+                balances.Add(new BalanceResult(this)
                 {
                     Available = new Money(rBalance.Available, asset),
                     Balance = new Money(rBalance.Balance, asset),

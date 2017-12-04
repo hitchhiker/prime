@@ -19,8 +19,7 @@ namespace Prime.Common
             if (value == 0)
                 return;
 
-            var i = GetOrCreateBalanceResult(asset);
-            i.Reserved = new Money(value, asset);
+            var i = new BalanceResult(ProviderSource) {Reserved = new Money(value, asset)};
             Add(i);
         }
 
@@ -29,8 +28,7 @@ namespace Prime.Common
             if (value == 0)
                 return;
 
-            var i = GetOrCreateBalanceResult(asset);
-            i.Balance = new Money(value, asset);
+            var i = new BalanceResult(ProviderSource) {Balance = new Money(value, asset)};
             Add(i);
         }
 
@@ -39,17 +37,8 @@ namespace Prime.Common
             if (value == 0)
                 return;
 
-            var i = GetOrCreateBalanceResult(asset);
-            i.Available = new Money(value, asset);
+            var i = new BalanceResult(ProviderSource) {Available = new Money(value, asset)};
             Add(i);
-        }
-
-        private BalanceResult GetOrCreateBalanceResult(Asset asset)
-        {
-            var i = this.FirstOrDefault(x => Equals(x.Asset, asset));
-            if (i == null)
-                Add(i = new BalanceResult(asset));
-            return i;
         }
     }
 }

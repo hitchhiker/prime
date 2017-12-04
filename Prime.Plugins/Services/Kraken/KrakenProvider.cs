@@ -232,7 +232,7 @@ namespace Prime.Plugins.Services.Kraken
                 var asset = pair.Key.ToAsset(this);
                 var money = new Money(pair.Value, asset);
 
-                results.Add(new BalanceResult(asset)
+                results.Add(new BalanceResult(this)
                 {
                     Available = money,
                     Balance = money,

@@ -283,7 +283,7 @@ namespace Prime.Plugins.Services.Binance
             {
                 var asset = b.asset.ToAsset(this);
 
-                balances.Add(new BalanceResult(asset)
+                balances.Add(new BalanceResult(this)
                 {
                     Available = new Money(b.free, asset),
                     Balance = new Money(b.free, asset),

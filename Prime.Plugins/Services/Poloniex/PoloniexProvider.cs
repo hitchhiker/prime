@@ -171,7 +171,7 @@ namespace Prime.Plugins.Services.Poloniex
             {
                 var c = kvp.Key.ToAsset(this);
 
-                results.Add(new BalanceResult(c)
+                results.Add(new BalanceResult(this)
                 {
                     Available = new Money(kvp.Value.available, c),
                     Reserved = new Money(kvp.Value.onOrders, c),
