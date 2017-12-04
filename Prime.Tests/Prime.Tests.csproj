@@ -159,6 +159,7 @@
     <Compile Include="Providers\CryptopiaTests.cs" />
     <Compile Include="Providers\EthexIndiaTests.cs" />
     <Compile Include="Providers\ExmoTests.cs" />
+    <Compile Include="Providers\ExxTests.cs" />
     <Compile Include="Providers\GatecoinTests.cs" />
     <Compile Include="Providers\GateTests.cs" />
     <Compile Include="Providers\GdaxTests.cs" />
