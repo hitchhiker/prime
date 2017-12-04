@@ -19,9 +19,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestPublicApi()
+        public override void TestApiPublic()
         {
-            base.TestPublicApi();
+            base.TestApiPublic();
         }
 
         [TestMethod]

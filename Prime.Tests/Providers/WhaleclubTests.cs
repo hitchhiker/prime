@@ -20,9 +20,9 @@ namespace Prime.Tests.Providers
 
         [Obsolete("Public methods require key.")]
         [TestMethod]
-        public override void TestPublicApi()
+        public override void TestApiPublic()
         {
-            base.TestPublicApi();
+            base.TestApiPublic();
         }
 
         [Obsolete("Public methods require key.")]

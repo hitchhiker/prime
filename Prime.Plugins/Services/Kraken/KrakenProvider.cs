@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.Kraken
 
         public KrakenProvider()
         {
-            ApiProvider = new RestApiClientProvider<IKrakenApi>(KrakenApiUrl, this, k => new KrakenAuthenticator(k).GetRequestModifier)
+            ApiProvider = new RestApiClientProvider<IKrakenApi>(KrakenApiUrl, this, k => new KrakenAuthenticator(k).GetRequestModifierAsync)
             {
                 JsonSerializerSettings = CreateJsonSerializerSettings()
             };

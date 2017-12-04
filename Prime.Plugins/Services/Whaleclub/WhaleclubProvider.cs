@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Whaleclub
 
         public WhaleclubProvider()
         {
-            ApiProvider = new RestApiClientProvider<IWhaleclubApi>(WhaleclubApiUrl, this, k => new WhaleclubAuthenticator(k).GetRequestModifier);
+            ApiProvider = new RestApiClientProvider<IWhaleclubApi>(WhaleclubApiUrl, this, k => new WhaleclubAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)

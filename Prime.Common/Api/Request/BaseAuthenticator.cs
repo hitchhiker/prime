@@ -18,9 +18,16 @@ namespace Prime.Common
 
         public readonly ApiKey ApiKey;
 
+        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+
         public static long GetLongNonce()
         {
             return DateTime.UtcNow.Ticks;
+        }
+
+        public static long GetUnixEpochNonce()
+        {
+            return DateTime.UtcNow.Ticks - ArbTickEpoch;
         }
 
         protected virtual long GetNonce()
@@ -62,7 +69,7 @@ namespace Prime.Common
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA256(string message, string secret)
         {
-           return Convert.ToBase64String(HashHMACSHA256Raw(message, secret));
+            return Convert.ToBase64String(HashHMACSHA256Raw(message, secret));
         }
 
         // ReSharper disable once InconsistentNaming
@@ -90,8 +97,8 @@ namespace Prime.Common
         public string HashHMACSHA256Hex(string message, string secret)
         {
             return ToHex(HashHMACSHA256Raw(message, secret));
-        }        
-        
+        }
+
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512Hex(string message, string secret)
         {
@@ -115,11 +122,9 @@ namespace Prime.Common
 
         public abstract void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken);
 
-        public Task GetRequestModifier(HttpRequestMessage request, CancellationToken cancellationToken)
+        public Task GetRequestModifierAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var t = new Task(() => RequestModify(request, cancellationToken));
-            t.RunSynchronously();
-            return t;
+            return Task.Run(() => RequestModify(request, cancellationToken), cancellationToken);
         }
     }
 }

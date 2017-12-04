@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Tidex
 
         [Get("/info")]
         Task<TidexSchema.AssetPairsResponse> GetAssetPairsAsync();
+
+        [Post("/")]
+        Task<TidexSchema.UserInfoExtResponse> GetUserInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }
