@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.Okex;
+using Prime.Plugins.Services.Alphapoint;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class OkexTests : ProviderDirectTestsBase
+    public class AlphapointTests : ProviderDirectTestsBase
     {
-        public OkexTests()
+        public AlphapointTests()
         {
-            Provider = Networks.I.Providers.OfType<OkexProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<AlphapointProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -27,10 +27,7 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "ltc_btc".ToAssetPairRaw(),
-                "eth_btc".ToAssetPairRaw(),
-                "etc_btc".ToAssetPairRaw(),
-                "bch_btc".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, true);
@@ -41,10 +38,7 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "ltc_btc".ToAssetPairRaw(),
-                "eth_btc".ToAssetPairRaw(),
-                "etc_btc".ToAssetPairRaw(),
-                "bch_btc".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);
