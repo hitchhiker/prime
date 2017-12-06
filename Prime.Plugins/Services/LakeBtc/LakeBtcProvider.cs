@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.LakeBtc
 
             if (r == null || r.Count == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();
@@ -87,7 +87,7 @@ namespace Prime.Plugins.Services.LakeBtc
 
             if (r == null || r.Count == 0)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             var prices = new MarketPrices();

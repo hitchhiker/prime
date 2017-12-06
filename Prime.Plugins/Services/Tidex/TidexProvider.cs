@@ -88,7 +88,7 @@ namespace Prime.Plugins.Services.Tidex
 
             if (r == null || r.pairs.Count == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();
@@ -131,7 +131,7 @@ namespace Prime.Plugins.Services.Tidex
 
             if (r == null || r.Count == 0)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             var ticker = r.FirstOrDefault().Value;
@@ -158,7 +158,7 @@ namespace Prime.Plugins.Services.Tidex
 
             if (r == null || r.Count == 0)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             var prices = new MarketPrices();

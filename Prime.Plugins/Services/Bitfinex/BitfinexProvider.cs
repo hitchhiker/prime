@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
             if (r == null || r.Length == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();

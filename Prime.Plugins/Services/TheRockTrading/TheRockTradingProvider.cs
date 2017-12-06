@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             if (r?.tickers == null || r.tickers.Length == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();
@@ -97,7 +97,7 @@ namespace Prime.Plugins.Services.TheRockTrading
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-            
+
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
@@ -112,7 +112,7 @@ namespace Prime.Plugins.Services.TheRockTrading
 
             if (r?.tickers == null || r.tickers.Length == 0)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             var prices = new MarketPrices();

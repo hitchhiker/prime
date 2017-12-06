@@ -8,10 +8,10 @@ namespace Prime.Plugins.Services.Alphapoint
     {
         internal class ProductPairsResponse
         {
-            public ProductPairEntry[] productPairs;
+            public ProductPairEntryResponse[] productPairs;
         }
 
-        internal class ProductPairEntry
+        internal class ProductPairEntryResponse
         {
             public int productPairCode;
             public int product1DecimalPlaces;

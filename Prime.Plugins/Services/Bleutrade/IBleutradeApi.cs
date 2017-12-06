@@ -9,12 +9,12 @@ namespace Prime.Plugins.Services.Bleutrade
     internal interface IBleutradeApi
     {
         [Get("/public/getticker?market={currencyPair}")]
-        Task<BleutradeSchema.BaseResponse<BleutradeSchema.TickerEntry[]>> GetTickerAsync([Path] string currencyPair);
+        Task<BleutradeSchema.BaseResponse<BleutradeSchema.TickerEntryResponse[]>> GetTickerAsync([Path] string currencyPair);
 
         [Get("/public/getmarketsummaries")]
-        Task<BleutradeSchema.BaseResponse<BleutradeSchema.MarketEntry[]>> GetMarketsAsync();
+        Task<BleutradeSchema.BaseResponse<BleutradeSchema.MarketEntryResponse[]>> GetMarketsAsync();
 
         [Get("/public/getmarketsummary?market={currencyPair}")]
-        Task<BleutradeSchema.BaseResponse<BleutradeSchema.MarketEntry[]>> GetMarketAsync([Path] string currencyPair);
+        Task<BleutradeSchema.BaseResponse<BleutradeSchema.MarketEntryResponse[]>> GetMarketAsync([Path] string currencyPair);
     }
 }

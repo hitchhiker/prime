@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
-using System.Linq;
 
-namespace Prime.Plugins.Services.Gatecoin
+namespace Prime.Plugins.Services.Yobit
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
-    // https://gatecoin.com/api/
-    public class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider
+    // https://www.yobit.net/en/api/
+    public class YobitProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string GatecoinApiUrl = "https://api.gatecoin.com/Public/";
+        private const string YobitApiVersion = "3";
+        private const string YobitApiUrl = "https://yobit.net/api/" + YobitApiVersion;
 
-        private static readonly ObjectId IdHash = "prime:gatecoin".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:yobit".GetObjectIdHashCode();
 
-        //Taken from API doc: "There is no rate limit on any public API."
-        //https://gatecoin.com/api/
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<IGatecoinApi> ApiProvider { get; }
+        private RestApiClientProvider<IYobitApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("Gatecoin");
+        public Network Network { get; } = Networks.I.Get("Yobit");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -31,41 +30,40 @@ namespace Prime.Plugins.Services.Gatecoin
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
-        public char? CommonPairSeparator => null;
-
         public bool IsDirect => true;
+        public char? CommonPairSeparator => '_';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public GatecoinProvider()
+        public YobitProvider()
         {
-            ApiProvider = new RestApiClientProvider<IGatecoinApi>(GatecoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IYobitApi>(YobitApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync("BTCUSD").ConfigureAwait(false);
+            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
-            return r?.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == true;
+            return r?.pairs?.Count > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
-            if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.tickers == null || r.tickers.Length == 0)
+            if (r.pairs == null || r.pairs.Count == 0)
             {
                 throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();
 
-            foreach (var rCurrentTicker in r.tickers)
+            foreach (var rCurrentTicker in r.pairs)
             {
-                pairs.Add(rCurrentTicker.currencyPair.ToAssetPair(this, 3));
+                pairs.Add(rCurrentTicker.Key.ToAssetPair(this));
             }
 
             return pairs;
@@ -79,7 +77,7 @@ namespace Prime.Plugins.Services.Gatecoin
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
+            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -95,34 +93,35 @@ namespace Prime.Plugins.Services.Gatecoin
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.ticker == null)
+            if (r.Count == 0 || r.TryGetValue(pairCode, out var ticker) == false)
             {
-                throw new ApiResponseException("No asset pairs returned", this);
+                throw new ApiResponseException("No ticker returned", this);
             }
 
-            return new MarketPrices(new MarketPrice(Network, context.Pair, r.ticker.last)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, ticker.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.ask, r.ticker.bid, r.ticker.low, r.ticker.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.volume)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, ticker.sell, ticker.buy, ticker.low, ticker.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, ticker.vol)
             });
         }
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
+            var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
-            if (r == null || r.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == false || r.tickers == null || r.tickers.Length == 0)
+            if (r.Count == 0)
             {
                 throw new ApiResponseException("No tickers returned", this);
             }
 
             var prices = new MarketPrices();
 
-            var rPairsDict = r.tickers.ToDictionary(x => x.currencyPair.ToAssetPair(this, 3), x => x);
+            var rPairsDict = r.ToDictionary(x => x.Key.ToAssetPair(this), x => x.Value);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
@@ -137,8 +136,8 @@ namespace Prime.Plugins.Services.Gatecoin
                 {
                     prices.Add(new MarketPrice(Network, pair, currentTicker.last)
                     {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
+                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
+                        Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)
                     });
                 }
             }

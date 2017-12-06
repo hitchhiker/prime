@@ -76,7 +76,7 @@ namespace Prime.Plugins.Services.Coincheck
 
             if (r == null)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)

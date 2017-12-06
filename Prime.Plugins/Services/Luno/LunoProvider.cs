@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.Luno
 
             if (r?.tickers == null || r.tickers.Length == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();
@@ -112,7 +112,7 @@ namespace Prime.Plugins.Services.Luno
 
             if (r?.tickers == null || r.tickers.Length == 0)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             var prices = new MarketPrices();

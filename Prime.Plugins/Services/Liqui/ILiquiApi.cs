@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.Liqui
         Task<LiquiSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/ticker/{currencyPair}")]
-        Task<Dictionary<string,LiquiSchema.TickerResponse>> GetTickersAsync([Path] string currencyPair);
+        Task<LiquiSchema.AllTickersResponse> GetTickersAsync([Path] string currencyPair);
 
         [Get("/info")]
         Task<LiquiSchema.AssetPairsResponse> GetAssetPairsAsync();

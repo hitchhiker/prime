@@ -8,11 +8,15 @@ namespace Prime.Plugins.Services.Exx
     {
         internal class TickerResponse
         {
-            public TickerEntry ticker;
+            public TickerEntryResponse ticker;
             public long date;
         }
 
-        internal class TickerEntry
+        internal class AllTickersResponse : Dictionary<string, TickerEntryResponse>
+        {
+        }
+
+        internal class TickerEntryResponse
         {
             public float vol;
             public decimal last;

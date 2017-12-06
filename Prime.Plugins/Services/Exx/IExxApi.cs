@@ -12,6 +12,6 @@ namespace Prime.Plugins.Services.Exx
         Task<ExxSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/tickers")]
-        Task<Dictionary<string, ExxSchema.TickerEntry>> GetTickersAsync();
+        Task<ExxSchema.AllTickersResponse> GetTickersAsync();
     }
 }

@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.MercadoBitcoin
 
             if (r?.ticker == null)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.ticker.last)

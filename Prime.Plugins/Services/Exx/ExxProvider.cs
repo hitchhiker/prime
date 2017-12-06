@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.Exx
 
             if (r?.Count == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();
@@ -100,7 +100,7 @@ namespace Prime.Plugins.Services.Exx
 
             if (r.ticker == null || !CheckTickerResponse(r.ticker))
             {
-                throw new ApiResponseException("No ticker returned.", this);
+                throw new ApiResponseException("No ticker returned", this);
             }
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, 1 / r.ticker.last)
@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Exx
 
             if (r?.Count == 0)
             {
-                throw new ApiResponseException("No tickers returned.", this);
+                throw new ApiResponseException("No tickers returned", this);
             }
 
             var prices = new MarketPrices();
@@ -146,7 +146,7 @@ namespace Prime.Plugins.Services.Exx
             return prices;
         }
 
-        private bool CheckTickerResponse(ExxSchema.TickerEntry ticker)
+        private bool CheckTickerResponse(ExxSchema.TickerEntryResponse ticker)
         {
             return (decimal) ticker.vol + ticker.last + ticker.sell + ticker.buy + ticker.weekRiseRate +
                    ticker.riseRate + ticker.high + ticker.low +

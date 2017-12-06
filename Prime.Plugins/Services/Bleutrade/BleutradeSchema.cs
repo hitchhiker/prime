@@ -11,14 +11,9 @@ namespace Prime.Plugins.Services.Bleutrade
             public bool success;
             public string message;
             public TResult result;
-
-            internal object FirstOrDefault(Func<object, bool> p)
-            {
-                throw new NotImplementedException();
-            }
         }
 
-        internal class MarketEntry
+        internal class MarketEntryResponse
         {
             public bool IsActive;
             public string MarketCurrency;
@@ -36,7 +31,7 @@ namespace Prime.Plugins.Services.Bleutrade
             public DateTime TimeStamp;
         }
 
-        internal class TickerEntry
+        internal class TickerEntryResponse
         {
             public decimal Last;
             public decimal Bid;

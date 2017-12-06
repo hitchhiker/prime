@@ -10,10 +10,10 @@ namespace Prime.Plugins.Services.NovaExchange
         {
             public string status;
             public string message;
-            public TickerEntry[] markets;
+            public TickerEntryResponse[] markets;
         }
 
-        internal class TickerEntry
+        internal class TickerEntryResponse
         {
             public int marketid;
             public int disabled;

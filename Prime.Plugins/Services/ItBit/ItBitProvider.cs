@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.ItBit
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public ItBitProvider()
         {
@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.ItBit
         public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this);
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.ItBit
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, ""); 
+            var pairCode = context.Pair.ToTicker(this); 
 
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 

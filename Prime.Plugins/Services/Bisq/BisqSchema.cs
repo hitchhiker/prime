@@ -6,7 +6,11 @@ namespace Prime.Plugins.Services.Bisq
 {
     internal class BisqSchema
     {
-        internal class TickerResponseEntry
+        internal class AllTickersResponse : Dictionary<string, TickerEntryResponse> { }
+
+        internal class TickerResponse : List<TickerEntryResponse> { }
+
+        internal class TickerEntryResponse
         {
             public decimal? last;
             public decimal? high;

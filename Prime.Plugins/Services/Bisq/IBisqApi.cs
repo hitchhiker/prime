@@ -9,9 +9,9 @@ namespace Prime.Plugins.Services.Bisq
     internal interface IBisqApi
     {
         [Get("/ticker?market={currencyPair}")]
-        Task<List<BisqSchema.TickerResponseEntry>> GetTickerAsync([Path] string currencyPair);
+        Task<BisqSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/ticker")]
-        Task<Dictionary<string, BisqSchema.TickerResponseEntry>> GetAllTickers();
+        Task<BisqSchema.AllTickersResponse> GetAllTickers();
     }
 }

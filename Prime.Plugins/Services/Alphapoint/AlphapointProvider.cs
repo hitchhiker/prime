@@ -57,7 +57,7 @@ namespace Prime.Plugins.Services.Alphapoint
 
             if (r?.productPairs == null || r.productPairs?.Length == 0)
             {
-                throw new ApiResponseException("No asset pairs returned.", this);
+                throw new ApiResponseException("No asset pairs returned", this);
             }
 
             var pairs = new AssetPairs();

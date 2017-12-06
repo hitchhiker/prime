@@ -9,7 +9,7 @@ namespace Prime.Plugins.Services.TuxExchange
     internal interface ITuxExchangeApi
     {
         [Get("/api?method=getticker")]
-        Task<Dictionary<string, TuxEchangeSchema.TickerResponse>> GetTickersAsync();
+        Task<TuxEchangeSchema.AllTickersResponse> GetTickersAsync();
 
         [Get("/api?method=get24hvolume")]
         Task<TuxEchangeSchema.VolumeResponse> GetVolumesAsync();

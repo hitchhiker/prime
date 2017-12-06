@@ -9,6 +9,6 @@ namespace Prime.Plugins.Services.LakeBtc
     internal interface ILakeBtcApi
     {
         [Get("/ticker")]
-        Task<Dictionary<string,LakeBtcSchema.TickerResponse>> GetTickersAsync();
+        Task<LakeBtcSchema.AllTickersResponse> GetTickersAsync();
     }
 }

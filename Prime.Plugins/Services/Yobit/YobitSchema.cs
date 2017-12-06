@@ -2,32 +2,33 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Prime.Plugins.Services.Liqui
+namespace Prime.Plugins.Services.Yobit
 {
-    internal class LiquiSchema
+    internal class YobitSchema
     {
         internal class AssetPairsResponse
         {
             public long server_time;
-            public Dictionary<string, AssetPairEntry> pairs;
+            public Dictionary<string, AssetPairEntryResponse> pairs;
         }
 
         internal class AllTickersResponse : Dictionary<string, TickerResponse>
         {
         }
 
-        internal class AssetPairEntry
+        internal class AssetPairEntryResponse
         {
             public int decimal_places;
+            public int hidden;
             public decimal min_price;
             public decimal max_price;
             public decimal min_amount;
-            public decimal max_amount;
             public decimal min_total;
-            public decimal hidden;
             public decimal fee;
+            public decimal fee_buyer;
+            public decimal fee_seller;
         }
-
+        
         internal class TickerResponse
         {
             public decimal high;

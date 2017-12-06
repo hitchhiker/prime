@@ -187,6 +187,7 @@
     <Compile Include="Providers\TidexTests.cs" />
     <Compile Include="Providers\TuxExchangeTests.cs" />
     <Compile Include="Providers\WhaleclubTests.cs" />
+    <Compile Include="Providers\YobitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
