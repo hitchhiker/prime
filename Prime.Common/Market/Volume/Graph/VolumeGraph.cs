@@ -79,8 +79,10 @@ namespace Prime.Common
             return alldata.Volume;
         }
 
-        private void ApplyBtc()
+        public void ApplyBtc()
         {
+            _failedBtc.Clear();
+
             foreach (var i in _volume)
                 if (!i.ApplyBtcVolume(PriceGraph.Prices) && !i.HasVolume24Btc)
                     _failedBtc.Add(i.Pair);

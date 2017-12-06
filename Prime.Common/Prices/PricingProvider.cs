@@ -22,6 +22,13 @@ namespace Prime.Common
             ProvidersPublicPricing = Networks.I.Providers.OfType<IPublicPricingProvider>().Where(x => x.IsDirect).ToList();
         }
 
+        public async Task<MarketPrices> GetAsync(Dictionary<Network, UniqueList<AssetPair>> pairsByNetwork, PricingProviderContext context = null)
+        {
+            var t = pairsByNetwork.Select(x => GetTask(x.Key, x.Value, context));
+            var r = await t.WhenAll().ConfigureAwait(false);
+            return new MarketPrices(r);
+        }
+
         public async Task<MarketPrices> GetAsync(IEnumerable<Network> networks, PricingProviderContext context = null)
         {
             var t = networks.Select(x => GetTask(x, context));

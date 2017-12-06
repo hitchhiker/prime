@@ -6,17 +6,32 @@ namespace Prime.Common
     {
         public Asset Asset => !Balance.Asset.IsNone() ? Balance.Asset : (!Available.Asset.IsNone() ? Available.Asset : Reserved.Asset);
 
+        [Bson]
         public Money Balance { get; set; }
+
+        [Bson]
         public Money Available { get; set; }
+
+        [Bson]
         public Money Reserved { get; set; }
 
-        public Network Network { get; private set; }
+        [Bson]
+        public AssetPosition AssetPosition { get; private set; }
+
+        public Network Network { get; }
 
         public BalanceResult(INetworkProvider provider) : this(provider.Network) { }
 
-        public BalanceResult(Network network)
+        public BalanceResult(Network network, Money? availableBalance = null)
         {
             Network = network;
+            if (availableBalance != null)
+            {
+                Available = availableBalance.Value;
+                AssetPosition = new AssetPosition(network, Available.Asset);
+            }
+            else
+                AssetPosition = new AssetPosition(network, Asset.None);
         }
 
         public override string ToString()

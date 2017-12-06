@@ -77,12 +77,12 @@ namespace Prime.Common
         {
             var failed = false;
 
-            if (HasVolume24Base && !HasVolume24Btc)
+            if (HasVolume24Base)
                 failed = (Volume24Btc = prices.FxConvert(Volume24Base, Asset.Btc)) == null;
 
             HasVolume24Btc = Volume24Btc != null;
 
-            if (HasVolume24Quote && !HasVolume24Btc)
+            if (HasVolume24Quote)
                 failed = (Volume24Btc = prices.FxConvert(Volume24Quote, Asset.Btc)) == null || failed;
 
             HasVolume24Btc = Volume24Btc != null;

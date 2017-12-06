@@ -15,9 +15,9 @@ namespace Prime.Common
         public readonly PricesContext PricesContext;
         public readonly NetworkGraph NetworkGraph;
 
-        private readonly List<MarketPrice> _prices;
-        private readonly Dictionary<Network, IReadOnlyList<MarketPrice>> _pricesByNetwork;
-        private readonly Dictionary<AssetPair, IReadOnlyList<MarketPrice>> _pricesByPair;
+        private List<MarketPrice> _prices;
+        private Dictionary<Network, IReadOnlyList<MarketPrice>> _pricesByNetwork;
+        private Dictionary<AssetPair, IReadOnlyList<MarketPrice>> _pricesByPair;
 
         public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetwork => _dN.PairsByNetwork;
         public IReadOnlyDictionary<AssetPair, IReadOnlyList<Network>> NetworksByPair => _dN.NetworksByPair;
@@ -37,16 +37,36 @@ namespace Prime.Common
 
             _dN.BuildData(networkGraph.PairsByNetworkN);
 
+            Refresh();
+        }
+
+        public void Update(MarketPrices prices)
+        {
+            var ps = Prices.ToList();
+            foreach (var p in prices)
+            {
+                var e = ps.FirstOrDefault(x => x.Network?.Id == p.Network?.Id && x.Pair.Id == p.Pair.Id);
+                if (e != null)
+                    ps.Remove(e);
+                ps.Add(p);
+            }
+            var newprices = new MarketPrices(ps);
+            Save(newprices);
+            Refresh(newprices);
+        }
+
+        public void Refresh(MarketPrices newPrices = null)
+        {
             var source = _dN.DeNormalise(NetworkGraph.PairsByNetworkRaw);
 
-            _pricesByNetwork = PopulatePriceGraph(source).GroupBy(x => x.Network).ToDictionary(x => x.Key, y => y.AsReadOnlyList());
+            _pricesByNetwork = (newPrices ?? PopulatePriceGraph(source)).GroupBy(x => x.Network).ToDictionary(x => x.Key, y => y.AsReadOnlyList());
 
             RemoveEmptyPricing(_pricesByNetwork);
 
-            _dN.BuildData(_pricesByNetwork.ToDictionary(x=>x.Key, y=>y.Value.Select(x=>x.Pair).AsReadOnlyList()));
+            _dN.BuildData(_pricesByNetwork.ToDictionary(x => x.Key, y => y.Value.Select(x => x.Pair).AsReadOnlyList()));
 
             _prices = _pricesByNetwork.Values.SelectMany(x => x).ToList();
-            _pricesByPair = _prices.GroupBy(x=>x.Pair).ToDictionary(x => x.Key, y => y.AsReadOnlyList());
+            _pricesByPair = _prices.GroupBy(x => x.Pair).ToDictionary(x => x.Key, y => y.AsReadOnlyList());
         }
 
         private static void RemoveEmptyPricing(Dictionary<Network, IReadOnlyList<MarketPrice>> pbn)

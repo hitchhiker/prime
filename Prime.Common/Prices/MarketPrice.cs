@@ -73,5 +73,16 @@ namespace Prime.Common
         {
             return $"{Network?.Name}: 1 {QuoteAsset} = {Price.Display}";
         }
+
+        public decimal PercentageDifference(MarketPrice secondPrice)
+        {
+            if (secondPrice.Reversed.Pair.Id == this.Pair.Id)
+                secondPrice = secondPrice.Reversed;
+
+            if (secondPrice.Pair.Id != Pair.Id)
+                throw new Exception($"Can't calculate percentage difference for {nameof(MarketPrice)}, as pairs don't match: {secondPrice.Pair} - {Pair}");
+
+            return Price.PercentageProfit(secondPrice.Price);
+        }
     }
 }
