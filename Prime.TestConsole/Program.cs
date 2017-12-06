@@ -29,7 +29,10 @@ namespace TestConsole
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
                 // Run Alyasko code :)
-                new ProviderTools().GenerateProvidersReport();
+                // new ProviderTools().GenerateProvidersReport();
+                var perfTools = new PerformanceTools();
+                perfTools.CheckConditionals();
+                perfTools.MemTest();
             }
             else if (Environment.UserName.Equals("Sean"))
             {

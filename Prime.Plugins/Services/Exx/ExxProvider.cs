@@ -98,12 +98,12 @@ namespace Prime.Plugins.Services.Exx
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            if (r.ticker == null)
+            if (r.ticker == null || !CheckTickerResponse(r.ticker))
             {
                 throw new ApiResponseException("No ticker returned.", this);
             }
 
-            return new MarketPrices(new MarketPrice(Network, context.Pair, r.ticker.last > 0 ? 1 / r.ticker.last : 0)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, 1 / r.ticker.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell, r.ticker.buy, r.ticker.low, r.ticker.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, (decimal)r.ticker.vol)
@@ -129,13 +129,13 @@ namespace Prime.Plugins.Services.Exx
             {
                 rPairsDict.TryGetValue(pair, out var currentTicker);
 
-                if (currentTicker == null)
+                if (currentTicker == null || !CheckTickerResponse(currentTicker))
                 {
                     prices.MissedPairs.Add(pair);
                 }
                 else
                 {
-                    prices.Add(new MarketPrice(Network, pair, currentTicker.last > 0 ? 1 / currentTicker.last : 0)
+                    prices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, (decimal)currentTicker.vol)
@@ -144,6 +144,13 @@ namespace Prime.Plugins.Services.Exx
             }
 
             return prices;
+        }
+
+        private bool CheckTickerResponse(ExxSchema.TickerEntry ticker)
+        {
+            return (decimal) ticker.vol + ticker.last + ticker.sell + ticker.buy + ticker.weekRiseRate +
+                   ticker.riseRate + ticker.high + ticker.low +
+                   ticker.monthRiseRate != 0m;
         }
     }
 }

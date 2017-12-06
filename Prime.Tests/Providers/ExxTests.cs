@@ -27,7 +27,9 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "bts_eth".ToAssetPairRaw()
+                "bts_eth".ToAssetPairRaw(),
+                "BTM_ETH".ToAssetPairRaw(),
+                "EOS_BTC".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, false);
@@ -38,7 +40,9 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "bts_eth".ToAssetPairRaw()
+                "bts_eth".ToAssetPairRaw(),
+                "BTM_ETH".ToAssetPairRaw(),
+                "EOS_BTC".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);
