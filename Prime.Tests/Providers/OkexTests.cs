@@ -8,7 +8,7 @@ using Prime.Plugins.Services.Okex;
 
 namespace Prime.Tests.Providers
 {
-    [TestClass()]
+    [TestClass]
     public class OkexTests : ProviderDirectTestsBase
     {
         public OkexTests()
@@ -17,9 +17,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestPublicApi()
+        public override void TestApiPublic()
         {
-            base.TestPublicApi();
+            base.TestApiPublic();
         }
 
         [TestMethod]

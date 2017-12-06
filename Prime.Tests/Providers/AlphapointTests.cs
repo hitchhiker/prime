@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.ItBit;
+using Prime.Plugins.Services.Alphapoint;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class ItBitTests : ProviderDirectTestsBase
+    public class AlphapointTests : ProviderDirectTestsBase
     {
-        public ItBitTests()
+        public AlphapointTests()
         {
-            Provider = Networks.I.Providers.OfType<ItBitProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<AlphapointProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -28,23 +27,19 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_SGD".ToAssetPairRaw(),
-                "BTC_EUR".ToAssetPairRaw(),
+                "BTC_USD".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, true);
         }
 
         [TestMethod]
         public override void TestGetAssetPairs()
         {
-            var requiredPairs = new AssetPairs(new List<AssetPair>()
+            var requiredPairs = new AssetPairs()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_SGD".ToAssetPairRaw(),
-                "BTC_EUR".ToAssetPairRaw(),
-            });
+                "BTC_USD".ToAssetPairRaw()
+            };
 
             base.TestGetAssetPairs(requiredPairs);
         }

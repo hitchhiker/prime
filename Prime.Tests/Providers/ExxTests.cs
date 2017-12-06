@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.ItBit;
+using Prime.Plugins.Services.Exx;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class ItBitTests : ProviderDirectTestsBase
+    public class ExxTests : ProviderDirectTestsBase
     {
-        public ItBitTests()
+        public ExxTests()
         {
-            Provider = Networks.I.Providers.OfType<ItBitProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<ExxProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -28,9 +27,9 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_SGD".ToAssetPairRaw(),
-                "BTC_EUR".ToAssetPairRaw(),
+                "bts_eth".ToAssetPairRaw(),
+                "BTM_ETH".ToAssetPairRaw(),
+                "EOS_BTC".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, false);
@@ -39,12 +38,12 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetAssetPairs()
         {
-            var requiredPairs = new AssetPairs(new List<AssetPair>()
+            var requiredPairs = new AssetPairs()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_SGD".ToAssetPairRaw(),
-                "BTC_EUR".ToAssetPairRaw(),
-            });
+                "bts_eth".ToAssetPairRaw(),
+                "BTM_ETH".ToAssetPairRaw(),
+                "EOS_BTC".ToAssetPairRaw()
+            };
 
             base.TestGetAssetPairs(requiredPairs);
         }

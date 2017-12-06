@@ -19,18 +19,18 @@ namespace Prime.Tests.Providers
 
         #region Wrappers
 
-        public virtual void TestApi()
+        public virtual void TestApiPrivate()
         {
             var p = IsType<INetworkProviderPrivate>();
             if (p.Success)
-                TestApi(p.Provider);
+                TestApiPrivate(p.Provider);
         }
 
-        public virtual void TestPublicApi()
+        public virtual void TestApiPublic()
         {
             var p = IsType<INetworkProvider>();
             if (p.Success)
-                TestPublicApi(p.Provider);
+                TestApiPublic(p.Provider);
         }
 
 
@@ -183,7 +183,7 @@ namespace Prime.Tests.Providers
                 "Provider returns quote volume using both pricing and volume interfaces");
         }
 
-        private void TestApi(INetworkProviderPrivate provider)
+        private void TestApiPrivate(INetworkProviderPrivate provider)
         {
             var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
 
@@ -198,7 +198,7 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void TestPublicApi(INetworkProvider provider)
+        private void TestApiPublic(INetworkProvider provider)
         {
             var ctx = new NetworkProviderContext();
 

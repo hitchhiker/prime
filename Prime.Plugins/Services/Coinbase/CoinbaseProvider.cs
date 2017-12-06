@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public CoinbaseProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICoinbaseApi>(CoinbaseApiUrl, this, k => new CoinbaseAuthenticator(k).GetRequestModifier);
+            ApiProvider = new RestApiClientProvider<ICoinbaseApi>(CoinbaseApiUrl, this, k => new CoinbaseAuthenticator(k).GetRequestModifierAsync);
             GdaxApiProvider = new RestApiClientProvider<IGdaxApi>(GdaxApiUrl);
         }
 

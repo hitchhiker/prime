@@ -25,7 +25,7 @@ namespace Prime.Plugins.Services
         /// <param name="apiUrl">API base URL.</param>
         /// <param name="networkProvider">Network provider that contains private user information.</param>
         /// <param name="requestModifier">Method-modifier that is called before request sending, usually implements authentication.</param>
-        public RestApiClientProvider(string apiUrl, INetworkProvider networkProvider, Func<ApiKey, RequestModifier> requestModifier) : this(apiUrl)
+        public RestApiClientProvider(string apiUrl, INetworkProvider networkProvider, Func<ApiKey, RequestModifier> requestModifier = null) : this(apiUrl)
         {
             _provider = networkProvider;
             _requestModifier = requestModifier;
