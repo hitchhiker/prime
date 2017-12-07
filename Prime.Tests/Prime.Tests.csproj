@@ -134,12 +134,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvidersTests.cs" />
     <Compile Include="Providers\AbucoinsTests.cs" />
+    <Compile Include="Providers\AllcoinTests.cs" />
     <Compile Include="Providers\AlphapointTests.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Volume.cs" />
     <Compile Include="Providers\BinanceTests.cs" />
     <Compile Include="Providers\BisqTests.cs" />
     <Compile Include="Providers\Bit2CTests.cs" />
     <Compile Include="Providers\BitBayTests.cs" />
+    <Compile Include="Providers\BitcoinIndonesiaTests.cs" />
     <Compile Include="Providers\BitfinexTests.cs" />
     <Compile Include="Providers\BitFlyerTests.cs" />
     <Compile Include="Providers\BithumbTests.cs" />
@@ -186,6 +188,8 @@
     <Compile Include="Providers\TheRockTradingTests.cs" />
     <Compile Include="Providers\TidexTests.cs" />
     <Compile Include="Providers\TuxExchangeTests.cs" />
+    <Compile Include="Providers\VaultoroTests.cs" />
+    <Compile Include="Providers\WexTests.cs" />
     <Compile Include="Providers\WhaleclubTests.cs" />
     <Compile Include="Providers\YobitTests.cs" />
   </ItemGroup>

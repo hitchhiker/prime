@@ -9,7 +9,7 @@ using Prime.Plugins.Services.TheRockTrading;
 
 namespace Prime.Tests.Providers
 {
-    [TestClass()]
+    [TestClass]
     public class TheRockTradingTests : ProviderDirectTestsBase
     {
         public TheRockTradingTests()

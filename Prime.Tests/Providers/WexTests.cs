@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.BitStamp;
-using Prime.Plugins.Services.QuadrigaCX;
+using Prime.Plugins.Services.Wex;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class QuadrigaCxTests : ProviderDirectTestsBase
+    public class WexTests : ProviderDirectTestsBase
     {
-        public QuadrigaCxTests()
+        public WexTests()
         {
-            Provider = Networks.I.Providers.OfType<QuadrigaCxProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<WexProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -28,10 +28,10 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_CAD".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw(),
-                "ETH_CAD".ToAssetPairRaw()
+                "btc_eur".ToAssetPairRaw(),
+                "btc_usd".ToAssetPairRaw(),
+                "ltc_usd".ToAssetPairRaw(),
+                "ltc_eur".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, false);
@@ -42,10 +42,10 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "BTC_USD".ToAssetPairRaw(),
-                "BTC_CAD".ToAssetPairRaw(),
-                "ETH_BTC".ToAssetPairRaw(),
-                "ETH_CAD".ToAssetPairRaw()
+                "btc_eur".ToAssetPairRaw(),
+                "btc_usd".ToAssetPairRaw(),
+                "ltc_usd".ToAssetPairRaw(),
+                "ltc_eur".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);

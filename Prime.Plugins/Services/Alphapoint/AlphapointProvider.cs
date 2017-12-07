@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.Alphapoint
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://alphapoint.com/api/docs/public/
-    public class AlphapointProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class AlphapointProvider : /*PricingProvider,*/ IAssetPairsProvider
     {
         private const string AlphapointApiVersion = "v1";
         private const string AlphapointApiUrl = "https://sim3.alphapoint.com:8400/ajax/" + AlphapointApiVersion;
