@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Tidex
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://tidex.com/public-api
-    public class TidexProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate
+    public partial class TidexProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate
     {
         private const string TidexApiVersion = "3";
         private const string TidexApiUrlPublic = "https://api.tidex.com/api/" + TidexApiVersion;
@@ -37,10 +37,27 @@ namespace Prime.Plugins.Services.Tidex
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
+        private RestApiClientProvider<ITidexApi> ApiProviderPublic { get; }
+        private RestApiClientProvider<ITidexApi> ApiProviderPrivate { get; }
 
         private Dictionary<string, object> CreateTidexPostBody()
         {
             return new Dictionary<string, object>();
+        }
+
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        {
+            var api = ApiProviderPrivate.GetApi(context);
+
+            var body = CreateTidexPostBody();
+            body.Add("method", "orderInfo");
+            body.Add("order_id", context.RemoteId);
+
+            var r = await api.GetOrderInfoAsync(body).ConfigureAwait(false);
+
+            var orderStatus = new TradeOrderStatus();
+
+            return orderStatus;
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
@@ -62,9 +79,6 @@ namespace Prime.Plugins.Services.Tidex
             if(r.success != 1)
                 throw new ApiResponseException(r.error, this);
         }
-
-        private RestApiClientProvider<ITidexApi> ApiProviderPublic { get; }
-        private RestApiClientProvider<ITidexApi> ApiProviderPrivate { get; }
 
         public TidexProvider()
         {

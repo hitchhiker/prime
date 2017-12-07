@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LiteDB;
 using Newtonsoft.Json;
 
 namespace Prime.Plugins.Services.Tidex
@@ -59,6 +60,22 @@ namespace Prime.Plugins.Services.Tidex
             public bool trade;
             public bool withdraw;
         }
+
+        internal class OrderInfoResponse : BaseResponse<OrderInfoDataResponse> { }
+
+        internal class OrderInfoDataResponse : Dictionary<string, OrderInfoDataEntryResponse> { }
+
+        internal class OrderInfoDataEntryResponse
+        {
+            public string pair;
+            public string type;
+            public decimal start_amount;
+            public decimal amount;
+            public decimal rate;
+            public long timestamp_created;
+            public short status;
+        }
+
 
         #endregion
 
