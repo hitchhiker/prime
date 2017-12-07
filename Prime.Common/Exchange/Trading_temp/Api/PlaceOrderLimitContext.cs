@@ -13,7 +13,7 @@ namespace Prime.Common
             Rate = rate;
 
             if (!pair.Has(rate.Asset))
-                throw new ArgumentException($"The {nameof(rate)}'s asset does not belong to this market '" + pair + "'");
+                throw new ArgumentException($"The {nameof(rate)}'s asset does not belong to this market '{pair}'");
         }
 
         public AssetPair Pair { get; }

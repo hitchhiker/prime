@@ -39,7 +39,9 @@ namespace Prime.Plugins.Services.Tidex
             postData.Add(new KeyValuePair<string, string>("nonce", GetNonce().ToString()));
             postData.AddRange(prevData);
 
-            var message = string.Join("&", postData.Select(x => $"{x.Key}={x.Value}"));
+            var bodyDataEnc = postData.Select(x => $"{x.Key}={x.Value}").ToArray(); 
+
+            var message = string.Join("&", bodyDataEnc);
             var sign = HashHMACSHA512Hex(message, ApiKey.Secret);
 
             request.Content = new FormUrlEncodedContent(postData);

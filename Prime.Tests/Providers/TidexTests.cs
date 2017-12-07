@@ -23,6 +23,17 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public void TestGetOrderStatus()
+        {
+            var tradingProvider = Provider as IOrderLimitProvider;
+            var context = new RemoteIdContext(UserContext.Current, "12351");
+
+            var r = tradingProvider.GetOrderStatusAsync(context);
+
+            Assert.IsTrue(r != null);
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
