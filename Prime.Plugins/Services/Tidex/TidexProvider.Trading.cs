@@ -10,9 +10,23 @@ namespace Prime.Plugins.Services.Tidex
 {
     public partial class TidexProvider : IOrderLimitProvider
     {
-        public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
+        public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProviderPrivate.GetApi(context);
+
+            var body = CreateTidexPostBody();
+            body.Add("method", "Trade");
+            body.Add("pair", context.Pair.ToTicker(this).ToLower());
+            body.Add("type", context.IsBuy ? "buy": "sell");
+            // TODO: check decimal separator!
+            body.Add("rate", context.Rate.ToDoubleValue());
+            body.Add("amount", context.Quantity);
+
+            var r = await api.TradeAsync(body).ConfigureAwait(false);
+
+            CheckTidexResponse(r);
+
+            return new PlacedOrderLimitResponse(r.return_.order_id.ToString());
         }
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)

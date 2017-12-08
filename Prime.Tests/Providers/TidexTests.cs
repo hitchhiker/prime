@@ -30,13 +30,9 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public void TestPlaceTradeOrder()
+        public override void TestPlaceOrderLimit()
         {
-            var tradingProvider = Provider as IOrderLimitProvider;
-
-            var context = new PlaceOrderLimitContext(UserContext.Current, "LTC_BTC".ToAssetPairRaw(), false, 1, new Money(1, Asset.Btc));
-
-            var r = tradingProvider.PlaceOrderLimitAsync(context);
+            base.TestPlaceOrderLimit("LTC_BTC".ToAssetPairRaw(), false, 1, new Money(1, Asset.Btc));
         }
 
         [TestMethod]

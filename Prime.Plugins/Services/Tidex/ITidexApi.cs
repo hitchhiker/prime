@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Tidex
 
         [Post("/")]
         Task<TidexSchema.OrderInfoResponse> GetOrderInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/")]
+        Task<TidexSchema.TradeResponse> TradeAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

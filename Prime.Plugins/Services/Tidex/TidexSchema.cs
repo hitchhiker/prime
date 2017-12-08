@@ -76,6 +76,15 @@ namespace Prime.Plugins.Services.Tidex
             public short status;
         }
 
+        internal class TradeResponse : BaseResponse<TradeDataResponse> { }
+
+        internal class TradeDataResponse
+        {
+            public decimal received;
+            public decimal remains;
+            public long order_id;
+            public Dictionary<string, decimal> funds;
+        }
 
         #endregion
 
