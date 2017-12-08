@@ -45,21 +45,6 @@ namespace Prime.Plugins.Services.Tidex
             return new Dictionary<string, object>();
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
-        {
-            var api = ApiProviderPrivate.GetApi(context);
-
-            var body = CreateTidexPostBody();
-            body.Add("method", "orderInfo");
-            body.Add("order_id", context.RemoteId);
-
-            var r = await api.GetOrderInfoAsync(body).ConfigureAwait(false);
-
-            var orderStatus = new TradeOrderStatus();
-
-            return orderStatus;
-        }
-
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
@@ -69,12 +54,12 @@ namespace Prime.Plugins.Services.Tidex
 
             var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
 
-            CheckResponse(r);
+            CheckTidexResponse(r);
 
             return r.return_ != null;
         }
 
-        private void CheckResponse<T>(TidexSchema.BaseResponse<T> r)
+        private void CheckTidexResponse<T>(TidexSchema.BaseResponse<T> r)
         {
             if(r.success != 1)
                 throw new ApiResponseException(r.error, this);

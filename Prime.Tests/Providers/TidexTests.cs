@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
 using Prime.Plugins.Services.Tidex;
@@ -23,14 +24,19 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public void TestGetOrderStatus()
+        public override void TestGetTradeOrderStatus()
+        {
+            base.TestGetTradeOrderStatus("12351");
+        }
+
+        [TestMethod]
+        public void TestPlaceTradeOrder()
         {
             var tradingProvider = Provider as IOrderLimitProvider;
-            var context = new RemoteIdContext(UserContext.Current, "12351");
 
-            var r = tradingProvider.GetOrderStatusAsync(context);
+            var context = new PlaceOrderLimitContext(UserContext.Current, "LTC_BTC".ToAssetPairRaw(), false, 1, new Money(1, Asset.Btc));
 
-            Assert.IsTrue(r != null);
+            var r = tradingProvider.PlaceOrderLimitAsync(context);
         }
 
         [TestMethod]
