@@ -30,11 +30,10 @@ namespace Prime.Tests.Providers
                 "ltc_btc".ToAssetPairRaw(),
                 "ppc_btc".ToAssetPairRaw(),
                 "dash_btc".ToAssetPairRaw(),
-                "doge_btc".ToAssetPairRaw(),
-                "cam_btc".ToAssetPairRaw()
+                "doge_btc".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, false);
+            base.TestGetPricing(pairs, true);
         }
 
         [TestMethod]
@@ -45,8 +44,7 @@ namespace Prime.Tests.Providers
                 "ltc_btc".ToAssetPairRaw(),
                 "ppc_btc".ToAssetPairRaw(),
                 "dash_btc".ToAssetPairRaw(),
-                "doge_btc".ToAssetPairRaw(),
-                "cam_btc".ToAssetPairRaw()
+                "doge_btc".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);
