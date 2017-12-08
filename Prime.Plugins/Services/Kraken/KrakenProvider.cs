@@ -65,7 +65,7 @@ namespace Prime.Plugins.Services.Kraken
         {
             return new JsonSerializerSettings()
             {
-                Converters = { new OhlcJsonConverter() }
+                Converters = { new KrakenOhlcJsonConverter() }
             };
         }
 

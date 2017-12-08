@@ -17,6 +17,8 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<TidexProvider>().FirstProvider();
         }
 
+        #region Private
+
         [TestMethod]
         public override void TestApiPrivate()
         {
@@ -34,6 +36,16 @@ namespace Prime.Tests.Providers
         {
             base.TestPlaceOrderLimit("LTC_BTC".ToAssetPairRaw(), false, 1, new Money(1, Asset.Btc));
         }
+
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        #endregion
+
+        #region Public
 
         [TestMethod]
         public override void TestApiPublic()
@@ -70,5 +82,7 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
+
+        #endregion
     }
 }

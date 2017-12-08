@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Prime.Plugins.Services.Kraken.Converters
 {
-    internal class OhlcJsonConverter : JsonConverter
+    internal class KrakenOhlcJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

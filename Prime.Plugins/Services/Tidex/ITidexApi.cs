@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Tidex
         Task<TidexSchema.AssetPairsResponse> GetAssetPairsAsync();
 
         [Post("/")]
-        Task<TidexSchema.UserInfoExtResponse> GetUserInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<TidexSchema.UserInfoExtResponse> GetUserInfoExtAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
         [Post("/")]
         Task<TidexSchema.OrderInfoResponse> GetOrderInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);

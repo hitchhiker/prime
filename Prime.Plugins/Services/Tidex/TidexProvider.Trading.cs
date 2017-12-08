@@ -8,8 +8,24 @@ using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Tidex
 {
-    public partial class TidexProvider : IOrderLimitProvider
+    public partial class TidexProvider : IOrderLimitProvider, IBalanceProvider
     {
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        {
+            var api = ApiProviderPrivate.GetApi(context);
+
+            var body = CreateTidexPostBody();
+            body.Add("method", "getInfoExt");
+
+            var r = await api.GetUserInfoExtAsync(body).ConfigureAwait(false);
+
+            CheckTidexResponse(r);
+
+            var balances = new BalanceResults();
+
+            return balances;
+        }
+
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);

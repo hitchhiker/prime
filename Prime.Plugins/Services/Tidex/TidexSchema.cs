@@ -39,8 +39,7 @@ namespace Prime.Plugins.Services.Tidex
         {
             //public Dictionary<string, FundInfoResponse> funds;
             public object funds;
-            // public UserRightsResponse rights;
-            public object rights;
+            public UserRightResponse rights;
             public int transaction_count;
             public int open_orders;
             public long server_time;
@@ -51,8 +50,6 @@ namespace Prime.Plugins.Services.Tidex
             public decimal value;
             public decimal inOrders;
         }
-
-        internal class UserRightsResponse : Dictionary<string, UserRightResponse> { }
 
         internal class UserRightResponse
         {

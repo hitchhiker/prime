@@ -50,13 +50,6 @@ namespace Prime.Tests.Providers
                 GetAssetPairs(p.Provider, requiredPairs);
         }
 
-        public virtual void TestGetBalances()
-        {
-            var p = IsType<IBalanceProvider>();
-            if (p.Success)
-                GetBalances(p.Provider);
-        }
-
         public virtual void TestGetAddresses() { }
         public void TestGetAddresses(WalletAddressContext context)
         {
@@ -280,28 +273,6 @@ namespace Prime.Tests.Providers
                 foreach (var pair in pairs)
                 {
                     Trace.WriteLine(pair);
-                }
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
-        private void GetBalances(IBalanceProvider provider)
-        {
-            var ctx = new NetworkProviderPrivateContext(UserContext.Current);
-
-            try
-            {
-                var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
-
-                Assert.IsTrue(balances != null);
-
-                Trace.WriteLine("User balances: ");
-                foreach (var b in balances)
-                {
-                    Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Balance} balance, {b.Reserved} reserved");
                 }
             }
             catch (Exception e)
