@@ -37,8 +37,7 @@ namespace Prime.Plugins.Services.Tidex
 
         internal class UserInfoDataExtResponse
         {
-            //public Dictionary<string, FundInfoResponse> funds;
-            public object funds;
+            public Dictionary<string, FundInfoResponse> funds;
             public UserRightResponse rights;
             public int transaction_count;
             public int open_orders;

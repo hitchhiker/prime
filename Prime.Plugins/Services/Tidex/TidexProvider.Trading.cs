@@ -23,6 +23,20 @@ namespace Prime.Plugins.Services.Tidex
 
             var balances = new BalanceResults();
 
+            foreach (var fund in r.return_.funds)
+            {
+                var c = fund.Key.ToAsset(this);
+
+                var available = new Money(fund.Value.value, c);
+
+                balances.Add(new BalanceResult(this)
+                {
+                    Available = available,
+                    Balance = available,
+                    Reserved = new Money(fund.Value.inOrders, c)
+                });
+            }
+
             return balances;
         }
 

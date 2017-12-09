@@ -7,6 +7,7 @@ using LiteDB;
 using Newtonsoft.Json;
 using Prime.Common;
 using Prime.Plugins.Services.Kraken.Converters;
+using Prime.Plugins.Services.Tidex.Converters;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Tidex
@@ -58,6 +59,8 @@ namespace Prime.Plugins.Services.Tidex
 
             CheckTidexResponse(r);
 
+            // TODO: re-implement.
+
             return r.return_ != null;
         }
 
@@ -71,14 +74,6 @@ namespace Prime.Plugins.Services.Tidex
         {
             ApiProviderPublic = new RestApiClientProvider<ITidexApi>(TidexApiUrlPublic);
             ApiProviderPrivate = new RestApiClientProvider<ITidexApi>(TidexApiUrlPrivate, this, (k) => new TidexAuthenticator(k).GetRequestModifierAsync);
-            ApiProviderPrivate.JsonSerializerSettings = new JsonSerializerSettings()
-            {
-                Converters = new List<JsonConverter>()
-                {
-                    // TODO: AY: implement when funded.
-                    // new KrakenOhlcJsonConverter()
-                }
-            };
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
