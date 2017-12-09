@@ -48,8 +48,7 @@ namespace Prime.Plugins.Services.Tidex
             body.Add("method", "Trade");
             body.Add("pair", context.Pair.ToTicker(this).ToLower());
             body.Add("type", context.IsBuy ? "buy": "sell");
-            // TODO: check decimal separator!
-            body.Add("rate", context.Rate.ToDoubleValue());
+            body.Add("rate", context.Rate.ToDecimalValue());
             body.Add("amount", context.Quantity);
 
             var r = await api.TradeAsync(body).ConfigureAwait(false);
