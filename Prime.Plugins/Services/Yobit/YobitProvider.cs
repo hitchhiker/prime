@@ -37,6 +37,7 @@ namespace Prime.Plugins.Services.Yobit
 
         public YobitProvider()
         {
+            Encoding.RegisterProvider(new YobitEncodingProvider());
             ApiProvider = new RestApiClientProvider<IYobitApi>(YobitApiUrl, this, (k) => null);
         }
 

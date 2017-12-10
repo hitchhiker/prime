@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.Yobit;
+using Prime.Plugins.Services.Coinsecure;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class YobitTests : ProviderDirectTestsBase
+    public class CoinsecureTests : ProviderDirectTestsBase
     {
-        public YobitTests()
+        public CoinsecureTests()
         {
-            Provider = Networks.I.Providers.OfType<YobitProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<CoinsecureProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -27,13 +28,10 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "ltc_btc".ToAssetPairRaw(),
-                "ppc_btc".ToAssetPairRaw(),
-                "dash_btc".ToAssetPairRaw(),
-                "doge_btc".ToAssetPairRaw()
+                "BTC_INR".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, true);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]
@@ -41,10 +39,7 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "ltc_btc".ToAssetPairRaw(),
-                "ppc_btc".ToAssetPairRaw(),
-                "dash_btc".ToAssetPairRaw(),
-                "doge_btc".ToAssetPairRaw()
+                "BTC_INR".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);
