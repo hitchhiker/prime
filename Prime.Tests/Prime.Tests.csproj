@@ -153,6 +153,7 @@
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\BleutradeTests.cs" />
+    <Compile Include="Providers\BraziliexTests.cs" />
     <Compile Include="Providers\BtccTests.cs" />
     <Compile Include="Providers\BtcxIndiaTests.cs" />
     <Compile Include="Providers\BxInThTests.cs" />
