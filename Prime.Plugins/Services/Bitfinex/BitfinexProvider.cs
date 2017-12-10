@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -10,7 +11,8 @@ namespace Prime.Plugins.Services.Bitfinex
 {
     // https://bitfinex.readme.io/v1/reference
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
-    public class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    public partial class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string BitfinexApiVersion = "v1";
         private const string BitfinexApiUrl = "https://api.bitfinex.com/" + BitfinexApiVersion;
@@ -39,7 +41,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
         public BitfinexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitfinexApi>(BitfinexApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBitfinexApi>(BitfinexApiUrl, this, k => new BitfinexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -48,6 +50,17 @@ namespace Prime.Plugins.Services.Bitfinex
             var r = await api.GetAssetsAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var infoRequest = new BitfinexSchema.AccountInfoRequest();
+
+            var r = await api.GetAccountInfoAsync(infoRequest).ConfigureAwait(false);
+
+            return r.Any() && r.First().fees.Any();
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

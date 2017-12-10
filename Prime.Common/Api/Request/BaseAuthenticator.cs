@@ -54,6 +54,15 @@ namespace Prime.Common
         }
 
         // ReSharper disable once InconsistentNaming
+        public string HashSHA384(string message)
+        {
+            using (var sha384 = SHA384.Create())
+            {
+                return ToHex(sha384.ComputeHash(FromUtf8(message)));
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512(string message, string secret)
         {
             return Convert.ToBase64String(HashHMACSHA512Raw(message, secret));
@@ -70,6 +79,28 @@ namespace Prime.Common
         public string HashHMACSHA256(string message, string secret)
         {
             return Convert.ToBase64String(HashHMACSHA256Raw(message, secret));
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashHMACSHA384(string message, string secret)
+        {
+            return Convert.ToBase64String(HashHMACSHA384Raw(message, secret));
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashHMACSHA384Hex(string message, string secret)
+        {
+            return ToHex(HashHMACSHA384Raw(message, secret));
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public byte[] HashHMACSHA384Raw(string message, string secret)
+        {
+            using (var hmac = new HMACSHA384(FromUtf8(secret)))
+            {
+                var msg = FromUtf8(message);
+                return hmac.ComputeHash(msg);
+            }
         }
 
         // ReSharper disable once InconsistentNaming
@@ -118,6 +149,11 @@ namespace Prime.Common
         public byte[] FromBase64(string data)
         {
             return Convert.FromBase64String(data);
+        }
+
+        public string ToBase64(string data)
+        {
+            return Convert.ToBase64String(FromUtf8(data));
         }
 
         public abstract void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken);

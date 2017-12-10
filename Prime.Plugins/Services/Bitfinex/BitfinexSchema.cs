@@ -6,6 +6,45 @@ namespace Prime.Plugins.Services.Bitfinex
 {
     internal class BitfinexSchema
     {
+        #region Base
+
+        internal class FeesBaseResposnse
+        {
+            public decimal maker_fees;
+            public decimal taker_fees;
+        }
+
+        internal class BaseRequest
+        {
+            public string request;
+            public string nonce;
+        }
+
+        #endregion
+
+
+        #region Private
+
+        internal class AccountInfoResponse : List<AccountInfoDataResponse> { }
+
+        internal class AccountInfoDataResponse : FeesBaseResposnse
+        {
+            public FeesResponse fees;
+        }
+
+        internal class FeesResponse : List<FeeResponse> { }
+
+        internal class FeeResponse : FeesBaseResposnse
+        {
+            public string pairs;
+        }
+
+        internal class AccountInfoRequest : BaseRequest { }
+
+        #endregion
+
+        #region Public
+
         internal class TickerResponse
         {
             public decimal mid;
@@ -17,5 +56,7 @@ namespace Prime.Plugins.Services.Bitfinex
             public decimal volume;
             public decimal timestamp;
         }
+
+        #endregion
     }
 }

@@ -17,6 +17,18 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BitfinexProvider>().FirstProvider();
         }
 
+        #region Private
+
+        [TestMethod]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        #endregion
+
+        #region Public
+
         [TestMethod]
         public override void TestApiPublic()
         {
@@ -48,5 +60,7 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
+
+        #endregion
     }
 }

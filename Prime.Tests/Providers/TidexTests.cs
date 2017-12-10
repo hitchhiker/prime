@@ -28,7 +28,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
-            base.TestGetTradeOrderStatus("67069100");
+            base.TestGetTradeOrderStatus("67092369");
         }
 
         [TestMethod]

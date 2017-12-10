@@ -25,15 +25,7 @@ namespace Prime.Plugins.Services.Tidex
         {
             var headers = request.Headers;
 
-            var prevData = request.Content.ReadAsStringAsync().Result.Split(new[] { "&" }, StringSplitOptions.RemoveEmptyEntries).Select(x =>
-            {
-                var parts = x.Split(new[] {"="}, StringSplitOptions.RemoveEmptyEntries);
-
-                if(parts.Length != 2)
-                    throw new FormatException("Invalid format of post data");
-
-                return new KeyValuePair<string, string>(parts[0], parts[1]);
-            }).ToList();
+            var prevData = ApiHelpers.DecodeUrlEncodedBody(request.Content.ReadAsStringAsync().Result).ToList();
 
             var postData = new List<KeyValuePair<string, string>>();
             postData.Add(new KeyValuePair<string, string>("nonce", GetNonce().ToString()));

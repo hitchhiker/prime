@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Bitfinex
 
         [Get("/symbols")]
         Task<string[]> GetAssetsAsync();
+
+        [Post("/account_infos")]
+        Task<BitfinexSchema.AccountInfoResponse> GetAccountInfoAsync([Body(BodySerializationMethod.Serialized)] object body);
     }
 }
