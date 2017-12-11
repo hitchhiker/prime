@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Prime.Utility;
@@ -44,6 +46,19 @@ namespace Prime.Common
                 return;
 
             limiter.Limit();
+        }
+
+        public static IEnumerable<KeyValuePair<string, string>> DecodeUrlEncodedBody(string body)
+        {
+            return body.Split(new[] {"&"}, StringSplitOptions.RemoveEmptyEntries).Select(x =>
+            {
+                var parts = x.Split(new[] {"="}, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length != 2)
+                    throw new FormatException("Invalid format of post data");
+
+                return new KeyValuePair<string, string>(parts[0], parts[1]);
+            });
         }
     }
 }

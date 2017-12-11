@@ -28,13 +28,13 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
-            base.TestGetTradeOrderStatus("12351");
+            base.TestGetTradeOrderStatus("67092369");
         }
 
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            base.TestPlaceOrderLimit("LTC_BTC".ToAssetPairRaw(), false, 1, new Money(1, Asset.Btc));
+            base.TestPlaceOrderLimit("ETH_BTC".ToAssetPairRaw(), false, 0.001m, new Money(1, Asset.Btc));
         }
 
         [TestMethod]

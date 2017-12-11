@@ -49,6 +49,13 @@ namespace Prime.Tests.Providers
                 var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
 
                 Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
+                Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
+
+                if(r.IsOpen) Trace.WriteLine("Order is open");
+                if(r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
+                if(r.IsCanceled) Trace.WriteLine("Order is canceled");
+                if(r.IsClosed) Trace.WriteLine("Order is closed");
+                if(r.IsFound) Trace.WriteLine("Order is found");
             }
             catch (Exception e)
             {
@@ -63,6 +70,9 @@ namespace Prime.Tests.Providers
                 var context = new PlaceOrderLimitContext(UserContext.Current, market, isBuy, quantity, rate);
 
                 var r = AsyncContext.Run(() => provider.PlaceOrderLimitAsync(context));
+
+                Assert.IsTrue(!String.IsNullOrWhiteSpace(r.RemoteTradeId));
+                Trace.WriteLine($"Remote trade order id: {r.RemoteTradeId}");
             }
             catch (Exception e)
             {

@@ -8,6 +8,8 @@ using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Tidex
 {
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    // https://tidex.com/public-api
     public partial class TidexProvider : IOrderLimitProvider, IBalanceProvider
     {
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -23,6 +25,20 @@ namespace Prime.Plugins.Services.Tidex
 
             var balances = new BalanceResults();
 
+            foreach (var fund in r.return_.funds)
+            {
+                var c = fund.Key.ToAsset(this);
+
+                var available = new Money(fund.Value.value, c);
+
+                balances.Add(new BalanceResult(this)
+                {
+                    Available = available,
+                    Balance = available,
+                    Reserved = new Money(fund.Value.inOrders, c)
+                });
+            }
+
             return balances;
         }
 
@@ -34,8 +50,7 @@ namespace Prime.Plugins.Services.Tidex
             body.Add("method", "Trade");
             body.Add("pair", context.Pair.ToTicker(this).ToLower());
             body.Add("type", context.IsBuy ? "buy": "sell");
-            // TODO: check decimal separator!
-            body.Add("rate", context.Rate.ToDoubleValue());
+            body.Add("rate", context.Rate.ToDecimalValue());
             body.Add("amount", context.Quantity);
 
             var r = await api.TradeAsync(body).ConfigureAwait(false);
