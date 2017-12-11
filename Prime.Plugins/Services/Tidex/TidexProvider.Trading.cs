@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Tidex
                 balances.Add(new BalanceResult(this)
                 {
                     Available = available,
-                    Balance = available,
+                    AvailableAndReserved = available,
                     Reserved = new Money(fund.Value.inOrders, c)
                 });
             }
