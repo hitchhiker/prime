@@ -39,7 +39,18 @@ namespace Prime.Plugins.Services.Bitfinex
             public string pairs;
         }
 
+        internal class WalletBalanceResponse : List<WalletBalancesResponse> { }
+
+        internal class WalletBalancesResponse
+        {
+            public string type;
+            public string currency;
+            public decimal amount;
+            public decimal available;
+        }
+
         internal class AccountInfoRequest : BaseRequest { }
+        internal class WalletBalancesRequest : BaseRequest { }
 
         #endregion
 

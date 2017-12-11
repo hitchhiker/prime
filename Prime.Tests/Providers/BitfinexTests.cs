@@ -25,6 +25,12 @@ namespace Prime.Tests.Providers
             base.TestApiPrivate();
         }
 
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
         #endregion
 
         #region Public

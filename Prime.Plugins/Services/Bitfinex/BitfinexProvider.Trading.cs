@@ -6,7 +6,9 @@ using Prime.Common;
 
 namespace Prime.Plugins.Services.Bitfinex
 {
-    public partial class BitfinexProvider : IOrderLimitProvider
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    // https://bitfinex.readme.io/v1/reference
+    public partial class BitfinexProvider : IOrderLimitProvider, IBalanceProvider
     {
 
         public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
@@ -20,5 +22,30 @@ namespace Prime.Plugins.Services.Bitfinex
         }
 
         public decimal MinimumTradeVolume { get; }
+
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new BitfinexSchema.WalletBalancesRequest();
+
+            var r = await api.GetWalletBalancesAsync(body).ConfigureAwait(false);
+
+            var balances = new BalanceResults();
+
+            foreach (var rBalance in r)
+            {
+                var asset = rBalance.currency.ToAsset(this);
+
+                balances.Add(new BalanceResult(this)
+                {
+                    Available = new Money(rBalance.available, asset),
+                    Balance = new Money(rBalance.amount, asset),
+                    Reserved = new Money(0, asset)
+                });
+            }
+
+            return balances;
+        }
     }
 }
