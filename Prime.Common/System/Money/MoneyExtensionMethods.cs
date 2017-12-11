@@ -89,6 +89,9 @@ namespace Prime.Common
             if (money1 == 0 && money2 == 0)
                 return 0;
 
+            if (money1 == 0 || money2 == 0)
+                return 100;
+
             if (!Equals(money1.Asset, money2.Asset))
                 throw new Exception("Cannot calculate percentage profit for Money objects with different assets.");
 

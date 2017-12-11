@@ -5,9 +5,9 @@ using Prime.Common;
 
 namespace Prime.Common
 {
-    public class AuditGroup
+    public class AuditByAsset
     {
-        public AuditGroup(Money startingBalance, MarketPrice price = null)
+        public AuditByAsset(Money startingBalance, MarketPrice price = null)
         {
             Asset = startingBalance.Asset;
             Add(startingBalance, price);
@@ -20,7 +20,7 @@ namespace Prime.Common
             get
             {
                 lock (_lock)
-                    return Audit.First().Balance;
+                    return Audit.First().Value;
             }
         }
 
@@ -29,7 +29,7 @@ namespace Prime.Common
             get
             {
                 lock (_lock)
-                    return Audit.Last().Balance;
+                    return Audit.Last().Value;
             }
         }
 
@@ -54,7 +54,7 @@ namespace Prime.Common
         public void Add(Money balance, MarketPrice price = null)
         {
             if (balance.Asset.Id != Asset.Id)
-                throw new Exception($"You cant add this balance to {nameof(AuditGroup)} as it has the wrong asset class: {balance.Asset.ShortCode} needs {Asset.ShortCode}");
+                throw new Exception($"You cant add this balance to {nameof(AuditByAsset)} as it has the wrong asset class: {balance.Asset.ShortCode} needs {Asset.ShortCode}");
 
             lock (_lock)
                 Audit.Add(new AuditEntry(DateTime.UtcNow, balance, price));

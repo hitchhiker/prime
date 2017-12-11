@@ -42,7 +42,7 @@ namespace Prime.TestConsole
 
                     foreach (var result in balances)
 		            {
-		                Console.WriteLine($"{result.Asset}: {result.Balance}, {result.Available}, {result.Reserved}");
+		                Console.WriteLine($"{result.Asset}: {result.AvailableAndReserved}, {result.Available}, {result.Reserved}");
 		            }
 		        }
 		        catch (Exception e)

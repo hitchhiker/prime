@@ -130,5 +130,17 @@ namespace Prime.Utility
             encoding = encoding ?? Encoding.UTF8;
             return new MemoryStream(encoding.GetBytes(s ?? ""));
         }
+
+        public static string ToPercentage(this decimal percentage, bool signed)
+        {
+            return ToPercentage(percentage, 2, true, signed);
+        }
+
+        public static string ToPercentage(this decimal percentage, int decimalPlaces = 2, bool showPercentageSymbol = true, bool signed = false)
+        {
+            var r = Math.Round(percentage, decimalPlaces);
+            var s = signed ? r.ToSignedString() : r.ToString();
+            return !showPercentageSymbol ? s : $"{s}%";
+        }
     }
 }

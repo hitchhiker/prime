@@ -57,8 +57,7 @@ namespace Prime.Plugins.Services.Whaleclub
             var api = ApiProvider.GetApi(ctxPrivate);
             var r = await api.GetMarkets().ConfigureAwait(false);
 
-            var rFiltered = r.Where(
-                x =>
+            var rFiltered = r.Where(x =>
                     x.Value.category.Equals("crypto", StringComparison.OrdinalIgnoreCase) ||
                     x.Value.category.Equals("forex", StringComparison.OrdinalIgnoreCase));
 

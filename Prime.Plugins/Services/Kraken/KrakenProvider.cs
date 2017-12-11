@@ -235,7 +235,7 @@ namespace Prime.Plugins.Services.Kraken
                 results.Add(new BalanceResult(this)
                 {
                     Available = money,
-                    Balance = money,
+                    AvailableAndReserved = money,
                     Reserved = 0
                 });
             }

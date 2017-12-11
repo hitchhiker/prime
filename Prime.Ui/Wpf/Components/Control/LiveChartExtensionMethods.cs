@@ -99,7 +99,7 @@ namespace Prime.Ui.Wpf
 
             var values = new GearedValues<InstantChartPoint>();
             var ordered = data.OrderBy(x => x.DateTimeUtc).ToList();
-            var smadata = FinancialHelper.ComputeMovingAverage(ordered.Select(x => x.Close).ToList(), length);
+            var smadata = ordered.Select(x => x.Close).ToList().ComputeMovingAverage(length);
             for (var index = 0; index < ordered.Count; index++)
             {
                 var d = ordered[index];

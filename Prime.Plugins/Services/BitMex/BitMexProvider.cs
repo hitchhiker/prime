@@ -265,7 +265,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var balance = new BalanceResult(this)
             {
-                Balance = new Money(btcAmount, c),
+                AvailableAndReserved = new Money(btcAmount, c),
                 Available = new Money(btcAmount, c),
                 Reserved = new Money(0, c)
             };

@@ -138,12 +138,22 @@ namespace Prime.Common
         /// </summary>
         public static MarketPrice GetPrice(this IEnumerable<MarketPrice> prices, AssetPair pair)
         {
-            var m = prices.FirstOrDefault(x => x.Pair.Id == pair.Id);
-            if (m != null)
-                return m;
+            var m = prices.Where(x => x.Pair.Id == pair.Id);
+            if (m.Any())
+                return m.GetMidPrice();
 
-            m = prices.FirstOrDefault(x => x.Pair.Id == pair.Reversed.Id);
-            return m?.Reversed;
+            m = prices.Where(x => x.Pair.Id == pair.Reversed.Id);
+            if (m.Any())
+                return m.GetMidPrice().Reversed;
+            return null;
+        }
+
+        public static MarketPrice GetMidPrice(this IEnumerable<MarketPrice> prices)
+        {
+            var p = prices.OrderBy(x => x.Price).ToList();
+            if (!p.Any())
+                return null;
+            return p.Count == 1 ? p.First() : p.Skip(p.Count / 2).FirstOrDefault();
         }
         
         /// <summary>
