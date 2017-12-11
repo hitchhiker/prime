@@ -15,6 +15,9 @@ namespace Prime.Common
         [BsonId]
         public ObjectId Id { get; private set; }
 
+        /// <summary>
+        /// TODO: Work out what exactly these types of balances are ;)
+        /// </summary>
         [Bson]
         public Money AvailableAndReserved { get; set; }
 
