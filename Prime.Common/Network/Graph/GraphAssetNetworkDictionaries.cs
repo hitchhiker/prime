@@ -11,7 +11,7 @@ namespace Prime.Common
         private Dictionary<AssetPair, IReadOnlyList<Network>> _networksByPair;
         private UniqueList<AssetPair> _assetPairs;
         private IReadOnlyList<Asset> _assets;
-        private IReadOnlyList<Network> _networks;
+        private UniqueList<Network> _networks;
 
         public IReadOnlyList<AssetPair> AssetPairs => _assetPairs;
         public IReadOnlyDictionary<AssetPair, IReadOnlyList<Network>> NetworksByPair => _networksByPair;
@@ -24,8 +24,26 @@ namespace Prime.Common
             _pairsByNetwork = data.ToDictionary(x => x.Key, y => y.Value.AsReadOnlyList());
             _assetPairs = _pairsByNetwork.SelectMany(x => x.Value).ToUniqueList();
             _assets = _assetPairs.Select(a1 => a1.Asset1).Union(_assetPairs.Select(a2 => a2.Asset2)).ToUniqueList();
-            _networks = _pairsByNetwork.Keys.ToList();
-            _networksByPair = _assetPairs.ToDictionary(x => x, y => _pairsByNetwork.Where(kv2 => kv2.Value.Contains(y)).Select(x => x.Key).AsReadOnlyList());
+            _networks = _pairsByNetwork.Keys.ToUniqueList();
+            _networksByPair = FastInvert(_networks, _pairsByNetwork);
+        }
+
+        private static Dictionary<AssetPair, IReadOnlyList<Network>> FastInvert(UniqueList<Network> networks, Dictionary<Network, IReadOnlyList<AssetPair>> pbn)
+        {
+            var temp = new Dictionary<AssetPair, List<Network>>();
+            foreach (var n in networks)
+            {
+                var pairs = pbn.Get(n);
+                if (!pairs.Any())
+                    continue;
+                foreach (var p in pairs)
+                {
+                    if (!temp.ContainsKey(p))
+                        temp.Add(p, new List<Network>());
+                    temp[p].Add(n);
+                }
+            }
+            return temp.ToDictionary(x => x.Key, y => y.Value.AsReadOnlyList());
         }
 
         public void BuildData(GraphAssetNetworkDictionaries d, bool normalise)

@@ -28,7 +28,7 @@ namespace Prime.Common
             if (value == 0)
                 return;
 
-            var i = new BalanceResult(ProviderSource) {Balance = new Money(value, asset)};
+            var i = new BalanceResult(ProviderSource) {AvailableAndReserved = new Money(value, asset)};
             Add(i);
         }
 

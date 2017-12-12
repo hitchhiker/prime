@@ -175,7 +175,7 @@ namespace Prime.Plugins.Services.Poloniex
                 {
                     Available = new Money(kvp.Value.available, c),
                     Reserved = new Money(kvp.Value.onOrders, c),
-                    Balance = new Money(kvp.Value.available, c)
+                    AvailableAndReserved = new Money(kvp.Value.available, c)
                 });
             }
 

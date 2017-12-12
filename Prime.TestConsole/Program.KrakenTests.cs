@@ -113,7 +113,7 @@ namespace Prime.TestConsole
                         foreach (var balance in balances)
                         {
                             Console.WriteLine(
-                                $"{balance.Asset}: {balance.Available}, {balance.Balance}, {balance.Reserved}");
+                                $"{balance.Asset}: {balance.Available}, {balance.AvailableAndReserved}, {balance.Reserved}");
                         }
                     }
                 }

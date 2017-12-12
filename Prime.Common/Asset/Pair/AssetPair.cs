@@ -98,7 +98,7 @@ namespace Prime.Common
 
         public bool Equals(AssetPair other)
         {
-            return Asset1.Equals(other.Asset1) && Asset2.Equals(other.Asset2);
+            return Asset1?.Id == other?.Asset1.Id && Asset2?.Id == other?.Asset2.Id;
         }
 
         public bool Equals(AssetPair other, bool eitherDirection)
@@ -106,7 +106,7 @@ namespace Prime.Common
             if (!eitherDirection)
                 return Equals(other);
 
-            return Equals(other) || (Asset1.Equals(other.Asset2) && Asset2.Equals(other.Asset1));
+            return Equals(other) || Asset1?.Id == other?.Asset2.Id && Asset2?.Id == other?.Asset1.Id;
         }
 
         public override bool Equals(object obj)

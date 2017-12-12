@@ -61,7 +61,7 @@ namespace Prime.Common
             if (r == null)
                 return null;
 
-            r.RemoveAll(x => x.Balance == 0 && x.Available == 0 && x.Reserved == 0);
+            r.RemoveAll(x => x.AvailableAndReserved == 0 && x.Available == 0 && x.Reserved == 0);
             return r;
         }
 

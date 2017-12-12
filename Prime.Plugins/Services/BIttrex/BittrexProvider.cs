@@ -181,7 +181,7 @@ namespace Prime.Plugins.Services.Bittrex
                 balances.Add(new BalanceResult(this)
                 {
                     Available = new Money(rBalance.Available, asset),
-                    Balance = new Money(rBalance.Balance, asset),
+                    AvailableAndReserved = new Money(rBalance.Balance, asset),
                     Reserved = new Money(rBalance.Pending, asset)
                 });
             }

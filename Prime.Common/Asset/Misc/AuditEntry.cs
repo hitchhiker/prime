@@ -1,4 +1,5 @@
 ﻿using System;
+using LiteDB;
 
 namespace Prime.Common
 {
@@ -6,17 +7,20 @@ namespace Prime.Common
     {
         private AuditEntry() { }
 
-        public AuditEntry(DateTime utcCreated, Money balance, MarketPrice tradePrice = null)
+        public AuditEntry(DateTime utcCreated, Money value, MarketPrice tradePrice = null)
         {
             UtcCreated = utcCreated;
-            Balance = balance;
+            Value = value;
             TradePrice = tradePrice;
         }
 
+        [Bson]
         public DateTime UtcCreated { get; private set; }
 
-        public Money Balance { get; private set; }
+        [Bson]
+        public Money Value { get; private set; }
 
+        [Bson]
         public MarketPrice TradePrice { get; private set; }
     }
 }

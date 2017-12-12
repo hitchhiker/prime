@@ -57,7 +57,7 @@ namespace Prime.Common
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return string.Equals(ShortCode, other.ShortCode);
+            return string.Equals(Id, other.Id);
         }
 
         public override bool Equals(object obj)
@@ -70,7 +70,7 @@ namespace Prime.Common
 
         public override int GetHashCode()
         {
-            return (ShortCode != null ? ShortCode.GetHashCode() : 0);
+            return (Id != null ? Id.GetHashCode() : 0);
         }
 
         private UniqueList<Asset> _pegged;

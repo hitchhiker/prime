@@ -153,6 +153,9 @@ namespace Prime.Utility
             if (dateTime == DateTime.MinValue)
                 return false;
 
+            if (dateTime == DateTime.MaxValue)
+                return true;
+
             if (dateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(IsWithinTheLast) + " only accepts UTC DateTime");
 
@@ -163,6 +166,9 @@ namespace Prime.Utility
         {
             if (dateTime == DateTime.MinValue)
                 return true;
+
+            if (dateTime == DateTime.MaxValue)
+                return false;
 
             if (dateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException(nameof(IsBeforeOrEqualTo) + " only accepts UTC DateTime");
@@ -213,5 +219,12 @@ namespace Prime.Utility
         }
 
         public static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static string ToPrettyString(this TimeSpan span)
+        {
+            if (span.Days > 0)
+                return string.Format("{0}d:{1}h:{2}m", span.Days, span.Hours, span.Minutes);
+            return span.Hours > 0 ? string.Format("{0}h:{1}m", span.Hours, span.Minutes) : string.Format("{0}m", span.Minutes);
+        }
     }
 }

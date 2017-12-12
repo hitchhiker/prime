@@ -27,5 +27,15 @@ namespace Prime.Utility
         {
             return PercentageDifference((decimal)value1, value2);
         }
+
+        public static decimal PercentageAdd(this decimal value, decimal percentage)
+        {
+            return value + (value * (percentage / 100));
+        }
+
+        public static string ToSignedString(this decimal value)
+        {
+            return value >= 0 ? $"+{value}" : value.ToString();
+        }
     }
 }

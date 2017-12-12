@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.Bitfinex
                 balances.Add(new BalanceResult(this)
                 {
                     Available = new Money(rBalance.available, asset),
-                    Balance = new Money(rBalance.amount, asset),
+                    AvailableAndReserved = new Money(rBalance.amount, asset),
                     Reserved = new Money(0, asset)
                 });
             }

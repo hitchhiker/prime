@@ -200,7 +200,7 @@ namespace Prime.Plugins.Services.HitBtc
                 balances.Add(new BalanceResult(this)
                 {
                     Available = rBalance.available,
-                    Balance = rBalance.available,
+                    AvailableAndReserved = rBalance.available,
                     Reserved = rBalance.reserved
                 });
             }

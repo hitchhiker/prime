@@ -1,13 +1,25 @@
+using LiteDB;
 using System;
 
 namespace Prime.Common
 {
     public class BalanceResult : IEquatable<BalanceResult>
     {
-        public Asset Asset => !Balance.Asset.IsNone() ? Balance.Asset : (!Available.Asset.IsNone() ? Available.Asset : Reserved.Asset);
+        public BalanceResult()
+        {
+            Id = ObjectId.NewObjectId();
+        }
 
+        public Asset Asset => !AvailableAndReserved.Asset.IsNone() ? AvailableAndReserved.Asset : (!Available.Asset.IsNone() ? Available.Asset : Reserved.Asset);
+
+        [BsonId]
+        public ObjectId Id { get; private set; }
+
+        /// <summary>
+        /// TODO: Work out what exactly these types of balances are ;)
+        /// </summary>
         [Bson]
-        public Money Balance { get; set; }
+        public Money AvailableAndReserved { get; set; }
 
         [Bson]
         public Money Available { get; set; }
@@ -22,7 +34,7 @@ namespace Prime.Common
 
         public BalanceResult(INetworkProvider provider) : this(provider.Network) { }
 
-        public BalanceResult(Network network, Money? availableBalance = null)
+        public BalanceResult(Network network, Money? availableBalance = null) : this()
         {
             Network = network;
             if (availableBalance != null)
@@ -36,14 +48,22 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return "A: " + Available + " B: " + Balance + " R: " + Reserved;
+            return "A: " + Available + " B: " + AvailableAndReserved + " R: " + Reserved;
+        }
+
+        public bool MatchNetworkAsset(BalanceResult other)
+        {
+            if (other == null)
+                return false;
+
+            return other?.Network.Id == Network.Id && other?.Asset.Id == Asset.Id;
         }
 
         public bool Equals(BalanceResult other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Asset, other.Asset) && Equals(Network, other.Network);
+            return Equals(Id, other.Id);
         }
 
         public override bool Equals(object obj)
@@ -56,10 +76,7 @@ namespace Prime.Common
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((Asset != null ? Asset.GetHashCode() : 0) * 397) ^ (Network != null ? Network.GetHashCode() : 0);
-            }
+            return (Id != null ? Id.GetHashCode() : 0);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Prime.TestConsole
 
                     foreach (var balance in balances)
                     {
-                        Console.WriteLine($"{balance.Asset}: {balance.Balance}, {balance.Available}, {balance.Reserved}");
+                        Console.WriteLine($"{balance.Asset}: {balance.AvailableAndReserved}, {balance.Available}, {balance.Reserved}");
                     }
                 }
                 catch (Exception e)

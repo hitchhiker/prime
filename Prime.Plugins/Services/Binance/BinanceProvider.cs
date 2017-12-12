@@ -286,7 +286,7 @@ namespace Prime.Plugins.Services.Binance
                 balances.Add(new BalanceResult(this)
                 {
                     Available = new Money(b.free, asset),
-                    Balance = new Money(b.free, asset),
+                    AvailableAndReserved = new Money(b.free, asset),
                     Reserved = new Money(b.locked, asset)
                 });
             }

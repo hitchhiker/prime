@@ -30,10 +30,17 @@ namespace Prime.Common
 
         public void Add(MarketPrice price)
         {
-            if (price?.Price > 0)
+            if (price?.Pair == null)
+                return;
+
+            if (price.Network == null)
+            {
+                MissedPairs.Add(price.Pair);
+                return;
+            }
+
+            if (price.Price > 0)
                 PricesList.Add(price);
-            else if (price?.Pair != null)
-                MissedPairs.Add(price?.Pair);
         }
 
         public void AddRange(IEnumerable<MarketPrice> prices)
