@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Prime.Plugins.Services.Bitfinex
 {
@@ -8,7 +10,12 @@ namespace Prime.Plugins.Services.Bitfinex
     {
         #region Base
 
-        internal class FeesBaseResposnse
+        internal class BaseResponse
+        {
+            public string message;
+        }
+
+        internal class FeesBaseResposnse : BaseResponse
         {
             public decimal maker_fees;
             public decimal taker_fees;
@@ -16,8 +23,15 @@ namespace Prime.Plugins.Services.Bitfinex
 
         internal class BaseRequest
         {
+            [JsonProperty(Order = -2)]
             public string request;
+            [JsonProperty(Order = -2)]
             public string nonce;
+        }
+
+        internal interface IClassDescriptor
+        {
+             string ClassName { get; }
         }
 
         #endregion
@@ -49,8 +63,74 @@ namespace Prime.Plugins.Services.Bitfinex
             public decimal available;
         }
 
-        internal class AccountInfoRequest : BaseRequest { }
-        internal class WalletBalancesRequest : BaseRequest { }
+        internal class NewOrderResponse : BaseResponse
+        {
+            public long id;
+            public string symbol;
+            public string exchange;
+            public decimal price;
+            public decimal avg_execution_price;
+            public string side;
+            public string type;
+            public string timestamp;
+            public bool is_live;
+            public bool is_cancelled;
+            public bool is_hidden;
+            public bool was_forced;
+            public decimal original_amount;
+            public decimal remaining_amount;
+            public decimal executed_amount;
+            public long order_id;
+        }
+
+        internal class AccountInfoRequest : BaseRequest
+        {
+            internal class Descriptor : AccountInfoRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(AccountInfoRequest);
+            }
+        }
+
+        internal class WalletBalancesRequest : BaseRequest
+        {
+            internal class Descriptor : AccountInfoRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(WalletBalancesRequest);
+            }
+        }
+
+        internal class NewOrderRequest : BaseRequest
+        {
+            public NewOrderRequest()
+            {
+                //is_hidden = "false";
+                //use_all_available = 0.ToString();
+                //ocoorder = "false";
+                //buy_price_oco = 0.ToString();
+                //sell_price_oco = 0.ToString();
+                type = "exchange limit";
+                exchange = "bitfinex";
+            }
+
+            public string symbol; 
+            public string amount;
+            public string price;
+            public string exchange;
+            public string side;
+            public string type;
+            
+            //public string is_hidden;
+            //public string is_postonly;
+            //public string use_all_available;
+            //public string ocoorder;
+            //public string buy_price_oco;
+            //public string sell_price_oco;
+
+            internal class Descriptor : NewOrderRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(NewOrderRequest);
+            }
+        }
 
         #endregion
 

@@ -6,18 +6,22 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bitfinex
 {
+    [AllowAnyStatusCode]
     internal interface IBitfinexApi
     {
         [Get("/pubticker/{currencyPair}")]
-        Task<BitfinexSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+        Task<Response<BitfinexSchema.TickerResponse>> GetTickerAsync([Path] string currencyPair);
 
         [Get("/symbols")]
-        Task<string[]> GetAssetsAsync();
+        Task<Response<string[]>> GetAssetsAsync();
 
         [Post("/account_infos")]
-        Task<BitfinexSchema.AccountInfoResponse> GetAccountInfoAsync([Body(BodySerializationMethod.Serialized)] object body);
+        Task<Response<BitfinexSchema.AccountInfoResponse>> GetAccountInfoAsync([Body(BodySerializationMethod.Serialized)] object body);
 
         [Post("/balances")]
-        Task<BitfinexSchema.WalletBalanceResponse> GetWalletBalancesAsync([Body(BodySerializationMethod.Serialized)] object body);
+        Task<Response<BitfinexSchema.WalletBalanceResponse>> GetWalletBalancesAsync([Body(BodySerializationMethod.Serialized)] object body);
+
+        [Post("/order/new")]
+        Task<Response<BitfinexSchema.NewOrderResponse>> PlaceNewOrderAsync([Body(BodySerializationMethod.Serialized)] object body);
     }
 }

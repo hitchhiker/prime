@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
@@ -10,10 +11,23 @@ namespace Prime.Plugins.Services.Bitfinex
     // https://bitfinex.readme.io/v1/reference
     public partial class BitfinexProvider : IOrderLimitProvider, IBalanceProvider
     {
-
-        public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
+        public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new BitfinexSchema.NewOrderRequest.Descriptor();
+            body.symbol = context.Pair.ToTicker(this);
+            body.amount = context.Quantity.ToString(CultureInfo.InvariantCulture);
+            body.price = context.Rate.ToDecimalValue().ToString(CultureInfo.InvariantCulture);
+            body.side = context.IsSell ? "sell" : "buy";
+
+            var rRaw = await api.PlaceNewOrderAsync(body).ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
         public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
@@ -27,9 +41,13 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = new BitfinexSchema.WalletBalancesRequest();
+            var body = new BitfinexSchema.WalletBalancesRequest.Descriptor();
 
-            var r = await api.GetWalletBalancesAsync(body).ConfigureAwait(false);
+            var rRaw = await api.GetWalletBalancesAsync(body).ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var balances = new BalanceResults();
 

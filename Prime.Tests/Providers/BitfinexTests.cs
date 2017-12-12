@@ -31,6 +31,12 @@ namespace Prime.Tests.Providers
             base.TestGetBalances();
         }
 
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("ETH_USD".ToAssetPairRaw(), false, 1, new Money(1000, "USD".ToAssetRaw()));
+        }
+
         #endregion
 
         #region Public
