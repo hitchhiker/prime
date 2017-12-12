@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
@@ -66,16 +67,57 @@ namespace Prime.Plugins.Services.Bitfinex
             return balances;
         }
 
-        public bool IsFeeIncluded { get; }
+        private static readonly Lazy<Dictionary<Asset, string>> WithdrawalAssetsToTypes = new Lazy<Dictionary<Asset,string>>(() => new Dictionary<Asset, string>()
+        {
+            // TODO: clarify keys.
+            { "BTC".ToAssetRaw(), "bitcoin" },
+            { "LTC".ToAssetRaw(), "litecoin" },
+            { "ETH".ToAssetRaw(), "ethereum" },
+            { "ETC".ToAssetRaw(), "ethereumc" },
+            { "mastercoin".ToAssetRaw(), "mastercoin" },
+            { "ZEC".ToAssetRaw(), "zcash" },
+            { "XMR".ToAssetRaw(), "monero" },
+            { "wire".ToAssetRaw(), "wire" },
+            { "DASH".ToAssetRaw(), "dash" },
+            { "XRP".ToAssetRaw(), "ripple" },
+            { "EOS".ToAssetRaw(), "eos" },
+            { "NEO".ToAssetRaw(), "neo" },
+            { "AVT".ToAssetRaw(), "aventus" },
+            { "QTUM".ToAssetRaw(), "qtum" },
+            { "eidoo".ToAssetRaw(), "eidoo" },
+        });
+
+        public bool IsFeeIncluded => false;
+
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = new Bitfinex.BitfinexSchema.WithdrawalRequest.Descriptor();
+            var body = new BitfinexSchema.WithdrawalRequest.Descriptor();
 
-            //var rRaw = await api.WithdrawAsync()
+            if(!WithdrawalAssetsToTypes.Value.TryGetValue(context.Amount.Asset, out var withdrawalType))
+                throw new ApiResponseException("Withdrawal of specified asset is not supported", this);
 
-            return new WithdrawalPlacementResult();
+            body.withdraw_type = withdrawalType;
+            body.walletselected = "exchange"; // Can be trading, exchange, deposit.
+            body.amount = context.Amount.ToDecimalValue().ToString(CultureInfo.InvariantCulture);
+            body.address = context.Address.Address;
+
+            var rRaw = await api.WithdrawAsync(body).ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent().FirstOrDefault();
+            if(r == null)
+                throw new ApiResponseException("No result return after withdrawal operation", this);
+
+            if(r.status.Equals("error", StringComparison.InvariantCultureIgnoreCase))
+                throw new ApiResponseException(r.message, this);
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.withdrawal_id.ToString()
+            };
         }
     }
 }

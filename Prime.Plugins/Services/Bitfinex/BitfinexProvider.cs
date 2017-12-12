@@ -52,8 +52,8 @@ namespace Prime.Plugins.Services.Bitfinex
             {
                 if (rawResponse.GetContent() is BitfinexSchema.BaseResponse rBase)
                 {
-                    if (!String.IsNullOrWhiteSpace(rBase.message))
-                        throw new ApiResponseException(rBase.message, this, methodName);
+                    var message = String.IsNullOrWhiteSpace(rBase.message) ? "Unknown error occurred" : rBase.message;
+                    throw new ApiResponseException(message, this, methodName);
                 }
                 else
                 {

@@ -83,12 +83,17 @@ namespace Prime.Plugins.Services.Bitfinex
             public long order_id;
         }
 
-        internal class WithdrawalsResponse : List<WithdrawalResponse> { }
-
-        internal class WithdrawalResponse
+        internal class WithdrawalsResponse : List<WithdrawalResponse>
         {
             public string status;
             public string message;
+            public long withdrawal_id;
+        }
+
+        internal class WithdrawalResponse : BaseResponse
+        {
+            public string status;
+            // public string message; // Inherited from BaseResponse.
             public long withdrawal_id;
         }
 
@@ -145,8 +150,8 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             public string withdraw_type;
             public string walletselected;
-            public decimal amount;
-            public string walletto;
+            public string amount;
+            public string address;
 
             internal class Descriptor : WithdrawalRequest, IClassDescriptor
             {

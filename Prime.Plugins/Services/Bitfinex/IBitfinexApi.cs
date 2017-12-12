@@ -25,6 +25,6 @@ namespace Prime.Plugins.Services.Bitfinex
         Task<Response<BitfinexSchema.NewOrderResponse>> PlaceNewOrderAsync([Body(BodySerializationMethod.Serialized)] object body);
 
         [Post("/withdraw")]
-        Task WithdrawAsync([Body(BodySerializationMethod.Serialized)] object body);
+        Task<Response<BitfinexSchema.WithdrawalsResponse>> WithdrawAsync([Body(BodySerializationMethod.Serialized)] object body);
     }
 }

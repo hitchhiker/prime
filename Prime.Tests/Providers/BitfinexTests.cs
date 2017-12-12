@@ -42,7 +42,7 @@ namespace Prime.Tests.Providers
         {
             var context = new WithdrawalPlacementContext(UserContext.Current)
             {
-                Address = new WalletAddress("testaddress12345"),
+                Address = new WalletAddress("12ZjBeu8mP9L81PeFeiFokwaW5KW7usrmv"),
                 Amount = new Money(1, Asset.Btc)
             };
 
