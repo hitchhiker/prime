@@ -9,7 +9,7 @@ namespace Prime.Plugins.Services.Bitfinex
 {
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://bitfinex.readme.io/v1/reference
-    public partial class BitfinexProvider : IOrderLimitProvider, IBalanceProvider
+    public partial class BitfinexProvider : IOrderLimitProvider, IBalanceProvider, IWithdrawalPlacementProvider
     {
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
@@ -64,6 +64,18 @@ namespace Prime.Plugins.Services.Bitfinex
             }
 
             return balances;
+        }
+
+        public bool IsFeeIncluded { get; }
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Bitfinex.BitfinexSchema.WithdrawalRequest.Descriptor();
+
+            //var rRaw = await api.WithdrawAsync()
+
+            return new WithdrawalPlacementResult();
         }
     }
 }

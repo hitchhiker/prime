@@ -83,6 +83,15 @@ namespace Prime.Plugins.Services.Bitfinex
             public long order_id;
         }
 
+        internal class WithdrawalsResponse : List<WithdrawalResponse> { }
+
+        internal class WithdrawalResponse
+        {
+            public string status;
+            public string message;
+            public long withdrawal_id;
+        }
+
         internal class AccountInfoRequest : BaseRequest
         {
             internal class Descriptor : AccountInfoRequest, IClassDescriptor
@@ -103,11 +112,11 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             public NewOrderRequest()
             {
-                //is_hidden = "false";
-                //use_all_available = 0.ToString();
-                //ocoorder = "false";
-                //buy_price_oco = 0.ToString();
-                //sell_price_oco = 0.ToString();
+                is_hidden = false;
+                use_all_available = 0;
+                ocoorder = false;
+                buy_price_oco = 0;
+                sell_price_oco = 0;
                 type = "exchange limit";
                 exchange = "bitfinex";
             }
@@ -119,16 +128,29 @@ namespace Prime.Plugins.Services.Bitfinex
             public string side;
             public string type;
             
-            //public string is_hidden;
-            //public string is_postonly;
-            //public string use_all_available;
-            //public string ocoorder;
-            //public string buy_price_oco;
-            //public string sell_price_oco;
+            public bool is_hidden;
+            public bool is_postonly;
+            public int use_all_available;
+            public bool ocoorder;
+            public int buy_price_oco;
+            public int sell_price_oco;
 
             internal class Descriptor : NewOrderRequest, IClassDescriptor
             {
                 public string ClassName => nameof(NewOrderRequest);
+            }
+        }
+
+        internal class WithdrawalRequest : BaseRequest
+        {
+            public string withdraw_type;
+            public string walletselected;
+            public decimal amount;
+            public string walletto;
+
+            internal class Descriptor : WithdrawalRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(WithdrawalRequest);
             }
         }
 

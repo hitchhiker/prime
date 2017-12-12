@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Nito.AsyncEx;
@@ -28,11 +29,33 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
+                ///////
+
+                var ohlcs = Networks.I.OhlcProviders.ToArray();
+                foreach (var provider in ohlcs)
+                {
+                    Console.WriteLine($"Name: {provider.Network.Name}");
+                }
+
+                var bitmex = Networks.I.Providers.OfType<BitMexProvider>().First();
+
+                var r = bitmex.GetOhlcAsync(new OhlcContext("BTC_USD".ToAssetPairRaw(), TimeResolution.Hour,
+                    new TimeRange(DateTime.UtcNow.AddDays(-60), DateTime.UtcNow.AddDays(-40), TimeResolution.Hour))).Result;
+
+                var contents = string.Join("\r\n", r.Select(x => $"{x.DateTimeUtc} - {(x.High + x.Low) / 2}"));
+
+                File.WriteAllText(@"C:\Users\Alexander\Desktop\ohlc btc-usd 1h 3.txt", contents);
+
+                return;
+
+                ///////
                 // Run Alyasko code :)
                 // new ProviderTools().GenerateProvidersReport();
                 var perfTools = new PerformanceTools();
                 perfTools.CheckConditionals();
                 perfTools.MemTest();
+
+                
             }
             else if (Environment.UserName.Equals("Sean"))
             {

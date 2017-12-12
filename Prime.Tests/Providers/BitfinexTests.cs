@@ -37,6 +37,18 @@ namespace Prime.Tests.Providers
             base.TestPlaceOrderLimit("ETH_USD".ToAssetPairRaw(), false, 1, new Money(1000, "USD".ToAssetRaw()));
         }
 
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            var context = new WithdrawalPlacementContext(UserContext.Current)
+            {
+                Address = new WalletAddress("testaddress12345"),
+                Amount = new Money(1, Asset.Btc)
+            };
+
+            base.TestPlaceWithdrawal(context);
+        }
+
         #endregion
 
         #region Public
