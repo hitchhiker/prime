@@ -14,12 +14,20 @@ namespace Prime.Common
 
     public class WalletAddress : IEquatable<WalletAddress>
     {
-        private WalletAddress() { }
-
-        public WalletAddress(IBalanceProvider service, Asset asset)
+        private WalletAddress()
         {
-            Network = service.Network;
             UtcCreated = UtcLastChecked = DateTime.UtcNow;
+        }
+
+        // TODO: WalletAddress: review this constructor.
+        public WalletAddress(string address) : this()
+        {
+            Address = address;
+        }
+
+        public WalletAddress(IBalanceProvider service, Asset asset): this()
+        {
+            Network = service?.Network;
             Asset = asset;
         }
 
