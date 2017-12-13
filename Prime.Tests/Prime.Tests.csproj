@@ -137,6 +137,7 @@
     <Compile Include="Providers\AcxTests.cs" />
     <Compile Include="Providers\AllcoinTests.cs" />
     <Compile Include="Providers\AlphapointTests.cs" />
+    <Compile Include="Providers\ApiaryTests.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Trading.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Volume.cs" />
     <Compile Include="Providers\BinanceTests.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="Providers\Base\ProviderDirectTestsBase.cs" />
     <Compile Include="Providers\QuadrigaCxTests.cs" />
     <Compile Include="Providers\CoinfloorTests.cs" />
+    <Compile Include="Providers\QuoineTests.cs" />
     <Compile Include="Providers\ShapeShiftTests.cs" />
     <Compile Include="Providers\TheRockTradingTests.cs" />
     <Compile Include="Providers\TidexTests.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="Providers\VaultoroTests.cs" />
     <Compile Include="Providers\WexTests.cs" />
     <Compile Include="Providers\WhaleclubTests.cs" />
+    <Compile Include="Providers\XbtceTests.cs" />
     <Compile Include="Providers\YobitTests.cs" />
   </ItemGroup>
   <ItemGroup>
