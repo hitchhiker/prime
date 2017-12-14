@@ -55,9 +55,7 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var rRawBase = rRaw.GetContent();
 
-            var rBase = rRawBase as CryptopiaSchema.BaseResponse;
-
-            if (rBase != null && !rBase.Success)
+            if (rRawBase is CryptopiaSchema.BaseResponse rBase && !rBase.Success)
             {
                 string error;
 
