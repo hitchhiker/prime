@@ -8,10 +8,15 @@ namespace Prime.Plugins.Services.Cryptopia
     {
         #region Base
 
-        internal class BaseResponse<T>
+        internal class BaseResponse
         {
             public bool Success;
             public string Message;
+            public string Error;
+        }
+
+        internal class BaseResponse<T> : BaseResponse
+        {
             public T Data;
         }
 

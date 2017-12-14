@@ -55,10 +55,21 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var rRawBase = rRaw.GetContent();
 
-            if (rRawBase is CryptopiaSchema.BaseResponse<T> rBase)
-                if (!rBase.Success && !String.IsNullOrWhiteSpace(rBase.Message))
-                    throw new ApiResponseException(rBase.Message, this, methodName);
+            var rBase = rRawBase as CryptopiaSchema.BaseResponse;
 
+            if (rBase != null && !rBase.Success)
+            {
+                string error;
+
+                if(!String.IsNullOrWhiteSpace(rBase.Error))
+                    error = rBase.Error;
+                else if (!String.IsNullOrWhiteSpace(rBase.Message))
+                    error = rBase.Message;
+                else
+                    error = "Unknown API error";
+
+                throw new ApiResponseException(error, this, methodName);
+            }
 
             if (!rRaw.ResponseMessage.IsSuccessStatusCode)
             {
@@ -73,7 +84,7 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetBalanceAsync(new object()).ConfigureAwait(false);
+            var rRaw = await api.GetBalanceAsync(new { }).ConfigureAwait(false);
 
             CheckCryptopiaResponseErrors(rRaw);
 
