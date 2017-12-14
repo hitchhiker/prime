@@ -31,6 +31,24 @@ namespace Prime.Tests.Providers
             base.TestGetBalances();
         }
 
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("ETH_USD".ToAssetPairRaw(), false, 1, new Money(1000, "USD".ToAssetRaw()));
+        }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            var context = new WithdrawalPlacementContext(UserContext.Current)
+            {
+                Address = new WalletAddress("12ZjBeu8mP9L81PeFeiFokwaW5KW7usrmv"),
+                Amount = new Money(1, Asset.Btc)
+            };
+
+            base.TestPlaceWithdrawal(context);
+        }
+
         #endregion
 
         #region Public

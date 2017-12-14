@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.Cryptopia;
+using Prime.Plugins.Services.Ccex;
 
 namespace Prime.Tests.Providers
 {
-    [TestClass()]
-    public class CryptopiaTests : ProviderDirectTestsBase
+    [TestClass]
+    public class CcexTests : ProviderDirectTestsBase
     {
-        public CryptopiaTests()
+        public CcexTests()
         {
-            Provider = Networks.I.Providers.OfType<CryptopiaProvider>().FirstProvider();
-        }
-
-        [TestMethod]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
+            Provider = Networks.I.Providers.OfType<CcexProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -34,13 +29,11 @@ namespace Prime.Tests.Providers
             var pairs = new List<AssetPair>()
             {
                 "USD_BTC".ToAssetPairRaw(),
-                "BTC_USDT".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "BCH_BTC".ToAssetPairRaw(),
-                "BCH_USDT".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw(),
+                "ZNY_DOGE".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, true);
+            base.TestGetPricing(pairs, true, false);
         }
 
         [TestMethod]
@@ -49,10 +42,8 @@ namespace Prime.Tests.Providers
             var requiredPairs = new AssetPairs()
             {
                 "USD_BTC".ToAssetPairRaw(),
-                "BTC_USDT".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "BCH_BTC".ToAssetPairRaw(),
-                "BCH_USDT".ToAssetPairRaw()
+                "BTC_USD".ToAssetPairRaw(),
+                "ZNY_DOGE".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);

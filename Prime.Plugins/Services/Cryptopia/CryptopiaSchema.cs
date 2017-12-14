@@ -6,12 +6,44 @@ namespace Prime.Plugins.Services.Cryptopia
 {
     internal class CryptopiaSchema
     {
-        public class BaseResponse<T>
+        #region Base
+
+        internal class BaseResponse
         {
             public bool Success;
             public string Message;
+            public string Error;
+        }
+
+        internal class BaseResponse<T> : BaseResponse
+        {
             public T Data;
         }
+
+        #endregion
+
+        #region Private
+
+        internal class BalanceResponse : BaseResponse<BalanceDataResponse[]> { }
+
+        internal class BalanceDataResponse
+        {
+            public int CurrencyId;
+            public string Symbol;
+            public decimal Total;
+            public decimal Available;
+            public decimal Unconfirmed;
+            public decimal HeldForTrades;
+            public decimal PendingWithdraw;
+            public string Address;
+            public string BaseAddress;
+            public string Status;
+            public string StatusMessage;
+        }
+
+        #endregion
+
+        #region Public
 
         internal class AllTickersResponse : BaseResponse<TickerEntryResponse[]>
         {
@@ -40,5 +72,7 @@ namespace Prime.Plugins.Services.Cryptopia
             public decimal BaseBuyVolume;
             public decimal BaseSellVolume;
         }
+
+        #endregion
     }
 }

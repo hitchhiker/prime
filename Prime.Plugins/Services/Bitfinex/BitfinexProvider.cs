@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.Bitfinex
 {
@@ -44,10 +46,31 @@ namespace Prime.Plugins.Services.Bitfinex
             ApiProvider = new RestApiClientProvider<IBitfinexApi>(BitfinexApiUrl, this, k => new BitfinexAuthenticator(k).GetRequestModifierAsync);
         }
 
+        private void CheckBitfinexResponseErrors<T>(Response<T> rawResponse, [CallerMemberName]string methodName = null)
+        {
+            if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
+            {
+                if (rawResponse.GetContent() is BitfinexSchema.BaseResponse rBase)
+                {
+                    var message = String.IsNullOrWhiteSpace(rBase.message) ? "Unknown error occurred" : rBase.message;
+                    throw new ApiResponseException(message, this, methodName);
+                }
+                else
+                {
+                    var reason = rawResponse.ResponseMessage.ReasonPhrase;
+                    throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(String.IsNullOrWhiteSpace(reason) ? "": $" ({reason})")}", this, methodName);
+                }
+            }               
+        }
+
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAssetsAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAssetsAsync().ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r?.Length > 0;
         }
@@ -56,9 +79,13 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             var api = ApiProvider.GetApi(context);
 
-            var infoRequest = new BitfinexSchema.AccountInfoRequest();
+            var infoRequest = new BitfinexSchema.AccountInfoRequest.Descriptor();
 
-            var r = await api.GetAccountInfoAsync(infoRequest).ConfigureAwait(false);
+            var rRaw = await api.GetAccountInfoAsync(infoRequest).ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r.Any() && r.First().fees.Any();
         }
@@ -67,7 +94,11 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAssetsAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAssetsAsync().ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             if (r == null || r.Length == 0)
             {
@@ -100,7 +131,11 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
-            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+            var rRaw = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.last_price)
             {
