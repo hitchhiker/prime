@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.BxInTh
 
         public Network Network { get; } = Networks.I.Get("BxInTh");
 
-        public bool Disabled => false;
+        public bool Disabled => true;
         public int Priority => 100;
         public string AggregatorName => null;
         public string Title => Network.Name;

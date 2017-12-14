@@ -122,7 +122,7 @@ namespace Prime.Common
                 return false;
             }
 
-            var hasvolume = pairVolume.Volume24Btc > 40;
+            var hasvolume = pairVolume.Volume24Btc !=null && pairVolume.Volume24Btc.Value.ToDecimalValue() > Context.MinimumBtcVolume;
             if (hasvolume)
                 return true;
 

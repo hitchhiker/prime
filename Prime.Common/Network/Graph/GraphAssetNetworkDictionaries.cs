@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
 using Prime.Utility;
@@ -8,16 +9,27 @@ namespace Prime.Common
     public class GraphAssetNetworkDictionaries
     {
         private Dictionary<Network, IReadOnlyList<AssetPair>> _pairsByNetwork;
-        private Dictionary<AssetPair, IReadOnlyList<Network>> _networksByPair;
+        
         private UniqueList<AssetPair> _assetPairs;
         private IReadOnlyList<Asset> _assets;
         private UniqueList<Network> _networks;
 
         public IReadOnlyList<AssetPair> AssetPairs => _assetPairs;
-        public IReadOnlyDictionary<AssetPair, IReadOnlyList<Network>> NetworksByPair => _networksByPair;
+        public IReadOnlyDictionary<AssetPair, IReadOnlyList<Network>> NetworksByPair => NetworksByPairLazy;
         public IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> PairsByNetwork => _pairsByNetwork;
         public IReadOnlyList<Asset> Assets => _assets;
         public IReadOnlyList<Network> Networks => _networks;
+
+        private readonly object _nbpl = new object();
+        private Dictionary<AssetPair, IReadOnlyList<Network>> _networksByPairBacking;
+        private Dictionary<AssetPair, IReadOnlyList<Network>> NetworksByPairLazy
+        {
+            get
+            {
+                lock (_nbpl)
+                    return _networksByPairBacking ?? (_networksByPairBacking = FastInvert(_networks, _pairsByNetwork));
+            }
+        }
 
         public void BuildData(IReadOnlyCollection<KeyValuePair<Network, IReadOnlyList<AssetPair>>> data)
         {
@@ -25,7 +37,7 @@ namespace Prime.Common
             _assetPairs = _pairsByNetwork.SelectMany(x => x.Value).ToUniqueList();
             _assets = _assetPairs.Select(a1 => a1.Asset1).Union(_assetPairs.Select(a2 => a2.Asset2)).ToUniqueList();
             _networks = _pairsByNetwork.Keys.ToUniqueList();
-            _networksByPair = FastInvert(_networks, _pairsByNetwork);
+            _networksByPairBacking = null;
         }
 
         private static Dictionary<AssetPair, IReadOnlyList<Network>> FastInvert(UniqueList<Network> networks, Dictionary<Network, IReadOnlyList<AssetPair>> pbn)

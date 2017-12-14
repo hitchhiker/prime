@@ -112,7 +112,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionMethods\FileExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\MessengerExtensionMethods.cs" />
     <Compile Include="Misc\GridValueColourConverter.cs" />
     <Compile Include="Misc\NetworkTraffic.cs" />

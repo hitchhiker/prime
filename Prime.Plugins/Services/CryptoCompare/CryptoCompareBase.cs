@@ -200,8 +200,8 @@ namespace Prime.Plugins.Services.CryptoCompare
                     Close = i.close,
                     Low = i.low,
                     High = i.high,
-                    VolumeFrom = (long)i.volumefrom,
-                    VolumeTo = (long)i.volumeto
+                    VolumeFrom = i.volumefrom,
+                    VolumeTo = i.volumeto
                 });
             }
 

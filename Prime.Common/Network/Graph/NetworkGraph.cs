@@ -43,12 +43,12 @@ namespace Prime.Common
 
             var orig = AsyncContext.Run(() => AssetPairProvider.I.GetNetworksDiskAsync());
 
-            var pbn = orig.ToDictionary(x => x.Key, y => y.Value.Select(x => x.Normalised).AsReadOnlyList());
+            //var pbn = orig.ToDictionary(x => x.Key, y => y.Value.Select(x => x.Normalised).AsReadOnlyList());
             var pbnR = orig.ToDictionary(x => x.Key, y => y.Value as IReadOnlyList<AssetPair>);
 
-             ApplyFilters(Context, pbn);
+             ApplyFilters(Context, pbnR);
 
-            _dN.BuildData(pbn);
+            _dN.BuildData(pbnR.ToDictionary(x => x.Key, y => y.Value.Select(x => x.Normalised).AsReadOnlyList()));
             _dR.BuildData(pbnR);
         }
 
@@ -76,7 +76,7 @@ namespace Prime.Common
             if (ctx.OnlyPairs != null || !ctx.OnlyPairs.Any())
                 return;
 
-            var opn = ctx.OnlyPairs.Select(x => x.Normalised).ToList();
+            var opn = ctx.OnlyPairs.ToList();
 
             var clone = pbn.ToDictionary(x => x.Key, y => y.Value);
             foreach (var kv in clone)

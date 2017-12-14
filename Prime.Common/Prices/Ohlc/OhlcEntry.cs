@@ -52,25 +52,25 @@ namespace Prime.Common
         public DateTime DateTimeUtc { get; set; }
 
         [Bson]
-        public double Open { get; set; }
+        public decimal Open { get; set; }
 
         [Bson]
-        public double Close { get; set; }
+        public decimal Close { get; set; }
 
         [Bson]
-        public double High { get; set; }
+        public decimal High { get; set; }
 
         [Bson]
-        public double Low { get; set; }
+        public decimal Low { get; set; }
 
         [Bson]
-        public double VolumeTo { get; set; }
+        public decimal VolumeTo { get; set; }
 
         [Bson]
-        public double VolumeFrom { get; set; }
+        public decimal VolumeFrom { get; set; }
 
         [Bson]
-        public double WeightedAverage { get; set; }
+        public decimal WeightedAverage { get; set; }
 
         [Bson]
         public long DateTimeUtcTicks

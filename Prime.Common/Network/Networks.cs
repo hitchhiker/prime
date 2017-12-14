@@ -25,7 +25,7 @@ namespace Prime.Common
                 if (!_collected)
                 {
                     _collected = true;
-                    KnownNetworks.AddRange(TypeCatalogue.I.ImplementInstances<INetworkProvider>().Select(x => x.Network));
+                    KnownNetworks.AddRange(TypeCatalogue.I.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).Select(x => x.Network));
                 }
             }
             return _cache.GetOrAdd(Network.GetHash(name), k => new Network(name));

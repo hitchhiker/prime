@@ -9,6 +9,14 @@ namespace Prime.Utility
     {
         private readonly List<string> _l = new List<string>();
 
+        public void Write(int space, object obj)
+        {
+            var str = obj.ToString();
+            Write(str);
+            if (str.Length < space)
+                Write(new string(' ', space - str.Length));
+        }
+
         public void Write(object obj)
         {
             if (obj == null)
@@ -42,7 +50,8 @@ namespace Prime.Utility
             return string.Join(Environment.NewLine, _l);
         }
 
-        public void SetCursorPosition(int index)
+
+        public void At(int index)
         {
             if (!_l.Any())
             {

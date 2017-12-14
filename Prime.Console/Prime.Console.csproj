@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Worker.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\prv\Prime.Arbitrage\Prime.Arbitrage.csproj" />
+    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
+    <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LiteDB">
+      <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

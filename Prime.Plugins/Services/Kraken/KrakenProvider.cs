@@ -373,13 +373,13 @@ namespace Prime.Plugins.Services.Kraken
                     // BUG: ohlcResponse.volume is double ~0.2..10.2, why do we cast to long?
                     ohlc.Add(new OhlcEntry(seriesId, time, this)
                     {
-                        Open = (double)ohlcResponse.open,
-                        Close = (double)ohlcResponse.close,
-                        Low = (double)ohlcResponse.low,
-                        High = (double)ohlcResponse.high,
-                        VolumeTo = (long)ohlcResponse.volume, // Cast to long should be revised.
-                        VolumeFrom = (long)ohlcResponse.volume,
-                        WeightedAverage = (double)ohlcResponse.vwap // Should be checked.
+                        Open = ohlcResponse.open,
+                        Close = ohlcResponse.close,
+                        Low = ohlcResponse.low,
+                        High = ohlcResponse.high,
+                        VolumeTo = ohlcResponse.volume, // Cast to long should be revised.
+                        VolumeFrom = ohlcResponse.volume,
+                        WeightedAverage = ohlcResponse.vwap // Should be checked.
                     });
                 }
             }

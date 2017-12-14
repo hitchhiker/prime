@@ -89,13 +89,13 @@ namespace Prime.Plugins.Services.BitMex
             {
                 ohlc.Add(new OhlcEntry(seriesId, instrActive.timestamp, this)
                 {
-                    Open = (double)instrActive.open,
-                    Close = (double)instrActive.close,
-                    Low = (double)instrActive.low,
-                    High = (double)instrActive.high,
-                    VolumeTo = (long)instrActive.volume,
-                    VolumeFrom = (long)instrActive.volume,
-                    WeightedAverage = (double)(instrActive.vwap ?? 0) // BUG: what to set if vwap is NULL?
+                    Open = instrActive.open,
+                    Close = instrActive.close,
+                    Low = instrActive.low,
+                    High = instrActive.high,
+                    VolumeTo = instrActive.volume,
+                    VolumeFrom = instrActive.volume,
+                    WeightedAverage = (instrActive.vwap ?? 0) // BUG: what to set if vwap is NULL?
                 });
             }
 

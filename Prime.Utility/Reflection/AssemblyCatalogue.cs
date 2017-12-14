@@ -39,14 +39,22 @@ namespace Prime.Utility
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var a in assemblies)
             {
-                if (a.IsDynamic || a.GlobalAssemblyCache)
+                try
+                {
+                    if (a.IsDynamic || a.GlobalAssemblyCache)
                     continue;
 
                 if (a.FullName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("NETStandard", StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                if (a.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright?.Contains("microsoft", StringComparison.OrdinalIgnoreCase) == true)
+                
+                    if (a.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright?.Contains("microsoft", StringComparison.OrdinalIgnoreCase) == true)
+                        continue;
+                }
+                catch
+                {
                     continue;
+                }
 
                 try
                 {

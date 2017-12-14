@@ -273,12 +273,12 @@ namespace Prime.Plugins.Services.Coinbase
                     var dateTime = ((long)candle[0]).ToUtcDateTime();
                     ohlc.Add(new OhlcEntry(seriesId, dateTime, this)
                     {
-                        Low = (double)candle[1],
-                        High = (double)candle[2],
-                        Open = (double)candle[3],
-                        Close = (double)candle[4],
-                        VolumeTo = (long)candle[5],
-                        VolumeFrom = (long)candle[5],
+                        Low = candle[1],
+                        High = candle[2],
+                        Open = candle[3],
+                        Close = candle[4],
+                        VolumeTo = candle[5],
+                        VolumeFrom = candle[5],
                         WeightedAverage = 0 // Is not provided by API.
                     });
                 }

@@ -82,12 +82,12 @@ namespace Prime.Plugins.Services.CryptoCompare
         internal class HistoricEntry
         {
             public long time;
-            public double high;
-            public double low;
-            public double open;
-            public double close;
-            public double volumefrom;
-            public double volumeto;
+            public decimal high;
+            public decimal low;
+            public decimal open;
+            public decimal close;
+            public decimal volumefrom;
+            public decimal volumeto;
         }
 
         internal class HistoricListResult : CryptoCompareResponseBase

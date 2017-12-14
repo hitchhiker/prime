@@ -9,10 +9,10 @@ namespace Prime.Ui.Wpf
         public OhlcInstantChartPoint(OhlcEntry i)
         {
             X = i.DateTimeUtc.ToInstant();
-            Open = i.Open;
-            High = i.High;
-            Low = i.Low;
-            Close = i.Close;
+            Open = (double)i.Open;
+            High = (double)i.High;
+            Low = (double)i.Low;
+            Close = (double)i.Close;
         }
 
         public Instant X { get; set; }

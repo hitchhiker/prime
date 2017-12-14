@@ -66,8 +66,8 @@ namespace Prime.Ui.Wpf.ViewModel
             set => Set(ref _lastLow, value);
         }
 
-        private double _lastVolume;
-        public double LastVolume
+        private decimal _lastVolume;
+        public decimal LastVolume
         {
             get => _lastVolume;
             set => Set(ref _lastVolume, value);

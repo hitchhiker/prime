@@ -22,5 +22,10 @@ namespace Prime.Common
 
         [Bson]
         public MarketPrice TradePrice { get; private set; }
+
+        public override string ToString()
+        {
+            return UtcCreated.ToLongTimeString() + "\t" + Value.ToString() + "\t" + TradePrice?.ToString();
+        }
     }
 }

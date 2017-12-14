@@ -90,12 +90,12 @@ namespace Prime.Plugins.Services.Binance
                 var dateTime = ((long)(rEntry[0] / 1000)).ToUtcDateTime();
                 ohlc.Add(new OhlcEntry(seriesId, dateTime, this)
                 {
-                    Open = (double)rEntry[1],
-                    Close = (double)rEntry[4],
-                    Low = (double)rEntry[3],
-                    High = (double)rEntry[2],
-                    VolumeTo = (double)rEntry[7], // Quote asset volume
-                    VolumeFrom = (double)rEntry[5], // Volume
+                    Open = rEntry[1],
+                    Close = rEntry[4],
+                    Low = rEntry[3],
+                    High = rEntry[2],
+                    VolumeTo = rEntry[7], // Quote asset volume
+                    VolumeFrom = rEntry[5], // Volume
                     WeightedAverage = 0 // BUG: no WeightedAverage data returned from API.
                 });
             }

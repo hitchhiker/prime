@@ -25,13 +25,13 @@ namespace Prime.Plugins.Services.Poloniex
         internal class ChartEntryResponse
         {
             public long date;
-            public double high;
-            public double low;
-            public double open;
-            public double close;
-            public long volume;
-            public long quoteVolume;
-            public double weightedAverage;
+            public decimal high;
+            public decimal low;
+            public decimal open;
+            public decimal close;
+            public decimal volume;
+            public decimal quoteVolume;
+            public decimal weightedAverage;
         }
 
         internal class TickerEntryResponse
