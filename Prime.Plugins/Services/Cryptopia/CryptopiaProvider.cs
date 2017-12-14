@@ -18,7 +18,7 @@ namespace Prime.Plugins.Services.Cryptopia
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    // https://www.cryptopia.co.nz/Forum/Thread/255
+    // https://www.cryptopia.co.nz/Forum/Category/45
     public partial class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string CryptopiaApiUrl = "https://www.cryptopia.co.nz/api/";
@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetBalanceAsync(new { }).ConfigureAwait(false);
+            var rRaw = await api.GetBalanceAsync(new CryptopiaSchema.BalanceRequest()).ConfigureAwait(false);
 
             CheckCryptopiaResponseErrors(rRaw);
 

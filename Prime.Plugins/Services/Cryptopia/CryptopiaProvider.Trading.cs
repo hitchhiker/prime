@@ -10,9 +10,22 @@ namespace Prime.Plugins.Services.Cryptopia
     // https://www.cryptopia.co.nz/Forum/Thread/255
     public partial class CryptopiaProvider : IOrderLimitProvider, IBalanceProvider
     {
-        public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
+        public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new CryptopiaSchema.SubmitTradeRequest();
+            body.Market = context.Pair.ToTicker(this, "/");
+            body.Type = context.IsBuy ? "Buy" : "Sell";
+            body.Rate = context.Rate;
+            body.Amount = context.Quantity;
+
+            var rRaw = await api.SubmitTradeAsync(body).ConfigureAwait(false);
+
+            CheckCryptopiaResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+            return new PlacedOrderLimitResponse(r.Data.OrderId.ToString());
         }
 
         public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
@@ -21,9 +34,30 @@ namespace Prime.Plugins.Services.Cryptopia
         }
 
         public decimal MinimumTradeVolume { get; }
-        public Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
+
+        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalanceAsync(new CryptopiaSchema.BalanceRequest()).ConfigureAwait(false);
+
+            CheckCryptopiaResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+            
+            var balances = new BalanceResults();
+
+            foreach (var rBalance in r.Data)
+            {
+                var asset = rBalance.Symbol.ToAsset(this);
+
+                balances.Add(new BalanceResult(this)
+                {
+                    Available = new Money(rBalance.Available, asset),
+                    Reserved = new Money(rBalance.HeldForTrades + rBalance.PendingWithdraw, asset)
+                });
+            }
+
+            return balances;
         }
     }
 }

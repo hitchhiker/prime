@@ -16,6 +16,9 @@ namespace Prime.Plugins.Services.Cryptopia
 
         [AllowAnyStatusCode]
         [Post("/GetBalance")]
-        Task<Response<CryptopiaSchema.BalanceResponse>> GetBalanceAsync([Body(BodySerializationMethod.Serialized)] object body);
+        Task<Response<CryptopiaSchema.BalanceResponse>> GetBalanceAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.BalanceRequest body);
+
+        [Post("/SubmitTrade")]
+        Task<Response<CryptopiaSchema.SubmitTradeResponse>> SubmitTradeAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.SubmitTradeRequest body);
     }
 }

@@ -23,6 +23,18 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("ETH_BTC".ToAssetPairRaw(), false, 1, new Money(100000, Asset.Btc));
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
