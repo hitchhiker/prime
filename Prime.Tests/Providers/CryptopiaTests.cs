@@ -23,6 +23,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
