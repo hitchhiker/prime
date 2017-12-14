@@ -26,6 +26,8 @@ namespace Prime.Plugins.Services.Cryptopia
 
         internal class BalanceResponse : BaseResponse<BalanceDataResponse[]> { }
 
+        internal class SubmitTradeResponse : BaseResponse<SubmitTradeDataResponse> { }
+
         internal class BalanceDataResponse
         {
             public int CurrencyId;
@@ -39,6 +41,22 @@ namespace Prime.Plugins.Services.Cryptopia
             public string BaseAddress;
             public string Status;
             public string StatusMessage;
+        }
+
+        internal class SubmitTradeDataResponse
+        {
+            public long OrderId;
+            public long[] FilledOrders;
+        }
+
+        internal class BalanceRequest { }
+
+        internal class SubmitTradeRequest
+        {
+            public string Market;
+            public string Type;
+            public decimal Rate;
+            public decimal Amount;
         }
 
         #endregion

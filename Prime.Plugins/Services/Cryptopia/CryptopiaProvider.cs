@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetBalanceAsync(new { }).ConfigureAwait(false);
+            var rRaw = await api.GetBalanceAsync(new CryptopiaSchema.BalanceRequest()).ConfigureAwait(false);
 
             CheckCryptopiaResponseErrors(rRaw);
 
