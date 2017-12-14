@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using LiteDB;
+using Newtonsoft.Json;
 using Prime.Common;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.Cryptopia
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://www.cryptopia.co.nz/Forum/Thread/255
-    public class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider
+    public partial class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string CryptopiaApiUrl = "https://www.cryptopia.co.nz/api/";
 
@@ -40,7 +48,38 @@ namespace Prime.Plugins.Services.Cryptopia
 
         public CryptopiaProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICryptopiaApi>(CryptopiaApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICryptopiaApi>(CryptopiaApiUrl, this, k => new CryptopiaAuthenticator(k).GetRequestModifierAsync);
+        }
+
+        private void CheckCryptopiaResponseErrors<T>(Response<T> rRaw, [CallerMemberName] string methodName = null)
+        {
+            var rRawBase = rRaw.GetContent();
+
+            if (rRawBase is CryptopiaSchema.BaseResponse<T> rBase)
+                if (!rBase.Success && !String.IsNullOrWhiteSpace(rBase.Message))
+                    throw new ApiResponseException(rBase.Message, this, methodName);
+
+
+            if (!rRaw.ResponseMessage.IsSuccessStatusCode)
+            {
+                var reason = rRaw.ResponseMessage.ReasonPhrase;
+                throw new ApiResponseException(
+                    $"HTTP error {rRaw.ResponseMessage.StatusCode} {(String.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}",
+                    this, methodName);
+            }
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = await api.GetBalanceAsync(new object()).ConfigureAwait(false);
+
+            CheckCryptopiaResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null && r.Data.Length > 0;
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -123,8 +162,8 @@ namespace Prime.Plugins.Services.Cryptopia
             if (r.Success)
             {
                 var prices = new MarketPrices();
-                
-                var rPairsDict = r.Data.ToDictionary(x => x.Label.ToAssetPair(this,'/'), x => x);
+
+                var rPairsDict = r.Data.ToDictionary(x => x.Label.ToAssetPair(this, '/'), x => x);
                 var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
                 foreach (var pair in pairsQueryable)

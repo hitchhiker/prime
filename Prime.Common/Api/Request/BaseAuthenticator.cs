@@ -65,26 +65,26 @@ namespace Prime.Common
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512(string message, string secret)
         {
-            return Convert.ToBase64String(HashHMACSHA512Raw(message, secret));
+            return ToBase64(HashHMACSHA512Raw(message, secret));
         }
 
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA512(byte[] message, byte[] secret)
         {
             using (var hmacsha512 = new HMACSHA512(secret))
-                return Convert.ToBase64String(hmacsha512.ComputeHash(message));
+                return ToBase64(hmacsha512.ComputeHash(message));
         }
 
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA256(string message, string secret)
         {
-            return Convert.ToBase64String(HashHMACSHA256Raw(message, secret));
+            return ToBase64(HashHMACSHA256Raw(message, secret));
         }
 
         // ReSharper disable once InconsistentNaming
         public string HashHMACSHA384(string message, string secret)
         {
-            return Convert.ToBase64String(HashHMACSHA384Raw(message, secret));
+            return ToBase64(HashHMACSHA384Raw(message, secret));
         }
 
         // ReSharper disable once InconsistentNaming
@@ -125,6 +125,15 @@ namespace Prime.Common
         }
 
         // ReSharper disable once InconsistentNaming
+        public byte[] HashHMACSHA256Raw(byte[] message, byte[] secret)
+        {
+            using (var hmac = new HMACSHA256(secret))
+            {
+                return hmac.ComputeHash(message);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
         public string HashHMACSHA256Hex(string message, string secret)
         {
             return ToHex(HashHMACSHA256Raw(message, secret));
@@ -136,6 +145,31 @@ namespace Prime.Common
             return ToHex(HashHMACSHA512Raw(message, secret));
         }
 
+        #region Hash MD5
+
+        // ReSharper disable once InconsistentNaming
+        public byte[] HashMD5Raw(string message)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                return md5.ComputeHash(FromUtf8(message));
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashMD5Hex(string message)
+        {
+            return ToHex(HashMD5Raw(message));
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashMD5(string message)
+        {
+            return ToBase64(HashMD5Raw(message));
+        }
+
+        #endregion
+
         public string ToHex(byte[] data)
         {
             return data.Aggregate(new StringBuilder(), (sb, b) => sb.AppendFormat("{0:x2}", b), sb => sb.ToString());
@@ -146,14 +180,24 @@ namespace Prime.Common
             return Encoding.UTF8.GetBytes(data);
         }
 
+        public string ToUtf8(byte[] data)
+        {
+            return Encoding.UTF8.GetString(data);
+        }
+
         public byte[] FromBase64(string data)
         {
             return Convert.FromBase64String(data);
         }
 
+        public string ToBase64(byte[] data)
+        {
+            return Convert.ToBase64String(data);
+        }
+
         public string ToBase64(string data)
         {
-            return Convert.ToBase64String(FromUtf8(data));
+            return ToBase64(FromUtf8(data));
         }
 
         public abstract void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken);
