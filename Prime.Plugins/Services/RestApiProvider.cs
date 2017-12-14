@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services
             return new RestClient(_apiUrl)
             {
                 JsonSerializerSettings = JsonSerializerSettings,
-                // ResponseDeserializer = new DebugDeserialiser()
+                //ResponseDeserializer = new DebugDeserialiser()
             }.For<T>() as T;
         }
 
