@@ -18,3 +18,5 @@ UpgradeLog.htm
 *.DotSettings
 TestResults
  
+exception-*.txt
+audit-*.txt
