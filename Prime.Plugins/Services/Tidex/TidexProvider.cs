@@ -50,18 +50,9 @@ namespace Prime.Plugins.Services.Tidex
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            var api = ApiProviderPrivate.GetApi(context);
+            var r = await GetBalancesAsync(context).ConfigureAwait(false);
 
-            var body = CreateTidexPostBody();
-            body.Add("method", "getInfo");
-
-            var r = await api.GetUserInfoExtAsync(body).ConfigureAwait(false);
-
-            CheckTidexResponse(r);
-
-            // TODO: re-implement.
-
-            return r.return_ != null;
+            return r != null;
         }
 
         private void CheckTidexResponse<T>(TidexSchema.BaseResponse<T> r)
