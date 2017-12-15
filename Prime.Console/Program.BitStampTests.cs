@@ -21,11 +21,11 @@ namespace Prime.TestConsole
                 {
                     var price = AsyncContext.Run(() => provider.GetPricingAsync(priceContext));
 
-                    Console.WriteLine($"Latest {pair}: {price.FirstPrice}");
+                    System.Console.WriteLine($"Latest {pair}: {price.FirstPrice}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -42,12 +42,12 @@ namespace Prime.TestConsole
 
                     foreach (var result in balances)
 		            {
-		                Console.WriteLine($"{result.Asset}: {result.AvailableAndReserved}, {result.Available}, {result.Reserved}");
+		                System.Console.WriteLine($"{result.Asset}: {result.AvailableAndReserved}, {result.Available}, {result.Reserved}");
 		            }
 		        }
 		        catch (Exception e)
 		        {
-		            Console.WriteLine(e.Message);
+		            System.Console.WriteLine(e.Message);
 		            throw;
 		        }
             }
@@ -63,12 +63,12 @@ namespace Prime.TestConsole
 
 		            foreach (var pair in pairs)
 		            {
-		                Console.WriteLine($"{pair}");
+		                System.Console.WriteLine($"{pair}");
 		            }
 		        }
 		        catch (Exception e)
 		        {
-		            Console.WriteLine(e);
+		            System.Console.WriteLine(e);
 		            throw;
 		        }
             }
@@ -85,21 +85,21 @@ namespace Prime.TestConsole
 		            var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
 		            var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
 
-                    Console.WriteLine("Addresses for 1 asset");
+                    System.Console.WriteLine("Addresses for 1 asset");
 		            foreach (var address in addresses)
 		            {
-		                Console.WriteLine($"{address.Asset} : {address.Address}");
+		                System.Console.WriteLine($"{address.Asset} : {address.Address}");
 		            }
 
-		            Console.WriteLine("Addresses for all assets");
+		            System.Console.WriteLine("Addresses for all assets");
 		            foreach (var address in addressesAll)
 		            {
-		                Console.WriteLine($"{address.Asset} : {address.Address}");
+		                System.Console.WriteLine($"{address.Asset} : {address.Address}");
 		            }
 		        }
 		        catch (Exception e)
 		        {
-		            Console.WriteLine(e);
+		            System.Console.WriteLine(e);
 		            throw;
 		        }
             }
