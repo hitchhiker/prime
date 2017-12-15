@@ -15,11 +15,11 @@ namespace Prime.Tests.Providers
         #region Wrappers
 
         public virtual void TestGetTradeOrderStatus() { }
-        public void TestGetTradeOrderStatus(string remoteOrderId)
+        public void TestGetTradeOrderStatus(string remoteOrderId, AssetPair market = null)
         {
             var p = IsType<IOrderLimitProvider>();
             if (p.Success)
-                GetTradeOrderStatus(p.Provider, remoteOrderId);
+                GetTradeOrderStatus(p.Provider, remoteOrderId, market);
         }
 
         public virtual void TestPlaceOrderLimit() { }
@@ -41,11 +41,15 @@ namespace Prime.Tests.Providers
 
         #region Tests
 
-        private void GetTradeOrderStatus(IOrderLimitProvider provider, string remoteOrderId)
+        private void GetTradeOrderStatus(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
             try
             {
                 var context = new RemoteIdContext(UserContext.Current, remoteOrderId);
+
+                if (market != null)
+                    context.Market = market;
+
                 var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
 
                 Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");

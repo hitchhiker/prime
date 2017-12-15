@@ -35,6 +35,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.TestGetTradeOrderStatus("1234", "DOT_BTC".ToAssetPairRaw());
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
