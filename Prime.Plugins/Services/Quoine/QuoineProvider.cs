@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.Quoine
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var products = await GetAllProductsAsync();
+            var products = await GetAllProductsAsync().ConfigureAwait(false);
 
             var pairs = new AssetPairs();
 
@@ -139,7 +139,7 @@ namespace Prime.Plugins.Services.Quoine
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
-            var products = await GetAllProductsAsync();
+            var products = await GetAllProductsAsync().ConfigureAwait(false);
 
             var prices = new MarketPrices();
 
