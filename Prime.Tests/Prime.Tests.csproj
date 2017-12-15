@@ -152,6 +152,7 @@
     <Compile Include="Providers\BitlishTests.cs" />
     <Compile Include="Providers\BitMarketTests.cs" />
     <Compile Include="Providers\BitMexTests.cs" />
+    <Compile Include="Providers\BitsaneTests.cs" />
     <Compile Include="Providers\BitsoTests.cs" />
     <Compile Include="Providers\BitStampTests.cs" />
     <Compile Include="Providers\BittrexTests.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Providers\ItBitTests.cs" />
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
+    <Compile Include="Providers\KunaTests.cs" />
     <Compile Include="Providers\LakeBtcTests.cs" />
     <Compile Include="Providers\LiquiTests.cs" />
     <Compile Include="Providers\LiveCoinTests.cs" />
