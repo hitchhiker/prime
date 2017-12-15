@@ -31,7 +31,7 @@ namespace Prime.Tests.Providers
                 "btc_uah".ToAssetPairRaw(),
                 "eth_uah".ToAssetPairRaw(),
                 "kun_btc".ToAssetPairRaw(),
-                "wave_suah".ToAssetPairRaw()
+                "waves_uah".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, false);
