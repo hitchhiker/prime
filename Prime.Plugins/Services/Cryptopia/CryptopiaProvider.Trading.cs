@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
+using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Cryptopia
 {
@@ -28,9 +30,61 @@ namespace Prime.Plugins.Services.Cryptopia
             return new PlacedOrderLimitResponse(r.Data.OrderId.ToString());
         }
 
-        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteIdContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new CryptopiaSchema.GetOpenOrdersRequest();
+            body.Count = 1000;
+            body.Market = context.Market.ToTicker(this, "/");
+
+            var rRaw = await api.GetOpenOrdersAsync(body).ConfigureAwait(false);
+
+            CheckCryptopiaResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r.Data.Select(x => new TradeOrderStatus(x.OrderId.ToString(), true, false));
+        }
+
+        private async Task<IEnumerable<TradeOrderStatus>> GetTradeHistoryAsync(RemoteIdContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new CryptopiaSchema.GetTradeHistoryRequest();
+            body.Count = 1000;
+            body.Market = context.Market.ToTicker(this, "/");
+
+            var rRaw = await api.GetTradeHistoryAsync(body).ConfigureAwait(false);
+
+            CheckCryptopiaResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r.Data.Select(x => new TradeOrderStatus(x.TradeId.ToString(), false, false));
+        }
+
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        {
+            var openOrders = await GetOpenOrdersAsync(context).ConfigureAwait(false);
+
+            var order = openOrders.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteId));
+
+            var isOpen = true;
+
+            if (order == null)
+            {
+                var tradeHistory = await GetTradeHistoryAsync(context).ConfigureAwait(false);
+
+                var trade = tradeHistory.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteId));
+
+                if(trade == null)
+                    throw new NoTradeOrderException(context, this);
+
+                isOpen = false;
+            }
+
+            return new TradeOrderStatus(context.RemoteId, isOpen, false);
         }
 
         public decimal MinimumTradeVolume { get; }
