@@ -28,7 +28,9 @@ namespace Prime.Common
             {
                 {"USD".ToAssetRaw(), 3},
                 {"EUR".ToAssetRaw(), 3},
-                {"USDT".ToAssetRaw(), 5}
+                {"USDT".ToAssetRaw(), 5},
+                {"BTC".ToAssetRaw(), 4},
+                {"LTC".ToAssetRaw(), 4}
             };
             return d;
         }

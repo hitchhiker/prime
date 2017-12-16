@@ -177,13 +177,7 @@ namespace Prime.Plugins.Services.Bittrex
             foreach (var rBalance in r.result)
             {
                 var asset = rBalance.Currency.ToAsset(this);
-
-                balances.Add(new BalanceResult(this)
-                {
-                    Available = new Money(rBalance.Available, asset),
-                    AvailableAndReserved = new Money(rBalance.Balance, asset),
-                    Reserved = new Money(rBalance.Pending, asset)
-                });
+                balances.Add(asset, rBalance.Available, rBalance.Pending);
             }
 
             return balances;

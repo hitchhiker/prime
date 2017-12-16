@@ -263,15 +263,7 @@ namespace Prime.Plugins.Services.BitMex
 
             var c = Asset.Btc;
 
-            var balance = new BalanceResult(this)
-            {
-                AvailableAndReserved = new Money(btcAmount, c),
-                Available = new Money(btcAmount, c),
-                Reserved = new Money(0, c)
-            };
-
-            results.Add(balance);
-
+            results.Add(c, btcAmount, 0);
             return results;
         }
 

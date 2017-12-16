@@ -282,13 +282,7 @@ namespace Prime.Plugins.Services.Binance
             foreach (var b in r.balances)
             {
                 var asset = b.asset.ToAsset(this);
-
-                balances.Add(new BalanceResult(this)
-                {
-                    Available = new Money(b.free, asset),
-                    AvailableAndReserved = new Money(b.free, asset),
-                    Reserved = new Money(b.locked, asset)
-                });
+                balances.Add(asset, b.free, b.locked);
             }
 
             return balances;

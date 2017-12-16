@@ -11,6 +11,12 @@ namespace Prime.Utility
 
         public void Write(int space, object obj)
         {
+            if (space == -1)
+            {
+                Write(obj);
+                return;
+            }
+
             var str = obj.ToString();
             Write(str);
             if (str.Length < space)
@@ -72,6 +78,11 @@ namespace Prime.Utility
                 line = line + new string(' ', index- lineIndex);
 
             _l[_l.Count - 1] = line;
+        }
+
+        public void Write(ConsoleEntries entries)
+        {
+            entries.ForEach(kv => Write(kv.ColumnWidth, kv.Text));
         }
     }
 }

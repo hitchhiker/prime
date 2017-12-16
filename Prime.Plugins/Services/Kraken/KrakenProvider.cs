@@ -230,14 +230,7 @@ namespace Prime.Plugins.Services.Kraken
             foreach (var pair in r.result)
             {
                 var asset = pair.Key.ToAsset(this);
-                var money = new Money(pair.Value, asset);
-
-                results.Add(new BalanceResult(this)
-                {
-                    Available = money,
-                    AvailableAndReserved = money,
-                    Reserved = 0
-                });
+                results.Add(asset, pair.Value, 0);
             }
 
             return results;

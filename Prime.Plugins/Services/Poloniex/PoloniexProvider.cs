@@ -170,13 +170,7 @@ namespace Prime.Plugins.Services.Poloniex
             foreach (var kvp in r)
             {
                 var c = kvp.Key.ToAsset(this);
-
-                results.Add(new BalanceResult(this)
-                {
-                    Available = new Money(kvp.Value.available, c),
-                    Reserved = new Money(kvp.Value.onOrders, c),
-                    AvailableAndReserved = new Money(kvp.Value.available, c)
-                });
+                results.Add(c, kvp.Value.available, kvp.Value.onOrders);
             }
 
             return results;

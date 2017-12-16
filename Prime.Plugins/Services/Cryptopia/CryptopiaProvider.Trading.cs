@@ -49,12 +49,7 @@ namespace Prime.Plugins.Services.Cryptopia
             foreach (var rBalance in r.Data)
             {
                 var asset = rBalance.Symbol.ToAsset(this);
-
-                balances.Add(new BalanceResult(this)
-                {
-                    Available = new Money(rBalance.Available, asset),
-                    Reserved = new Money(rBalance.HeldForTrades + rBalance.PendingWithdraw, asset)
-                });
+                balances.Add(asset, rBalance.Available, rBalance.HeldForTrades + rBalance.PendingWithdraw);
             }
 
             return balances;

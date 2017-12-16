@@ -106,9 +106,7 @@ namespace Prime.Plugins.Services.Coinbase
                     continue;
 
                 var c = a.balance.currency.ToAsset(this);
-                results.AddBalance(c, a.balance.amount);
-                results.AddAvailable(c, a.balance.amount);
-                results.AddReserved(c, a.balance.amount);
+                results.Add(c, a.balance.amount, 0);
             }
 
             return results;

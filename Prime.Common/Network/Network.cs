@@ -72,6 +72,9 @@ namespace Prime.Common
             return NetworkDatas.I.GetOrCreate(context, this);
         }
 
+        private string _code4;
+        public string Code4 => _code4 ?? (_code4 = Name.Length>4 ? Name.ToUpper().Substring(0,4) : Name.ToUpper());
+
         public override string ToString()
         {
             return Name;

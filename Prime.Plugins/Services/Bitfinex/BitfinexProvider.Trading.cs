@@ -55,13 +55,7 @@ namespace Prime.Plugins.Services.Bitfinex
             foreach (var rBalance in r)
             {
                 var asset = rBalance.currency.ToAsset(this);
-
-                balances.Add(new BalanceResult(this)
-                {
-                    Available = new Money(rBalance.available, asset),
-                    AvailableAndReserved = new Money(rBalance.amount, asset),
-                    Reserved = new Money(0, asset)
-                });
+                balances.Add(asset, rBalance.available, rBalance.amount - rBalance.available);
             }
 
             return balances;

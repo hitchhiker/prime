@@ -16,17 +16,24 @@ namespace Prime.Common
         public ObjectId Id { get; private set; }
 
         /// <summary>
-        /// TODO: Work out what exactly these types of balances are ;)
+        /// The available balance for use.
         /// </summary>
-        [Bson]
-        public Money AvailableAndReserved { get; set; }
-
         [Bson]
         public Money Available { get; set; }
 
+        /// <summary>
+        /// The balance reserved in either trading / withdrawals or creation of orders.
+        /// </summary>
         [Bson]
         public Money Reserved { get; set; }
 
+        /// <summary>
+        /// The account's value when all balances are available.
+        /// The amount of money reserved by trading / withdrawals plus the available balance.
+        /// </summary>
+        [Bson]
+        public Money AvailableAndReserved { get; set; }
+        
         [Bson]
         public AssetPosition AssetPosition { get; private set; }
 

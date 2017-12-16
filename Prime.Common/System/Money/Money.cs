@@ -642,7 +642,12 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return _asset?.ShortCode + " " + ToDecimalValue().ToString("N" + PrimeCommon.I.DecimalPlaces.Get(Asset, (uint)6));
+            return _asset?.ShortCode + " " + ToStringNoAsset();
+        }
+
+        public string ToStringNoAsset()
+        {
+            return ToDecimalValue().ToString("N" + PrimeCommon.I.DecimalPlaces.Get(Asset, (uint)6));
         }
 
         public string ToString(int decimalPlaces)
