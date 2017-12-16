@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.BitMarket
         private const string PairsCsv = "BTC_PLN,BTC_EUR,LTC_PLN,LTC_BTC,LiteMineX_BTC";
 
         private AssetPairs _pairs;
-        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(PairsCsv.ToCsv().Select(x => x.ToAssetPairRaw())));
+        public AssetPairs Pairs => _pairs ?? (_pairs = new AssetPairs(PairsCsv.ToCsv().Select(x => x.ToAssetPair(this))));
 
         private static readonly ObjectId IdHash = "prime:bitmarket".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
