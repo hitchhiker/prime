@@ -20,6 +20,18 @@ namespace Prime.Plugins.Services.Cryptopia
             public T Data;
         }
 
+        internal class TradeOrderBaseRequest
+        {
+            public string Market;
+            public long TradePairId;
+            public int Count;
+
+            public bool ShouldSerializeTradePairId()
+            {
+                return String.IsNullOrWhiteSpace(Market);
+            }
+        }
+
         #endregion
 
         #region Private
@@ -49,6 +61,38 @@ namespace Prime.Plugins.Services.Cryptopia
             public long[] FilledOrders;
         }
 
+        internal class OpenOrdersResponse : BaseResponse<OpenOrderResponse[]> { }
+
+        internal class OpenOrderResponse
+        {
+            public long OrderId;
+            public long TradePairId;
+            public string Market;
+            public string Type;
+            public decimal Rate;
+            public decimal Amount;
+            public decimal Total;
+            public decimal Remaining;
+            public DateTime TimeStamp;
+        }
+
+        internal class TradeHistoryResponse : BaseResponse<TradeHistoryEntryResponse[]> { }
+
+        internal class TradeHistoryEntryResponse
+        {
+            public long TradeId;
+            public long TradePairId;
+            public string Market;
+            public string Type;
+            public decimal Rate;
+            public decimal Amount;
+            public decimal Total;
+            public decimal Fee;
+            public DateTime TimeStamp;
+        }
+
+        internal class SubmitWithdrawResponse : BaseResponse<int?> { }
+
         internal class BalanceRequest { }
 
         internal class SubmitTradeRequest
@@ -58,6 +102,37 @@ namespace Prime.Plugins.Services.Cryptopia
             public decimal Rate;
             public decimal Amount;
         }
+
+        internal class SubmitWithdrawRequest
+        {
+            public string Currency;
+            public int CurrencyId;
+
+            /// <summary>
+            /// (Important!) Address must exist in you AddressBook, can be found in you Security settings page.
+            /// </summary>
+            public string Address;
+
+            /// <summary>
+            /// The unique paymentid to identify the payment. (PaymentId for CryptoNote coins.)
+            /// </summary>
+            public string PaymentId;
+            public decimal Amount;
+
+            public bool ShouldSerializeCurrencyId()
+            {
+                return String.IsNullOrWhiteSpace(Currency);
+            }
+
+            public bool ShouldSerializePaymentId()
+            {
+                return !String.IsNullOrWhiteSpace(PaymentId);
+            }
+        }
+
+        internal class GetOpenOrdersRequest : TradeOrderBaseRequest { }
+
+        internal class GetTradeHistoryRequest : TradeOrderBaseRequest { }
 
         #endregion
 

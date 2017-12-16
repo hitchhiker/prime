@@ -25,11 +25,11 @@ namespace Prime.TestConsole
                 {
                     var r = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
 
-                    Console.WriteLine($"Api success: {r}");
+                    System.Console.WriteLine($"Api success: {r}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                 }
             }
 
@@ -43,11 +43,11 @@ namespace Prime.TestConsole
                 {
                     scanner.Update();
                     foreach (var i in scanner.Items)
-                        Console.WriteLine(i.Asset.ShortCode + " " + i.AvailableBalance);
+                        System.Console.WriteLine(i.Asset.ShortCode + " " + i.AvailableBalance);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                 }
             }
 
@@ -63,15 +63,15 @@ namespace Prime.TestConsole
                 {
                     var r = provider.GetAddressesForAssetAsync(ctx).Result;
 
-                    Console.WriteLine("List of addresses: ");
+                    System.Console.WriteLine("List of addresses: ");
                     foreach (var walletAddress in r)
                     {
-                        Console.WriteLine($"{walletAddress.Asset}: {walletAddress.Address}");
+                        System.Console.WriteLine($"{walletAddress.Asset}: {walletAddress.Address}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    System.Console.WriteLine(e);
                     throw;
                 }
             }
@@ -88,14 +88,14 @@ namespace Prime.TestConsole
 
                     foreach (var data in ohlc)
                     {
-                        Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low} {data.Open} {data.Close}");
+                        System.Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low} {data.Open} {data.Close}");
                     }
 
-                    Console.WriteLine($"Entries count: {ohlc.Count}");
+                    System.Console.WriteLine($"Entries count: {ohlc.Count}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -110,12 +110,12 @@ namespace Prime.TestConsole
                 {
                     var c = AsyncContext.Run(() => provider.GetPriceAsync(ctx));
 
-                    Console.WriteLine($"Base asset: {ctx.QuoteAsset}\n");
-                    Console.WriteLine(c.FirstPrice.Price.Display);
+                    System.Console.WriteLine($"Base asset: {ctx.QuoteAsset}\n");
+                    System.Console.WriteLine(c.FirstPrice.Price.Display);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -131,12 +131,12 @@ namespace Prime.TestConsole
 
                     foreach (var pair in pairs)
                     {
-                        Console.WriteLine($"{pair}");
+                        System.Console.WriteLine($"{pair}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -152,12 +152,12 @@ namespace Prime.TestConsole
 
                     foreach (var balance in balances)
                     {
-                        Console.WriteLine($"{balance.Asset} : {balance.AvailableAndReserved}, {balance.Available}, {balance.Reserved}");
+                        System.Console.WriteLine($"{balance.Asset} : {balance.AvailableAndReserved}, {balance.Available}, {balance.Reserved}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -172,16 +172,16 @@ namespace Prime.TestConsole
                 {
                     var addresses = AsyncContext.Run(() => provider.GetAddressesAsync(ctx));
 
-                    Console.WriteLine("All addresses:");
+                    System.Console.WriteLine("All addresses:");
 
                     foreach (var address in addresses)
                     {
-                        Console.WriteLine($"{address.Asset}: {address.Address}");
+                        System.Console.WriteLine($"{address.Asset}: {address.Address}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }

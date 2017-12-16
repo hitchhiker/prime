@@ -25,12 +25,12 @@ namespace Prime.TestConsole
 
                     foreach (var balance in balances)
                     {
-                        Console.WriteLine($"{balance.Asset}: {balance.AvailableAndReserved}, {balance.Available}, {balance.Reserved}");
+                        System.Console.WriteLine($"{balance.Asset}: {balance.AvailableAndReserved}, {balance.Available}, {balance.Reserved}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -44,11 +44,11 @@ namespace Prime.TestConsole
                 {
                     var ok = AsyncContext.Run(() => provider.TestPrivateApiAsync(apiTestCtx));
 
-                    Console.WriteLine($"Api test OK: {ok}");
+                    System.Console.WriteLine($"Api test OK: {ok}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    System.Console.WriteLine(e.Message);
                     throw;
                 }
             }
@@ -64,12 +64,12 @@ namespace Prime.TestConsole
 
                     foreach (var pair in pairs)
                     {
-                        Console.WriteLine($"{pair}");
+                        System.Console.WriteLine($"{pair}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    System.Console.WriteLine(e);
                     throw;
                 }
             }
@@ -86,21 +86,21 @@ namespace Prime.TestConsole
                     var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
                     var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
 
-                    Console.WriteLine("Addresses for 1 asset");
+                    System.Console.WriteLine("Addresses for 1 asset");
                     foreach (var address in addresses)
                     {
-                        Console.WriteLine($"{address.Asset} : {address.Address}");
+                        System.Console.WriteLine($"{address.Asset} : {address.Address}");
                     }
 
-                    Console.WriteLine("Addresses for all assets");
+                    System.Console.WriteLine("Addresses for all assets");
                     foreach (var address in addressesAll)
                     {
-                        Console.WriteLine($"{address.Asset} : {address.Address}");
+                        System.Console.WriteLine($"{address.Asset} : {address.Address}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    System.Console.WriteLine(e);
                     throw;
                 }
             }
@@ -118,12 +118,12 @@ namespace Prime.TestConsole
 
                     foreach (var entry in ohlc)
                     {
-                        Console.WriteLine($"{entry.DateTimeUtc}: {entry.High}, {entry.Low}, {entry.Open}, {entry.Close}");
+                        System.Console.WriteLine($"{entry.DateTimeUtc}: {entry.High}, {entry.Low}, {entry.Open}, {entry.Close}");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    System.Console.WriteLine(e);
                     throw;
                 }
             }

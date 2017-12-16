@@ -26,11 +26,11 @@ namespace Prime.TestConsole
                 {
                     var price = AsyncContext.Run(() => provider.GetPricingAsync(ctx));
 
-                    Console.WriteLine($"Latest price for {pair} is {price.FirstPrice.Price}");
+                    System.Console.WriteLine($"Latest price for {pair} is {price.FirstPrice.Price}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    System.Console.WriteLine(e);
                     throw;
                 }
             }

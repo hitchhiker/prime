@@ -10,5 +10,11 @@ namespace Prime.Common
         {
             RemoteId = remoteId;
         }
+
+        /// <summary>
+        /// Required for some exchanges that don't support direct status querying (Cryptopia).
+        /// </summary>
+        public AssetPair Market = AssetPair.Empty;
+        public bool HasMarket => !Equals(Market, AssetPair.Empty);
     }
 }

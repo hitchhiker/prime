@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Prime.Common;
@@ -8,8 +9,10 @@ namespace Prime.Plugins.Services
 {
     internal static class AssetsUtilities
     {
-        public static (String AssetCode1, String AssetCode2)? GetAssetPair(string pairCode, AssetPairs existingPairs)
+        public static (String AssetCode1, String AssetCode2)? GetAssetPair(string pairCodeRaw, AssetPairs existingPairs)
         {
+            var pairCode = pairCodeRaw.ToUpper(CultureInfo.InvariantCulture);
+
             if (pairCode.Length == 6)
             {
                 return GetAssetPairByLength(pairCode);

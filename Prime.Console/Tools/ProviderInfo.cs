@@ -39,7 +39,7 @@ namespace Prime.TestConsole.Tools
                     info += " - " + type.Name + "\n";
             }
 
-            Console.WriteLine($"'{NetworkProvider.Network.Name}':\n{info}");
+            System.Console.WriteLine($"'{NetworkProvider.Network.Name}':\n{info}");
         }
 
         public INetworkProvider NetworkProvider { get; set; }

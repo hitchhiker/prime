@@ -40,7 +40,7 @@ namespace Prime.TestConsole.Tools
                 var r1 = TestSum();
             }
             _stopwatch.Stop();
-            Console.WriteLine($"First: {_stopwatch.ElapsedMilliseconds}");
+            System.Console.WriteLine($"First: {_stopwatch.ElapsedMilliseconds}");
 
             _stopwatch.Start();
             for (int i = 0; i < n; i++)
@@ -48,7 +48,7 @@ namespace Prime.TestConsole.Tools
                 var r2 = TestBool();
             }
             _stopwatch.Stop();
-            Console.WriteLine($"Second: {_stopwatch.ElapsedMilliseconds}");
+            System.Console.WriteLine($"Second: {_stopwatch.ElapsedMilliseconds}");
         }
 
         private bool TestSum()

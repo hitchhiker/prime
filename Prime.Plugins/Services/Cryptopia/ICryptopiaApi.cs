@@ -20,5 +20,14 @@ namespace Prime.Plugins.Services.Cryptopia
 
         [Post("/SubmitTrade")]
         Task<Response<CryptopiaSchema.SubmitTradeResponse>> SubmitTradeAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.SubmitTradeRequest body);
+
+        [Post("/SubmitWithdraw")]
+        Task<Response<CryptopiaSchema.SubmitWithdrawResponse>> SubmitWithdrawAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.SubmitWithdrawRequest body);
+
+        [Post("/GetOpenOrders")]
+        Task<Response<CryptopiaSchema.OpenOrdersResponse>> GetOpenOrdersAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.GetOpenOrdersRequest body);
+
+        [Post("/GetTradeHistory")]
+        Task<Response<CryptopiaSchema.TradeHistoryResponse>> GetTradeHistoryAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.GetTradeHistoryRequest body);
     }
 }

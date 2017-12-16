@@ -34,12 +34,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
+            // TODO: AY: Bitfinex - test with real money.
             base.TestPlaceOrderLimit("ETH_USD".ToAssetPairRaw(), false, 1, new Money(1000, "USD".ToAssetRaw()));
         }
 
         [TestMethod]
         public override void TestPlaceWithdrawal()
         {
+            // TODO: AY: Bitfinex - test with real money.
             var context = new WithdrawalPlacementContext(UserContext.Current)
             {
                 Address = new WalletAddress("12ZjBeu8mP9L81PeFeiFokwaW5KW7usrmv"),

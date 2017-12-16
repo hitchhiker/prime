@@ -31,7 +31,26 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
+            // TODO: AY: Cryptopia - test with real money.
             base.TestPlaceOrderLimit("ETH_BTC".ToAssetPairRaw(), false, 1, new Money(100000, Asset.Btc));
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: AY: Cryptopia - test with real money.
+            base.TestGetTradeOrderStatus("1234", "DOT_BTC".ToAssetPairRaw());
+        }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawalExtended()
+        {
+            // TODO: AY: Cryptopia - test with real money.
+            base.TestPlaceWithdrawalExtended(new WithdrawalPlacementContextExtended(UserContext.Current)
+            {
+                Address = new WalletAddress("12498176298371628471628376"),
+                Amount = new Money(1, Asset.Btc)
+            });
         }
 
         [TestMethod]
