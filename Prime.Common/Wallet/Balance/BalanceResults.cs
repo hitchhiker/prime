@@ -16,9 +16,19 @@ namespace Prime.Common
 
         public void Add(Asset asset, decimal available, decimal reserved)
         {
-            AddAvailable(asset, available);
-            AddReserved(asset, reserved);
-            AddAvailableReserved(asset, available + reserved);
+            var i = new BalanceResult(ProviderSource)
+            {
+                Available = new Money(available, asset),
+                Reserved = new Money(reserved, asset),
+                AvailableAndReserved = new Money(available + reserved, asset)
+            };
+
+            Add(i);
+
+            // TODO: Frank's implementation - for review.
+            //AddAvailable(asset, available);
+            //AddReserved(asset, reserved);
+            //AddAvailableReserved(asset, available + reserved);
         }
 
         public void AddAvailable(Asset asset, decimal value)

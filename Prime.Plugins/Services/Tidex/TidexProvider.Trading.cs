@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.Tidex
 
             CheckTidexResponse(r);
 
-            var balances = new BalanceResults();
+            var balances = new BalanceResults(this);
 
             foreach (var fund in r.return_.funds)
             {

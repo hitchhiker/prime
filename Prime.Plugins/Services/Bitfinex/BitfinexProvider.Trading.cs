@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var r = rRaw.GetContent();
 
-            var balances = new BalanceResults();
+            var balances = new BalanceResults(this);
 
             foreach (var rBalance in r)
             {

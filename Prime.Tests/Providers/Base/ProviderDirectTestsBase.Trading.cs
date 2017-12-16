@@ -101,7 +101,7 @@ namespace Prime.Tests.Providers
                 Trace.WriteLine("User balances: ");
                 foreach (var b in balances)
                 {
-                    Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.AvailableAndReserved} balance, {b.Reserved} reserved");
+                    Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Reserved} reserved, {b.AvailableAndReserved} total");
                 }
             }
             catch (Exception e)
