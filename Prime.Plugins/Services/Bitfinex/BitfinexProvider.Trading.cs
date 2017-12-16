@@ -16,11 +16,13 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = new BitfinexSchema.NewOrderRequest.Descriptor();
-            body.symbol = context.Pair.ToTicker(this);
-            body.amount = context.Quantity.ToString(CultureInfo.InvariantCulture);
-            body.price = context.Rate.ToDecimalValue().ToString(CultureInfo.InvariantCulture);
-            body.side = context.IsSell ? "sell" : "buy";
+            var body = new BitfinexSchema.NewOrderRequest.Descriptor
+            {
+                symbol = context.Pair.ToTicker(this),
+                amount = context.Quantity.ToString(CultureInfo.InvariantCulture),
+                price = context.Rate.ToDecimalValue().ToString(CultureInfo.InvariantCulture),
+                side = context.IsSell ? "sell" : "buy"
+            };
 
             var rRaw = await api.PlaceNewOrderAsync(body).ConfigureAwait(false);
 
@@ -36,7 +38,7 @@ namespace Prime.Plugins.Services.Bitfinex
             throw new NotImplementedException();
         }
 
-        public decimal MinimumTradeVolume { get; }
+        public decimal MinimumTradeVolume => throw new NotImplementedException();
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
@@ -69,7 +71,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
         private static readonly Lazy<Dictionary<Asset, string>> WithdrawalAssetsToTypes = new Lazy<Dictionary<Asset,string>>(() => new Dictionary<Asset, string>()
         {
-            // TODO: clarify keys.
+            // TODO: Bitfinex - clarify keys.
             { "BTC".ToAssetRaw(), "bitcoin" },
             { "LTC".ToAssetRaw(), "litecoin" },
             { "ETH".ToAssetRaw(), "ethereum" },

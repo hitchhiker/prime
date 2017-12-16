@@ -60,6 +60,10 @@ namespace Prime.Tests.Providers
                 if(r.IsCanceled) Trace.WriteLine("Order is canceled");
                 if(r.IsClosed) Trace.WriteLine("Order is closed");
                 if(r.IsFound) Trace.WriteLine("Order is found");
+
+                if (r.Rate.HasValue) Trace.WriteLine($"The rate of order is {r.Rate.Value}");
+                if (r.AmountInitial.HasValue) Trace.WriteLine($"The initial amount is {r.AmountInitial.Value}");
+                if (r.AmountRemaining.HasValue) Trace.WriteLine($"The remaining amount is {r.AmountRemaining.Value}");
             }
             catch (Exception e)
             {

@@ -17,6 +17,10 @@
         public bool IsOpen { get; }
         public bool IsCancelRequested { get; }
 
+        public decimal? Rate { get; set; }
+        public Money? AmountInitial { get; set; }
+        public Money? AmountRemaining { get; set; }
+
         public bool IsClosed => IsFound && !IsOpen;
         public bool IsCanceled => IsCancelRequested && IsClosed;
     }

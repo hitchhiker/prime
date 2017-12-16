@@ -31,6 +31,8 @@ namespace Prime.Plugins.Services.Tidex
 
                 var available = new Money(fund.Value.value, c);
 
+                
+
                 balances.Add(new BalanceResult(this)
                 {
                     Available = available,
@@ -75,9 +77,14 @@ namespace Prime.Plugins.Services.Tidex
             if(r.return_.Count == 0 || !r.return_.TryGetValue(context.RemoteId, out var order))
                 throw new NoTradeOrderException(context, this);
 
-            return new TradeOrderStatus(context.RemoteId, order.status == 0, order.status == 2 || order.status == 3);
+            return new TradeOrderStatus(context.RemoteId, order.status == 0, order.status == 2 || order.status == 3)
+            {
+                Rate = order.rate,
+                AmountInitial = order.start_amount,
+                AmountRemaining = order.amount
+            };
         }
 
-        public decimal MinimumTradeVolume { get; }
+        public decimal MinimumTradeVolume => throw new NotImplementedException();
     }
 }
