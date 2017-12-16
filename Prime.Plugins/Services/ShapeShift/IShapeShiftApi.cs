@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.ShapeShift
 
         [Get("/marketinfo/")]
         Task<ShapeShiftSchema.MarketInfosResponse> GetMarketInfos();
+
+        [Get("/getcoins")]
+        Task<ShapeShiftSchema.GetCoinsResponse> GetCoins();
     }
 }

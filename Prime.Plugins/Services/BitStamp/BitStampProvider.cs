@@ -103,26 +103,9 @@ namespace Prime.Plugins.Services.BitStamp
             var usdAsset = "usd".ToAsset(this);
             var eurAsset = "eur".ToAsset(this);
 
-            balances.Add(new BalanceResult(this)
-            {
-                Available = new Money(r.btc_available, btcAsset),
-                AvailableAndReserved = new Money(r.btc_balance, btcAsset),
-                Reserved = new Money(r.btc_reserved, btcAsset)
-            });
-
-            balances.Add(new BalanceResult(this)
-            {
-                Available = new Money(r.usd_available, usdAsset),
-                AvailableAndReserved = new Money(r.usd_balance, usdAsset),
-                Reserved = new Money(r.usd_reserved, usdAsset)
-            });
-
-            balances.Add(new BalanceResult(this)
-            {
-                Available = new Money(r.eur_available, eurAsset),
-                AvailableAndReserved = new Money(r.eur_reserved, eurAsset),
-                Reserved = new Money(r.eur_balance, eurAsset)
-            });
+            balances.Add(btcAsset, r.btc_available, r.btc_reserved);
+            balances.Add(usdAsset, r.usd_available, r.usd_reserved);
+            balances.Add(eurAsset, r.eur_available, r.eur_reserved);
 
             return balances;
         }

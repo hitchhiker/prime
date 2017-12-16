@@ -14,6 +14,22 @@ namespace Prime.Common
 
         public readonly IBalanceProvider ProviderSource;
 
+        public void Add(Asset asset, decimal available, decimal reserved)
+        {
+            AddAvailable(asset, available);
+            AddReserved(asset, reserved);
+            AddAvailableReserved(asset, available + reserved);
+        }
+
+        public void AddAvailable(Asset asset, decimal value)
+        {
+            if (value == 0)
+                return;
+
+            var i = new BalanceResult(ProviderSource) { Available = new Money(value, asset) };
+            Add(i);
+        }
+
         public void AddReserved(Asset asset, decimal value)
         {
             if (value == 0)
@@ -23,21 +39,12 @@ namespace Prime.Common
             Add(i);
         }
 
-        public void AddBalance(Asset asset, decimal value)
+        public void AddAvailableReserved(Asset asset, decimal value)
         {
             if (value == 0)
                 return;
 
             var i = new BalanceResult(ProviderSource) {AvailableAndReserved = new Money(value, asset)};
-            Add(i);
-        }
-
-        public void AddAvailable(Asset asset, decimal value)
-        {
-            if (value == 0)
-                return;
-
-            var i = new BalanceResult(ProviderSource) {Available = new Money(value, asset)};
             Add(i);
         }
     }

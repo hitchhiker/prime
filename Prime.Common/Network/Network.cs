@@ -72,9 +72,21 @@ namespace Prime.Common
             return NetworkDatas.I.GetOrCreate(context, this);
         }
 
+        private string _code4;
+        public string Code4 => _code4 ?? (_code4 = CreateCode4());
+
         public override string ToString()
         {
             return Name;
+        }
+
+        private string CreateCode4()
+        {
+            var nv = Name.RemoveVowels();
+            var c4 = nv.Length > 4 ? nv.ToUpper().Substring(0, 4) : nv.ToUpper();
+            if (c4.Length == 4)
+                return c4;
+            return Name.Length > 4 ? Name.ToUpper().Substring(0, 4) : Name.ToUpper();
         }
     }
 }

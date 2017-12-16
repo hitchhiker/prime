@@ -9,7 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.ShapeShift
 {
-    public class ShapeShiftProvider : IPublicPricingProvider
+    public class ShapeShiftProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string ShapeShiftApiUrl = "https://shapeshift.io";
 
@@ -27,11 +27,26 @@ namespace Prime.Plugins.Services.ShapeShift
         public bool IsDirect => true;
         public char? CommonPairSeparator => '_';
 
+
         private RestApiClientProvider<IShapeShiftApi> ApiProvider { get; }
 
         public ShapeShiftProvider()
         {
             ApiProvider = new RestApiClientProvider<IShapeShiftApi>(ShapeShiftApiUrl, this, k => null);
+        }
+
+        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetCoins().ConfigureAwait(false);
+            var ap = new AssetPairs();
+            var assets = r.Select(x => x.Value.symbol.ToAsset(this)).ToList();
+            foreach (var a in assets)
+            {
+                foreach (var a2 in assets.Where(x => !Equals(x, a)))
+                    ap.Add(new AssetPair(a, a2));
+            }
+            return ap;
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
