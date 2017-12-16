@@ -142,5 +142,11 @@ namespace Prime.Utility
             var s = signed ? r.ToSignedString() : r.ToString();
             return !showPercentageSymbol ? s : $"{s}%";
         }
+
+        private static readonly string Vowels = "aeiouy";
+        public static string RemoveVowels(this string word)
+        {
+           return new string(word.Where(c => !Vowels.Contains(c)).ToArray());
+        }
     }
 }

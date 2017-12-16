@@ -23,5 +23,18 @@ namespace Prime.Plugins.Services.ShapeShift
         {
             
         }
+
+        internal class GetCoinsResponse : Dictionary<string, GetCoinItem>
+        {
+            
+        }
+
+        internal class GetCoinItem
+        {
+            public string name;
+            public string symbol;
+            public string image;
+            public string status;
+        }
     }
 }
