@@ -61,8 +61,6 @@ namespace Prime.Plugins.Services.Cryptopia
             public long[] FilledOrders;
         }
 
-        internal class WithdrawTradeResponse : BaseResponse<int> { }
-
         internal class OpenOrdersResponse : BaseResponse<OpenOrderResponse[]> { }
 
         internal class OpenOrderResponse
@@ -93,6 +91,8 @@ namespace Prime.Plugins.Services.Cryptopia
             public DateTime TimeStamp;
         }
 
+        internal class SubmitWithdrawResponse : BaseResponse<int?> { }
+
         internal class BalanceRequest { }
 
         internal class SubmitTradeRequest
@@ -106,13 +106,28 @@ namespace Prime.Plugins.Services.Cryptopia
         internal class SubmitWithdrawRequest
         {
             public string Currency;
+            public int CurrencyId;
 
             /// <summary>
             /// (Important!) Address must exist in you AddressBook, can be found in you Security settings page.
             /// </summary>
             public string Address;
 
+            /// <summary>
+            /// The unique paymentid to identify the payment. (PaymentId for CryptoNote coins.)
+            /// </summary>
+            public string PaymentId;
             public decimal Amount;
+
+            public bool ShouldSerializeCurrencyId()
+            {
+                return String.IsNullOrWhiteSpace(Currency);
+            }
+
+            public bool ShouldSerializePaymentId()
+            {
+                return !String.IsNullOrWhiteSpace(PaymentId);
+            }
         }
 
         internal class GetOpenOrdersRequest : TradeOrderBaseRequest { }

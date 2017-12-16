@@ -41,6 +41,16 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestPlaceWithdrawalExtended()
+        {
+            base.TestPlaceWithdrawalExtended(new WithdrawalPlacementContextExtended(UserContext.Current)
+            {
+                Address = new WalletAddress("12498176298371628471628376"),
+                Amount = new Money(1, Asset.Btc)
+            });
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();

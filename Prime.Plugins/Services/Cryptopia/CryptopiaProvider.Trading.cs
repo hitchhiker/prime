@@ -10,17 +10,19 @@ namespace Prime.Plugins.Services.Cryptopia
 {
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://www.cryptopia.co.nz/Forum/Thread/255
-    public partial class CryptopiaProvider : IOrderLimitProvider, IBalanceProvider
+    public partial class CryptopiaProvider : IOrderLimitProvider, IBalanceProvider, IWithdrawalPlacementProviderExtended
     {
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = new CryptopiaSchema.SubmitTradeRequest();
-            body.Market = context.Pair.ToTicker(this, "/");
-            body.Type = context.IsBuy ? "Buy" : "Sell";
-            body.Rate = context.Rate;
-            body.Amount = context.Quantity;
+            var body = new CryptopiaSchema.SubmitTradeRequest
+            {
+                Market = context.Pair.ToTicker(this, "/"),
+                Type = context.IsBuy ? "Buy" : "Sell",
+                Rate = context.Rate,
+                Amount = context.Quantity
+            };
 
             var rRaw = await api.SubmitTradeAsync(body).ConfigureAwait(false);
 
@@ -34,9 +36,11 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = new CryptopiaSchema.GetOpenOrdersRequest();
-            body.Count = 1000;
-            body.Market = context.Market.ToTicker(this, "/");
+            var body = new CryptopiaSchema.GetOpenOrdersRequest
+            {
+                Count = 1000,
+                Market = context.Market.ToTicker(this, "/")
+            };
 
             var rRaw = await api.GetOpenOrdersAsync(body).ConfigureAwait(false);
 
@@ -51,9 +55,11 @@ namespace Prime.Plugins.Services.Cryptopia
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = new CryptopiaSchema.GetTradeHistoryRequest();
-            body.Count = 1000;
-            body.Market = context.Market.ToTicker(this, "/");
+            var body = new CryptopiaSchema.GetTradeHistoryRequest
+            {
+                Count = 1000,
+                Market = context.Market.ToTicker(this, "/")
+            };
 
             var rRaw = await api.GetTradeHistoryAsync(body).ConfigureAwait(false);
 
@@ -87,7 +93,8 @@ namespace Prime.Plugins.Services.Cryptopia
             return new TradeOrderStatus(context.RemoteId, isOpen, false);
         }
 
-        public decimal MinimumTradeVolume { get; }
+        // TODO: AY: find out MinimumTradeVolume in Cryptopia.
+        public decimal MinimumTradeVolume => throw new NotImplementedException();
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
@@ -112,6 +119,36 @@ namespace Prime.Plugins.Services.Cryptopia
             }
 
             return balances;
+        }
+
+        // TODO: AY: find out IsFeeIncluded in Cryptopia.
+        public bool IsFeeIncluded => throw new NotImplementedException();
+
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new CryptopiaSchema.SubmitWithdrawRequest
+            {
+                Address = context.Address.Address,
+                Amount = context.Amount,
+                Currency = context.Amount.Asset.ToRemoteCode(this),
+                PaymentId = context.Description
+            };
+
+            var rRaw = await api.SubmitWithdrawAsync(body).ConfigureAwait(false);
+
+            CheckCryptopiaResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            if(!r.Data.HasValue)
+                throw new ApiResponseException("Remote withdrawal ID is not returned", this);
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.Data.ToString()
+            };
         }
     }
 }
