@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\prv\Prime.Arbitrage\Prime.Arbitrage.csproj" />
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
@@ -21,6 +20,11 @@
     <Reference Include="LiteDB">
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tests\Frank\" />
+    <Folder Include="Tests\Sean\" />
   </ItemGroup>
 
 </Project>

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
-namespace Prime.TestConsole.Tools
+namespace Prime.Console.Tests.Alyasko
 {
-    public class PerformanceTools
+    public class PerformanceTools : ITestBase
     {
         private Stopwatch _stopwatch = new Stopwatch();
 
@@ -64,6 +59,12 @@ namespace Prime.TestConsole.Tools
             var t2 = new TestTicker();
 
             return (decimal)t2.vol == 0 && t2.last == 0 && t2.sell == 0 && t2.buy == 0 && t2.weekRiseRate == 0 && t2.riseRate == 0 && t2.high == 0 && t2.low == 0 && t2.monthRiseRate == 0;
+        }
+
+        public void Go()
+        {
+            CheckConditionals();
+            MemTest();
         }
     }
 }

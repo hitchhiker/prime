@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Prime.Common;
 
-namespace Prime.TestConsole.Tools
+namespace Prime.Console.Tests.Alyasko
 {
-    public class ProviderInfo
+    public class ProviderInfo : ITestBase
     {
         private List<Type> _supportedInterfaces = new List<Type>()
         {
@@ -47,6 +45,11 @@ namespace Prime.TestConsole.Tools
         public bool ProviderSupports<TInterface>()
         {
             return NetworkProvider is TInterface;
+        }
+
+        public void Go()
+        {
+            PrintReadableInfo();
         }
     }
 }
