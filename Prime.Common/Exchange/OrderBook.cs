@@ -68,20 +68,20 @@ namespace Prime.Common
         }
 
         private Money? _spread;
-        public Money Spread => _spread ?? (Money)(_spread = BestAsk.Price - BestBid.Price);
+        public Money Spread => _spread ?? (Money)(_spread = LowestAsk.Price - HighestBid.Price);
 
         private decimal? _spreadPercentage;
-        public decimal SpreadPercentage => _spreadPercentage ?? (decimal)(_spreadPercentage = BestBid.Price.PercentageProfit(BestAsk.Price));
+        public decimal SpreadPercentage => _spreadPercentage ?? (decimal)(_spreadPercentage = HighestBid.Price.PercentageProfit(LowestAsk.Price));
 
         private OrderBookRecord _lowestAsk;
-        public OrderBookRecord BestAsk => _lowestAsk ?? (_lowestAsk = _asks.OrderBy(x => x.Price).FirstOrDefault());
+        public OrderBookRecord LowestAsk => _lowestAsk ?? (_lowestAsk = _asks.OrderBy(x => x.Price).FirstOrDefault());
 
         private OrderBookRecord _highestBid;
-        public OrderBookRecord BestBid => _highestBid ?? (_highestBid = _bids.OrderByDescending(x => x.Price).FirstOrDefault());
+        public OrderBookRecord HighestBid => _highestBid ?? (_highestBid = _bids.OrderByDescending(x => x.Price).FirstOrDefault());
 
         public Money PriceAtPercentage(OrderType type, decimal percentage)
         {
-            var top = type == OrderType.Ask ? BestAsk : BestBid;
+            var top = type == OrderType.Ask ? LowestAsk : HighestBid;
             var price = type == OrderType.Ask ? top.Price.PercentageAdd(percentage) : top.Price.PercentageAdd(-percentage);
             return price;
         }

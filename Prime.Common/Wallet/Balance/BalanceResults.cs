@@ -24,11 +24,6 @@ namespace Prime.Common
             };
 
             Add(i);
-
-            // TODO: Frank's implementation - for review.
-            //AddAvailable(asset, available);
-            //AddReserved(asset, reserved);
-            //AddAvailableReserved(asset, available + reserved);
         }
 
         public void AddAvailable(Asset asset, decimal value)
