@@ -83,11 +83,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()));
-            base.TestGetOrderBook(context);
-
-            context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), 100);
-            base.TestGetOrderBook(context);
+            base.TestGetOrderBook(new AssetPair("BTC".ToAssetRaw(), "LTC".ToAssetRaw()), true);
         }
     }
 }

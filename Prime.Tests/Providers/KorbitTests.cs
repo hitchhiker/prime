@@ -54,11 +54,8 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            var context = new OrderBookContext(new AssetPair("BTC", "KRW"), 10);
-            base.TestGetOrderBook(context);
-
-            context = new OrderBookContext(new AssetPair("BTC", "KRW"));
-            base.TestGetOrderBook(context);
+            // TODO: AY: Korbit 20 for records count test - review. Not tested.
+            base.TestGetOrderBook(new AssetPair("BTC", "KRW"), false);
         }
     }
 }

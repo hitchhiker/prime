@@ -53,11 +53,8 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            var context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()));
-            base.TestGetOrderBook(context);
-
-            context = new OrderBookContext(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()), 20);
-            base.TestGetOrderBook(context);
+            // TODO: AY: BitFlyer test for 20, not for 100 - review. Not tested.
+            base.TestGetOrderBook(new AssetPair("BTC".ToAssetRaw(), "JPY".ToAssetRaw()), false);
         }
     }
 }
