@@ -8,7 +8,7 @@ namespace Prime.Plugins.Services.Xbtce
 {
     [Header("Content-Type", "application/json")]
     [Header("Accept", "application/json")]
-    [Header("Accept-Encoding", "gzip, deflate")]
+    [Header("Accept-Encoding", "gzip")]
     internal interface IXbtceApi
     {
         [Get("/public/ticker/{currencyPair}")]
