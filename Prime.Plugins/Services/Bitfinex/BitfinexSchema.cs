@@ -152,6 +152,12 @@ namespace Prime.Plugins.Services.Bitfinex
             public string walletselected;
             public string amount;
             public string address;
+            public string payment_id;
+
+            public bool ShouldSerializepayment_id()
+            {
+                return !String.IsNullOrWhiteSpace(payment_id);
+            }
 
             internal class Descriptor : WithdrawalRequest, IClassDescriptor
             {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Prime.Common;
 
 namespace Prime.Console.Tests.Alyasko
@@ -29,10 +30,32 @@ namespace Prime.Console.Tests.Alyasko
             }
         }
 
+        public void ListProvidersThatSupport(Asset asset)
+        {
+            System.Console.WriteLine($"Providers that support {asset} asset:");
+
+            var providers = Networks.I.Providers.OfType<IAssetPairsProvider>().ToArray();
+
+            foreach (var provider in providers)
+            {
+                try
+                {
+                    var suppoertedPairs = provider.GetAssetPairsAsync(new NetworkProviderContext()).Result;
+                    if (suppoertedPairs.Any(x => x.Has(asset)))
+                        System.Console.WriteLine($"{provider.Network.Name} supports {asset}");
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine($"Error in {provider.Network.Name}: {e.Message}");
+                }
+            }
+        }
+
         public void Go()
         {
             //GenerateProvidersReport();
-            ListOrderBookProviders();
+            //ListOrderBookProviders();
+            ListProvidersThatSupport("XRP".ToAssetRaw());
         }
     }
 }

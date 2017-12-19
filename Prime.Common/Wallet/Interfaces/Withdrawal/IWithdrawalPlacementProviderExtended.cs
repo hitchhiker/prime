@@ -1,5 +1,8 @@
-﻿namespace Prime.Common
+﻿using System;
+
+namespace Prime.Common
 {
+    [Obsolete]
     /// <summary>
     /// Provides extended withdrawal functionality.
     /// </summary>

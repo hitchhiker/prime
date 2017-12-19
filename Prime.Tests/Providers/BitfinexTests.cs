@@ -35,7 +35,7 @@ namespace Prime.Tests.Providers
         public override void TestPlaceOrderLimit()
         {
             // TODO: AY: Bitfinex - test with real money.
-            base.TestPlaceOrderLimit("ETH_USD".ToAssetPairRaw(), false, 1, new Money(1000, "USD".ToAssetRaw()));
+            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, 103.85414263m, new Money(0.00004333m, "BTC".ToAssetRaw()));
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace Prime.Tests.Providers
             // TODO: AY: Bitfinex - test with real money.
             var context = new WithdrawalPlacementContext(UserContext.Current)
             {
-                Address = new WalletAddress("12ZjBeu8mP9L81PeFeiFokwaW5KW7usrmv"),
+                Address = new WalletAddress("6a51d6a5wda6w5d1"),
                 Amount = new Money(1, Asset.Btc)
             };
 
