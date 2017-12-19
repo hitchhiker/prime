@@ -256,7 +256,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r, context.Pair);
 
-            var orderBook = new OrderBook(Network, context.Pair);
+            var orderBook = new OrderBook(Network, context.Pair.Reversed); //HH: This is the reversed pair that is returned.
 
             var bids = context.MaxRecordsCount.HasValue
                 ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)
@@ -266,10 +266,10 @@ namespace Prime.Plugins.Services.Bittrex
                 : r.result.sell;
 
             foreach (var i in bids)
-                orderBook.AddBid(i.Rate, i.Quantity);
+                orderBook.AddBid(i.Rate, i.Quantity, true);
 
             foreach (var i in asks)
-                orderBook.AddAsk(i.Rate, i.Quantity);
+                orderBook.AddAsk(i.Rate, i.Quantity, true); 
 
             return orderBook;
         }

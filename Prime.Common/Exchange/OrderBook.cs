@@ -4,6 +4,7 @@ using System.Linq;
 using LiteDB;
 using Prime.Common.Exchange;
 using Prime.Utility;
+using System;
 
 namespace Prime.Common
 {        /// <summary>
@@ -17,33 +18,51 @@ namespace Prime.Common
     public class OrderBook : IReadOnlyList<OrderBookRecord>, ISerialiseAsObject
     {
         public readonly AssetPair Pair;
+        public readonly AssetPair PairNormalised;
         public readonly Network Network;
         private readonly List<OrderBookRecord> _records = new List<OrderBookRecord>();
-        private readonly List<OrderBookRecord> _asks = new List<OrderBookRecord>();
-        private readonly List<OrderBookRecord> _bids = new List<OrderBookRecord>();
+        private List<OrderBookRecord> _asks = new List<OrderBookRecord>();
+        private List<OrderBookRecord> _bids = new List<OrderBookRecord>();
 
         public IReadOnlyList<OrderBookRecord> Asks => _asks;
         public IReadOnlyList<OrderBookRecord> Bids => _bids;
 
+        public readonly DateTime UtcCreated;
+
+        public OrderBook(Network network, AssetPair pair, IEnumerable<OrderBookRecord> asks, IEnumerable<OrderBookRecord> bids) : this(network, pair)
+        {
+            _asks = asks.AsList();
+            _bids = bids.AsList();
+            _records.AddRange(_asks);
+            _records.AddRange(_bids);
+        }
+
         public OrderBook(Network network, AssetPair pair)
         {
             Pair = pair;
+            PairNormalised = pair.Normalised;
             Network = network;
+            UtcCreated = DateTime.UtcNow;
         }
 
-        public void AddAsk(Money price, decimal volume)
+        public void AddAsk(decimal price, decimal volume, bool volAssetReversed = false)
         {
-            Add(new OrderBookRecord(OrderType.Ask, new Money(price, Pair.Asset2), volume));
+            Add(OrderBookRecord.CreateInternal(OrderType.Ask, new Money(price, Pair.Asset2), GetVolume(volume, volAssetReversed)));
         }
 
-        public void AddBid(Money price, decimal volume)
+        public void AddBid(decimal price, decimal volume, bool volAssetReversed = false)
         {
-            Add(new OrderBookRecord(OrderType.Bid, new Money(price, Pair.Asset2), volume));
+            Add(OrderBookRecord.CreateInternal(OrderType.Bid, new Money(price, Pair.Asset2), GetVolume(volume, volAssetReversed)));
         }
 
-        public void Add(OrderType type, Money price, decimal volume)
+        public void Add(OrderType type, decimal price, decimal volume, bool volAssetReversed = false)
         {
-            Add(new OrderBookRecord(type, new Money(price, Pair.Asset2), volume));
+            Add(OrderBookRecord.CreateInternal(type, new Money(price, Pair.Asset2), GetVolume(volume, volAssetReversed)));
+        }
+
+        private Money GetVolume(decimal volume, bool volAssetReversed)
+        {
+            return new Money(volume, volAssetReversed ? Pair.Asset1 : Pair.Asset2);
         }
 
         public void Add(OrderBookRecord record)
@@ -79,6 +98,12 @@ namespace Prime.Common
         private OrderBookRecord _highestBid;
         public OrderBookRecord HighestBid => _highestBid ?? (_highestBid = _bids.OrderByDescending(x => x.Price).FirstOrDefault());
 
+        public void Order()
+        {
+            _bids = _bids.OrderByDescending(x => x.Price).ToList();
+            _asks = _asks.OrderBy(x => x.Price).ToList();
+        }
+
         public Money PriceAtPercentage(OrderType type, decimal percentage)
         {
             var top = type == OrderType.Ask ? LowestAsk : HighestBid;
@@ -105,5 +130,24 @@ namespace Prime.Common
         public int Count => _records.Count;
 
         public OrderBookRecord this[int index] => _records[index];
+
+        private OrderBook _reversed;
+        public OrderBook Reversed => _reversed ?? (_reversed = GetReversed());
+
+        public bool IsReversed { get; private set; }
+
+        private OrderBook GetReversed()
+        {
+            return new OrderBook(Network, Pair.Reversed, _records.Where(x => x.Type == OrderType.Bid).Select(x => x.AsQuote(Pair.Asset1)), _records.Where(x => x.Type == OrderType.Ask).Select(x => x.AsQuote(Pair.Asset1)))
+            {
+                _reversed = this,
+                IsReversed = true
+            };
+        }
+
+        public OrderBook AsPair(AssetPair pair)
+        {
+            return pair.Id == Pair.Id ? this : Reversed;
+        }
     }
 }

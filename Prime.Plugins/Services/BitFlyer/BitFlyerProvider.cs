@@ -94,10 +94,10 @@ namespace Prime.Plugins.Services.BitFlyer
             var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in bids)
-                orderBook.Add(new OrderBookRecord(OrderType.Bid, new Money(i.price, context.Pair.Asset2), i.size));
+                orderBook.AddBid(i.price, i.size);
             
             foreach (var i in asks)
-                orderBook.Add(new OrderBookRecord(OrderType.Ask, new Money(i.price, context.Pair.Asset2), i.size));
+                orderBook.AddAsk(i.price, i.size);
 
             return orderBook;
         }

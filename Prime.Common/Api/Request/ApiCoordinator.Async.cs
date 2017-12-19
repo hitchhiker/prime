@@ -94,5 +94,10 @@ namespace Prime.Common
                 r.Volume.ForEach(x => x.Source = s);
             });
         }
+
+        public static Task<ApiResponse<OrderBook>> GetOrderBookAsync(IOrderBookProvider provider, OrderBookContext context)
+        {
+            return ApiHelpers.WrapExceptionAsync(() => provider.GetOrderBookAsync(context), nameof(GetOrderBook), provider, context);
+        }
     }
 }

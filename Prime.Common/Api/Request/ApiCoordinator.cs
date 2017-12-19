@@ -69,5 +69,10 @@ namespace Prime.Common
         {
             return AsyncContext.Run(() => GetPublicVolumeAsync(provider, context));
         }
+
+        public static ApiResponse<OrderBook> GetOrderBook(IOrderBookProvider provider, OrderBookContext context)
+        {
+            return AsyncContext.Run(() => GetOrderBookAsync(provider, context));
+        }
     }
 }

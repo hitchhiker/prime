@@ -293,10 +293,10 @@ namespace Prime.Plugins.Services.BitMex
             var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in buys)
-                orderBook.Add(new OrderBookRecord(OrderType.Bid, new Money(i.price, context.Pair.Asset2), i.size));
+                orderBook.AddBid(i.price, i.size);
 
             foreach (var i in sells)
-                orderBook.Add(new OrderBookRecord(OrderType.Ask, new Money(i.price, context.Pair.Asset2), i.size));
+                orderBook.AddAsk(i.price, i.size);
 
             return orderBook;
         }

@@ -16,13 +16,10 @@ namespace Prime.Common
             Networks = networks.AsReadOnlyList();
         }
 
-        public void PrepareApi(NetworkGraph graph)
+        public void Confirm(NetworkGraph graph)
         {
             ForApi = Networks.Select(network => new NetworkApiPair(network, Pair, graph)).ToList();
-        }
 
-        public void Trim()
-        {
             var bad = ForApi.Where(x => x.Pair == null).ToList();
             if (!bad.Any())
                 return;
@@ -30,5 +27,7 @@ namespace Prime.Common
             ForApi = ForApi.Where(x => x.Pair != null).ToList();
             Networks = ForApi.Select(x => x.Network).ToList();
         }
+
+        public bool IsEmpty => !Networks.Any();
     }
 }
