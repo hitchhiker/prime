@@ -19,6 +19,8 @@
     <Compile Remove="Exchange\ExchangeCommand.cs" />
     <Compile Remove="Messages\RenewingSubscriptionsListener.cs" />
     <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
+    <Compile Remove="Wallet\Interfaces\Withdrawal\IWithdrawalPlacementProviderExtended.cs" />
+    <Compile Remove="Wallet\Withdrawal\Placement\WithdrawalPlacementContextExtended.cs" />
   </ItemGroup>
 
   <ItemGroup>

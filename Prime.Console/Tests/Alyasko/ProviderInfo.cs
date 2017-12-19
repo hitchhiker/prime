@@ -16,7 +16,6 @@ namespace Prime.Console.Tests.Alyasko
             typeof(IOhlcProvider),
             typeof(IAssetPairsProvider),
             typeof(IPublicVolumeProvider),
-            typeof(IWithdrawalPlacementProviderExtended),
             typeof(IWithdrawalHistoryProvider),
             typeof(IWithdrawalCancelationProvider),
             typeof(IWithdrawalConfirmationProvider),

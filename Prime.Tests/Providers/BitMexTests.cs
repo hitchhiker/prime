@@ -100,11 +100,11 @@ namespace Prime.Tests.Providers
         }
 
         // [TestMethod]
-        public override void TestPlaceWithdrawalExtended()
+        public override void TestPlaceWithdrawal()
         {
             var token2fa = "249723";
 
-            var context = new WithdrawalPlacementContextExtended(UserContext.Current)
+            var context = new WithdrawalPlacementContext(UserContext.Current)
             {
                 Amount = new Money(0.001m, Asset.Btc),
                 Address = null,
@@ -113,7 +113,7 @@ namespace Prime.Tests.Providers
                 Description = "Debug payment"
             };
 
-            base.TestPlaceWithdrawalExtended(context);
+            base.TestPlaceWithdrawal(context);
         }
 
         // [TestMethod]

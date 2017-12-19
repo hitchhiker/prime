@@ -83,12 +83,7 @@ namespace Prime.Plugins.Services.Bitfinex
             { "eidoo".ToAssetRaw(), "eidoo" },
         });
 
-        public bool IsFeeIncluded => true; // Confirmed.
-
-        public Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsFeeIncluded => false; // Confirmed.
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {

@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.BitMex
     // https://www.bitmex.com/api/explorer/
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitMexProvider :
-        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProviderExtended, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
+        IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider, IWithdrawalPlacementProvider, IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
     {
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
@@ -303,7 +303,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public bool IsFeeIncluded => false;
 
-        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var api = ApiProvider.GetApi(context);
 
