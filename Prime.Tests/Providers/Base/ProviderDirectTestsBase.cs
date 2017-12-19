@@ -92,14 +92,6 @@ namespace Prime.Tests.Providers
                 PlaceWithdrawal(p.Provider, context);
         }
 
-        public virtual void TestPlaceWithdrawalExtended() { }
-        public void TestPlaceWithdrawalExtended(WithdrawalPlacementContextExtended context)
-        {
-            var p = IsType<IWithdrawalPlacementProviderExtended>();
-            if (p.Success)
-                PlaceWithdrawalExtended(p.Provider, context);
-        }
-
         public virtual void TestCancelWithdrawal() { }
         public void TestCancelWithdrawal(WithdrawalCancelationContext context)
         {
@@ -391,23 +383,6 @@ namespace Prime.Tests.Providers
         }
 
         private void PlaceWithdrawal(IWithdrawalPlacementProvider provider, WithdrawalPlacementContext context)
-        {
-            if (context == null)
-                return;
-
-            try
-            {
-                var r = AsyncContext.Run(() => provider.PlaceWithdrawalAsync(context));
-
-                // Assert.IsTrue(r);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
-        }
-
-        private void PlaceWithdrawalExtended(IWithdrawalPlacementProviderExtended provider, WithdrawalPlacementContextExtended context)
         {
             if (context == null)
                 return;

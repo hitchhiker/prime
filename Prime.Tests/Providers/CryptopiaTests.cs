@@ -43,10 +43,10 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestPlaceWithdrawalExtended()
+        public override void TestPlaceWithdrawal()
         {
             // TODO: AY: Cryptopia - test with real money.
-            base.TestPlaceWithdrawalExtended(new WithdrawalPlacementContextExtended(UserContext.Current)
+            base.TestPlaceWithdrawal(new WithdrawalPlacementContext(UserContext.Current)
             {
                 Address = new WalletAddress("12498176298371628471628376"),
                 Amount = new Money(1, Asset.Btc)

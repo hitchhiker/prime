@@ -83,12 +83,7 @@ namespace Prime.Plugins.Services.Bitfinex
             { "eidoo".ToAssetRaw(), "eidoo" },
         });
 
-        public bool IsFeeIncluded => true; // Confirmed.
-
-        public Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsWithdrawalFeeIncluded => false; // Confirmed. When 100 XRP is queried for withdrawal 100.02 will be charged.
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
@@ -103,7 +98,7 @@ namespace Prime.Plugins.Services.Bitfinex
             body.walletselected = "exchange"; // Can be trading, exchange, deposit.
             body.amount = context.Amount.ToDecimalValue().ToString(CultureInfo.InvariantCulture);
             body.address = context.Address.Address;
-            body.payment_id = string.IsNullOrWhiteSpace(context.Description) ? null : context.Description;
+            body.payment_id = context.HasDescription ? null : context.Description;
 
             var rRaw = await api.WithdrawAsync(body).ConfigureAwait(false);
 

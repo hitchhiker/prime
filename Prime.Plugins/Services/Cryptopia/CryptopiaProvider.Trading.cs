@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.Cryptopia
 {
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://www.cryptopia.co.nz/Forum/Thread/255
-    public partial class CryptopiaProvider : IOrderLimitProvider, IBalanceProvider, IWithdrawalPlacementProviderExtended
+    public partial class CryptopiaProvider : IOrderLimitProvider, IBalanceProvider, IWithdrawalPlacementProvider
     {
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
@@ -117,9 +117,9 @@ namespace Prime.Plugins.Services.Cryptopia
         }
 
         // TODO: AY: find out IsFeeIncluded in Cryptopia.
-        public bool IsFeeIncluded => throw new NotImplementedException();
+        public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
 
-        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -137,7 +137,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = rRaw.GetContent();
 
-            if(!r.Data.HasValue)
+            if (!r.Data.HasValue)
                 throw new ApiResponseException("Remote withdrawal ID is not returned", this);
 
             return new WithdrawalPlacementResult()
