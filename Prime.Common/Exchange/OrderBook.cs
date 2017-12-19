@@ -149,5 +149,10 @@ namespace Prime.Common
         {
             return pair.Id == Pair.Id ? this : Reversed;
         }
+
+        public override string ToString()
+        {
+            return Network.Name + " " + Pair;
+        }
     }
 }

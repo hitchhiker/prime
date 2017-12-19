@@ -51,7 +51,7 @@ namespace Prime.Utility
                     if (a.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright?.Contains("microsoft", StringComparison.OrdinalIgnoreCase) == true)
                         continue;
                 }
-                catch
+                catch (Exception e)
                 {
                     continue;
                 }

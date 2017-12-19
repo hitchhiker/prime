@@ -287,15 +287,13 @@ namespace Prime.Plugins.Services.Poloniex
             if (r.bids == null || r.asks == null)
                 throw new NoAssetPairException(context.Pair, this);
 
-            var actualPair = context.Pair.Reversed;
-
-            var orderBook = new OrderBook(Network, actualPair); //POLONIEX IS REVERSING THE MARKET
+            var orderBook = new OrderBook(Network, context.Pair.Reversed); //POLONIEX IS REVERSING THE MARKET
 
             foreach (var i in r.bids)
-                orderBook.AddBid(i[0],i[1]);
+                orderBook.AddBid(i[0], i[1], true);
 
             foreach (var i in r.asks)
-                orderBook.AddAsk(i[0], i[1]);
+                orderBook.AddAsk(i[0], i[1], true);
 
             orderBook.Order();
 

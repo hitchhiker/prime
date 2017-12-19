@@ -37,9 +37,13 @@ namespace TestConsole
             {
                 
             }
-            else 
+            else
             {
-                TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault()?.Go();
+                var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
+                if (ft == null)
+                    Console.WriteLine("Cant find 'Frank' testing modules.");
+                else
+                    ft.Go();
             }
 
             // ----- Kraken -----
