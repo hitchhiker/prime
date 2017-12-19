@@ -301,7 +301,7 @@ namespace Prime.Plugins.Services.BitMex
             return orderBook;
         }
 
-        public bool IsFeeIncluded => false;
+        public bool IsWithdrawalFeeIncluded => false;
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
@@ -315,7 +315,11 @@ namespace Prime.Plugins.Services.BitMex
             body.Add("currency", context.Amount.Asset.ToRemoteCode(this));
             body.Add("amount", context.Amount.ToDecimalValue() / ConversionRate);
             body.Add("address", context.Address.Address + ":" + context.Address.Tag);
-            body.Add("fee", context.CustomFee.ToDecimalValue() / ConversionRate);
+
+            if(!context.HasCustomFee)
+                throw new ContextArgumentException("Custom fee is required for withdrawal", this);
+
+            body.Add("fee", context.CustomFee.Value.ToDecimalValue() / ConversionRate);
 
             var r = await api.RequestWithdrawalAsync(body).ConfigureAwait(false);
 

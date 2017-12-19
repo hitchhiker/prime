@@ -99,14 +99,14 @@ namespace Prime.Tests.Providers
             base.TestGetWithdrawalHistory(context);
         }
 
-        // [TestMethod]
+        //[TestMethod]
         public override void TestPlaceWithdrawal()
         {
             var token2fa = "249723";
 
             var context = new WithdrawalPlacementContext(UserContext.Current)
             {
-                Amount = new Money(0.001m, Asset.Btc),
+                Amount = new Money(1000, Asset.Btc),
                 Address = null,
                 AuthenticationToken = token2fa,
                 CustomFee = new Money(0.004m, Asset.Btc),

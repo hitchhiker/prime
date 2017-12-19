@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Cryptopia
         }
 
         // TODO: AY: find out IsFeeIncluded in Cryptopia.
-        public bool IsFeeIncluded => throw new NotImplementedException();
+        public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {

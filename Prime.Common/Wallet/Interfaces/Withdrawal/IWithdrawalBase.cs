@@ -7,7 +7,7 @@ namespace Prime.Common
         /// <summary>
         /// If fee is included then you will receive/pay the price that you submit and nothing will be additionally charged.
         /// </summary>
-        bool IsFeeIncluded { get; }
+        bool IsWithdrawalFeeIncluded { get; }
 
         Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(TWithdrawalContext context);
     }

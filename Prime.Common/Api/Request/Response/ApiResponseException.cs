@@ -3,23 +3,18 @@ using System.Runtime.CompilerServices;
 
 namespace Prime.Common
 {
-    public class ApiResponseException : Exception
+    public class ApiResponseException : ApiBaseException
     {
-        public ApiResponseException(Exception exception, INetworkProvider provider, [CallerMemberName] string method = "Unknown")
+        public ApiResponseException(Exception exception, INetworkProvider provider, [CallerMemberName]string method = "Unknown") : base(exception, provider, method)
         {
-            Message = exception.Message + " - " + method + " in " + provider.Title + " provider.";
         }
 
-        public ApiResponseException(string message)
+        public ApiResponseException(string message) : base(message)
         {
-            Message = message;
         }
 
-        public ApiResponseException(string message, INetworkProvider provider, [CallerMemberName] string method = "Unknown")
+        public ApiResponseException(string message, INetworkProvider provider, [CallerMemberName] string method = "Unknown") : base(message, provider, method)
         {
-            Message = message + " - " + method + " in " + provider.Title + " provider.";
         }
-
-        public override string Message { get; }
     }
 }
