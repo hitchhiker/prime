@@ -4,12 +4,13 @@ using System.Linq;
 using System.Reflection;
 using Nito.AsyncEx;
 using Prime.Common;
+using Prime.Console.Tests;
+using Prime.Console.Tests.Alyasko;
 using Prime.Core;
 using Prime.Plugins.Services.BitMex;
 using Prime.Plugins.Services.Kraken;
 using Prime.Plugins.Services.QuadrigaCX;
 using Prime.TestConsole;
-using Prime.TestConsole.Tools;
 using Prime.Utility;
 using AssetPair = Prime.Common.AssetPair;
 
@@ -29,36 +30,12 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
-                ///////
-
-                var ohlcs = Networks.I.OhlcProviders.ToArray();
-                foreach (var provider in ohlcs)
-                {
-                    Console.WriteLine($"Name: {provider.Network.Name}");
-                }
-
-                var bitmex = Networks.I.Providers.OfType<BitMexProvider>().First();
-
-                var r = bitmex.GetOhlcAsync(new OhlcContext("BTC_USD".ToAssetPairRaw(), TimeResolution.Hour,
-                    new TimeRange(DateTime.UtcNow.AddDays(-60), DateTime.UtcNow.AddDays(-40), TimeResolution.Hour))).Result;
-
-                var contents = string.Join("\r\n", r.Select(x => $"{x.DateTimeUtc} - {(x.High + x.Low) / 2}"));
-
-                File.WriteAllText(@"C:\Users\Alexander\Desktop\ohlc btc-usd 1h 3.txt", contents);
-
-                return;
-
-                ///////
-                // Run Alyasko code :)
-                // new ProviderTools().GenerateProvidersReport();
-                var perfTools = new PerformanceTools();
-                perfTools.CheckConditionals();
-                perfTools.MemTest();
-
-                
+                var test = new ProviderTools() as ITestBase;
+                test.Go();
             }
             else if (Environment.UserName.Equals("Sean"))
             {
+                
             }
             else 
             {

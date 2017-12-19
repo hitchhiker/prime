@@ -83,7 +83,12 @@ namespace Prime.Plugins.Services.Bitfinex
             { "eidoo".ToAssetRaw(), "eidoo" },
         });
 
-        public bool IsFeeIncluded => false;
+        public bool IsFeeIncluded => true; // Confirmed.
+
+        public Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContextExtended context)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
@@ -98,6 +103,7 @@ namespace Prime.Plugins.Services.Bitfinex
             body.walletselected = "exchange"; // Can be trading, exchange, deposit.
             body.amount = context.Amount.ToDecimalValue().ToString(CultureInfo.InvariantCulture);
             body.address = context.Address.Address;
+            body.payment_id = string.IsNullOrWhiteSpace(context.Description) ? null : context.Description;
 
             var rRaw = await api.WithdrawAsync(body).ConfigureAwait(false);
 

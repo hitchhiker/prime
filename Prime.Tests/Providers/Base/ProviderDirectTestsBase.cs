@@ -68,11 +68,11 @@ namespace Prime.Tests.Providers
         }
 
         public virtual void TestGetOrderBook() { }
-        public void TestGetOrderBook(OrderBookContext context)
+        public void TestGetOrderBook(AssetPair pair, bool priceLessThan1)
         {
             var p = IsType<IOrderBookProvider>();
             if (p.Success)
-                GetOrderBook(p.Provider, context);
+                GetOrderBook(p.Provider, pair, priceLessThan1);
         }
 
         public virtual void TestGetWithdrawalHistory() { }
@@ -327,26 +327,40 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void GetOrderBook(IOrderBookProvider provider, OrderBookContext context)
+        private void InternalGetOrderBook(IOrderBookProvider provider, OrderBookContext context, bool priceLessThan1)
         {
-            if (context == null)
-                return;
+            var r = AsyncContext.Run(() => provider.GetOrderBookAsync(context));
+            Assert.IsTrue(r != null, "Null response returned");
 
+            Assert.IsTrue(r.Pair.Equals(context.Pair), "Incorrect asset pair returned");
+
+            if (context.MaxRecordsCount.HasValue)
+                Assert.IsTrue(r.Count == context.MaxRecordsCount.Value, "Incorrect number of order book records returned");
+            else
+                Assert.IsTrue(r.Count > 0, "No order book records returned");
+
+            Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderType.Ask)} asks, {r.Count(x => x.Type == OrderType.Bid)} bids): ");
+            foreach (var obr in r)
+            {
+                if (priceLessThan1) // Checks if the pair is reversed (price-wise).
+                    Assert.IsTrue(obr.Price < 1, "Reverse check failed. Price is expected to be < 1");
+                else
+                    Assert.IsTrue(obr.Price > 1, "Reverse check failed. Price is expected to be > 1");
+
+                Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");
+            }
+        }
+
+        private void GetOrderBook(IOrderBookProvider provider, AssetPair pair, bool priceLessThan1)
+        {
             try
             {
-                var r = AsyncContext.Run(() => provider.GetOrderBookAsync(context));
-                Assert.IsTrue(r != null);
+                var context = new OrderBookContext(pair);
+                InternalGetOrderBook(provider, context, priceLessThan1);
 
-                if (context.MaxRecordsCount.HasValue)
-                    Assert.IsTrue(r.Count == context.MaxRecordsCount.Value);
-                else
-                    Assert.IsTrue(r.Count > 0);
+                context = new OrderBookContext(pair, 100);
+                InternalGetOrderBook(provider, context, priceLessThan1);
 
-                Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderType.Ask)} asks, {r.Count(x => x.Type == OrderType.Bid)} bids): ");
-                foreach (var obr in r)
-                {
-                    Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");
-                }
             }
             catch (Exception e)
             {

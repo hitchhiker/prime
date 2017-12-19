@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
+using Newtonsoft.Json;
 using Prime.Common;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.Xbtce
 {
@@ -17,10 +21,17 @@ namespace Prime.Plugins.Services.Xbtce
         private const string XbtceApiUrl = "https://cryptottlivewebapi.xbtce.net:8443/api/" + XbtceApiVersion;
 
         private static readonly ObjectId IdHash = "prime:xbtce".GetObjectIdHashCode();
-        
+
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<IXbtceApi> ApiProvider { get; }
+        private IXbtceApi _apiProvider;
+        private IXbtceApi ApiProvider => _apiProvider ?? (_apiProvider = RestClient.For<IXbtceApi>(new HttpClient(new HttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+        })
+        {
+            BaseAddress = new Uri(XbtceApiUrl)
+        }));
 
         public Network Network { get; } = Networks.I.Get("Xbtce");
 
@@ -34,25 +45,18 @@ namespace Prime.Plugins.Services.Xbtce
         public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-
-        public XbtceProvider()
-        {
-            ApiProvider = new RestApiClientProvider<IXbtceApi>(XbtceApiUrl, this, (k) => null);
-        }
-
+        
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+
+            var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
-
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
@@ -92,16 +96,15 @@ namespace Prime.Plugins.Services.Xbtce
 
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
-            var api = ApiProvider.GetApi(context);
             var pairsCsv = string.Join(" ", context.Pairs.Select(x => x.ToTicker(this)));
-            var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
+            var r = await ApiProvider.GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
                 throw new ApiResponseException("No ticker returned", this);
             }
 
-            return new MarketPrices(new MarketPrice(Network, context.Pair,r[0].LastBuyPrice)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r[0].LastBuyPrice)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r[0].BestAsk, r[0].BestBid),
                 Volume = new NetworkPairVolume(Network, context.Pair, r[0].DailyTradedTotalVolume)
@@ -110,8 +113,7 @@ namespace Prime.Plugins.Services.Xbtce
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
