@@ -33,9 +33,27 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
-        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new BitfinexSchema.OrderStatusRequest.Descriptor()
+            {
+                order_id = long.Parse(context.RemoteId)
+            };
+
+            var rRaw = await api.GetOrderStatusAsync(body).ConfigureAwait(false);
+
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new TradeOrderStatus(r.id.ToString(), r.is_live, r.is_cancelled)
+            {
+                Rate = r.price,
+                AmountInitial = r.original_amount,
+                AmountRemaining = r.remaining_amount
+            };
         }
 
         public decimal MinimumTradeVolume => throw new NotImplementedException();

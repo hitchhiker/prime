@@ -14,6 +14,12 @@ namespace Prime.Common
 
             if (!pair.Has(rate.Asset))
                 throw new ArgumentException($"The {nameof(rate)}'s asset does not belong to this market '{pair}'");
+
+            if(IsSell && !pair.Asset2.Equals(rate.Asset))
+                throw new ArgumentException($"Wrong currency rate asset is set for '{pair}' market when SELLING - must be {pair.Asset2}");
+
+            if(IsBuy && !pair.Asset1.Equals(rate.Asset))
+                throw new ArgumentException($"Wrong currency rate asset is set for '{pair}' market when BUYING - must be {pair.Asset1}");
         }
 
         public AssetPair Pair { get; }

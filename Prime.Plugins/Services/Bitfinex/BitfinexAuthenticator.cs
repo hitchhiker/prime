@@ -57,6 +57,8 @@ namespace Prime.Plugins.Services.Bitfinex
                     return JsonConvert.DeserializeObject<BitfinexSchema.AccountInfoRequest>(json);
                 case "WithdrawalRequest":
                     return JsonConvert.DeserializeObject<BitfinexSchema.WithdrawalRequest>(json);
+                case "OrderStatusRequest":
+                    return JsonConvert.DeserializeObject<BitfinexSchema.OrderStatusRequest>(json);
                 default:
                     throw new NotSupportedException("Serialization of specified class is not supported");
             }

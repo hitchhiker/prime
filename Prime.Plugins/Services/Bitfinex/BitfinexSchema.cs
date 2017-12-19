@@ -36,7 +36,6 @@ namespace Prime.Plugins.Services.Bitfinex
 
         #endregion
 
-
         #region Private
 
         internal class AccountInfoResponse : List<AccountInfoDataResponse> { }
@@ -95,6 +94,36 @@ namespace Prime.Plugins.Services.Bitfinex
             public string status;
             // public string message; // Inherited from BaseResponse.
             public long withdrawal_id;
+        }
+
+        internal class OrderStatusResponse : BaseResponse
+        {
+            public long id;
+            public string symbol;
+            public string exchange;
+            public decimal? price; // "(can be null for market orders)".
+            public decimal avg_execution_price;
+            public string side;
+            public string type;
+            public double timestamp;
+            public bool is_live;
+            public bool is_cancelled;
+            public bool is_hidden;
+            public string oco_order;
+            public bool was_forced;
+            public decimal original_amount;
+            public decimal remaining_amount;
+            public decimal executed_amount;
+        }
+
+        internal class OrderStatusRequest : BaseRequest
+        {
+            public long order_id;
+
+            internal class Descriptor : OrderStatusRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(OrderStatusRequest);
+            }
         }
 
         internal class AccountInfoRequest : BaseRequest

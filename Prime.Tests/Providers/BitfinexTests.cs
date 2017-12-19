@@ -34,7 +34,13 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, 103.85414263m, new Money(0.00004333m, "BTC".ToAssetRaw()));
+            base.TestPlaceOrderLimit("XRP_USD".ToAssetPairRaw(), false, 34m, new Money(100000m, "USD".ToAssetRaw()));
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.TestGetTradeOrderStatus("6313352603");
         }
 
         [TestMethod]
