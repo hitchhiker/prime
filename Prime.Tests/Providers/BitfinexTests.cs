@@ -34,7 +34,6 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            // TODO: AY: Bitfinex - test with real money.
             base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, 103.85414263m, new Money(0.00004333m, "BTC".ToAssetRaw()));
         }
 
