@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
@@ -30,7 +31,7 @@ namespace Prime.Plugins.Services.Binance
         public string AggregatorName => null;
         public string Title => Network.Name;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
@@ -73,7 +74,7 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
 
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this);
 
             var interval = ConvertToBinanceInterval(context.Market);
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
@@ -170,7 +171,7 @@ namespace Prime.Plugins.Services.Binance
             {
                 foreach (var pair in context.Pairs)
                 {
-                    var lowerPairTicker = pair.ToTicker(this, "").ToLower();
+                    var lowerPairTicker = pair.ToTicker(this).ToLower();
 
                     var lpr = r.FirstOrDefault(x => x.symbol.ToLower().Equals(lowerPairTicker));
 
@@ -190,7 +191,7 @@ namespace Prime.Plugins.Services.Binance
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var ticker = context.Pair.ToTicker(this, "");
+            var ticker = context.Pair.ToTicker(this);
             var r = await api.Get24HrTickerAsync(ticker).ConfigureAwait(false);
 
             var marketPrice = new MarketPrices(new MarketPrice(Network, context.Pair, r.lastPrice)
@@ -221,18 +222,27 @@ namespace Prime.Plugins.Services.Binance
             }
 
             return assetPairs;
-        }      
+        }
+
+        private static readonly int[] OrderBookValidRecordsCount = {5, 10, 20, 50, 100, 200, 500, 1000};
+
+        private void CheckOrderRecordsInputNumber(int? recordsNumber, [CallerMemberName]string method = "Unknown")
+        {
+            if (recordsNumber.HasValue && !OrderBookValidRecordsCount.Contains(recordsNumber.Value))
+                throw new ContextArgumentException("Specified number of order book records is not supported", this, method);
+        }
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
-            CheckOrderRecordsInputNumber(context.MaxRecordsCount);
+            var maxValidCount = OrderBookValidRecordsCount.Max();
+            var recordsCount = context.MaxRecordsCount == Int32.MaxValue ? maxValidCount : context.MaxRecordsCount;
+
+            CheckOrderRecordsInputNumber(recordsCount);
 
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "");
+            var pairCode = context.Pair.ToTicker(this);
 
-            var r = context.MaxRecordsCount == Int32.MaxValue
-                ? await api.GetOrderBookAsync(pairCode).ConfigureAwait(false)
-                : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
+            var r = await api.GetOrderBookAsync(pairCode, recordsCount).ConfigureAwait(false);
 
             var orderBook = new OrderBook(Network, context.Pair);
 
@@ -254,14 +264,6 @@ namespace Prime.Plugins.Services.Binance
                 throw new ApiResponseException("Incorrect format of returned volume", this);
 
             return (price, volume);
-        }
-
-        private void CheckOrderRecordsInputNumber(int? recordsNumber)
-        {
-            var validRecordsCount = new int[] { 5, 10, 20, 50, 100, 200, 500 };
-
-            if (recordsNumber.HasValue && !validRecordsCount.Contains(recordsNumber.Value))
-                throw new ArgumentException("Specified number of order book records is not supported");
         }
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)

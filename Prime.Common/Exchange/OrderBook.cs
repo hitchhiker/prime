@@ -8,13 +8,13 @@ using System;
 
 namespace Prime.Common
 {        /// <summary>
-    /// TODO: Just a note to Alex (delete when read)
-    /// Added network and pair to constructor
-    /// Added IREADONLYLIST as base, so we entries cant be accidentaly modified
-    /// Add 'Add' method to include Money conversion, less likely to have mistakes in providers.
-    /// Check for correct quote asset when adding also.
-    /// TODO: Update your other providers to work like 'CoinBase/Korbit' add/ask etc
-    /// </summary>
+         /// TODO: Just a note to Alex (delete when read)
+         /// Added network and pair to constructor
+         /// Added IREADONLYLIST as base, so we entries cant be accidentaly modified
+         /// Add 'Add' method to include Money conversion, less likely to have mistakes in providers.
+         /// Check for correct quote asset when adding also.
+         /// TODO: Update your other providers to work like 'CoinBase/Korbit' add/ask etc
+         /// </summary>
     public class OrderBook : ISerialiseAsObject
     {
         public readonly AssetPair Pair;
@@ -68,7 +68,7 @@ namespace Prime.Common
             if (record.Price == 0 || record.Volume == 0)
                 return;
 
-            if (record.Price.Asset.Id!= Pair.Asset2.Id)
+            if (record.Price.Asset.Id != Pair.Asset2.Id)
                 throw new System.Exception($"You cant add this {nameof(OrderBookRecord)} as it has the wrong asset: {record.Price.Asset} -> should be: {Pair.Asset2}");
 
             if (record.Volume.Asset.Id != Pair.Asset2.Id)
@@ -89,7 +89,7 @@ namespace Prime.Common
                 var la = _asks.LastOrDefault();
                 return la == null || newRecord.Price > la.Price;
             }
-            
+
             var lb = _bids.LastOrDefault();
             return lb == null || newRecord.Price < lb.Price;
         }

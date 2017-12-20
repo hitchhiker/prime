@@ -188,8 +188,10 @@ namespace Prime.Plugins.Services.BitStamp
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);
 
-            var asks = context.MaxRecordsCount == Int32.MaxValue ? r.asks : r.asks.Take(context.MaxRecordsCount);
-            var bids = context.MaxRecordsCount == Int32.MaxValue ? r.bids : r.bids.Take(context.MaxRecordsCount);
+            var maxCount = 1000; // Used to limit number of records when no limit is set (because it's too big).
+
+            var asks = context.MaxRecordsCount == Int32.MaxValue ? r.asks.Take(maxCount) : r.asks.Take(context.MaxRecordsCount);
+            var bids = context.MaxRecordsCount == Int32.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
 
             foreach (var i in bids.Select(GetBidAskData))
                 orderBook.AddBid(i.Price, i.Amount);

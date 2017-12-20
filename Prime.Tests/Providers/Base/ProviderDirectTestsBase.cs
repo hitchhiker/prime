@@ -324,12 +324,15 @@ namespace Prime.Tests.Providers
             var r = AsyncContext.Run(() => provider.GetOrderBookAsync(context));
             Assert.IsTrue(r != null, "Null response returned");
 
-            Assert.IsTrue(r.Pair.Equals(context.Pair), "Incorrect asset pair returned");
+            if(r.Pair.Reversed.Equals(context.Pair))
+                Trace.WriteLine("Asset pair is reversed");
+
+            // Assert.IsTrue(r.Pair.Equals(context.Pair), "Incorrect asset pair returned");
 
             if (context.MaxRecordsCount == Int32.MaxValue)
                 Assert.IsTrue(r.Count > 0, "No order book records returned");
             else
-                Assert.IsTrue(r.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
+                Assert.IsTrue(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
 
 
             Trace.WriteLine($"Order book data ({r.Asks.Count} asks, {r.Bids.Count} bids): ");
@@ -348,12 +351,11 @@ namespace Prime.Tests.Providers
         {
             try
             {
-                var context = new OrderBookContext(pair);
+                var context = new OrderBookContext(pair, 100);
                 InternalGetOrderBook(provider, context, priceLessThan1);
 
-                context = new OrderBookContext(pair, 100);
+                context = new OrderBookContext(pair, Int32.MaxValue);
                 InternalGetOrderBook(provider, context, priceLessThan1);
-
             }
             catch (Exception e)
             {
