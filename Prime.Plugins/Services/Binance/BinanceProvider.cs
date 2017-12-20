@@ -230,9 +230,9 @@ namespace Prime.Plugins.Services.Binance
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this, "");
 
-            var r = context.MaxRecordsCount.HasValue
-                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false)
-                : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var r = context.MaxRecordsCount == Int32.MaxValue
+                ? await api.GetOrderBookAsync(pairCode).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
 
             var orderBook = new OrderBook(Network, context.Pair);
 

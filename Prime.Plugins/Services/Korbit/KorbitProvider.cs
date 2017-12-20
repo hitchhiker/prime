@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using LiteDB;
@@ -97,13 +98,13 @@ namespace Prime.Plugins.Services.Korbit
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
 
-            var bids = context.MaxRecordsCount.HasValue 
-                ? r.bids.Take(context.MaxRecordsCount.Value / 2) 
-                : r.bids;
+            var bids = context.MaxRecordsCount == Int32.MaxValue 
+                ? r.bids
+                : r.bids.Take(context.MaxRecordsCount) ;
 
-            var asks = context.MaxRecordsCount.HasValue
-                ? r.asks.Take(context.MaxRecordsCount.Value / 2)
-                : r.asks;
+            var asks = context.MaxRecordsCount == Int32.MaxValue
+                ? r.asks
+                : r.asks.Take(context.MaxRecordsCount);
 
             var orderBook = new OrderBook(Network, context.Pair);
 
