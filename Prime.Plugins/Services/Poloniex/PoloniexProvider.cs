@@ -290,7 +290,7 @@ namespace Prime.Plugins.Services.Poloniex
             var orderBook = new OrderBook(Network, context.Pair.Reversed); //POLONIEX IS REVERSING THE MARKET
 
             foreach (var i in r.bids)
-                orderBook.AddBid(i[0], i[1], true);
+                orderBook.AddBid(i[0], i[1], true); //HH: Confirmed reversed on https://poloniex.com/exchange#btc_btcd
 
             foreach (var i in r.asks)
                 orderBook.AddAsk(i[0], i[1], true);

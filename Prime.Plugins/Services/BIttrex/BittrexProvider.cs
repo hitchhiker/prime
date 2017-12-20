@@ -266,7 +266,7 @@ namespace Prime.Plugins.Services.Bittrex
                 : r.result.sell;
 
             foreach (var i in bids)
-                orderBook.AddBid(i.Rate, i.Quantity, true);
+                orderBook.AddBid(i.Rate, i.Quantity, true); //HH:CONFIRMED INVERTED ON https://bittrex.com/Market/Index?MarketName=BTC-BTCD
 
             foreach (var i in asks)
                 orderBook.AddAsk(i.Rate, i.Quantity, true); 

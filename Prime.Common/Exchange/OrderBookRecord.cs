@@ -45,7 +45,7 @@ namespace Prime.Common
             if (Price.Asset.Id == asset.Id)
                 return this;
 
-            return new OrderBookRecord(Type, Price.ReverseAsset(asset), Volume);
+            return new OrderBookRecord(Type, Price.ReverseAsset(asset), new Money(Volume * Price, asset));
         }
     }
 }
