@@ -54,8 +54,8 @@ namespace Prime.Console.Tests.Alyasko
         public void Go()
         {
             //GenerateProvidersReport();
-            //ListOrderBookProviders();
-            ListProvidersThatSupport("XRP".ToAssetRaw());
+            ListOrderBookProviders();
+            //ListProvidersThatSupport("XRP".ToAssetRaw());
         }
     }
 }

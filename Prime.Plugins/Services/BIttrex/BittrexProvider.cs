@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -258,12 +259,12 @@ namespace Prime.Plugins.Services.Bittrex
 
             var orderBook = new OrderBook(Network, context.Pair.Reversed); //HH: This is the reversed pair that is returned.
 
-            var bids = context.MaxRecordsCount.HasValue
-                ? r.result.buy.Take(context.MaxRecordsCount.Value / 2)
-                : r.result.buy;
-            var asks = context.MaxRecordsCount.HasValue
-                ? r.result.sell.Take(context.MaxRecordsCount.Value / 2)
-                : r.result.sell;
+            var bids = context.MaxRecordsCount == Int32.MaxValue
+                ? r.result.buy
+                : r.result.buy.Take(context.MaxRecordsCount);
+            var asks = context.MaxRecordsCount == Int32.MaxValue
+                ? r.result.sell
+                : r.result.sell.Take(context.MaxRecordsCount);
 
             foreach (var i in bids)
                 orderBook.AddBid(i.Rate, i.Quantity, true); //HH:CONFIRMED INVERTED ON https://bittrex.com/Market/Index?MarketName=BTC-BTCD

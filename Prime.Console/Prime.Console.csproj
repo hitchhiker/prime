@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\prv\Prime.Arbitrage\Prime.Arbitrage.csproj" />
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
