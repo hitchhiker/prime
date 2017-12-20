@@ -45,24 +45,24 @@ namespace Prime.Common
             UtcCreated = DateTime.UtcNow;
         }
 
-        public void AddAsk(decimal price, decimal volume, bool volAssetReversed = false)
+        public void AddAsk(decimal price, decimal volume, bool volumeIsNotQuote = false)
         {
-            Add(OrderBookRecord.CreateInternal(OrderType.Ask, new Money(price, Pair.Asset2), GetVolume(volume, volAssetReversed)));
+            Add(OrderType.Ask, price, volume, volumeIsNotQuote);
         }
 
-        public void AddBid(decimal price, decimal volume, bool volAssetReversed = false)
+        public void AddBid(decimal price, decimal volume, bool volumeIsNotQuote = false)
         {
-            Add(OrderBookRecord.CreateInternal(OrderType.Bid, new Money(price, Pair.Asset2), GetVolume(volume, volAssetReversed)));
+            Add(OrderType.Bid, price, volume, volumeIsNotQuote);
         }
 
-        public void Add(OrderType type, decimal price, decimal volume, bool volAssetReversed = false)
+        public void Add(OrderType type, decimal price, decimal volume, bool volumeIsNotQuote = false)
         {
-            Add(OrderBookRecord.CreateInternal(type, new Money(price, Pair.Asset2), GetVolume(volume, volAssetReversed)));
+            Add(OrderBookRecord.CreateInternal(type, new Money(price, Pair.Asset2), GetVolume(price, volume, volumeIsNotQuote)));
         }
 
-        private Money GetVolume(decimal volume, bool volAssetReversed)
+        private Money GetVolume(decimal price, decimal volume, bool volumeIsNotQuote)
         {
-            return new Money(volume, volAssetReversed ? Pair.Asset1 : Pair.Asset2);
+            return volumeIsNotQuote ? new Money(volume * price, Pair.Asset2) : new Money(volume, Pair.Asset2);
         }
 
         public void Add(OrderBookRecord record)
@@ -72,6 +72,9 @@ namespace Prime.Common
 
             if (record.Price.Asset.Id!= Pair.Asset2.Id)
                 throw new System.Exception($"You cant add this {nameof(OrderBookRecord)} as it has the wrong asset: {record.Price.Asset} -> should be: {Pair.Asset2}");
+
+            if (record.Volume.Asset.Id != Pair.Asset2.Id)
+                throw new System.Exception($"You cant add this {nameof(OrderBookRecord)} as it has the wrong volume asset: {record.Volume.Asset} -> should be: {Pair.Asset2}");
 
             if (record.Type == OrderType.Ask)
                 _asks.Add(record);

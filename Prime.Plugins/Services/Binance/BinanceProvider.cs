@@ -237,10 +237,10 @@ namespace Prime.Plugins.Services.Binance
             var orderBook = new OrderBook(Network, context.Pair);
 
             foreach (var i in r.bids.Select(GetOrderBookRecordData))
-                orderBook.AddBid(i.Price, i.Volume);
+                orderBook.AddBid(i.Price, i.Volume, true);
             
             foreach (var i in r.asks.Select(GetOrderBookRecordData))
-                orderBook.AddAsk(i.Price, i.Volume);
+                orderBook.AddAsk(i.Price, i.Volume, true);
 
             return orderBook;
         }
