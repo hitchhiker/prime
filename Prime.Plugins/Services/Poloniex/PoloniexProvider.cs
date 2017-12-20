@@ -295,8 +295,6 @@ namespace Prime.Plugins.Services.Poloniex
             foreach (var i in r.asks)
                 orderBook.AddAsk(i[0], i[1], true);
 
-            orderBook.Order();
-
             return orderBook;
         }
 

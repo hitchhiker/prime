@@ -15,14 +15,14 @@ namespace Prime.Common
     /// Check for correct quote asset when adding also.
     /// TODO: Update your other providers to work like 'CoinBase/Korbit' add/ask etc
     /// </summary>
-    public class OrderBook : IReadOnlyList<OrderBookRecord>, ISerialiseAsObject
+    public class OrderBook : ISerialiseAsObject
     {
         public readonly AssetPair Pair;
         public readonly AssetPair PairNormalised;
         public readonly Network Network;
-        private readonly List<OrderBookRecord> _records = new List<OrderBookRecord>();
         private List<OrderBookRecord> _asks = new List<OrderBookRecord>();
         private List<OrderBookRecord> _bids = new List<OrderBookRecord>();
+        public bool IsSorted { get; private set; } = true;
 
         public IReadOnlyList<OrderBookRecord> Asks => _asks;
         public IReadOnlyList<OrderBookRecord> Bids => _bids;
@@ -31,10 +31,8 @@ namespace Prime.Common
 
         public OrderBook(Network network, AssetPair pair, IEnumerable<OrderBookRecord> asks, IEnumerable<OrderBookRecord> bids) : this(network, pair)
         {
-            _asks = asks.AsList();
-            _bids = bids.AsList();
-            _records.AddRange(_asks);
-            _records.AddRange(_bids);
+            asks.ForEach(Add);
+            bids.ForEach(Add);
         }
 
         public OrderBook(Network network, AssetPair pair)
@@ -76,11 +74,24 @@ namespace Prime.Common
             if (record.Volume.Asset.Id != Pair.Asset2.Id)
                 throw new System.Exception($"You cant add this {nameof(OrderBookRecord)} as it has the wrong volume asset: {record.Volume.Asset} -> should be: {Pair.Asset2}");
 
+            IsSorted = IsSorted && IsInOrder(record);
+
             if (record.Type == OrderType.Ask)
                 _asks.Add(record);
             else
                 _bids.Add(record);
-            _records.Add(record);
+        }
+
+        private bool IsInOrder(OrderBookRecord newRecord)
+        {
+            if (newRecord.Type == OrderType.Ask)
+            {
+                var la = _asks.LastOrDefault();
+                return la == null || newRecord.Price > la.Price;
+            }
+            
+            var lb = _bids.LastOrDefault();
+            return lb == null || newRecord.Price < lb.Price;
         }
 
         public void AddRange(IEnumerable<OrderBookRecord> records)
@@ -101,7 +112,9 @@ namespace Prime.Common
         private OrderBookRecord _highestBid;
         public OrderBookRecord HighestBid => _highestBid ?? (_highestBid = _bids.OrderByDescending(x => x.Price).FirstOrDefault());
 
-        public void Order()
+        public Money Price => new Money((LowestAsk.Price + HighestBid.Price) / 2, LowestAsk.Price.Asset);
+
+        public void SortPricing()
         {
             _bids = _bids.OrderByDescending(x => x.Price).ToList();
             _asks = _asks.OrderBy(x => x.Price).ToList();
@@ -126,14 +139,6 @@ namespace Prime.Common
             return VolumeAt(type, PriceAtPercentage(type, percentage));
         }
 
-        public IEnumerator<OrderBookRecord> GetEnumerator() => _records.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable) _records).GetEnumerator();
-
-        public int Count => _records.Count;
-
-        public OrderBookRecord this[int index] => _records[index];
-
         private OrderBook _reversed;
         public OrderBook Reversed => _reversed ?? (_reversed = GetReversed());
 
@@ -141,7 +146,7 @@ namespace Prime.Common
 
         private OrderBook GetReversed()
         {
-            return new OrderBook(Network, Pair.Reversed, _records.Where(x => x.Type == OrderType.Bid).Select(x => x.AsQuote(Pair.Asset1)), _records.Where(x => x.Type == OrderType.Ask).Select(x => x.AsQuote(Pair.Asset1)))
+            return new OrderBook(Network, Pair.Reversed, _bids.Select(x => x.AsQuote(Pair.Asset1)), _asks.Select(x => x.AsQuote(Pair.Asset1)))
             {
                 _reversed = this,
                 IsReversed = true
