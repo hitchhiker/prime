@@ -331,8 +331,8 @@ namespace Prime.Tests.Providers
             else
                 Assert.IsTrue(r.Count > 0, "No order book records returned");
 
-            Trace.WriteLine($"Order book data ({r.Count(x => x.Type == OrderType.Ask)} asks, {r.Count(x => x.Type == OrderType.Bid)} bids): ");
-            foreach (var obr in r)
+            Trace.WriteLine($"Order book data ({r.Asks.Count} asks, {r.Bids.Count} bids): ");
+            foreach (var obr in r.Asks.Concat(r.Bids))
             {
                 if (priceLessThan1) // Checks if the pair is reversed (price-wise).
                     Assert.IsTrue(obr.Price < 1, "Reverse check failed. Price is expected to be < 1");

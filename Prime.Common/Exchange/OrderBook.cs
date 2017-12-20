@@ -153,6 +153,8 @@ namespace Prime.Common
             };
         }
 
+        public int Count => Asks.Count + Bids.Count;
+
         public OrderBook AsPair(AssetPair pair)
         {
             return pair.Id == Pair.Id ? this : Reversed;
