@@ -5,13 +5,6 @@ namespace Prime.Common
 {
     public class OrderBookRecord
     {
-        /// <summary>
-        /// TODO: Just a note to Alex (delete when read)
-        /// Moved the type to the constructor, made the set properties private, made the empty constructor private (for deserialisation only)
-        /// Also only use 'IEquatable' if you have a specific need, as it was here it served no purpose (that I could see)
-        /// Removed TIMESTAMP -> unreliable zones etc, it's safer if we use our known UTC NOW time, as we can be sure that's accurate.
-        /// </summary>
-
         private OrderBookRecord() : base() { }
 
         private OrderBookRecord(OrderType type, Money price, Money volume)
