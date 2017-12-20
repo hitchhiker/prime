@@ -178,6 +178,7 @@
     <Compile Include="Providers\GdaxTests.cs" />
     <Compile Include="Providers\GeminiTests.cs" />
     <Compile Include="Providers\HitBtcTests.cs" />
+    <Compile Include="Providers\IndependentReserveTests.cs" />
     <Compile Include="Providers\ItBitTests.cs" />
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Providers\QuoineTests.cs" />
     <Compile Include="Providers\ShapeShiftTests.cs" />
     <Compile Include="Providers\SouthXchangeTests.cs" />
+    <Compile Include="Providers\StocksExchangeTests.cs" />
     <Compile Include="Providers\TheRockTradingTests.cs" />
     <Compile Include="Providers\TidexTests.cs" />
     <Compile Include="Providers\TuxExchangeTests.cs" />
