@@ -24,6 +24,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
+        }
+
+        [TestMethod]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()
