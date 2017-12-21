@@ -194,10 +194,10 @@ namespace Prime.Plugins.Services.BitStamp
             var bids = context.MaxRecordsCount == Int32.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
 
             foreach (var i in bids.Select(GetBidAskData))
-                orderBook.AddBid(i.Price, i.Amount);
+                orderBook.AddBid(i.Price, i.Amount, true);
 
             foreach (var i in asks.Select(GetBidAskData))
-                orderBook.AddAsk(i.Price, i.Amount);
+                orderBook.AddAsk(i.Price, i.Amount, true);
 
             return orderBook;
         }
