@@ -405,18 +405,15 @@ namespace Prime.Plugins.Services.Kraken
             if (dataArray == null)
                 throw new ApiResponseException("Invalid order book data response", this);
 
-            decimal price;
-            decimal volume;
-            long timeStampUnix;
             DateTime timeStamp;
 
-            if (!decimal.TryParse(dataArray[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price))
+            if (!decimal.TryParse(dataArray[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var price))
                 throw new ApiResponseException("Incorrect order book data format", this);
 
-            if (!decimal.TryParse(dataArray[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out volume))
+            if (!decimal.TryParse(dataArray[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var volume))
                 throw new ApiResponseException("Incorrect order book data format", this);
 
-            if (!long.TryParse(dataArray[2], out timeStampUnix))
+            if (!long.TryParse(dataArray[2], out var timeStampUnix))
                 throw new ApiResponseException("Incorrect order book data format", this);
 
             timeStamp = timeStampUnix.ToUtcDateTime();
@@ -427,31 +424,26 @@ namespace Prime.Plugins.Services.Kraken
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var orderBook = await GetOrderBookLocalAsync(api, context.Pair, context.MaxRecordsCount).ConfigureAwait(false);
 
-            return orderBook;
-        }
+            var maxCountEmperical = 500;
 
-        private async Task<OrderBook> GetOrderBookLocalAsync(IKrakenApi api, AssetPair assetPair, int? maxCount)
-        {
-            var pair = assetPair;
-            var remotePair = new AssetPair(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this));
-
-            var r = await api.GetOrderBookAsync(remotePair.ToTicker(this), maxCount ?? 0).ConfigureAwait(false);
+            var r = context.MaxRecordsCount == Int32.MaxValue
+                ? await api.GetOrderBookAsync(context.Pair.ToTicker(this), maxCountEmperical).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(context.Pair.ToTicker(this), context.MaxRecordsCount).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
             var data = r.result.FirstOrDefault();
-            var orderBook = new OrderBook(Network, assetPair);
+            var orderBook = new OrderBook(Network, context.Pair);
 
-            var asks = maxCount.HasValue ? data.Value.asks.Take(maxCount.Value / 2).ToArray() : data.Value.asks;
-            var bids = maxCount.HasValue ? data.Value.bids.Take(maxCount.Value / 2).ToArray() : data.Value.bids;
+            var asks = data.Value.asks;
+            var bids = data.Value.bids;
 
             foreach (var i in bids.Select(GetBidAskData))
-                orderBook.Add(OrderType.Bid, i.Price, i.Volume);
+                orderBook.AddBid(i.Price, i.Volume);
 
             foreach (var i in asks.Select(GetBidAskData))
-                orderBook.Add(OrderType.Ask, i.Price, i.Volume);
+                orderBook.AddAsk(i.Price, i.Volume);
 
             return orderBook;
         }

@@ -68,11 +68,11 @@ namespace Prime.Tests.Providers
         }
 
         public virtual void TestGetOrderBook() { }
-        public void TestGetOrderBook(AssetPair pair, bool priceLessThan1)
+        public void TestGetOrderBook(AssetPair pair, bool priceLessThan1, int recordsCount = 100)
         {
             var p = IsType<IOrderBookProvider>();
             if (p.Success)
-                GetOrderBook(p.Provider, pair, priceLessThan1);
+                GetOrderBook(p.Provider, pair, priceLessThan1, recordsCount);
         }
 
         public virtual void TestGetWithdrawalHistory() { }
@@ -347,11 +347,11 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void GetOrderBook(IOrderBookProvider provider, AssetPair pair, bool priceLessThan1)
+        private void GetOrderBook(IOrderBookProvider provider, AssetPair pair, bool priceLessThan1, int recordsCount = 100)
         {
             try
             {
-                var context = new OrderBookContext(pair, 100);
+                var context = new OrderBookContext(pair, recordsCount);
                 InternalGetOrderBook(provider, context, priceLessThan1);
 
                 context = new OrderBookContext(pair, Int32.MaxValue);
