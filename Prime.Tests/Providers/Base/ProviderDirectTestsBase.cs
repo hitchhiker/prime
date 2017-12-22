@@ -334,15 +334,18 @@ namespace Prime.Tests.Providers
             else
                 Assert.IsTrue(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
 
-
-            Trace.WriteLine($"Order book data ({r.Asks.Count} asks, {r.Bids.Count} bids): ");
-            foreach (var obr in r.Asks.Concat(r.Bids))
+            foreach (var record in r.Asks.Take(1).Concat(r.Bids.Take(1)))
             {
                 if (priceLessThan1) // Checks if the pair is reversed (price-wise).
-                    Assert.IsTrue(obr.Price < 1, "Reverse check failed. Price is expected to be < 1");
+                    Assert.IsTrue(record.Price < 1, "Reverse check failed. Price is expected to be < 1");
                 else
-                    Assert.IsTrue(obr.Price > 1, "Reverse check failed. Price is expected to be > 1");
+                    Assert.IsTrue(record.Price > 1, "Reverse check failed. Price is expected to be > 1");
+            }
 
+            Trace.WriteLine($"Order book data ({r.Asks.Count} asks, {r.Bids.Count} bids): ");
+
+            foreach (var obr in r.Asks.Concat(r.Bids))
+            {
                 Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");
             }
         }

@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Cex
 
         [Get("/last_prices/USD/EUR/RUB/BTC")]
         Task<CexSchema.LatestPricesResponse> GetLastPricesAsync();
+
+        [Get("/order_book/{currencyPair}/?depth={depth}")]
+        Task<CexSchema.OrderBookResponse> GetOrderBookAsync([Path(UrlEncode = false)] string currencyPair, [Path] int? depth = null);
     }
 }

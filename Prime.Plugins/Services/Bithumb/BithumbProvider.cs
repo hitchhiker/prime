@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Bithumb
 {
     // https://www.bithumb.com/u1/US127
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class BithumbProvider : IAssetPairsProvider, IPublicPricingProvider
+    public class BithumbProvider : IAssetPairsProvider, IPublicPricingProvider, IOrderBookProvider
     {
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
@@ -25,6 +25,34 @@ namespace Prime.Plugins.Services.Bithumb
         public string Title => Network.Name;
         public bool IsDirect => true;
         public char? CommonPairSeparator { get; }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            if (!context.Pair.Asset2.Equals(Asset.Krw))
+                throw new NoAssetPairException(context.Pair, this);
+
+            var r = context.MaxRecordsCount == Int32.MaxValue
+                ? await api.GetOrderBookAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(context.Pair.Asset1.ToRemoteCode(this), context.MaxRecordsCount).ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            foreach (var rBid in r.data.bids)
+            {
+                orderBook.AddBid(rBid.price, rBid.quantity, true);
+            }
+
+            foreach (var rAsk in r.data.asks)
+            {
+                orderBook.AddAsk(rAsk.price, rAsk.quantity, true);
+            }
+
+            return orderBook;
+        }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
@@ -128,7 +156,6 @@ namespace Prime.Plugins.Services.Bithumb
             return prices;
         }
 
-        [Obsolete("READ NOTE")]
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);

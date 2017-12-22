@@ -6,11 +6,32 @@ namespace Prime.Plugins.Services.Cex
 {
     internal class CexSchema
     {
+        #region Base
+
         internal class BaseResponse
         {
             public string e;
             public string ok;
         }
+
+        #endregion
+
+        #region Private
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] bids;
+            public decimal[][] asks;
+            public string pair;
+            public int id;
+            public decimal sell_total;
+            public decimal buy_total;
+        }
+
+        #endregion
+
+        #region Public
 
         internal class TickersResponse : BaseResponse
         {
@@ -41,5 +62,7 @@ namespace Prime.Plugins.Services.Cex
             public string symbol2;
             public decimal lprice;
         }
+
+        #endregion
     }
 }
