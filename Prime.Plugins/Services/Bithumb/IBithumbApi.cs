@@ -22,5 +22,14 @@ namespace Prime.Plugins.Services.Bithumb
         /// <returns>Ticker for specified currency.</returns>
         [Get("/public/ticker/{currency}")]
         Task<BithumbSchema.SingleTickerResponse> GetTickerAsync([Path] string currency);
+
+        /// <summary>
+        /// Gets order book for specified currency regarding KRW.
+        /// </summary>
+        /// <param name="currency">Currency which order book data is to be returned.</param>
+        /// <param name="count">Number of records to be returned. Max is 50.</param>
+        /// <returns>Order book data.</returns>
+        [Get("/public/orderbook/{currency}")]
+        Task<BithumbSchema.OrderBookResponse> GetOrderBookAsync([Path] string currency, [Query()] int? count = null);
     }
 }
