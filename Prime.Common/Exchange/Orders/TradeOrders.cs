@@ -16,7 +16,6 @@ namespace Prime.Common
 
         public IReadOnlyList<TradeOrder> Orders => _orders;
 
-
         public void Add(TradeOrder order)
         {
             _orders.Add(order);

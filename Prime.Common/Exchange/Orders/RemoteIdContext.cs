@@ -4,11 +4,11 @@ namespace Prime.Common
 {
     public class RemoteIdContext : NetworkProviderPrivateContext
     {
-        public readonly string RemoteId;
+        public readonly string RemoteGroupId;
 
-        public RemoteIdContext(UserContext userContext, string remoteId, ILogger logger = null) : base(userContext, logger)
+        public RemoteIdContext(UserContext userContext, string remoteGroupId, ILogger logger = null) : base(userContext, logger)
         {
-            RemoteId = remoteId;
+            RemoteGroupId = remoteGroupId;
         }
 
         /// <summary>

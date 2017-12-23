@@ -4,6 +4,9 @@
     {
         ReturnBalances,
         ReturnCompleteBalances,
-        ReturnDepositAddresses
+        ReturnDepositAddresses,
+        LimitOrderBuy,
+        LimitOrderSell,
+        OrderStatus,
     }
 }

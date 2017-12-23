@@ -26,9 +26,9 @@ namespace Prime.Common.Exchange.Trading_temp
                 price = _ctx.IsBuy ? new Money(price * .9m, _ctx.Price.Asset) : new Money(price * 1.1m, _ctx.Price.Asset);
 
             var r = AsyncContext.Run(()=> Provider.PlaceOrderLimitAsync(new PlaceOrderLimitContext(_ctx.UserContext, _ctx.Pair, _ctx.IsBuy, _ctx.Quantity, price)));
-            RemoteTradeId = r.RemoteTradeId;
+            RemoteTradeId = r.RemoteOrderGroupId;
 
-            Task.Run(()=> WaitForEnd(r.RemoteTradeId));
+            Task.Run(()=> WaitForEnd(r.RemoteOrderGroupId));
         }
 
         private async void WaitForEnd(string tradeId)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Prime.Plugins.Services.Poloniex
 {
@@ -13,6 +14,33 @@ namespace Prime.Plugins.Services.Poloniex
         internal class ChartEntriesResponse : List<ChartEntryResponse> { }
 
         internal class VolumeResponse : Dictionary<string, object> { }
+
+        internal class OrderLimitResponse
+        {
+            public string orderNumber;
+            public List<TradeResult> resultingTrades;
+        }
+
+        internal class OrderStatusResponse : List<TradeResultFinal>
+        {
+        }
+
+        internal class TradeResult
+        {
+            public decimal amount;
+            public DateTime date;
+            public decimal rate;
+            public decimal total;
+            public string tradeID;
+            public string type;
+        }
+
+        internal class TradeResultFinal : TradeResult
+        {
+            public decimal fee;
+            public string currencyPair;
+            public string globalTradeID;
+        }
 
         internal class OrderBookResponse
         {

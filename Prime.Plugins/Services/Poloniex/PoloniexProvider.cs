@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Poloniex
 {
     // https://poloniex.com/support/api/
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider
+    public partial class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private const String PoloniexApiUrl = "https://poloniex.com";
 
@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.Poloniex
         private static readonly NoRateLimits Limiter = new NoRateLimits();
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => '_';
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -78,7 +78,7 @@ namespace Prime.Plugins.Services.Poloniex
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTickerAsync().ConfigureAwait(false);
 
-            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this, '_'), y => y.Value);
+            var rPaired = r.ToDictionary(x => x.Key.ToAssetPair(this), y => y.Value);
             var pairsQueryable = context.IsRequestAll ? rPaired.Select(x => x.Key) : context.Pairs;
                 
             var prices = new MarketPrices();
@@ -116,7 +116,7 @@ namespace Prime.Plugins.Services.Poloniex
 
             foreach (var rPair in r)
             {
-                var pair = rPair.Key.ToAssetPair(this, '_');
+                var pair = rPair.Key.ToAssetPair(this);
 
                 pairs.Add(pair);
             }
@@ -191,6 +191,15 @@ namespace Prime.Plugins.Services.Poloniex
                 case PoloniexBodyType.ReturnDepositAddresses:
                     body.Add("command", "returnDepositAddresses");
                     break;
+                case PoloniexBodyType.LimitOrderBuy:
+                    body.Add("command", "buy");
+                    break;
+                case PoloniexBodyType.LimitOrderSell:
+                    body.Add("command", "sell");
+                    break;
+                case PoloniexBodyType.OrderStatus:
+                    body.Add("command", "returnOrderTrades");
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);
             }
@@ -243,7 +252,7 @@ namespace Prime.Plugins.Services.Poloniex
             var period = ConvertToPoloniexInterval(market);
 
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetChartDataAsync(pair.ToTicker(this, '_'), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
+            var r = await api.GetChartDataAsync(pair.ToTicker(this), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
 
             var ohlc = new OhlcData(market);
             var seriesid = OhlcUtilities.GetHash(pair, market, Network);
@@ -277,32 +286,11 @@ namespace Prime.Plugins.Services.Poloniex
             }
         }
 
-        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '_');
-
-            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
-
-            if (r.bids == null || r.asks == null)
-                throw new NoAssetPairException(context.Pair, this);
-
-            var orderBook = new OrderBook(Network, context.Pair.Reversed); //POLONIEX IS REVERSING THE MARKET
-
-            foreach (var i in r.bids)
-                orderBook.AddBid(i[0], i[1], true); //HH: Confirmed reversed on https://poloniex.com/exchange#btc_btcd
-
-            foreach (var i in r.asks)
-                orderBook.AddAsk(i[0], i[1], true);
-
-            return orderBook;
-        }
-
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.Get24HVolumeAsync().ConfigureAwait(false);
-            var volumes = r.Where(x => x.Key.ToAssetPair(this, '_').Equals(context.Pair));
+            var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
 
             if (!volumes.Any())
                 throw new NoAssetPairException(context.Pair, this);
@@ -313,6 +301,5 @@ namespace Prime.Plugins.Services.Poloniex
 
             return new PublicVolumeResponse(Network, context.Pair, volume);
         }
-        
     }
 }

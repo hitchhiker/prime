@@ -7,7 +7,7 @@ namespace Prime.Common.Api.Request.Response
 {
     public class NoTradeOrderException : ApiResponseException
     {
-        public NoTradeOrderException(RemoteIdContext context, INetworkProvider provider, [CallerMemberName] string method = "Unknown") : base($"Order \"{context.RemoteId}\" does not exist", provider, method)
+        public NoTradeOrderException(RemoteIdContext context, INetworkProvider provider, [CallerMemberName] string method = "Unknown") : base($"Order \"{context.RemoteGroupId}\" does not exist", provider, method)
         {
 
         }

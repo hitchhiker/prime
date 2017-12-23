@@ -146,7 +146,7 @@ namespace Prime.Common
 
         private OrderBook GetReversed()
         {
-            return new OrderBook(Network, Pair.Reversed, _bids.Select(x => x.AsQuote(Pair.Asset1)), _asks.Select(x => x.AsQuote(Pair.Asset1)))
+            return new OrderBook(Network, Pair.Reversed, _bids.Select(x => x.Reverse(Pair.Asset1)), _asks.Select(x => x.Reverse(Pair.Asset1)))
             {
                 _reversed = this,
                 IsReversed = true

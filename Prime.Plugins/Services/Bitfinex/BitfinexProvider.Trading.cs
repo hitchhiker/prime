@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var body = new BitfinexSchema.OrderStatusRequest.Descriptor()
             {
-                order_id = long.Parse(context.RemoteId)
+                order_id = long.Parse(context.RemoteGroupId)
             };
 
             var rRaw = await api.GetOrderStatusAsync(body).ConfigureAwait(false);

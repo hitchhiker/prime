@@ -79,7 +79,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<TradeOrder> GetOrderDetails(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountOrder(context.RemoteId).ConfigureAwait(false);
+            var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
             var order = r.result;
 
             CheckResponseErrors(r);
@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountOrder(context.RemoteId).ConfigureAwait(false);
+            var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

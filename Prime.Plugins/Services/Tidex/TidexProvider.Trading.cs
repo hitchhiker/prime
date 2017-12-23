@@ -58,16 +58,16 @@ namespace Prime.Plugins.Services.Tidex
 
             var body = CreateTidexPostBody();
             body.Add("method", "orderInfo");
-            body.Add("order_id", context.RemoteId);
+            body.Add("order_id", context.RemoteGroupId);
 
             var r = await api.GetOrderInfoAsync(body).ConfigureAwait(false);
 
             CheckTidexResponse(r);
 
-            if(r.return_.Count == 0 || !r.return_.TryGetValue(context.RemoteId, out var order))
+            if(r.return_.Count == 0 || !r.return_.TryGetValue(context.RemoteGroupId, out var order))
                 throw new NoTradeOrderException(context, this);
 
-            return new TradeOrderStatus(context.RemoteId, order.status == 0, order.status == 2 || order.status == 3)
+            return new TradeOrderStatus(context.RemoteGroupId, order.status == 0, order.status == 2 || order.status == 3)
             {
                 Rate = order.rate,
                 AmountInitial = order.start_amount,

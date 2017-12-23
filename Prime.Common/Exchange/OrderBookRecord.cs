@@ -9,6 +9,12 @@ namespace Prime.Common
 
         private OrderBookRecord(OrderType type, Money price, Money volume)
         {
+            if (price.Asset.IsNone())
+                throw new ArgumentException($"{nameof(price)} {nameof(Asset)} cannot be 'None'");
+
+            if (volume.Asset.IsNone())
+                throw new ArgumentException($"{nameof(volume)} {nameof(Asset)} cannot be 'None'");
+
             Type = type;
             Price = price;
             Volume = volume;
@@ -26,19 +32,24 @@ namespace Prime.Common
         public readonly OrderType Type;
         public readonly Money Price;
         public readonly Money Volume;
-        public readonly DateTime UtcUpdated;
+        public DateTime UtcUpdated { get; private set; }
 
         public override string ToString()
         {
-            return Type + " " + Price.ToString() + " [" + Volume.ToString() + "]";
+            return Type + " " + Price.ToDecimalValue() + " [" + Volume.ToDecimalValue() + "]";
         }
 
-        public OrderBookRecord AsQuote(Asset asset)
+        public OrderBookRecord Reverse(Asset asset)
         {
             if (Price.Asset.Id == asset.Id)
-                return this;
+                throw new Exception("Cant reverse to the same 'Asset'");
 
-            return new OrderBookRecord(Type, Price.ReverseAsset(asset), new Money(Volume * Price, asset));
+            return new OrderBookRecord(Type == OrderType.Ask ? OrderType.Bid : OrderType.Ask, Price.ReverseAsset(asset), new Money(Volume * Price, asset));
+        }
+
+        public OrderBookRecord Clone()
+        {
+            return new OrderBookRecord(Type, Price, Volume) {UtcUpdated = UtcUpdated};
         }
     }
 }

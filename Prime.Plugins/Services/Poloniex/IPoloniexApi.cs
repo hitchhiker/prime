@@ -15,6 +15,12 @@ namespace Prime.Plugins.Services.Poloniex
         [Post("/tradingApi")]
         Task<PoloniexSchema.DepositAddressesResponse> GetDepositAddressesAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
+        [Post("/tradingApi")]
+        Task<PoloniexSchema.OrderLimitResponse> PlaceOrderLimitAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
+        [Post("/tradingApi")]
+        Task<PoloniexSchema.OrderStatusResponse> GetOrderStatusAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
         [Get("/public?command=returnTicker")]
         Task<PoloniexSchema.TickerResponse> GetTickerAsync();
 

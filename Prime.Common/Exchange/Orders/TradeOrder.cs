@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Prime.Common
@@ -13,6 +14,9 @@ namespace Prime.Common
             OrderType = orderType;
             Price = new Money(price, pair.Asset2);
         }
+
+        [Bson]
+        public List<string> TradeIds { get; private set; } = new List<string>();
 
         [Bson]
         public Network Network { get; private set; }
