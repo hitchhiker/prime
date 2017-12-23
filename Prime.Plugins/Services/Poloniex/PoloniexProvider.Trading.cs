@@ -17,9 +17,11 @@ namespace Prime.Plugins.Services.Poloniex
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this);
+            var pairCode = context.Pair.ToTicker(this, '_');
 
-            var r = context.MaxRecordsCount.HasValue ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value / 2).ConfigureAwait(false) : await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var r = context.MaxRecordsCount == Int32.MaxValue
+                ? await api.GetOrderBookAsync(pairCode).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
 
             if (r.bids == null || r.asks == null)
                 throw new NoAssetPairException(context.Pair, this);

@@ -32,6 +32,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("BTC_KRW".ToAssetPairRaw(), false, 50);
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();

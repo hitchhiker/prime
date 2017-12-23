@@ -273,22 +273,22 @@ namespace Prime.Plugins.Services.BitMex
 
             var pairCode = context.Pair.ToTicker(this, "");
 
-            var r = context.MaxRecordsCount.HasValue
-                ? await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount.Value).ConfigureAwait(false)
-                : await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false);
+            var r = context.MaxRecordsCount == Int32.MaxValue
+                ? await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
 
             var buyAction = "buy";
             var sellAction = "sell";
 
-            var buys = context.MaxRecordsCount.HasValue
-                ? r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id)
-                    .Take(context.MaxRecordsCount.Value / 2).ToList()
-                : r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList();
+            var buys = context.MaxRecordsCount == Int32.MaxValue
+                ? r.Where(x => x.side.ToLower().Equals(buyAction)).OrderBy(x => x.id).ToList()
+                : r.Where(x => x.side.Equals(buyAction, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.id)
+                    .Take(context.MaxRecordsCount).ToList();
 
-            var sells = context.MaxRecordsCount.HasValue
-                ? r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id)
-                    .Take(context.MaxRecordsCount.Value / 2).ToList()
-                : r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList();
+            var sells = context.MaxRecordsCount == Int32.MaxValue
+                ? r.Where(x => x.side.ToLower().Equals(sellAction)).OrderBy(x => x.id).ToList()
+                : r.Where(x => x.side.Equals(sellAction, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.id)
+                    .Take(context.MaxRecordsCount).ToList();
 
             var orderBook = new OrderBook(Network, context.Pair);
 
@@ -316,7 +316,7 @@ namespace Prime.Plugins.Services.BitMex
             body.Add("amount", context.Amount.ToDecimalValue() / ConversionRate);
             body.Add("address", context.Address.Address + ":" + context.Address.Tag);
 
-            if(!context.HasCustomFee)
+            if (!context.HasCustomFee)
                 throw new ContextArgumentException("Custom fee is required for withdrawal", this);
 
             body.Add("fee", context.CustomFee.Value.ToDecimalValue() / ConversionRate);

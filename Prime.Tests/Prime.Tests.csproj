@@ -158,6 +158,7 @@
     <Compile Include="Providers\BittrexTests.cs" />
     <Compile Include="Providers\BleutradeTests.cs" />
     <Compile Include="Providers\BraziliexTests.cs" />
+    <Compile Include="Providers\BrightonPeakTests.cs" />
     <Compile Include="Providers\BtccTests.cs" />
     <Compile Include="Providers\BtcxIndiaTests.cs" />
     <Compile Include="Providers\BxInThTests.cs" />
@@ -177,7 +178,9 @@
     <Compile Include="Providers\GateTests.cs" />
     <Compile Include="Providers\GdaxTests.cs" />
     <Compile Include="Providers\GeminiTests.cs" />
+    <Compile Include="Providers\GlobitexTests.cs" />
     <Compile Include="Providers\HitBtcTests.cs" />
+    <Compile Include="Providers\IndependentReserveTests.cs" />
     <Compile Include="Providers\ItBitTests.cs" />
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
@@ -188,6 +191,7 @@
     <Compile Include="Providers\LunoTests.cs" />
     <Compile Include="Providers\MercadoBitcoinTests.cs" />
     <Compile Include="Providers\MixCoinsTests.cs" />
+    <Compile Include="Providers\NLexchTests.cs" />
     <Compile Include="Providers\NovaExchangeTests.cs" />
     <Compile Include="Providers\OkCoinTests.cs" />
     <Compile Include="Providers\OkexTests.cs" />
@@ -199,6 +203,7 @@
     <Compile Include="Providers\QuoineTests.cs" />
     <Compile Include="Providers\ShapeShiftTests.cs" />
     <Compile Include="Providers\SouthXchangeTests.cs" />
+    <Compile Include="Providers\StocksExchangeTests.cs" />
     <Compile Include="Providers\TheRockTradingTests.cs" />
     <Compile Include="Providers\TidexTests.cs" />
     <Compile Include="Providers\TuxExchangeTests.cs" />

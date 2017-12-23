@@ -285,7 +285,7 @@ namespace Prime.Plugins.Services.Poloniex
                     throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
             }
         }
-
+        
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);

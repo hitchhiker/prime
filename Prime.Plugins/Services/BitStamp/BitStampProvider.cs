@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.BitStamp
         public ObjectId Id => IdHash;
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public bool CanGenerateDepositAddress => false;
         public bool CanPeekDepositAddress => false;
@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.ToTicker(this).ToLower()).ConfigureAwait(false);
 
             var price = new MarketPrice(Network, context.Pair, r.last)
             {
@@ -183,21 +183,21 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, "").ToLower();
+            var pairCode = context.Pair.ToTicker(this).ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);
 
-            var date = r.timestamp.ToUtcDateTime();
+            var maxCount = 1000; // Used to limit number of records when no limit is set (because it's too big).
 
-            var asks = context.MaxRecordsCount.HasValue ? r.asks.Take(context.MaxRecordsCount.Value / 2) : r.asks;
-            var bids = context.MaxRecordsCount.HasValue ? r.bids.Take(context.MaxRecordsCount.Value / 2) : r.bids;
+            var asks = context.MaxRecordsCount == Int32.MaxValue ? r.asks.Take(maxCount) : r.asks.Take(context.MaxRecordsCount);
+            var bids = context.MaxRecordsCount == Int32.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
 
             foreach (var i in bids.Select(GetBidAskData))
-                orderBook.AddBid(i.Price, i.Amount);
+                orderBook.AddBid(i.Price, i.Amount, true);
 
             foreach (var i in asks.Select(GetBidAskData))
-                orderBook.AddAsk(i.Price, i.Amount);
+                orderBook.AddAsk(i.Price, i.Amount, true);
 
             return orderBook;
         }
@@ -230,7 +230,7 @@ namespace Prime.Plugins.Services.BitStamp
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync(context.Pair.ToTicker(this, "").ToLower()).ConfigureAwait(false);
+            var r = await api.GetTickerAsync(context.Pair.ToTicker(this).ToLower()).ConfigureAwait(false);
 
             return new PublicVolumeResponse(Network, context.Pair, r.volume);
         }

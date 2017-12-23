@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Cex
 {
     // https://cex.io/rest-api#public
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
         private const string CexApiUrl = "https://cex.io/api";
 
@@ -24,6 +24,36 @@ namespace Prime.Plugins.Services.Cex
         public string Title => Network.Name;
         public bool IsDirect => true;
         public char? CommonPairSeparator => '/';
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var pair = context.Pair.ToTicker(this);
+
+            var r = context.MaxRecordsCount == Int32.MaxValue
+                ? await api.GetOrderBookAsync(pair).ConfigureAwait(false)
+                : await api.GetOrderBookAsync(pair, context.MaxRecordsCount).ConfigureAwait(false);
+
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            foreach (var rAsk in r.asks.Select(ParseOrderBookData))
+            {
+                orderBook.AddAsk(rAsk.Price, rAsk.Volume, true);
+            }
+
+            foreach (var rBid in r.bids.Select(ParseOrderBookData))
+            {
+                orderBook.AddBid(rBid.Price, rBid.Volume, true);
+            }
+
+            return orderBook;
+        }
+
+        private (decimal Price, decimal Volume) ParseOrderBookData(decimal[] data)
+        {
+            return (data[0], data[1]);
+        }
 
         private RestApiClientProvider<ICexApi> ApiProvider { get; }
 

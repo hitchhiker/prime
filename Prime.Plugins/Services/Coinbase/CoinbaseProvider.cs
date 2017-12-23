@@ -218,12 +218,12 @@ namespace Prime.Plugins.Services.Coinbase
 
             var r = await api.GetProductOrderBookAsync(pairCode, OrderBookDepthLevel.FullNonAggregated).ConfigureAwait(false);
 
-            var bids = context.MaxRecordsCount.HasValue 
-                ? r.bids.Take(context.MaxRecordsCount.Value / 2).ToArray() 
-                : r.bids.Take(recordsLimit).ToArray();
-            var asks = context.MaxRecordsCount.HasValue
-                ? r.asks.Take(context.MaxRecordsCount.Value / 2).ToArray()
-                : r.asks.Take(recordsLimit).ToArray();
+            var bids = context.MaxRecordsCount == Int32.MaxValue 
+                ? r.bids.Take(recordsLimit).ToArray()
+                : r.bids.Take(context.MaxRecordsCount).ToArray() ;
+            var asks = context.MaxRecordsCount == Int32.MaxValue
+                ? r.asks.Take(recordsLimit).ToArray()
+                : r.asks.Take(context.MaxRecordsCount).ToArray();
 
             var orderBook = new OrderBook(Network, context.Pair);
 

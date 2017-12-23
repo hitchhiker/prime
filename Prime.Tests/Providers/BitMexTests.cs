@@ -85,7 +85,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            base.TestGetOrderBook(new AssetPair(Asset.Btc, "USD".ToAssetRaw()), false);
+            base.TestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
         }
 
         [TestMethod]
