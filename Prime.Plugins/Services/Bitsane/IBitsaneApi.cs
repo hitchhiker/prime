@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Bitsane
 
         [Get("/ticker")]
         Task<BitsaneSchema.TickerResponse> GetTickersAsync();
+
+        [Get("/orderbook?pair={currencyPair}")]
+        Task<BitsaneSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

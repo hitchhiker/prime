@@ -17,5 +17,11 @@ namespace Prime.Plugins.Services.BitBay
             public decimal average;
             public decimal volume;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

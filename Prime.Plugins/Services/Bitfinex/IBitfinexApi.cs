@@ -15,6 +15,9 @@ namespace Prime.Plugins.Services.Bitfinex
         [Get("/symbols")]
         Task<Response<string[]>> GetAssetsAsync();
 
+        [Get("/book/{currencyPair}")]
+        Task<BitfinexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
         [Post("/account_infos")]
         Task<Response<BitfinexSchema.AccountInfoResponse>> GetAccountInfoAsync([Body(BodySerializationMethod.Serialized)] object body);
 

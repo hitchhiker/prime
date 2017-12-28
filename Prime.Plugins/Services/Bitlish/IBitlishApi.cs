@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.Bitlish
     {
         [Get("/tickers")]
         Task<BitlishSchema.AllTickersResponse> GetTickersAsync();
+
+        [Get("/trades_depth?pair_id={currencyPair}")]
+        Task<BitlishSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

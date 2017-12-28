@@ -23,5 +23,25 @@ namespace Prime.Plugins.Services.Bitsane
             public decimal euroEquivalent;
             public decimal bitcoinEquivalent;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] bids;
+            public OrderBookItemResponse[] asks;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal price;
+            public decimal amount;
+            public long timestamp;
+        }
+
+        internal class OrderBookResponse
+        {
+            public int statusCode;
+            public string statusText;
+            public OrderBookEntryResponse result;
+        }
     }
 }

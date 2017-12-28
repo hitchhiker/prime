@@ -14,5 +14,11 @@ namespace Prime.Plugins.Services.Bit2c
             public decimal a;
             public decimal av;
         }
+
+        internal class OrderBookResponse
+        {
+            public object[][] bids;
+            public object[][] asks;
+        }
     }
 }
