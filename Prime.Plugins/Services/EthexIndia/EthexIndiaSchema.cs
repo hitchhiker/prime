@@ -19,5 +19,12 @@ namespace Prime.Plugins.Services.EthexIndia
             public decimal ask;
             public long last_traded_time;
         }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[] bids;
+            public decimal[] asks;
+        }
     }
 }

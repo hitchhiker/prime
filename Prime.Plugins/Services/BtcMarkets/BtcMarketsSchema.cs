@@ -14,5 +14,14 @@ namespace Prime.Plugins.Services.BtcMarkets
             public decimal bestAsk;
             public long timestamp;
         }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public string currency;
+            public string instrument;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

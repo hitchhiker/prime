@@ -28,5 +28,12 @@ namespace Prime.Plugins.Services.Btcc
             public decimal ExecutionLimitUp;
             public long Timestamp;
         }
+
+        internal class OrderBookResponse
+        {
+            public long date;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

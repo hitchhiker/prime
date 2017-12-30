@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Gate
 
         [Get("/1/marketlist")]
         Task<GateSchema.VolumeResponse> GetVolumesAsync();
+
+        [Get("/1/orderBook/{currencyPair}")]
+        Task<GateSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

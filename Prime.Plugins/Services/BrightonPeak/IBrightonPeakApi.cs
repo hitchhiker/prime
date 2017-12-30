@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.BrightonPeak
 
         [Post("/GetProductPairs")]
         Task<BrightonPeakSchema.AssetPairsResponse> GetAssetPairsAsync();
+
+        [Get("/GetOrderBook")]
+        Task<BrightonPeakSchema.OrderBookResponse> GetOrderBookAsync([Body(BodySerializationMethod.Default)] Dictionary<string, object> body);
     }
 }

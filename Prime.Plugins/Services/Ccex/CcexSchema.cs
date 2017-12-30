@@ -48,5 +48,24 @@ namespace Prime.Plugins.Services.Ccex
             public decimal buysupport;
             public long updated;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] buy;
+            public OrderBookItemResponse[] sell;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal rate;
+            public decimal quantity;
+        }
+
+        internal class OrderBookResponse
+        {
+            public bool success;
+            public string message;
+            public OrderBookEntryResponse result;
+        }
     }
 }

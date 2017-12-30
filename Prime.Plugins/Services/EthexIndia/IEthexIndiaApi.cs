@@ -8,7 +8,10 @@ namespace Prime.Plugins.Services.EthexIndia
 {
     internal interface IEthexIndiaApi
     {
-        [Get("/ticker")]
+        [Get("/ticker/")]
         Task<EthexIndiaSchema.TickerResponse[]> GetTickersAsync();
+
+        [Get("/order_book/")]
+        Task<EthexIndiaSchema.OrderBookResponse> GetOrderBookAsync();
     }
 }

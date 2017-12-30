@@ -14,6 +14,9 @@ namespace Prime.Plugins.Services.Cryptopia
         [Get("/GetMarkets")]
         Task<CryptopiaSchema.AllTickersResponse> GetTickersAsync();
 
+        [Get("/GetMarketOrders/{currencyPair}")]
+        Task<CryptopiaSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
         [AllowAnyStatusCode]
         [Post("/GetBalance")]
         Task<Response<CryptopiaSchema.BalanceResponse>> GetBalanceAsync([Body(BodySerializationMethod.Serialized)] CryptopiaSchema.BalanceRequest body);

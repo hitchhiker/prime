@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Gatecoin
 
         [Get("/LiveTickers")]
         Task<GatecoinSchema.TickersResponse> GetTickersAsync();
+
+        [Get("/MarketDepth/{currencyPair}")]
+        Task<GatecoinSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

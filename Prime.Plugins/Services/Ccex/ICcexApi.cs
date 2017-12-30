@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Ccex
 
         [Get("/t/api_pub.html?a=getmarketsummaries")]
         Task<CcexSchema.VolumeResponse> GetVolumesAsync();
+
+        [Get("/t/api_pub.html?a=getorderbook&market={currencyPair}&type=both&depth={depth}")]
+        Task<CcexSchema.OrderBookResponse> GetOrderBookAsync([Path(UrlEncode = false)] string currencyPair, [Path] int depth);
     }
 }

@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.Coincheck
     {
         [Get("/ticker/?pair={currencyPair}")]
         Task<CoincheckSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+
+        [Get("/order_books")]
+        Task<CoincheckSchema.OrderBookResponse> GetOrderBookAsync();
     }
 }

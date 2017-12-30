@@ -22,5 +22,23 @@ namespace Prime.Plugins.Services.Coinroom
             public string[] real;
             public string[] crypto;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] asks;
+            public OrderBookItemResponse[] bids;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal rate;
+            public decimal amount;
+            public decimal price;
+        }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookEntryResponse data;
+        }
     }
 }

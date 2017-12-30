@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Coinroom
 
         [Get("/availableCurrencies")]
         Task<CoinroomSchema.CurrenciesResponse> GetCurrenciesAsync();
+
+        [Post("/orderbook")]
+        Task<CoinroomSchema.OrderBookResponse> GetOrderBookAsync([Body(BodySerializationMethod.Default)] Dictionary<string, object> body);
     }
 }

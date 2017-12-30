@@ -25,5 +25,25 @@ namespace Prime.Plugins.Services.Coinmate
             public decimal open;
             public long timestamp;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] asks;
+            public OrderBookItemResponse[] bids;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal price;
+            public decimal amount;
+        }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public bool error;
+            public string errorMessage;
+            public OrderBookEntryResponse data;
+        }
     }
 }

@@ -16,5 +16,11 @@ namespace Prime.Plugins.Services.Coincheck
             public decimal ask;
             public long timestamp;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }
