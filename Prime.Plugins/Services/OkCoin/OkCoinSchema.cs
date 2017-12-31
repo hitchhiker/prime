@@ -21,5 +21,11 @@ namespace Prime.Plugins.Services.OkCoin
             public decimal sell;
             public decimal vol;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

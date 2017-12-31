@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Quoine
 
         [Get("/products")]
         Task<QuoineSchema.ProductResponse[]> GetProductsAsync();
+
+        [Get("/products/{productId}/price_levels")]
+        Task<QuoineSchema.OrderBookResponse> GetOrderBookAsync([Path] int productId);
     }
 }

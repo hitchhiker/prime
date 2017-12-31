@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.LakeBtc
     {
         [Get("/ticker")]
         Task<LakeBtcSchema.AllTickersResponse> GetTickersAsync();
+
+        [Get("/bcorderbook?symbol={currencyPair}")]
+        Task<LakeBtcSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

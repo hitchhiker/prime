@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Okex
 
         [Get("/exchange_rate.do")]
         Task<OkexSchema.ExchangeRateResponse> GetExchangeRate();
+
+        [Get("/depth.do?symbol={currencyPair}")]
+        Task<OkexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

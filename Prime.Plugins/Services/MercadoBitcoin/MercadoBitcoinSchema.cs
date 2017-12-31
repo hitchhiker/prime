@@ -21,5 +21,11 @@ namespace Prime.Plugins.Services.MercadoBitcoin
             public decimal sell;
             public long date;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.MercadoBitcoin
     {
         [Get("/{baseAsset}/ticker")]
         Task<MercadoBitcoinSchema.TickerResponse> GetTickerAsync([Path] string baseAsset);
+
+        [Get("/{baseAsset}/orderbook")]
+        Task<MercadoBitcoinSchema.OrderBookResponse> GetOrderBookAsync([Path] string baseAsset);
     }
 }

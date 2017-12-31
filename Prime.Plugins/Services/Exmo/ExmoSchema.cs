@@ -31,8 +31,8 @@ namespace Prime.Plugins.Services.Exmo
             public decimal bid_quantity;
             public decimal bid_amount;
             public decimal bid_top;
-            public decimal[] ask;
-            public decimal[] bid;
+            public decimal[][] ask;
+            public decimal[][] bid;
         }
     }
 }

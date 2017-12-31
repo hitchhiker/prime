@@ -32,5 +32,11 @@ namespace Prime.Plugins.Services.Quoine
             public string quoted_currency;
             public string base_currency;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] buy_price_levels;
+            public decimal[][] sell_price_levels;
+        }
     }
 }

@@ -11,6 +11,9 @@ namespace Prime.Plugins.Services.Tidex
         [Get("/ticker/{pairsCsv}")]
         Task<Dictionary<string, TidexSchema.TickerData>> GetTickerAsync([Path(UrlEncode = false)] string pairsCsv);
 
+        [Get("/depth/{currencyPair}")]
+        Task<TidexSchema.OrderBookResponse> GetOrderBookAsync([Path(UrlEncode = false)] string pairsCsv);
+
         [Get("/info")]
         Task<TidexSchema.AssetPairsResponse> GetAssetPairsAsync();
 

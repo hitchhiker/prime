@@ -23,8 +23,8 @@ namespace Prime.Plugins.Services.EthexIndia
         internal class OrderBookResponse
         {
             public long timestamp;
-            public decimal[] bids;
-            public decimal[] asks;
+            public decimal[][] bids;
+            public decimal[][] asks;
         }
     }
 }

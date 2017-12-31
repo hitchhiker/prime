@@ -14,5 +14,8 @@ namespace Prime.Plugins.Services.LiveCoin
 
         [Get("/ticker")]
         Task<LiveCoinSchema.TickerResponse[]> GetTickersAsync();
+
+        [Get("/order_book?currencyPair={currencyPair}")]
+        Task<LiveCoinSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

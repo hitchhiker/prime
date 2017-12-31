@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Paymium
 
         [Get("/countries")]
         Task<PaymiumSchema.CountriesResponse[]> GetCountriesAsync();
+
+        [Get("/data/{currency}/depth")]
+        Task<PaymiumSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

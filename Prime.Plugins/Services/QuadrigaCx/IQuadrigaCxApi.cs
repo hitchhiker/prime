@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.QuadrigaCx
     {
         [Get("/ticker?book={currencyPair}")]
         Task<QuadrigaCxSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+
+        [Get("/order_book?book={currencyPair}")]
+        Task<QuadrigaCxSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

@@ -35,5 +35,23 @@ namespace Prime.Plugins.Services.Vaultoro
             [JsonProperty("24HVolume")]
             public decimal Volume24h;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] b;
+            public OrderBookItemResponse[] s;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal Gold_Price;
+            public decimal Gold_Amount;
+        }
+
+        internal class OrderBookResponse
+        {
+            public string status;
+            public OrderBookEntryResponse data;
+        }
     }
 }

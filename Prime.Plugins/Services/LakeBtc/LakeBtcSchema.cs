@@ -19,5 +19,11 @@ namespace Prime.Plugins.Services.LakeBtc
             public decimal? bid;
             public decimal? ask;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

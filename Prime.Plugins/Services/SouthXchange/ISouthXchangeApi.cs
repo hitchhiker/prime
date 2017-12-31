@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.SouthXchange
 
         [Get("/prices")]
         Task<SouthXchangeSchema.AllTickerResponse[]> GetTickersAsync();
+
+        [Get("/book/{currencyPair}")]
+        Task<SouthXchangeSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }
