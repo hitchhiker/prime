@@ -130,6 +130,7 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Providers\BlinkTradeTests.cs" />
     <Compile Include="Providers\BtcMarketsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvidersTests.cs" />
