@@ -167,6 +167,7 @@
     <Compile Include="Providers\CexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoincheckTests.cs" />
+    <Compile Include="Providers\CoinCornerTests.cs" />
     <Compile Include="Providers\CoinmateTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\CoinroomTests.cs" />
