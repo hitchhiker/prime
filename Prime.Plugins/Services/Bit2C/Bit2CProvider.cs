@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Plugins.Services.Bit2c;
@@ -8,7 +10,7 @@ namespace Prime.Plugins.Services.Bit2C
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.bit2c.co.il/home/api
-    public class Bit2CProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class Bit2CProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string Bit2CApiUrl = "https://www.bit2c.co.il/";
 
@@ -79,6 +81,36 @@ namespace Prime.Plugins.Services.Bit2C
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, r.l, r.h),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.a)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = 1000;
+
+            var asks = context.MaxRecordsCount == int.MaxValue ? r.asks.Take(maxCount) : r.asks.Take(context.MaxRecordsCount);
+            var bids = context.MaxRecordsCount == int.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(object[] data)
+        {
+            decimal price = Convert.ToDecimal(data[0]);
+            decimal amount = Convert.ToDecimal(data[1]);
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }
