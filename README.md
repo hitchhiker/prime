@@ -89,12 +89,10 @@ Until exchanges decentralise, they will remain the weakest link. Regardless, not
  
 **Timeline**
 
-Stage 1 - *ETC: end of 2017*
+Stage 1
 
 * Core components: Decentralised local storage etc.
 * Exchange connectors. 
 * Working with exchanges to provide features that are required.
 * Trading fundamental elements. Buy / Sell / Market / Limit / Stop-Sell 
 * Charting fundamentals. 
-
-Stage 2 begins 2018.
