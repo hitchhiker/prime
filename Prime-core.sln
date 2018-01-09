@@ -11,10 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core", "Prime.Core\Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Plugins", "Prime.Plugins\Prime.Plugins.csproj", "{A55B44E7-3DF6-4A03-B77B-43736E8A1AD5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetCore", "NetCore", "{5515A1A2-C437-4D8F-8407-3F8ECC9FFB23}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Console", "Prime.Console\Prime.Console.csproj", "{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All_Debug|Any CPU = All_Debug|Any CPU
@@ -127,36 +123,9 @@ Global
 		{A55B44E7-3DF6-4A03-B77B-43736E8A1AD5}.Release|x64.Build.0 = Release|Any CPU
 		{A55B44E7-3DF6-4A03-B77B-43736E8A1AD5}.Release|x86.ActiveCfg = Release|Any CPU
 		{A55B44E7-3DF6-4A03-B77B-43736E8A1AD5}.Release|x86.Build.0 = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.All_Debug|x64.ActiveCfg = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.All_Debug|x64.Build.0 = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.All_Debug|x86.ActiveCfg = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.All_Debug|x86.Build.0 = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Debug|x64.Build.0 = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Debug|x86.Build.0 = Debug|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release (PDB)|Any CPU.ActiveCfg = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release (PDB)|Any CPU.Build.0 = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release (PDB)|x64.ActiveCfg = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release (PDB)|x64.Build.0 = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release (PDB)|x86.ActiveCfg = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release (PDB)|x86.Build.0 = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release|x64.ActiveCfg = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release|x64.Build.0 = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release|x86.ActiveCfg = Release|Any CPU
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F88A99A1-0B6E-4984-8D1F-2F2F1F103C9F} = {5515A1A2-C437-4D8F-8407-3F8ECC9FFB23}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B121BD0B-ADD0-49A0-AB12-10C5C75250CF}
