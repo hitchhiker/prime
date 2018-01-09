@@ -2,7 +2,7 @@
 
 https://getprime.org
 
-Project status: PRE-ALPHA - not production ready.
+Project status: PRE-ALPHA - not production ready. CORE in LINUX/MAC/WIN - UI in WINDOWS only
 
 Open source decentralised **(ODC)** crypto asset trading application, browser, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
 
