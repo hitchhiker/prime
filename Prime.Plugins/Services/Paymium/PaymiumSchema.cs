@@ -34,5 +34,19 @@ namespace Prime.Plugins.Services.Paymium
             public string name_en;
             public string name_fr;
         }
+        
+        internal class OrderBookItemResponse
+        {
+            public long timestamp;
+            public decimal amount;
+            public decimal price;
+            public string currency;
+        }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookItemResponse[] bids;
+            public OrderBookItemResponse[] asks;
+        }
     }
 }

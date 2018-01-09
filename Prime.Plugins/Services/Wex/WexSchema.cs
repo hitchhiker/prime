@@ -10,6 +10,10 @@ namespace Prime.Plugins.Services.Wex
         {
         }
 
+        internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
+        {
+        }
+
         internal class AllAssetsResponse
         {
             public long server_time;
@@ -37,6 +41,12 @@ namespace Prime.Plugins.Services.Wex
             public decimal buy;
             public decimal sell;
             public long updated;
+        }
+
+        internal class OrderBookEntryResponse
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
         }
     }
 }

@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Luno
 
         [Get("/tickers")]
         Task<LunoSchema.AllTickersResponse> GetTickersAsync();
+
+        [Get("/orderbook?pair={currencyPair}")]
+        Task<LunoSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

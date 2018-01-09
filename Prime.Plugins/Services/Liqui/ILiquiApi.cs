@@ -17,5 +17,8 @@ namespace Prime.Plugins.Services.Liqui
 
         [Get("/info")]
         Task<LiquiSchema.AssetPairsResponse> GetAssetPairsAsync();
+
+        [Get("/depth/{currencyPair}")]
+        Task<LiquiSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

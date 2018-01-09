@@ -42,5 +42,12 @@ namespace Prime.Plugins.Services.Abucoins
             public decimal volume_30d;
             public decimal change;
         }
+
+        internal class OrderBookResponse
+        {
+            public int sequence;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

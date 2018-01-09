@@ -25,5 +25,17 @@ namespace Prime.Plugins.Services.Braziliex
             public decimal highestBid24;
             public decimal lowestAsk24;
         }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookItemResponse[] bids;
+            public OrderBookItemResponse[] asks;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal price;
+            public decimal amount;
+        }
     }
 }

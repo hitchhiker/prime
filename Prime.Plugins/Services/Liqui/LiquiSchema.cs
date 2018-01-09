@@ -16,6 +16,10 @@ namespace Prime.Plugins.Services.Liqui
         {
         }
 
+        internal class OrderBookResponse : Dictionary<string, OrderBookResponse>
+        {
+        }
+
         internal class AssetPairEntry
         {
             public int decimal_places;
@@ -39,6 +43,12 @@ namespace Prime.Plugins.Services.Liqui
             public decimal buy;
             public decimal sell;
             public long updated;
+        }
+
+        internal class OrderBookEntryResponse
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
         }
     }
 }

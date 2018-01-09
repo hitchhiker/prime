@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.TuxExchange
 
         [Get("/api?method=get24hvolume")]
         Task<TuxEchangeSchema.VolumeResponse> GetVolumesAsync();
+
+        [Get("/api?method=getorders&coin={coin}&market={market}")]
+        Task<TuxEchangeSchema.VolumeResponse> GetOrderBookAsync([Path] string coin, [Path] string market);
     }
 }

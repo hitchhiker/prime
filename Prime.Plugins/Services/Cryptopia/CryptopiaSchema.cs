@@ -166,6 +166,28 @@ namespace Prime.Plugins.Services.Cryptopia
             public decimal BaseSellVolume;
         }
 
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] Buy;
+            public OrderBookItemResponse[] Sell;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public int TradePairId;
+            public string Label;
+            public decimal Price;
+            public decimal Volume;
+            public decimal Total;
+        }
+
+        internal class OrderBookResponse
+        {
+            public bool Success;
+            public string Message;
+            public OrderBookEntryResponse Data;
+        }
+
         #endregion
     }
 }

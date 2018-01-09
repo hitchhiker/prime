@@ -16,5 +16,8 @@ namespace Prime.Plugins.Services.Kuna
 
         [Get("/timestamp")]
         Task<long> GetTimestamp();
+
+        [Get("/order_book?market={currencyPair}")]
+        Task<KunaSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

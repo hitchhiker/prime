@@ -2,7 +2,7 @@
 
 https://getprime.org
 
-Project status: PRE-ALPHA - not production ready.
+Project status: PRE-ALPHA - not production ready. CORE in LINUX/MAC/WIN - UI in WINDOWS only
 
 Open source decentralised **(ODC)** crypto asset trading application, browser, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
 
@@ -89,12 +89,10 @@ Until exchanges decentralise, they will remain the weakest link. Regardless, not
  
 **Timeline**
 
-Stage 1 - *ETC: end of 2017*
+Stage 1
 
 * Core components: Decentralised local storage etc.
 * Exchange connectors. 
 * Working with exchanges to provide features that are required.
 * Trading fundamental elements. Buy / Sell / Market / Limit / Stop-Sell 
 * Charting fundamentals. 
-
-Stage 2 begins 2018.

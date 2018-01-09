@@ -91,6 +91,10 @@ namespace Prime.Plugins.Services.Tidex
             public Dictionary<string, AssetPairsInfo> pairs;
         }
 
+        internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
+        {
+        }
+
         internal class AssetPairsInfo
         {
             public int decimal_places;
@@ -112,6 +116,12 @@ namespace Prime.Plugins.Services.Tidex
             public decimal buy;
             public decimal sell;
             public long updated;
+        }
+
+        internal class OrderBookEntryResponse
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
         }
 
         #endregion

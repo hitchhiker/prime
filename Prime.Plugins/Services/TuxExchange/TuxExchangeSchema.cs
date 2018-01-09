@@ -20,6 +20,12 @@ namespace Prime.Plugins.Services.TuxExchange
             public decimal low24hr;
         }
 
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
+
         internal class AllTickersResponse : Dictionary<string, TuxEchangeSchema.TickerResponse>
         {
         }

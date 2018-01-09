@@ -20,5 +20,12 @@ namespace Prime.Plugins.Services.LiveCoin
             public decimal best_bid;
             public decimal best_ask;
         }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

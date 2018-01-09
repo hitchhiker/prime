@@ -16,5 +16,8 @@ namespace Prime.Plugins.Services.Abucoins
 
         [Get("/products/stats")]
         Task<AbucoinsSchema.VolumeResponse[]> GetVolumesAsync();
+
+        [Get("/products/{currencyPair}/book?level={depth}")]
+        Task<AbucoinsSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int depth);
     }
 }

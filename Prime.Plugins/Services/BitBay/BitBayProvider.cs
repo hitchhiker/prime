@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -10,7 +11,7 @@ namespace Prime.Plugins.Services.BitBay
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitbay.net/en/api-public#details
-    public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitBayApiUrl = "https://bitbay.net/API/Public/";
 
@@ -75,12 +76,42 @@ namespace Prime.Plugins.Services.BitBay
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-            
+
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.min, r.max),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            const int maxCount = 80;
+
+            var asks = context.MaxRecordsCount == int.MaxValue ? r.asks.Take(maxCount) : r.asks.Take(context.MaxRecordsCount);
+            var bids = context.MaxRecordsCount == int.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

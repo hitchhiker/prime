@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.Bitsane
     // https://bitsane.com/info-api
     public class BitsaneProvider : IPublicPricingProvider, IAssetPairsProvider
     {
-        private const string BitsaneApiUrl = "https://bitsane.com/api/public/" ;
+        private const string BitsaneApiUrl = "https://bitsane.com/api/public/";
 
         private static readonly ObjectId IdHash = "prime:bitsane".GetObjectIdHashCode();
         

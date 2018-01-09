@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.Vaultoro
     {
         [Get("/markets")]
         Task<VaultoroSchema.MarketResponse> GetMarketsAsync();
+
+        [Get("/orderbook")]
+        Task<VaultoroSchema.OrderBookResponse> GetOrderBookAsync();
     }
 }

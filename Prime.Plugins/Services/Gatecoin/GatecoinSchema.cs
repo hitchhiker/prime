@@ -39,5 +39,18 @@ namespace Prime.Plugins.Services.Gatecoin
         {
             public string message;
         }
+        
+        internal class OrderBookItemResponse
+        {
+            public decimal price;
+            public decimal quantvolumeity;
+        }
+
+        internal class OrderBookResponse
+        {
+            public StatusResponse responseStatus;
+            public OrderBookItemResponse[] asks;
+            public OrderBookItemResponse[] bids;
+        }
     }
 }

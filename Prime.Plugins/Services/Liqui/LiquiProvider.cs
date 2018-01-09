@@ -9,6 +9,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Liqui
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://liqui.io/api
     public class LiquiProvider : IPublicPricingProvider, IAssetPairsProvider
     {

@@ -45,5 +45,12 @@ namespace Prime.Plugins.Services.Gate
             public string curr_suffix;
             public string trend;
         }
+
+        internal class OrderBookResponse
+        {
+            public bool result;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

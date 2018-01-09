@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Wex
 
         [Get("/info")]
         Task<WexSchema.AllAssetsResponse> GetAssetPairsAsync();
+
+        [Get("/depth/{currencyPair}")]
+        Task<WexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

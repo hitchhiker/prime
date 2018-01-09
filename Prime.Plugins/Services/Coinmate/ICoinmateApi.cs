@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.Coinmate
     {
         [Get("/ticker?currencyPair={currencyPair}")]
         Task<CoinmateSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+
+        [Get("/orderBook?currencyPair={currencyPair}&groupByPriceLimit={groupByPriceLimit}")]
+        Task<CoinmateSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] bool groupByPriceLimit);
     }
 }

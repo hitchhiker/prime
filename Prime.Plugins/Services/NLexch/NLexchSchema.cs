@@ -21,5 +21,27 @@ namespace Prime.Plugins.Services.NLexch
             public decimal last;
             public decimal vol;
         }
+
+        internal class OrderBookItemResponse
+        {
+            public int id;
+            public int trades_count;
+            public decimal price;
+            public decimal avg_price;
+            public decimal volume;
+            public decimal remaining_volume;
+            public decimal executed_volume;
+            public string side;
+            public string ord_type;
+            public string state;
+            public string market;
+            public DateTime created_at;
+        }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookItemResponse[] asks;
+            public OrderBookItemResponse[] bids;
+        }
     }
 }

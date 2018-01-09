@@ -44,5 +44,11 @@ namespace Prime.Plugins.Services.Globitex
             public decimal volumeQuote;
             public long timestamp;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

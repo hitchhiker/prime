@@ -38,5 +38,17 @@ namespace Prime.Plugins.Services.BrightonPeak
             public decimal Total24HrQtyTraded;
             public decimal Total24HrProduct2Traded;
         }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookItemResponse[] bids;
+            public OrderBookItemResponse[] asks;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal qty;
+            public decimal px;
+        }
     }
 }

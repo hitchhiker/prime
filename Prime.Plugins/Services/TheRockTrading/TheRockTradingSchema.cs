@@ -25,5 +25,19 @@ namespace Prime.Plugins.Services.TheRockTrading
             public decimal ask;
             public DateTime date;
         }
+        
+        internal class OrderBookItemResponse
+        {
+            public decimal price;
+            public decimal amount;
+        }
+
+        internal class OrderBookResponse
+        {
+            public string fund_id;
+            public DateTime date;
+            public OrderBookItemResponse[] asks;
+            public OrderBookItemResponse[] bids;
+        }
     }
 }

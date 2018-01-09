@@ -210,6 +210,19 @@ namespace Prime.Plugins.Services.Bitfinex
             public decimal timestamp;
         }
 
+        internal class OrderBookEntryResponse
+        {
+            public decimal price;
+            public decimal amount;
+            public long timestamp;
+        }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookEntryResponse[] bids;
+            public OrderBookEntryResponse[] asks;
+        }
+
         #endregion
     }
 }

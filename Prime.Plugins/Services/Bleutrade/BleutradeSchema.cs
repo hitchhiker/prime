@@ -37,5 +37,24 @@ namespace Prime.Plugins.Services.Bleutrade
             public decimal Bid;
             public decimal Ask;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public OrderBookItemResponse[] buy;
+            public OrderBookItemResponse[] sell;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal rate;
+            public decimal quantity;
+        }
+
+        internal class OrderBookResponse
+        {
+            public bool success;
+            public string message;
+            public OrderBookEntryResponse result;
+        }
     }
 }

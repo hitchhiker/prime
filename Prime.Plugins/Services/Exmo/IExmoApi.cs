@@ -14,5 +14,8 @@ namespace Prime.Plugins.Services.Exmo
 
         [Get("/currency")]
         Task<string[]> GetCurrencyAsync();
+
+        [Get("/order_book/?pair={currencyPair}")]
+        Task<ExmoSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

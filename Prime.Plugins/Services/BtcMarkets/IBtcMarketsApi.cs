@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.BtcMarkets
     {
         [Get("/market/{currencyPair}/tick")]
         Task<BtcMarketsSchema.TickerResponse> GetTickerAsync([Path(UrlEncode = false)] string currencyPair);
+
+        [Get("/market/{currencyPair}/orderbook")]
+        Task<BtcMarketsSchema.OrderBookResponse> GetOrderBookAsync([Path(UrlEncode = false)] string currencyPair);
     }
 }

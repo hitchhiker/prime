@@ -16,5 +16,11 @@ namespace Prime.Plugins.Services.Coinfloor
             public decimal bid;
             public decimal ask;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

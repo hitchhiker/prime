@@ -26,5 +26,11 @@ namespace Prime.Plugins.Services.Okex
             public decimal sell;
             public decimal vol;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

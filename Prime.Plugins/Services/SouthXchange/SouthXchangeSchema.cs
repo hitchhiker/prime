@@ -24,5 +24,18 @@ namespace Prime.Plugins.Services.SouthXchange
             public decimal? Variation24Hr;
             public decimal? Volume24Hr;
         }
+        
+        internal class OrderBookItemResponse
+        {
+            public int Index;
+            public decimal Amount;
+            public decimal Price;
+        }
+
+        internal class OrderBookResponse
+        {
+            public OrderBookItemResponse[] BuyOrders;
+            public OrderBookItemResponse[] SellOrders;
+        }
     }
 }

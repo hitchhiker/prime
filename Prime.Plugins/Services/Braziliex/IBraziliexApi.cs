@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Braziliex
 
         [Get("/public/ticker")]
         Task<BraziliexSchema.AllTickersResponse> GetTickersAsync();
+
+        [Get("/public/orderbook/{currencyPair}")]
+        Task<BraziliexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

@@ -17,5 +17,12 @@ namespace Prime.Plugins.Services.QuadrigaCx
             public decimal ask;
             public long timestamp;
         }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
     }
 }

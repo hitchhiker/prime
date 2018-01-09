@@ -130,7 +130,8 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BtcMarketsTests.cs" />
+    <Compile Include="Providers\BlinkTradeTests.cs" />
+    <Compile Include="Providers\BtcMarketsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvidersTests.cs" />
     <Compile Include="Providers\AbucoinsTests.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Providers\CexTests.cs" />
     <Compile Include="Providers\CoinbaseTests.cs" />
     <Compile Include="Providers\CoincheckTests.cs" />
+    <Compile Include="Providers\CoinCornerTests.cs" />
     <Compile Include="Providers\CoinmateTests.cs" />
     <Compile Include="Providers\CoinoneTests.cs" />
     <Compile Include="Providers\CoinroomTests.cs" />

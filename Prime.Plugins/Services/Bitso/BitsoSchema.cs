@@ -34,5 +34,26 @@ namespace Prime.Plugins.Services.Bitso
             public decimal ask;
             public DateTime created_at;
         }
+
+        internal class OrderBookEntryResponse
+        {
+            public long sequence;
+            public DateTime updated_at;
+            public OrderBookItemResponse[] bids;
+            public OrderBookItemResponse[] asks;
+        }
+
+        internal class OrderBookItemResponse
+        {
+            public decimal price;
+            public decimal amount;
+            public string book;
+        }
+
+        internal class OrderBookResponse
+        {
+            public bool success;
+            public OrderBookEntryResponse payload;
+        }
     }
 }

@@ -20,5 +20,21 @@ namespace Prime.Plugins.Services.IndependentReserve
             public string PrimaryCurrencyCode;
             public string SecondaryCurrencyCode;
         }
+
+        internal class OrderBookItemResponse
+        {
+            public string OrderType;
+            public decimal Price;
+            public decimal Volume;
+        }
+
+        internal class OrderBookResponse
+        {
+            public string PrimaryCurrencyCode;
+            public string SecondaryCurrencyCode;
+            public DateTime CreatedTimestampUtc;
+            public OrderBookItemResponse[] BuyOrders;
+            public OrderBookItemResponse[] SellOrders;
+        }
     }
 }

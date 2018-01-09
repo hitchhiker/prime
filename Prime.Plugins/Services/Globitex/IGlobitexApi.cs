@@ -19,5 +19,8 @@ namespace Prime.Plugins.Services.Globitex
 
         [Get("/public/time")]
         Task<GlobitexSchema.TimeResponse> GetTimeAsync();
+
+        [Get("/public/orderbook/{currencyPair}")]
+        Task<GlobitexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

@@ -20,5 +20,18 @@ namespace Prime.Plugins.Services.Luno
             public decimal rolling_24_hour_volume;
             public long timestamp;
         }
+        
+        internal class OrderBookItemResponse
+        {
+            public decimal volume;
+            public decimal price;
+        }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public OrderBookItemResponse[] bids;
+            public OrderBookItemResponse[] asks;
+        }
     }
 }
