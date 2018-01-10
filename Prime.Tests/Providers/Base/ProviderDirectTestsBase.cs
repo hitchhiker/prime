@@ -339,7 +339,9 @@ namespace Prime.Tests.Providers
             //else
             //    Assert.IsTrue(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
 
-            foreach (var record in r.Asks.Take(1).Concat(r.Bids.Take(1)))
+
+            var records = new List<OrderBookRecord>() { r.LowestAsk, r.HighestBid };
+            foreach (var record in records)
             {
                 if (priceLessThan1) // Checks if the pair is reversed (price-wise).
                     Assert.IsTrue(record.Price < 1, "Reverse check failed. Price is expected to be < 1");
