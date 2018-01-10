@@ -92,10 +92,10 @@ namespace Prime.Plugins.Services.BitBay
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);
 
-            const int maxCount = 80;
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
 
-            var asks = context.MaxRecordsCount == int.MaxValue ? r.asks.Take(maxCount) : r.asks.Take(context.MaxRecordsCount);
-            var bids = context.MaxRecordsCount == int.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
 
             foreach (var i in bids.Select(GetBidAskData))
                 orderBook.AddBid(i.Item1, i.Item2, true);

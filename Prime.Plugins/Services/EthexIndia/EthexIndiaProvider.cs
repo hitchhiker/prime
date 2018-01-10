@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.EthexIndia
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.ethexindia.com/
-    public class EthexIndiaProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class EthexIndiaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string EthexIndiaApiUrl = "https://api.ethexindia.com";
 
@@ -98,6 +98,35 @@ namespace Prime.Plugins.Services.EthexIndia
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var r = await api.GetOrderBookAsync().ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal amount = data[0];
+            decimal price = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

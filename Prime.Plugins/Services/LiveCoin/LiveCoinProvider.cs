@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.LiveCoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.livecoin.net/api/public
-    public class LiveCoinProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class LiveCoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string LiveCoinApiUrl = "https://api.livecoin.net/exchange/";
 
@@ -138,6 +138,36 @@ namespace Prime.Plugins.Services.LiveCoin
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var r = await api.GetOrderBookAsync(pairCode, maxCount).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var asks = r.asks;
+            var bids = r.bids;
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(float[] data)
+        {
+            decimal price = (decimal)data[0];
+            decimal amount = (decimal)data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

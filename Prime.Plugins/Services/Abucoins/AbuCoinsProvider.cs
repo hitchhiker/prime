@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Abucoins
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://docs.abucoins.com
-    public class AbucoinsProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class AbucoinsProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
         private const string AbucoinsApiUrl = "https://api.abucoins.com/";
 
@@ -119,6 +119,36 @@ namespace Prime.Plugins.Services.Abucoins
             }
 
             return new PublicVolumeResponse(Network, volumes, missingPairs);
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
 
         private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures()

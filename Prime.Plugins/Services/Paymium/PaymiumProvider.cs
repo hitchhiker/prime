@@ -94,10 +94,10 @@ namespace Prime.Plugins.Services.Paymium
             var r = await api.GetOrderBookAsync(currency).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);
 
-            var maxCount = 1000; 
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
 
-            var asks = context.MaxRecordsCount == int.MaxValue ? r.asks.Take(maxCount) : r.asks.Take(context.MaxRecordsCount);
-            var bids = context.MaxRecordsCount == int.MaxValue ? r.bids.Take(maxCount) : r.bids.Take(context.MaxRecordsCount);
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
 
             foreach (var i in bids)
                 orderBook.AddBid(i.price, i.amount, true);

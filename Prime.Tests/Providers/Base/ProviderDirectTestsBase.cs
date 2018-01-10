@@ -329,10 +329,15 @@ namespace Prime.Tests.Providers
 
             // Assert.IsTrue(r.Pair.Equals(context.Pair), "Incorrect asset pair returned");
 
-            if (context.MaxRecordsCount == Int32.MaxValue)
-                Assert.IsTrue(r.Count > 0, "No order book records returned");
-            else
-                Assert.IsTrue(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
+            Assert.IsTrue(r.Asks.Count > 0, "No asks returned");
+            Assert.IsTrue(r.Bids.Count > 0, "No bids returned");
+            Assert.IsTrue(r.Asks.Count <= context.MaxRecordsCount, "Incorrect number of ask order book records returned");
+            Assert.IsTrue(r.Bids.Count <= context.MaxRecordsCount, "Incorrect number of bid order book records returned");
+
+            //if (context.MaxRecordsCount == Int32.MaxValue)
+            //    Assert.IsTrue(r.Count > 0, "No order book records returned");
+            //else
+            //    Assert.IsTrue(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
 
             foreach (var record in r.Asks.Take(1).Concat(r.Bids.Take(1)))
             {
