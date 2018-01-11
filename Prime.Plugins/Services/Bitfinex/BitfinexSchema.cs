@@ -214,7 +214,7 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             public decimal price;
             public decimal amount;
-            public long timestamp;
+            public decimal timestamp;
         }
 
         internal class OrderBookResponse

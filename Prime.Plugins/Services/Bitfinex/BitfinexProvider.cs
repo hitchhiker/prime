@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Bitfinex
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://bitfinex.readme.io/v1/reference
-    public partial class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider
+    public partial class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitfinexApiVersion = "v1";
         private const string BitfinexApiUrl = "https://api.bitfinex.com/" + BitfinexApiVersion;
@@ -142,6 +142,28 @@ namespace Prime.Plugins.Services.Bitfinex
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
     }
 }

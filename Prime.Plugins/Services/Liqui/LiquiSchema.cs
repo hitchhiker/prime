@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Liqui
         {
         }
 
-        internal class OrderBookResponse : Dictionary<string, OrderBookResponse>
+        internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
         {
         }
 

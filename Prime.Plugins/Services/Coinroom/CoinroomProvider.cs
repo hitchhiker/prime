@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Coinroom
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coinroom.com/public-api
-    public class CoinroomProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class CoinroomProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string CoinroomApiUrl = "https://coinroom.com/api/";
 
@@ -90,6 +90,33 @@ namespace Prime.Plugins.Services.Coinroom
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>
+            {
+                { "realCurrency", context.Pair.Asset2.ShortCode },
+                { "cryptoCurrency", context.Pair.Asset1.ShortCode }
+            };
+
+            var r = await api.GetOrderBookAsync(body).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.data.asks.Take(maxCount);
+            var bids = r.data.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
     }
 }

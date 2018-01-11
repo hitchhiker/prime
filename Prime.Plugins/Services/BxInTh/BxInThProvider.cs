@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.BxInTh
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bx.in.th/info/api/
-    public class BxInThProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BxInThProvider : /*IPublicPricingProvider,*/ IAssetPairsProvider
     {
         private const string BxInThApiUrl = "https://bx.in.th/api/";
 
@@ -74,47 +74,46 @@ namespace Prime.Plugins.Services.BxInTh
             return null;
         }
 
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
-        {
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
-        };
+        //private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
+        //{
+        //    Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true, CanReturnAll = true }
+        //};
 
-        public PricingFeatures PricingFeatures => StaticPricingFeatures;
+        //public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
-        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickersAsync().ConfigureAwait(false);
+        //public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
+        //{
+        //    var api = ApiProvider.GetApi(context);
+        //    var r = await api.GetTickersAsync().ConfigureAwait(false);
 
-            if (r == null || r.Count == 0)
-            {
-                throw new ApiResponseException("No tickers returned", this);
-            }
+        //    if (r == null || r.Count == 0)
+        //    {
+        //        throw new ApiResponseException("No tickers returned", this);
+        //    }
 
-            var prices = new MarketPrices();
+        //    var prices = new MarketPrices();
 
-            var rPairsDict = r.Values.ToDictionary(x =>  new AssetPair(x.primary_currency, x.secondary_currency, this), x => x);
-            var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
+        //    var rPairsDict = r.Values.ToDictionary(x =>  new AssetPair(x.primary_currency, x.secondary_currency, this), x => x);
+        //    var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
-            foreach (var pair in pairsQueryable)
-            {
-                rPairsDict.TryGetValue(pair, out var currentTicker);
+        //    foreach (var pair in pairsQueryable)
+        //    {
+        //        rPairsDict.TryGetValue(pair, out var currentTicker);
 
-                if (currentTicker == null)
-                {
-                    prices.MissedPairs.Add(pair);
-                }
-                else
-                {
-                    prices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
-                    {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.orderbook.asks.highbid, currentTicker.orderbook.bids.highbid),
-                        Volume = new NetworkPairVolume(Network, pair, currentTicker.volume_24hours)
-                    });
-                }
-            }
+        //        if (currentTicker == null)
+        //        {
+        //            prices.MissedPairs.Add(pair);
+        //        }
+        //        else
+        //        {
+        //            //prices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
+        //            //{
+        //            //   TODO
+        //            //});
+        //        }
+        //    }
 
-            return prices;
-        }
+        //    return prices;
+        //}
     }
 }

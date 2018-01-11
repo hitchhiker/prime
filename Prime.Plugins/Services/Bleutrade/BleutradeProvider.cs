@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Bleutrade
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bleutrade.com/help/API
-    public class BleutradeProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class BleutradeProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
         private const string BleutradeApiVersion = "v2";
         private const string BleutradeApiUrl = "https://bleutrade.com/api/" + BleutradeApiVersion;
@@ -153,6 +153,28 @@ namespace Prime.Plugins.Services.Bleutrade
                 return await GetVolumeAsync(context).ConfigureAwait(false);
 
             return await GetVolumesAsync(context).ConfigureAwait(false);
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.result.sell.Take(maxCount);
+            var bids = r.result.buy.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.rate, i.quantity, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.rate, i.quantity, true);
+
+            return orderBook;
         }
 
         private static readonly VolumeFeatures StaticVolumeFeatures = new VolumeFeatures()

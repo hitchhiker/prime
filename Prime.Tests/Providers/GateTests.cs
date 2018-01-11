@@ -61,5 +61,11 @@ namespace Prime.Tests.Providers
 
             base.TestGetVolume(pairs, false);
         }
+
+        [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("ltc_btc".ToAssetPairRaw(), true);
+        }
     }
 }
