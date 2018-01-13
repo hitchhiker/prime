@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.TheRockTrading
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.therocktrading.com/doc/v1/
-    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string TheRockTradingApiVersion = "v1";
         private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
@@ -139,6 +139,28 @@ namespace Prime.Plugins.Services.TheRockTrading
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
     }
 }

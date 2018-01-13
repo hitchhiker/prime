@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.TheRockTrading
 
         [Get("/funds/tickers")]
         Task<TheRockTradingSchema.AllTickersResponse> GetTickersAsync();
+
+        [Get("/funds/{currencyPair}/orderbook")]
+        Task<TheRockTradingSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

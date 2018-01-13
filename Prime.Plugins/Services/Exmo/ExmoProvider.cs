@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
@@ -8,7 +9,7 @@ namespace Prime.Plugins.Services.Exmo
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://exmo.com/en/api#/public_api
-    public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string ExmoApiVersion = "v1";
         private const string ExmoApiUrl = "https://api.exmo.com/" + ExmoApiVersion;
@@ -115,6 +116,43 @@ namespace Prime.Plugins.Services.Exmo
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+            
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            r.TryGetValue(pairCode, out var response);
+
+            if (response == null)
+            {
+                throw new ApiResponseException("No depth info found");
+            }
+
+            var asks = response.ask.Take(maxCount);
+            var bids = response.bid.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[2];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

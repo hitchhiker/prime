@@ -11,7 +11,8 @@ namespace Prime.Plugins.Services.Bisq
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://markets.bisq.network/api/
-    public class BisqProvider : IPublicPricingProvider, IAssetPairsProvider
+    //Revisit this later as per Frank's Slack message, since this is a decentralised exchange.
+    public class BisqProvider : /*IPublicPricingProvider,*/ IAssetPairsProvider, IOrderBookProvider
     {
         private const string BisqApiUrl = "https://markets.bisq.network/api/";
 
@@ -144,6 +145,35 @@ namespace Prime.Plugins.Services.Bisq
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            r.TryGetValue(pairCode, out var response);
+
+            if (response == null)
+            {
+                throw new ApiResponseException("No depth info found");
+            }
+
+            var asks = response.sells.Take(maxCount);
+            var bids = response.buys.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i, 0, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i, 0, true);
+
+            return orderBook;
         }
     }
 }
