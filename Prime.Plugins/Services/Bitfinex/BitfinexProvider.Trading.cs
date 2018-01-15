@@ -19,6 +19,7 @@ namespace Prime.Plugins.Services.Bitfinex
             var body = new BitfinexSchema.NewOrderRequest.Descriptor
             {
                 symbol = context.Pair.ToTicker(this),
+                type = "exchange market",
                 amount = context.Quantity.ToString(CultureInfo.InvariantCulture),
                 price = context.Rate.ToDecimalValue().ToString(CultureInfo.InvariantCulture),
                 side = context.IsSell ? "sell" : "buy"
@@ -50,7 +51,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
             return new TradeOrderStatus(r.id.ToString(), r.is_live, r.is_cancelled)
             {
-                Rate = r.price,
+                Rate = r.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? r.price : r.avg_execution_price,
                 AmountInitial = r.original_amount,
                 AmountRemaining = r.remaining_amount
             };
