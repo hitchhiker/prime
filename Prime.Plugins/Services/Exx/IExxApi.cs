@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Exx
 
         [Get("/tickers")]
         Task<ExxSchema.AllTickersResponse> GetTickersAsync();
+
+        [Get("/depth?currency={currencyPair}")]
+        Task<ExxSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

@@ -24,8 +24,8 @@ namespace Prime.Plugins.Services.LiveCoin
         internal class OrderBookResponse
         {
             public long timestamp;
-            public decimal[][] bids;
-            public decimal[][] asks;
+            public float[][] bids;
+            public float[][] asks;
         }
     }
 }

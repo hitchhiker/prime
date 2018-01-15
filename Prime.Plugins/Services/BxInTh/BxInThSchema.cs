@@ -13,22 +13,8 @@ namespace Prime.Plugins.Services.BxInTh
             public decimal change;
             public decimal last_price;
             public decimal volume_24hours;
-            public OrderBookResponse orderbook;
         }
-
-        internal class OrderBookResponse
-        {
-            public OrderBookEntryResponse bids;
-            public OrderBookEntryResponse asks;
-        }
-
-        internal class OrderBookEntryResponse
-        {
-            public decimal total;
-            public decimal volume;
-            public decimal highbid;
-        }
-
+        
         internal class CurrenciesResponse : Dictionary<int, CurrencyResponse> { }
 
         internal class CurrencyResponse

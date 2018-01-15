@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Gatecoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://gatecoin.com/api/
-    public class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string GatecoinApiUrl = "https://api.gatecoin.com/Public/";
 
@@ -144,6 +144,28 @@ namespace Prime.Plugins.Services.Gatecoin
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.volume, true);
+
+            return orderBook;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
@@ -7,7 +9,7 @@ namespace Prime.Plugins.Services.BtcMarkets
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://github.com/BTCMarkets/API/wiki/Market-data-API
-    public class BtcMarketsProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BtcMarketsProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BtcMarketsApiUrl = "https://api.btcmarkets.net/";
 
@@ -77,6 +79,36 @@ namespace Prime.Plugins.Services.BtcMarkets
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.bestAsk, r.bestBid),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume24h)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }
