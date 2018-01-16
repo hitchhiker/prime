@@ -46,7 +46,7 @@ namespace Prime.Plugins.Services.Vaultoro
             var api = ApiProvider.GetApi(context);
             var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
-            return r?.status.Equals("success", StringComparison.InvariantCultureIgnoreCase) == true;
+            return r?.status.Equals("success", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -55,10 +55,8 @@ namespace Prime.Plugins.Services.Vaultoro
 
             var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
-            if (r.status.Equals("success", StringComparison.InvariantCultureIgnoreCase) == false)
-            {
+            if (!r.status.Equals("success", StringComparison.OrdinalIgnoreCase))
                 throw new ApiResponseException("No asset pairs returned", this);
-            }
 
             var pairs = new AssetPairs
             {
@@ -85,19 +83,18 @@ namespace Prime.Plugins.Services.Vaultoro
             var api = ApiProvider.GetApi(context);
             var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
-            if (context.Pair.Equals(new AssetPair("BTC", "GLD")) == false)
-            {
-                throw new ApiResponseException("Invalid asset pair - only BTC_GLD is supported.");
-            }
+            if (!context.Pair.Equals(new AssetPair("BTC", "GLD")))
+                throw new NoAssetPairException(context.Pair, this);
 
-            if (r.status.Equals("success", StringComparison.InvariantCulture) == false)
+            if (r.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
             {
                 throw new ApiResponseException("Error obtaining pricing");
             }
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, 1/ r.data.LastPrice)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, r.data.Low24h, r.data.High24h),
+                // TODO: HH: check correctness of high/low swapping when reversing.
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, 1 / r.data.High24h, 1 / r.data.Low24h),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.data.Volume24h)
             });
         }
@@ -113,10 +110,10 @@ namespace Prime.Plugins.Services.Vaultoro
 
             if (context.Pair.Equals(new AssetPair("BTC", "GLD")) == false)
             {
-                throw new ApiResponseException("Invalid asset pair - only BTC_GLD is supported.");
+                throw new NoAssetPairException(context.Pair, this);
             }
 
-            if (r.status.Equals("success", StringComparison.InvariantCulture) == false)
+            if (r.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
             {
                 throw new ApiResponseException("Error obtaining order books");
             }

@@ -62,13 +62,64 @@ namespace Prime.Tests.Providers
 
             if (!context.IsRequestAll)
             {
-                Assert.IsTrue(r.FirstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
-                Assert.IsTrue(r.FirstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+                var firstPrice = r.FirstPrice;
 
-                if (firstPriceLessThan1) // Checks if the pair is reversed (price-wise).
-                    Assert.IsTrue(r.FirstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
+                Assert.IsTrue(firstPrice.QuoteAsset.Equals(context.Pair.Asset1), "Incorrect base asset");
+                Assert.IsTrue(firstPrice.Price.Asset.Equals(context.Pair.Asset2), "Incorrect quote asset");
+
+                // Checks if the pair is reversed (price-wise).
+                if (firstPriceLessThan1)
+                    Assert.IsTrue(firstPrice.Price < 1, "Reverse check failed. Price is expected to be < 1");
                 else
-                    Assert.IsTrue(r.FirstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+                    Assert.IsTrue(firstPrice.Price > 1, "Reverse check failed. Price is expected to be > 1");
+
+                // Checks if statistics price are correct.
+                if (firstPrice.HasStatistics)
+                {
+                    if (firstPrice.PriceStatistics.HasHighestBid)
+                    {
+                        if (firstPriceLessThan1)
+                            Assert.IsTrue(firstPrice.PriceStatistics.HighestBid < 1,
+                                "Reverse check failed. Highest bid price is expected to be < 1");
+                        else
+                            Assert.IsTrue(firstPrice.PriceStatistics.HighestBid > 1,
+                                "Reverse check failed. Highest bid price is expected to be > 1");
+                    }
+
+                    if (firstPrice.PriceStatistics.HasLowestAsk)
+                    {
+                        if (firstPriceLessThan1)
+                            Assert.IsTrue(firstPrice.PriceStatistics.LowestAsk < 1,
+                                "Reverse check failed. Lowest ask price is expected to be < 1");
+                        else
+                            Assert.IsTrue(firstPrice.PriceStatistics.LowestAsk > 1,
+                                "Reverse check failed. Lowest ask price is expected to be > 1");
+                    }
+
+                    if (firstPrice.PriceStatistics.HasPrice24High)
+                    {
+                        if (firstPriceLessThan1)
+                            Assert.IsTrue(firstPrice.PriceStatistics.Price24High < 1,
+                                "Reverse check failed. Highest 24h price is expected to be < 1");
+                        else
+                            Assert.IsTrue(firstPrice.PriceStatistics.Price24High > 1,
+                                "Reverse check failed. Highest 24h price is expected to be > 1");
+                    }
+
+                    if (firstPrice.PriceStatistics.HasPrice24Low)
+                    {
+                        if (firstPriceLessThan1)
+                            Assert.IsTrue(firstPrice.PriceStatistics.Price24Low < 1,
+                            "Reverse check failed. Lowest 24h price is expected to be < 1");
+                        else
+                            Assert.IsTrue(firstPrice.PriceStatistics.Price24Low > 1,
+                                "Reverse check failed. Lowest 24h price is expected to be > 1");
+                    }
+
+                    // Check if 24 highest >= 24 lowest.
+                    if (firstPrice.PriceStatistics.HasPrice24Low && firstPrice.PriceStatistics.HasPrice24High)
+                        Assert.IsTrue(firstPrice.PriceStatistics.Price24High >= firstPrice.PriceStatistics.Price24Low, "24h highest price is smaller that 24h lowest price");
+                }
 
                 // First price. Volume base/quote relation.
                 var canAllVolume = r.FirstPrice.HasVolume && r.FirstPrice.Volume.HasVolume24Base && r.FirstPrice.Volume.HasVolume24Quote;
