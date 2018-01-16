@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Vaultoro
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.vaultoro.com/#api-Basic_API
-    public class VaultoroProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class VaultoroProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string VaultoroApiUrl = "https://api.vaultoro.com/";
 
@@ -83,14 +83,75 @@ namespace Prime.Plugins.Services.Vaultoro
         public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
-            return new MarketPrices(new MarketPrice(Network, context.Pair, r.data.LastPrice)
+            if (context.Pair.Equals(new AssetPair("BTC", "GLD")) == false)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null,null, r.data.Low24h, r.data.High24h),
+                throw new ApiResponseException("Invalid asset pair - only BTC_GLD is supported.");
+            }
+
+            if (r.status.Equals("success", StringComparison.InvariantCulture) == false)
+            {
+                throw new ApiResponseException("Error obtaining pricing");
+            }
+
+            return new MarketPrices(new MarketPrice(Network, context.Pair, 1/ r.data.LastPrice)
+            {
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, r.data.Low24h, r.data.High24h),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.data.Volume24h)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var r = await api.GetOrderBookAsync().ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair.Reversed);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            if (context.Pair.Equals(new AssetPair("BTC", "GLD")) == false)
+            {
+                throw new ApiResponseException("Invalid asset pair - only BTC_GLD is supported.");
+            }
+
+            if (r.status.Equals("success", StringComparison.InvariantCulture) == false)
+            {
+                throw new ApiResponseException("Error obtaining order books");
+            }
+
+            VaultoroSchema.OrderBookItemResponse[] arrAsks = null;
+            VaultoroSchema.OrderBookItemResponse[] arrBids = null;
+
+            foreach (var entry in r.data)
+            {
+                if (entry.b != null && entry.b.Length > 0)
+                {
+                    arrBids = entry.b;
+                }
+
+                if (entry.s != null && entry.s.Length > 0)
+                {
+                    arrAsks = entry.s;
+                }
+            }
+
+            if (arrAsks == null || arrBids == null)
+            {
+                throw new ApiResponseException("No order books found");
+            }
+
+            var asks = arrAsks.Take(maxCount);
+            var bids = arrBids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.Gold_Price, i.Gold_Amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.Gold_Price, i.Gold_Amount, true);
+
+            return orderBook;
         }
     }
 }

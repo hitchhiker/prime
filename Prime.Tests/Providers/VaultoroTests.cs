@@ -31,7 +31,7 @@ namespace Prime.Tests.Providers
                 "BTC_GLD".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, true);
+            base.TestGetPricing(pairs, false);
         }
 
         [TestMethod]
@@ -43,6 +43,12 @@ namespace Prime.Tests.Providers
             };
 
             base.TestGetAssetPairs(requiredPairs);
+        }
+
+        [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("BTC_GLD".ToAssetPairRaw(), false);
         }
     }
 }
