@@ -95,16 +95,12 @@ namespace Prime.Plugins.Services.Bittrex
             if (e == null)
                 throw new NoAssetPairException(context.Pair, this);
 
-            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(1 / e.Last, context.Pair.Asset2))
+            var price = new MarketPrice(Network, context.Pair.Reversed, e.Last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, 
-                    e.Ask == 0 ? 0 : 1 / e.Ask, 
-                    e.Bid == 0 ? 0 : 1 / e.Bid, 
-                    e.High == 0 ? 0 : 1 / e.High, 
-                    e.Low == 0 ? 0 : 1 / e.Low),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
                 Volume = new NetworkPairVolume(Network, context.Pair, e.BaseVolume, e.Volume)
             };
-            return new MarketPrices(price);
+            return new MarketPrices(price.Reversed);
         }
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
@@ -130,15 +126,11 @@ namespace Prime.Plugins.Services.Bittrex
                     continue;
                 }
 
-                prices.Add(new MarketPrice(Network, pair, 1 / e.Last)
+                prices.Add(new MarketPrice(Network, pair.Reversed, e.Last)
                 {
-                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, 
-                        e.Ask == 0 ? 0 : 1 / e.Ask, 
-                        e.Bid == 0 ? 0 : 1 / e.Bid,
-                        e.High == 0 ? 0 : 1 / e.High,
-                        e.Low == 0 ? 0 : 1 / e.Low),
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
                     Volume = new NetworkPairVolume(Network, pair, e.BaseVolume, e.Volume)
-                });
+                }.Reversed);
             }
 
             return prices;
@@ -280,7 +272,7 @@ namespace Prime.Plugins.Services.Bittrex
             foreach (var i in asks)
                 orderBook.AddAsk(i.Rate, i.Quantity, true);
 
-            return orderBook;
+            return orderBook.AsPair(context.Pair);
         }
 
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)

@@ -83,7 +83,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            base.TestGetOrderBook("BTC_LTC".ToAssetPairRaw(), false);
+            base.TestGetOrderBook("BTC_XRP".ToAssetPairRaw(), false);
         }
     }
 }
