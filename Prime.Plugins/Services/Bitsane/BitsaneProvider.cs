@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Bitsane
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitsane.com/info-api
-    public class BitsaneProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BitsaneProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitsaneApiUrl = "https://bitsane.com/api/public/";
 
@@ -148,6 +148,35 @@ namespace Prime.Plugins.Services.Bitsane
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            if (r.result == null)
+            {
+                throw new ApiResponseException("Order book response not successful");
+            }
+
+            var response = r.result;
+
+            var asks = response.asks.Take(maxCount);
+            var bids = response.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Bitlish
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitlish.com/api
-    public class BitlishProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BitlishProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitlishApiVersion = "v1";
         private const string BitlishApiUrl = "https://bitlish.com/api/" + BitlishApiVersion;
@@ -114,6 +114,28 @@ namespace Prime.Plugins.Services.Bitlish
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.ask.Take(maxCount);
+            var bids = r.bid.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.volume, true);
+
+            return orderBook;
         }
     }
 }

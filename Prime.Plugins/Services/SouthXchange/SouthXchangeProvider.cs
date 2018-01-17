@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.SouthXchange
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.southxchange.com/Home/Api
-    public class SouthXchangeProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class SouthXchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string SouthXchangeApiUrl = "https://www.southxchange.com/api/" ;
 
@@ -136,6 +136,28 @@ namespace Prime.Plugins.Services.SouthXchange
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.SellOrders.Take(maxCount);
+            var bids = r.BuyOrders.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.Price, i.Amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.Price, i.Amount, true);
+
+            return orderBook;
         }
     }
 }

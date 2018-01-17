@@ -30,7 +30,7 @@ namespace Prime.Tests.Providers
                 "BTC_USD".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, true);
+            base.TestGetPricing(pairs, false);
         }
 
         [TestMethod]

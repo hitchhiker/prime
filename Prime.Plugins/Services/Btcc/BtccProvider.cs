@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
@@ -7,7 +9,7 @@ namespace Prime.Plugins.Services.Btcc
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.btcc.com/apidocs/usd-spot-exchange-market-data-rest-api
-    public class BtccProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BtccProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BtccApiUrl = "https://spotusd-data.btcc.com/data/pro/";
 
@@ -75,6 +77,36 @@ namespace Prime.Plugins.Services.Btcc
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.AskPrice, r.ticker.BidPrice, r.ticker.Low, r.ticker.High),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.Volume24H)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var r = await api.GetOrderBookAsync(pairCode, maxCount).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var asks = r.asks;
+            var bids = r.bids;
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

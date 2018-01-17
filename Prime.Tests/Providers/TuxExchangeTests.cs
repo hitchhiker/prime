@@ -32,7 +32,7 @@ namespace Prime.Tests.Providers
                 "BTC_PPC".ToAssetPairRaw()
             };
 
-            base.TestGetPricing(pairs, true, false);
+            base.TestGetPricing(pairs, false, false);
         }
 
         [TestMethod]

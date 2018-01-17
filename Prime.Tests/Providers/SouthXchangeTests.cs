@@ -48,5 +48,11 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
+
+        [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("DOGE_BTC".ToAssetPairRaw(), true);
+        }
     }
 }

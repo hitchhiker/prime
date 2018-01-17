@@ -13,11 +13,11 @@ namespace Prime.Plugins.Services.Quoine
             public decimal market_bid;
             public decimal indicator;
             public decimal exchange_rate;
-            public decimal fiat_minimum_withdraw;
-            public decimal taker_fee;
-            public decimal maker_fee;
-            public float low_market_bid;
-            public float high_market_ask;
+            public decimal? fiat_minimum_withdraw;
+            public decimal? taker_fee;
+            public decimal? maker_fee;
+            public float? low_market_bid;
+            public float? high_market_ask;
             public decimal volume_24h;
             public float? last_price_24h;
             public float? last_traded_price;
