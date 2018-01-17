@@ -324,10 +324,7 @@ namespace Prime.Tests.Providers
             var r = AsyncContext.Run(() => provider.GetOrderBookAsync(context));
             Assert.IsTrue(r != null, "Null response returned");
 
-            var isReversed = r.IsReversed;
-            var priceLessThan1Internal = isReversed ? !priceLessThan1 : priceLessThan1;
-
-            if (isReversed)
+            if (r.IsReversed)
                 Trace.WriteLine("Asset pair is reversed");
 
             // Assert.IsTrue(r.Pair.Equals(context.Pair), "Incorrect asset pair returned");
@@ -342,11 +339,13 @@ namespace Prime.Tests.Providers
             //else
             //    Assert.IsTrue(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
 
+            Trace.WriteLine($"Highest bid: {r.HighestBid}");
+            Trace.WriteLine($"Lowest ask: {r.LowestAsk}");
 
             var records = new List<OrderBookRecord>() { r.LowestAsk, r.HighestBid };
             foreach (var record in records)
             {
-                if (priceLessThan1Internal) // Checks if the pair is reversed (price-wise).
+                if (priceLessThan1) // Checks if the pair is reversed (price-wise).
                     Assert.IsTrue(record.Price < 1, "Reverse check failed. Price is expected to be < 1");
                 else
                     Assert.IsTrue(record.Price > 1, "Reverse check failed. Price is expected to be > 1");
@@ -356,7 +355,7 @@ namespace Prime.Tests.Providers
 
             foreach (var obr in r.Asks.Concat(r.Bids))
             {
-                Trace.WriteLine($"{obr.UtcUpdated} | For {context.Pair.Asset1}: {obr.Type} {obr.Price.Display}, {obr.Volume} ");
+                Trace.WriteLine($"{obr.UtcUpdated} : {obr}");
             }
         }
 

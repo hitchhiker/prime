@@ -108,15 +108,11 @@ namespace Prime.Plugins.Services.Vaultoro
 
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
 
-            if (context.Pair.Equals(new AssetPair("BTC", "GLD")) == false)
-            {
+            if (!context.Pair.Equals(new AssetPair("BTC", "GLD", this)))
                 throw new NoAssetPairException(context.Pair, this);
-            }
 
-            if (r.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
-            {
+            if (!r.status.Equals("success", StringComparison.OrdinalIgnoreCase))
                 throw new ApiResponseException("Error obtaining order books");
-            }
 
             VaultoroSchema.OrderBookItemResponse[] arrAsks = null;
             VaultoroSchema.OrderBookItemResponse[] arrBids = null;
@@ -124,31 +120,22 @@ namespace Prime.Plugins.Services.Vaultoro
             foreach (var entry in r.data)
             {
                 if (entry.b != null && entry.b.Length > 0)
-                {
                     arrBids = entry.b;
-                }
 
                 if (entry.s != null && entry.s.Length > 0)
-                {
                     arrAsks = entry.s;
-                }
             }
 
             if (arrAsks == null || arrBids == null)
-            {
                 throw new ApiResponseException("No order books found");
-            }
 
-            var asks = arrAsks.Take(maxCount);
-            var bids = arrBids.Take(maxCount);
-
-            foreach (var i in bids)
+            foreach (var i in arrBids.Take(maxCount))
                 orderBook.AddBid(i.Gold_Price, i.Gold_Amount, true);
 
-            foreach (var i in asks)
+            foreach (var i in arrAsks.Take(maxCount))
                 orderBook.AddAsk(i.Gold_Price, i.Gold_Amount, true);
 
-            return orderBook;
+            return orderBook.AsPair(context.Pair);
         }
     }
 }

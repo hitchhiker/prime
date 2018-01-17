@@ -280,7 +280,7 @@ namespace Prime.Plugins.Services.Bittrex
             foreach (var i in asks)
                 orderBook.AddAsk(i.Rate, i.Quantity, true);
 
-            return orderBook;
+            return orderBook.AsPair(context.Pair);
         }
 
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
