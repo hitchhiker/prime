@@ -12,6 +12,6 @@ namespace Prime.Plugins.Services.Coinfloor
         Task<CoinfloorSchema.TickerResponse> GetTickerAsync([Path(UrlEncode = false)] string currencyPair);
 
         [Get("/{currencyPair}/order_book/")]
-        Task<CoinfloorSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+        Task<CoinfloorSchema.OrderBookResponse> GetOrderBookAsync([Path(UrlEncode = false)] string currencyPair);
     }
 }

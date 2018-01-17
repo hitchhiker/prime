@@ -35,6 +35,12 @@ namespace Prime.Plugins.Services.Vaultoro
             [JsonProperty("24HVolume")]
             public decimal Volume24h;
         }
+        
+        internal class OrderBookItemResponse
+        {
+            public decimal Gold_Price;
+            public decimal Gold_Amount;
+        }
 
         internal class OrderBookEntryResponse
         {
@@ -42,16 +48,10 @@ namespace Prime.Plugins.Services.Vaultoro
             public OrderBookItemResponse[] s;
         }
 
-        internal class OrderBookItemResponse
-        {
-            public decimal Gold_Price;
-            public decimal Gold_Amount;
-        }
-
         internal class OrderBookResponse
         {
             public string status;
-            public OrderBookEntryResponse data;
+            public OrderBookEntryResponse[] data;
         }
     }
 }

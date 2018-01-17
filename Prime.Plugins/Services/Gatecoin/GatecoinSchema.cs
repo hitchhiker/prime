@@ -43,7 +43,7 @@ namespace Prime.Plugins.Services.Gatecoin
         internal class OrderBookItemResponse
         {
             public decimal price;
-            public decimal quantvolumeity;
+            public decimal volume;
         }
 
         internal class OrderBookResponse

@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Luno
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     //https://www.luno.com/en/api
-    public class LunoProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class LunoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string LunoApiVersion = "1";
         private const string LunoApiUrl = "https://api.mybitx.com/api/" + LunoApiVersion;
@@ -139,6 +139,28 @@ namespace Prime.Plugins.Services.Luno
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.volume, true);
+
+            return orderBook;
         }
     }
 }

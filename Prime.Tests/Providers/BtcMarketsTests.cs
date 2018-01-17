@@ -54,5 +54,12 @@ namespace Prime.Tests
 
             base.TestGetAssetPairs(requiredPairs);
         }
+
+
+        [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("BTC_AUD".ToAssetPairRaw(), false);
+        }
     }
 }

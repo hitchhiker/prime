@@ -124,7 +124,7 @@ namespace Prime.Plugins.Services.Abucoins
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this).ToLower();
+            var pairCode = context.Pair.ToTicker(this);
 
             var r = await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);

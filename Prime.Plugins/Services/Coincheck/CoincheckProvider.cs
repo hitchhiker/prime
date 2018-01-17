@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -10,7 +11,7 @@ namespace Prime.Plugins.Services.Coincheck
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coincheck.com/documents/exchange/api#public
-    public class CoincheckProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class CoincheckProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string CoincheckApiUrl = "https://coincheck.com/api/";
 
@@ -84,6 +85,40 @@ namespace Prime.Plugins.Services.Coincheck
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            if (context.Pair.Equals(new AssetPair("BTC", "JPY")) == false)
+            {
+                throw new ApiResponseException("Invalid asset pair - only btc_jpy is supported.");
+            }
+
+            var r = await api.GetOrderBookAsync().ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Wex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://wex.nz/api/3/docs
-    public class WexProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class WexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string WexApiVersion = "3";
         private const string WexApiUrl = "https://wex.nz/api/" + WexApiVersion;
@@ -143,6 +143,43 @@ namespace Prime.Plugins.Services.Wex
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            r.TryGetValue(pairCode, out var response);
+
+            if (response == null)
+            {
+                throw new ApiResponseException("No depth info found");
+            }
+
+            var asks = response.asks.Take(maxCount);
+            var bids = response.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

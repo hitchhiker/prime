@@ -28,5 +28,12 @@ namespace Prime.Plugins.Services.Exx
             public decimal low;
             public decimal monthRiseRate;
         }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] asks;
+            public decimal[][] bids;
+        }
     }
 }

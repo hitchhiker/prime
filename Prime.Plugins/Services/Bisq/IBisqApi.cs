@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Bisq
 
         [Get("/ticker")]
         Task<BisqSchema.AllTickersResponse> GetAllTickers();
+
+        [Get("/depth?market={currencyPair}")]
+        Task<BisqSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

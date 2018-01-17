@@ -64,5 +64,11 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
+
+        [TestMethod]
+        public override void TestGetOrderBook()
+        {//TODO: This endpoint does not accept a parameter in the endpoint, so this needs to be checked.  BTC_JPY seems to be the default pair on this exchange, but this still needs testing.
+            base.TestGetOrderBook("btc_jpy".ToAssetPairRaw(), false);
+        }
     }
 }

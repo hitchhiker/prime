@@ -72,7 +72,7 @@ namespace Prime.Plugins.Services.Bittrex
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Single = new PricingSingleFeatures() {CanVolume = true, CanStatistics = true},
+            Single = new PricingSingleFeatures() { CanVolume = true, CanStatistics = true },
             Bulk = new PricingBulkFeatures()
             {
                 CanReturnAll = true,
@@ -97,7 +97,11 @@ namespace Prime.Plugins.Services.Bittrex
 
             var price = new MarketPrice(Network, context.Pair.Asset1, new Money(1 / e.Last, context.Pair.Asset2))
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, 
+                    e.Ask == 0 ? 0 : 1 / e.Ask, 
+                    e.Bid == 0 ? 0 : 1 / e.Bid, 
+                    e.High == 0 ? 0 : 1 / e.High, 
+                    e.Low == 0 ? 0 : 1 / e.Low),
                 Volume = new NetworkPairVolume(Network, context.Pair, e.BaseVolume, e.Volume)
             };
             return new MarketPrices(price);
@@ -128,7 +132,11 @@ namespace Prime.Plugins.Services.Bittrex
 
                 prices.Add(new MarketPrice(Network, pair, 1 / e.Last)
                 {
-                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, 
+                        e.Ask == 0 ? 0 : 1 / e.Ask, 
+                        e.Bid == 0 ? 0 : 1 / e.Bid,
+                        e.High == 0 ? 0 : 1 / e.High,
+                        e.Low == 0 ? 0 : 1 / e.Low),
                     Volume = new NetworkPairVolume(Network, pair, e.BaseVolume, e.Volume)
                 });
             }
@@ -241,7 +249,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             if (response.success == false)
             {
-                if(response.message.Equals("INVALID_MARKET") && pair != null)
+                if (response.message.Equals("INVALID_MARKET") && pair != null)
                     throw new NoAssetPairException(pair, this);
                 throw new ApiResponseException($"API error: {response.message}", this);
             }
@@ -270,7 +278,7 @@ namespace Prime.Plugins.Services.Bittrex
                 orderBook.AddBid(i.Rate, i.Quantity, true); //HH:CONFIRMED INVERTED ON https://bittrex.com/Market/Index?MarketName=BTC-BTCD
 
             foreach (var i in asks)
-                orderBook.AddAsk(i.Rate, i.Quantity, true); 
+                orderBook.AddAsk(i.Rate, i.Quantity, true);
 
             return orderBook;
         }
