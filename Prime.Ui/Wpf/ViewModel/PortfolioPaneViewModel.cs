@@ -22,8 +22,8 @@ namespace Prime.Ui.Wpf.ViewModel
         private DateTime _utcLastUpdated;
         private string _information;
         private Money _totalConverted;
-        private readonly TimerIrregular _timer;
-        private readonly PortfolioSubscribeMessage _subscribeKeepAlive;
+        private readonly TimerRegular _timer;
+        private readonly PortfolioSubscribeMessage _subscription;
 
         public PortfolioPaneViewModel()
         {
@@ -32,13 +32,13 @@ namespace Prime.Ui.Wpf.ViewModel
 
             M.Register<PortfolioResultsMessage>(this, UserContext.Current.Token, PortfolioChanged);
 
-            _subscribeKeepAlive = new PortfolioSubscribeMessage(Id, SubscriptionType.Subscribe);
-            _timer = new TimerIrregular(TimeSpan.FromSeconds(30), KeepSubscriptionAlive, true);
+            _subscription = new PortfolioSubscribeMessage(Id, SubscriptionType.Subscribe);
+            _timer = new TimerRegular(TimeSpan.FromSeconds(5), KeepSubscriptionAlive, true);
         }
 
         private void KeepSubscriptionAlive()
         {
-            M.Send(_subscribeKeepAlive, UserContext.Current.Token);
+            M.Send(_subscription, UserContext.Current.Token);
         }
 
         public DateTime UtcLastUpdated
@@ -120,7 +120,6 @@ namespace Prime.Ui.Wpf.ViewModel
 
         public override void Dispose()
         {
-            M.SendAsync(new PortfolioSubscribeMessage(Id, SubscriptionType.UnsubscribeAll), UserContext.Current.Token);
             M.Unregister(this);
             _timer?.Dispose();
             base.Dispose();
