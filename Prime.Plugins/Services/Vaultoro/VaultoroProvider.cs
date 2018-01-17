@@ -87,16 +87,15 @@ namespace Prime.Plugins.Services.Vaultoro
                 throw new NoAssetPairException(context.Pair, this);
 
             if (r.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
-            {
                 throw new ApiResponseException("Error obtaining pricing");
-            }
 
-            return new MarketPrices(new MarketPrice(Network, context.Pair, 1/ r.data.LastPrice)
+            var price = new MarketPrice(Network, context.Pair.Reversed, r.data.LastPrice)
             {
-                // TODO: HH: check correctness of high/low swapping when reversing.
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, 1 / r.data.High24h, 1 / r.data.Low24h),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, null, null, r.data.Low24h, r.data.High24h),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.data.Volume24h)
-            });
+            };
+
+            return new MarketPrices(price.Reversed);
         }
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)

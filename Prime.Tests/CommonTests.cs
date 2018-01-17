@@ -30,7 +30,27 @@ namespace Prime.Tests
         [TestMethod]
         public void TestReversePricing()
         {
-            
+            var n = new Network("Test network");
+            var p = new MarketPrice(n, "BTC_USD".ToAssetPairRaw(), 10_000m)
+            {
+                PriceStatistics = new PriceStatistics(n, Asset.Usd, 1100m, 900m, 800m, 1200m)
+            };
+            Trace.WriteLine($"{p}");
+            Trace.WriteLine($"{p.PriceStatistics}");
+
+            var pReversed = p.Reversed;
+
+            Trace.WriteLine($"{pReversed}");
+            Trace.WriteLine($"{pReversed.PriceStatistics}");
+        }
+
+        [TestMethod]
+        public void TestReversePricingStatistics()
+        {
+            var stats = new PriceStatistics(new Network("Test network"), Asset.Usd, 1100m, 900m, 800m, 1200m);
+            Trace.WriteLine($"{stats}");
+            var statsReversed = stats.Reverse(Asset.Btc);
+            Trace.WriteLine($"{statsReversed}");
         }
     }
 }
