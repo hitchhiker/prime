@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Poloniex
             foreach (var i in r.asks)
                 orderBook.AddAsk(i[0], i[1], true);
 
-            return orderBook;
+            return orderBook.AsPair(context.Pair);
         }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
