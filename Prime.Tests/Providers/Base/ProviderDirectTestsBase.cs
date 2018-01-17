@@ -324,7 +324,7 @@ namespace Prime.Tests.Providers
             var r = AsyncContext.Run(() => provider.GetOrderBookAsync(context));
             Assert.IsTrue(r != null, "Null response returned");
 
-            var isReversed = r.Pair.Reversed.Equals(context.Pair);
+            var isReversed = r.IsReversed;
             var priceLessThan1Internal = isReversed ? !priceLessThan1 : priceLessThan1;
 
             if (isReversed)

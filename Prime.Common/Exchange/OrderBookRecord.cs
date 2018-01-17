@@ -36,7 +36,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return Type + " " + Price.ToDecimalValue() + " [" + Volume.ToDecimalValue() + "]";
+            return $"{Type} {Price.ToDecimalValue()} [{Volume.ToDecimalValue()}]";
         }
 
         public OrderBookRecord Reverse(Asset asset)

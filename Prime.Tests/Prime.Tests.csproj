@@ -214,6 +214,7 @@
     <Compile Include="Providers\WhaleclubTests.cs" />
     <Compile Include="Providers\XbtceTests.cs" />
     <Compile Include="Providers\YobitTests.cs" />
+    <Compile Include="CommonTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
