@@ -140,17 +140,11 @@ namespace Prime.Plugins.Services.BitKonan
 
             var r = await api.GetOrderBookAsync(context.Pair.Asset1.ShortCode.ToLower()).ConfigureAwait(false);
 
-            foreach (var bidRaw in r.bid.Take(maxCount))
-            {
-                var bidData = ParseOrderBookRecords(bidRaw, context.Pair);
-                orderBook.AddBid(bidData.Price, bidData.Volume, true);
-            }
+            foreach (var rBid in r.bid.Take(maxCount).Select(x => ParseOrderBookRecords(x, context.Pair)))
+                orderBook.AddBid(rBid.Price, rBid.Volume, true);
 
-            foreach (var askRaw in r.ask.Take(maxCount))
-            {
-                var askData = ParseOrderBookRecords(askRaw, context.Pair);
-                orderBook.AddAsk(askData.Price, askData.Volume, true);
-            }
+            foreach (var rAsk in r.ask.Take(maxCount).Select(x => ParseOrderBookRecords(x, context.Pair)))
+                orderBook.AddAsk(rAsk.Price, rAsk.Volume, true);
 
             return orderBook;
         }
