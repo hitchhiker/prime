@@ -363,6 +363,7 @@ namespace Prime.Tests.Providers
         {
             try
             {
+                Trace.WriteLine($"Order book market: {pair}");
                 var context = new OrderBookContext(pair, recordsCount);
                 InternalGetOrderBook(provider, context, priceLessThan1);
 
