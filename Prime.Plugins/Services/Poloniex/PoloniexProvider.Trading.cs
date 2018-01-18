@@ -68,6 +68,6 @@ namespace Prime.Plugins.Services.Poloniex
             return null;
         }
 
-        public decimal MinimumTradeVolume { get; }
+        public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
     }
 }

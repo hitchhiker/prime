@@ -173,7 +173,7 @@ namespace Prime.Plugins.Services.Bittrex
             var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(r);
 
-            var balances = new BalanceResults();
+            var balances = new BalanceResults(this);
 
             foreach (var rBalance in r.result)
             {

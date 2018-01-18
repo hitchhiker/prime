@@ -57,7 +57,10 @@ namespace Prime.Plugins.Services.Bitfinex
             };
         }
 
-        public decimal MinimumTradeVolume => throw new NotImplementedException();
+        public MinimumTradeVolume[] MinimumTradeVolume { get; } =
+        {
+            new MinimumTradeVolume(new AssetPair("XRP", "USD"), new Money(10, Asset.Usd), new Money(12, Asset.Xrp))
+        };
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
