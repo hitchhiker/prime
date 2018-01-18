@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.Korbit
             catch (ApiException ex)
             {
                 if(ex.StatusCode == HttpStatusCode.BadRequest)
-                    throw new NoAssetPairException(context.Pair, this);
+                    throw new AssetPairNotSupportedException(context.Pair, this);
                 throw;
             }
         }

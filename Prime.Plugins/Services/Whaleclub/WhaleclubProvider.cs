@@ -130,7 +130,7 @@ namespace Prime.Plugins.Services.Whaleclub
             var r = await api.GetPrices(code).ConfigureAwait(false);
 
             if (!r.TryGetValue(context.Pair.ToTicker(this), out var price))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, (price.ask + price.bid) / 2)
             {

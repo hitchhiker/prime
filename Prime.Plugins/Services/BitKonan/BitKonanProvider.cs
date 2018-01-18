@@ -46,7 +46,7 @@ namespace Prime.Plugins.Services.BitKonan
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var ctx = new PublicPriceContext("btc_usd".ToAssetPair(this));
+            var ctx = new PublicPriceContext("BTC_USD".ToAssetPair(this));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
 
             return r != null;
@@ -73,20 +73,14 @@ namespace Prime.Plugins.Services.BitKonan
         {
             var api = ApiProvider.GetApi(context);
 
-            BitKonanSchema.TickerResponse tickerResponse;
+            var btcUsdPair = new AssetPair("BTC", "USD", this);
 
-            if (context.Pair.Equals(new AssetPair("BTC", "USD")))
-            {
-                tickerResponse = await api.GetBtcTickerAsync().ConfigureAwait(false);
-            }
-            else if (context.Pair.Equals(new AssetPair("LTC", "USD")))
-            {
-                tickerResponse = await api.GetLtcTickerAsync().ConfigureAwait(false);
-            }
-            else
-            {
-                throw new ApiResponseException("Invalid asset pair");
-            }
+            if (!context.Pair.Equals(btcUsdPair) && !context.Pair.Equals(new AssetPair("LTC", "USD", this)))
+                throw new AssetPairNotSupportedException(context.Pair, this);
+
+            var tickerResponse = context.Pair.Equals(btcUsdPair) 
+                ? await api.GetBtcTickerAsync().ConfigureAwait(false)
+                : await api.GetLtcTickerAsync().ConfigureAwait(false);
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, tickerResponse.last)
             {

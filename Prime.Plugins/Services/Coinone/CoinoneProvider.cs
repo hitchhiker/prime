@@ -118,7 +118,7 @@ namespace Prime.Plugins.Services.Coinone
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.ToRemoteCode(this).Equals(Asset.Krw.ShortCode))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var r = await api.GetTickerAsync(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
@@ -171,7 +171,7 @@ namespace Prime.Plugins.Services.Coinone
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.Equals(Asset.Krw))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var r = await api.GetTickerAsync(context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 

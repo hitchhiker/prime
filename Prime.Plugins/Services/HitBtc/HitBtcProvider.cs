@@ -62,7 +62,7 @@ namespace Prime.Plugins.Services.HitBtc
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
             if(!r.last.HasValue)
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var price = new MarketPrice(Network, context.Pair, r.last.Value)
             {

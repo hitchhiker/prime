@@ -132,7 +132,7 @@ namespace Prime.Plugins.Services.BitMex
             var rPrice = r.FirstOrDefault(x => x.symbol.Equals(context.Pair.ToTicker(this, "")));
 
             if (rPrice == null || rPrice.lastPrice.HasValue == false)
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var price = new MarketPrice(Network, context.Pair, rPrice.lastPrice.Value)
             {
@@ -332,7 +332,7 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistoryAsync(WithdrawalHistoryContext context)
         {
             if (!context.Asset.ToRemoteCode(this).Equals(Asset.Btc.ToRemoteCode(this)))
-                throw new NoAssetPairException(context.Asset.ShortCode, this);
+                throw new AssetPairNotSupportedException(context.Asset.ShortCode, this);
 
             var api = ApiProvider.GetApi(context);
             var remoteCode = context.Asset.ToRemoteCode(this);
