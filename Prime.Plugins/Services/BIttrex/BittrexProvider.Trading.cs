@@ -9,7 +9,8 @@ namespace Prime.Plugins.Services.Bittrex
 {
     public partial class BittrexProvider : IOrderLimitProvider
     {
-        public decimal MinimumTradeVolume { get; } = 0.011m; //50K Satoshi /4 USD
+        // TODO: AY: BittrexProvider, review MinimumTradeVolume.
+        public MinimumTradeVolume[] MinimumTradeVolume { get; } = { new MinimumTradeVolume() { MinimumSell = 0.011m, MinimumBuy = 0.011m } }; //50K Satoshi /4 USD
 
         private TradeOrderType GetTradeOrderType(string tradeOrderTypeSchema)
         {

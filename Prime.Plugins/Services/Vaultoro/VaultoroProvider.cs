@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Vaultoro
             var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
             if (!context.Pair.Equals(new AssetPair("BTC", "GLD")))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             if (r.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
                 throw new ApiResponseException("Error obtaining pricing");
@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.Vaultoro
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
 
             if (!context.Pair.Equals(new AssetPair("BTC", "GLD", this)))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             if (!r.status.Equals("success", StringComparison.OrdinalIgnoreCase))
                 throw new ApiResponseException("Error obtaining order books");

@@ -75,6 +75,6 @@ namespace Prime.Plugins.Services.Tidex
             };
         }
 
-        public decimal MinimumTradeVolume => throw new NotImplementedException();
+        public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
     }
 }

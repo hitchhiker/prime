@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Binance
 {
     // https://www.binance.com/restapipub.html
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class BinanceProvider : IOrderBookProvider, IBalanceProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public partial class BinanceProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com/api";
@@ -272,22 +272,6 @@ namespace Prime.Plugins.Services.Binance
             var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
 
             return r != null;
-        }
-
-        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
-
-            var balances = new BalanceResults();
-
-            foreach (var b in r.balances)
-            {
-                var asset = b.asset.ToAsset(this);
-                balances.Add(asset, b.free, b.locked);
-            }
-
-            return balances;
         }
     }
 }

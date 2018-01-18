@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.Cryptopia
         }
 
         // TODO: AY: find out MinimumTradeVolume in Cryptopia.
-        public decimal MinimumTradeVolume => throw new NotImplementedException();
+        public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
@@ -105,7 +105,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = rRaw.GetContent();
             
-            var balances = new BalanceResults();
+            var balances = new BalanceResults(this);
 
             foreach (var rBalance in r.Data)
             {

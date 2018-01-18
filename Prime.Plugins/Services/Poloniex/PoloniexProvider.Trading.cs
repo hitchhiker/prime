@@ -24,7 +24,7 @@ namespace Prime.Plugins.Services.Poloniex
                 : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
 
             if (r.bids == null || r.asks == null)
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var orderBook = new OrderBook(Network, context.Pair.Reversed); //POLONIEX IS REVERSING THE MARKET
 
@@ -68,6 +68,6 @@ namespace Prime.Plugins.Services.Poloniex
             return null;
         }
 
-        public decimal MinimumTradeVolume { get; }
+        public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
     }
 }

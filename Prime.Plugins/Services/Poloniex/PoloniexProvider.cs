@@ -293,11 +293,11 @@ namespace Prime.Plugins.Services.Poloniex
             var volumes = r.Where(x => x.Key.ToAssetPair(this).Equals(context.Pair));
 
             if (!volumes.Any())
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var rVolumes = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(volumes.FirstOrDefault().Value.ToString());
             if(!rVolumes.TryGetValue(context.Pair.Asset1.ShortCode, out var volume))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             return new PublicVolumeResponse(Network, context.Pair, volume);
         }

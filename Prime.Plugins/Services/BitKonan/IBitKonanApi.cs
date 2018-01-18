@@ -14,10 +14,10 @@ namespace Prime.Plugins.Services.BitKonan
         [Get("/ltc_ticker")]
         Task<BitKonanSchema.TickerResponse> GetLtcTickerAsync();
 
-        [Get("/btc_orderbook")]
-        Task<BitKonanSchema.OrderBookBtcResponse> GetBtcOrderBookAsync();
+        [Get("/{asset}_orderbook")]
+        Task<BitKonanSchema.OrderBookResponse> GetOrderBookAsync([Path] string asset);
 
-        [Get("/ltc_orderbook")]
-        Task<BitKonanSchema.OrderBookLtcResponse> GetLtcOrderBookAsync();
+        //[Get("/ltc_orderbook")]
+        //Task<BitKonanSchema.OrderBookLtcResponse> GetLtcOrderBookAsync();
     }
 }
