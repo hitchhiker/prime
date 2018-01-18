@@ -13,5 +13,8 @@ namespace Prime.Plugins.Services.Yobit
 
         [Get("/info")]
         Task<YobitSchema.AssetPairsResponse> GetAssetPairsAsync();
+
+        [Get("/depth/{currencyPair}")]
+        Task<YobitSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

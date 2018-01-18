@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -10,7 +11,7 @@ namespace Prime.Plugins.Services.Coinmate
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coinmate.docs.apiary.io/
-    public class CoinmateProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class CoinmateProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string CoinmateApiUrl = "https://coinmate.io/api/";
 
@@ -84,6 +85,35 @@ namespace Prime.Plugins.Services.Coinmate
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.data.ask, r.data.bid, r.data.low, r.data.high)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode,false).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            if (r == null || r.error || r.data == null)
+            {
+                throw new ApiResponseException(r.errorMessage, this);
+            }
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var response = r.data;
+
+            var asks = response.asks.Take(maxCount);
+            var bids = response.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
     }
 }

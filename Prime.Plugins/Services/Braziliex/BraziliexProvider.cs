@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Braziliex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://braziliex.com/exchange/api.php
-    public class BraziliexProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BraziliexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BraziliexApiVersion = "v1";
         private const string BraziliexApiUrl = "https://braziliex.com/api/" + BraziliexApiVersion;
@@ -137,6 +137,28 @@ namespace Prime.Plugins.Services.Braziliex
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
     }
 }
