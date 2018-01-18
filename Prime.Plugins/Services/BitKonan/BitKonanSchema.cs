@@ -31,14 +31,14 @@ namespace Prime.Plugins.Services.BitKonan
 
         internal class OrderBookBtcResponse
         {
-            public OrderBookEntryBtcResponse[][] bid;
-            public OrderBookEntryBtcResponse[][] ask;
+            public OrderBookEntryBtcResponse[] bid;
+            public OrderBookEntryBtcResponse[] ask;
         }
 
         internal class OrderBookLtcResponse
         {
-            public OrderBookEntryLtcResponse[][] bid;
-            public OrderBookEntryLtcResponse[][] ask;
+            public OrderBookEntryLtcResponse[] bid;
+            public OrderBookEntryLtcResponse[] ask;
         }
     }
 }

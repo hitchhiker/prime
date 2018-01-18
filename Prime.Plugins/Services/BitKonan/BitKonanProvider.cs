@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -10,7 +11,7 @@ namespace Prime.Plugins.Services.BitKonan
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitkonan.com/info/api
-    public class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitKonanApiUrl = "https://bitkonan.com/api/";
 
@@ -92,6 +93,47 @@ namespace Prime.Plugins.Services.BitKonan
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, tickerResponse.ask, tickerResponse.bid, tickerResponse.low, tickerResponse.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, tickerResponse.volume)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+            
+            if (context.Pair.Equals(new AssetPair("BTC", "USD")))
+            {
+                var r = await api.GetBtcOrderBookAsync().ConfigureAwait(false);
+                var asks = r.ask.Take(maxCount);
+                var bids = r.bid.Take(maxCount);
+
+                foreach (var i in bids)
+                    orderBook.AddBid(i.btc, 0, true);
+
+                foreach (var i in asks)
+                    orderBook.AddAsk(i.btc, 0, true);
+            }
+            else if (context.Pair.Equals(new AssetPair("LTC", "USD")))
+            {
+                var r = await api.GetLtcOrderBookAsync().ConfigureAwait(false);
+
+                var asks = r.ask.Take(maxCount);
+                var bids = r.bid.Take(maxCount);
+
+                foreach (var i in bids)
+                    orderBook.AddBid(i.ltc, 0, true);
+
+                foreach (var i in asks)
+                    orderBook.AddAsk(i.ltc, 0, true);
+            }
+            else
+            {
+                throw new ApiResponseException("Invalid asset pair");
+            }
+
+            return orderBook;
         }
     }
 }
