@@ -18,6 +18,30 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BinanceProvider>().FirstProvider();
         }
 
+        #region Private
+
+        [TestMethod]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, 1000, new Money(0.00001m, Asset.Btc));
+        }
+
+        #endregion
+
+        #region Public
+
         [TestMethod]
         public override void TestApiPublic()
         {
@@ -61,23 +85,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
-        [TestMethod]
-        public override void TestGetBalances()
-        {
-            base.TestGetBalances();
-        }
-
-        [TestMethod]
         public override void TestGetOhlc()
         {
-            var context = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
+            var context = new OhlcContext("BTC_USDT".ToAssetPairRaw(), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
             base.TestGetOhlc(context);
         }
+
+        #endregion
     }
 }

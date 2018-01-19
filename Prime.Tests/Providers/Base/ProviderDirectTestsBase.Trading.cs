@@ -101,7 +101,7 @@ namespace Prime.Tests.Providers
                 Assert.IsTrue(balances != null);
 
                 Trace.WriteLine("User balances: ");
-                foreach (var b in balances)
+                foreach (var b in balances.OrderByDescending(x => x.AvailableAndReserved.ToDecimalValue()))
                 {
                     Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Reserved} reserved, {b.AvailableAndReserved} total");
                 }

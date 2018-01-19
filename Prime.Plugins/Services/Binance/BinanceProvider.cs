@@ -65,7 +65,8 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi();
 
-            await api.PingAsync().ConfigureAwait(false);
+            var rRaw = await api.PingAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
             return true;
         }
@@ -80,7 +81,10 @@ namespace Prime.Plugins.Services.Binance
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
             var endDate = (long)(context.Range.UtcTo.ToUnixTimeStamp() * 1000);
 
-            var r = await api.GetCandlestickBarsAsync(pairCode, interval, startDate, endDate).ConfigureAwait(false);
+            var rRaw = await api.GetCandlestickBarsAsync(pairCode, interval, startDate, endDate).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var ohlc = new OhlcData(context.Market);
 
@@ -146,7 +150,11 @@ namespace Prime.Plugins.Services.Binance
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
+
+            var rRaw = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var prices = new MarketPrices();
             var knownPairs = new AssetPairs();
@@ -192,7 +200,10 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
             var ticker = context.Pair.ToTicker(this);
-            var r = await api.Get24HrTickerAsync(ticker).ConfigureAwait(false);
+            var rRaw = await api.Get24HrTickerAsync(ticker).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var marketPrice = new MarketPrices(new MarketPrice(Network, context.Pair, r.lastPrice)
             {
@@ -207,7 +218,10 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
+            var rRaw = await api.GetSymbolPriceTickerAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var assetPairs = new AssetPairs();
 
@@ -242,7 +256,10 @@ namespace Prime.Plugins.Services.Binance
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
 
-            var r = await api.GetOrderBookAsync(pairCode, recordsCount).ConfigureAwait(false);
+            var rRaw = await api.GetOrderBookAsync(pairCode, recordsCount).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var orderBook = new OrderBook(Network, context.Pair);
 
@@ -269,7 +286,10 @@ namespace Prime.Plugins.Services.Binance
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAccountInformationAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null;
         }

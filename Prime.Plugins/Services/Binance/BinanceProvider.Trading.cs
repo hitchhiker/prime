@@ -1,17 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
+using RestEase;
 
 namespace Prime.Plugins.Services.Binance
 {
     public partial class BinanceProvider : IBalanceProvider, IOrderLimitProvider
     {
+        private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
+        {
+            if (r.ResponseMessage.IsSuccessStatusCode) return;
+
+            if (r.GetContent() is BinanceSchema.ErrorResponseBase rError && !string.IsNullOrWhiteSpace(rError.msg))
+                throw new ApiResponseException($"{rError.msg} ({rError.code})", this, method);
+
+            throw new ApiResponseException(r.ResponseMessage.ReasonPhrase, this, method);
+        }
+
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountInformationAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAccountInformationAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var balances = new BalanceResults(this);
 
@@ -24,9 +39,17 @@ namespace Prime.Plugins.Services.Binance
             return balances;
         }
 
-        public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
+        public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.TestNewOrderAsync(context.Pair.ToTicker(this), context.IsBuy ? "BUY" : "SELL", "LIMIT", "GTC",
+                context.Quantity, context.Rate);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new PlacedOrderLimitResponse(r.clientOrderId);
         }
 
         public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
@@ -34,6 +57,6 @@ namespace Prime.Plugins.Services.Binance
             throw new NotImplementedException();
         }
 
-        public MinimumTradeVolume[] MinimumTradeVolume { get; }
+        public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
     }
 }
