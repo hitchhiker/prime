@@ -22,5 +22,18 @@ namespace Prime.Plugins.Services.MixCoins
             public decimal low;
             public decimal vol;
         }
+
+        internal class OrderBookResponse
+        {
+            public int status;
+            public string message;
+            public OrderBookEntryResponse result;
+        }
+
+        internal class OrderBookEntryResponse
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Yobit
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.yobit.net/en/api/
-    public class YobitProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class YobitProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string YobitApiVersion = "3";
         private const string YobitApiUrl = "https://yobit.net/api/" + YobitApiVersion;
@@ -144,6 +144,41 @@ namespace Prime.Plugins.Services.Yobit
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            if (r.Count == 0 || r.TryGetValue(pairCode, out var response) == false)
+            {
+                throw new ApiResponseException("No order book returned", this);
+            }
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = response.asks.Take(maxCount);
+            var bids = response.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

@@ -41,5 +41,15 @@ namespace Prime.Plugins.Services.Yobit
             public decimal sell;
             public long updated;
         }
+
+        internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
+        {
+        }
+
+        internal class OrderBookEntryResponse 
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
+        }
     }
 }

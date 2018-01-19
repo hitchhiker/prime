@@ -21,5 +21,11 @@ namespace Prime.Plugins.Services.Allcoin
             public decimal sell;
             public decimal vol;
         }
+
+        internal class OrderBookResponse
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
+        }
     }
 }
