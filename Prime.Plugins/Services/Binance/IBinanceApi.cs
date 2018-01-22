@@ -33,10 +33,27 @@ namespace Prime.Plugins.Services.Binance
         /// <returns>Information about user account.</returns>
         [Get("/v3/account")]
         Task<Response<BinanceSchema.UserInformationResponse>> GetAccountInformationAsync();
-        
-        [Post("/v3/order")]
-        Task<Response<BinanceSchema.NewOrderResponse>> TestNewOrderAsync([Query] string symbol, [Query] string side, [Query] string type, [Query] string timeInForce, [Query] decimal quantity, [Query] decimal price, [Query] string newClientOrderId = null, [Query] decimal? stopPrice = null, [Query] decimal? icebergQty = null, [Query] long? recvWindow = null);
 
+        /// <summary>
+        /// Places a new trade limit order.
+        /// </summary>
+        /// <returns>The id of placed order.</returns>
+        /// <param name="symbol">The market.</param>
+        /// <param name="side">The type of order, can be "buy" or "sell".</param>
+        /// <param name="type">The type of trade order.</param>
+        /// <param name="timeInForce">The method of order execution, can be "GTC" (Good 'til Canceled) or "IOC" (Immediate or Cancel).</param>
+        /// <param name="quantity">The volume of order.</param>
+        /// <param name="price">The price of order.</param>
+        /// <param name="newClientOrderId">New client order identifier.</param>
+        /// <param name="stopPrice">Stop price.</param>
+        /// <param name="icebergQty">Iceberg quantity.</param>
+        /// <param name="recvWindow">Request reveice window.</param>
+        [Post("/v3/order")]
+        Task<Response<BinanceSchema.NewOrderResponse>> NewOrderAsync([Query] string symbol, [Query] string side, [Query] string type, [Query] string timeInForce, [Query] decimal quantity, [Query] decimal price, [Query] string newClientOrderId = null, [Query] decimal? stopPrice = null, [Query] decimal? icebergQty = null, [Query] long? recvWindow = null);
+
+        [Post("/v3/order")]
+        Task<Response<BinanceSchema.QueryOrderResponse>> QueryOrderAsync([Query] string symbol, [Query] long? orderId = null, [Query] string origClientOrderId = null, [Query] long? recvWindow = null);
+        
         /// <summary>
         /// Gets OHLC data.
         /// </summary>
