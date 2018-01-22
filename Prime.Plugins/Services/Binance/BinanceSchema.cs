@@ -47,6 +47,23 @@ namespace Prime.Plugins.Services.Binance
             public long transactTime;
         }
 
+        internal class QueryOrderResponse : ErrorResponseBase
+        {
+            public string symbol;
+            public int orderId;
+            public string clientOrderId;
+            public decimal price;
+            public decimal origQty;
+            public decimal executedQty;
+            public string status;
+            public string timeInForce;
+            public string type;
+            public string side;
+            public decimal stopPrice;
+            public decimal icebergQty;
+            public long time;
+        }
+        
         #endregion
 
         #region Public

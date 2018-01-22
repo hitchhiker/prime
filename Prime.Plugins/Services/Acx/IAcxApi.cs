@@ -16,5 +16,8 @@ namespace Prime.Plugins.Services.Acx
 
         [Get("/markets.json")]
         Task<AcxSchema.MarketResponse[]> GetAssetPairsAsync();
+
+        [Get("/depth.json?market={currencyPair}")]
+        Task<AcxSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

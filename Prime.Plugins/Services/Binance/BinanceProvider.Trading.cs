@@ -42,9 +42,8 @@ namespace Prime.Plugins.Services.Binance
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.TestNewOrderAsync(context.Pair.ToTicker(this), context.IsBuy ? "BUY" : "SELL", "LIMIT", "GTC",
+            var rRaw = await api.NewOrderAsync(context.Pair.ToTicker(this), context.IsBuy ? "BUY" : "SELL", "LIMIT", "GTC",
                 context.Quantity, context.Rate);
-
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -52,9 +51,27 @@ namespace Prime.Plugins.Services.Binance
             return new PlacedOrderLimitResponse(r.clientOrderId);
         }
 
-        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            
+            if(!long.TryParse(context.RemoteGroupId, out var orderId))
+                throw new ApiResponseException("Incorrect order ID specified", this);
+
+            var rRaw = await api.QueryOrderAsync(context.Market.ToTicker(this), orderId);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var isCancelRequested = r.status.Equals("pending_cancel", StringComparison.OrdinalIgnoreCase);
+            var isOpen = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
+            
+            return new TradeOrderStatus(r.orderId.ToString(), isOpen, isCancelRequested)
+            {
+                Rate = r.price,
+                AmountInitial = r.origQty,
+                AmountRemaining = r.origQty - r.executedQty
+            };
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
