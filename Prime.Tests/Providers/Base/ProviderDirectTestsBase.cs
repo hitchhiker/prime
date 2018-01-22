@@ -85,11 +85,11 @@ namespace Prime.Tests.Providers
 
 
         public virtual void TestPlaceWithdrawal() { }
-        public void TestPlaceWithdrawal(WithdrawalPlacementContext context)
+        public void TestPlaceWithdrawal(WalletAddress address, Money amount, string description = null, Money? customFee = null, string authToken = null)
         {
             var p = IsType<IWithdrawalPlacementProvider>();
             if (p.Success)
-                PlaceWithdrawal(p.Provider, context);
+                PlaceWithdrawal(p.Provider, address, amount, description, customFee, authToken);
         }
 
         public virtual void TestCancelWithdrawal() { }
@@ -398,10 +398,14 @@ namespace Prime.Tests.Providers
             }
         }
 
-        private void PlaceWithdrawal(IWithdrawalPlacementProvider provider, WithdrawalPlacementContext context)
+        private void PlaceWithdrawal(IWithdrawalPlacementProvider provider, WalletAddress address, Money amount, string description = null, Money? customFee = null, string authToken = null)
         {
-            if (context == null)
-                return;
+            var context = new WithdrawalPlacementContext(address, amount, UserContext.Current)
+            {
+                Description = description,
+                CustomFee = customFee,
+                AuthenticationToken = authToken
+            };
 
             try
             {

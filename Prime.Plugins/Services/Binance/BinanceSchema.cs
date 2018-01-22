@@ -14,6 +14,7 @@ namespace Prime.Plugins.Services.Binance
         {
             public int code;
             public string msg;
+            public bool? success;
         }
 
         #endregion
@@ -63,7 +64,27 @@ namespace Prime.Plugins.Services.Binance
             public decimal icebergQty;
             public long time;
         }
-        
+
+        internal class DepositHistoryResponse : ErrorResponseBase
+        {
+            public DepositListEntryResponse[] depositList;
+        }
+
+        internal class DepositListEntryResponse
+        {
+            public long insertTime;
+            public decimal amount;
+            public string asset;
+            public string address;
+            public string txId;
+            public int status;
+        }
+
+        internal class WithdrawalRequestResponse : ErrorResponseBase
+        {
+            public string id;
+        }
+
         #endregion
 
         #region Public

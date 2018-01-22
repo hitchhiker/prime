@@ -8,13 +8,17 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Binance
 {
-    public partial class BinanceProvider : IBalanceProvider, IOrderLimitProvider
+    public partial class BinanceProvider : IBalanceProvider, IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
+            var rError = r.GetContent() as BinanceSchema.ErrorResponseBase;
+            if (rError?.success != null && !rError.success.Value)
+                throw new ApiResponseException($"{rError.msg}", this, method);
+
             if (r.ResponseMessage.IsSuccessStatusCode) return;
 
-            if (r.GetContent() is BinanceSchema.ErrorResponseBase rError && !string.IsNullOrWhiteSpace(rError.msg))
+            if (rError != null && !string.IsNullOrWhiteSpace(rError.msg))
                 throw new ApiResponseException($"{rError.msg} ({rError.code})", this, method);
 
             throw new ApiResponseException(r.ResponseMessage.ReasonPhrase, this, method);
@@ -43,7 +47,7 @@ namespace Prime.Plugins.Services.Binance
         {
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.NewOrderAsync(context.Pair.ToTicker(this), context.IsBuy ? "BUY" : "SELL", "LIMIT", "GTC",
-                context.Quantity, context.Rate);
+                context.Quantity, context.Rate).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -61,7 +65,7 @@ namespace Prime.Plugins.Services.Binance
             if(!long.TryParse(context.RemoteGroupId, out var orderId))
                 throw new ApiResponseException("Incorrect order ID specified", this);
 
-            var rRaw = await api.QueryOrderAsync(context.Market.ToTicker(this), orderId);
+            var rRaw = await api.QueryOrderAsync(context.Market.ToTicker(this), orderId).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -77,6 +81,34 @@ namespace Prime.Plugins.Services.Binance
             };
         }
 
+        [Obsolete("To be implemented soon.")]
+        public async Task GetDepositHistoryAsync(NetworkProviderPrivateContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = await api.GetDepositHistoryAsync().ConfigureAwait(false);
+
+            // TODO: example is working, will be implemented later.
+        }
+
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+
+        public bool IsWithdrawalFeeIncluded => false;
+
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = await api.SubmitWithdrawRequestAsync(context.Amount.Asset.ShortCode, context.Address.Address,
+                context.Amount.ToDecimalValue(), context.Description, "Primary test").ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.id
+            };
+        }
     }
 }

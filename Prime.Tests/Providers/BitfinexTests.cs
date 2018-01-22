@@ -47,14 +47,7 @@ namespace Prime.Tests.Providers
         public override void TestPlaceWithdrawal()
         {
             // TODO: AY: Bitfinex - test with real money.
-            var context = new WithdrawalPlacementContext(UserContext.Current)
-            {
-                Address = new WalletAddress("6a51d6a5wda6w5d1"),
-                Amount = new Money(10000, "UAH".ToAssetRaw()),
-                Description = "DESC"
-            };
-
-            base.TestPlaceWithdrawal(context);
+            base.TestPlaceWithdrawal(new WalletAddress("6a51d6a5wda6w5d1"), new Money(10000, "UAH".ToAssetRaw()));
         }
 
         #endregion

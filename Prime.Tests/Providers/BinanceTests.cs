@@ -99,6 +99,20 @@ namespace Prime.Tests.Providers
             base.TestGetOhlc(context);
         }
 
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            base.TestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(22, Asset.Xrp), "3299088538");
+        }
+
+        public async Task TestGetDepositHistory()
+        {
+            var context = new NetworkProviderPrivateContext(UserContext.Current);
+            var binanceProvider = new BinanceProvider();
+
+            await binanceProvider.GetDepositHistoryAsync(context).ConfigureAwait(false);
+        }
+
         #endregion
     }
 }

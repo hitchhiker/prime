@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Binance
     public partial class BinanceProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
         // public const string BinanceApiVersion = "v1";
-        public const string BinanceApiUrl = "https://www.binance.com/api";
+        public const string BinanceApiUrl = "https://www.binance.com";
 
         private static readonly ObjectId IdHash = "prime:bitflyer".GetObjectIdHashCode();
 
