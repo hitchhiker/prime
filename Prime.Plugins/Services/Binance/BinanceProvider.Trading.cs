@@ -93,6 +93,7 @@ namespace Prime.Plugins.Services.Binance
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
+        // When 22 XRP is submitted - 21.75 will be sent.
         public bool IsWithdrawalFeeIncluded => false;
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
