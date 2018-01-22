@@ -44,7 +44,9 @@ namespace Prime.Common
             if (Price.Asset.Id == asset.Id)
                 throw new Exception("Cant reverse to the same 'Asset'");
 
-            return new OrderBookRecord(Type == OrderType.Ask ? OrderType.Bid : OrderType.Ask, Price.ReverseAsset(asset), new Money(Volume * Price, asset));
+            var newType = Type == OrderType.Ask ? OrderType.Bid : OrderType.Ask;
+
+            return new OrderBookRecord(newType, Price.ReverseAsset(asset), new Money((1 / Price) * (Volume / Price), asset));
         }
 
         public OrderBookRecord Clone()
