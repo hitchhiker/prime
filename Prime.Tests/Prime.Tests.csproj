@@ -138,7 +138,7 @@
     <Compile Include="Providers\AcxTests.cs" />
     <Compile Include="Providers\AllcoinTests.cs" />
     <Compile Include="Providers\AlphapointTests.cs" />
-    <Compile Include="Providers\ApiaryTests.cs" />
+    <Compile Include="Providers\DsxTests.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Trading.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Volume.cs" />
     <Compile Include="Providers\BinanceTests.cs" />

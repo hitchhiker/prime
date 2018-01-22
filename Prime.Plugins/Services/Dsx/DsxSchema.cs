@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Prime.Plugins.Services.Apiary
+namespace Prime.Plugins.Services.Dsx
 {
-    internal class ApiarySchema
+    internal class DsxSchema
     {
         internal class TickerResponse : Dictionary<string, TickerEntryResponse>
         {
@@ -39,6 +39,16 @@ namespace Prime.Plugins.Services.Apiary
             public decimal vol;
             public decimal vol_cur;
             public long updated;
+        }
+
+        internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
+        {
+        }
+
+        internal class OrderBookEntryResponse
+        {
+            public decimal[][] asks;
+            public decimal[][] bids;
         }
     }
 }
