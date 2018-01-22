@@ -48,13 +48,16 @@ namespace Prime.Plugins.Services.Binance
 
             var r = rRaw.GetContent();
 
-            return new PlacedOrderLimitResponse(r.clientOrderId);
+            return new PlacedOrderLimitResponse(r.orderId.ToString());
         }
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);
             
+            if(!context.HasMarket)
+                throw new ApiResponseException("Market should be specified when querying order status", this);
+
             if(!long.TryParse(context.RemoteGroupId, out var orderId))
                 throw new ApiResponseException("Incorrect order ID specified", this);
 
@@ -69,8 +72,8 @@ namespace Prime.Plugins.Services.Binance
             return new TradeOrderStatus(r.orderId.ToString(), isOpen, isCancelRequested)
             {
                 Rate = r.price,
-                AmountInitial = r.origQty,
-                AmountRemaining = r.origQty - r.executedQty
+                AmountInitial = new Money(r.origQty, context.Market.Asset1),
+                AmountRemaining = new Money(r.origQty - r.executedQty, context.Market.Asset1),
             };
         }
 

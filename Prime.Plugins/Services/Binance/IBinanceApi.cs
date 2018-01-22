@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Binance
         [Post("/v3/order")]
         Task<Response<BinanceSchema.NewOrderResponse>> NewOrderAsync([Query] string symbol, [Query] string side, [Query] string type, [Query] string timeInForce, [Query] decimal quantity, [Query] decimal price, [Query] string newClientOrderId = null, [Query] decimal? stopPrice = null, [Query] decimal? icebergQty = null, [Query] long? recvWindow = null);
 
-        [Post("/v3/order")]
+        [Get("/v3/order")]
         Task<Response<BinanceSchema.QueryOrderResponse>> QueryOrderAsync([Query] string symbol, [Query] long? orderId = null, [Query] string origClientOrderId = null, [Query] long? recvWindow = null);
         
         /// <summary>
