@@ -127,6 +127,10 @@ namespace Prime.Plugins.Services.Abucoins
             var pairCode = context.Pair.ToTicker(this);
 
             var r = await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false);
+
+            if(!r.bids.Any() && !r.asks.Any())
+                throw new ApiResponseException("No order book data returned", this);
+
             var orderBook = new OrderBook(Network, context.Pair);
 
             var maxCount = Math.Min(1000, context.MaxRecordsCount);

@@ -29,7 +29,6 @@ namespace Prime.Tests.Providers
             {
                 "ETH_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
-                "ETC_BTC".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, true);
@@ -42,7 +41,6 @@ namespace Prime.Tests.Providers
             {
                 "ETH_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
-                "ETC_BTC".ToAssetPairRaw()
             };
 
             base.TestGetAssetPairs(requiredPairs);
@@ -55,7 +53,6 @@ namespace Prime.Tests.Providers
             {
                 "ETH_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
-                "ETC_BTC".ToAssetPairRaw()
             };
 
             base.TestGetVolume(pairs, false);
@@ -64,7 +61,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            base.TestGetOrderBook("BTC_PLN".ToAssetPairRaw(), false);
+            base.TestGetOrderBook("BTC_PLNaw".ToAssetPairRaw(), false);
         }
     }
 }
