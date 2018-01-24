@@ -89,7 +89,7 @@ namespace Prime.Plugins.Services.Bleutrade
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            if (r.success == false && r.result.Length > 0)
+            if (r.success == false || r.result.Length == 0)
             {
                 throw new ApiResponseException(r.message, this);
             }
@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.Bleutrade
 
             var r = await api.GetMarketAsync(pairCode).ConfigureAwait(false);
 
-            if (r.success == false && r.result.Length > 0)
+            if (r.success == false || r.result.Length == 0)
             {
                 throw new ApiResponseException(r.message, this);
             }
@@ -164,7 +164,7 @@ namespace Prime.Plugins.Services.Bleutrade
             var orderBook = new OrderBook(Network, context.Pair);
 
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
-
+          
             var asks = r.result.sell.Take(maxCount);
             var bids = r.result.buy.Take(maxCount);
 

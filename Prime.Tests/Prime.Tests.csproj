@@ -186,6 +186,7 @@
     <Compile Include="Providers\ItBitTests.cs" />
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
+    <Compile Include="Providers\KucoinTests.cs" />
     <Compile Include="Providers\KunaTests.cs" />
     <Compile Include="Providers\LakeBtcTests.cs" />
     <Compile Include="Providers\LiquiTests.cs" />

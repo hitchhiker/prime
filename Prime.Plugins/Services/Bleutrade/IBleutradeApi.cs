@@ -18,6 +18,6 @@ namespace Prime.Plugins.Services.Bleutrade
         Task<BleutradeSchema.BaseResponse<BleutradeSchema.MarketEntryResponse[]>> GetMarketAsync([Path] string currencyPair);
 
         [Get("/public/getorderbook?market={currencyPair}&type=all")]
-        Task<BleutradeSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+        Task<BleutradeSchema.BaseResponse<BleutradeSchema.OrderBookResponse>> GetOrderBookAsync([Path] string currencyPair);
     }
 }
