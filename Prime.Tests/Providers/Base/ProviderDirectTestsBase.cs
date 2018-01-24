@@ -361,19 +361,12 @@ namespace Prime.Tests.Providers
 
         private void GetOrderBook(IOrderBookProvider provider, AssetPair pair, bool priceLessThan1, int recordsCount = 100)
         {
-            try
-            {
-                Trace.WriteLine($"Order book market: {pair}");
-                var context = new OrderBookContext(pair, recordsCount);
-                InternalGetOrderBook(provider, context, priceLessThan1);
+            Trace.WriteLine($"Order book market: {pair}");
+            var context = new OrderBookContext(pair, recordsCount);
+            InternalGetOrderBook(provider, context, priceLessThan1);
 
-                context = new OrderBookContext(pair, Int32.MaxValue);
-                InternalGetOrderBook(provider, context, priceLessThan1);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            context = new OrderBookContext(pair, Int32.MaxValue);
+            InternalGetOrderBook(provider, context, priceLessThan1);
         }
 
         private void GetWithdrawalHistory(IWithdrawalHistoryProvider provider, WithdrawalHistoryContext context)
