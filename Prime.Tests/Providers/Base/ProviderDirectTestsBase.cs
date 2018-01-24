@@ -172,30 +172,16 @@ namespace Prime.Tests.Providers
         {
             var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
-                Assert.IsTrue(r);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            var r = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
+            Assert.IsTrue(r);
         }
 
         private void TestApiPublic(INetworkProvider provider)
         {
             var ctx = new NetworkProviderContext();
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.TestPublicApiAsync(ctx));
-                Assert.IsTrue(r);
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            var r = AsyncContext.Run(() => provider.TestPublicApiAsync(ctx));
+            Assert.IsTrue(r);
         }
 
         private void GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
@@ -203,38 +189,31 @@ namespace Prime.Tests.Providers
             if (context == null)
                 return;
 
-            try
+            var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(context));
+
+            bool success = true;
+            OhlcEntry ohlcEntryPrev = null;
+
+            foreach (var ohlcEntry in ohlc)
             {
-                var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(context));
-
-                bool success = true;
-                OhlcEntry ohlcEntryPrev = null;
-
-                foreach (var ohlcEntry in ohlc)
+                if (ohlcEntryPrev != null)
                 {
-                    if (ohlcEntryPrev != null)
+                    if (ohlcEntry.DateTimeUtc >= ohlcEntryPrev.DateTimeUtc)
                     {
-                        if (ohlcEntry.DateTimeUtc >= ohlcEntryPrev.DateTimeUtc)
-                        {
-                            success = false;
-                            Assert.Fail("Time check is failed.");
-                        }
+                        success = false;
+                        Assert.Fail("Time check is failed.");
                     }
-                    ohlcEntryPrev = ohlcEntry;
                 }
-
-                Assert.IsTrue(success);
-                Assert.IsTrue(ohlc != null && ohlc.Count > 0);
-
-                Trace.WriteLine("OHLC data:");
-                foreach (var entry in ohlc)
-                {
-                    Trace.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
-                }
+                ohlcEntryPrev = ohlcEntry;
             }
-            catch (Exception e)
+
+            Assert.IsTrue(success);
+            Assert.IsTrue(ohlc != null && ohlc.Count > 0);
+
+            Trace.WriteLine("OHLC data:");
+            foreach (var entry in ohlc)
             {
-                Assert.Fail(e.Message);
+                Trace.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
             }
         }
 
@@ -242,34 +221,27 @@ namespace Prime.Tests.Providers
         {
             var ctx = new NetworkProviderContext();
 
-            try
+            var pairs = AsyncContext.Run(() => provider.GetAssetPairsAsync(ctx));
+
+            Assert.IsTrue(pairs != null);
+            Assert.IsTrue(pairs.Count > 0);
+
+            if (requiredPairs != null)
             {
-                var pairs = AsyncContext.Run(() => provider.GetAssetPairsAsync(ctx));
-
-                Assert.IsTrue(pairs != null);
-                Assert.IsTrue(pairs.Count > 0);
-
-                if (requiredPairs != null)
+                Trace.WriteLine("Checked pairs:");
+                foreach (var requiredPair in requiredPairs)
                 {
-                    Trace.WriteLine("Checked pairs:");
-                    foreach (var requiredPair in requiredPairs)
-                    {
-                        var contains = pairs.Contains(requiredPair);
-                        Assert.IsTrue(contains, $"Provider didn't return required {requiredPair} pair.");
+                    var contains = pairs.Contains(requiredPair);
+                    Assert.IsTrue(contains, $"Provider didn't return required {requiredPair} pair.");
 
-                        Trace.WriteLine(requiredPair);
-                    }
-                }
-
-                Trace.WriteLine("\nRemote pairs from exchange:");
-                foreach (var pair in pairs)
-                {
-                    Trace.WriteLine(pair);
+                    Trace.WriteLine(requiredPair);
                 }
             }
-            catch (Exception e)
+
+            Trace.WriteLine("\nRemote pairs from exchange:");
+            foreach (var pair in pairs)
             {
-                Assert.Fail(e.Message);
+                Trace.WriteLine(pair);
             }
         }
 
@@ -278,21 +250,14 @@ namespace Prime.Tests.Providers
             if (context == null)
                 return;
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.GetAddressesAsync(context));
+            var r = AsyncContext.Run(() => provider.GetAddressesAsync(context));
 
-                Assert.IsTrue(r != null);
+            Assert.IsTrue(r != null);
 
-                Trace.WriteLine("All deposit addresses:");
-                foreach (var walletAddress in r)
-                {
-                    Trace.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
-                }
-            }
-            catch (Exception e)
+            Trace.WriteLine("All deposit addresses:");
+            foreach (var walletAddress in r)
             {
-                Assert.Fail(e.Message);
+                Trace.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
             }
         }
 
@@ -301,21 +266,14 @@ namespace Prime.Tests.Providers
             if (context == null)
                 return;
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(context));
+            var r = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(context));
 
-                Assert.IsTrue(r != null);
+            Assert.IsTrue(r != null);
 
-                Trace.WriteLine($"Deposit addresses for {context.Asset}:");
-                foreach (var walletAddress in r)
-                {
-                    Trace.WriteLine($"\"{walletAddress.Address}\"");
-                }
-            }
-            catch (Exception e)
+            Trace.WriteLine($"Deposit addresses for {context.Asset}:");
+            foreach (var walletAddress in r)
             {
-                Assert.Fail(e.Message);
+                Trace.WriteLine($"\"{walletAddress.Address}\"");
             }
         }
 
@@ -374,21 +332,14 @@ namespace Prime.Tests.Providers
             if (context == null)
                 return;
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.GetWithdrawalHistoryAsync(context));
+            var r = AsyncContext.Run(() => provider.GetWithdrawalHistoryAsync(context));
 
-                foreach (var historyEntry in r)
-                {
-                    Trace.WriteLine($"{historyEntry.CreatedTimeUtc} {historyEntry.WithdrawalStatus} {historyEntry.WithdrawalRemoteId} {historyEntry.Price.Display}");
-                }
-
-                // Assert.IsTrue(r);
-            }
-            catch (Exception e)
+            foreach (var historyEntry in r)
             {
-                Assert.Fail(e.Message);
+                Trace.WriteLine($"{historyEntry.CreatedTimeUtc} {historyEntry.WithdrawalStatus} {historyEntry.WithdrawalRemoteId} {historyEntry.Price.Display}");
             }
+
+            // Assert.IsTrue(r);
         }
 
         private void PlaceWithdrawal(IWithdrawalPlacementProvider provider, WalletAddress address, Money amount, string description = null, Money? customFee = null, string authToken = null)
@@ -400,18 +351,11 @@ namespace Prime.Tests.Providers
                 AuthenticationToken = authToken
             };
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.PlaceWithdrawalAsync(context));
+            var r = AsyncContext.Run(() => provider.PlaceWithdrawalAsync(context));
 
-                Assert.IsTrue(r != null);
+            Assert.IsTrue(r != null);
 
-                Trace.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            Trace.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
         }
 
         private void CancelWithdrawal(IWithdrawalCancelationProvider provider, WithdrawalCancelationContext context)
@@ -419,19 +363,12 @@ namespace Prime.Tests.Providers
             if (context == null)
                 return;
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.CancelWithdrawalAsync(context));
+            var r = AsyncContext.Run(() => provider.CancelWithdrawalAsync(context));
 
-                Assert.IsTrue(r != null);
-                Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
+            Assert.IsTrue(r != null);
+            Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
-                Trace.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            Trace.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
         }
 
         private void ConfirmWithdrawal(IWithdrawalConfirmationProvider provider, WithdrawalConfirmationContext context)
@@ -439,19 +376,12 @@ namespace Prime.Tests.Providers
             if (context == null)
                 return;
 
-            try
-            {
-                var r = AsyncContext.Run(() => provider.ConfirmWithdrawalAsync(context));
+            var r = AsyncContext.Run(() => provider.ConfirmWithdrawalAsync(context));
 
-                Assert.IsTrue(r != null);
-                Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
+            Assert.IsTrue(r != null);
+            Assert.IsTrue(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
-                Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
         }
 
         #endregion
