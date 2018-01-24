@@ -8,7 +8,66 @@ namespace Prime.Plugins.Services.HitBtc
 {
     internal class HitBtcSchema
     {
-        internal class SymbolsResponse: List<SymbolResponse> { }
+        #region Base
+
+        internal class ErrorResponse
+        {
+            public int code;
+            public string message;
+            public string description;
+        }
+
+        internal class BaseResponse
+        {
+            public ErrorResponse error;
+        }
+
+        #endregion
+
+        #region Private
+
+        internal class BalancesResponse : List<BalanceResponse>
+        {
+            public ErrorResponse error;
+        }
+
+        internal class BalanceResponse
+        {
+            public string currency;
+            public decimal available;
+            public decimal reserved;
+        }
+
+        internal class DepositAddressResponse : BaseResponse
+        {
+            public string address;
+            public string paymentId;
+        }
+
+        internal class ActiveOrderInfoResponse : BaseResponse
+        {
+            public int id;
+            public string clientOrderId;
+            public string symbol;
+            public string side;
+            public string status;
+            public string type;
+            public string timeInForce;
+            public decimal quantity;
+            public decimal price;
+            public decimal cumQuantity;
+            public DateTime createdAt;
+            public DateTime updatedAt;
+        }
+
+        #endregion
+
+        #region Public
+
+        internal class SymbolsResponse : List<SymbolResponse>
+        {
+            public ErrorResponse error;
+        }
 
         internal class SymbolResponse
         {
@@ -22,9 +81,12 @@ namespace Prime.Plugins.Services.HitBtc
             public string feeCurrency;
         }
 
-        internal class TickersResponse : List<TickerResponse> { }
+        internal class TickersResponse : List<TickerResponse>
+        {
+            public ErrorResponse error;
+        }
 
-        internal class TickerResponse
+        internal class TickerResponse : BaseResponse
         {
             public decimal? ask;
             public decimal? bid;
@@ -32,25 +94,12 @@ namespace Prime.Plugins.Services.HitBtc
             public decimal? open;
             public decimal? low;
             public decimal? high;
-            public decimal volume;
-            public decimal volumeQuote;
+            public decimal? volume;
+            public decimal? volumeQuote;
             public DateTime timestamp;
             public string symbol;
         }
 
-        internal class BalancesResponse : List<BalanceResponse> { }
-
-        internal class BalanceResponse
-        {
-            public string currency;
-            public decimal available;
-            public decimal reserved;
-        }
-
-        internal class DepositAddressResponse
-        {
-            public string address;
-            public string paymentId;
-        }
+        #endregion
     }
 }

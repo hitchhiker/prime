@@ -37,8 +37,6 @@ namespace Prime.Plugins.Services.HitBtc
             //var signature = HashHMACSHA512Hex(message, ApiKey.Secret).ToLower();
             //headers.Add("X-Signature", signature);
 
-
-
             //request.RequestUri = new Uri(request.RequestUri, uri);
 
             request.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(FromUtf8($"{ApiKey.Key}:{ApiKey.Secret}"))}");

@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.Abucoins
 
         internal class OrderBookResponse
         {
-            public int sequence;
+            public int? sequence;
             public decimal[][] bids;
             public decimal[][] asks;
         }
