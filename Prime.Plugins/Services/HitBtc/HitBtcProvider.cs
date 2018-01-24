@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.HitBtc
 {
     // https://api.hitbtc.com/
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class HitBtcProvider : IBalanceProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public partial class HitBtcProvider : IPublicPricingProvider, IAssetPairsProvider
     {
         private const string ApiVersion = "2";
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api/" + ApiVersion;
@@ -59,7 +59,11 @@ namespace Prime.Plugins.Services.HitBtc
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this);
-            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+
+            var rRaw = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             if(!r.last.HasValue)
                 throw new AssetPairNotSupportedException(context.Pair, this);
@@ -72,11 +76,13 @@ namespace Prime.Plugins.Services.HitBtc
 
             return new MarketPrices(price);
         }
-
+                
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllTickersAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAllTickersAsync().ConfigureAwait(false);
+
+            var r = rRaw.GetContent();
 
             var prices = new MarketPrices();
 
@@ -94,7 +100,7 @@ namespace Prime.Plugins.Services.HitBtc
                     var pair = new AssetPair(pairCodes.Value.AssetCode1, pairCodes.Value.AssetCode2, this);
 
                     knownPairs.Add(pair);
-
+        
                     prices.Add(new MarketPrice(Network, pair, ticker.last.Value)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, ticker.ask, ticker.bid, ticker.low, ticker.high),
@@ -143,7 +149,10 @@ namespace Prime.Plugins.Services.HitBtc
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetSymbolsAsync().ConfigureAwait(false);
+            var rRaw = await api.GetSymbolsAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var assetPairs = new AssetPairs();
 
@@ -157,7 +166,10 @@ namespace Prime.Plugins.Services.HitBtc
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetDepositAddressAsync(context.Asset.ShortCode).ConfigureAwait(false);
+            var rRaw = await api.GetDepositAddressAsync(context.Asset.ShortCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var walletAddresses = new WalletAddresses
             {
@@ -183,22 +195,12 @@ namespace Prime.Plugins.Services.HitBtc
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null && r.Any();
-        }
-
-        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalancesAsync().ConfigureAwait(false);
-
-            var balances = new BalanceResults(this);
-
-            foreach (var rBalance in r)
-               balances.Add(rBalance.currency.ToAsset(this), rBalance.available, rBalance.reserved);
-            
-            return balances;
         }
     }
 }

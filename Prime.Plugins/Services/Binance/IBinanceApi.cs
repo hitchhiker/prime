@@ -62,9 +62,28 @@ namespace Prime.Plugins.Services.Binance
         [Get("/api/v3/order")]
         Task<Response<BinanceSchema.QueryOrderResponse>> QueryOrderAsync([Query] string symbol, [Query] long? orderId = null, [Query] string origClientOrderId = null, [Query] long? recvWindow = null);
 
+        /// <summary>
+        /// Gets the history of deposits to account.
+        /// </summary>
+        /// <param name="asset">Asset which deposit history should be returned.</param>
+        /// <param name="status">Status filter.</param>
+        /// <param name="startTime">Start time.</param>
+        /// <param name="endTime">End time.</param>
+        /// <param name="recvWindow">Request receive window.</param>
+        /// <returns></returns>
         [Get("/wapi/v3/depositHistory.html")]
         Task<Response<BinanceSchema.DepositHistoryResponse>> GetDepositHistoryAsync([Query] string asset = null, [Query] int? status = null, [Query] long? startTime = null, [Query] long? endTime = null, [Query] long? recvWindow = null);
 
+        /// <summary>
+        /// Submits withdrawal request.
+        /// </summary>
+        /// <param name="asset">Withdrawal asset.</param>
+        /// <param name="address">Address which money is to be withdrawn to.</param>
+        /// <param name="amount">Amount of money to be withdrawn.</param>
+        /// <param name="addressTag">Optional address tag. Required for XRP, XMR and other.</param>
+        /// <param name="name">The name of the address.</param>
+        /// <param name="recvWindow">Request receive window.</param>
+        /// <returns></returns>
         [Post("/wapi/v3/withdraw.html")]
         Task<Response<BinanceSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestAsync([Query] string asset, [Query] string address, [Query] decimal amount, [Query] string addressTag = null, [Query] string name = null, [Query] long? recvWindow = null);
 
