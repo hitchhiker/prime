@@ -8,7 +8,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.HitBtc
 {
-    public partial class HitBtcProvider : IBalanceProvider, IDepositProvider, IOrderLimitProvider
+    public partial class HitBtcProvider : IBalanceProvider, IDepositProvider, IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
@@ -92,5 +92,35 @@ namespace Prime.Plugins.Services.HitBtc
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+
+        // When 50 XRP are submitted, 49.491000 XRP will be received.
+        public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreateHitBtcRequestBody();
+            body.Add("currency", context.Amount.Asset.ShortCode);
+            body.Add("amount", context.Amount.ToDecimalValue());
+            body.Add("address", context.Address.Address);
+
+            if(context.HasDescription)
+                body.Add("paymentId", context.Description);
+            if(context.HasCustomFee)
+                body.Add("networkFee", context.CustomFee.Value.ToDecimalValue());
+
+            // body.Add("includeFee", ""); // Not analyzed and checked.
+            body.Add("autoCommit", true);
+
+            var rRaw = await api.WithdrawCryptoAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.id
+            };
+        }
     }
 }
