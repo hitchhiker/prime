@@ -60,6 +60,11 @@ namespace Prime.Plugins.Services.HitBtc
             public DateTime updatedAt;
         }
 
+        internal class WithdrawCryptoResponse : BaseResponse
+        {
+            public string id;
+        }
+
         #endregion
 
         #region Public

@@ -43,18 +43,18 @@ namespace Prime.Plugins.Services.HitBtc
         Task<Response<HitBtcSchema.ActiveOrderInfoResponse>> GetActiveOrderInfoAsync([Path] string clientOrderId, [Query] int? wait = null);
 
         /// <summary>
+        /// Places crypto withdrawal request.
+        /// </summary>
+        /// <param name="body">Post parameters.</param>
+        /// <returns></returns>
+        [Post("/account/crypto/withdraw")]
+        Task<Response<HitBtcSchema.WithdrawCryptoResponse>> WithdrawCryptoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        /// <summary>
         /// Creates new order.
         /// For more details see https://api.hitbtc.com/#create-new-order.
         /// </summary>
-        /// <param name="symbol">Trading symbol.</param>
-        /// <param name="side">Either "sell" or "buy".</param>
-        /// <param name="quantity">Order quantity.</param>
-        /// <param name="price">Order price. Required for limit types.</param>
-        /// <param name="type">One of: limit, market, stopLimit, stopMarket.</param>
-        /// <param name="timeInForce">One of: GTC, IOC, FOK, Day, GTD.</param>
-        /// <param name="stopPrice">Required for stop types.</param>
-        /// <param name="strictValidate">Price and quantity will be checked that they increment within tick size and quantity step. See API documents for more details.</param>
-        /// <param name="expireTime">Required for GTD timeInForce.</param>
+        /// <param name="body">Post parameters.</param>
         /// <returns></returns>
         [Post("/order")]
         Task<Response<HitBtcSchema.ActiveOrderInfoResponse>> CreateNewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);

@@ -71,6 +71,13 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            // Real money tests not performed.
+            base.TestPlaceWithdrawal(new WalletAddress("123"), new Money(1, Asset.Btc));
+        }
+
+        [TestMethod]
         public override void TestApiPrivate()
         {
             base.TestApiPrivate();
