@@ -16,5 +16,8 @@ namespace Prime.Plugins.Services.Kucoin
 
         [Get("/open/orders?symbol={currencyPair}&limit={limit}")]
         Task<KucoinSchema.BaseResponse<KucoinSchema.OrderBookResponse>> GetOrderBookAsync([Path] string currencyPair, [Path] int limit);
+
+        [Get("/user/info")]
+        Task<KucoinSchema.UserInfoResponse> GetUserInfoAsync();
     }
 }

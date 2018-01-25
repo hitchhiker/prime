@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Kucoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://kucoinapidocs.docs.apiary.io
-    public class KucoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class KucoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string KucoinApiVersion = "v1";
         private const string KucoinApiUrl = "https://api.kucoin.com/" + KucoinApiVersion;
@@ -37,7 +37,7 @@ namespace Prime.Plugins.Services.Kucoin
 
         public KucoinProvider()
         {
-            ApiProvider = new RestApiClientProvider<IKucoinApi>(KucoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IKucoinApi>(KucoinApiUrl, this, (k) => new KucoinAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -172,6 +172,14 @@ namespace Prime.Plugins.Services.Kucoin
             decimal volume = data[2];
 
             return new Tuple<decimal, decimal>(price, volume);
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetUserInfoAsync().ConfigureAwait(false);
+            
+            return r?.data != null;
         }
     }
 }
