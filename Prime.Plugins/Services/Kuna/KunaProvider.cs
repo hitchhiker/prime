@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Kuna
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://kuna.io/documents/api
-    public class KunaProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class KunaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string KunaApiVersion = "v2";
         private const string KunaApiUrl = "https://kuna.io/api/" + KunaApiVersion;
@@ -164,6 +164,28 @@ namespace Prime.Plugins.Services.Kuna
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.volume, true);
+
+            return orderBook;
         }
     }
 }

@@ -54,7 +54,24 @@ namespace Prime.Common
         public Money Price { get; private set; }
 
         private MarketPrice _reversed;
-        public MarketPrice Reversed => _reversed ?? (_reversed = new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset)) {UtcCreated = UtcCreated, _reversed = this});
+        public MarketPrice Reversed
+        {
+            get
+            {
+                if (_reversed == null)
+                {
+                    _reversed = new MarketPrice(Network, Price.Asset, Price.ReverseAsset(QuoteAsset))
+                    {
+                        UtcCreated = UtcCreated,
+                        _reversed = this,
+                        PriceStatistics = PriceStatistics?.Reverse(QuoteAsset),
+                        Volume = Volume // TODO: confirm Volume = Volume, maybe some transformations needed.
+                    };
+                }
+
+                return _reversed;
+            }
+        }
 
         public MarketPrice AsQuote(Asset quote)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
@@ -10,7 +11,7 @@ namespace Prime.Plugins.Services.IndependentReserve
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.independentreserve.com/API
-    public class IndependentReserveProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class IndependentReserveProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string IndependentReserveApiUrl = "https://api.independentreserve.com/Public/";
 
@@ -96,6 +97,35 @@ namespace Prime.Plugins.Services.IndependentReserve
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.CurrentLowestOfferPrice, r.CurrentHighestBidPrice, r.DayLowestPrice, r.DayHighestPrice),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.DayVolumeXbt, r.DayVolumeXbtInSecondaryCurrrency)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            string pairCode = context.Pair.ToTicker(this);
+            var pairs = pairCode.Split('_');
+
+            if (pairs == null || pairs.Length < 2)
+            {
+                throw new ApiResponseException("Invalid asset pair passed as parameter");
+            }
+
+            var r = await api.GetOrderBookAsync(pairs[0].ToLower(), pairs[1].ToLower()).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+            
+            var asks = r.SellOrders.Take(maxCount);
+            var bids = r.BuyOrders.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.Price, i.Volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.Price, i.Volume, true);
+
+            return orderBook;
         }
     }
 }

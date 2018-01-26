@@ -49,11 +49,32 @@ namespace Prime.Tests.Providers
             base.TestGetAssetPairs(requiredPairs);
         }
 
-        [TestMethod]
+        [TestMethod] 
         public override void TestGetAddressesForAsset()
         {
             var context = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
             base.TestGetAddressesForAsset(context);
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            // Real money tests not performed.
+            base.TestGetTradeOrderStatus("orderid");
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            // Real money tests not performed.
+            base.TestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, 1, new Money(1000m, Asset.Usd));
+        }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            // Real money tests not performed.
+            base.TestPlaceWithdrawal(new WalletAddress("123"), new Money(1, Asset.Btc));
         }
 
         [TestMethod]

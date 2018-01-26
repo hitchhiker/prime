@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.Apiary
+namespace Prime.Plugins.Services.Dsx
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://dsx.docs.apiary.io/#
-    public class ApiaryProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class DsxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
-        private const string ApiaryApiUrl = "https://dsx.uk/mapi/" ;
+        private const string DsxApiUrl = "https://dsx.uk/mapi/" ;
 
-        private static readonly ObjectId IdHash = "prime:apiary".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:dsx".GetObjectIdHashCode();
 
         //If you make more than 60 requests of Trading API methods (/tapi/) per minute using the same API Keys you will receive an error on each extra request during the same minute. Each new minute the counter becomes 0.
         //https://dsx.docs.apiary.io/#introduction/requests-limit
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60, 1);
 
-        private RestApiClientProvider<IApiaryApi> ApiProvider { get; }
+        private RestApiClientProvider<IDsxApi> ApiProvider { get; }
 
-        public Network Network { get; } = Networks.I.Get("Apiary");
+        public Network Network { get; } = Networks.I.Get("Dsx");
 
         public bool Disabled => false;
         public int Priority => 100;
@@ -35,9 +36,9 @@ namespace Prime.Plugins.Services.Apiary
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public ApiaryProvider()
+        public DsxProvider()
         {
-            ApiProvider = new RestApiClientProvider<IApiaryApi>(ApiaryApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IDsxApi>(DsxApiUrl, this, (k) => null);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -104,6 +105,43 @@ namespace Prime.Plugins.Services.Apiary
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, currentTicker.vol)
             });
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            r.TryGetValue(pairCode, out var currentOrderBook);
+
+            if (currentOrderBook == null)
+            {
+                throw new ApiResponseException("No order book returned", this);
+            }
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = currentOrderBook.asks.Take(maxCount);
+            var bids = currentOrderBook.bids.Take(maxCount);
+
+            foreach (var i in bids.Select(GetBidAskData))
+                orderBook.AddBid(i.Item1, i.Item2, true);
+
+            foreach (var i in asks.Select(GetBidAskData))
+                orderBook.AddAsk(i.Item1, i.Item2, true);
+
+            return orderBook;
+        }
+
+        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
+        {
+            decimal price = data[0];
+            decimal amount = data[1];
+
+            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

@@ -94,7 +94,7 @@ namespace Prime.Plugins.Services.CryptoCompare
             var str = await api.GetPricesAsync(froms, tos, Name, "prime", "false", "false").ConfigureAwait(false);
 
             if (str.Contains("market does not exist for this coin pair"))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var apir = JsonConvert.DeserializeObject<CryptoCompareSchema.PriceMultiResult>(str);
             var prices = new MarketPrices();

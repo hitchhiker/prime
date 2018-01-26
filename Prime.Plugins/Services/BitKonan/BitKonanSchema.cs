@@ -17,28 +17,10 @@ namespace Prime.Plugins.Services.BitKonan
             public decimal volume;
         }
 
-        internal class OrderBookEntryBtcResponse
+        internal class OrderBookResponse
         {
-            public decimal usd;
-            public decimal btc;
-        }
-
-        internal class OrderBookEntryLtcResponse
-        {
-            public decimal usd;
-            public decimal ltc;
-        }
-
-        internal class OrderBookBtcResponse
-        {
-            public OrderBookEntryBtcResponse[][] bid;
-            public OrderBookEntryBtcResponse[][] ask;
-        }
-
-        internal class OrderBookLtcResponse
-        {
-            public OrderBookEntryLtcResponse[][] bid;
-            public OrderBookEntryLtcResponse[][] ask;
+            public Dictionary<string, decimal>[] bid;
+            public Dictionary<string, decimal>[] ask;
         }
     }
 }

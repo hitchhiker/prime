@@ -47,5 +47,12 @@ namespace Prime.Plugins.Services.Acx
             public string base_unit;
             public string quote_unit;
         }
-    }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] asks;
+            public decimal[][] bids;
+        }
+}
 }

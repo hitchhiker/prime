@@ -31,7 +31,7 @@ namespace Prime.Plugins.Services.Bithumb
             var api = ApiProvider.GetApi(context);
 
             if (!context.Pair.Asset2.Equals(Asset.Krw))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var r = context.MaxRecordsCount == Int32.MaxValue
                 ? await api.GetOrderBookAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false)
@@ -168,7 +168,7 @@ namespace Prime.Plugins.Services.Bithumb
             var krwAsset = Asset.Krw;
 
             if (!context.Pair.Asset2.Equals(krwAsset))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             var data = r.data;
             

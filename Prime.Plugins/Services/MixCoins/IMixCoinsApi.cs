@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.MixCoins
     {
         [Get("/ticker?market={currencyPair}")]
         Task<MixCoinsSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+
+        [Get("/depth?market={currencyPair}")]
+        Task<MixCoinsSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

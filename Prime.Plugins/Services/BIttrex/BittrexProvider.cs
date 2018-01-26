@@ -93,18 +93,14 @@ namespace Prime.Plugins.Services.Bittrex
 
             var e = r.result.FirstOrDefault();
             if (e == null)
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
-            var price = new MarketPrice(Network, context.Pair.Asset1, new Money(1 / e.Last, context.Pair.Asset2))
+            var price = new MarketPrice(Network, context.Pair.Reversed, e.Last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, 
-                    e.Ask == 0 ? 0 : 1 / e.Ask, 
-                    e.Bid == 0 ? 0 : 1 / e.Bid, 
-                    e.High == 0 ? 0 : 1 / e.High, 
-                    e.Low == 0 ? 0 : 1 / e.Low),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
                 Volume = new NetworkPairVolume(Network, context.Pair, e.BaseVolume, e.Volume)
             };
-            return new MarketPrices(price);
+            return new MarketPrices(price.Reversed);
         }
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
@@ -130,15 +126,11 @@ namespace Prime.Plugins.Services.Bittrex
                     continue;
                 }
 
-                prices.Add(new MarketPrice(Network, pair, 1 / e.Last)
+                prices.Add(new MarketPrice(Network, pair.Reversed, e.Last)
                 {
-                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, 
-                        e.Ask == 0 ? 0 : 1 / e.Ask, 
-                        e.Bid == 0 ? 0 : 1 / e.Bid,
-                        e.High == 0 ? 0 : 1 / e.High,
-                        e.Low == 0 ? 0 : 1 / e.Low),
+                    PriceStatistics = new PriceStatistics(Network, pair.Asset2, e.Ask, e.Bid, e.Low, e.High),
                     Volume = new NetworkPairVolume(Network, pair, e.BaseVolume, e.Volume)
-                });
+                }.Reversed);
             }
 
             return prices;
@@ -181,7 +173,7 @@ namespace Prime.Plugins.Services.Bittrex
             var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(r);
 
-            var balances = new BalanceResults();
+            var balances = new BalanceResults(this);
 
             foreach (var rBalance in r.result)
             {
@@ -250,7 +242,7 @@ namespace Prime.Plugins.Services.Bittrex
             if (response.success == false)
             {
                 if (response.message.Equals("INVALID_MARKET") && pair != null)
-                    throw new NoAssetPairException(pair, this);
+                    throw new AssetPairNotSupportedException(pair, this);
                 throw new ApiResponseException($"API error: {response.message}", this);
             }
         }
@@ -280,7 +272,7 @@ namespace Prime.Plugins.Services.Bittrex
             foreach (var i in asks)
                 orderBook.AddAsk(i.Rate, i.Quantity, true);
 
-            return orderBook;
+            return orderBook.AsPair(context.Pair);
         }
 
         public async Task<PublicVolumeResponse> GetPublicVolumeAsync(PublicVolumesContext context)
@@ -292,7 +284,7 @@ namespace Prime.Plugins.Services.Bittrex
             var summary = r.result.FirstOrDefault();
             var remoteMarker = summary.MarketName.ToAssetPair(this);
             if (summary == null || !remoteMarker.Equals(context.Pair))
-                throw new NoAssetPairException(context.Pair, this);
+                throw new AssetPairNotSupportedException(context.Pair, this);
 
             return new PublicVolumeResponse(Network, context.Pair, summary.BaseVolume, summary.Volume);
         }

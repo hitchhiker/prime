@@ -5,8 +5,6 @@ namespace Prime.Common
 {
     public class BalanceResults : UniqueList<BalanceResult>
     {
-        public BalanceResults() { }
-
         public BalanceResults(IBalanceProvider provider)
         {
             ProviderSource = provider;

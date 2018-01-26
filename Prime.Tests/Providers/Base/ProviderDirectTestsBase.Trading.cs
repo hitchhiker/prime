@@ -43,72 +43,50 @@ namespace Prime.Tests.Providers
 
         private void GetTradeOrderStatus(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
-            try
-            {
-                var context = new RemoteIdContext(UserContext.Current, remoteOrderId);
+            var context = new RemoteIdContext(UserContext.Current, remoteOrderId);
 
-                if (market != null)
-                    context.Market = market;
+            if (market != null)
+                context.Market = market;
 
-                var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
+            var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
 
-                Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
-                Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
+            Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
+            Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
 
-                if(r.IsOpen) Trace.WriteLine("Order is open");
-                if(r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
-                if(r.IsCanceled) Trace.WriteLine("Order is canceled");
-                if(r.IsClosed) Trace.WriteLine("Order is closed");
-                if(r.IsFound) Trace.WriteLine("Order is found");
+            if (r.IsOpen) Trace.WriteLine("Order is open");
+            if (r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
+            if (r.IsCanceled) Trace.WriteLine("Order is canceled");
+            if (r.IsClosed) Trace.WriteLine("Order is closed");
+            if (r.IsFound) Trace.WriteLine("Order is found");
 
-                if (r.Rate.HasValue) Trace.WriteLine($"The rate of order is {r.Rate.Value}");
-                if (r.AmountInitial.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitial.Value}");
-                if (r.AmountFilled.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilled.Value}");
-                if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
-                
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            if (r.Rate.HasValue) Trace.WriteLine($"The rate of order is {r.Rate.Value}");
+            if (r.AmountInitial.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitial.Value.Display}");
+            if (r.AmountFilled.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilled.Value.Display}");
+            if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value.Display}");
         }
 
         private void PlaceOrderLimit(IOrderLimitProvider provider, AssetPair market, bool isBuy, decimal quantity, Money rate)
         {
-            try
-            {
-                var context = new PlaceOrderLimitContext(UserContext.Current, market, isBuy, quantity, rate);
+            var context = new PlaceOrderLimitContext(UserContext.Current, market, isBuy, quantity, rate);
 
-                var r = AsyncContext.Run(() => provider.PlaceOrderLimitAsync(context));
+            var r = AsyncContext.Run(() => provider.PlaceOrderLimitAsync(context));
 
-                Assert.IsTrue(!String.IsNullOrWhiteSpace(r.RemoteOrderGroupId));
-                Trace.WriteLine($"Remote trade order id: {r.RemoteOrderGroupId}");
-            }
-            catch (Exception e)
-            {
-                Assert.Fail(e.Message);
-            }
+            Assert.IsTrue(!String.IsNullOrWhiteSpace(r.RemoteOrderGroupId));
+            Trace.WriteLine($"Remote trade order id: {r.RemoteOrderGroupId}");
         }
 
         private void GetBalances(IBalanceProvider provider)
         {
             var ctx = new NetworkProviderPrivateContext(UserContext.Current);
 
-            try
-            {
-                var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
+            var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
 
-                Assert.IsTrue(balances != null);
+            Assert.IsTrue(balances != null);
 
-                Trace.WriteLine("User balances: ");
-                foreach (var b in balances)
-                {
-                    Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Reserved} reserved, {b.AvailableAndReserved} total");
-                }
-            }
-            catch (Exception e)
+            Trace.WriteLine("User balances: ");
+            foreach (var b in balances.OrderByDescending(x => x.AvailableAndReserved.ToDecimalValue()))
             {
-                Assert.Fail(e.Message);
+                Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Reserved} reserved, {b.AvailableAndReserved} total");
             }
         }
 

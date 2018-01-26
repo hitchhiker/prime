@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Ccex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://c-cex.com/?id=api
-    public class CcexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider
+    public class CcexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
         private const string CcexApiUrl = "https://c-cex.com/";
 
@@ -171,6 +171,36 @@ namespace Prime.Plugins.Services.Ccex
         {
             Bulk = new VolumeBulkFeatures() { CanReturnAll = true, CanVolumeBase = true, CanVolumeQuote = true }
         };
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            //This API only accepts a depth of 100 maximum.
+            var maxCount = Math.Min(100, context.MaxRecordsCount);
+
+            var r = await api.GetOrderBookAsync(pairCode, maxCount).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            if (r.success == false)
+            {
+                throw new ApiResponseException(r.message, this);
+            }
+
+            var response = r.result;
+
+            var asks = response.sell;
+            var bids = response.buy;
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.rate, i.quantity, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.rate, i.quantity, true);
+
+            return orderBook;
+        }
 
         public VolumeFeatures VolumeFeatures => StaticVolumeFeatures;
     }

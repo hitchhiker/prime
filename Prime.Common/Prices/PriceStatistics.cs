@@ -14,6 +14,20 @@
             Price24High = price24High == null ? Money.Zero : new Money(price24High.Value, quoteAsset);
         }
 
+        private PriceStatistics _reversed;
+
+        public PriceStatistics Reverse(Asset quoteAsset)
+        {
+            return _reversed ?? (_reversed = new PriceStatistics(Network, quoteAsset,
+                LowestAsk == 0 ? null : (decimal?)(1 / HighestBid),
+                HighestBid == 0 ? null : (decimal?)(1 / LowestAsk),
+                Price24High == 0 ? null : (decimal?)(1 / Price24High),
+                Price24Low == 0 ? null : (decimal?)(1 / Price24Low))
+                   {
+                       _reversed = this
+                   });
+        }
+
         [Bson]
         public Network Network { get; private set; }
 
@@ -48,5 +62,10 @@
         public bool HasPrice24Low => Price24Low != Money.Zero;
 
         public bool HasPrice24High => Price24High != Money.Zero;
+
+        public override string ToString()
+        {
+            return $"{Network?.Name}: ask {LowestAsk.Display}, bid {HighestBid.Display}, low {Price24Low.Display}, high {Price24High.Display}";
+        }
     }
 }

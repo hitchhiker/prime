@@ -138,7 +138,7 @@
     <Compile Include="Providers\AcxTests.cs" />
     <Compile Include="Providers\AllcoinTests.cs" />
     <Compile Include="Providers\AlphapointTests.cs" />
-    <Compile Include="Providers\ApiaryTests.cs" />
+    <Compile Include="Providers\DsxTests.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Trading.cs" />
     <Compile Include="Providers\Base\ProviderDirectTestsBase.Volume.cs" />
     <Compile Include="Providers\BinanceTests.cs" />
@@ -186,6 +186,7 @@
     <Compile Include="Providers\ItBitTests.cs" />
     <Compile Include="Providers\KorbitTests.cs" />
     <Compile Include="Providers\KrakenTests.cs" />
+    <Compile Include="Providers\KucoinTests.cs" />
     <Compile Include="Providers\KunaTests.cs" />
     <Compile Include="Providers\LakeBtcTests.cs" />
     <Compile Include="Providers\LiquiTests.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="Providers\WhaleclubTests.cs" />
     <Compile Include="Providers\XbtceTests.cs" />
     <Compile Include="Providers\YobitTests.cs" />
+    <Compile Include="CommonTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">

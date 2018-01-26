@@ -9,6 +9,6 @@ namespace Prime.Common
 
         Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context);
 
-        decimal MinimumTradeVolume { get; }
+        MinimumTradeVolume[] MinimumTradeVolume { get; }
     }
 }

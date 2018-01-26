@@ -18,6 +18,37 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BinanceProvider>().FirstProvider();
         }
 
+        #region Private
+
+        [TestMethod]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), false, 1, new Money(1m, Asset.Btc));
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            var orderId = "21109502";
+            base.TestGetTradeOrderStatus(orderId, "XRP_BTC".ToAssetPairRaw());
+        }
+
+        #endregion
+
+        #region Public
+
         [TestMethod]
         public override void TestApiPublic()
         {
@@ -61,23 +92,27 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
-        [TestMethod]
-        public override void TestGetBalances()
-        {
-            base.TestGetBalances();
-        }
-
-        [TestMethod]
         public override void TestGetOhlc()
         {
-            var context = new OhlcContext(new AssetPair("BNT", "BTC"), TimeResolution.Minute,
+            var context = new OhlcContext("BTC_USDT".ToAssetPairRaw(), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
             base.TestGetOhlc(context);
         }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            base.TestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(22, Asset.Xrp), "3299088538");
+        }
+
+        public async Task TestGetDepositHistory()
+        {
+            var context = new NetworkProviderPrivateContext(UserContext.Current);
+            var binanceProvider = new BinanceProvider();
+
+            await binanceProvider.GetDepositHistoryAsync(context).ConfigureAwait(false);
+        }
+
+        #endregion
     }
 }

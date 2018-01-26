@@ -104,16 +104,7 @@ namespace Prime.Tests.Providers
         {
             var token2fa = "249723";
 
-            var context = new WithdrawalPlacementContext(UserContext.Current)
-            {
-                Amount = new Money(1000, Asset.Btc),
-                Address = null,
-                AuthenticationToken = token2fa,
-                CustomFee = new Money(0.004m, Asset.Btc),
-                Description = "Debug payment"
-            };
-
-            base.TestPlaceWithdrawal(context);
+            base.TestPlaceWithdrawal(null, new Money(1000, Asset.Btc), "Debug payment", new Money(0.004m, Asset.Btc), token2fa);
         }
 
         // [TestMethod]

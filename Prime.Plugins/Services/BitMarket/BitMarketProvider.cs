@@ -88,7 +88,7 @@ namespace Prime.Plugins.Services.BitMarket
             catch (ApiException ex)
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound)
-                    throw new NoAssetPairException(context.Pair, this);
+                    throw new AssetPairNotSupportedException(context.Pair, this);
                 throw;
             }
         }

@@ -19,7 +19,7 @@ namespace Prime.Plugins.Services.Cryptopia
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://www.cryptopia.co.nz/Forum/Category/45
-    public partial class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider
+    public partial class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string CryptopiaApiUrl = "https://www.cryptopia.co.nz/api/";
 
@@ -199,6 +199,35 @@ namespace Prime.Plugins.Services.Cryptopia
             {
                 throw new ApiResponseException("Error processing request. " + r.Message, this);
             }
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            if (r.Success == false)
+            {
+                throw new ApiResponseException("Error processing request. " + r.Message, this);
+            }
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var response = r.Data;
+
+            var asks = response.Sell.Take(maxCount);
+            var bids = response.Buy.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.Price, i.Volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.Price, i.Volume, true);
+
+            return orderBook;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
@@ -8,7 +9,7 @@ namespace Prime.Plugins.Services.Bitso
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitso.com/api_info
-    public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitsoApiVersion = "v3";
         private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
@@ -147,6 +148,30 @@ namespace Prime.Plugins.Services.Bitso
             {
                 throw new ApiResponseException("Error processing request", this);
             }
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this);
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var response = r.payload;
+
+            var asks = response.asks.Take(maxCount);
+            var bids = response.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.amount, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.amount, true);
+
+            return orderBook;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()

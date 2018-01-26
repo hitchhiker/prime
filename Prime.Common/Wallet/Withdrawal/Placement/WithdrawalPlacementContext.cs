@@ -7,15 +7,22 @@ namespace Prime.Common
 {
     public class WithdrawalPlacementContext : NetworkProviderPrivateContext
     {
-        public WithdrawalPlacementContext(UserContext userContext, ILogger logger = null) : base(userContext, logger)
+        private WithdrawalPlacementContext(UserContext userContext, ILogger logger = null) : base(userContext, logger)
         {
             CustomFee = null;
+        }
+
+        public WithdrawalPlacementContext(WalletAddress address, Money amount, UserContext userContext, ILogger logger = null) : this(userContext, logger)
+        {
+            CustomFee = null;
+
+            Address = address;
+            Amount = amount;
         }
 
         public WalletAddress Address { get; set; }
 
         public Money Amount { get; set; }
-
 
         /// <summary>
         /// Provides ability to set custom withdrawal fee if provider supports it.
@@ -28,7 +35,7 @@ namespace Prime.Common
         public string AuthenticationToken { get; set; }
 
         /// <summary>
-        /// This field can store paymentId or any other relevant information.
+        /// This field can store Tag (e.g. for XRP, XMR) or any other relevant information.
         /// </summary>
         public string Description { get; set; }
 

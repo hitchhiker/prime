@@ -10,5 +10,8 @@ namespace Prime.Plugins.Services.Allcoin
     {
         [Get("/ticker?symbol={currencyPair}")]
         Task<AllcoinSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+
+        [Get("/depth?symbol={currencyPair}")]
+        Task<AllcoinSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
     }
 }

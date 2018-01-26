@@ -8,11 +8,102 @@ namespace Prime.Plugins.Services.Binance
 {
     internal class BinanceSchema
     {
-        internal class LatestPricesResponse : List<LatestPriceResponse> { }
+        #region Base
 
-        internal class CandlestickResponse : List<decimal[]> { }
+        internal class ErrorResponseBase
+        {
+            public int code;
+            public string msg;
+            public bool? success;
+        }
 
-        internal class Ticker24HrResponse
+        #endregion
+
+        #region Private
+
+        internal class UserInformationResponse : ErrorResponseBase
+        {
+            public decimal makerCommission;
+            public decimal takerCommission;
+            public decimal buyerCommission;
+            public decimal sellerCommission;
+            public bool canTrade;
+            public bool canWithdraw;
+            public bool canDeposit;
+            public UserBalanceResponse[] balances;
+        }
+
+        internal class UserBalanceResponse : ErrorResponseBase
+        {
+            public string asset;
+            public decimal free;
+            public decimal locked;
+        }
+
+        internal class NewOrderResponse : ErrorResponseBase
+        {
+            public string symbol;
+            public long orderId;
+            public string clientOrderId;
+            public long transactTime;
+        }
+
+        internal class QueryOrderResponse : ErrorResponseBase
+        {
+            public string symbol;
+            public int orderId;
+            public string clientOrderId;
+            public decimal price;
+            public decimal origQty;
+            public decimal executedQty;
+            public string status;
+            public string timeInForce;
+            public string type;
+            public string side;
+            public decimal stopPrice;
+            public decimal icebergQty;
+            public long time;
+        }
+
+        internal class DepositHistoryResponse : ErrorResponseBase
+        {
+            public DepositListEntryResponse[] depositList;
+        }
+
+        internal class DepositListEntryResponse
+        {
+            public long insertTime;
+            public decimal amount;
+            public string asset;
+            public string address;
+            public string txId;
+            public int status;
+        }
+
+        internal class WithdrawalRequestResponse : ErrorResponseBase
+        {
+            public string id;
+        }
+
+        #endregion
+
+        #region Public
+
+        internal class LatestPricesResponse : List<LatestPriceResponse>
+        {
+            // Copy of ErrorResponseBase.
+            public int code;
+            public string msg;
+        }
+
+        internal class CandlestickResponse : List<decimal[]>
+        {
+            // Copy of ErrorResponseBase.
+            public int code;
+            public string msg;
+        }
+
+        internal class Ticker24HrResponse : ErrorResponseBase
         {
             public decimal priceChange;
             public decimal priceChangePercent;
@@ -32,26 +123,7 @@ namespace Prime.Plugins.Services.Binance
             public int count;
         }
 
-        internal class UserInformationResponse
-        {
-            public decimal makerCommission;
-            public decimal takerCommission;
-            public decimal buyerCommission;
-            public decimal sellerCommission;
-            public bool canTrade;
-            public bool canWithdraw;
-            public bool canDeposit;
-            public UserBalanceResponse[] balances;
-        }
-
-        internal class UserBalanceResponse
-        {
-            public string asset;
-            public decimal free;
-            public decimal locked;
-        }
-
-        internal class OrderBookResponse
+        internal class OrderBookResponse : ErrorResponseBase
         {
             public long lastUpdateId;
             public object[][] bids;
@@ -68,5 +140,7 @@ namespace Prime.Plugins.Services.Binance
                 return $"{symbol}: {price}";
             }
         }
+
+        #endregion
     }
 }

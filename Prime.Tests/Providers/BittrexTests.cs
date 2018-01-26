@@ -61,6 +61,12 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("BTC_XRP".ToAssetPairRaw(), false, 2, new Money(1m, Asset.Xrp));
+        }
+
+        [TestMethod]
         public override void TestGetAssetPairs()
         {
             var requiredPairs = new AssetPairs()
@@ -83,7 +89,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            base.TestGetOrderBook("BTC_LTC".ToAssetPairRaw(), false);
+            base.TestGetOrderBook("BTC_XRP".ToAssetPairRaw(), false);
         }
     }
 }

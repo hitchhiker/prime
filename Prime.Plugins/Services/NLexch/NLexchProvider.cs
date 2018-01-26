@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.NLexch
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.nlexch.com/documents/api_v2
-    public class NLexchProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class NLexchProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string NLexchApiVersion = "v2";
         private const string NLexchApiUrl = "https://www.nlexch.com:443//api/" + NLexchApiVersion;
@@ -167,6 +167,28 @@ namespace Prime.Plugins.Services.NLexch
             }
 
             return prices;
+        }
+
+        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var pairCode = context.Pair.ToTicker(this).ToLower();
+
+            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var orderBook = new OrderBook(Network, context.Pair);
+
+            var maxCount = Math.Min(1000, context.MaxRecordsCount);
+
+            var asks = r.asks.Take(maxCount);
+            var bids = r.bids.Take(maxCount);
+
+            foreach (var i in bids)
+                orderBook.AddBid(i.price, i.volume, true);
+
+            foreach (var i in asks)
+                orderBook.AddAsk(i.price, i.volume, true);
+
+            return orderBook;
         }
     }
 }

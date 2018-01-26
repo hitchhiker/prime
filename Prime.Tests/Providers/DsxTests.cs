@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prime.Common;
-using Prime.Plugins.Services.Apiary;
+using Prime.Plugins.Services.Dsx;
 
 namespace Prime.Tests.Providers
 {
     [TestClass]
-    public class ApiaryTests : ProviderDirectTestsBase
+    public class DsxTests : ProviderDirectTestsBase
     {
-        public ApiaryTests()
+        public DsxTests()
         {
-            Provider = Networks.I.Providers.OfType<ApiaryProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<DsxProvider>().FirstProvider();
         }
 
         [TestMethod]
@@ -47,6 +47,13 @@ namespace Prime.Tests.Providers
             };
 
             base.TestGetAssetPairs(requiredPairs);
+        }
+
+
+        [TestMethod]
+        public override void TestGetOrderBook()
+        {
+            base.TestGetOrderBook("eth_usd".ToAssetPairRaw(), false);
         }
     }
 }
