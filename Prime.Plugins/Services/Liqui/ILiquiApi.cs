@@ -10,7 +10,6 @@ namespace Prime.Plugins.Services.Liqui
 {
     public interface ILiquiApi : IBaseApi
     {
-        //[Get("/ticker/{pairsCsv}")]
-        //new Task<Dictionary<string, LiquiSchema.TickerData>> GetTickerAsync([Path(UrlEncode = false)] string pairsCsv);
+
     }
 }
