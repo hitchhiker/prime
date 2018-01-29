@@ -8,7 +8,7 @@ namespace Prime.Plugins.Services.Gemini
 {
     // https://docs.gemini.com/rest-api/
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class GeminiProvider : IAssetPairsProvider, IPublicPricingProvider
+    public partial class GeminiProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string GemeniApiVerstion = "v1";
         private const string GeminiApiUrl = "https://api.gemini.com/" + GemeniApiVerstion;
