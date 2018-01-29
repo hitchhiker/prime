@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.Liqui
     internal interface ILiquiApi
     {
         [Get("/ticker/{currencyPair}")]
-        Task<LiquiSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+        Task<LiquiSchema.AllTickersResponse> GetTickerAsync([Path] string currencyPair);
 
         [Get("/ticker/{currencyPair}")]
         Task<LiquiSchema.AllTickersResponse> GetTickersAsync([Path] string currencyPair);

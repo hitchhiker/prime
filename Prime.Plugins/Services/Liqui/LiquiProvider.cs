@@ -79,18 +79,13 @@ namespace Prime.Plugins.Services.Liqui
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
 
         public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
-            if (context.ForSingleMethod)
-                return await GetPriceAsync(context).ConfigureAwait(false);
-
-            return await GetPricesAsync(context).ConfigureAwait(false);
-
+            return await GetPriceAsync(context).ConfigureAwait(false);
         }
 
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
@@ -98,11 +93,14 @@ namespace Prime.Plugins.Services.Liqui
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
-
-            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)
+            
+            if(!r.TryGetValue(pairCode, out var rTicker))
+                throw new AssetPairNotSupportedException(context.Pair, this);
+            
+            return new MarketPrices(new MarketPrice(Network, context.Pair, rTicker.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.sell, r.buy, r.low, r.high),
-                Volume = new NetworkPairVolume(Network, context.Pair, r.vol)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, rTicker.sell, rTicker.buy, rTicker.low, rTicker.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, rTicker.vol)
             });
         }
 

@@ -18,6 +18,7 @@ namespace Prime.Plugins.Services.Liqui
 
         internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
         {
+            public bool success;
         }
 
         internal class AssetPairEntry

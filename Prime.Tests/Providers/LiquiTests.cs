@@ -29,8 +29,6 @@ namespace Prime.Tests.Providers
             var pairs = new List<AssetPair>()
             {
                 "ltc_btc".ToAssetPairRaw(),
-                "eth_btc".ToAssetPairRaw(),
-                "ans_btc".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, true);
