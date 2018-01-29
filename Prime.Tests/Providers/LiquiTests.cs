@@ -18,6 +18,32 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: AY: test using real money - Liqui.
+            base.TestGetTradeOrderStatus("98217034");
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            // TODO: AY: test using real money - Liqui.
+            base.TestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, 1m, new Money(1, Asset.UsdT));
+        }
+
+        [TestMethod]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
@@ -46,7 +72,6 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
-
 
         [TestMethod]
         public override void TestGetOrderBook()

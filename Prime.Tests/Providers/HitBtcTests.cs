@@ -59,21 +59,21 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
-            // Real money tests not performed.
+            // TODO: AY: test using real money - HitBtc.
             base.TestGetTradeOrderStatus("orderid");
         }
 
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            // Real money tests not performed.
+            // TODO: AY: test using real money - HitBtc.
             base.TestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, 1, new Money(1000m, Asset.Usd));
         }
 
         [TestMethod]
         public override void TestPlaceWithdrawal()
         {
-            // Real money tests not performed.
+            // TODO: AY: test using real money - HitBtc.
             base.TestPlaceWithdrawal(new WalletAddress("123"), new Money(1, Asset.Btc));
         }
 
