@@ -11,6 +11,7 @@ namespace Prime.Plugins.Services.Common
     /// <summary>
     /// Common provider for Tidex and Liqui exchanges.
     /// </summary>
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public abstract partial class CommonProviderTiLi<TApi> : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider where TApi : class, ICommonApiTiLi
     {
         //From doc: All information is cached every 2 seconds, so there's no point in making more frequent requests.
@@ -49,12 +50,6 @@ namespace Prime.Plugins.Services.Common
         {
             if (r.success != 1)
                 throw new ApiResponseException(r.error, this);
-        }
-
-        protected CommonProviderTiLi()
-        {
-            // ApiProviderPublic = InitApiProviderPublic();// new RestApiClientProvider<ITidexApi>(TidexApiUrlPublic);
-            // ApiProviderPrivate = InitApiProviderPrivate();  // new RestApiClientProvider<ITidexApi>(TidexApiUrlPrivate, this, (k) => new TidexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public virtual async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
