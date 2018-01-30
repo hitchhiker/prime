@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Kucoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://kucoinapidocs.docs.apiary.io
-    public class KucoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class KucoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string KucoinApiVersion = "v1";
         private const string KucoinApiUrl = "https://api.kucoin.com/" + KucoinApiVersion;
@@ -152,6 +152,12 @@ namespace Prime.Plugins.Services.Kucoin
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
 
             var r = await api.GetOrderBookAsync(pairCode, maxCount).ConfigureAwait(false);
+
+            if (r.success == false)
+            {
+                throw new ApiResponseException(r.msg, this);
+            }
+
             var orderBook = new OrderBook(Network, context.Pair);
             
             var asks = r.data.SELL.Take(maxCount);

@@ -8,6 +8,13 @@ namespace Prime.Plugins.Services.Kucoin
     {
         #region Base
 
+        internal class ErrorResponseBase
+        {
+            public int code;
+            public string msg;
+            public bool? success;
+        }
+
         internal class BaseResponse<TResult>
         {
             public string msg;
@@ -52,7 +59,6 @@ namespace Prime.Plugins.Services.Kucoin
         internal class UserInfoResponse
         {
             public UserInfoEntryResponse data;
-
         }
 
         internal class UserInfoEntryResponse
@@ -75,6 +81,53 @@ namespace Prime.Plugins.Services.Kucoin
             public bool hasTradePassword;
             public bool emailValidated;
             public string email;
+        }
+
+        internal class NewOrderResponse
+        {
+            public string orderOid;
+        }
+
+        internal class QueryActiveOrdersResponse
+        {
+            public ActiveOrderEntryResponse[] SELL;
+            public ActiveOrderEntryResponse[] BUY;
+        }
+
+        internal class ActiveOrderEntryResponse
+        {
+            public string oid;
+            public string type;
+            public string userOid;
+            public string coinType;
+            public string coinTypePair;
+            public string direction;
+            public decimal price;
+            public decimal dealAmount;
+            public decimal pendingAmount;
+            public long createdAt;
+            public long updatedAt;
+        }
+
+        internal class QueryDealtOrdersResponse
+        {
+            public DealtOrderEntryResponse[] datas;
+        }
+
+        internal class WithdrawalRequestResponse
+        {
+            
+        }
+
+        internal class DealtOrderEntryResponse
+        {
+            public string oid;
+            public decimal dealPrice;
+            public string orderOid;
+            public string direction;
+            public decimal amount;
+            public decimal dealValue;
+            public long createdAt;
         }
 
         #endregion

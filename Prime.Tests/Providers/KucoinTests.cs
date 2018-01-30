@@ -58,5 +58,24 @@ namespace Prime.Tests.Providers
         {
             base.TestGetOrderBook("KCS_BTC".ToAssetPairRaw(), true);
         }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            base.TestPlaceWithdrawal(new WalletAddress("address_placeholder"), new Money(22, Asset.Xrp));
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            var orderId = "21109502";
+            base.TestGetTradeOrderStatus(orderId, "KCS_BTC".ToAssetPairRaw());
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            base.TestPlaceOrderLimit("KCS_BTC".ToAssetPairRaw(), false, 1, new Money(1m, Asset.Btc));
+        }
     }
 }

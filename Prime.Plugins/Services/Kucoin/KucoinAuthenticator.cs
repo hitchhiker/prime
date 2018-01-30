@@ -22,10 +22,16 @@ namespace Prime.Plugins.Services.Kucoin
             var headers = request.Headers;
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
             
-            string endpoint = request.RequestUri.AbsolutePath; 
+            string endpoint = request.RequestUri.AbsolutePath;
 
-            string queryString = ""; //Arrange the parameters in ascending alphabetical order (lower cases first), then combine them with & (don't urlencode them, don't add ?, don't add extra &), e.g. amount=10&price=1.1&type=BUY 
+            //Arrange the parameters in ascending alphabetical order (lower cases first), then combine them with & (don't urlencode them, don't add ?, don't add extra &), e.g. amount=10&price=1.1&type=BUY 
+            string parameters = request.RequestUri.Query.Replace("?", "");
+            string[] arrParameters = parameters.Split('&');
 
+            Array.Sort(arrParameters); //Sorts array alphabetically.
+
+            string queryString = string.Join("&", arrParameters);
+            
             //splice string for signing
             string strForSign = endpoint + "/" + timeStamp + "/" + queryString;
 
