@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Prime.Plugins.Services.Base;
-using RestEase;
+﻿using Prime.Plugins.Services.Common;
 
 namespace Prime.Plugins.Services.Tidex
 {
-    public interface ITidexApi : IBaseApi
+    public interface ITidexApi : ICommonApiTiLi
     {
         
     }

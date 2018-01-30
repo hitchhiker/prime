@@ -14,7 +14,7 @@ namespace Prime.Tests.Providers
     {
         public LiquiTests()
         {
-            Provider = Networks.I.Providers.OfType<LiquiProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<LiquiProviderTiLi>().FirstProvider();
         }
 
         [TestMethod]

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Prime.Plugins.Services.Base
+namespace Prime.Plugins.Services.Common
 {
-    public class BaseSchema
+    /// <summary>
+    /// Contains API schema models for Liqui and Tidex exchanges.
+    /// </summary>
+    public class CommonSchemaTiLi
     {
         #region Base
 
@@ -15,7 +18,7 @@ namespace Prime.Plugins.Services.Base
             public T return_;
 
             public string error;
-            public BaseSchema.StatResponse stat;
+            public CommonSchemaTiLi.StatResponse stat;
         }
 
         public class StatResponse
@@ -37,7 +40,7 @@ namespace Prime.Plugins.Services.Base
 
         #region Private
 
-        public class UserInfoResponse : BaseSchema.BaseResponse<BaseSchema.UserInfoDataResponse>
+        public class UserInfoResponse : CommonSchemaTiLi.BaseResponse<CommonSchemaTiLi.UserInfoDataResponse>
         {
 
         }
@@ -45,15 +48,15 @@ namespace Prime.Plugins.Services.Base
         public class UserInfoDataResponse : BaseUserInfoDataResponse
         {
             public Dictionary<string, decimal> funds;
-            public BaseSchema.UserRightResponse rights;
+            public CommonSchemaTiLi.UserRightResponse rights;
         }
 
-        public class UserInfoExtResponse : BaseSchema.BaseResponse<BaseSchema.UserInfoDataExtResponse> { }
+        public class UserInfoExtResponse : CommonSchemaTiLi.BaseResponse<CommonSchemaTiLi.UserInfoDataExtResponse> { }
 
         public class UserInfoDataExtResponse : BaseUserInfoDataResponse
         {
-            public Dictionary<string, BaseSchema.FundInfoResponse> funds;
-            public BaseSchema.UserRightResponse rights;
+            public Dictionary<string, CommonSchemaTiLi.FundInfoResponse> funds;
+            public CommonSchemaTiLi.UserRightResponse rights;
         }
 
         public class FundInfoResponse
@@ -69,9 +72,9 @@ namespace Prime.Plugins.Services.Base
             public bool withdraw;
         }
 
-        public class OrderInfoResponse : BaseSchema.BaseResponse<BaseSchema.OrderInfoDataResponse> { }
+        public class OrderInfoResponse : CommonSchemaTiLi.BaseResponse<CommonSchemaTiLi.OrderInfoDataResponse> { }
 
-        public class OrderInfoDataResponse : Dictionary<string, BaseSchema.OrderInfoDataEntryResponse> { }
+        public class OrderInfoDataResponse : Dictionary<string, CommonSchemaTiLi.OrderInfoDataEntryResponse> { }
 
         public class OrderInfoDataEntryResponse
         {
@@ -84,7 +87,7 @@ namespace Prime.Plugins.Services.Base
             public short status;
         }
 
-        public class TradeResponse : BaseSchema.BaseResponse<BaseSchema.TradeDataResponse> { }
+        public class TradeResponse : CommonSchemaTiLi.BaseResponse<CommonSchemaTiLi.TradeDataResponse> { }
 
         public class TradeDataResponse
         {
@@ -100,10 +103,10 @@ namespace Prime.Plugins.Services.Base
 
         public class AssetPairsResponse
         {
-            public Dictionary<string, BaseSchema.AssetPairsInfo> pairs;
+            public Dictionary<string, CommonSchemaTiLi.AssetPairsInfo> pairs;
         }
 
-        public class OrderBookResponse : Dictionary<string, BaseSchema.OrderBookEntryResponse>
+        public class OrderBookResponse : Dictionary<string, CommonSchemaTiLi.OrderBookEntryResponse>
         {
         }
 

@@ -14,7 +14,7 @@ namespace Prime.Tests.Providers
     {
         public TidexTests()
         {
-            Provider = Networks.I.Providers.OfType<TidexProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<TidexProviderTiLi>().FirstProvider();
         }
 
         #region Private

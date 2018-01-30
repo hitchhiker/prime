@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Api.Request.Response;
 
-namespace Prime.Plugins.Services.Base
+namespace Prime.Plugins.Services.Common
 {
-    public abstract partial class BaseProvider<TApi> : IOrderLimitProvider, IBalanceProvider
+    public abstract partial class CommonProviderTiLi<TApi> : IOrderLimitProvider, IBalanceProvider
     {
         public virtual async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {

@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Plugins.Services.Tidex;
-using Prime.Utility;
+using Prime.Plugins.Services.Base;
 
-namespace Prime.Plugins.Services.Base
+namespace Prime.Plugins.Services.Common
 {
     /// <summary>
-    /// Class is used as base class for Tidex and Liqui providers.
+    /// Common provider for Tidex and Liqui exchanges.
     /// </summary>
-    public abstract partial class BaseProvider<TApi> : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider where TApi : class, IBaseApi
+    public abstract partial class CommonProviderTiLi<TApi> : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider where TApi : class, ICommonApiTiLi
     {
         //From doc: All information is cached every 2 seconds, so there's no point in making more frequent requests.
         //https://tidex.com/public-api
@@ -47,13 +45,13 @@ namespace Prime.Plugins.Services.Base
             return r != null;
         }
 
-        protected void CheckResponse<T>(BaseSchema.BaseResponse<T> r)
+        protected void CheckResponse<T>(CommonSchemaTiLi.BaseResponse<T> r)
         {
             if (r.success != 1)
                 throw new ApiResponseException(r.error, this);
         }
 
-        protected BaseProvider()
+        protected CommonProviderTiLi()
         {
             // ApiProviderPublic = InitApiProviderPublic();// new RestApiClientProvider<ITidexApi>(TidexApiUrlPublic);
             // ApiProviderPrivate = InitApiProviderPrivate();  // new RestApiClientProvider<ITidexApi>(TidexApiUrlPrivate, this, (k) => new TidexAuthenticator(k).GetRequestModifierAsync);
