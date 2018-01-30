@@ -36,7 +36,7 @@ namespace Prime.Common
 
         public override string ToString()
         {
-            return $"{Type} {Price.ToDecimalValue()} [{Volume.ToDecimalValue()}]";
+            return Type + " " + Price.ToDecimalValue() + " [" + Volume.ToDecimalValue() + "]";
         }
 
         public OrderBookRecord Reverse(Asset asset)
@@ -44,9 +44,8 @@ namespace Prime.Common
             if (Price.Asset.Id == asset.Id)
                 throw new Exception("Cant reverse to the same 'Asset'");
 
-            var newType = Type == OrderType.Ask ? OrderType.Bid : OrderType.Ask;
-
-            return new OrderBookRecord(newType, Price.ReverseAsset(asset), new Money((1 / Price) * (Volume / Price), asset));
+            var np = Price.ReverseAsset(asset);
+            return new OrderBookRecord(Type == OrderType.Ask ? OrderType.Bid : OrderType.Ask, np, new Money(Volume * np, asset));
         }
 
         public OrderBookRecord Clone()

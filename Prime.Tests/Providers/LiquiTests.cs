@@ -14,7 +14,33 @@ namespace Prime.Tests.Providers
     {
         public LiquiTests()
         {
-            Provider = Networks.I.Providers.OfType<LiquiProvider>().FirstProvider();
+            Provider = Networks.I.Providers.OfType<LiquiProviderTiLiWe>().FirstProvider();
+        }
+
+        [TestMethod]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: AY: test using real money - Liqui.
+            base.TestGetTradeOrderStatus("98217034");
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            // TODO: AY: test using real money - Liqui.
+            base.TestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, 1m, new Money(1, Asset.UsdT));
         }
 
         [TestMethod]
@@ -29,8 +55,6 @@ namespace Prime.Tests.Providers
             var pairs = new List<AssetPair>()
             {
                 "ltc_btc".ToAssetPairRaw(),
-                "eth_btc".ToAssetPairRaw(),
-                "ans_btc".ToAssetPairRaw()
             };
 
             base.TestGetPricing(pairs, true);
@@ -48,7 +72,6 @@ namespace Prime.Tests.Providers
 
             base.TestGetAssetPairs(requiredPairs);
         }
-
 
         [TestMethod]
         public override void TestGetOrderBook()

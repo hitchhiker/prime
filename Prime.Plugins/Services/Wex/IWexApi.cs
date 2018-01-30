@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Prime.Plugins.Services.Common;
 using RestEase;
 
 namespace Prime.Plugins.Services.Wex
 {
-    internal interface IWexApi
+    public interface IWexApi : ICommonApiTiLiWe
     {
-        [Get("/ticker/{currencyPair}")]
-        Task<WexSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
-
-        [Get("/info")]
-        Task<WexSchema.AllAssetsResponse> GetAssetPairsAsync();
-
-        [Get("/depth/{currencyPair}")]
-        Task<WexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+        [Post("/")]
+        Task<WexSchema.WithdrawCoinResponse> WithdrawCoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

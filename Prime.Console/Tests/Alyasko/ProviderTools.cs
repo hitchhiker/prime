@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Prime.Common;
+using Prime.Utility;
 
 namespace Prime.Console.Tests.Alyasko
 {
@@ -16,6 +17,17 @@ namespace Prime.Console.Tests.Alyasko
             {
                 info.PrintReadableInfo();
             }
+        }
+
+        public void ListPrivateProviders()
+        {
+            System.Console.WriteLine("Providers that implement private API:");
+
+            var providers = Networks.I.Providers.OfType<INetworkProviderPrivate>().ToArray();
+            providers.ForEach(x =>
+            {
+                System.Console.WriteLine($"{x.Network.Name}");
+            });
         }
 
         public void ListOrderBookProviders()
@@ -54,7 +66,8 @@ namespace Prime.Console.Tests.Alyasko
         public void Go()
         {
             //GenerateProvidersReport();
-            ListOrderBookProviders();
+            // ListOrderBookProviders();
+            ListPrivateProviders();
             //ListProvidersThatSupport("XRP".ToAssetRaw());
         }
     }

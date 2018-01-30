@@ -1,52 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Prime.Plugins.Services.Common;
 
 namespace Prime.Plugins.Services.Wex
 {
-    internal class WexSchema
+    public class WexSchema : CommonSchemaTiLiWe
     {
-        internal class TickerResponse : Dictionary<string, TickerEntryResponse>
+        #region Private
+
+        public class WithdrawCoinResponse : BaseResponse<WithdrawCoinDataResponse>
         {
+
         }
 
-        internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
+        public class WithdrawCoinDataResponse
         {
+            /// <summary>
+            /// Transaction ID.
+            /// </summary>
+            public int tId;
+
+            /// <summary>
+            /// The amount sent including commission.
+            /// </summary>
+            public decimal amountSent;
+
+            /// <summary>
+            /// Balance after the request.
+            /// </summary>
+            public Dictionary<string, decimal> funds;
         }
 
-        internal class AllAssetsResponse
-        {
-            public long server_time;
-            public Dictionary<string, AssetPairResponse> pairs;
-        }
+        #endregion
 
-        internal class AssetPairResponse
-        {
-            public int decimal_places;
-            public int hidden;
-            public decimal min_price;
-            public decimal max_price;
-            public decimal min_amount;
-            public decimal fee;
-        }
-
-        internal class TickerEntryResponse
-        {
-            public decimal high;
-            public decimal low;
-            public decimal avg;
-            public decimal vol;
-            public decimal vol_cur;
-            public decimal last;
-            public decimal buy;
-            public decimal sell;
-            public long updated;
-        }
-
-        internal class OrderBookEntryResponse
-        {
-            public decimal[][] asks;
-            public decimal[][] bids;
-        }
     }
 }

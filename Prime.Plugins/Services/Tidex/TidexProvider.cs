@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteDB;
-using Newtonsoft.Json;
+﻿using LiteDB;
 using Prime.Common;
-using Prime.Plugins.Services.Kraken.Converters;
-using Prime.Plugins.Services.Tidex.Converters;
 using Prime.Utility;
 
 namespace Prime.Plugins.Services.Tidex
@@ -15,7 +7,7 @@ namespace Prime.Plugins.Services.Tidex
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://tidex.com/public-api
-    public partial class TidexProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate, IOrderBookProvider
+    public partial class TidexProviderTiLiWe : Common.CommonProviderTiLiWe<ITidexApi>
     {
         private const string TidexApiVersion = "3";
         private const string TidexApiUrlPublic = "https://api.tidex.com/api/" + TidexApiVersion;
@@ -23,197 +15,15 @@ namespace Prime.Plugins.Services.Tidex
 
         private static readonly ObjectId IdHash = "prime:tidex".GetObjectIdHashCode();
 
-        //From doc: All information is cached every 2 seconds, so there's no point in making more frequent requests.
-        //https://tidex.com/public-api
-        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(1, 2);
+        public override Network Network { get; } = Networks.I.Get("Tidex");
+        public override ObjectId Id => IdHash;
+        protected override RestApiClientProvider<ITidexApi> ApiProviderPublic { get; }
+        protected override RestApiClientProvider<ITidexApi> ApiProviderPrivate { get; }
 
-        public Network Network { get; } = Networks.I.Get("Tidex");
-
-        public bool Disabled => false;
-        public int Priority => 100;
-        public string AggregatorName => null;
-        public string Title => Network.Name;
-        public ObjectId Id => IdHash;
-        public IRateLimiter RateLimiter => Limiter;
-        public bool IsDirect => true;
-        public char? CommonPairSeparator => '_';
-
-        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-
-        private RestApiClientProvider<ITidexApi> ApiProviderPublic { get; }
-        private RestApiClientProvider<ITidexApi> ApiProviderPrivate { get; }
-
-        private Dictionary<string, object> CreateTidexPostBody()
+        public TidexProviderTiLiWe()
         {
-            return new Dictionary<string, object>();
-        }
-
-        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
-        {
-            var r = await GetBalancesAsync(context).ConfigureAwait(false);
-
-            return r != null;
-        }
-
-        private void CheckTidexResponse<T>(TidexSchema.BaseResponse<T> r)
-        {
-            if (r.success != 1)
-                throw new ApiResponseException(r.error, this);
-        }
-
-        public TidexProvider()
-        {
-            ApiProviderPublic = new RestApiClientProvider<ITidexApi>(TidexApiUrlPublic);
+            ApiProviderPublic = new RestApiClientProvider<ITidexApi>(TidexApiUrlPublic, this, (k) => null);
             ApiProviderPrivate = new RestApiClientProvider<ITidexApi>(TidexApiUrlPrivate, this, (k) => new TidexAuthenticator(k).GetRequestModifierAsync);
-        }
-
-        public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
-        {
-            var api = ApiProviderPublic.GetApi(context);
-            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
-
-            return r?.pairs?.Count > 0;
-        }
-
-        public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
-        {
-            var api = ApiProviderPublic.GetApi(context);
-
-            var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
-
-            if (r == null || r.pairs.Count == 0)
-            {
-                throw new ApiResponseException("No asset pairs returned", this);
-            }
-
-            var pairs = new AssetPairs();
-
-            foreach (string entry in r.pairs.Keys)
-            {
-                pairs.Add(entry.ToAssetPair(this));
-            }
-
-            return pairs;
-        }
-
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
-
-        private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
-        {
-            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
-            Bulk = new PricingBulkFeatures() { CanStatistics = true, CanVolume = true }
-        };
-
-        public PricingFeatures PricingFeatures => StaticPricingFeatures;
-
-        public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
-        {
-            if (context.ForSingleMethod)
-                return await GetPriceAsync(context).ConfigureAwait(false);
-
-            return await GetPricesAsync(context).ConfigureAwait(false);
-
-        }
-
-        public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
-        {
-            var api = ApiProviderPublic.GetApi(context);
-            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
-            var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
-
-            if (r == null || r.Count == 0)
-            {
-                throw new ApiResponseException("No tickers returned", this);
-            }
-
-            var ticker = r.FirstOrDefault().Value;
-
-            if (ticker != null)
-            {
-                return new MarketPrices(new MarketPrice(Network, context.Pair, ticker.last)
-                {
-                    PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, ticker.sell, ticker.buy, ticker.low, ticker.high),
-                    Volume = new NetworkPairVolume(Network, context.Pair, ticker.vol)
-                });
-            }
-            else
-            {
-                throw new ApiResponseException("No data returned", this);
-            }
-        }
-
-        public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
-        {
-            var api = ApiProviderPublic.GetApi(context);
-            var pairsCsv = string.Join("-", context.Pairs.Select(x => x.ToTicker(this).ToLower()));
-            var r = await api.GetTickerAsync(pairsCsv).ConfigureAwait(false);
-
-            if (r == null || r.Count == 0)
-            {
-                throw new ApiResponseException("No tickers returned", this);
-            }
-
-            var prices = new MarketPrices();
-
-            foreach (var pair in context.Pairs)
-            {
-                var currentTicker = r.FirstOrDefault(x => x.Key.ToAssetPair(this).Equals(pair)).Value;
-
-                if (currentTicker == null)
-                {
-                    prices.MissedPairs.Add(pair);
-                }
-                else
-                {
-                    prices.Add(new MarketPrice(Network, pair, currentTicker.last)
-                    {
-                        PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.sell, currentTicker.buy, currentTicker.low, currentTicker.high),
-                        Volume = new NetworkPairVolume(Network, pair, currentTicker.vol)
-                    });
-                }
-            }
-
-            return prices;
-        }
-
-        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
-        {
-            var api = ApiProviderPublic.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this).ToLower();
-
-            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
-            var orderBook = new OrderBook(Network, context.Pair);
-
-            var maxCount = Math.Min(1000, context.MaxRecordsCount);
-
-            r.TryGetValue(pairCode, out var response);
-
-            if (response == null)
-            {
-                throw new ApiResponseException("No depth info found");
-            }
-
-            var asks = response.asks.Take(maxCount);
-            var bids = response.bids.Take(maxCount);
-
-            foreach (var i in bids.Select(GetBidAskData))
-                orderBook.AddBid(i.Item1, i.Item2, true);
-
-            foreach (var i in asks.Select(GetBidAskData))
-                orderBook.AddAsk(i.Item1, i.Item2, true);
-
-            return orderBook;
-        }
-
-        private Tuple<decimal, decimal> GetBidAskData(decimal[] data)
-        {
-            decimal price = data[0];
-            decimal amount = data[1];
-
-            return new Tuple<decimal, decimal>(price, amount);
         }
     }
 }

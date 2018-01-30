@@ -30,7 +30,7 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
-                var test = new OhlcExporter() as ITestBase;
+                var test = new ProviderTools() as ITestBase;
                 test.Go();
             }
             else if (Environment.UserName.Equals("Sean"))
