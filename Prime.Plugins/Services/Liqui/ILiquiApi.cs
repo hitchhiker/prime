@@ -2,7 +2,7 @@
 
 namespace Prime.Plugins.Services.Liqui
 {
-    public interface ILiquiApi : ICommonApiTiLi
+    public interface ILiquiApi : ICommonApiTiLiWe
     {
 
     }

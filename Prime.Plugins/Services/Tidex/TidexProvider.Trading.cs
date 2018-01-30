@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.Tidex
 {
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://tidex.com/public-api
-    public partial class TidexProviderTiLi
+    public partial class TidexProviderTiLiWe
     {
         
     }

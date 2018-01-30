@@ -7,7 +7,9 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Wex
 {
-    public interface IWexApi : ICommonApiTiLi
+    public interface IWexApi : ICommonApiTiLiWe
     {
+        [Post("/")]
+        Task<WexSchema.WithdrawCoinResponse> WithdrawCoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

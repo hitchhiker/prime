@@ -5,14 +5,14 @@ using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Common
 {
-    public abstract partial class CommonProviderTiLi<TApi> : IOrderLimitProvider, IBalanceProvider
+    public abstract partial class CommonProviderTiLiWe<TApi> : IOrderLimitProvider, IBalanceProvider
     {
         public virtual async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
 
             var body = CreatePostBody();
-            body.Add("method", "getInfoExt");
+            body.Add("method", ApiMethodsConfig[ApiMethodNamesTiLiWe.GetInfoExt]);
 
             var r = await api.GetUserInfoExtAsync(body).ConfigureAwait(false);
 
@@ -34,7 +34,7 @@ namespace Prime.Plugins.Services.Common
             var api = ApiProviderPrivate.GetApi(context);
 
             var body = CreatePostBody();
-            body.Add("method", "Trade");
+            body.Add("method", ApiMethodsConfig[ApiMethodNamesTiLiWe.Trade]);
             body.Add("pair", context.Pair.ToTicker(this).ToLower());
             body.Add("type", context.IsBuy ? "buy" : "sell");
             body.Add("rate", context.Rate.ToDecimalValue());
@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.Common
             var api = ApiProviderPrivate.GetApi(context);
 
             var body = CreatePostBody();
-            body.Add("method", "orderInfo");
+            body.Add("method", ApiMethodsConfig[ApiMethodNamesTiLiWe.OrderInfo]);
             body.Add("order_id", context.RemoteGroupId);
 
             var r = await api.GetOrderInfoAsync(body).ConfigureAwait(false);

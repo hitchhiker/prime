@@ -12,11 +12,10 @@ namespace Prime.Plugins.Services.Common
     /// Common provider for Tidex and Liqui exchanges.
     /// </summary>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public abstract partial class CommonProviderTiLi<TApi> : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider where TApi : class, ICommonApiTiLi
+    public abstract partial class CommonProviderTiLiWe<TApi> : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider where TApi : class, ICommonApiTiLiWe
     {
         //From doc: All information is cached every 2 seconds, so there's no point in making more frequent requests.
         //https://tidex.com/public-api
-        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(1, 2);
 
         public abstract Network Network { get; }
 
@@ -25,7 +24,8 @@ namespace Prime.Plugins.Services.Common
         public virtual string AggregatorName => null;
         public string Title => Network.Name;
         public abstract ObjectId Id { get; }
-        public virtual IRateLimiter RateLimiter => Limiter;
+        public virtual IRateLimiter RateLimiter { get; } = new PerSecondRateLimiter(1, 2);
+
         public bool IsDirect => true;
         public virtual char? CommonPairSeparator => '_';
 
@@ -33,6 +33,13 @@ namespace Prime.Plugins.Services.Common
 
         protected abstract RestApiClientProvider<TApi> ApiProviderPublic { get; }
         protected abstract RestApiClientProvider<TApi> ApiProviderPrivate { get; }
+
+        protected Dictionary<ApiMethodNamesTiLiWe, string> ApiMethodsConfig { get; } = new Dictionary<ApiMethodNamesTiLiWe, string>()
+        {
+            { ApiMethodNamesTiLiWe.OrderInfo, "orderInfo" },
+            { ApiMethodNamesTiLiWe.Trade, "Trade" },
+            { ApiMethodNamesTiLiWe.GetInfoExt, "getInfoExt" },
+        };
 
         protected Dictionary<string, object> CreatePostBody()
         {
@@ -46,7 +53,7 @@ namespace Prime.Plugins.Services.Common
             return r != null;
         }
 
-        protected void CheckResponse<T>(CommonSchemaTiLi.BaseResponse<T> r)
+        protected void CheckResponse<T>(CommonSchemaTiLiWe.BaseResponse<T> r)
         {
             if (r.success != 1)
                 throw new ApiResponseException(r.error, this);

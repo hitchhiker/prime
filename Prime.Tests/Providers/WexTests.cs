@@ -24,6 +24,38 @@ namespace Prime.Tests.Providers
         }
 
         [TestMethod]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [TestMethod]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.TestGetTradeOrderStatus("98217034");
+        }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            // TODO: AY: Wex - test with real money.
+            base.TestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, 1m, new Money(1, Asset.Usd));
+        }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: AY: Wex - test with real money.
+            base.TestPlaceWithdrawal(new WalletAddress("testaddress"), new Money(1, Asset.Usd));
+        }
+
+        [TestMethod]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()

@@ -2,7 +2,7 @@
 
 namespace Prime.Plugins.Services.Tidex
 {
-    public interface ITidexApi : ICommonApiTiLi
+    public interface ITidexApi : ICommonApiTiLiWe
     {
         
     }

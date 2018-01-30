@@ -8,7 +8,7 @@ using Prime.Plugins.Services.Common;
 
 namespace Prime.Plugins.Services.Tidex
 {
-    internal class TidexSchema : CommonSchemaTiLi
+    internal class TidexSchema : CommonSchemaTiLiWe
     {
         #region Base
         

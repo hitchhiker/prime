@@ -7,7 +7,7 @@ using Prime.Plugins.Services.Common;
 
 namespace Prime.Plugins.Services.Liqui
 {
-    public class LiquiSchema : CommonSchemaTiLi
+    public class LiquiSchema : CommonSchemaTiLiWe
     {
         #region Base
 

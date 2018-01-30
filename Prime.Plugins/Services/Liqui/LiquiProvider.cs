@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.Liqui
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://liqui.io/api
-    public partial class LiquiProviderTiLi : Common.CommonProviderTiLi<ILiquiApi>
+    public partial class LiquiProviderTiLiWe : Common.CommonProviderTiLiWe<ILiquiApi>
     {
         private const string LiquiApiVersion = "3";
         private const string LiquiApiUrl = "https://api.liqui.io/api/" + LiquiApiVersion;
@@ -27,7 +27,7 @@ namespace Prime.Plugins.Services.Liqui
         protected override RestApiClientProvider<ILiquiApi> ApiProviderPublic { get; }
         protected override RestApiClientProvider<ILiquiApi> ApiProviderPrivate { get; }
 
-        public LiquiProviderTiLi() : base()
+        public LiquiProviderTiLiWe() : base()
         {
             ApiProviderPrivate = new RestApiClientProvider<ILiquiApi>(LiquiApiUrlPrivate, this, (k) => new LiquiAuthenticator(k).GetRequestModifierAsync);
             ApiProviderPublic = new RestApiClientProvider<ILiquiApi>(LiquiApiUrl, this, (k) => null);
