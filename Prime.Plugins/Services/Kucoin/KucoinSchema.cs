@@ -8,26 +8,41 @@ namespace Prime.Plugins.Services.Kucoin
     {
         #region Base
 
-        internal class ErrorResponseBase
+        internal class ErrorBaseResponse : BaseResponse
         {
-            public int code;
-            public string msg;
-            public bool? success;
+            public long timestamp;
+            public short status;
+            public string error;
+            public string message;
+            public string path;
+
+            //public int code;
+            //public string msg;
+            //public bool? success;
         }
 
-        internal class BaseResponse<TResult>
+        internal class BaseResponse
         {
             public string msg;
             public string code;
             public bool success;
-            public TResult data;
         }
 
         #endregion
 
         #region Public
 
-        internal class TickerResponse
+        internal class TickersResponse : ErrorBaseResponse
+        {
+            public TickerDataResponse[] data;
+        }
+
+        internal class TickerResponse : ErrorBaseResponse
+        {
+            public TickerDataResponse data;
+        }
+
+        internal class TickerDataResponse
         {
             public string coinType;
             public bool trading;
@@ -46,7 +61,12 @@ namespace Prime.Plugins.Services.Kucoin
             public decimal changeRate;
         }
 
-        internal class OrderBookResponse
+        internal class OrderBookResponse : ErrorBaseResponse
+        {
+            public OrderBookDataResponse data;
+        }
+    
+        internal class OrderBookDataResponse
         {
             public decimal[][] SELL;
             public decimal[][] BUY;
@@ -81,14 +101,38 @@ namespace Prime.Plugins.Services.Kucoin
             public bool hasTradePassword;
             public bool emailValidated;
             public string email;
+            public LoginRecordResponse loginRecord;
         }
 
-        internal class NewOrderResponse
+        internal class LoginRecordResponse
+        {
+            public LoginRecordEntryResponse last;
+            public LoginRecordEntryResponse current;
+        }
+
+        internal class LoginRecordEntryResponse
+        {
+            public string ip;
+            public string context;
+            public long time;
+        }
+
+        internal class NewOrderResponse : KucoinSchema.ErrorBaseResponse
+        {
+            public NewOrderDataResponse data;
+        }
+
+        internal class NewOrderDataResponse
         {
             public string orderOid;
         }
 
-        internal class QueryActiveOrdersResponse
+        internal class ActiveOrdersResponse : KucoinSchema.ErrorBaseResponse
+        {
+            public ActiveOrdersDataResponse data;
+        }
+
+        internal class ActiveOrdersDataResponse
         {
             public ActiveOrderEntryResponse[] SELL;
             public ActiveOrderEntryResponse[] BUY;
@@ -109,12 +153,17 @@ namespace Prime.Plugins.Services.Kucoin
             public long updatedAt;
         }
 
-        internal class QueryDealtOrdersResponse
+        internal class DealtOrdersResponse : KucoinSchema.ErrorBaseResponse
+        {
+            public DealtOrdersDataResponse data;
+        }
+
+        internal class DealtOrdersDataResponse
         {
             public DealtOrderEntryResponse[] datas;
         }
 
-        internal class WithdrawalRequestResponse
+        internal class WithdrawalRequestResponse : KucoinSchema.ErrorBaseResponse
         {
             
         }

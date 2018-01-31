@@ -13,28 +13,27 @@ namespace Prime.Plugins.Services.Kucoin
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
-            var rError = r.GetContent() as KucoinSchema.BaseResponse<object>;
-            if (rError?.success == false)
-                throw new ApiResponseException($"{rError.msg}", this, method);
+            if (r.GetContent() is KucoinSchema.ErrorBaseResponse rError)
+            {
+                if (!string.IsNullOrEmpty(rError.code))
+                    throw new ApiResponseException($"{rError.code}: {rError.msg}", this, method);
 
-            if (r.ResponseMessage.IsSuccessStatusCode) return;
+                if (!string.IsNullOrEmpty(rError.error))
+                    throw new ApiResponseException($"{rError.error}: {rError.message}", this, method);
+            }
 
-            if (rError != null && !string.IsNullOrWhiteSpace(rError.msg))
-                throw new ApiResponseException($"{rError.msg} ({rError.code})", this, method);
-
-            throw new ApiResponseException(r.ResponseMessage.ReasonPhrase, this, method);
+            throw new ApiResponseException($"{r.ResponseMessage.ReasonPhrase} ({r.ResponseMessage.StatusCode})",
+                this, method);
         }
 
-        //TODO: Not tested with real money
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.NewOrderAsync(context.Pair.ToTicker(this), context.IsBuy ? "BUY" : "SELL", context.Rate, context.Quantity).ConfigureAwait(false);
 
-            if (r.success == false)
-            {
-                throw new ApiResponseException(r.msg, this);
-            }
+            var rRaw = await api.NewOrderAsync(context.Pair.ToTicker(this), context.IsBuy ? "BUY" : "SELL", context.Rate, context.Quantity).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return new PlacedOrderLimitResponse(r.data.orderOid);
         }
@@ -46,22 +45,15 @@ namespace Prime.Plugins.Services.Kucoin
             if (!context.HasMarket)
                 throw new ApiResponseException("Market should be specified when querying order status", this);
 
-            if (string.IsNullOrWhiteSpace(context.RemoteGroupId))
-                throw new ApiResponseException("Order ID not specified", this);
+            var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false);
+            CheckResponseErrors(rActiveOrdersRaw);
 
-            var rActiveOrders = await api.QueryActiveOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false);
+            var rActiveOrders = rActiveOrdersRaw.GetContent();
 
-            if (rActiveOrders.success == false)
-            {
-                throw new ApiResponseException(rActiveOrders.msg, this);
-            }
+            var rDealtOrdersRaw = await api.QueryDealtOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false);
+            CheckResponseErrors(rDealtOrdersRaw);
 
-            var rDealtOrders = await api.QueryDealtOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false);
-
-            if (rDealtOrders.success == false)
-            {
-                throw new ApiResponseException(rDealtOrders.msg, this);
-            }
+            var rDealtOrders = rDealtOrdersRaw.GetContent();
 
             var activeOrderBuy = rActiveOrders.data.BUY.FirstOrDefault(x => x.oid.Equals(context.RemoteGroupId));
             var activeOrderSell = rActiveOrders.data.SELL.FirstOrDefault(x => x.oid.Equals(context.RemoteGroupId));
@@ -71,6 +63,8 @@ namespace Prime.Plugins.Services.Kucoin
             decimal amountInitial = 0;
             decimal amountRemaining = 0;
             bool isOpen = false;
+
+            // TODO: AY: throw Ex if no order found.
 
             if (activeOrderBuy != null)
             {
@@ -99,7 +93,6 @@ namespace Prime.Plugins.Services.Kucoin
             };
         }
 
-        //TODO: Not tested with real money
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var api = ApiProvider.GetApi(context);
