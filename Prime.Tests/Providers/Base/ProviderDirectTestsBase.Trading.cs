@@ -53,6 +53,16 @@ namespace Prime.Tests.Providers
             Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
             Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
 
+            if (market != null)
+            {
+                if (r.AmountInitial.HasValue)
+                    Assert.IsTrue(r.AmountInitial.Value.Asset.Equals(market.Asset2));
+                if (r.AmountFilled.HasValue)
+                    Assert.IsTrue(r.AmountFilled.Value.Asset.Equals(market.Asset2));
+                if (r.AmountRemaining.HasValue)
+                    Assert.IsTrue(r.AmountRemaining.Value.Asset.Equals(market.Asset2));
+            }
+
             if (r.IsOpen) Trace.WriteLine("Order is open");
             if (r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
             if (r.IsCanceled) Trace.WriteLine("Order is canceled");

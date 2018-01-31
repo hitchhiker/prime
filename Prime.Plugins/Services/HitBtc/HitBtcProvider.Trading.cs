@@ -87,8 +87,12 @@ namespace Prime.Plugins.Services.HitBtc
 
             var isOpen = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
             var isCancelRequested = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
-
-            return new TradeOrderStatus(r.clientOrderId, isOpen, isCancelRequested);
+            
+            return new TradeOrderStatus(r.clientOrderId, isOpen, isCancelRequested)
+            {
+                Rate = r.price,
+                AmountInitial = r.quantity
+            };
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();

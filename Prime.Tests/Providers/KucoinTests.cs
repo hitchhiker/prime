@@ -63,14 +63,14 @@ namespace Prime.Tests.Providers
         public override void TestPlaceWithdrawal()
         {
             // TODO: Not tested with real money
-            base.TestPlaceWithdrawal(new WalletAddress("address_placeholder"), new Money(22, Asset.Xrp));
+            base.TestPlaceWithdrawal(new WalletAddress("address_placeholder"), new Money(22, Asset.Usd));
         }
 
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
             var orderId = "21109502";
-            base.TestGetTradeOrderStatus(orderId, "KCS_BTCawdawd".ToAssetPairRaw());
+            base.TestGetTradeOrderStatus(orderId, "KCS_BTC".ToAssetPairRaw());
         }
 
         [TestMethod]

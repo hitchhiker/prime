@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
+using Prime.Common.Api.Request.Response;
 using RestEase;
 
 namespace Prime.Plugins.Services.Kucoin
@@ -15,15 +16,16 @@ namespace Prime.Plugins.Services.Kucoin
         {
             if (r.GetContent() is KucoinSchema.ErrorBaseResponse rError)
             {
-                if (!string.IsNullOrEmpty(rError.code))
+                if (!string.IsNullOrEmpty(rError.code) && !rError.success)
                     throw new ApiResponseException($"{rError.code}: {rError.msg}", this, method);
 
                 if (!string.IsNullOrEmpty(rError.error))
                     throw new ApiResponseException($"{rError.error}: {rError.message}", this, method);
             }
 
-            throw new ApiResponseException($"{r.ResponseMessage.ReasonPhrase} ({r.ResponseMessage.StatusCode})",
-                this, method);
+            if (!r.ResponseMessage.IsSuccessStatusCode)
+                throw new ApiResponseException($"{r.ResponseMessage.ReasonPhrase} ({r.ResponseMessage.StatusCode})",
+                    this, method);
         }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
@@ -59,37 +61,32 @@ namespace Prime.Plugins.Services.Kucoin
             var activeOrderSell = rActiveOrders.data.SELL.FirstOrDefault(x => x.oid.Equals(context.RemoteGroupId));
             var dealtOrder = rDealtOrders.data.datas.FirstOrDefault(x => x.orderOid.Equals(context.RemoteGroupId));
 
-            decimal price;
-            decimal amountInitial = 0;
-            decimal amountRemaining = 0;
-            bool isOpen = false;
-
-            // TODO: AY: throw Ex if no order found.
+            var price = 0m;
+            var amountInitial = 0m;
+            var isOpen = true;
 
             if (activeOrderBuy != null)
             {
-                isOpen = true;
                 price = activeOrderBuy.price;
             }
             else if (activeOrderSell != null)
             {
-                isOpen = true;
                 price = activeOrderSell.price;
             }
             else if (dealtOrder != null)
             {
                 price = dealtOrder.dealPrice;
+                isOpen = false;
             }
             else
             {
-                price = 0;
+                throw new NoTradeOrderException(context, this);
             }
 
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
                 Rate = price,
-                AmountInitial = new Money(amountInitial, context.Market.Asset1),
-                AmountRemaining = new Money(amountRemaining, context.Market.Asset1),
+                AmountInitial = new Money(amountInitial, context.Market.Asset2)
             };
         }
 
@@ -101,8 +98,7 @@ namespace Prime.Plugins.Services.Kucoin
 
             CheckResponseErrors(rRaw);
 
-            var r = rRaw.GetContent();
-
+            // No id is returned.
             return new WithdrawalPlacementResult();
         }
 
