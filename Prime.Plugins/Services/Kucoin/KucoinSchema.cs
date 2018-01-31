@@ -15,10 +15,6 @@ namespace Prime.Plugins.Services.Kucoin
             public string error;
             public string message;
             public string path;
-
-            //public int code;
-            //public string msg;
-            //public bool? success;
         }
 
         internal class BaseResponse
