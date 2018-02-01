@@ -18,9 +18,8 @@ namespace Prime.Plugins.Services.BitBay
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var headers = request.Headers;
-            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
-            var strForSign = $"moment={timeStamp}";
-            
+            var strForSign = request.Content?.ReadAsStringAsync()?.Result;
+
             var signature = HashHMACSHA512Hex(strForSign, ApiKey.Secret);
 
             headers.Add("API-Key", ApiKey.Key);

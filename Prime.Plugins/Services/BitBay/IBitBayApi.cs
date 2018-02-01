@@ -15,6 +15,6 @@ namespace Prime.Plugins.Services.BitBay
         Task<BitBaySchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
 
         [Post("/Trading/tradingApi.php")]
-        Task<object> GetUserInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<BitBaySchema.UserInfoResponse> GetUserInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

@@ -40,15 +40,18 @@ namespace Prime.Plugins.Services.BitBay
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
+            var timestamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
+
             var body = new Dictionary<string, object>
             {
-                { "method", "info" }
+                { "method", "info" },
+                { "moment", timestamp}
             };
-            
+
             var api = ApiProvider.GetApi(context);
             var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
 
-            return r != null;
+            return r != null && r.success && r.balances.Count > 0;
         }
 
         public BitBayProvider()

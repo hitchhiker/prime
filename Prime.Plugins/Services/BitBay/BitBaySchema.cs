@@ -6,6 +6,7 @@ namespace Prime.Plugins.Services.BitBay
 {
     internal class BitBaySchema
     {
+        #region Public
         internal class TickerResponse
         {
             public decimal max;
@@ -23,5 +24,21 @@ namespace Prime.Plugins.Services.BitBay
             public decimal[][] bids;
             public decimal[][] asks;
         }
+        #endregion
+
+        #region Private
+        internal class UserInfoResponse
+        {
+            public bool success;
+            public decimal fee;
+            public Dictionary<string, BalanceEntryResponse> balances;
+        }
+
+        internal class BalanceEntryResponse
+        {
+            public int available;
+            public int locked;
+        }
+        #endregion
     }
 }
