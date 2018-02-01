@@ -175,7 +175,7 @@ namespace Prime.Tests.Providers
             var r = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
             Assert.IsTrue(r);
         }
-
+        
         private void TestApiPublic(INetworkProvider provider)
         {
             var ctx = new NetworkProviderContext();

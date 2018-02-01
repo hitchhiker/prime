@@ -11,9 +11,9 @@ namespace Prime.Plugins.Services.BitBay
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitbay.net/en/api-public#details
-    public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
-        private const string BitBayApiUrl = "https://bitbay.net/API/Public/";
+        private const string BitBayApiUrl = "https://bitbay.net/API";
 
         private static readonly ObjectId IdHash = "prime:bitbay".GetObjectIdHashCode();
 
@@ -38,9 +38,22 @@ namespace Prime.Plugins.Services.BitBay
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var body = new Dictionary<string, object>
+            {
+                { "method", "info" }
+            };
+            
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
+
+            return r != null;
+        }
+
         public BitBayProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitBayApi>(BitBayApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBitBayApi>(BitBayApiUrl, this, (k) => new BitBayAuthenticator(k).GetRequestModifierAsync);
         }
 
         private AssetPairs _pairs;

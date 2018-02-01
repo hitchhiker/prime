@@ -8,10 +8,13 @@ namespace Prime.Plugins.Services.BitBay
 {
     internal interface IBitBayApi
     {
-        [Get("/{currencyPair}/ticker.json")]
+        [Get("/Public/{currencyPair}/ticker.json")]
         Task<BitBaySchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
-        [Get("/{currencyPair}/orderbook.json")]
+        [Get("/Public/{currencyPair}/orderbook.json")]
         Task<BitBaySchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Post("/Trading/tradingApi.php")]
+        Task<object> GetUserInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }
