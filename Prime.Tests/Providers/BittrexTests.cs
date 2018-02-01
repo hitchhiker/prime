@@ -63,7 +63,15 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
+            // TODO: AY: real money tests - Bittrex.
             base.TestPlaceOrderLimit("BTC_XRP".ToAssetPairRaw(), false, 2, new Money(1m, Asset.Xrp));
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: AY: real money tests - Bittrex.
+            base.TestGetTradeOrderStatus("remoteid");
         }
 
         [TestMethod]

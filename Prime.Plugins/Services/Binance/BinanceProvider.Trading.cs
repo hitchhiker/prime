@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.Binance
                 throw new ApiResponseException("Market should be specified when querying order status", this);
 
             if(!long.TryParse(context.RemoteGroupId, out var orderId))
-                throw new ApiResponseException("Incorrect order ID specified", this);
+                throw new ApiResponseException("Incorrect order ID specified - must be a number", this);
 
             var rRaw = await api.QueryOrderAsync(context.Market.ToTicker(this), orderId).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
