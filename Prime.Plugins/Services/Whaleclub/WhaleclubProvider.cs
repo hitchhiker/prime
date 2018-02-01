@@ -8,7 +8,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Whaleclub
 {
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class WhaleclubProvider : IAssetPairsProvider, INetworkProviderPrivate, IPublicPricingProvider
+    public class WhaleclubProvider : IAssetPairsProvider, IPublicPricingProvider
     {
         private const string WhaleclubApiVersion = "v1";
         private const string WhaleclubApiUrl = "https://api.whaleclub.co/" + WhaleclubApiVersion;
@@ -68,13 +68,6 @@ namespace Prime.Plugins.Services.Whaleclub
             }
 
             return pairs;
-        }
-
-        public ApiConfiguration GetApiConfiguration => ApiConfiguration.KeyOnly;
-        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
-        {
-            // TODO: implement.
-            return true;
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()

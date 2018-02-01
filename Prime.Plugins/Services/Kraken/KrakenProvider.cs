@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Kraken
 {
     // https://www.kraken.com/help/api#public-market-data
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public class KrakenProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public partial class KrakenProvider : IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         // TODO: AY implement multi-statistics.
 
@@ -35,9 +35,6 @@ namespace Prime.Plugins.Services.Kraken
         // https://www.kraken.com/help/api
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(10, 1);
         public IRateLimiter RateLimiter => Limiter;
-
-        public bool CanGenerateDepositAddress => true;
-        public bool CanPeekDepositAddress => true;
 
         private static readonly ObjectId IdHash = "prime:kraken".GetObjectIdHashCode();
         public ObjectId Id => IdHash;
@@ -215,27 +212,6 @@ namespace Prime.Plugins.Services.Kraken
             }
         }
 
-        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var body = CreateKrakenBody();
-
-            var r = await api.GetBalancesAsync(body).ConfigureAwait(false);
-
-            CheckResponseErrors(r);
-
-            var results = new BalanceResults(this);
-
-            foreach (var pair in r.result)
-            {
-                var asset = pair.Key.ToAsset(this);
-                results.Add(asset, pair.Value, 0);
-            }
-
-            return results;
-        }
-
         public IAssetCodeConverter GetAssetCodeConverter()
         {
             return KrakenCodeConverterBase.I;
@@ -305,42 +281,6 @@ namespace Prime.Plugins.Services.Kraken
         public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
             return Task.FromResult<TransferSuspensions>(null);
-        }
-
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var assets = await GetAssetPairsAsync(context).ConfigureAwait(false);
-
-            var addresses = new WalletAddresses();
-
-            foreach (var pair in assets)
-            {
-                var fundingMethod = await GetFundingMethodAsync(context, pair.Asset1).ConfigureAwait(false);
-
-                if (fundingMethod == null)
-                    throw new NullReferenceException("No funding method is found");
-
-                var localAddresses = await GetAddressesLocalAsync(api, fundingMethod, pair.Asset1).ConfigureAwait(false);
-
-                addresses.AddRange(localAddresses);
-            }
-
-            return addresses;
-        }
-
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var fundingMethod = await GetFundingMethodAsync(context, context.Asset).ConfigureAwait(false);
-
-            if (fundingMethod == null)
-                throw new NullReferenceException("No funding method is found");
-
-            var addresses = await GetAddressesLocalAsync(api, fundingMethod, context.Asset).ConfigureAwait(false);
-
-            return addresses;
         }
 
         public async Task<OhlcData> GetOhlcAsync(OhlcContext context)

@@ -62,10 +62,13 @@ namespace Prime.Plugins.Services.Poloniex
             body.Add("orderNumber", context.RemoteGroupId);
 
             var r = await api.GetOrderStatusAsync(body).ConfigureAwait(false);
+            
+            // TODO: AY: implement - Poloniex.
 
-            var status = new TradeOrderStatus();
-            //status.Rate
-            return null;
+            return new TradeOrderStatus()
+            {
+                
+            };
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();

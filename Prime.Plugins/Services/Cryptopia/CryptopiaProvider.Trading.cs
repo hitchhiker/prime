@@ -76,21 +76,36 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var order = openOrders.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
 
+            Money? amountInitial;
+            Money? amountRemaining;
+
             var isOpen = true;
 
-            if (order == null)
+            if (order != null)
+            {
+                amountInitial = order.AmountInitial;
+                amountRemaining = order.AmountRemaining;
+            }
+            else
             {
                 var tradeHistory = await GetTradeHistoryAsync(context).ConfigureAwait(false);
 
                 var trade = tradeHistory.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
 
-                if(trade == null)
+                if (trade == null)
                     throw new NoTradeOrderException(context, this);
+
+                amountInitial = trade.AmountInitial;
+                amountRemaining = trade.AmountRemaining;
 
                 isOpen = false;
             }
 
-            return new TradeOrderStatus(context.RemoteGroupId, isOpen, false);
+            return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
+            {
+                AmountInitial = amountInitial,
+                AmountRemaining = amountRemaining
+            };
         }
 
         // TODO: AY: find out MinimumTradeVolume in Cryptopia.
