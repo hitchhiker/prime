@@ -99,12 +99,12 @@ namespace Prime.Tests.Providers
             base.TestGetWithdrawalHistory(context);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public override void TestPlaceWithdrawal()
         {
             var token2fa = "249723";
 
-            base.TestPlaceWithdrawal(null, new Money(1000, Asset.Btc), "Debug payment", new Money(0.004m, Asset.Btc), token2fa);
+            base.TestPlaceWithdrawal(new WalletAddress("address"), new Money(1000, Asset.Btc), "Debug payment", new Money(0.004m, Asset.Btc), token2fa);
         }
 
         // [TestMethod]
