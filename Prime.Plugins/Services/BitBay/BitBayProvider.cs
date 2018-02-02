@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.BitBay
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitbay.net/en/api-public#details
-    public class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitBayApiUrl = "https://bitbay.net/API";
 
