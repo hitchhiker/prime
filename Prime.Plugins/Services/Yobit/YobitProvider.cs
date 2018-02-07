@@ -11,16 +11,18 @@ namespace Prime.Plugins.Services.Yobit
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.yobit.net/en/api/
-    public class YobitProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class YobitProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string YobitApiVersion = "3";
         private const string YobitApiUrl = "https://yobit.net/api/" + YobitApiVersion;
+        private const string YobitApiPrivateUrl = "https://yobit.net/tapi/";
 
         private static readonly ObjectId IdHash = "prime:yobit".GetObjectIdHashCode();
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
         private RestApiClientProvider<IYobitApi> ApiProvider { get; }
+        private RestApiClientProvider<IYobitApi> ApiProviderPrivate { get; }
 
         public Network Network { get; } = Networks.I.Get("Yobit");
 
@@ -39,6 +41,7 @@ namespace Prime.Plugins.Services.Yobit
         {
             Encoding.RegisterProvider(new YobitEncodingProvider());
             ApiProvider = new RestApiClientProvider<IYobitApi>(YobitApiUrl, this, (k) => null);
+            ApiProviderPrivate = new RestApiClientProvider<IYobitApi>(YobitApiPrivateUrl, this, (k) => new YobitAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -47,6 +50,14 @@ namespace Prime.Plugins.Services.Yobit
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
             return r?.pairs?.Count > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProviderPrivate.GetApi(context);
+            var r = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            return r != null && r.success;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

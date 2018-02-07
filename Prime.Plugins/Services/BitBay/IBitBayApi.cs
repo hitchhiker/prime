@@ -26,6 +26,5 @@ namespace Prime.Plugins.Services.BitBay
         
         [Post("/Trading/tradingApi.php")]
         Task<Response<BitBaySchema.WithdrawalRequestResponse>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
     }
 }
