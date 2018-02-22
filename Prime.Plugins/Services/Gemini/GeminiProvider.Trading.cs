@@ -8,7 +8,7 @@ namespace Prime.Plugins.Services.Gemini
 {
     public partial class GeminiProvider : IOrderLimitProvider
     {
-        public ApiConfiguration GetApiConfiguration { get; }
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
         public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             throw new NotImplementedException();
