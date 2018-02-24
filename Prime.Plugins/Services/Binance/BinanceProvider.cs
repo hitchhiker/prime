@@ -17,10 +17,12 @@ namespace Prime.Plugins.Services.Binance
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com";
 
-        private static readonly ObjectId IdHash = "prime:bitflyer".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:binance".GetObjectIdHashCode();
 
         private static readonly IReadOnlyList<Asset> SuspendedDeposit = "BTM,HCC,LLT,BTG".ToAssetsCsvRaw();
         private static readonly IReadOnlyList<Asset> SuspendedWithdrawal = "BTG".ToAssetsCsvRaw();
+
+        private static readonly AssetCodeConverterDictionary _assetCodeConverter = new AssetCodeConverterDictionary(new Dictionary<string, string> { { "BCH", "BCC" } });
 
         private RestApiClientProvider<IBinanceApi> ApiProvider { get; }
 
@@ -128,7 +130,7 @@ namespace Prime.Plugins.Services.Binance
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-            return null;
+            return _assetCodeConverter;
         }
 
 
