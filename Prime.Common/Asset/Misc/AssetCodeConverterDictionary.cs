@@ -16,7 +16,7 @@ namespace Prime.Common
 
         protected override Dictionary<string, string> GetRemoteLocalDictionary()
         {
-            throw new NotImplementedException();
+            return _remoteToLocalMap;
         }
 
     }
