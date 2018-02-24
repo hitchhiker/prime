@@ -22,6 +22,8 @@ namespace Prime.Plugins.Services.Binance
         private static readonly IReadOnlyList<Asset> SuspendedDeposit = "BTM,HCC,LLT,BTG".ToAssetsCsvRaw();
         private static readonly IReadOnlyList<Asset> SuspendedWithdrawal = "BTG".ToAssetsCsvRaw();
 
+        private static readonly AssetCodeConverterDictionary _assetCodeConverter = new AssetCodeConverterDictionary(new Dictionary<string, string> { { "BCH", "BCC" } });
+
         private RestApiClientProvider<IBinanceApi> ApiProvider { get; }
 
         public ObjectId Id => IdHash;
@@ -128,7 +130,7 @@ namespace Prime.Plugins.Services.Binance
 
         public IAssetCodeConverter GetAssetCodeConverter()
         {
-            return null;
+            return _assetCodeConverter;
         }
 
 
