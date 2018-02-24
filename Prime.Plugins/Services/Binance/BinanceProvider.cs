@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.Binance
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com";
 
-        private static readonly ObjectId IdHash = "prime:bitflyer".GetObjectIdHashCode();
+        private static readonly ObjectId IdHash = "prime:binance".GetObjectIdHashCode();
 
         private static readonly IReadOnlyList<Asset> SuspendedDeposit = "BTM,HCC,LLT,BTG".ToAssetsCsvRaw();
         private static readonly IReadOnlyList<Asset> SuspendedWithdrawal = "BTG".ToAssetsCsvRaw();
