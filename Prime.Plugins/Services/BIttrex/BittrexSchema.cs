@@ -8,6 +8,8 @@ namespace Prime.Plugins.Services.Bittrex
 {
     internal class BittrexSchema
     {
+        #region Base
+
         internal class BaseResponse<TResult>
         {
             public bool success;
@@ -15,35 +17,13 @@ namespace Prime.Plugins.Services.Bittrex
             public TResult result;
         }
 
+        #endregion
+
+        #region Private
+
         internal class BalancesResponse : BaseResponse<IList<BalanceResponse>> { }
 
         internal class DepositAddressResponse : BaseResponse<DepositAddressContainerResponse> { }
-
-        internal class MarketEntriesResponse : BaseResponse<IList<MarketEntryResponse>> { }
-
-        internal class TickerResponse : BaseResponse<TickerContainerResponse> { }
-
-        internal class OrderBookResponse : BaseResponse<OrderBookDataResponse> { }
-
-        internal class MarketSummariesResponse : BaseResponse<IList<MarketSummaryEntryResponse>> { }
-
-        internal class MarketSummaryEntryResponse
-        {
-            public string MarketName;
-            public decimal High;
-            public decimal Low;
-            public decimal Volume;
-            public decimal Last;
-            public decimal BaseVolume;
-            public DateTime TimeStamp;
-            public decimal Bid;
-            public decimal Ask;
-            public int OpenBuyOrders;
-            public int OpenSellOrders;
-            public decimal PrevDay;
-            public DateTime Created;
-            public object DisplayMarketName;
-        }
 
         internal class UuidResponse : BaseResponse<UuidEntry> { }
 
@@ -52,6 +32,8 @@ namespace Prime.Plugins.Services.Bittrex
         internal class GetOrderResponse : BaseResponse<GetOrderEntry> { }
 
         internal class GetOrderHistoryResponse : BaseResponse<IList<GetOrderHistoryEntry>> { }
+
+        internal class WithdrawalResponse : BaseResponse<UuidEntry> { }
 
         internal class UuidEntry
         {
@@ -109,6 +91,55 @@ namespace Prime.Plugins.Services.Bittrex
             public decimal Commission;
         }
 
+        internal class BalanceResponse
+        {
+            public string Currency;
+            public decimal Balance;
+            public decimal Available;
+            public decimal Pending;
+            public string CryptoAddress;
+            public bool Requested;
+            public string Uuid;
+        }
+
+        internal class DepositAddressContainerResponse
+        {
+            public string Currency;
+            public string Address;
+        }
+
+
+
+        #endregion
+
+        #region Public
+
+        internal class MarketEntriesResponse : BaseResponse<IList<MarketEntryResponse>> { }
+
+        internal class TickerResponse : BaseResponse<TickerContainerResponse> { }
+
+        internal class OrderBookResponse : BaseResponse<OrderBookDataResponse> { }
+
+        internal class MarketSummariesResponse : BaseResponse<IList<MarketSummaryEntryResponse>> { }
+
+        internal class MarketSummaryEntryResponse
+        {
+            public string MarketName;
+            public decimal High;
+            public decimal Low;
+            public decimal Volume;
+            public decimal Last;
+            public decimal BaseVolume;
+            public DateTime TimeStamp;
+            public decimal Bid;
+            public decimal Ask;
+            public int OpenBuyOrders;
+            public int OpenSellOrders;
+            public decimal PrevDay;
+            public DateTime Created;
+            public object DisplayMarketName;
+        }
+
         internal class OrderBookDataResponse
         {
             public OrderBookEntryResponse[] buy;
@@ -140,21 +171,7 @@ namespace Prime.Plugins.Services.Bittrex
             public DateTime Created;
         }
 
-        internal class BalanceResponse
-        {
-            public string Currency;
-            public decimal Balance;
-            public decimal Available;
-            public decimal Pending;
-            public string CryptoAddress;
-            public bool Requested;
-            public string Uuid;
-        }
+        #endregion
 
-        internal class DepositAddressContainerResponse
-        {
-            public string Currency;
-            public string Address;
-        }
     }
 }

@@ -52,5 +52,16 @@ namespace Prime.Plugins.Services.Bittrex
 
         [Get("/account/getorderhistory")]
         Task<BittrexSchema.GetOrderHistoryResponse> GetAccountHistory([Query] string currencyPair = null);
+
+        /// <summary>
+        /// Used to withdraw funds from your account.
+        /// </summary>
+        /// <param name="currency">A string literal for the currency (i.e. BTC).</param>
+        /// <param name="quantity">The quantity of coins to withdraw.</param>
+        /// <param name="address">The address where to send the funds.</param>
+        /// <param name="paymentid">Used for CryptoNotes/BitShareX/Nxt optional field (memo/paymentid).</param>
+        /// <returns>Returns the withdrawal uuid.</returns>
+        [Get("/account/withdraw")]
+        Task<BittrexSchema.WithdrawalResponse> Withdraw([Query] string currency, [Query] decimal quantity, [Query] string address, [Query] string paymentid = null);
     }
 }

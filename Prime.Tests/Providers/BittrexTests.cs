@@ -63,14 +63,14 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            // TODO: AY: real money tests - Bittrex.
+            // TODO: AY: reversed exchange - Bittrex.
             base.TestPlaceOrderLimit("BTC_XRP".ToAssetPairRaw(), false, 2, new Money(1m, Asset.Xrp));
         }
 
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
-            // TODO: AY: real money tests - Bittrex.
+            // TODO: AY: reversed exchange - Bittrex.
             base.TestGetTradeOrderStatus("remoteid");
         }
 
@@ -98,6 +98,13 @@ namespace Prime.Tests.Providers
         public override void TestGetOrderBook()
         {
             base.TestGetOrderBook("BTC_XRP".ToAssetPairRaw(), false);
+        }
+
+        [TestMethod]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: AY: real money tests - Bittrex.
+            base.TestPlaceWithdrawal(new WalletAddress("123123"), new Money(500, Asset.Xrp));
         }
     }
 }

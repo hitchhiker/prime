@@ -7,7 +7,7 @@ using Prime.Common;
 
 namespace Prime.Plugins.Services.Bittrex
 {
-    public partial class BittrexProvider : IOrderLimitProvider
+    public partial class BittrexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         // TODO: AY: BittrexProvider, review MinimumTradeVolume.
         public MinimumTradeVolume[] MinimumTradeVolume { get; } = { new MinimumTradeVolume() { MinimumSell = 0.011m, MinimumBuy = 0.011m } }; //50K Satoshi /4 USD
@@ -26,8 +26,8 @@ namespace Prime.Plugins.Services.Bittrex
             var api = ApiProvider.GetApi(context);
             var remotePair = context.Pair.ToTicker(this);
 
-            var r = context.IsSell ? 
-                await api.GetMarketSellLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false) : 
+            var r = context.IsSell ?
+                await api.GetMarketSellLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false) :
                 await api.GetMarketBuyLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false);
 
             CheckResponseErrors(r);
@@ -103,6 +103,25 @@ namespace Prime.Plugins.Services.Bittrex
             {
                 AmountInitial = r.result.Quantity,
                 AmountRemaining = r.result.QuantityRemaining
+            };
+        }
+
+        public bool IsWithdrawalFeeIncluded => true;
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var r = context.HasDescription
+                ? await api.Withdraw(context.Amount.Asset.ToRemoteCode(this), context.Amount.ToDecimalValue(),
+                    context.Address.Address, context.Description).ConfigureAwait(false)
+                : await api.Withdraw(context.Amount.Asset.ToRemoteCode(this), context.Amount.ToDecimalValue(),
+                    context.Address.Address).ConfigureAwait(false);
+
+            CheckResponseErrors(r);
+
+            return new WithdrawalPlacementResult()
+            {
+                WithdrawalRemoteId = r.result.uuid
             };
         }
     }
