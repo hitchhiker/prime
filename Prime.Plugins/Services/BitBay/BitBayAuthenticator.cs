@@ -10,7 +10,6 @@ namespace Prime.Plugins.Services.BitBay
 {
     public class BitBayAuthenticator : BaseAuthenticator
     {
-
         public BitBayAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }

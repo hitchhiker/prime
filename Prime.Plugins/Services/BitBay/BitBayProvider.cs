@@ -10,15 +10,14 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.BitBay
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://bitbay.net/en/api-public#details
+    // https://bitbay.net/en/api-private#details
     public partial class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitBayApiUrl = "https://bitbay.net/API";
 
         private static readonly ObjectId IdHash = "prime:bitbay".GetObjectIdHashCode();
-
-        //Nothing mentioned in documentation.
-        private static readonly IRateLimiter Limiter = new NoRateLimits();
 
         private RestApiClientProvider<IBitBayApi> ApiProvider { get; }
         //List was not found anywhere - just put together based on crypto currencies supported by BitBay according to https://en.bitcoin.it/wiki/BitBay.
@@ -31,6 +30,9 @@ namespace Prime.Plugins.Services.BitBay
         public string AggregatorName => null;
         public string Title => Network.Name;
         public ObjectId Id => IdHash;
+
+        // The rate limit is 1 req / second.
+        private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(1, 1);
         public IRateLimiter RateLimiter => Limiter;
         public char? CommonPairSeparator => null;
 

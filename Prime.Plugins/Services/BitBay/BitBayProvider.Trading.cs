@@ -34,13 +34,13 @@ namespace Prime.Plugins.Services.BitBay
 
             var body = new Dictionary<string, object>
             {
-                { "method", "trade" },
-                { "moment", timestamp},
-                { "type", context.IsBuy ? "buy" : "sell"},
+                {"method", "trade"},
+                {"moment", timestamp},
+                {"type", context.IsBuy ? "buy" : "sell"},
                 {"currency", context.Pair.Asset1.ShortCode},
-                { "amount", context.Quantity},
+                {"amount", context.Quantity},
                 {"payment_currency", context.Pair.Asset2.ShortCode},
-                { "rate", context.Rate.ToDecimalValue()}
+                {"rate", context.Rate.ToDecimalValue()}
             };
 
             var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
