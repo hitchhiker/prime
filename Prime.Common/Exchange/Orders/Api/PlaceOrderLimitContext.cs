@@ -5,6 +5,15 @@ namespace Prime.Common
 {
     public class PlaceOrderLimitContext : NetworkProviderPrivateContext
     {
+        /// <summary>
+        /// Places buy/sell limit order to specified market.
+        /// </summary>
+        /// <param name="userContext">User specified information.</param>
+        /// <param name="pair">The market where limit order is to be placed.</param>
+        /// <param name="isBuy">Type of limit order - sell or buy.</param>
+        /// <param name="quantity">The quantity of base asset (e.g. for BTC-USD market quantity of BTC).</param>
+        /// <param name="rate">The rate in quote asset currency (e.g. for BTC-USD market rate expressed in USD).</param>
+        /// <param name="logger"></param>
         public PlaceOrderLimitContext(UserContext userContext, AssetPair pair, bool isBuy, decimal quantity, Money rate, ILogger logger = null) : base(userContext, logger)
         {
             Pair = pair;

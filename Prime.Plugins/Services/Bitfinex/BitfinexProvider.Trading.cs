@@ -19,7 +19,6 @@ namespace Prime.Plugins.Services.Bitfinex
             var body = new BitfinexSchema.NewOrderRequest.Descriptor
             {
                 symbol = context.Pair.ToTicker(this),
-                type = "exchange market",
                 amount = context.Quantity.ToString(CultureInfo.InvariantCulture),
                 price = context.Rate.ToDecimalValue().ToString(CultureInfo.InvariantCulture),
                 side = context.IsSell ? "sell" : "buy"
