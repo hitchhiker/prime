@@ -8,7 +8,6 @@ namespace Prime.Plugins.Services.BitMex
     {
         protected override Dictionary<string, string> GetRemoteLocalDictionary()
         {
-            // Remote codes are case sensitive.
             return new Dictionary<string, string>
             {
                 {"XBT", "BTC"}

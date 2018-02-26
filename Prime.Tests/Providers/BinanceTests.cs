@@ -60,6 +60,7 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
+                "BCH_BTC".ToAssetPairRaw(),
                 "LTC_BTC".ToAssetPairRaw(),
                 "BNT_BTC".ToAssetPairRaw(),
                 "SALT_ETH".ToAssetPairRaw(),
