@@ -91,7 +91,7 @@ namespace Prime.Plugins.Services.HitBtc
             return new TradeOrderStatus(r.clientOrderId, isOpen, isCancelRequested)
             {
                 Rate = r.price,
-                AmountInitialNumeric = r.quantity
+                AmountInitial = r.quantity
             };
         }
 

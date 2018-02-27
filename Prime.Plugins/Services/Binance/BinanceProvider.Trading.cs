@@ -76,8 +76,8 @@ namespace Prime.Plugins.Services.Binance
             return new TradeOrderStatus(r.orderId.ToString(), isOpen, isCancelRequested)
             {
                 Rate = r.price,
-                AmountInitialNumeric = new Money(r.origQty, context.Market.Asset1),
-                AmountRemainingNumeric = new Money(r.origQty - r.executedQty, context.Market.Asset1),
+                AmountInitial = new Money(r.origQty, context.Market.Asset1),
+                AmountRemaining = new Money(r.origQty - r.executedQty, context.Market.Asset1),
             };
         }
 
