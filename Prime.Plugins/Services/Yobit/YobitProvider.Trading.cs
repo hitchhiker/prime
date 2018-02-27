@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.Yobit
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
                 Rate = order.returnData.Value.rate,
-                AmountInitialNumeric = new Money(order.returnData.Value.start_amount, context.Market.Asset2)
+                AmountInitialNumeric = order.returnData.Value.start_amount
             };
         }
 
