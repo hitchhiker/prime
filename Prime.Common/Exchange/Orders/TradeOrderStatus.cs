@@ -18,10 +18,10 @@
         public bool IsCancelRequested { get; }
 
         public decimal? Rate { get; set; }
-        public Money? AmountInitial { get; set; }
-        public Money? AmountRemaining { get; set; }
+        public decimal? AmountInitialNumeric { get; set; }
+        public decimal? AmountRemainingNumeric { get; set; }
 
-        public Money? AmountFilled => AmountInitial.HasValue && AmountRemaining.HasValue ? AmountInitial.Value - AmountRemaining.Value : (Money?) null;
+        public decimal? AmountFilledNumeric => AmountInitialNumeric.HasValue && AmountRemainingNumeric.HasValue ? AmountInitialNumeric.Value - AmountRemainingNumeric.Value : (Money?) null;
 
         public bool IsClosed => IsFound && !IsOpen;
         public bool IsCanceled => IsCancelRequested && IsClosed;

@@ -101,8 +101,8 @@ namespace Prime.Plugins.Services.Bittrex
 
             return r?.result == null ? new TradeOrderStatus() : new TradeOrderStatus(r.result.OrderUuid, r.result.IsOpen, r.result.CancelInitiated)
             {
-                AmountInitial = r.result.Quantity,
-                AmountRemaining = r.result.QuantityRemaining
+                AmountInitialNumeric = r.result.Quantity,
+                AmountRemainingNumeric = r.result.QuantityRemaining
             };
         }
 

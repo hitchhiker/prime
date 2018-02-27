@@ -51,8 +51,8 @@ namespace Prime.Plugins.Services.Bitfinex
             return new TradeOrderStatus(r.id.ToString(), r.is_live, r.is_cancelled)
             {
                 Rate = r.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? r.price : r.avg_execution_price,
-                AmountInitial = r.original_amount,
-                AmountRemaining = r.remaining_amount
+                AmountInitialNumeric = r.original_amount,
+                AmountRemainingNumeric = r.remaining_amount
             };
         }
 

@@ -65,8 +65,8 @@ namespace Prime.Plugins.Services.Common
             return new TradeOrderStatus(context.RemoteGroupId, order.status == 0, order.status == 2 || order.status == 3)
             {
                 Rate = order.rate,
-                AmountInitial = order.start_amount,
-                AmountRemaining = order.amount
+                AmountInitialNumeric = order.start_amount,
+                AmountRemainingNumeric = order.amount
             };
         }
 

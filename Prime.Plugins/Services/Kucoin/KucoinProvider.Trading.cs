@@ -86,7 +86,7 @@ namespace Prime.Plugins.Services.Kucoin
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
                 Rate = price,
-                AmountInitial = new Money(amountInitial, context.Market.Asset2)
+                AmountInitialNumeric = new Money(amountInitial, context.Market.Asset2)
             };
         }
 

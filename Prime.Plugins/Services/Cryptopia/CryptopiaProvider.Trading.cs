@@ -83,8 +83,8 @@ namespace Prime.Plugins.Services.Cryptopia
 
             if (order != null)
             {
-                amountInitial = order.AmountInitial;
-                amountRemaining = order.AmountRemaining;
+                amountInitial = order.AmountInitialNumeric;
+                amountRemaining = order.AmountRemainingNumeric;
             }
             else
             {
@@ -95,16 +95,16 @@ namespace Prime.Plugins.Services.Cryptopia
                 if (trade == null)
                     throw new NoTradeOrderException(context, this);
 
-                amountInitial = trade.AmountInitial;
-                amountRemaining = trade.AmountRemaining;
+                amountInitial = trade.AmountInitialNumeric;
+                amountRemaining = trade.AmountRemainingNumeric;
 
                 isOpen = false;
             }
 
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
-                AmountInitial = amountInitial,
-                AmountRemaining = amountRemaining
+                AmountInitialNumeric = amountInitial,
+                AmountRemainingNumeric = amountRemaining
             };
         }
 

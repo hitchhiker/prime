@@ -53,16 +53,6 @@ namespace Prime.Tests.Providers
             Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
             Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
 
-            if (market != null)
-            {
-                if (r.AmountInitial.HasValue)
-                    Assert.IsTrue(r.AmountInitial.Value.Asset.Equals(market.Asset2));
-                if (r.AmountFilled.HasValue)
-                    Assert.IsTrue(r.AmountFilled.Value.Asset.Equals(market.Asset2));
-                if (r.AmountRemaining.HasValue)
-                    Assert.IsTrue(r.AmountRemaining.Value.Asset.Equals(market.Asset2));
-            }
-
             if (r.IsOpen) Trace.WriteLine("Order is open");
             if (r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
             if (r.IsCanceled) Trace.WriteLine("Order is canceled");
@@ -70,9 +60,9 @@ namespace Prime.Tests.Providers
             if (r.IsFound) Trace.WriteLine("Order is found");
 
             if (r.Rate.HasValue) Trace.WriteLine($"The rate of order is {r.Rate.Value}");
-            if (r.AmountInitial.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitial.Value.Display}");
-            if (r.AmountFilled.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilled.Value.Display}");
-            if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value.Display}");
+            if (r.AmountInitialNumeric.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitialNumeric.Value}");
+            if (r.AmountFilledNumeric.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilledNumeric.Value}");
+            if (r.AmountRemainingNumeric.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemainingNumeric.Value}");
         }
 
         private void PlaceOrderLimit(IOrderLimitProvider provider, AssetPair market, bool isBuy, decimal quantity, Money rate)

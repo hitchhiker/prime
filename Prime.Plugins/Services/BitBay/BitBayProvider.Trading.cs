@@ -81,7 +81,7 @@ namespace Prime.Plugins.Services.BitBay
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
                 Rate = order.current_price,
-                AmountInitial = new Money(order.start_price, context.Market.Asset2)
+                AmountInitialNumeric = new Money(order.start_price, context.Market.Asset2)
             };
         }
 
