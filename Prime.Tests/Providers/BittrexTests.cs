@@ -103,8 +103,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceWithdrawal()
         {
-            // TODO: AY: real money tests - Bittrex.
-            base.TestPlaceWithdrawal(new WalletAddress("123123"), new Money(500, Asset.Xrp));
+            base.TestPlaceWithdrawal(new WalletAddress("13zPXAsFofXXkczMg9bB6x1L9BWK9Yiawr"), new Money(0.00004911m, Asset.Btc));
         }
     }
 }
