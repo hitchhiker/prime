@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
+using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Bitfinex
 {
@@ -33,13 +34,16 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
+            if (!long.TryParse(context.RemoteGroupId, out var remoteId))
+                throw new ApiBaseException("Order remote id should be of a number type", this);
+
             var body = new BitfinexSchema.OrderStatusRequest.Descriptor()
             {
-                order_id = long.Parse(context.RemoteGroupId)
+                order_id = remoteId
             };
 
             var rRaw = await api.GetOrderStatusAsync(body).ConfigureAwait(false);
@@ -56,10 +60,54 @@ namespace Prime.Plugins.Services.Bitfinex
             };
         }
 
+        public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            if(!long.TryParse(context.RemoteGroupId, out var remoteId))
+                throw new ApiBaseException("Order remote id should be of a number type", this);
+
+            var body = new BitfinexSchema.ActiveOrdersRequest.Descriptor();
+
+            var rActiveOrdersRaw = await api.GetActiveOrdersAsync(body).ConfigureAwait(false);
+            CheckBitfinexResponseErrors(rActiveOrdersRaw);
+
+            var rActiveOrders = rActiveOrdersRaw.GetContent();
+
+            var order = rActiveOrders.FirstOrDefault(x => x.id == remoteId);
+
+            AssetPair market;
+
+            if (order == null)
+            {
+                var bodyOrdersHistory = new BitfinexSchema.OrdersHistoryRequest.Descriptor();
+
+                var rHistoryOrdersRaw = await api.GetOrdersHistoryAsync(bodyOrdersHistory).ConfigureAwait(false);
+                CheckBitfinexResponseErrors(rHistoryOrdersRaw);
+
+                var rHistoryOrders = rHistoryOrdersRaw.GetContent();
+                order = rHistoryOrders.FirstOrDefault(x => x.id == remoteId);
+
+                if(order == null)
+                    throw new NoTradeOrderException(context, this);
+            }
+
+            market = order.symbol.ToAssetPair(this, 3);
+
+            return new OrderMarketResponse(market);
+        }
+
         public MinimumTradeVolume[] MinimumTradeVolume { get; } =
         {
             new MinimumTradeVolume(new AssetPair("XRP", "USD"), new Money(10, Asset.Usd), new Money(12, Asset.Xrp))
         };
+
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, true)
+        {
+            // Order History limited to last 3 days and 1 request per minute.
+            MarketByOrderRequstAffectsRateLimiter = true
+        };
+        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {

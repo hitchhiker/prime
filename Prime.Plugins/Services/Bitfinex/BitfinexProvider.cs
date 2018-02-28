@@ -50,10 +50,10 @@ namespace Prime.Plugins.Services.Bitfinex
         {
             if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
             {
-                if (rawResponse.GetContent() is BitfinexSchema.BaseResponse rBase)
+                if (rawResponse.TryGetContent(out BitfinexSchema.BaseResponse baseResponse))
                 {
-                    var message = String.IsNullOrWhiteSpace(rBase.message) ? "Unknown error occurred" : rBase.message;
-                    throw new ApiResponseException(message, this, methodName);
+                    var message = String.IsNullOrWhiteSpace(baseResponse.message) ? "Unknown error occurred" : baseResponse.message;
+                    throw new ApiResponseException(message.TrimEnd("."), this, methodName);
                 }
                 else
                 {
@@ -100,10 +100,8 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var r = rRaw.GetContent();
 
-            if (r == null || r.Length == 0)
-            {
+            if (r.Length == 0)
                 throw new ApiResponseException("No asset pairs returned", this);
-            }
 
             var pairs = new AssetPairs();
 
@@ -149,7 +147,11 @@ namespace Prime.Plugins.Services.Bitfinex
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
 
-            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var rRaw = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
             var orderBook = new OrderBook(Network, context.Pair);
 
             var maxCount = Math.Min(1000, context.MaxRecordsCount);

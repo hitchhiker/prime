@@ -10,7 +10,16 @@ namespace Prime.Plugins.Services.Bittrex
     public partial class BittrexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         // TODO: AY: BittrexProvider, review MinimumTradeVolume.
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            // TODO: AY: implement GetMarketFromOrderAsync.
+            throw new NotImplementedException();
+        }
+
         public MinimumTradeVolume[] MinimumTradeVolume { get; } = { new MinimumTradeVolume() { MinimumSell = 0.011m, MinimumBuy = 0.011m } }; //50K Satoshi /4 USD
+
+        public OrderLimitFeatures OrderLimitFeatures { get; }
 
         private TradeOrderType GetTradeOrderType(string tradeOrderTypeSchema)
         {
@@ -77,7 +86,7 @@ namespace Prime.Plugins.Services.Bittrex
             return orders;
         }
 
-        public async Task<TradeOrder> GetOrderDetails(RemoteIdContext context)
+        public async Task<TradeOrder> GetOrderDetails(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
@@ -92,7 +101,7 @@ namespace Prime.Plugins.Services.Bittrex
             };
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);

@@ -40,7 +40,13 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
-            base.TestGetTradeOrderStatus("8762360224");
+            base.TestGetTradeOrderStatus("876236022465");
+        }
+
+        [TestMethod]
+        public override void TestGetMarketFromOrder()
+        {
+            base.TestGetMarketFromOrder("8083100177");
         }
 
         [TestMethod]

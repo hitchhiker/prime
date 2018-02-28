@@ -19,11 +19,17 @@ namespace Prime.Plugins.Services.Gemini
             throw new NotImplementedException();
         }
 
-        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
         {
             throw new NotImplementedException();
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; }
+        public OrderLimitFeatures OrderLimitFeatures { get; }
     }
 }

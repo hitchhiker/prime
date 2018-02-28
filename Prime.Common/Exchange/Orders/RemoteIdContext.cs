@@ -1,20 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Prime.Utility;
 
 namespace Prime.Common
 {
+    /// <summary>
+    /// This context is used to get details of order, withdrawal, deposit and other actions that have unique Id.
+    /// </summary>
     public class RemoteIdContext : NetworkProviderPrivateContext
     {
         public readonly string RemoteGroupId;
 
-        public RemoteIdContext(UserContext userContext, string remoteGroupId, ILogger logger = null) : base(userContext, logger)
+        public RemoteIdContext(UserContext userContext, string remoteId, ILogger logger = null) : base(userContext, logger)
         {
-            RemoteGroupId = remoteGroupId;
+            RemoteGroupId = remoteId;
         }
-
-        /// <summary>
-        /// Required for some exchanges that don't support direct status querying (Cryptopia).
-        /// </summary>
-        public AssetPair Market = AssetPair.Empty;
-        public bool HasMarket => !Equals(Market, AssetPair.Empty);
     }
 }

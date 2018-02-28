@@ -30,6 +30,15 @@ namespace Prime.Tests.Providers
                 PlaceOrderLimit(p.Provider, market, isBuy, quantity, rate);
         }
 
+        public virtual void TestGetMarketFromOrder() { }
+
+        public void TestGetMarketFromOrder(string remoteOrderId)
+        {
+            var p = IsType<IOrderLimitProvider>();
+            if (p.Success)
+                GetMarketFromOrder(p.Provider, remoteOrderId);
+        }
+
         public virtual void TestGetBalances()
         {
             var p = IsType<IBalanceProvider>();
@@ -43,25 +52,12 @@ namespace Prime.Tests.Providers
 
         private void GetTradeOrderStatus(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
-            var context = new RemoteIdContext(UserContext.Current, remoteOrderId);
-
-            if (market != null)
-                context.Market = market;
+            var context = new RemoteMarketIdContext(UserContext.Current, remoteOrderId, market);
 
             var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
 
             Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
             Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
-
-            if (market != null)
-            {
-                if (r.AmountInitial.HasValue)
-                    Assert.IsTrue(r.AmountInitial.Value.Asset.Equals(market.Asset2));
-                if (r.AmountFilled.HasValue)
-                    Assert.IsTrue(r.AmountFilled.Value.Asset.Equals(market.Asset2));
-                if (r.AmountRemaining.HasValue)
-                    Assert.IsTrue(r.AmountRemaining.Value.Asset.Equals(market.Asset2));
-            }
 
             if (r.IsOpen) Trace.WriteLine("Order is open");
             if (r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
@@ -70,9 +66,9 @@ namespace Prime.Tests.Providers
             if (r.IsFound) Trace.WriteLine("Order is found");
 
             if (r.Rate.HasValue) Trace.WriteLine($"The rate of order is {r.Rate.Value}");
-            if (r.AmountInitial.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitial.Value.Display}");
-            if (r.AmountFilled.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilled.Value.Display}");
-            if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value.Display}");
+            if (r.AmountInitial.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitial.Value}");
+            if (r.AmountFilled.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilled.Value}");
+            if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
         }
 
         private void PlaceOrderLimit(IOrderLimitProvider provider, AssetPair market, bool isBuy, decimal quantity, Money rate)
@@ -83,6 +79,18 @@ namespace Prime.Tests.Providers
 
             Assert.IsTrue(!String.IsNullOrWhiteSpace(r.RemoteOrderGroupId));
             Trace.WriteLine($"Remote trade order id: {r.RemoteOrderGroupId}");
+        }
+
+        private void GetMarketFromOrder(IOrderLimitProvider provider, string remoteOrderId)
+        {
+            var context = new RemoteIdContext(UserContext.Current, remoteOrderId);
+
+            var r = AsyncContext.Run(() => provider.GetMarketFromOrderAsync(context));
+
+            Trace.WriteLine($"Remote trade order id is {remoteOrderId}, market is {r.Market}");
+
+            Assert.IsTrue(r.Market != null, "Returned market is null");
+            Assert.IsTrue(!Equals(r.Market, AssetPair.Empty), "Returned market is AssetPair.Empty");
         }
 
         private void GetBalances(IBalanceProvider provider)

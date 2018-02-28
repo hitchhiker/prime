@@ -12,17 +12,5 @@ namespace Prime.Common
         {
             
         }
-
-        public AssetPairNotSupportedException(Exception exception, INetworkProvider provider, [CallerMemberName] string method = "Unknown") : base(exception, provider, method)
-        {
-        }
-
-        public AssetPairNotSupportedException(string message) : base(message)
-        {
-        }
-
-        public AssetPairNotSupportedException(string message, INetworkProvider provider, [CallerMemberName] string method = "Unknown") : base(message, provider, method)
-        {
-        }
     }
 }

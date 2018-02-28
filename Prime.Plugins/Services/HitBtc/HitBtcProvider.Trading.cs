@@ -76,7 +76,7 @@ namespace Prime.Plugins.Services.HitBtc
             return new Dictionary<string, object>();
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -95,7 +95,14 @@ namespace Prime.Plugins.Services.HitBtc
             };
         }
 
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            // TODO: AY: implement GetMarketFromOrderAsync.
+            throw new NotImplementedException();
+        }
+
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+        public OrderLimitFeatures OrderLimitFeatures { get; }
 
         // When 50 XRP are submitted, 49.491000 XRP will be received.
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();

@@ -40,15 +40,22 @@ namespace Prime.Plugins.Services.BitBay
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
-        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        private Dictionary<string, object> CreatePostBody(string method)
         {
             var timestamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
 
             var body = new Dictionary<string, object>
             {
-                { "method", "info" },
+                { "method", method },
                 { "moment", timestamp}
             };
+
+            return body;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var body = CreatePostBody("info");
 
             var api = ApiProvider.GetApi(context);
             var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
@@ -77,10 +84,7 @@ namespace Prime.Plugins.Services.BitBay
             return Task.Run(() => Pairs);
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {

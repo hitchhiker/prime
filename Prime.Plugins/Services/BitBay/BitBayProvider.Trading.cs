@@ -15,7 +15,8 @@ namespace Prime.Plugins.Services.BitBay
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
-            if (r.GetContent() is BitBaySchema.ErrorBaseResponse rErrorResponse)
+            var rErrorResponse = r.GetContent() as BitBaySchema.ErrorBaseResponse;
+            if (rErrorResponse != null)
             {
                 if (!string.IsNullOrEmpty(rErrorResponse.message))
                     throw new ApiResponseException($"{rErrorResponse.code}: {rErrorResponse.message}", this, method);
@@ -30,18 +31,12 @@ namespace Prime.Plugins.Services.BitBay
         {
             var api = ApiProvider.GetApi(context);
 
-            var timestamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
-
-            var body = new Dictionary<string, object>
-            {
-                {"method", "trade"},
-                {"moment", timestamp},
-                {"type", context.IsBuy ? "buy" : "sell"},
-                {"currency", context.Pair.Asset1.ShortCode},
-                {"amount", context.Quantity},
-                {"payment_currency", context.Pair.Asset2.ShortCode},
-                {"rate", context.Rate.ToDecimalValue()}
-            };
+            var body = CreatePostBody("trade");
+            body.Add("type", context.IsBuy ? "buy" : "sell");
+            body.Add("currency", context.Pair.Asset1.ToRemoteCode(this));
+            body.Add("amount", context.Quantity);
+            body.Add("payment_currency", context.Pair.Asset2.ToRemoteCode(this));
+            body.Add("rate", context.Rate.ToDecimalValue());
 
             var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -51,38 +46,42 @@ namespace Prime.Plugins.Services.BitBay
             return new PlacedOrderLimitResponse(r.order_id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        private async Task<BitBaySchema.OrdersResponse> GetOrderResponseByOrderId(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var timestamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
+            var body = CreatePostBody("orders");
 
-            var body = new Dictionary<string, object>
-            {
-                { "method", "orders" },
-                { "moment", timestamp}
-            };
+            var rRaw = await api.QueryOrdersAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            if (!context.HasMarket)
-                throw new ApiResponseException("Market should be specified when querying order status", this);
-
-            var rOrdersRaw = await api.QueryOrdersAsync(body).ConfigureAwait(false);
-            CheckResponseErrors(rOrdersRaw);
-
-            var order = rOrdersRaw.GetContent().FirstOrDefault(x => x.order_id.Equals(context.RemoteGroupId));
+            var r = rRaw.GetContent();
+            var order = r.FirstOrDefault(x => x.order_id.Equals(context.RemoteGroupId));
 
             if (order == null)
-            {
                 throw new NoTradeOrderException(context, this);
-            }
 
-            bool isOpen = order.status.Equals("active", StringComparison.OrdinalIgnoreCase);
+            return order;
+        }
+
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        {
+            var order = await GetOrderResponseByOrderId(context).ConfigureAwait(false);
+            var isOpen = order.status.Equals("active", StringComparison.OrdinalIgnoreCase);
 
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
                 Rate = order.current_price,
-                AmountInitial = new Money(order.start_price, context.Market.Asset2)
+                AmountInitial = order.start_price
             };
+        }
+
+        public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            var order = await GetOrderResponseByOrderId(context).ConfigureAwait(false);
+
+            // TODO: check if market is returned correctly - BitBay.
+            return new OrderMarketResponse(new AssetPair(order.order_currency, order.payment_currency, this));
         }
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
@@ -93,22 +92,25 @@ namespace Prime.Plugins.Services.BitBay
 
             var body = new Dictionary<string, object>
             {
-                { "method", "transfer" },
-                { "moment", timestamp},
+                {"method", "transfer"},
+                {"moment", timestamp},
                 {"currency", context.Amount.Asset.ShortCode},
-                { "quantity", context.Amount.ToDecimalValue()},
-                { "address", context.Address.Address}
+                {"quantity", context.Amount.ToDecimalValue()},
+                {"address", context.Address.Address}
             };
 
             var rRaw = await api.SubmitWithdrawRequestAsync(body).ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 
-            // No id is returned.
+            // No id is returned from exchange.
             return new WithdrawalPlacementResult();
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, true);
+        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
     }

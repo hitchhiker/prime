@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Bitfinex
         Task<Response<string[]>> GetAssetsAsync();
 
         [Get("/book/{currencyPair}")]
-        Task<BitfinexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+        Task<Response<BitfinexSchema.OrderBookResponse>> GetOrderBookAsync([Path] string currencyPair);
 
         [Post("/account_infos")]
         Task<Response<BitfinexSchema.AccountInfoResponse>> GetAccountInfoAsync([Body(BodySerializationMethod.Serialized)] object body);
@@ -32,5 +32,11 @@ namespace Prime.Plugins.Services.Bitfinex
 
         [Post("/order/status")]
         Task<Response<BitfinexSchema.OrderStatusResponse>> GetOrderStatusAsync([Body(BodySerializationMethod.Serialized)] object body);
+
+        [Post("/orders")]
+        Task<Response<BitfinexSchema.ActiveOrdersResponse>> GetActiveOrdersAsync([Body(BodySerializationMethod.Serialized)] object body);
+
+        [Post("/orders/hist")]
+        Task<Response<BitfinexSchema.OrdersHistoryResponse>> GetOrdersHistoryAsync([Body(BodySerializationMethod.Serialized)] object body);
     }
 }

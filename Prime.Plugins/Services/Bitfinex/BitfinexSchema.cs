@@ -116,6 +116,32 @@ namespace Prime.Plugins.Services.Bitfinex
             public decimal executed_amount;
         }
 
+        internal class ActiveOrdersResponse : List<OrderStatusResponse>
+        {
+            public string message;
+        }
+
+        internal class OrdersHistoryResponse : List<OrderStatusResponse>
+        {
+            public string message;
+        }
+
+        internal class ActiveOrdersRequest : BaseRequest
+        {
+            internal class Descriptor : ActiveOrdersRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(ActiveOrdersRequest);
+            }
+        }
+
+        internal class OrdersHistoryRequest : BaseRequest
+        {
+            internal class Descriptor : OrdersHistoryRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(OrdersHistoryRequest);
+            }
+        }
+
         internal class OrderStatusRequest : BaseRequest
         {
             public long order_id;

@@ -32,7 +32,7 @@ namespace Prime.Plugins.Services.Cryptopia
             return new PlacedOrderLimitResponse(r.Data.OrderId.ToString());
         }
 
-        private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteIdContext context)
+        private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Cryptopia
             return r.Data.Select(x => new TradeOrderStatus(x.OrderId.ToString(), true, false));
         }
 
-        private async Task<IEnumerable<TradeOrderStatus>> GetTradeHistoryAsync(RemoteIdContext context)
+        private async Task<IEnumerable<TradeOrderStatus>> GetTradeHistoryAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.Cryptopia
             return r.Data.Select(x => new TradeOrderStatus(x.TradeId.ToString(), false, false));
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var openOrders = await GetOpenOrdersAsync(context).ConfigureAwait(false);
 
@@ -108,8 +108,15 @@ namespace Prime.Plugins.Services.Cryptopia
             };
         }
 
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            // TODO: AY: implement GetMarketFromOrderAsync.
+            throw new NotImplementedException();
+        }
+
         // TODO: AY: find out MinimumTradeVolume in Cryptopia.
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+        public OrderLimitFeatures OrderLimitFeatures { get; }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {

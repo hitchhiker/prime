@@ -10,7 +10,7 @@ using Prime.Utility;
 
 namespace Prime.Plugins.Services.Binance
 {
-    // https://www.binance.com/restapipub.html
+    // https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BinanceProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {

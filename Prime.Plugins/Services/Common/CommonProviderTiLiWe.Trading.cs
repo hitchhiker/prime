@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Common
             return new PlacedOrderLimitResponse(r.return_.order_id.ToString());
         }
 
-        public virtual async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        public virtual async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
 
@@ -70,6 +70,13 @@ namespace Prime.Plugins.Services.Common
             };
         }
 
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            // TODO: AY: implement GetMarketFromOrderAsync.
+            throw new NotImplementedException();
+        }
+
         public virtual MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+        public OrderLimitFeatures OrderLimitFeatures { get; }
     }
 }

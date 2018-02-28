@@ -40,19 +40,22 @@ namespace Prime.Plugins.Services.Kucoin
             return new PlacedOrderLimitResponse(r.data.orderOid);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteIdContext context)
+        [Obsolete("Sean please review this method and consider using 'OrderDetails' endpoint", false)]
+        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
+            if(context.Market == null)
+                throw new MarketNotSpecifiedException(this);
+
             var api = ApiProvider.GetApi(context);
 
-            if (!context.HasMarket)
-                throw new ApiResponseException("Market should be specified when querying order status", this);
+            var ticker = context.Market.ToTicker(this);
 
-            var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false);
+            var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(ticker).ConfigureAwait(false);
             CheckResponseErrors(rActiveOrdersRaw);
 
             var rActiveOrders = rActiveOrdersRaw.GetContent();
 
-            var rDealtOrdersRaw = await api.QueryDealtOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false);
+            var rDealtOrdersRaw = await api.QueryDealtOrdersAsync(ticker).ConfigureAwait(false);
             CheckResponseErrors(rDealtOrdersRaw);
 
             var rDealtOrders = rDealtOrdersRaw.GetContent();
@@ -86,9 +89,11 @@ namespace Prime.Plugins.Services.Kucoin
             return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
             {
                 Rate = price,
-                AmountInitial = new Money(amountInitial, context.Market.Asset2)
+                AmountInitial = amountInitial
             };
         }
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
@@ -98,11 +103,15 @@ namespace Prime.Plugins.Services.Kucoin
 
             CheckResponseErrors(rRaw);
 
-            // No id is returned.
+            // No id is returned from exchange.
             return new WithdrawalPlacementResult();
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
+
+        // Note: supports only dealt orders getting without market being specified.
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, false); 
+        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
     }
