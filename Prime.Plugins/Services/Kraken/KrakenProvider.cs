@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Kraken
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class KrakenProvider : IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
-        // TODO: AY implement multi-statistics.
+        // TODO: AY: implement multi-statistics.
 
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 

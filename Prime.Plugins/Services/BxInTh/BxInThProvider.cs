@@ -108,7 +108,7 @@ namespace Prime.Plugins.Services.BxInTh
         //        {
         //            //prices.Add(new MarketPrice(Network, pair, 1 / currentTicker.last_price)
         //            //{
-        //            //   TODO
+        //            //   
         //            //});
         //        }
         //    }
