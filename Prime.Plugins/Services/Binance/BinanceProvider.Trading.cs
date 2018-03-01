@@ -72,12 +72,14 @@ namespace Prime.Plugins.Services.Binance
 
             var isCancelRequested = r.status.Equals("pending_cancel", StringComparison.OrdinalIgnoreCase);
             var isOpen = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
-            
-            return new TradeOrderStatus(r.orderId.ToString(), isOpen, isCancelRequested)
+
+            var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatus(r.orderId.ToString(), isBuy, isOpen, isCancelRequested)
             {
                 Rate = r.price,
-                AmountInitial = new Money(r.origQty, context.Market.Asset1),
-                AmountRemaining = new Money(r.origQty - r.executedQty, context.Market.Asset1),
+                AmountInitial = r.origQty,
+                AmountRemaining = r.origQty - r.executedQty
             };
         }
 

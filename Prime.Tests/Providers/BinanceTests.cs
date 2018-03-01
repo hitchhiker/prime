@@ -35,14 +35,17 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), false, 1, new Money(1m, Asset.Btc));
+            // Reliable buy order test.
+            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, new Money(100000m, Asset.Xrp), new Money(0.00000001m, Asset.Btc));
+
+            // Reliable sell order test.
+            base.TestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), false, new Money(1m, Asset.Xrp), new Money(1m, Asset.Btc));
         }
 
         [TestMethod]
         public override void TestGetTradeOrderStatus()
         {
-            var orderId = "21109502";
-            base.TestGetTradeOrderStatus(orderId, "XRP_BTC".ToAssetPairRaw());
+            base.TestGetTradeOrderStatus("29772241", "XRP_BTC".ToAssetPairRaw());
         }
 
         #endregion

@@ -62,7 +62,9 @@ namespace Prime.Plugins.Services.Common
             if (r.return_.Count == 0 || !r.return_.TryGetValue(context.RemoteGroupId, out var order))
                 throw new NoTradeOrderException(context, this);
 
-            return new TradeOrderStatus(context.RemoteGroupId, order.status == 0, order.status == 2 || order.status == 3)
+            var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatus(context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
             {
                 Rate = order.rate,
                 AmountInitial = order.start_amount,

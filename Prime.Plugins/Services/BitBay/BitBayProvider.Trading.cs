@@ -69,7 +69,9 @@ namespace Prime.Plugins.Services.BitBay
             var order = await GetOrderResponseByOrderId(context).ConfigureAwait(false);
             var isOpen = order.status.Equals("active", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
+            var isBuy = order.type.Equals("bid", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
                 Rate = order.current_price,
                 AmountInitial = order.start_price

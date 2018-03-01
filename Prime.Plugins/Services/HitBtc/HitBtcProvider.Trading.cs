@@ -87,8 +87,10 @@ namespace Prime.Plugins.Services.HitBtc
 
             var isOpen = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
             var isCancelRequested = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
-            
-            return new TradeOrderStatus(r.clientOrderId, isOpen, isCancelRequested)
+
+            var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatus(r.clientOrderId, isBuy, isOpen, isCancelRequested)
             {
                 Rate = r.price,
                 AmountInitial = r.quantity

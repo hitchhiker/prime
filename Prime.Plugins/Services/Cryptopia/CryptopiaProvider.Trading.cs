@@ -48,7 +48,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = rRaw.GetContent();
 
-            return r.Data.Select(x => new TradeOrderStatus(x.OrderId.ToString(), true, false));
+            return r.Data.Select(x => new TradeOrderStatus(x.OrderId.ToString(), x.Type.Equals("buy", StringComparison.OrdinalIgnoreCase), true, false));
         }
 
         private async Task<IEnumerable<TradeOrderStatus>> GetTradeHistoryAsync(RemoteMarketIdContext context)
@@ -67,7 +67,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = rRaw.GetContent();
 
-            return r.Data.Select(x => new TradeOrderStatus(x.TradeId.ToString(), false, false));
+            return r.Data.Select(x => new TradeOrderStatus(x.TradeId.ToString(), x.Type.Equals("buy", StringComparison.OrdinalIgnoreCase), false, false));
         }
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
@@ -76,15 +76,19 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var order = openOrders.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
 
-            Money? amountInitial;
-            Money? amountRemaining;
+            decimal? amountInitial;
+            decimal? amountRemaining;
+            decimal? rate;
 
             var isOpen = true;
+            var isBuy = false;
 
             if (order != null)
             {
                 amountInitial = order.AmountInitial;
                 amountRemaining = order.AmountRemaining;
+                rate = order.Rate;
+                isBuy = order.IsBuy;
             }
             else
             {
@@ -97,12 +101,15 @@ namespace Prime.Plugins.Services.Cryptopia
 
                 amountInitial = trade.AmountInitial;
                 amountRemaining = trade.AmountRemaining;
+                rate = trade.Rate;
+                isBuy = trade.IsBuy;
 
                 isOpen = false;
             }
 
-            return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
+            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
+                Rate = rate,
                 AmountInitial = amountInitial,
                 AmountRemaining = amountRemaining
             };

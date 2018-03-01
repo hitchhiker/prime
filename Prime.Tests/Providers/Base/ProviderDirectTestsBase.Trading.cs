@@ -23,7 +23,7 @@ namespace Prime.Tests.Providers
         }
 
         public virtual void TestPlaceOrderLimit() { }
-        public void TestPlaceOrderLimit(AssetPair market, bool isBuy, decimal quantity, Money rate)
+        public void TestPlaceOrderLimit(AssetPair market, bool isBuy, Money quantity, Money rate)
         {
             var p = IsType<IOrderLimitProvider>();
             if (p.Success)
@@ -58,6 +58,7 @@ namespace Prime.Tests.Providers
 
             Assert.IsTrue(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
             Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
+            Trace.WriteLine($"Order side: {(r.IsBuy ? "buy": "sell")}");
 
             if (r.IsOpen) Trace.WriteLine("Order is open");
             if (r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
@@ -71,7 +72,7 @@ namespace Prime.Tests.Providers
             if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
         }
 
-        private void PlaceOrderLimit(IOrderLimitProvider provider, AssetPair market, bool isBuy, decimal quantity, Money rate)
+        private void PlaceOrderLimit(IOrderLimitProvider provider, AssetPair market, bool isBuy, Money quantity, Money rate)
         {
             var context = new PlaceOrderLimitContext(UserContext.Current, market, isBuy, quantity, rate);
 

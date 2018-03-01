@@ -35,9 +35,12 @@ namespace Prime.Plugins.Services.Bittrex
             var api = ApiProvider.GetApi(context);
             var remotePair = context.Pair.ToTicker(this);
 
+            var quantity = context.Quantity.ToDecimalValue();
+            var rate = context.Rate.ToDecimalValue();
+
             var r = context.IsSell ?
-                await api.GetMarketSellLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false) :
-                await api.GetMarketBuyLimit(remotePair, context.Quantity, context.Rate).ConfigureAwait(false);
+                await api.GetMarketSellLimit(remotePair, quantity, rate).ConfigureAwait(false) :
+                await api.GetMarketBuyLimit(remotePair, quantity, rate).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -108,10 +111,15 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            return r?.result == null ? new TradeOrderStatus() : new TradeOrderStatus(r.result.OrderUuid, r.result.IsOpen, r.result.CancelInitiated)
+            var order = r.result;
+
+            var isBuy = order.Type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            return new TradeOrderStatus(order.OrderUuid, isBuy, order.IsOpen, order.CancelInitiated)
             {
-                AmountInitial = r.result.Quantity,
-                AmountRemaining = r.result.QuantityRemaining
+                Rate = order.Limit,
+                AmountInitial = order.Quantity,
+                AmountRemaining = order.QuantityRemaining
             };
         }
 

@@ -67,26 +67,28 @@ namespace Prime.Plugins.Services.Kucoin
             var price = 0m;
             var amountInitial = 0m;
             var isOpen = true;
+            var isBuy = false;
 
             if (activeOrderBuy != null)
             {
                 price = activeOrderBuy.price;
+                isBuy = true;
             }
             else if (activeOrderSell != null)
             {
                 price = activeOrderSell.price;
+                isBuy = false;
             }
             else if (dealtOrder != null)
             {
                 price = dealtOrder.dealPrice;
                 isOpen = false;
+                isBuy = dealtOrder.direction.Equals("buy", StringComparison.OrdinalIgnoreCase);
             }
             else
-            {
                 throw new NoTradeOrderException(context, this);
-            }
 
-            return new TradeOrderStatus(context.RemoteGroupId, isOpen, false)
+            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
                 Rate = price,
                 AmountInitial = amountInitial

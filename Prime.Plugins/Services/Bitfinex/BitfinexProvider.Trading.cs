@@ -52,7 +52,9 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var r = rRaw.GetContent();
 
-            return new TradeOrderStatus(r.id.ToString(), r.is_live, r.is_cancelled)
+            var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatus(r.id.ToString(), isBuy, r.is_live, r.is_cancelled)
             {
                 Rate = r.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? r.price : r.avg_execution_price,
                 AmountInitial = r.original_amount,

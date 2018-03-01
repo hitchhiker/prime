@@ -4,13 +4,17 @@
     {
         public TradeOrderStatus() {}
 
-        public TradeOrderStatus(string remoteOrderId, bool isOpen, bool isCancelRequested)
+        public TradeOrderStatus(string remoteOrderId, bool isBuy, bool isOpen, bool isCancelRequested)
         {
             IsFound = true;
             RemoteOrderId = remoteOrderId;
+            IsBuy = isBuy;
             IsOpen = isOpen;
             IsCancelRequested = isCancelRequested;
         }
+
+        public bool IsBuy { get; }
+        public bool IsSell => !IsBuy;
 
         public bool IsFound { get; }
         public string RemoteOrderId { get; }
