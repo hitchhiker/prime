@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.Yobit
         [Get("/depth/{currencyPair}")]
         Task<YobitSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
 
-        [Post("/info")]
+        [Post("/getInfo")]
         Task<YobitSchema.UserInfoResponse> GetUserInfoAsync();
 
         [Post("/Trade")]

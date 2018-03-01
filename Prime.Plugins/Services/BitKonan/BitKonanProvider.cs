@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.BitKonan
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitkonan.com/info/api
-    public class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitKonanApiUrl = "https://bitkonan.com/api/";
 
@@ -63,6 +63,12 @@ namespace Prime.Plugins.Services.BitKonan
 
             return r != null;
         }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            return true;
+        }
+
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
