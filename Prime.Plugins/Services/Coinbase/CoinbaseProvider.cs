@@ -213,7 +213,7 @@ namespace Prime.Plugins.Services.Coinbase
             var api = GdaxApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
 
-            // TODO: HH, Check this! Can we use limit when we query all records?
+            // TODO: AY: HH, Check this! Can we use limit when we query all records?
             var recordsLimit = 1000;
 
             var r = await api.GetProductOrderBookAsync(pairCode, OrderBookDepthLevel.FullNonAggregated).ConfigureAwait(false);
