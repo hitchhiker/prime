@@ -21,7 +21,7 @@ namespace Prime.Ui.Wpf
         {            
             InitializeComponent();
 
-            // TODO: Implement dependency injection for windows
+            // TODO: HH: Implement dependency injection for windows
             _messenger = Messenger.Default; 
         }
     }

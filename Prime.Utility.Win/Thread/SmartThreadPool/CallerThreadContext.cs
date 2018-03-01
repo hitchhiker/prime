@@ -71,7 +71,7 @@ namespace Amib.Threading.Internal
 
 			CallerThreadContext callerThreadContext = new CallerThreadContext();
 
-			// TODO: In NET 2.0, redo using the new feature of ExecutionContext class - Capture()
+			// TODO: HH: In NET 2.0, redo using the new feature of ExecutionContext class - Capture()
 			// Capture Call Context
 			if(captureCallContext && (getLogicalCallContextMethodInfo != null))
 			{
@@ -96,7 +96,7 @@ namespace Amib.Threading.Internal
 				throw new ArgumentNullException("callerThreadContext");			
 			}
 
-			// Todo: In NET 2.0, redo using the new feature of ExecutionContext class - Run()
+			// TODO: HH: In NET 2.0, redo using the new feature of ExecutionContext class - Run()
 			// Restore call context
 			if ((callerThreadContext._callContext != null) && (setLogicalCallContextMethodInfo != null))
 			{

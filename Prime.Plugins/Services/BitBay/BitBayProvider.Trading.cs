@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.BitBay
         {
             var order = await GetOrderResponseByOrderId(context).ConfigureAwait(false);
 
-            // TODO: check if market is returned correctly - BitBay.
+            // TODO: SC: check if market is returned correctly - BitBay.
             return new OrderMarketResponse(new AssetPair(order.order_currency, order.payment_currency, this));
         }
 

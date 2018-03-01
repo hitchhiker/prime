@@ -136,7 +136,7 @@ namespace Prime.Plugins.Services.Coinbase
                 return null;
 
             var r = await api.GetAddressesAsync(acc.id).ConfigureAwait(false);
-            // TODO: re-implement.
+            // TODO: AY: re-implement.
             //if (r.data.Count == 0 && context.CanGenerateAddress)
             //{
             //    var cr = await api.CreateAddressAsync(accid);
@@ -213,7 +213,7 @@ namespace Prime.Plugins.Services.Coinbase
             var api = GdaxApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
 
-            // TODO: Check this! Can we use limit when we query all records?
+            // TODO: HH, Check this! Can we use limit when we query all records?
             var recordsLimit = 1000;
 
             var r = await api.GetProductOrderBookAsync(pairCode, OrderBookDepthLevel.FullNonAggregated).ConfigureAwait(false);

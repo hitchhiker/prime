@@ -178,9 +178,5 @@ namespace Prime.Plugins.Services.Bitso
         {
             return null;
         }
-
-        public bool DoesMultiplePairs => false; // TODO: confirm
-
-        public bool PricesAsAssetQuotes => false; // TODO: confirm
     }
 }

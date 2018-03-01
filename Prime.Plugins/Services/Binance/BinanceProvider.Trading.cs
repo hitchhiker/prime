@@ -92,7 +92,7 @@ namespace Prime.Plugins.Services.Binance
 
             var rRaw = await api.GetDepositHistoryAsync().ConfigureAwait(false);
 
-            // TODO: example is working, will be implemented later.
+            throw new NotImplementedException();
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();

@@ -65,7 +65,7 @@ namespace Prime.Common
                         UtcCreated = UtcCreated,
                         _reversed = this,
                         PriceStatistics = PriceStatistics?.Reverse(QuoteAsset),
-                        Volume = Volume // TODO: confirm Volume = Volume, maybe some transformations needed.
+                        Volume = Volume // TODO: AY: confirm Volume = Volume, maybe some transformations needed.
                     };
                 }
 

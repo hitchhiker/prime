@@ -62,7 +62,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceWithdrawal()
         {
-            // TODO: Not tested with real money
+            // TODO: SC: Not tested with real money
             base.TestPlaceWithdrawal(new WalletAddress("address_placeholder"), new Money(22, Asset.Usd));
         }
 
@@ -76,7 +76,7 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestPlaceOrderLimit()
         {
-            //TODO: Not tested with real money
+            //TODO: SC: Not tested with real money
             base.TestPlaceOrderLimit("KCS_BTC".ToAssetPairRaw(), false, 1, new Money(1m, Asset.Btc));
         }
     }

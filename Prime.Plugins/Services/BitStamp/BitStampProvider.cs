@@ -155,9 +155,7 @@ namespace Prime.Plugins.Services.BitStamp
                 Address = processedAddress
             };
 
-            var addresses = new WalletAddresses(walletAddress);
-
-            return addresses;
+            return new WalletAddresses(walletAddress);
         }
 
         private string ProcessAddressResponce(Asset asset, string response)

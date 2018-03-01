@@ -9,12 +9,7 @@ using System;
 namespace Prime.Common
 {
     /// <summary>
-    /// TODO: Just a note to Alex (delete when read)
-    /// Added network and pair to constructor
-    /// Added IREADONLYLIST as base, so we entries cant be accidentaly modified
-    /// Add 'Add' method to include Money conversion, less likely to have mistakes in providers.
-    /// Check for correct quote asset when adding also.
-    /// TODO: Update your other providers to work like 'CoinBase/Korbit' add/ask etc
+    /// TODO: HH: Update other providers to work like 'CoinBase/Korbit' add/ask etc.
     /// </summary>
     public class OrderBook : ISerialiseAsObject
     {

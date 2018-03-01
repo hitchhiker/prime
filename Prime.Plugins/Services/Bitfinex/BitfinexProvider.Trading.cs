@@ -136,7 +136,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
         private static readonly Lazy<Dictionary<Asset, string>> WithdrawalAssetsToTypes = new Lazy<Dictionary<Asset,string>>(() => new Dictionary<Asset, string>()
         {
-            // TODO: Bitfinex - clarify keys.
+            // AY: TODO: Bitfinex - clarify keys.
             { "BTC".ToAssetRaw(), "bitcoin" },
             { "LTC".ToAssetRaw(), "litecoin" },
             { "ETH".ToAssetRaw(), "ethereum" },

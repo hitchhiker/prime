@@ -49,7 +49,7 @@ namespace Prime.Ui.Wpf
             if (!(DataContext is ChartGroupViewModel m) || e == null)
                 return;
 
-            //TODO: ScrollViewer click to reposition
+            // TODO: HH: ScrollViewer click to reposition.
         }
 
         /// <summary>

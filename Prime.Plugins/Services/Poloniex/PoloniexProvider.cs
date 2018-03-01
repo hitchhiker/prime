@@ -276,7 +276,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         private PoloniexTimeInterval ConvertToPoloniexInterval(TimeResolution resolution)
         {
-            // TODO: implement all TimeResolution cases.
+            // TODO: AY: implement all TimeResolution cases.
             switch (resolution)
             {
                 case TimeResolution.Day:

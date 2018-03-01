@@ -115,9 +115,5 @@ namespace Prime.Plugins.Services.Coinfloor
         {
             return AssetCodeConverter;
         }
-
-        public bool DoesMultiplePairs => false; // TODO: confirm
-
-        public bool PricesAsAssetQuotes => false; // TODO: confirm
     }
 }

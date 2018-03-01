@@ -19,12 +19,20 @@ namespace Prime.Common
             UtcCreated = UtcLastChecked = DateTime.UtcNow;
         }
 
-        // TODO: WalletAddress: review this constructor.
+        /// <summary>
+        /// This constructor is used when querying data.
+        /// </summary>
+        /// <param name="address"></param>
         public WalletAddress(string address) : this()
         {
             Address = address;
         }
 
+        /// <summary>
+        /// This constructor is used when returning data.
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="asset"></param>
         public WalletAddress(IBalanceProvider service, Asset asset): this()
         {
             Network = service?.Network;
