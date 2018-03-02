@@ -5,6 +5,7 @@ using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Common
 {
+    // TODO: AY: review TApi usage - maybe it's better to remove it.
     public abstract partial class CommonProviderTiLiWe<TApi> : IOrderLimitProvider, IBalanceProvider
     {
         public virtual async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -66,19 +67,18 @@ namespace Prime.Plugins.Services.Common
 
             return new TradeOrderStatus(context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
             {
+                Market = order.pair.ToAssetPair(this),
                 Rate = order.rate,
                 AmountInitial = order.start_amount,
                 AmountRemaining = order.amount
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            // TODO: AY: implement GetMarketFromOrderAsync.
-            throw new NotImplementedException();
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public virtual MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
-        public OrderLimitFeatures OrderLimitFeatures { get; }
+
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
+        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
     }
 }

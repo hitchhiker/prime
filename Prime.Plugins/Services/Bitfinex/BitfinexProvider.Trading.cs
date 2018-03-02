@@ -56,55 +56,21 @@ namespace Prime.Plugins.Services.Bitfinex
 
             return new TradeOrderStatus(r.id.ToString(), isBuy, r.is_live, r.is_cancelled)
             {
+                Market = r.symbol.ToAssetPair(this, 3),
                 Rate = r.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? r.price : r.avg_execution_price,
                 AmountInitial = r.original_amount,
                 AmountRemaining = r.remaining_amount
             };
         }
 
-        public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            if(!long.TryParse(context.RemoteGroupId, out var remoteId))
-                throw new ApiBaseException("Order remote id should be of a number type", this);
-
-            var body = new BitfinexSchema.ActiveOrdersRequest.Descriptor();
-
-            var rActiveOrdersRaw = await api.GetActiveOrdersAsync(body).ConfigureAwait(false);
-            CheckBitfinexResponseErrors(rActiveOrdersRaw);
-
-            var rActiveOrders = rActiveOrdersRaw.GetContent();
-
-            var order = rActiveOrders.FirstOrDefault(x => x.id == remoteId);
-
-            AssetPair market;
-
-            if (order == null)
-            {
-                var bodyOrdersHistory = new BitfinexSchema.OrdersHistoryRequest.Descriptor();
-
-                var rHistoryOrdersRaw = await api.GetOrdersHistoryAsync(bodyOrdersHistory).ConfigureAwait(false);
-                CheckBitfinexResponseErrors(rHistoryOrdersRaw);
-
-                var rHistoryOrders = rHistoryOrdersRaw.GetContent();
-                order = rHistoryOrders.FirstOrDefault(x => x.id == remoteId);
-
-                if(order == null)
-                    throw new NoTradeOrderException(context, this);
-            }
-
-            market = order.symbol.ToAssetPair(this, 3);
-
-            return new OrderMarketResponse(market);
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; } =
         {
             new MinimumTradeVolume(new AssetPair("XRP", "USD"), new Money(10, Asset.Usd), new Money(12, Asset.Xrp))
         };
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, true)
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus)
         {
             // Order History limited to last 3 days and 1 request per minute.
             MarketByOrderRequstAffectsRateLimiter = true
@@ -134,7 +100,7 @@ namespace Prime.Plugins.Services.Bitfinex
             return balances;
         }
 
-        private static readonly Lazy<Dictionary<Asset, string>> WithdrawalAssetsToTypes = new Lazy<Dictionary<Asset,string>>(() => new Dictionary<Asset, string>()
+        private static readonly Lazy<Dictionary<Asset, string>> WithdrawalAssetsToTypes = new Lazy<Dictionary<Asset, string>>(() => new Dictionary<Asset, string>()
         {
             // AY: TODO: Bitfinex - clarify keys.
             { "BTC".ToAssetRaw(), "bitcoin" },
@@ -162,7 +128,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var body = new BitfinexSchema.WithdrawalRequest.Descriptor();
 
-            if(!WithdrawalAssetsToTypes.Value.TryGetValue(context.Amount.Asset, out var withdrawalType))
+            if (!WithdrawalAssetsToTypes.Value.TryGetValue(context.Amount.Asset, out var withdrawalType))
                 throw new ApiResponseException("Withdrawal of specified asset is not supported", this);
 
             body.withdraw_type = withdrawalType;
@@ -176,10 +142,10 @@ namespace Prime.Plugins.Services.Bitfinex
             CheckBitfinexResponseErrors(rRaw);
 
             var r = rRaw.GetContent().FirstOrDefault();
-            if(r == null)
+            if (r == null)
                 throw new ApiResponseException("No result return after withdrawal operation", this);
 
-            if(r.status.Equals("error", StringComparison.InvariantCultureIgnoreCase))
+            if (r.status.Equals("error", StringComparison.InvariantCultureIgnoreCase))
                 throw new ApiResponseException(r.message, this);
 
             return new WithdrawalPlacementResult()

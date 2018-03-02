@@ -11,10 +11,15 @@
             IsBuy = isBuy;
             IsOpen = isOpen;
             IsCancelRequested = isCancelRequested;
+
+            Market = AssetPair.Empty;
         }
 
         public bool IsBuy { get; }
         public bool IsSell => !IsBuy;
+
+        public AssetPair Market { get; set; }
+        public bool HasMarket => !Equals(Market, AssetPair.Empty);
 
         public bool IsFound { get; }
         public string RemoteOrderId { get; }

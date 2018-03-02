@@ -11,15 +11,12 @@ namespace Prime.Plugins.Services.Bittrex
     {
         // TODO: AY: BittrexProvider, review MinimumTradeVolume.
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            // TODO: AY: implement GetMarketFromOrderAsync.
-            throw new NotImplementedException();
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; } = { new MinimumTradeVolume() { MinimumSell = 0.011m, MinimumBuy = 0.011m } }; //50K Satoshi /4 USD
 
-        public OrderLimitFeatures OrderLimitFeatures { get; }
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
+        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         private TradeOrderType GetTradeOrderType(string tradeOrderTypeSchema)
         {
@@ -117,6 +114,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             return new TradeOrderStatus(order.OrderUuid, isBuy, order.IsOpen, order.CancelInitiated)
             {
+                Market = order.Exchange.ToAssetPair(this),
                 Rate = order.Limit,
                 AmountInitial = order.Quantity,
                 AmountRemaining = order.QuantityRemaining

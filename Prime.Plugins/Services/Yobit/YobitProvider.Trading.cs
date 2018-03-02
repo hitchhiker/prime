@@ -69,6 +69,7 @@ namespace Prime.Plugins.Services.Yobit
 
             return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
+                Market = order.pair.ToAssetPair(this),
                 Rate = order.rate,
                 AmountInitial = order.start_amount
             };
@@ -95,14 +96,7 @@ namespace Prime.Plugins.Services.Yobit
             return order;
         }
 
-        public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
-
-            var orderMarket = order.pair.ToAssetPair(this, '_');
-
-            return new OrderMarketResponse(orderMarket);
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
@@ -125,7 +119,7 @@ namespace Prime.Plugins.Services.Yobit
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, true);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
