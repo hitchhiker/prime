@@ -34,6 +34,6 @@ namespace Prime.Common
         /// In Binance the number of requests counted against the rate limiter is equal to the number of symbols currently trading on the exchange.
         /// </summary>
         [Obsolete("Should be revised and probably removed.")]
-        public bool MarketByOrderRequstAffectsRateLimiter { get; set; }
+        public bool MarketByOrderRequestAffectsRateLimiter { get; set; }
     }
 }

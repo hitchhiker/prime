@@ -73,7 +73,7 @@ namespace Prime.Plugins.Services.Bitfinex
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus)
         {
             // Order History limited to last 3 days and 1 request per minute.
-            MarketByOrderRequstAffectsRateLimiter = true
+            MarketByOrderRequestAffectsRateLimiter = true
         };
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 

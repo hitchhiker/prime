@@ -99,7 +99,7 @@ namespace Prime.Plugins.Services.Binance
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.FromNowhere)
         {
-            MarketByOrderRequstAffectsRateLimiter = true
+            MarketByOrderRequestAffectsRateLimiter = true
         };
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
