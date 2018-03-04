@@ -12,8 +12,6 @@ namespace Prime.Plugins.Services.Bittrex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
-        // TODO: AY: implement multi-statistics.
-
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
 

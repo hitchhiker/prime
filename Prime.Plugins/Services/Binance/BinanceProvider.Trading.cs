@@ -97,9 +97,9 @@ namespace Prime.Plugins.Services.Binance
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, false)
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.FromNowhere)
         {
-            MarketByOrderRequstAffectsRateLimiter = true
+            MarketByOrderRequestAffectsRateLimiter = true
         };
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 

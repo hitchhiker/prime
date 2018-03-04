@@ -112,7 +112,7 @@ namespace Prime.Plugins.Services.Kucoin
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
         // Note: supports only dealt orders getting without market being specified.
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, false); 
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.FromNowhere); 
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();

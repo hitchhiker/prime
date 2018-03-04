@@ -54,7 +54,6 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            // TODO: AY: Korbit 20 for records count test - review. Not tested.
             base.TestGetOrderBook("BTC_KRW".ToAssetPairRaw(), false);
         }
     }

@@ -73,18 +73,13 @@ namespace Prime.Plugins.Services.BitBay
 
             return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
+                Market = new AssetPair(order.order_currency, order.payment_currency, this),
                 Rate = order.current_price,
                 AmountInitial = order.start_price
             };
         }
 
-        public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            var order = await GetOrderResponseByOrderId(context).ConfigureAwait(false);
-
-            // TODO: SC: check if market is returned correctly - BitBay.
-            return new OrderMarketResponse(new AssetPair(order.order_currency, order.payment_currency, this));
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
@@ -111,7 +106,7 @@ namespace Prime.Plugins.Services.BitBay
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, true);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();

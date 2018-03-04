@@ -11,6 +11,7 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Wex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
+    /// /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://wex.nz/api/3/docs
     public partial class WexProvider : CommonProviderTiLiWe<IWexApi>
     {

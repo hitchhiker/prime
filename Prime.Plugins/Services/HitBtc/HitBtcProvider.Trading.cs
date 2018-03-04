@@ -97,14 +97,15 @@ namespace Prime.Plugins.Services.HitBtc
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            // TODO: AY: implement GetMarketFromOrderAsync.
-            throw new NotImplementedException();
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
-        public OrderLimitFeatures OrderLimitFeatures { get; }
+
+        /// <summary>
+        /// CanGetOrderMarket.FromNowhere because order's market is non-parseable.
+        /// </summary>
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.FromNowhere);
+        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         // When 50 XRP are submitted, 49.491000 XRP will be received.
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();

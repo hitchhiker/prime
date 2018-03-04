@@ -215,8 +215,6 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
             var addresses = new WalletAddresses();
 
-            // TODO: AY: re-implement, incorrect implementation.
-
             foreach (var assetPair in Pairs)
             {
                 var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);

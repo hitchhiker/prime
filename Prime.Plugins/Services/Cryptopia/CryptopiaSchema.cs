@@ -20,7 +20,7 @@ namespace Prime.Plugins.Services.Cryptopia
             public T Data;
         }
 
-        internal class TradeOrderBaseRequest
+        internal class GetTradeOrderBaseRequest
         {
             public string Market;
             public long TradePairId;
@@ -61,34 +61,31 @@ namespace Prime.Plugins.Services.Cryptopia
             public long[] FilledOrders;
         }
 
-        internal class OpenOrdersResponse : BaseResponse<OpenOrderResponse[]> { }
-
-        internal class OpenOrderResponse
+        internal class OpenHistoryOrderResponseBase
         {
-            public long OrderId;
             public long TradePairId;
             public string Market;
             public string Type;
             public decimal Rate;
             public decimal Amount;
             public decimal Total;
-            public decimal Remaining;
             public DateTime TimeStamp;
+        }
+
+        internal class OpenOrdersResponse : BaseResponse<OpenOrderResponse[]> { }
+
+        internal class OpenOrderResponse : OpenHistoryOrderResponseBase
+        {
+            public long OrderId;
+            public decimal Remaining;
         }
 
         internal class TradeHistoryResponse : BaseResponse<TradeHistoryEntryResponse[]> { }
 
-        internal class TradeHistoryEntryResponse
+        internal class TradeHistoryEntryResponse : OpenHistoryOrderResponseBase
         {
             public long TradeId;
-            public long TradePairId;
-            public string Market;
-            public string Type;
-            public decimal Rate;
-            public decimal Amount;
-            public decimal Total;
             public decimal Fee;
-            public DateTime TimeStamp;
         }
 
         internal class SubmitWithdrawResponse : BaseResponse<int?> { }
@@ -130,9 +127,9 @@ namespace Prime.Plugins.Services.Cryptopia
             }
         }
 
-        internal class GetOpenOrdersRequest : TradeOrderBaseRequest { }
+        internal class GetOpenOrdersRequest : GetTradeOrderBaseRequest { }
 
-        internal class GetTradeHistoryRequest : TradeOrderBaseRequest { }
+        internal class GetTradeHistoryRequest : GetTradeOrderBaseRequest { }
 
         #endregion
 

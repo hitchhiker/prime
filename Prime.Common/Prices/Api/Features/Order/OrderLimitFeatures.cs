@@ -6,10 +6,10 @@ namespace Prime.Common
 {
     public class OrderLimitFeatures
     {
-        public OrderLimitFeatures(bool requiresMarketForOrderStatus, bool canGetMarketByOrder)
+        public OrderLimitFeatures(bool requiresMarketForOrderStatus, CanGetOrderMarket canGetOrderMarket)
         {
             RequiresMarketForOrderStatus = requiresMarketForOrderStatus;
-            CanGetMarketByOrder = canGetMarketByOrder;
+            CanGetOrderMarket = canGetOrderMarket;
         }
 
         /// <summary>
@@ -17,16 +17,23 @@ namespace Prime.Common
         /// </summary>
         public bool RequiresMarketForOrderStatus { get; }
 
+        public CanGetOrderMarket CanGetOrderMarket { get; }
+
         /// <summary>
-        /// Indicates whether provider can get market of order with specified id.
+        /// Indicates whether provider can get order market with specified id by calling specific API endpoint.
         /// </summary>
-        public bool CanGetMarketByOrder { get; }
+        public bool CanGetMarketByAdditionalRequest => CanGetOrderMarket == CanGetOrderMarket.ByAdditionalRequest;
+
+        /// <summary>
+        /// Indicates whether provider can return market of order when it's status queried by id.
+        /// </summary>
+        public bool CanGetMarketWithinOrderStatus => CanGetOrderMarket == CanGetOrderMarket.WithinOrderStatus;
 
         /// <summary>
         /// Indicates whether GetMarketByOrder request affects rate limiter by more that 1.
         /// In Binance the number of requests counted against the rate limiter is equal to the number of symbols currently trading on the exchange.
         /// </summary>
         [Obsolete("Should be revised and probably removed.")]
-        public bool MarketByOrderRequstAffectsRateLimiter { get; set; }
+        public bool MarketByOrderRequestAffectsRateLimiter { get; set; }
     }
 }

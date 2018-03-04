@@ -53,7 +53,6 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            // TODO: AY: BitFlyer test for 20, not for 100 - review. Not tested.
             base.TestGetOrderBook("BTC_JPY".ToAssetPairRaw(), false);
         }
     }
