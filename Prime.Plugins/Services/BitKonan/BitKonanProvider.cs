@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.BitKonan
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitkonan.com/info/api
-    public class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitKonanApiUrl = "https://bitkonan.com/api/";
 
@@ -48,11 +48,11 @@ namespace Prime.Plugins.Services.BitKonan
 
         public BitKonanProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitKonanApi>(BitKonanApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBitKonanApi>(BitKonanApiUrl, this, (k) => new BitKonanAuthenticator(k).GetRequestModifierAsync);
 
-            if(_assetPairBtcUsd == null)
+            if (_assetPairBtcUsd == null)
                 _assetPairBtcUsd = new AssetPair("BTC", "USD", this);
-            if(_assetPairLtcUsd == null)
+            if (_assetPairLtcUsd == null)
                 _assetPairLtcUsd = new AssetPair("LTC", "USD", this);
         }
 
@@ -66,9 +66,11 @@ namespace Prime.Plugins.Services.BitKonan
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return true;
-        }
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetBalanceAsync().ConfigureAwait(false);
 
+            return r != null && r.status.Equals("success", StringComparison.OrdinalIgnoreCase);
+        }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
@@ -99,9 +101,9 @@ namespace Prime.Plugins.Services.BitKonan
 
             var api = ApiProvider.GetApi(context);
 
-             var tickerResponse = context.Pair.Equals(AssetPairBtcUsd) 
-                ? await api.GetBtcTickerAsync().ConfigureAwait(false)
-                : await api.GetLtcTickerAsync().ConfigureAwait(false);
+            var tickerResponse = context.Pair.Equals(AssetPairBtcUsd)
+               ? await api.GetBtcTickerAsync().ConfigureAwait(false)
+               : await api.GetLtcTickerAsync().ConfigureAwait(false);
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, tickerResponse.last)
             {
@@ -122,7 +124,7 @@ namespace Prime.Plugins.Services.BitKonan
             var quoteCode = market.Asset2.ShortCode.ToLower();
 
             var prices = raw.Where(x => x.Key.Equals(quoteCode, StringComparison.OrdinalIgnoreCase)).ToList();
-            if(prices.Count == 0)
+            if (prices.Count == 0)
                 throw new ApiResponseException($"Order book response entry does not have {market.Asset2} price field",
                     this, methodName);
 

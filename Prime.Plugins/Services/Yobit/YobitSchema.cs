@@ -68,9 +68,7 @@ namespace Prime.Plugins.Services.Yobit
 
         internal class UserInfoResponse : BaseResponse<UserInfoEntryResponse>
         {
-            public int transaction_count;
-            public int open_orders;
-            public long server_time;
+            
         }
 
         internal class UserInfoEntryResponse
@@ -78,6 +76,9 @@ namespace Prime.Plugins.Services.Yobit
             public Dictionary<string, decimal> funds;
             public Dictionary<string, decimal> funds_incl_orders;
             public RightsEntryResponse rights;
+            public int transaction_count;
+            public int open_orders;
+            public long server_time;
         }
 
         internal class RightsEntryResponse

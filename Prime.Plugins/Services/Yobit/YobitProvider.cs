@@ -54,9 +54,17 @@ namespace Prime.Plugins.Services.Yobit
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            var api = ApiProviderPrivate.GetApi(context);
-            var r = await api.GetUserInfoAsync().ConfigureAwait(false);
+            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
 
+            var body = new Dictionary<string, object>
+            {
+                { "method","getInfo" },
+                { "nonce", timeStamp }
+            };
+
+            var api = ApiProviderPrivate.GetApi(context);
+            var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
+         
             return r != null && r.success;
         }
 

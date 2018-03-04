@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitKonan
 {
+    [AllowAnyStatusCode]
     internal interface IBitKonanApi
     {
         [Get("/ticker")]
@@ -17,7 +18,13 @@ namespace Prime.Plugins.Services.BitKonan
         [Get("/{asset}_orderbook")]
         Task<BitKonanSchema.OrderBookResponse> GetOrderBookAsync([Path] string asset);
 
-        //[Get("/ltc_orderbook")]
-        //Task<BitKonanSchema.OrderBookLtcResponse> GetLtcOrderBookAsync();
+        [Post("/private/balance")]
+        Task<BitKonanSchema.BalanceResponse> GetBalanceAsync();
+
+        [Post("/private/order/new")]
+        Task<BitKonanSchema.NewOrderResponse> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        
+        [Post("/private/orders")]
+        Task<BitKonanSchema.OrderInfoResponse> QueryActiveOrdersAsync();
     }
 }

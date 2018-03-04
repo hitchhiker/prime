@@ -17,19 +17,19 @@ namespace Prime.Plugins.Services.Yobit
         [Get("/depth/{currencyPair}")]
         Task<YobitSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
 
-        [Post("/getInfo")]
-        Task<YobitSchema.UserInfoResponse> GetUserInfoAsync();
+        [Post("/")]
+        Task<YobitSchema.UserInfoResponse> GetUserInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
-        [Post("/Trade")]
+        [Post("/")]
         Task<Response<YobitSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
-        [Post("/ActiveOrders")]
+        [Post("/")]
         Task<Response<YobitSchema.ActiveOrdersResponse>> QueryActiveOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
-        [Post("/OrderInfo")]
+        [Post("/")]
         Task<Response<YobitSchema.OrderInfoResponse>> QueryOrderInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
-        [Post("/WithdrawCoinsToAddress")]
+        [Post("/")]
         Task<Response<YobitSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }
