@@ -9,8 +9,6 @@ namespace Prime.Plugins.Services.Bittrex
 {
     public partial class BittrexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        // TODO: AY: BittrexProvider, review MinimumTradeVolume.
-
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; } = { new MinimumTradeVolume() { MinimumSell = 0.011m, MinimumBuy = 0.011m } }; //50K Satoshi /4 USD
