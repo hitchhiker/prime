@@ -46,15 +46,16 @@ namespace Prime.Plugins.Services.BitKonan
                 throw new ApiResponseException(activeOrders.errors != null && activeOrders.errors.Length > 0 ? activeOrders.errors[0] : "Error in QueryActiveOrdersAsync");
             }
 
-            // If the active list contains this order and the request for active orders was successful, then it is active. Otherwise it is not active.
+            // If the active list contains this order and the request for active orders was successful, then it is open. Otherwise it is not open.
             var isOpen = activeOrders.data.Any(x => x.id.Equals(context.RemoteGroupId));
 
-            var isBuy = order.type.Equals("BUY", StringComparison.OrdinalIgnoreCase);
+            var isBuy = order.type.IndexOf("BUY", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
             {
                 Rate = order.price,
-                AmountInitial = order.amount
+                AmountInitial = order.amount,
+                Market = order.trade_pair
             };
         }
 
@@ -71,14 +72,12 @@ namespace Prime.Plugins.Services.BitKonan
 
             var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
 
-            if (order != null)
-            {
-                return order;
-            }
-            else
+            if (order == null)
             {
                 throw new NoTradeOrderException(context.RemoteGroupId, this);
             }
+
+            return order;
         }
 
         public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
@@ -92,9 +91,7 @@ namespace Prime.Plugins.Services.BitKonan
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, true);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
-
-        public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
     }
 }

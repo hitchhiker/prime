@@ -73,7 +73,7 @@ namespace Prime.Plugins.Services.Yobit
             // If the active list contains this order and the request for active orders was successful, then it is active. Otherwise it is not active.
             var isOpen = activeOrders.ContainsKey(context.RemoteGroupId);
 
-            var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
             return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
