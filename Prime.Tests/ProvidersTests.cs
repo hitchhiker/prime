@@ -41,7 +41,7 @@ namespace Prime.Tests
         [TestMethod]
         public void GetPricesFromProvidersTest()
         {
-            // TODO: AY: Sean check your providers here.
+            // Sean check pricing method of your providers here.
 
             var ctx = new PublicPriceContext("BTC_USD".ToAssetPairRaw());
 

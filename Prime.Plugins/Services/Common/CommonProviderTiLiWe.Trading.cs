@@ -5,7 +5,6 @@ using Prime.Common.Api.Request.Response;
 
 namespace Prime.Plugins.Services.Common
 {
-    // TODO: AY: review TApi usage - maybe it's better to remove it.
     public abstract partial class CommonProviderTiLiWe<TApi> : IOrderLimitProvider, IBalanceProvider
     {
         public virtual async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
