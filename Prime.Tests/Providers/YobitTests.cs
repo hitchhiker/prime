@@ -81,7 +81,7 @@ namespace Prime.Tests.Providers
         public override void TestPlaceOrderLimit()
         {
             //TODO: SC: Not tested with real money
-            base.TestPlaceOrderLimit("btc_usd".ToAssetPairRaw(), false, 1, new Money(1m, Asset.Usd));
+            base.TestPlaceOrderLimit("btc_usd".ToAssetPairRaw(), false, new Money(10, Asset.Usd), new Money(10m, Asset.Usd));
         }
     }
 }

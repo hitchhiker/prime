@@ -30,8 +30,12 @@ namespace Prime.Plugins.Services.Yobit
         {
             var api = ApiProviderPrivate.GetApi(context);
 
+            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
+
             var body = new Dictionary<string, object>
             {
+                { "method","Trade" },
+                { "nonce", timeStamp },
                 { "pair", context.Pair.ToTicker(this) },
                 { "type", context.IsBuy ? "buy" : "sell"},
                 { "amount", context.Quantity},
@@ -43,7 +47,7 @@ namespace Prime.Plugins.Services.Yobit
 
             var r = rRaw.GetContent();
 
-            return new PlacedOrderLimitResponse(r.returnData.order_id);
+            return r.success ? new PlacedOrderLimitResponse(r.returnData.order_id) : new PlacedOrderLimitResponse("");
         }
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
@@ -52,8 +56,12 @@ namespace Prime.Plugins.Services.Yobit
 
             var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
 
+            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
+
             var bodyActiveOrders = new Dictionary<string, object>
             {
+                { "method","ActiveOrders" },
+                { "nonce", timeStamp },
                 {"pair", order.pair}
             };
 
@@ -65,7 +73,7 @@ namespace Prime.Plugins.Services.Yobit
             // If the active list contains this order and the request for active orders was successful, then it is active. Otherwise it is not active.
             var isOpen = activeOrders.ContainsKey(context.RemoteGroupId);
 
-            var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
             return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
@@ -79,8 +87,12 @@ namespace Prime.Plugins.Services.Yobit
         {
             var api = ApiProviderPrivate.GetApi(context);
 
+            var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
+
             var bodyOrderInfo = new Dictionary<string, object>
             {
+                { "method","OrderInfo" },
+                { "nonce", timeStamp },
                 { "order_id", context.RemoteGroupId}
             };
 
@@ -102,8 +114,12 @@ namespace Prime.Plugins.Services.Yobit
         {
             var api = ApiProviderPrivate.GetApi(context);
 
+            var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
+
             var body = new Dictionary<string, object>
             {
+                { "method","WithdrawCoinsToAddress" },
+                { "nonce", timeStamp },
                 {"coinName", context.Amount.Asset.ShortCode},
                 {"amount", context.Amount.ToDecimalValue()},
                 {"address", context.Address.Address}

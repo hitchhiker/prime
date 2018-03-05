@@ -34,8 +34,8 @@ namespace Prime.Plugins.Services.Bittrex
             var rate = context.Rate.ToDecimalValue();
 
             var r = context.IsSell ?
-                await api.GetMarketSellLimit(remotePair, quantity, rate).ConfigureAwait(false) :
-                await api.GetMarketBuyLimit(remotePair, quantity, rate).ConfigureAwait(false);
+                await api.PlaceMarketSellLimit(remotePair, quantity, rate).ConfigureAwait(false) :
+                await api.PlaceMarketBuyLimit(remotePair, quantity, rate).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 

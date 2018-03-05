@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.Kucoin
             var activeOrderBuy = rActiveOrders.data.BUY.FirstOrDefault(x => x.oid.Equals(context.RemoteGroupId));
             var activeOrderSell = rActiveOrders.data.SELL.FirstOrDefault(x => x.oid.Equals(context.RemoteGroupId));
             var dealtOrder = rDealtOrders.data.datas.FirstOrDefault(x => x.orderOid.Equals(context.RemoteGroupId));
-
+            
             var price = 0m;
             var amountInitial = 0m;
             var isOpen = true;
@@ -83,7 +83,7 @@ namespace Prime.Plugins.Services.Kucoin
             {
                 price = dealtOrder.dealPrice;
                 isOpen = false;
-                isBuy = dealtOrder.direction.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                isBuy = dealtOrder.direction.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             }
             else
                 throw new NoTradeOrderException(context, this);

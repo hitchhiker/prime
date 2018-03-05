@@ -36,10 +36,10 @@ namespace Prime.Plugins.Services.Bittrex
         Task<BittrexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
 
         [Get("/market/buylimit")]
-        Task<BittrexSchema.UuidResponse> GetMarketBuyLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
+        Task<BittrexSchema.UuidResponse> PlaceMarketBuyLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
 
         [Get("/market/selllimit")]
-        Task<BittrexSchema.UuidResponse> GetMarketSellLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
+        Task<BittrexSchema.UuidResponse> PlaceMarketSellLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
 
         [Get("/market/cancel?uuid={uuid}")]
         Task<BittrexSchema.UuidResponse> GetMarketCancel([Path] string uuid);

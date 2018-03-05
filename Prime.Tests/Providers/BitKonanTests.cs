@@ -58,5 +58,20 @@ namespace Prime.Tests.Providers
         {
             base.TestGetOrderBook("LTC_USD".ToAssetPairRaw(), false);
         }
+
+        [TestMethod]
+        public override void TestPlaceOrderLimit()
+        {
+            //TODO: SC: Not tested with real money
+            base.TestPlaceOrderLimit("btc_usd".ToAssetPairRaw(), false, new Money(10m, Asset.Usd), new Money(10m, Asset.Usd));
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: SC: Not tested with real money
+            var orderId = "21109502";
+            base.TestGetTradeOrderStatus(orderId, "btc_usd".ToAssetPairRaw());
+        }
     }
 }
