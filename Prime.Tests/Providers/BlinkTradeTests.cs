@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.BlinkTrade;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BlinkTradeTests : ProviderDirectTestsBase
     {
-        public BlinkTradeTests()
+        public BlinkTradeTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BlinkTradeProvider>().FirstProvider();
         }

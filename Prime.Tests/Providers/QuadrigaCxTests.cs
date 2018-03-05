@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.QuadrigaCX;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class QuadrigaCxTests : ProviderDirectTestsBase
     {
-        public QuadrigaCxTests()
+        public QuadrigaCxTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<QuadrigaCxProvider>().FirstProvider();
         }

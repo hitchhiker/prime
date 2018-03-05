@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Gdax;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class GdaxTests : ProviderDirectTestsBase
     {
-        public GdaxTests()
+        public GdaxTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<GdaxProvider>().FirstProvider();
         }

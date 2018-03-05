@@ -4,13 +4,14 @@ using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Plugins.Services.Kraken;
 using Xunit;
+using Xunit.Abstractions;
 using AssetPair = Prime.Common.AssetPair;
 
 namespace Prime.Tests.Providers
 {
     public class KrakenTests : ProviderDirectTestsBase
     {
-        public KrakenTests()
+        public KrakenTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
         }

@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Bitfinex;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BitfinexTests : ProviderDirectTestsBase
     {
-        public BitfinexTests()
+        public BitfinexTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitfinexProvider>().FirstProvider();
         }

@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Coinsecure;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class CoinsecureTests : ProviderDirectTestsBase
     {
-        public CoinsecureTests()
+        public CoinsecureTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<CoinsecureProvider>().FirstProvider();
         }

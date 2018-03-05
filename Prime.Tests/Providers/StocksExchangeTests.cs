@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.StocksExchange;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class StocksExchangeTests : ProviderDirectTestsBase
     {
-        public StocksExchangeTests()
+        public StocksExchangeTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<StocksExchangeProvider>().FirstProvider();
         }

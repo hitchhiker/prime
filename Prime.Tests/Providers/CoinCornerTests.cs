@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.CoinCorner;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class CoinCornerTests : ProviderDirectTestsBase
     {
-        public CoinCornerTests()
+        public CoinCornerTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<CoinCornerProvider>().FirstProvider();
         }

@@ -4,12 +4,13 @@ using Prime.Common;
 using Prime.Plugins.Services.Coinfloor;
 using Prime.Tests.Providers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests
 {
     public class CoinfloorTests : ProviderDirectTestsBase
     {
-        public CoinfloorTests()
+        public CoinfloorTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<CoinfloorProvider>().FirstProvider();
         }

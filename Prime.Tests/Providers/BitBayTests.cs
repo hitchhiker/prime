@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.BitBay;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BitBayTests : ProviderDirectTestsBase
     {
-        public BitBayTests()
+        public BitBayTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitBayProvider>().FirstProvider();
         }

@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Braziliex;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BraziliexTests : ProviderDirectTestsBase
     {
-        public BraziliexTests()
+        public BraziliexTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BraziliexProvider>().FirstProvider();
         }

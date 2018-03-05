@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Paymium;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class PaymiumTests : ProviderDirectTestsBase
     {
-        public PaymiumTests()
+        public PaymiumTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<PaymiumProvider>().FirstProvider();
         }

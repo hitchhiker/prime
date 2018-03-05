@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Bleutrade;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BleutradeTests : ProviderDirectTestsBase
     {
-        public BleutradeTests()
+        public BleutradeTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BleutradeProvider>().FirstProvider();
         }

@@ -53,19 +53,19 @@ namespace Prime.Tests.Providers
             var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
 
             Assert.True(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
-            Trace.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
-            Trace.WriteLine($"Order side: {(r.IsBuy ? "buy": "sell")}");
+            OutputWriter.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
+            OutputWriter.WriteLine($"Order side: {(r.IsBuy ? "buy": "sell")}");
 
-            if (r.IsOpen) Trace.WriteLine("Order is open");
-            if (r.IsCancelRequested) Trace.WriteLine("Order is requested to be canceled");
-            if (r.IsCanceled) Trace.WriteLine("Order is canceled");
-            if (r.IsClosed) Trace.WriteLine("Order is closed");
-            if (r.IsFound) Trace.WriteLine("Order is found");
+            if (r.IsOpen) OutputWriter.WriteLine("Order is open");
+            if (r.IsCancelRequested) OutputWriter.WriteLine("Order is requested to be canceled");
+            if (r.IsCanceled) OutputWriter.WriteLine("Order is canceled");
+            if (r.IsClosed) OutputWriter.WriteLine("Order is closed");
+            if (r.IsFound) OutputWriter.WriteLine("Order is found");
 
-            if (r.Rate.HasValue) Trace.WriteLine($"The rate of order is {r.Rate.Value}");
-            if (r.AmountInitial.HasValue) Trace.WriteLine($"Initial amount is {r.AmountInitial.Value}");
-            if (r.AmountFilled.HasValue) Trace.WriteLine($"Filled amount is {r.AmountFilled.Value}");
-            if (r.AmountRemaining.HasValue) Trace.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
+            if (r.Rate.HasValue) OutputWriter.WriteLine($"The rate of order is {r.Rate.Value}");
+            if (r.AmountInitial.HasValue) OutputWriter.WriteLine($"Initial amount is {r.AmountInitial.Value}");
+            if (r.AmountFilled.HasValue) OutputWriter.WriteLine($"Filled amount is {r.AmountFilled.Value}");
+            if (r.AmountRemaining.HasValue) OutputWriter.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
         }
 
         private void PlaceOrderLimitTest(IOrderLimitProvider provider, AssetPair market, bool isBuy, Money quantity, Money rate)
@@ -75,7 +75,7 @@ namespace Prime.Tests.Providers
             var r = AsyncContext.Run(() => provider.PlaceOrderLimitAsync(context));
 
             Assert.True(!String.IsNullOrWhiteSpace(r.RemoteOrderGroupId));
-            Trace.WriteLine($"Remote trade order id: {r.RemoteOrderGroupId}");
+            OutputWriter.WriteLine($"Remote trade order id: {r.RemoteOrderGroupId}");
         }
 
         private void GetMarketFromOrderTest(IOrderLimitProvider provider, string remoteOrderId)
@@ -84,7 +84,7 @@ namespace Prime.Tests.Providers
 
             var r = AsyncContext.Run(() => provider.GetMarketFromOrderAsync(context));
 
-            Trace.WriteLine($"Remote trade order id is {remoteOrderId}, market is {r.Market}");
+            OutputWriter.WriteLine($"Remote trade order id is {remoteOrderId}, market is {r.Market}");
 
             Assert.True(r.Market != null, "Returned market is null");
             Assert.True(!Equals(r.Market, AssetPair.Empty), "Returned market is AssetPair.Empty");
@@ -98,10 +98,10 @@ namespace Prime.Tests.Providers
 
             Assert.True(balances != null);
 
-            Trace.WriteLine("User balances: ");
+            OutputWriter.WriteLine("User balances: ");
             foreach (var b in balances.OrderByDescending(x => x.AvailableAndReserved.ToDecimalValue()))
             {
-                Trace.WriteLine($"{b.Asset}: {b.Available} available, {b.Reserved} reserved, {b.AvailableAndReserved} total");
+                OutputWriter.WriteLine($"{b.Asset}: {b.Available} available, {b.Reserved} reserved, {b.AvailableAndReserved} total");
             }
         }
 

@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.EthexIndia;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class EthexIndiaTests : ProviderDirectTestsBase
     {
-        public EthexIndiaTests()
+        public EthexIndiaTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<EthexIndiaProvider>().FirstProvider();
         }

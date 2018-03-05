@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.BitFlyer;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BitFlyerTests : ProviderDirectTestsBase
     {
-        public BitFlyerTests()
+        public BitFlyerTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitFlyerProvider>().FirstProvider();
         }

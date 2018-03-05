@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Xbtce;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class XbtceTests : ProviderDirectTestsBase
     {
-        public XbtceTests()
+        public XbtceTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<XbtceProvider>().FirstProvider();
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.BitStamp;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
@@ -10,7 +11,7 @@ namespace Prime.Tests.Providers
     {
         // OHLC data is not provided by API.
         
-        public BitStampTests()
+        public BitStampTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
         }

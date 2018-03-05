@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Korbit;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class KorbitTests : ProviderDirectTestsBase
     {
-        public KorbitTests()
+        public KorbitTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<KorbitProvider>().FirstProvider();
         }

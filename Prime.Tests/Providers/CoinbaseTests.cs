@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Coinbase;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class CoinbaseTests : ProviderDirectTestsBase
     {
-        public CoinbaseTests()
+        public CoinbaseTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<CoinbaseProvider>().FirstProvider();
         }

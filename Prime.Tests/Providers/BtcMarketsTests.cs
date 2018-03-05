@@ -4,12 +4,13 @@ using Prime.Common;
 using Prime.Plugins.Services.BtcMarkets;
 using Prime.Tests.Providers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests
 {
     public class BtcMarketsTests : ProviderDirectTestsBase
     {
-        public BtcMarketsTests()
+        public BtcMarketsTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BtcMarketsProvider>().FirstProvider();
         }

@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.NLexch;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class NLexchTests : ProviderDirectTestsBase
     {
-        public NLexchTests()
+        public NLexchTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<NLexchProvider>().FirstProvider();
         }

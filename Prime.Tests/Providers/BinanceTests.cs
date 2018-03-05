@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Plugins.Services.Binance;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BinanceTests : ProviderDirectTestsBase 
     {
-        public BinanceTests()
+        public BinanceTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BinanceProvider>().FirstProvider();
         }
@@ -89,7 +90,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetOrderBook()
         {
-            base.PretestGetOrderBook("BTC_USDT".ToAssetPairRaw(), false, 50);
+            base.PretestGetOrderBook("BTC_USDT".ToAssetPairRaw(), false);
         }
 
         [Fact]

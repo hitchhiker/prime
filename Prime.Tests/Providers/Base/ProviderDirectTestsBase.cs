@@ -8,11 +8,19 @@ using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public abstract partial class ProviderDirectTestsBase
     {
+        protected ITestOutputHelper OutputWriter;
+
+        protected ProviderDirectTestsBase(ITestOutputHelper outputWriter)
+        {
+            OutputWriter = outputWriter;
+        }
+
         public INetworkProvider Provider { get; protected set; }
 
         private bool IsVolumePricingSanityTested { get; set; }
@@ -210,10 +218,10 @@ namespace Prime.Tests.Providers
             Assert.True(success);
             Assert.True(ohlc != null && ohlc.Count > 0);
 
-            Trace.WriteLine("OHLC data:");
+            OutputWriter.WriteLine("OHLC data:");
             foreach (var entry in ohlc)
             {
-                Trace.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
+                OutputWriter.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
             }
         }
 
@@ -228,20 +236,20 @@ namespace Prime.Tests.Providers
 
             if (requiredPairs != null)
             {
-                Trace.WriteLine("Checked pairs:");
+                OutputWriter.WriteLine("Checked pairs:");
                 foreach (var requiredPair in requiredPairs)
                 {
                     var contains = pairs.Contains(requiredPair);
                     Assert.True(contains, $"Provider didn't return required {requiredPair} pair.");
 
-                    Trace.WriteLine(requiredPair);
+                    OutputWriter.WriteLine(requiredPair.ToString());
                 }
             }
 
-            Trace.WriteLine("\nRemote pairs from exchange:");
+            OutputWriter.WriteLine("\nRemote pairs from exchange:");
             foreach (var pair in pairs)
             {
-                Trace.WriteLine(pair);
+                OutputWriter.WriteLine(pair.ToString());
             }
         }
 
@@ -254,10 +262,10 @@ namespace Prime.Tests.Providers
 
             Assert.True(r != null);
 
-            Trace.WriteLine("All deposit addresses:");
+            OutputWriter.WriteLine("All deposit addresses:");
             foreach (var walletAddress in r)
             {
-                Trace.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
+                OutputWriter.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
             }
         }
 
@@ -270,10 +278,10 @@ namespace Prime.Tests.Providers
 
             Assert.True(r != null);
 
-            Trace.WriteLine($"Deposit addresses for {context.Asset}:");
+            OutputWriter.WriteLine($"Deposit addresses for {context.Asset}:");
             foreach (var walletAddress in r)
             {
-                Trace.WriteLine($"\"{walletAddress.Address}\"");
+                OutputWriter.WriteLine($"\"{walletAddress.Address}\"");
             }
         }
 
@@ -283,7 +291,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null, "Null response returned");
 
             if (r.IsReversed)
-                Trace.WriteLine("Asset pair is reversed");
+                OutputWriter.WriteLine("Asset pair is reversed");
 
             // Assert.True(r.Pair.Equals(context.Pair), "Incorrect asset pair returned");
 
@@ -297,8 +305,8 @@ namespace Prime.Tests.Providers
             //else
             //    Assert.True(r.Asks.Count == context.MaxRecordsCount && r.Bids.Count == context.MaxRecordsCount, "Incorrect number of order book records returned");
 
-            Trace.WriteLine($"Highest bid: {r.HighestBid}");
-            Trace.WriteLine($"Lowest ask: {r.LowestAsk}");
+            OutputWriter.WriteLine($"Highest bid: {r.HighestBid}");
+            OutputWriter.WriteLine($"Lowest ask: {r.LowestAsk}");
 
             var records = new List<OrderBookRecord>() { r.LowestAsk, r.HighestBid };
             foreach (var record in records)
@@ -309,17 +317,17 @@ namespace Prime.Tests.Providers
                     Assert.True(record.Price > 1, "Reverse check failed. Price is expected to be > 1");
             }
 
-            Trace.WriteLine($"Order book data ({r.Asks.Count} asks, {r.Bids.Count} bids): ");
+            OutputWriter.WriteLine($"Order book data ({r.Asks.Count} asks, {r.Bids.Count} bids): ");
 
             foreach (var obr in r.Asks.Concat(r.Bids))
             {
-                Trace.WriteLine($"{obr.UtcUpdated} : {obr}");
+                OutputWriter.WriteLine($"{obr.UtcUpdated} : {obr}");
             }
         }
 
         private void GetOrderBookTest(IOrderBookProvider provider, AssetPair pair, bool priceLessThan1, int recordsCount = 100)
         {
-            Trace.WriteLine($"Order book market: {pair}");
+            OutputWriter.WriteLine($"Order book market: {pair}");
             var context = new OrderBookContext(pair, recordsCount);
             InternalGetOrderBook(provider, context, priceLessThan1);
 
@@ -336,7 +344,7 @@ namespace Prime.Tests.Providers
 
             foreach (var historyEntry in r)
             {
-                Trace.WriteLine($"{historyEntry.CreatedTimeUtc} {historyEntry.WithdrawalStatus} {historyEntry.WithdrawalRemoteId} {historyEntry.Price.Display}");
+                OutputWriter.WriteLine($"{historyEntry.CreatedTimeUtc} {historyEntry.WithdrawalStatus} {historyEntry.WithdrawalRemoteId} {historyEntry.Price.Display}");
             }
 
             // Assert.True(r);
@@ -355,7 +363,7 @@ namespace Prime.Tests.Providers
 
             Assert.True(r != null);
 
-            Trace.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
+            OutputWriter.WriteLine($"Withdrawal request remote id: {r.WithdrawalRemoteId}");
         }
 
         private void CancelWithdrawalTest(IWithdrawalCancelationProvider provider, WithdrawalCancelationContext context)
@@ -368,7 +376,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null);
             Assert.True(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
-            Trace.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
+            OutputWriter.WriteLine($"Withdrawal request canceled, remote id is {r.WithdrawalRemoteId}");
         }
 
         private void ConfirmWithdrawalTest(IWithdrawalConfirmationProvider provider, WithdrawalConfirmationContext context)
@@ -381,7 +389,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null);
             Assert.True(r.WithdrawalRemoteId.Equals(context.WithdrawalRemoteId), "Withdrawal ids don't match.");
 
-            Trace.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
+            OutputWriter.WriteLine($"Withdrawal request confirmed, remote id is {r.WithdrawalRemoteId}");
         }
 
         #endregion

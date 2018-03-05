@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Coinmate;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class CoinmateTests : ProviderDirectTestsBase
     {
-        public CoinmateTests()
+        public CoinmateTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<CoinmateProvider>().FirstProvider();
         }

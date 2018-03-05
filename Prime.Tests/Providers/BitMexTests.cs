@@ -6,12 +6,13 @@ using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
 using Prime.Plugins.Services.BitMex;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BitMexTests : ProviderDirectTestsBase
     {
-        public BitMexTests()
+        public BitMexTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
         }

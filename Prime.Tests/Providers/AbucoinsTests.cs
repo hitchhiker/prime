@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Abucoins;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class AbucoinsTests : ProviderDirectTestsBase
     {
-        public AbucoinsTests()
+        public AbucoinsTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<AbucoinsProvider>().FirstProvider();
         }

@@ -4,13 +4,14 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Whaleclub;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class WhaleclubTests : ProviderDirectTestsBase
     {
-        public WhaleclubTests()
+        public WhaleclubTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<WhaleclubProvider>().FirstProvider();
         }

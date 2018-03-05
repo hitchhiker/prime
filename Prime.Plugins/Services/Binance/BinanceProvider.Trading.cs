@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Binance
         {
             var rError = r.GetContent() as BinanceSchema.ErrorResponseBase;
             if (rError?.success != null && !rError.success.Value)
-                throw new ApiResponseException($"{rError.msg}", this, method);
+                throw new ApiResponseException($"{rError.msg.Trim(new char[] { '.' })}", this, method);
 
             if (r.ResponseMessage.IsSuccessStatusCode) return;
 

@@ -4,12 +4,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Poloniex;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class PoloniexTests : ProviderDirectTestsBase
     {
-        public PoloniexTests()
+        public PoloniexTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
         }

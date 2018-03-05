@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.TheRockTrading;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class TheRockTradingTests : ProviderDirectTestsBase
     {
-        public TheRockTradingTests()
+        public TheRockTradingTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<TheRockTradingProvider>().FirstProvider();
         }

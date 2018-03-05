@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.LiveCoin;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class LiveCoinTests : ProviderDirectTestsBase
     {
-        public LiveCoinTests()
+        public LiveCoinTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<LiveCoinProvider>().FirstProvider();
         }

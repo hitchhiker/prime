@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Alphapoint;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class AlphapointTests : ProviderDirectTestsBase
     {
-        public AlphapointTests()
+        public AlphapointTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<AlphapointProvider>().FirstProvider();
         }

@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.BitMarket;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BitMarketTests : ProviderDirectTestsBase
     {
-        public BitMarketTests()
+        public BitMarketTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitMarketProvider>().FirstProvider();
         }

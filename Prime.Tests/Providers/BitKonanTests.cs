@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.BitKonan;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class BitKonanTests : ProviderDirectTestsBase
     {
-        public BitKonanTests()
+        public BitKonanTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BitKonanProvider>().FirstProvider();
         }

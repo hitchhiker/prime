@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Cryptopia;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class CryptopiaTests : ProviderDirectTestsBase
     {
-        public CryptopiaTests()
+        public CryptopiaTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<CryptopiaProvider>().FirstProvider();
         }

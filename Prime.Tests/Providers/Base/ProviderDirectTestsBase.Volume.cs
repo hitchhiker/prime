@@ -54,14 +54,14 @@ namespace Prime.Tests.Providers
                 {
                     Assert.False(networkPairVolume.Volume24Base.ToDecimal(null) == 0,
                         $"Base volume of {networkPairVolume.Pair} is 0");
-                    Trace.WriteLine($"Base volume for {networkPairVolume.Pair} pair is {networkPairVolume.Volume24Base}");
+                    OutputWriter.WriteLine($"Base volume for {networkPairVolume.Pair} pair is {networkPairVolume.Volume24Base}");
                 }
 
                 if (networkPairVolume.HasVolume24Quote)
                 {
                     Assert.False(networkPairVolume.Volume24Quote.ToDecimal(null) == 0,
                         $"Quote volume of {networkPairVolume.Pair} is 0");
-                    Trace.WriteLine($"Quote volume for {networkPairVolume.Pair} pair is {networkPairVolume.Volume24Quote}");
+                    OutputWriter.WriteLine($"Quote volume for {networkPairVolume.Pair} pair is {networkPairVolume.Volume24Quote}");
                 }
 
                 if (networkPairVolume.HasVolume24Base && networkPairVolume.HasVolume24Quote)
@@ -73,11 +73,11 @@ namespace Prime.Tests.Providers
 
         private void GetVolumeTest(IPublicVolumeProvider provider, List<AssetPair> pairs, bool volumeBaseBiggerThanQuote)
         {
-            Trace.WriteLine("Volume interface test\n\n");
+            OutputWriter.WriteLine("Volume interface test\n\n");
 
             if (provider.VolumeFeatures.HasSingle)
             {
-                Trace.WriteLine("\nSingle features test\n");
+                OutputWriter.WriteLine("\nSingle features test\n");
 
                 var context = new PublicVolumeContext(pairs.First());
 
@@ -86,14 +86,14 @@ namespace Prime.Tests.Providers
 
             if (provider.VolumeFeatures.HasBulk)
             {
-                Trace.WriteLine("\nBulk features test with pairs selection\n");
+                OutputWriter.WriteLine("\nBulk features test with pairs selection\n");
                 var context = new PublicVolumesContext(pairs);
 
                 InternalGetVolumeAsync(provider, context, volumeBaseBiggerThanQuote, false);
 
                 if (provider.VolumeFeatures.Bulk.CanReturnAll)
                 {
-                    Trace.WriteLine("\nBulk features test (provider can return all volumes)\n");
+                    OutputWriter.WriteLine("\nBulk features test (provider can return all volumes)\n");
                     context = new PublicVolumesContext();
 
                     InternalGetVolumeAsync(provider, context, volumeBaseBiggerThanQuote, false);

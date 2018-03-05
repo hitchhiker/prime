@@ -3,12 +3,13 @@ using System.Linq;
 using Prime.Common;
 using Prime.Plugins.Services.Globitex;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests.Providers
 {
     public class GlobitexTests : ProviderDirectTestsBase
     {
-        public GlobitexTests()
+        public GlobitexTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<GlobitexProvider>().FirstProvider();
         }

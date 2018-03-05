@@ -1,4 +1,6 @@
-﻿namespace Prime.Tests.Providers
+﻿using Xunit.Abstractions;
+
+namespace Prime.Tests.Providers
 {
     public class NovaExchangeTests : ProviderDirectTestsBase
     {/*
@@ -38,5 +40,8 @@
 
             base.TestGetAssetPairs(requiredPairs);
         }*/
+        public NovaExchangeTests(ITestOutputHelper outputWriter) : base(outputWriter)
+        {
+        }
     }
 }

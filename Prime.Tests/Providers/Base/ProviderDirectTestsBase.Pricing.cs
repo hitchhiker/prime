@@ -56,7 +56,7 @@ namespace Prime.Tests.Providers
 
             // First price, price value.
             Assert.True(r.FirstPrice != null, "First price is null");
-            Trace.WriteLine($"First asset price: {r.FirstPrice}");
+            OutputWriter.WriteLine($"First asset price: {r.FirstPrice}");
 
             if (!context.IsRequestAll)
             {
@@ -133,7 +133,7 @@ namespace Prime.Tests.Providers
 
             foreach (var p in r)
             {
-                Trace.WriteLine($"Market price: {p}");
+                OutputWriter.WriteLine($"Market price: {p}");
 
                 // Statistics.
                 if (pricingFeatures.CanStatistics)
@@ -141,15 +141,15 @@ namespace Prime.Tests.Providers
                     Assert.True(p.HasStatistics,
                         $"Market price does not have statistics but provider supports it - {p.Pair}");
 
-                    Trace.WriteLine($"Market price statistics for {p.Pair}:");
+                    OutputWriter.WriteLine($"Market price statistics for {p.Pair}:");
 
-                    Trace.WriteLine(
+                    OutputWriter.WriteLine(
                         $"Bid: {(p.PriceStatistics.HasHighestBid ? p.PriceStatistics.HighestBid.Display : "-")}");
-                    Trace.WriteLine(
+                    OutputWriter.WriteLine(
                         $"Ask: {(p.PriceStatistics.HasLowestAsk ? p.PriceStatistics.LowestAsk.Display : "-")}");
-                    Trace.WriteLine(
+                    OutputWriter.WriteLine(
                         $"Low: {(p.PriceStatistics.HasPrice24Low ? p.PriceStatistics.Price24Low.Display : "-")}");
-                    Trace.WriteLine(
+                    OutputWriter.WriteLine(
                         $"High: {(p.PriceStatistics.HasPrice24High ? p.PriceStatistics.Price24High.Display : "-")}");
                 }
                 else
@@ -164,27 +164,27 @@ namespace Prime.Tests.Providers
                         $"Market price does not have volume but provider supports it - {p.Pair}");
 
                     if (p.Volume.HasVolume24Base)
-                        Trace.WriteLine($"Base 24h volume: {p.Volume.Volume24Base}");
+                        OutputWriter.WriteLine($"Base 24h volume: {p.Volume.Volume24Base}");
 
                     if (p.Volume.HasVolume24Quote)
-                        Trace.WriteLine($"Quote 24h volume: {p.Volume.Volume24Quote}");
+                        OutputWriter.WriteLine($"Quote 24h volume: {p.Volume.Volume24Quote}");
                 }
                 else
                 {
                     Assert.True(!p.HasVolume, $"Provider returns volume but did not announce it - {p.Pair}");
                 }
 
-                Trace.WriteLine("");
+                OutputWriter.WriteLine("");
             }
         }
 
         protected void GetPricingTest(IPublicPricingProvider provider, List<AssetPair> pairs, bool firstPriceLessThan1, bool? firstVolumeBaseBiggerThanQuote = null)
         {
-            Trace.WriteLine("Pricing interface test\n\n");
+            OutputWriter.WriteLine("Pricing interface test\n\n");
 
             if (provider.PricingFeatures.HasSingle)
             {
-                Trace.WriteLine("\nSingle features test\n");
+                OutputWriter.WriteLine("\nSingle features test\n");
                 var context = new PublicPriceContext(pairs.First())
                 {
                     RequestStatistics = provider.PricingFeatures.Single.CanStatistics,
@@ -196,7 +196,7 @@ namespace Prime.Tests.Providers
 
             if (provider.PricingFeatures.HasBulk)
             {
-                Trace.WriteLine("\nBulk features test with pairs selection\n");
+                OutputWriter.WriteLine("\nBulk features test with pairs selection\n");
                 var context = new PublicPricesContext(pairs)
                 {
                     RequestStatistics = provider.PricingFeatures.Bulk.CanStatistics,
@@ -207,7 +207,7 @@ namespace Prime.Tests.Providers
 
                 if (provider.PricingFeatures.Bulk.CanReturnAll)
                 {
-                    Trace.WriteLine("\nBulk features test (provider can return all prices)\n");
+                    OutputWriter.WriteLine("\nBulk features test (provider can return all prices)\n");
                     context = new PublicPricesContext();
 
                     InternalGetPriceAsync(provider, context, false, firstPriceLessThan1, firstVolumeBaseBiggerThanQuote);
