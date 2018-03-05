@@ -8,5 +8,6 @@
         LimitOrderBuy,
         LimitOrderSell,
         OrderStatus,
+        OpenOrders
     }
 }

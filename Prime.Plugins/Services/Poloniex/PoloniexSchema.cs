@@ -5,27 +5,45 @@ namespace Prime.Plugins.Services.Poloniex
 {
     internal class PoloniexSchema
     {
-        internal class BalancesDetailedResponse : Dictionary<string, BalanceDetailedResponse> { }
+        #region Base
 
-        internal class TickerResponse : Dictionary<string, TickerEntryResponse> { }
+        internal class ErrorResponse
+        {
+            public string error;
+        }
+
+        #endregion
+
+        #region Private
+
+        internal class BalancesDetailedResponse : Dictionary<string, BalanceDetailedResponse> { }
 
         internal class DepositAddressesResponse : Dictionary<string, string> { }
 
-        internal class ChartEntriesResponse : List<ChartEntryResponse> { }
+        internal class OpenMarketOrdersResponse : Dictionary<string, OpenOrdersResponse> { }
 
-        internal class VolumeResponse : Dictionary<string, object> { }
+        internal class OpenOrdersResponse : List<OpenOrderResponse> { }
+
+        internal class OpenOrderResponse
+        {
+            public long orderNumber;
+            public string type;
+            public decimal rate;
+            public decimal amount;
+            public decimal total;
+        }
 
         internal class OrderLimitResponse
         {
             public string orderNumber;
-            public List<TradeResult> resultingTrades;
+            public List<TradeResultResponse> resultingTrades;
         }
 
-        internal class OrderStatusResponse : List<TradeResultFinal>
+        internal class OrderStatusResponse : List<TradeResultFinalResponse>
         {
         }
 
-        internal class TradeResult
+        internal class TradeResultResponse
         {
             public decimal amount;
             public DateTime date;
@@ -35,12 +53,29 @@ namespace Prime.Plugins.Services.Poloniex
             public string type;
         }
 
-        internal class TradeResultFinal : TradeResult
+        internal class TradeResultFinalResponse : TradeResultResponse
         {
             public decimal fee;
             public string currencyPair;
-            public string globalTradeID;
+            public long globalTradeID;
         }
+
+        internal class BalanceDetailedResponse
+        {
+            public decimal available;
+            public decimal onOrders;
+            public decimal btcValue;
+        }
+
+        #endregion
+
+        #region Public
+
+        internal class TickerResponse : Dictionary<string, TickerEntryResponse> { }
+
+        internal class ChartEntriesResponse : List<ChartEntryResponse> { }
+
+        internal class VolumeResponse : Dictionary<string, object> { }
 
         internal class OrderBookResponse
         {
@@ -76,11 +111,7 @@ namespace Prime.Plugins.Services.Poloniex
             public decimal low24hr;
         }
 
-        internal class BalanceDetailedResponse
-        {
-            public decimal available;
-            public decimal onOrders;
-            public decimal btcValue;
-        }
+        #endregion
+
     }
 }

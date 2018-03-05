@@ -46,7 +46,6 @@ namespace Prime.Tests.Providers
         [TestMethod]
         public override void TestGetOrderBook()
         {
-            // Not tested.
             TestGetOrderBook("BTC_NXT".ToAssetPairRaw(), false);
         }
 
@@ -77,6 +76,12 @@ namespace Prime.Tests.Providers
             var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Current);
 
             base.TestGetAddressesForAsset(context);
+        }
+
+        [TestMethod]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.TestGetTradeOrderStatus("123412");
         }
 
         [TestMethod]

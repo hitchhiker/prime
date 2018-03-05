@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
 using Prime.Common;
+using Prime.Common.Api.Request.Response;
 using Prime.Common.Exchange;
 using Prime.Utility;
 
@@ -14,29 +15,6 @@ namespace Prime.Plugins.Services.Poloniex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class PoloniexProvider : IOrderLimitProvider
     {
-        public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var pairCode = context.Pair.ToTicker(this, '_');
-
-            var r = context.MaxRecordsCount == Int32.MaxValue
-                ? await api.GetOrderBookAsync(pairCode).ConfigureAwait(false)
-                : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
-
-            if (r.bids == null || r.asks == null)
-                throw new AssetPairNotSupportedException(context.Pair, this);
-
-            var orderBook = new OrderBook(Network, context.Pair.Reversed); //POLONIEX IS REVERSING THE MARKET
-
-            foreach (var i in r.bids)
-                orderBook.AddBid(i[0], i[1], true); //HH: Confirmed reversed on https://poloniex.com/exchange#btc_btcd
-
-            foreach (var i in r.asks)
-                orderBook.AddAsk(i[0], i[1], true);
-
-            return orderBook.AsPair(context.Pair);
-        }
-
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var buy = context.IsBuy;
@@ -50,7 +28,10 @@ namespace Prime.Plugins.Services.Poloniex
 
             //fillOrKill //immediateOrCancel //postOnly
 
-            var r = await api.PlaceOrderLimitAsync(body).ConfigureAwait(false);
+            var rRaw = await api.PlaceOrderLimitAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return new PlacedOrderLimitResponse(r.orderNumber, r.resultingTrades.Select(x=>x.tradeID));
         }
@@ -59,16 +40,67 @@ namespace Prime.Plugins.Services.Poloniex
         {
             var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.OrderStatus);
+
+            if(!long.TryParse(context.RemoteGroupId, out var orderNumber))
+                throw new ApiBaseException("Order id has to be of a long type", this);
+
             body.Add("orderNumber", context.RemoteGroupId);
 
-            var r = await api.GetOrderStatusAsync(body).ConfigureAwait(false);
-            
-            // TODO: AY: implement, use all markets - Poloniex.
+            var rRaw = await api.GetOrderStatusAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            return new TradeOrderStatus()
+            var r = rRaw.GetContent();
+
+            var order = r.FirstOrDefault(x => x.globalTradeID == orderNumber);
+            if(order == null)
+                throw new NoTradeOrderException(context, this);
+
+            var openOrders = await GetOpenOrders(context).ConfigureAwait(false);
+            var isOpen = openOrders.Any(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
+
+            var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
             {
-                
+                Market = order.currencyPair.ToAssetPair(this),
+                Rate = order.rate,
+                AmountInitial = order.amount,
+                AmountRemaining = order.amount - order.total
             };
+        }
+
+        public async Task<IEnumerable<TradeOrderStatus>> GetOpenOrders(NetworkProviderPrivateContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreatePoloniexBody(PoloniexBodyType.OpenOrders);
+            body.Add("currencyPair", "all");
+
+            var rRaw = await api.GetOpenOrdersAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var openOrders = new List<TradeOrderStatus>();
+
+            foreach (var rMarketOrders in r)
+            {
+                var market = rMarketOrders.Key.ToAssetPair(this);
+
+                foreach (var rOrder in rMarketOrders.Value)
+                {
+                    var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                    openOrders.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, true, false)
+                    {
+                        Market = market,
+                        AmountInitial = rOrder.amount,
+                        AmountRemaining = rOrder.amount - rOrder.total,
+                        Rate = rOrder.rate
+                    });
+                }
+            }
+
+            return openOrders;
         }
 
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
