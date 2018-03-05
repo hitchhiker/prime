@@ -17,6 +17,8 @@ UpgradeLog.htm
 *.7z
 *.DotSettings
 TestResults
+
+.idea
  
 exception-*.txt
 audit-*.txt
