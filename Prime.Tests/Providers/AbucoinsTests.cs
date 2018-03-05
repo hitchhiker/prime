@@ -1,0 +1,69 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using Prime.Common;
+using Prime.Plugins.Services.Abucoins;
+using Xunit;
+
+namespace Prime.Tests.Providers
+{
+    public class AbucoinsTests : ProviderDirectTestsBase
+    {
+        public AbucoinsTests()
+        {
+            Provider = Networks.I.Providers.OfType<AbucoinsProvider>().FirstProvider();
+        }
+
+        [Fact]
+        public override void TestApiPublic()
+        {
+            base.TestApiPublic();
+        }
+
+        [Fact]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "ETH_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+            };
+
+            base.PretestGetPricing(pairs, true);
+        }
+
+        [Fact]
+        public override void TestGetAssetPairs()
+        {
+            var requiredPairs = new AssetPairs()
+            {
+                "ETH_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+            };
+
+            base.PretestGetAssetPairs(requiredPairs);
+        }
+
+        [Fact]
+        public override void TestGetVolume()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "ETH_BTC".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+            };
+
+            base.PretestGetVolume(pairs, false);
+        }
+
+        [Fact]
+        public override void TestGetOrderBook()
+        {
+            base.PretestGetOrderBook("BTC_PLN".ToAssetPairRaw(), false);
+
+            Assert.Throws<ApiResponseException>(() =>
+            {
+                base.PretestGetOrderBook("BTC_PLNaw".ToAssetPairRaw(), false);
+            });
+        }
+    }
+}
