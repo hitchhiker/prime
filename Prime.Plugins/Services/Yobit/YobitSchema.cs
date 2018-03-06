@@ -59,6 +59,12 @@ namespace Prime.Plugins.Services.Yobit
 
         #region Private
 
+        internal class ErrorResponse
+        {
+            public bool success;
+            public string error;
+        }
+
         internal class BaseResponse<T>
         {
             public bool success;

@@ -19,12 +19,12 @@ namespace Prime.Plugins.Services.BitKonan
         {
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
 
-            string strForSign = $"{ApiKey.Key}{timeStamp}";
+            var strForSign = $"{ApiKey.Key}{timeStamp}";
             var signature = HashHMACSHA256Hex(strForSign, ApiKey.Secret);
 
             var parameters = request.Content?.ReadAsStringAsync()?.Result;
 
-            string jsonParams = "";
+            var jsonParams = "";
 
             if (parameters != null)
             {

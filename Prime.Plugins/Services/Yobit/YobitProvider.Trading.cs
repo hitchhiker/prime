@@ -15,15 +15,17 @@ namespace Prime.Plugins.Services.Yobit
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
+            if (r.TryGetContent(out YobitSchema.ErrorResponse rError))
+                if (!rError.success)
+                    throw new ApiResponseException(rError.error, this, method);
+
             if (!r.ResponseMessage.IsSuccessStatusCode)
                 throw new ApiResponseException($"{r.ResponseMessage.ReasonPhrase} ({r.ResponseMessage.StatusCode})",
                     this, method);
 
             if (r.GetContent() is YobitSchema.BaseResponse<T> baseResponse)
-            {
                 if (!baseResponse.success)
                     throw new ApiResponseException("API response error occurred", this, method);
-            }
         }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
@@ -31,6 +33,7 @@ namespace Prime.Plugins.Services.Yobit
             var api = ApiProviderPrivate.GetApi(context);
 
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
+            // TODO: AY: For Sean - create method that will create Dictionary and populate it with nonce.
 
             var body = new Dictionary<string, object>
             {
@@ -47,7 +50,7 @@ namespace Prime.Plugins.Services.Yobit
 
             var r = rRaw.GetContent();
 
-            return r.success ? new PlacedOrderLimitResponse(r.returnData.order_id) : new PlacedOrderLimitResponse("");
+            return new PlacedOrderLimitResponse(r.returnData.order_id);
         }
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
