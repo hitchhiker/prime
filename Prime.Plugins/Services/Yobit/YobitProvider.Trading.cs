@@ -15,15 +15,17 @@ namespace Prime.Plugins.Services.Yobit
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
+            if (r.TryGetContent(out YobitSchema.ErrorResponse rError))
+                if (!rError.success)
+                    throw new ApiResponseException(rError.error, this, method);
+
             if (!r.ResponseMessage.IsSuccessStatusCode)
                 throw new ApiResponseException($"{r.ResponseMessage.ReasonPhrase} ({r.ResponseMessage.StatusCode})",
                     this, method);
 
             if (r.GetContent() is YobitSchema.BaseResponse<T> baseResponse)
-            {
                 if (!baseResponse.success)
                     throw new ApiResponseException("API response error occurred", this, method);
-            }
         }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)

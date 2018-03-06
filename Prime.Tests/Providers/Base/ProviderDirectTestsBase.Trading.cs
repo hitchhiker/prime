@@ -74,7 +74,7 @@ namespace Prime.Tests.Providers
 
             var r = AsyncContext.Run(() => provider.PlaceOrderLimitAsync(context));
 
-            Assert.True(!String.IsNullOrWhiteSpace(r.RemoteOrderGroupId));
+            Assert.True(!String.IsNullOrWhiteSpace(r.RemoteOrderGroupId), "Remote id is empty.");
             OutputWriter.WriteLine($"Remote trade order id: {r.RemoteOrderGroupId}");
         }
 
