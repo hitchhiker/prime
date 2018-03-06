@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
+      <Project>{C22EFECA-8587-4975-84EF-4BF59E768537}</Project>
+      <Name>Prime.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
