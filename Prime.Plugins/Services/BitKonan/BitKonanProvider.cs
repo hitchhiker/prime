@@ -49,11 +49,6 @@ namespace Prime.Plugins.Services.BitKonan
         public BitKonanProvider()
         {
             ApiProvider = new RestApiClientProvider<IBitKonanApi>(BitKonanApiUrl, this, (k) => new BitKonanAuthenticator(k).GetRequestModifierAsync);
-
-            if (_assetPairBtcUsd == null)
-                _assetPairBtcUsd = new AssetPair("BTC", "USD", this);
-            if (_assetPairLtcUsd == null)
-                _assetPairLtcUsd = new AssetPair("LTC", "USD", this);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -77,10 +72,7 @@ namespace Prime.Plugins.Services.BitKonan
             return Task.Run(() => Pairs);
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {

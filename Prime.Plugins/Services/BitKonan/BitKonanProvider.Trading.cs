@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.BitKonan
 {
     public partial class BitKonanProvider : IOrderLimitProvider
     {
-        //TODO: This method still needs to be tested with a balance greater than 0 in the account, to see what it returns (documentation does not explain). It should return the order ID.
+        //TODO: SC: This method still needs to be tested with a balance greater than 0 in the account, to see what it returns (documentation does not explain). It should return the order ID.
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -29,6 +29,8 @@ namespace Prime.Plugins.Services.BitKonan
 
             var r = await api.NewOrderAsync(body).ConfigureAwait(false);
 
+            // TODO: AY: For Sean - don't return "" order ids.
+
             return r?.status.Equals("success", StringComparison.OrdinalIgnoreCase) == true ? new PlacedOrderLimitResponse(r.data?.order_id) : new PlacedOrderLimitResponse("");
         }
 
@@ -41,15 +43,16 @@ namespace Prime.Plugins.Services.BitKonan
             // Checks if this order is contained in active list.
             var activeOrders = await api.QueryActiveOrdersAsync().ConfigureAwait(false);
 
+            // TODO: AY: For Sean - please add CheckResponse errors and put condition there.
             if (activeOrders.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
             {
-                throw new ApiResponseException(activeOrders.errors != null && activeOrders.errors.Length > 0 ? activeOrders.errors[0] : "Error in QueryActiveOrdersAsync");
+                throw new ApiResponseException(activeOrders.errors != null && activeOrders.errors.Length > 0 ? activeOrders.errors[0] : $"Error in {nameof(api.QueryActiveOrdersAsync)}");
             }
 
             // If the active list contains this order and the request for active orders was successful, then it is open. Otherwise it is not open.
             var isOpen = activeOrders.data.Any(x => x.id.Equals(context.RemoteGroupId));
 
-            var isBuy = order.type.IndexOf("BUY", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
             return new TradeOrderStatus(order.id, isBuy, isOpen, false)
             {
@@ -67,7 +70,7 @@ namespace Prime.Plugins.Services.BitKonan
 
             if (r.status.Equals("success", StringComparison.OrdinalIgnoreCase) == false)
             {
-                throw new ApiResponseException(r.errors != null && r.errors.Length > 0 ? r.errors[0] : "Error in GetOrderReponseByIdAsync");
+                throw new ApiResponseException(r.errors != null && r.errors.Length > 0 ? r.errors[0] : $"Error in {nameof(api.QueryActiveOrdersAsync)}");
             }
 
             var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
