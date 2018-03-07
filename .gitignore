@@ -17,6 +17,8 @@ UpgradeLog.htm
 *.7z
 *.DotSettings
 TestResults
+node_modules
+bower_components
 
 .idea
  
