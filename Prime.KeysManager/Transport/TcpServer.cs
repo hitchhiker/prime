@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
-using Prime.KeysManager.Events;
+using Prime.KeysManager.Messages;
+using Prime.KeysManager.Utils;
 
 namespace Prime.KeysManager.Transport
 {
     public class TcpServer : ITcpServer
     {
-        private TcpListener _listener;        
-        private Dictionary<Type, Action<object>> _subscriptions;
-        
-        public TcpServer()
-        {
-            _subscriptions = new Dictionary<Type, Action<object>>();
-        }
-        
+        private TcpListener _listener;
+        private TcpClient _connectedClient;
+        private readonly Dictionary<Type, Action<object>> _subscriptions = new Dictionary<Type, Action<object>>();
+
         public void CreateServer(IPAddress address, short port)
         {
             _listener = new TcpListener(address, port);
@@ -35,7 +33,7 @@ namespace Prime.KeysManager.Transport
 
                 var subscribedTypes = _subscriptions.Where(x =>
                     x.Key.Name.Equals(baseMessage.Type, StringComparison.OrdinalIgnoreCase)).ToList();
-                if(!subscribedTypes.Any())
+                if (!subscribedTypes.Any())
                     throw new NullReferenceException($"There is no handler registered for '{baseMessage.Type}' type.");
 
                 var subscribedType = subscribedTypes.First();
@@ -59,23 +57,22 @@ namespace Prime.KeysManager.Transport
         {
             while (true)
             {
-                var client = _listener.AcceptTcpClient();
-
-                if (client != null)
+                using (_connectedClient = _listener.AcceptTcpClient())
                 {
                     try
                     {
-                        var message = "";
-
-                        while (message != null && !message.StartsWith("quit"))
+                        using (var stream = _connectedClient.GetStream())
                         {
-                            SendData(client, "> ");
-                            ReceiveData(client, out var data);
+                            while (_connectedClient.Connected)
+                            {
+                                ReceiveData(stream, out var data);
 
-                            HandleResponse(data);
+                                data = CleanData(data);
+
+                                if (!string.IsNullOrWhiteSpace(data))
+                                    HandleResponse(data);
+                            }
                         }
-
-                        client.GetStream().Dispose();
                     }
                     catch (Exception e)
                     {
@@ -85,41 +82,43 @@ namespace Prime.KeysManager.Transport
             }
         }
 
+        private string CleanData(string data)
+        {
+            return data.Replace("\r", "").Replace("\n", "");
+        }
+
         private bool SendData(TcpClient client, string data)
         {
             if (!client.Connected)
                 return false;
-            
-            var dataBytes = Encoding.Default.GetBytes(data);  
+
+            var dataBytes = Encoding.Default.GetBytes(data);
             client.GetStream().Write(dataBytes, 0, data.Length);
 
             return true;
         }
 
-        private bool ReceiveData(TcpClient client, out string data)
+        private void ReceiveData(NetworkStream stream, out string data)
         {
             data = null;
-            if (!client.Connected)
-                return false;
-            
-            var buffer = new byte[1024];  
-            client.GetStream().Read(buffer, 0, buffer.Length);  
-   
-            data = Encoding.Default.GetString(buffer);
-            return true;
+
+            var buffer = new byte[1024];
+            stream.Read(buffer, 0, buffer.Length);
+
+            data = buffer.DecodeAscii();//Encoding.Default.GetString(buffer);
         }
 
         public void ShutdownServer()
         {
             _listener.Stop();
         }
-        
+
         public void Subscribe<T>(Action<T> handler)
         {
             var t = typeof(T);
-            if(_subscriptions.ContainsKey(t))
+            if (_subscriptions.ContainsKey(t))
                 throw new InvalidOperationException("Handler for specified type has already been added.");
-                
+
             _subscriptions.Add(t, (o) => handler((T)o));
         }
 
@@ -130,6 +129,12 @@ namespace Prime.KeysManager.Transport
                 _subscriptions.Remove(t);
             else
                 throw new InvalidOperationException("Handler for specified type does not exist.");
+        }
+
+        public void Send<T>(T data)
+        {
+            var json = JsonConvert.SerializeObject(data);
+            SendData(_connectedClient, json);
         }
 
         public event EventHandler<Exception> ExceptionOccurred;

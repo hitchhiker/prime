@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using Prime.KeysManager.Events;
 
 namespace Prime.KeysManager.Transport
 {
@@ -11,6 +10,8 @@ namespace Prime.KeysManager.Transport
 
         void Subscribe<T>(Action<T> handler);
         void Unsubscribe<T>();
+
+        void Send<T>(T data);
 
         event EventHandler<Exception> ExceptionOccurred;
     }

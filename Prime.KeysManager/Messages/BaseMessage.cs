@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Prime.KeysManager.Events
+﻿namespace Prime.KeysManager.Messages
 {
     public class BaseMessage
     {

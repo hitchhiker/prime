@@ -8,5 +8,12 @@
       <Project>{C22EFECA-8587-4975-84EF-4BF59E768537}</Project>
       <Name>Prime.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="LiteDB">
+      <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

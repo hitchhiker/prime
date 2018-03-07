@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Prime.KeysManager.Core;
 using Prime.KeysManager.Transport;
 
 namespace Prime.KeysManager
@@ -10,8 +11,8 @@ namespace Prime.KeysManager
     {
         static void Main(string[] args)
         {
-            var app = new KeysManagerApp(new TcpServer());
-            app.Run();   
+            var app = new KeysManagerApp(new TcpServer(), new PrimeService());
+            app.Run();
         }
     }
 }
