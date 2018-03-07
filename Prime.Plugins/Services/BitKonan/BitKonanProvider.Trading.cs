@@ -29,9 +29,7 @@ namespace Prime.Plugins.Services.BitKonan
 
             var r = await api.NewOrderAsync(body).ConfigureAwait(false);
 
-            // TODO: AY: For Sean - don't return "" order ids.
-
-            return r?.status.Equals("success", StringComparison.OrdinalIgnoreCase) == true ? new PlacedOrderLimitResponse(r.data?.order_id) : new PlacedOrderLimitResponse("");
+            return new PlacedOrderLimitResponse(r.data?.order_id);
         }
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)

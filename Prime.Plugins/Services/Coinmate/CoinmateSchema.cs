@@ -6,6 +6,54 @@ namespace Prime.Plugins.Services.Coinmate
 {
     internal class CoinmateSchema
     {
+        #region Base
+        internal class BaseResponse<T>
+        {
+            public bool error;
+            public string errorMessage;
+            public T data;
+        }
+        #endregion
+
+        #region Private
+        internal class BalanceResponse : BaseResponse<Dictionary<string, BalanceEntryResponse>>
+        {
+        }
+
+        internal class BalanceEntryResponse
+        {
+            public string currency;
+            public decimal balance;
+            public decimal reserved;
+            public decimal available;
+        }
+
+        internal class NewOrderResponse : BaseResponse<string>
+        {
+        }
+
+        internal class OrderInfoResponse : BaseResponse<OrderInfoEntryResponse[]>
+        {
+        }
+
+        internal class OrderInfoEntryResponse
+        {
+            public string id;
+            public long timestamp;
+            public string type;
+            public decimal price;
+            public decimal remainingAmount;
+            public decimal originalAmount;
+            public string status;
+        }
+
+        internal class WithdrawalRequestResponse : BaseResponse<string>
+        {
+        }
+
+        #endregion
+
+        #region Public
         internal class TickerResponse
         {
             public bool error;
@@ -45,5 +93,6 @@ namespace Prime.Plugins.Services.Coinmate
             public string errorMessage;
             public OrderBookEntryResponse data;
         }
+        #endregion
     }
 }

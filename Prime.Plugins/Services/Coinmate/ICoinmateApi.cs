@@ -13,5 +13,26 @@ namespace Prime.Plugins.Services.Coinmate
 
         [Get("/orderBook?currencyPair={currencyPair}&groupByPriceLimit={groupByPriceLimit}")]
         Task<CoinmateSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] bool groupByPriceLimit);
+
+        [Post("/balances")]
+        Task<CoinmateSchema.BalanceResponse> GetBalanceAsync();
+
+        [Post("/buyLimit")]
+        Task<Response<CoinmateSchema.NewOrderResponse>> PlaceMarketBuyLimit([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/sellLimit")]
+        Task<Response<CoinmateSchema.NewOrderResponse>> PlaceMarketSellLimit([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/openOrders")]
+        Task<Response<CoinmateSchema.OrderInfoResponse>> QueryOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/bitcoinWithdrawal")]
+        Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/litecoinWithdrawal")]
+        Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestLitecoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/bitcoinCashWithdrawal")]
+        Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinCashAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }
