@@ -16,4 +16,7 @@
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Electron\" />
+  </ItemGroup>
 </Project>

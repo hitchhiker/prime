@@ -1,0 +1,18 @@
+{
+  "name": "prime-keys-manager",
+  "version": "1.0.0",
+  "description": "Client app for Prime.KeysManager API.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexander Yasko",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {
+    "electron": "^1.8.3"
+  }
+}
