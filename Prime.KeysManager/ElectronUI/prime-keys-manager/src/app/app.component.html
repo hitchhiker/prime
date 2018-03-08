@@ -1,4 +1,28 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<button (click)="testPrime()">Test prime</button>
 
-<app-providers-list [providers]="providers"></app-providers-list>
+<div class="container">
+    <div class="header">
+        <div class="row">
+            <h4>Prime Keys Manager</h4>
+        </div>
+        <div class="row">
+            <form action="#">
+                <span class="rb-provider-type">
+                    <input name="group1" type="radio" id="all-providers" />
+                    <label for="all-providers">All providers</label>
+                </span>
+                <span class="rb-provider-type">
+                    <input name="group1" type="radio" id="public-providers" />
+                    <label for="public-providers">Public providers</label>
+                </span>
+                <span class="rb-provider-type">
+                    <input name="group1" type="radio" id="private-providers" />
+                    <label for="private-providers">Private providers</label>
+                </span>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <app-providers-list [providers]="providers"></app-providers-list>
+    </div>
+</div>

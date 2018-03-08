@@ -14,12 +14,8 @@ export class AppComponent implements OnInit {
 
     this._primeService.getProvidersList((event, data) => {
       this.providers = JSON.parse(data);
-      console.log("providers list:");
-      console.log(this.providers);
 
       this._changeDetectorRef.detectChanges();
-
-      //providersList.subscribe(x => this.providers = x);
     });
   }
 
