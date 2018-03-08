@@ -11,13 +11,10 @@ export class PrimeService implements OnInit {
     this._electronService.ipcRenderer.send('socket:connect', "data");
   }
 
-  getProvidersList(callback: (d) => any) {
+  getProvidersList(callback: (event, data) => any) {
     this._electronService.ipcRenderer.send('socket:get-providers-list');
 
-    this._electronService.ipcRenderer.on('socket:providers-list', (event, data) => {
-      console.log("Providers list listener handles call!");
-      console.log(data);
-    });
+    this._electronService.ipcRenderer.on('socket:providers-list', callback);
   }
 
   ngOnInit(): void {

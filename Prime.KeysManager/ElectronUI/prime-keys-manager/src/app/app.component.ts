@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ApplicationRef } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { PrimeService } from './prime.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-root',
@@ -11,17 +12,20 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this._primeService.connect();
 
-    this._primeService.getProvidersList((data) => {
-      console.log(data);
-    })
+    this._primeService.getProvidersList((event, data) => {
+      this.providers = JSON.parse(data);
+      console.log("providers list:");
+      console.log(this.providers);
+
+      this._changeDetectorRef.detectChanges();
+
+      //providersList.subscribe(x => this.providers = x);
+    });
   }
 
-  public providers: Array<any> = [
-    { Name: "Binance", Id: "123ad21" },
-    { Name: "Bittrex", Id: "adwjkh1k2jh" }
-  ];
+  public providers: Array<any> = [];
 
-  constructor(private _electronService: ElectronService, private _primeService: PrimeService) {}
+  constructor(private _electronService: ElectronService, private _primeService: PrimeService, private _changeDetectorRef: ChangeDetectorRef) {}
 
   launchWindow() {
     this._electronService.shell.openExternal('https://www.google.com/');
