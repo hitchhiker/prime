@@ -6,6 +6,7 @@ namespace Prime.Plugins.Services.Acx
 {
     internal class AcxSchema
     {
+        #region Public
         internal class AllTickersResponse : Dictionary<string, TickersResponse>
         {
         }
@@ -54,5 +55,6 @@ namespace Prime.Plugins.Services.Acx
             public decimal[][] asks;
             public decimal[][] bids;
         }
-}
+        #endregion
+    }
 }

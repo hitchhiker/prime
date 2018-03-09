@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.BitKonan
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
+            var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
 
             var strForSign = $"{ApiKey.Key}{timeStamp}";
             var signature = HashHMACSHA256Hex(strForSign, ApiKey.Secret);

@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.Allcoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.allcoin.com/About/APIReference/#SpotPriceAPI
-    public class AllcoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class AllcoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string AllcoinApiVersion = "v1";
         private const string AllcoinApiUrl = "https://api.allcoin.com/api/" + AllcoinApiVersion;
@@ -43,7 +45,7 @@ namespace Prime.Plugins.Services.Allcoin
 
         public AllcoinProvider()
         {
-            ApiProvider = new RestApiClientProvider<IAllcoinApi>(AllcoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IAllcoinApi>(AllcoinApiUrl, this, (k) => new AllcoinAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -52,6 +54,17 @@ namespace Prime.Plugins.Services.Allcoin
             var r = await api.GetTickerAsync("ltc_usd").ConfigureAwait(false);
 
             return r?.ticker != null;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+            var r = rRaw.GetContent();
+            
+            return r != null && r.result;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

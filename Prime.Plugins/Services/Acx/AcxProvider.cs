@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Acx
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://acx.io/documents/api_v2
-    public class AcxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class AcxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string AcxApiVersion = "v2";
         private const string AcxApiUrl = "https://acx.io//api/" + AcxApiVersion;
@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Acx
 
         public AcxProvider()
         {
-            ApiProvider = new RestApiClientProvider<IAcxApi>(AcxApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IAcxApi>(AcxApiUrl, this, (k) => new AcxAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)

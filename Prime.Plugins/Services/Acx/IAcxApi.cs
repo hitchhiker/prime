@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Acx
 {
+    [AllowAnyStatusCode]
     internal interface IAcxApi
     {
         [Get("/tickers/{currencyPair}.json")]

@@ -13,5 +13,14 @@ namespace Prime.Plugins.Services.Allcoin
 
         [Get("/depth?symbol={currencyPair}")]
         Task<AllcoinSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Post("/userinfo")]
+        Task<Response<AllcoinSchema.UserInfoResponse>> GetUserInfoAsync();
+
+        [Post("/trade")]
+        Task<Response<AllcoinSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/order_info")]
+        Task<Response<AllcoinSchema.OrderInfoResponse>> GetOrderInfoAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

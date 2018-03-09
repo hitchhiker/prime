@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.Coinmate
 
             var order = await GetOrderReponseByIdAsync(context, market).ConfigureAwait(false);
 
-            var isOpen = order.type.IndexOf("OPEN", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isOpen = order.status.IndexOf("OPEN", StringComparison.OrdinalIgnoreCase) >= 0;
 
             var isBuy = order.type.IndexOf("BUY", StringComparison.OrdinalIgnoreCase) >= 0;
 
