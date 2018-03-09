@@ -8,5 +8,6 @@ namespace Prime.KeysManager.Core.Models
     {
         public string Name { get; set; }
         public string Id { get; set; }
+        public bool HasKeys { get; set; }
     }
 }

@@ -10,6 +10,7 @@ import { PrimeService } from './prime.service';
 import { ProvidersListComponent } from './providers-list/providers-list.component';
 import { ProvidersListItemComponent } from './providers-list-item/providers-list-item.component';
 import { ActionThrottleService } from './action-throttle.service';
+import { ProviderEditorComponent } from './provider-editor/provider-editor.component';
 
 const config: SocketIoConfig = { url: "http://127.0.0.1:8082" }
 
@@ -17,7 +18,8 @@ const config: SocketIoConfig = { url: "http://127.0.0.1:8082" }
   declarations: [
     AppComponent,
     ProvidersListComponent,
-    ProvidersListItemComponent
+    ProvidersListItemComponent,
+    ProviderEditorComponent
   ],
   imports: [
     BrowserModule,
