@@ -1,6 +1,4 @@
-
-
-
+const {ipcRenderer} = require("electron");
 
 var PrimeTcpClient = function () {
     var self = this;
@@ -11,9 +9,22 @@ var PrimeTcpClient = function () {
 
     }
 
-    this.getProvidersList = function () {
-        //internalData = null;
-        //self.client.write('{"Type":"ProvidersListMessage"}');
+    this.getPrivateProvidersList = function (callback) {
+        ipcRenderer.send('prime:get-private-providers-list');
+
+        ipcRenderer.on('prime:private-providers-list', callback);
+    }
+
+    this.getProviderDetails = function(id, callback) {
+        ipcRenderer.send('prime:get-provider-details', id);
+
+        ipcRenderer.on('prime:provider-details', callback);
+    }
+
+    this.saveProviderKeys = function(id, keys, callback) {
+        ipcRenderer.send('prime:save-provider-keys', { id: id, keys: keys });
+
+        ipcRenderer.on('prime:provider-keys-saved', callback);
     }
 }
 

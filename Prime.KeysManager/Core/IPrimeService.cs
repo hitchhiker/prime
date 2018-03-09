@@ -11,5 +11,6 @@ namespace Prime.KeysManager.Core
         IEnumerable<ProviderModel> GetPrivateNetworks(bool direct = true);
 
         ProviderDetailsModel GetProviderDetails(string objectId);
+        void SaveKeys(string providerId, string key, string secret, string extra);
     }
 }

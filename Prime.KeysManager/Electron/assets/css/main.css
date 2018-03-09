@@ -7,8 +7,20 @@ body {
     margin: 0;
 }
 
+.hidden {
+    display: none;
+}
+
+.italic {
+    font-style: italic;
+}
+
 h1 {
     text-align: center;
+}
+
+#providers-list {
+    padding-top: 120px;
 }
 
 .list-item {
@@ -29,6 +41,26 @@ h1 {
     margin-bottom: 5px;
 }
 
+.has-api-keys-icon {
+    margin-top: 5px;
+}
+
 .id {
     color: gray;
+}
+
+.row {
+    margin-bottom: 0;
+}
+
+.card .card-content {
+    padding: 10px 15px;
+}
+
+.card .card-content .card-title {
+    margin-bottom: 0px;
+}
+
+.card .card-action {
+    padding: 15px 15px;
 }

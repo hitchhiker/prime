@@ -1,0 +1,15 @@
+.row {
+    margin-bottom: 0;
+}
+
+.card-content {
+    padding: 10px 15px;
+}
+
+.card .card-content .card-title {
+    margin-bottom: 0px;
+}
+
+.card .card-action {
+    padding: 15px 15px;
+}

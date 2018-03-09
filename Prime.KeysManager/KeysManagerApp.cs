@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Prime.KeysManager.Core;
+using Prime.KeysManager.Core.Models;
 using Prime.KeysManager.Messages;
 using Prime.KeysManager.Transport;
 
@@ -33,6 +34,25 @@ namespace Prime.KeysManager
             _tcpServer.Subscribe<ProvidersListMessage>(ProvidersListHandler);
             _tcpServer.Subscribe<PrivateProvidersListMessage>(PrivateProvidersListHandler);
             _tcpServer.Subscribe<ProviderDetailsMessage>(ProviderDetailsHandler);
+            _tcpServer.Subscribe<ProviderKeysMessage>(ProviderKeysHandler);
+        }
+
+        private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage)
+        {
+            Console.WriteLine("Saving keys...");
+            var success = true;
+            
+            try
+            {
+                _primeService.SaveKeys(providerKeysMessage.Id, providerKeysMessage.Key, providerKeysMessage.Secret, providerKeysMessage.Extra);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                Console.WriteLine($"Error while saving keys: {e.Message}");
+            }
+            
+            _tcpServer.Send(new OperationResultModel() { Success = success});
         }
 
         private void ProviderDetailsHandler(ProviderDetailsMessage providerDetailsMessage)
