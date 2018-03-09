@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Coinmate
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coinmate.docs.apiary.io/
-    public class CoinmateProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class CoinmateProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string CoinmateApiUrl = "https://coinmate.io/api/";
 
@@ -39,12 +39,15 @@ namespace Prime.Plugins.Services.Coinmate
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return true;
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetBalanceAsync().ConfigureAwait(false);
+           
+            return r != null && r.error == false;
         }
 
         public CoinmateProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICoinmateApi>(CoinmateApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICoinmateApi>(CoinmateApiUrl, this, (k) => new CoinmateAuthenticator(k).GetRequestModifierAsync);
         }
 
         private AssetPairs _pairs;
