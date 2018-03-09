@@ -17,6 +17,12 @@ export class PrimeService implements OnInit {
     this._electronService.ipcRenderer.on('socket:providers-list', callback);
   }
 
+  getPrivateProvidersList(callback: (event, data) => any) {
+    this._electronService.ipcRenderer.send('socket:get-private-providers-list');
+
+    this._electronService.ipcRenderer.on('socket:private-providers-list', callback);
+  }
+
   ngOnInit(): void {
     
   }

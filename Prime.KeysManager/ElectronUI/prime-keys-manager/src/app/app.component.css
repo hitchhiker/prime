@@ -1,4 +1,18 @@
 
+.header {
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    background-color: white;
+    padding: 0 30px;
+
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 15px;
+}
+
 .rb-provider-type {
     margin-right: 20px;
+}
+
+.container {
+    padding-top: 120px;
 }

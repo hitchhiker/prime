@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { PrimeService } from './prime.service';
 import { ProvidersListComponent } from './providers-list/providers-list.component';
 import { ProvidersListItemComponent } from './providers-list-item/providers-list-item.component';
+import { ActionThrottleService } from './action-throttle.service';
 
 const config: SocketIoConfig = { url: "http://127.0.0.1:8082" }
 
@@ -23,7 +24,7 @@ const config: SocketIoConfig = { url: "http://127.0.0.1:8082" }
     NgxElectronModule,
     SocketIoModule.forRoot(config)
   ],
-  providers: [PrimeService],
+  providers: [PrimeService, ActionThrottleService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

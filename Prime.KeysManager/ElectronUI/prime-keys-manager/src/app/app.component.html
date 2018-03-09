@@ -1,28 +1,17 @@
 <!--The content below is only a placeholder and can be replaced.-->
+<div class="header">
+    <div class="row">
+        <form class="col s12">
+            <div class="input-field col s12">
+                <input (input)="onFilterChange($event.target.value)" placeholder="Provider name" id="first_name" type="text">
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="container">
-    <div class="header">
-        <div class="row">
-            <h4>Prime Keys Manager</h4>
-        </div>
-        <div class="row">
-            <form action="#">
-                <span class="rb-provider-type">
-                    <input name="group1" type="radio" id="all-providers" />
-                    <label for="all-providers">All providers</label>
-                </span>
-                <span class="rb-provider-type">
-                    <input name="group1" type="radio" id="public-providers" />
-                    <label for="public-providers">Public providers</label>
-                </span>
-                <span class="rb-provider-type">
-                    <input name="group1" type="radio" id="private-providers" />
-                    <label for="private-providers">Private providers</label>
-                </span>
-            </form>
-        </div>
-    </div>
+
     <div class="row">
-        <app-providers-list [providers]="providers"></app-providers-list>
+        <app-providers-list [providers]="providersDisplay"></app-providers-list>
     </div>
 </div>

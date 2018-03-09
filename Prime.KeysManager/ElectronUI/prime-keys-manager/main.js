@@ -50,6 +50,11 @@ ipcMain.on('socket:get-providers-list', (event, arg) => {
   client.write('{"Type":"ProvidersListMessage"}');
 });
 
+ipcMain.on('socket:get-private-providers-list', (event, arg) => {
+  responseDataChannel = 'socket:private-providers-list';
+  client.write('{"Type":"PrivateProvidersListMessage"}');
+});
+
 function clientData(data) {
   console.log("Sending data to '" + responseDataChannel + "' channel...");
   var stringData = bin2string(data);
