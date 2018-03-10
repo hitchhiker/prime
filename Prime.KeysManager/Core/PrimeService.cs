@@ -11,26 +11,43 @@ namespace Prime.KeysManager.Core
 {
     public class PrimeService : IPrimeService
     {
-        public IEnumerable<ProviderModel> GetNetworks()
+        private Network GetNetworkById(string networkId)
         {
-            return Networks.I.Providers.AsEnumerable().Select(x => new ProviderModel()
+            var provider = Networks.I.Providers.AsEnumerable().FilterType<INetworkProvider, INetworkProviderPrivate>()
+                .FirstOrDefault(x => x.Network.Id.ToString().Equals(networkId));
+
+            return provider?.Network;
+        }
+
+        private INetworkProvider GetProviderByNetworkId(string networkId)
+        {
+            var provider = Networks.I.Providers.AsEnumerable().FilterType<INetworkProvider, INetworkProviderPrivate>()
+                .FirstOrDefault(x => x.Network.Id.ToString().Equals(networkId));
+
+            return provider;
+        }
+
+        public IEnumerable<NetworkModel> GetNetworks()
+        {
+            return Networks.I.Providers.AsEnumerable().Select(x => new NetworkModel()
             {
                 Name = x.Network.Name,
                 Id = x.Network.Id.ToString()
             });
         }
-        public ProviderDetailsModel GetProviderDetails(string objectId)
+
+        public NetworkDetailsModel GetNetworkDetails(string objectId)
         {
-            var network = Networks.I.Providers.AsEnumerable()
+            var networkProvider = Networks.I.Providers.AsEnumerable()
                 .FirstOrDefault(x => x.Network.Id.Equals(objectId.ToObjectId()));
 
-            ProviderDetailsModel result = null;
+            NetworkDetailsModel result = null;
 
-            if (network != null)
+            if (networkProvider != null)
             {
-                var apiKey = UserContext.Current.GetApiKey(network);
+                var apiKey = UserContext.Current.GetApiKey(networkProvider);
 
-                result = new ProviderDetailsModel() { Name = network.Network.Name, Id = objectId};
+                result = new NetworkDetailsModel() { Name = networkProvider.Network.Name, Id = objectId};
 
                 if (apiKey != null)
                 {
@@ -43,20 +60,35 @@ namespace Prime.KeysManager.Core
             return result;
         }
 
-        public void SaveKeys(string providerId, string key, string secret, string extra)
+        public void SaveKeys(string networkId, string key, string secret, string extra)
         {
-            var provider = Networks.I.Providers.AsEnumerable().FilterType<INetworkProvider, INetworkProviderPrivate>()
-                .FirstOrDefault(x => x.Network.Id.ToString().Equals(providerId));
+            var networkProvider = Networks.I.Providers.AsEnumerable().FilterType<INetworkProvider, INetworkProviderPrivate>()
+                .FirstOrDefault(x => x.Network.Id.ToString().Equals(networkId));
 
-            if (provider == null)
-                throw new NullReferenceException("Provider not found.");
+            if (networkProvider == null)
+                throw new NullReferenceException("Network provider not found.");
 
+            DeleteKeys(networkId);
+
+            var keys = UserContext.Current.ApiKeys;
+
+            if(string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
+                throw new NullReferenceException("Key and secret should not be empty.");
+
+            var newKey = new ApiKey(networkProvider.Network, networkProvider.Title, key, secret, string.IsNullOrEmpty(extra) ? null : extra);
+            keys.Add(newKey);
+
+            keys.Save();
+        }
+
+        public void DeleteKeys(string networkId)
+        {
             var keys = UserContext.Current.ApiKeys;
 
             var keysToRemove = new List<ApiKey>();
             foreach (var apiKey in keys)
             {
-                if (apiKey.Network.Id.Equals(provider.Network.Id))
+                if (apiKey.Network.Id.ToString().Equals(networkId))
                     keysToRemove.Add(apiKey);
             }
 
@@ -65,17 +97,24 @@ namespace Prime.KeysManager.Core
                 keys.Remove(apiKey);
             }
 
-            var newKey = new ApiKey(provider.Network, provider.Title, key, secret, string.IsNullOrEmpty(extra) ? null : extra);
-            keys.Add(newKey);
             keys.Save();
         }
 
-        public IEnumerable<ProviderModel> GetPrivateNetworks(bool direct = true)
+        public bool TestPrivateApi(string networkId)
+        {
+            var network = GetProviderByNetworkId(networkId) as INetworkProviderPrivate;
+
+            var result = network.TestPrivateApiAsync(new ApiPrivateTestContext(UserContext.Current.GetApiKey(network))).Result;
+
+            return result;
+        }
+
+        public IEnumerable<NetworkModel> GetPrivateNetworks(bool direct = true)
         {
             var userContext = UserContext.Current;
             return Networks.I.Providers.AsEnumerable().FilterType<INetworkProvider, INetworkProviderPrivate>()
                 .Where(x => x.IsDirect == direct).Select(x =>
-                    new ProviderModel()
+                    new NetworkModel()
                     {
                         Name = x.Network.Name,
                         Id = x.Network.Id.ToString(),

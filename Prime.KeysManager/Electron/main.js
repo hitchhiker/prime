@@ -70,5 +70,25 @@ ipcMain.on('prime:save-provider-keys', (event, arg) => {
     dataHandlerChannel = "prime:provider-keys-saved";
 })
 
+ipcMain.on('prime:delete-provider-keys', (event, arg) => {
+    console.log("Saving provider keys...");
+
+    client.write(JSON.stringify({
+        "Type": "DeleteProviderKeysMessage",
+        "Id": arg,
+    }));
+    dataHandlerChannel = "prime:provider-keys-deleted";
+});
+
+ipcMain.on('prime:test-private-api', (event, arg) => {
+    console.log("Testing private API...");
+
+    client.write(JSON.stringify({
+        "Type": "TestPrivateApiMessage",
+        "Id": arg,
+    }));
+    dataHandlerChannel = "prime:private-api-tested";
+});
+
 app.on('ready', createWindow);
 

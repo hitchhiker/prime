@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Prime.KeysManager.Core.Models
 {
-    public class ProviderModel
+    public class NetworkModel
     {
         public string Name { get; set; }
         public string Id { get; set; }

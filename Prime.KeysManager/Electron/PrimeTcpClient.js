@@ -1,4 +1,4 @@
-const {ipcRenderer} = require("electron");
+const { ipcRenderer } = require("electron");
 
 var PrimeTcpClient = function () {
     var self = this;
@@ -9,22 +9,42 @@ var PrimeTcpClient = function () {
 
     }
 
+    let registeredCallbacks = [];
+    function registerCallback(channel, callback) {
+        if (!registeredCallbacks.includes(channel)) {
+            ipcRenderer.on(channel, callback);
+            registeredCallbacks.push(channel);
+        }
+    }
+
     this.getPrivateProvidersList = function (callback) {
         ipcRenderer.send('prime:get-private-providers-list');
 
-        ipcRenderer.on('prime:private-providers-list', callback);
+        registerCallback('prime:private-providers-list', callback);
     }
 
-    this.getProviderDetails = function(id, callback) {
+    this.getProviderDetails = function (id, callback) {
         ipcRenderer.send('prime:get-provider-details', id);
 
-        ipcRenderer.on('prime:provider-details', callback);
+        registerCallback('prime:provider-details', callback);
     }
 
-    this.saveProviderKeys = function(id, keys, callback) {
+    this.saveProviderKeys = function (id, keys, callback) {
         ipcRenderer.send('prime:save-provider-keys', { id: id, keys: keys });
 
-        ipcRenderer.on('prime:provider-keys-saved', callback);
+        registerCallback('prime:provider-keys-saved', callback);
+    }
+
+    this.deleteProviderKeys = function (id, callback) {
+        ipcRenderer.send('prime:delete-provider-keys', id);
+
+        registerCallback('prime:provider-keys-deleted', callback);
+    }
+
+    this.testPrivateApi = function(id, callback) {
+        ipcRenderer.send('prime:test-private-api', id);
+
+        registerCallback('prime:private-api-tested', callback);
     }
 }
 

@@ -31,13 +31,44 @@ var IndexView = function () {
 
         $(document).on("click", ".modal-trigger", showProviderDetails);
         $(document).on("click", "#saveAndClose", saveProviderDetails);
+        $(document).on("click", "#removeKeys", removeProviderKeys);
+        $(document).on("click", "#testPrivateApi", testPrivateApi);
 
         getProviderProviders();
         initModal();
     }
 
+    function testPrivateApi(e) {
+        let id = inputProviderId.val();
+
+        primeTcpClient.testPrivateApi(id, (event, data) => {
+            let response = JSON.parse(data);
+            let msg = 'Private API test SUCCEEDED';
+
+            if (response.Success === false)
+                msg = 'Private API test FAILED';
+
+            Materialize.toast(msg, 4000);
+        })
+    }
+
+    function removeProviderKeys(e) {
+        let id = inputProviderId.val();
+
+        primeTcpClient.deleteProviderKeys(id, (event, data) => {
+            let response = JSON.parse(data);
+            let msg = 'Keys successfully deleted';
+
+            if (response.Success === false)
+                msg = 'Error during keys deleting';
+
+            Materialize.toast(msg, 4000);
+        });
+    }
+
     function saveProviderDetails(e) {
         let id = inputProviderId.val();
+
         let keys = {
             Key: inputPublicKey.val(),
             Secret: inputPrivateKey.val(),
@@ -46,7 +77,12 @@ var IndexView = function () {
 
         primeTcpClient.saveProviderKeys(id, keys, (event, data) => {
             let response = JSON.parse(data);
-            console.log(response);
+            let msg = 'Keys successfully saved';
+
+            if (response.Success === false)
+                msg = 'Error during keys saving';
+
+            Materialize.toast(msg, 4000);
         });
     }
 
