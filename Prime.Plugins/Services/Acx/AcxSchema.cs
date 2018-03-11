@@ -6,6 +6,65 @@ namespace Prime.Plugins.Services.Acx
 {
     internal class AcxSchema
     {
+        #region Private
+        internal class ErrorResponse
+        {
+            public ErrorEntryResponse error;
+        }
+
+        internal class ErrorEntryResponse
+        {
+            public int code;
+            public string message;
+        }
+
+        internal class UserInfoResponse
+        {
+            public string sn;
+            public string name;
+            public string email;
+            public bool activated;
+            public AccountResponse[] accounts;
+        }
+
+        internal class OrderInfoResponse
+        {
+            public string id;
+            public string side;
+            public decimal price;
+            public decimal avg_price;
+            public string state;
+            public string market;
+            public long created_at;
+            public decimal volume;
+            public decimal remaining_volume;
+            public decimal executed_volume;
+            public OrderInfoEntryResponse[] trades;
+        }
+
+        internal class OrderInfoEntryResponse
+        {
+            public string id;
+            public decimal price;
+            public decimal volume;
+            public string market;
+            public long created_at;
+            public string side;
+        }
+
+        internal class NewOrderResponse
+        {
+            public string id;
+        }
+
+        internal class AccountResponse
+        {
+            public string currency;
+            public decimal balance;
+            public double locked;
+        }
+        #endregion
+
         #region Public
         internal class AllTickersResponse : Dictionary<string, TickersResponse>
         {
