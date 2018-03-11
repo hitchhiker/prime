@@ -35,6 +35,44 @@ namespace Prime.KeysManager
             _tcpServer.Subscribe<PrivateProvidersListMessage>(PrivateProvidersListHandler);
             _tcpServer.Subscribe<ProviderDetailsMessage>(ProviderDetailsHandler);
             _tcpServer.Subscribe<ProviderKeysMessage>(ProviderKeysHandler);
+            _tcpServer.Subscribe<DeleteProviderKeysMessage>(DeleteProviderKeysHandler);
+            _tcpServer.Subscribe<TestPrivateApiMessage>(TestPrivateApiHandler);
+        }
+
+        private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage)
+        {
+            Console.WriteLine("Testing private API...");
+            var success = true;
+
+            try
+            {
+                success = _primeService.TestPrivateApi(testPrivateApiMessage.Id);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                Console.WriteLine($"Error while testing private API: {e.Message}");
+            }
+
+            _tcpServer.Send(new OperationResultModel() { Success = success });
+        }
+
+        private void DeleteProviderKeysHandler(DeleteProviderKeysMessage deleteProviderKeysMessage)
+        {
+            Console.WriteLine("Deleting keys...");
+            var success = true;
+
+            try
+            {
+                _primeService.DeleteKeys(deleteProviderKeysMessage.Id);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                Console.WriteLine($"Error while deleting keys: {e.Message}");
+            }
+
+            _tcpServer.Send(new OperationResultModel() { Success = success });
         }
 
         private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage)
@@ -59,7 +97,7 @@ namespace Prime.KeysManager
         {
             Console.WriteLine("Sending provider details...");
 
-            var providerDetails = _primeService.GetProviderDetails(providerDetailsMessage.Id);
+            var providerDetails = _primeService.GetNetworkDetails(providerDetailsMessage.Id);
             _tcpServer.Send(providerDetails);
         }
 

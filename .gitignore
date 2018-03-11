@@ -19,6 +19,7 @@ UpgradeLog.htm
 TestResults
 node_modules
 bower_components
+*.log
 
 .idea
  

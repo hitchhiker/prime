@@ -7,10 +7,13 @@ namespace Prime.KeysManager.Core
 {
     public interface IPrimeService
     {
-        IEnumerable<ProviderModel> GetNetworks();
-        IEnumerable<ProviderModel> GetPrivateNetworks(bool direct = true);
+        IEnumerable<NetworkModel> GetNetworks();
+        IEnumerable<NetworkModel> GetPrivateNetworks(bool direct = true);
 
-        ProviderDetailsModel GetProviderDetails(string objectId);
-        void SaveKeys(string providerId, string key, string secret, string extra);
+        NetworkDetailsModel GetNetworkDetails(string objectId);
+        void SaveKeys(string networkId, string key, string secret, string extra);
+        void DeleteKeys(string networkId);
+
+        bool TestPrivateApi(string networkId);
     }
 }
