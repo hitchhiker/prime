@@ -17,5 +17,7 @@ namespace Prime.Common
         /// Market where order was placed.
         /// </summary>
         public readonly AssetPair Market;
+
+        public bool HasMarket => Market == null;
     }
 }

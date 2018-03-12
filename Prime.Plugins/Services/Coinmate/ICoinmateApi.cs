@@ -9,10 +9,10 @@ namespace Prime.Plugins.Services.Coinmate
     internal interface ICoinmateApi
     {
         [Get("/ticker?currencyPair={currencyPair}")]
-        Task<CoinmateSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
+        Task<Response<CoinmateSchema.TickerResponse>> GetTickerAsync([Path] string currencyPair);
 
         [Get("/orderBook?currencyPair={currencyPair}&groupByPriceLimit={groupByPriceLimit}")]
-        Task<CoinmateSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] bool groupByPriceLimit);
+        Task<Response<CoinmateSchema.OrderBookResponse>> GetOrderBookAsync([Path] string currencyPair, [Path] bool groupByPriceLimit);
 
         [Post("/balances")]
         Task<CoinmateSchema.BalanceResponse> GetBalanceAsync();

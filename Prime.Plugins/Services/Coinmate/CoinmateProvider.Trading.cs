@@ -18,14 +18,10 @@ namespace Prime.Plugins.Services.Coinmate
             if (r.TryGetContent(out CoinmateSchema.BaseResponse<T> rError))
             {
                 if (rError.error)
-                {
-                    throw new ApiResponseException(rError.errorMessage, this, method);
-                }
+                    throw new ApiResponseException(rError.errorMessage.TrimEnd('.'), this, method);
 
                 if (rError.data == null)
-                {
                     throw new ApiResponseException("API response error occurred", this, method);
-                }
             }
         }
 
@@ -40,18 +36,11 @@ namespace Prime.Plugins.Services.Coinmate
                 { "price", context.Rate.ToDecimalValue()}
             };
 
-            Response<CoinmateSchema.NewOrderResponse> rRaw;
-
-            if (context.IsBuy)
-            {
-                rRaw = await api.PlaceMarketBuyLimit(body).ConfigureAwait(false);
-            }
-            else
-            {
-                rRaw = await api.PlaceMarketSellLimit(body).ConfigureAwait(false);
-            }
-
+            var rRaw = context.IsBuy
+                ? await api.PlaceMarketBuyLimit(body).ConfigureAwait(false)
+                : await api.PlaceMarketSellLimit(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
+            
             var r = rRaw.GetContent();
 
             return new PlacedOrderLimitResponse(r.data);
@@ -59,77 +48,60 @@ namespace Prime.Plugins.Services.Coinmate
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            string market = context.Market.ToTicker(this).ToLower();
+            var api = ApiProvider.GetApi(context);
 
-            var order = await GetOrderReponseByIdAsync(context, market).ConfigureAwait(false);
+            var body = new Dictionary<string, object>();
 
-            var isOpen = order.status.IndexOf("OPEN", StringComparison.OrdinalIgnoreCase) >= 0;
+            var rRaw = await api.QueryOrdersAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+            
+            var r = rRaw.GetContent();
 
-            var isBuy = order.type.IndexOf("BUY", StringComparison.OrdinalIgnoreCase) >= 0;
+            var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
+            if (order == null)
+                throw new NoTradeOrderException(context.RemoteGroupId, this);
+            
+            var isOpen = order.type.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
             return new TradeOrderStatus(order.id, isBuy, isOpen, false)
             {
                 Rate = order.price,
-                AmountInitial = order.originalAmount,
-                Market = market,
-                AmountRemaining = order.remainingAmount
+                AmountInitial = order.amount,
+                Market = order.currencyPair.ToAssetPair(this),
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
-        private async Task<CoinmateSchema.OrderInfoEntryResponse> GetOrderReponseByIdAsync(RemoteIdContext context, string market)
+        private async Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawalRequestAsync(
+            WithdrawalPlacementContext context)
         {
             var api = ApiProvider.GetApi(context);
-
-            var body = new Dictionary<string, object>
-            {
-                { "currencyPair", market }
-            };
-
-            var rRaw = await api.QueryOrdersAsync(body).ConfigureAwait(false);
-
-            var r = rRaw.GetContent();
-
-            var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
-
-            if (order == null)
-            {
-                throw new NoTradeOrderException(context.RemoteGroupId, this);
-            }
-
-            return order;
-        }
-
-        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
+            
             var body = new Dictionary<string, object>
             {
                 {"coinName", context.Amount.Asset.ShortCode},
                 {"amount", context.Amount.ToDecimalValue()},
                 {"address", context.Address.Address}
             };
+            
+            if (context.Amount.Asset.Equals(Asset.Btc))
+                return await api.SubmitWithdrawRequestBitcoinAsync(body).ConfigureAwait(false);
+            
+            if (context.Amount.Asset.Equals(Asset.Ltc))
+                return await api.SubmitWithdrawRequestLitecoinAsync(body).ConfigureAwait(false);
+            
+            if (context.Amount.Asset.Equals(Asset.Bch))
+                return await api.SubmitWithdrawRequestBitcoinCashAsync(body).ConfigureAwait(false);
+             
+            throw new ApiBaseException($"Withdrawal of '{context.Amount.Asset}' is not supported by exchange", this);
+        }
 
-            Response<CoinmateSchema.WithdrawalRequestResponse> rRaw;
-
-            if (context.Amount.Asset.ShortCode.Equals("BTC"))
-            {
-                rRaw = await api.SubmitWithdrawRequestBitcoinAsync(body).ConfigureAwait(false);
-            }
-            else if (context.Amount.Asset.ShortCode.Equals("LTC"))
-            {
-                rRaw = await api.SubmitWithdrawRequestLitecoinAsync(body).ConfigureAwait(false);
-            }
-            else
-            {
-                rRaw = await api.SubmitWithdrawRequestBitcoinCashAsync(body).ConfigureAwait(false);
-            }
-
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var rRaw = await SubmitWithdrawalRequestAsync(context);
+            
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -142,7 +114,7 @@ namespace Prime.Plugins.Services.Coinmate
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.FromNowhere);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();

@@ -57,7 +57,7 @@ namespace Prime.Plugins.Services.Binance
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            if(context.Market == null)
+            if(!context.HasMarket)
                 throw new MarketNotSpecifiedException(this);
 
             var api = ApiProvider.GetApi(context);

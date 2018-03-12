@@ -56,9 +56,12 @@ namespace Prime.Plugins.Services.Coinmate
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetTickerAsync("BTC_EUR").ConfigureAwait(false);
+            var rRaw = await api.GetTickerAsync("BTC_EUR").ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            return r?.error == false && r.data != null;
+            var r = rRaw.GetContent();
+            
+            return r.data != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -66,14 +69,11 @@ namespace Prime.Plugins.Services.Coinmate
             return Task.Run(() => Pairs);
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
-            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = false }
+            Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true }
         };
 
         public PricingFeatures PricingFeatures => StaticPricingFeatures;
@@ -82,16 +82,17 @@ namespace Prime.Plugins.Services.Coinmate
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
-            var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+            var rRaw = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            if (r == null || r.error || r.data == null)
-            {
-                throw new ApiResponseException("No tickers found", this);
-            }
+            var r = rRaw.GetContent();
+            
+            var data = r.data;
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.data.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.data.ask, r.data.bid, r.data.low, r.data.high)
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, data.ask, data.bid, data.low, data.high),
+                Volume = new NetworkPairVolume(Network, context.Pair, data.amount)
             });
         }
 
@@ -100,13 +101,12 @@ namespace Prime.Plugins.Services.Coinmate
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
 
-            var r = await api.GetOrderBookAsync(pairCode,false).ConfigureAwait(false);
-            var orderBook = new OrderBook(Network, context.Pair);
+            var rRaw = await api.GetOrderBookAsync(pairCode,false).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            if (r == null || r.error || r.data == null)
-            {
-                throw new ApiResponseException(r.errorMessage, this);
-            }
+            var r = rRaw.GetContent();
+            
+            var orderBook = new OrderBook(Network, context.Pair);
 
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
 

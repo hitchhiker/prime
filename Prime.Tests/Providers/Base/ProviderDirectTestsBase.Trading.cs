@@ -49,7 +49,7 @@ namespace Prime.Tests.Providers
         private void GetTradeOrderStatusTest(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
             var context = new RemoteMarketIdContext(UserContext.Current, remoteOrderId, market);
-
+            
             var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
 
             Assert.True(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");

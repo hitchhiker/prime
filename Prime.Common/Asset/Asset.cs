@@ -82,6 +82,10 @@ namespace Prime.Common
         /// Considered a BASE currency for now.
         /// </summary>
         public static Asset Btc = Assets.I.GetRaw("BTC");
+        
+        public static Asset Ltc = Assets.I.GetRaw("LTC");
+        
+        public static Asset Bch = Assets.I.GetRaw("BCH");
 
         public static Asset Eth = Assets.I.GetRaw("ETH");
 
