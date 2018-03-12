@@ -100,6 +100,11 @@ namespace Prime.Common
             _keys.Add(key, true);
         }
 
+        public void RemoveNetwork(ObjectId networkId)
+        {
+            _keys.RemoveAll(x=>x.Network.Id.Equals(networkId));
+        }
+
         public static DirectoryInfo ApiConfigPath = new DirectoryInfo(Path.Combine(CommonFs.I.UserConfigDirectory.FullName, "keys"));
 
         public IEnumerator<ApiKey> GetEnumerator()

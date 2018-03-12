@@ -38,7 +38,7 @@ namespace Prime.Common
         {
             return Type + " " + Price.ToDecimalValue() + " [" + Volume.ToDecimalValue() + "]";
         }
-
+        
         public OrderBookRecord Reverse(Asset asset)
         {
             if (Price.Asset.Id == asset.Id)

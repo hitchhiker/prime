@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using LiteDB;
 using Prime.Common;
 using Prime.KeysManager.Core.Models;
 using Prime.Utility;
@@ -68,35 +69,23 @@ namespace Prime.KeysManager.Core
             if (networkProvider == null)
                 throw new NullReferenceException("Network provider not found.");
 
-            DeleteKeys(networkId);
-
             var keys = UserContext.Current.ApiKeys;
+
+            keys.RemoveNetwork(networkId.ToObjectId());
 
             if(string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
                 throw new NullReferenceException("Key and secret should not be empty.");
 
             var newKey = new ApiKey(networkProvider.Network, networkProvider.Title, key, secret, string.IsNullOrEmpty(extra) ? null : extra);
-            keys.Add(newKey);
 
+            keys.Add(newKey);
             keys.Save();
         }
 
         public void DeleteKeys(string networkId)
         {
             var keys = UserContext.Current.ApiKeys;
-
-            var keysToRemove = new List<ApiKey>();
-            foreach (var apiKey in keys)
-            {
-                if (apiKey.Network.Id.ToString().Equals(networkId))
-                    keysToRemove.Add(apiKey);
-            }
-
-            foreach (var apiKey in keysToRemove)
-            {
-                keys.Remove(apiKey);
-            }
-
+            keys.RemoveNetwork(networkId.ToObjectId());
             keys.Save();
         }
 
