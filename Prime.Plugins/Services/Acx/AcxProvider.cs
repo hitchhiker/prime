@@ -68,25 +68,17 @@ namespace Prime.Plugins.Services.Acx
 
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
-            if (r == null || r.Length == 0)
-            {
-                throw new ApiResponseException("No asset pairs returned", this);
-            }
-
             var pairs = new AssetPairs();
 
             foreach (var rCurrentTicker in r)
             {
-                pairs.Add(rCurrentTicker.id.ToAssetPair(this,3));
+                pairs.Add(rCurrentTicker.id.ToAssetPair(this, 3));
             }
 
             return pairs;
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
