@@ -33,6 +33,5 @@ namespace Prime.Plugins.Services.Acx
         //TODO: SC - See what object endpoint returns, as there is no documentation to demonstrate this, so must be tested with real money.
         [Post("/withdraw.json")]
         Task<Response<object>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
     }
 }

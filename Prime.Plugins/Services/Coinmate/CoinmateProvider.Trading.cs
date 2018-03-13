@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.Coinmate
 
             var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
             if (order == null)
-                throw new NoTradeOrderException(context.RemoteGroupId, this);
+                throw new NoTradeOrderException(context, this);
             
             var isOpen = order.type.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;

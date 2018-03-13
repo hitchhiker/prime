@@ -68,7 +68,7 @@ namespace Prime.Tests.Providers
         {
             // TODO: SC: Not tested with real money
             var orderId = "21109502";
-            base.PretestGetTradeOrderStatus(orderId, "BTC_EUR".ToAssetPairRaw());
+            base.PretestGetTradeOrderStatus(orderId);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Prime.Tests.Providers
             base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
 
             //Test for selling
-            base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), false, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
+            //base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), false, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
         }
     }
 }
