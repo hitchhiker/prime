@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Coinmate
             // TODO: AY: Sean implement this method using GetOpenOrders endpoint.
             
             throw new NotImplementedException();
-        };
+        }
 
         private async Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawalRequestAsync(
             WithdrawalPlacementContext context)
