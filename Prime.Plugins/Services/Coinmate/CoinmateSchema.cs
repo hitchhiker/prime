@@ -44,9 +44,7 @@ namespace Prime.Plugins.Services.Coinmate
             public string id;
             public long timestamp;
             public string type;
-            public string currencyPair;
             public decimal price;
-            public decimal amount;
             public decimal remainingAmount;
             public decimal originalAmount;
             public string status;
