@@ -47,6 +47,9 @@ namespace Prime.Plugins.Services.Coinmate
             public string currencyPair;
             public decimal price;
             public decimal amount;
+            public decimal remainingAmount;
+            public decimal originalAmount;
+            public string status;
         }
 
         internal class WithdrawalRequestResponse : BaseResponse<string>
