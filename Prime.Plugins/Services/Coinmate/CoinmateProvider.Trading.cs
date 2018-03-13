@@ -69,7 +69,6 @@ namespace Prime.Plugins.Services.Coinmate
                 Rate = order.price,
                 AmountInitial = order.originalAmount,
                 AmountRemaining = order.remainingAmount,
-                Market = order.currencyPair.ToAssetPair(this)
             };
         }
 
