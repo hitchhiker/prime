@@ -15,14 +15,14 @@ namespace Prime.Plugins.Services.Coinmate
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
-            if (r.TryGetContent(out CoinmateSchema.BaseResponse<T> rError))
-            {
-                if (rError.error)
-                    throw new ApiResponseException(rError.errorMessage.TrimEnd('.'), this, method);
+            if (!r.TryGetContent(out CoinmateSchema.BaseResponse<T> rError)) 
+                return;
+            
+            if (rError.error)
+                throw new ApiResponseException(rError.errorMessage.TrimEnd('.'), this, method);
 
-                if (rError.data == null)
-                    throw new ApiResponseException("API response error occurred", this, method);
-            }
+            if (rError.data == null)
+                throw new ApiResponseException("API response error occurred", this, method);
         }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
@@ -48,9 +48,15 @@ namespace Prime.Plugins.Services.Coinmate
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
+            if(!context.HasMarket)
+                throw new MarketNotSpecifiedException(this);
+            
             var api = ApiProvider.GetApi(context);
 
-            var body = new Dictionary<string, object>();
+            var body = new Dictionary<string, object>()
+            {
+                {"currencyPair", context.Market}
+            };
 
             var rRaw = await api.QueryOrdersAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -69,10 +75,16 @@ namespace Prime.Plugins.Services.Coinmate
                 Rate = order.price,
                 AmountInitial = order.originalAmount,
                 AmountRemaining = order.remainingAmount,
+                Market = context.Market
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            // TODO: AY: Sean implement this method using GetOpenOrders endpoint.
+            
+            throw new NotImplementedException();
+        };
 
         private async Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawalRequestAsync(
             WithdrawalPlacementContext context)
@@ -114,7 +126,7 @@ namespace Prime.Plugins.Services.Coinmate
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.FromNowhere);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.ByAdditionalRequest);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
