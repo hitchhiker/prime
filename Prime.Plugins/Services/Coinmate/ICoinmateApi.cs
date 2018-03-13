@@ -23,7 +23,7 @@ namespace Prime.Plugins.Services.Coinmate
         [Post("/sellLimit")]
         Task<Response<CoinmateSchema.NewOrderResponse>> PlaceMarketSellLimit([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
-        [Post("/openOrders")]
+        [Post("/orderHistory")]
         Task<Response<CoinmateSchema.OrderInfoResponse>> QueryOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
         [Post("/bitcoinWithdrawal")]
