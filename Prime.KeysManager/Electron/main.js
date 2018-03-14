@@ -20,10 +20,14 @@ function createWindow() {
     }));
 }
 
+function closeWindow() {
+    alert("Windows is being closed...");
+}
+
 // TCP client.
 let client = new net.Socket();
 
-client.connect(8082, '127.0.0.1', function () {
+client.connect(19991, '127.0.0.1', function () {
     console.log('Connected to Prime API server.');
 });
 
@@ -93,5 +97,6 @@ ipcMain.on('prime:test-private-api', (event, arg) => {
     dataHandlerChannel = "prime:private-api-tested";
 });
 
+app.on('close', closeWindow);
 app.on('ready', createWindow);
 

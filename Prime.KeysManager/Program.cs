@@ -13,6 +13,8 @@ namespace Prime.KeysManager
 {
     class Program
     {
+        private static readonly KeysManagerApp _keysManagerApp = new KeysManagerApp(new TcpServer(), new PrimeService());
+        
         static void Main(string[] args)
         {
             Console.WriteLine($"Operating system: " + Environment.OSVersion.Platform);
@@ -28,12 +30,18 @@ namespace Prime.KeysManager
             t.Wait();
         }
 
+        private static void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs consoleCancelEventArgs)
+        {
+            // BUG: does not allow closing open ports.
+            Console.WriteLine("Closing app...");
+            _keysManagerApp.Exit();
+        }
+
         private static Task RunServer()
         {
             var t = Task.Run(() =>
             {
-                var app = new KeysManagerApp(new TcpServer(), new PrimeService());
-                app.Run();
+                _keysManagerApp.Run();
             });
             Console.WriteLine("> Server started");
 

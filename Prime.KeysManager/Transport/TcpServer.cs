@@ -103,7 +103,8 @@ namespace Prime.KeysManager.Transport
             data = null;
 
             var buffer = new byte[1024];
-            stream.Read(buffer, 0, buffer.Length);
+            if(stream.CanRead)
+                stream.Read(buffer, 0, buffer.Length);
 
             data = buffer.DecodeAscii();//Encoding.Default.GetString(buffer);
         }
@@ -111,6 +112,8 @@ namespace Prime.KeysManager.Transport
         public void ShutdownServer()
         {
             _listener.Stop();
+            _connectedClient.Dispose();
+            Console.WriteLine("Server closed");
         }
 
         public void Subscribe<T>(Action<T> handler)

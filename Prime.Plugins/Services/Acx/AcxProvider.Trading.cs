@@ -41,9 +41,7 @@ namespace Prime.Plugins.Services.Acx
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            string market = context.Market.ToTicker(this).ToLower();
-
-            var order = await GetOrderReponseByIdAsync(context, market).ConfigureAwait(false);
+            var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
 
             var isOpen = order.state.IndexOf("wait", StringComparison.OrdinalIgnoreCase) >= 0;
 
@@ -52,16 +50,12 @@ namespace Prime.Plugins.Services.Acx
             return new TradeOrderStatus(order.id, isBuy, isOpen, false)
             {
                 Rate = order.price,
-                Market = market
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task<AcxSchema.OrderInfoResponse> GetOrderReponseByIdAsync(RemoteIdContext context, string market)
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        
+        private async Task<AcxSchema.OrderInfoResponse> GetOrderReponseByIdAsync(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -104,7 +98,7 @@ namespace Prime.Plugins.Services.Acx
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.FromNowhere);
+            private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.FromNowhere);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
