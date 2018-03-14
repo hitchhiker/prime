@@ -41,33 +41,13 @@ namespace Prime.Plugins.Services.Allcoin
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            string market = context.Market.ToTicker(this).ToLower();
+            var market = context.Market.ToTicker(this).ToLower();
 
-            var order = await GetOrderReponseByIdAsync(context, market).ConfigureAwait(false);
-
-            var isOpen = order.status == 0 || order.status == 1; //status:  0 = unfilled, 1 = partially filled, 2 = fully filled, 10 = cancelled
-
-            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
-
-            return new TradeOrderStatus(order.order_id, isBuy, isOpen, false)
-            {
-                Rate = order.price,
-                Market = market
-            };
-        }
-
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task<AllcoinSchema.OrderInfoEntryResponse> GetOrderReponseByIdAsync(RemoteIdContext context, string market)
-        {
             var api = ApiProvider.GetApi(context);
 
             var body = new Dictionary<string, object>
             {
-                { "symbol", market.ToLower() },
+                { "symbol", market },
                 { "order_id", context.RemoteGroupId}
             };
 
@@ -76,27 +56,28 @@ namespace Prime.Plugins.Services.Allcoin
             CheckResponseErrors(rRaw);
 
             var rOrders = rRaw.GetContent();
+            
+            var order = rOrders.orders?.FirstOrDefault(x=>x.order_id.Equals(context.RemoteGroupId));
+            if(order == null)
+                throw new NoTradeOrderException(context, this);
 
-            if (rOrders.orders != null && rOrders.orders.Length > 0)
+            var isOpen = order.status == 0 || order.status == 1; //status:  0 = unfilled, 1 = partially filled, 2 = fully filled, 10 = cancelled
+
+            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            return new TradeOrderStatus(order.order_id, isBuy, isOpen, false)
             {
-                var order = rOrders.orders.FirstOrDefault(x=>x.order_id.Equals(context.RemoteGroupId));
-
-                if (order == null)
-                {
-                    throw new NoTradeOrderException(context.RemoteGroupId, this);
-                }
-
-                return order;
-            }
-            else
-            {
-                throw new NoTradeOrderException(context.RemoteGroupId, this);
-            }
+                Rate = order.price,
+                Market = order.symbol.ToAssetPair(this),
+                AmountInitial = order.amount
+            };
         }
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.FromNowhere);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
