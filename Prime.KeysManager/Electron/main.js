@@ -85,7 +85,10 @@ ipcMain.on('prime:test-private-api', (event, arg) => {
 
     client.write(JSON.stringify({
         "Type": "TestPrivateApiMessage",
-        "Id": arg,
+        "Id": arg.id,
+        "Key": arg.keys.Key,
+        "Secret": arg.keys.Secret,
+        "Extra": arg.keys.Extra
     }));
     dataHandlerChannel = "prime:private-api-tested";
 });

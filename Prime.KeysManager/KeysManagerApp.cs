@@ -46,7 +46,7 @@ namespace Prime.KeysManager
 
             try
             {
-                success = _primeService.TestPrivateApi(testPrivateApiMessage.Id);
+                success = _primeService.TestPrivateApi(testPrivateApiMessage.Id, testPrivateApiMessage.Key, testPrivateApiMessage.Secret, testPrivateApiMessage.Extra);
             }
             catch (Exception e)
             {

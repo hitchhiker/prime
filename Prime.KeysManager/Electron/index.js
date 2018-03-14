@@ -41,7 +41,13 @@ var IndexView = function () {
     function testPrivateApi(e) {
         let id = inputProviderId.val();
 
-        primeTcpClient.testPrivateApi(id, (event, data) => {
+        let keys = {
+            Key: inputPublicKey.val(),
+            Secret: inputPrivateKey.val(),
+            Extra: inputExtra.val()
+        };
+
+        primeTcpClient.testPrivateApi(id, keys, (event, data) => {
             let response = JSON.parse(data);
             let msg = 'Private API test SUCCEEDED';
 
