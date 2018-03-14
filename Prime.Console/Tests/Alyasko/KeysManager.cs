@@ -45,7 +45,7 @@ namespace Prime.Console.Tests.Alyasko
 
                 var apiKey = new ApiKey(exchange.Network, "Default", key, secret);
                 var keys = UserContext.Current.ApiKeys;
-                keys.Remove(apiKey);
+                keys.RemoveNetwork(exchange.Network.Id);
 
                 keys.Add(apiKey);
                 keys.Save();
