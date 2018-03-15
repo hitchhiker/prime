@@ -17,7 +17,7 @@ namespace Prime.KeysManager.Transport
         private TcpClient _connectedClient;
         private readonly Dictionary<Type, Action<object>> _subscriptions = new Dictionary<Type, Action<object>>();
 
-        public void CreateServer(IPAddress address, short port)
+        public void StartServer(IPAddress address, short port)
         {
             _listener = new TcpListener(address, port);
             _listener.Start();
@@ -27,29 +27,22 @@ namespace Prime.KeysManager.Transport
 
         private void HandleResponse(string raw)
         {
-            try
+            var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(raw);
+
+            var subscribedTypes = _subscriptions.Where(x =>
+                x.Key.Name.Equals(baseMessage.Type, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!subscribedTypes.Any())
+                throw new NullReferenceException($"There is no handler registered for '{baseMessage.Type}' type.");
+
+            var subscribedType = subscribedTypes.First();
+            if (subscribedType.Value != null)
             {
-                var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(raw);
-
-                var subscribedTypes = _subscriptions.Where(x =>
-                    x.Key.Name.Equals(baseMessage.Type, StringComparison.OrdinalIgnoreCase)).ToList();
-                if (!subscribedTypes.Any())
-                    throw new NullReferenceException($"There is no handler registered for '{baseMessage.Type}' type.");
-
-                var subscribedType = subscribedTypes.First();
-                if (subscribedType.Value != null)
-                {
-                    var parameter = JsonConvert.DeserializeObject(raw, subscribedType.Key);
-                    subscribedType.Value(parameter);
-                }
-                else
-                {
-                    throw new NullReferenceException($"Subscribed handler for '{baseMessage.Type}' type is null.");
-                }
+                var parameter = JsonConvert.DeserializeObject(raw, subscribedType.Key);
+                subscribedType.Value(parameter);
             }
-            catch (Exception e)
+            else
             {
-                throw;
+                throw new NullReferenceException($"Subscribed handler for '{baseMessage.Type}' type is null.");
             }
         }
 
@@ -87,15 +80,13 @@ namespace Prime.KeysManager.Transport
             return data.Replace("\r", "").Replace("\n", "");
         }
 
-        private bool SendData(TcpClient client, string data)
+        private void SendData(TcpClient client, string data)
         {
             if (!client.Connected)
-                return false;
+                return;
 
             var dataBytes = Encoding.Default.GetBytes(data);
             client.GetStream().Write(dataBytes, 0, data.Length);
-
-            return true;
         }
 
         private void ReceiveData(NetworkStream stream, out string data)
@@ -106,7 +97,7 @@ namespace Prime.KeysManager.Transport
             if(stream.CanRead)
                 stream.Read(buffer, 0, buffer.Length);
 
-            data = buffer.DecodeAscii();//Encoding.Default.GetString(buffer);
+            data = buffer.DecodeAscii();
         }
 
         public void ShutdownServer()

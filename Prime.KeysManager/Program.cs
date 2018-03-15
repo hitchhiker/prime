@@ -13,7 +13,7 @@ namespace Prime.KeysManager
 {
     class Program
     {
-        private static readonly KeysManagerApp _keysManagerApp = new KeysManagerApp(new TcpServer(), new PrimeService());
+        private static readonly KeysManagerApp KeysManagerApp = new KeysManagerApp(new TcpServer(), new PrimeService());
         
         static void Main(string[] args)
         {
@@ -30,18 +30,11 @@ namespace Prime.KeysManager
             t.Wait();
         }
 
-        private static void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs consoleCancelEventArgs)
-        {
-            // BUG: does not allow closing open ports.
-            Console.WriteLine("Closing app...");
-            _keysManagerApp.Exit();
-        }
-
         private static Task RunServer()
         {
             var t = Task.Run(() =>
             {
-                _keysManagerApp.Run();
+                KeysManagerApp.Run();
             });
             Console.WriteLine("> Server started");
 

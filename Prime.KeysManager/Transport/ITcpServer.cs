@@ -5,7 +5,7 @@ namespace Prime.KeysManager.Transport
 {
     public interface ITcpServer
     {
-        void CreateServer(IPAddress address, short port);
+        void StartServer(IPAddress address, short port);
         void ShutdownServer();
 
         void Subscribe<T>(Action<T> handler);
