@@ -41,8 +41,8 @@ var PrimeTcpClient = function () {
         registerCallback('prime:provider-keys-deleted', callback);
     }
 
-    this.testPrivateApi = function(id, callback) {
-        ipcRenderer.send('prime:test-private-api', id);
+    this.testPrivateApi = function(id, keys, callback) {
+        ipcRenderer.send('prime:test-private-api', { id: id, keys: keys });
 
         registerCallback('prime:private-api-tested', callback);
     }

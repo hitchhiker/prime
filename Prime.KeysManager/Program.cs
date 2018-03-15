@@ -13,6 +13,8 @@ namespace Prime.KeysManager
 {
     class Program
     {
+        private static readonly KeysManagerApp KeysManagerApp = new KeysManagerApp(new TcpServer(), new PrimeService());
+        
         static void Main(string[] args)
         {
             Console.WriteLine($"Operating system: " + Environment.OSVersion.Platform);
@@ -32,8 +34,7 @@ namespace Prime.KeysManager
         {
             var t = Task.Run(() =>
             {
-                var app = new KeysManagerApp(new TcpServer(), new PrimeService());
-                app.Run();
+                KeysManagerApp.Run();
             });
             Console.WriteLine("> Server started");
 

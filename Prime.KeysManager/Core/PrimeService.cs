@@ -89,11 +89,12 @@ namespace Prime.KeysManager.Core
             keys.Save();
         }
 
-        public bool TestPrivateApi(string networkId)
+        public bool TestPrivateApi(string networkId, string key, string secret, string extra)
         {
-            var network = GetProviderByNetworkId(networkId) as INetworkProviderPrivate;
+            var networkProvider = GetProviderByNetworkId(networkId) as INetworkProviderPrivate;
 
-            var result = network.TestPrivateApiAsync(new ApiPrivateTestContext(UserContext.Current.GetApiKey(network))).Result;
+            var testApiKey = new ApiKey(networkProvider.Network, "Testing", key, secret, string.IsNullOrEmpty(extra) ? null : extra);
+            var result = networkProvider.TestPrivateApiAsync(new ApiPrivateTestContext(testApiKey)).Result;
 
             return result;
         }

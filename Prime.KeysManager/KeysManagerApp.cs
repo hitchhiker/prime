@@ -11,8 +11,11 @@ namespace Prime.KeysManager
 {
     public class KeysManagerApp
     {
-        private ITcpServer _tcpServer;
-        private IPrimeService _primeService;
+        private readonly ITcpServer _tcpServer;
+        private readonly IPrimeService _primeService;
+
+        public short PortNumber { get; set; } = 19991;
+        public IPAddress IpAddress { get; set; } = IPAddress.Parse("127.0.0.1");
         
         public KeysManagerApp(ITcpServer tcpServer, IPrimeService primeService)
         {
@@ -26,7 +29,7 @@ namespace Prime.KeysManager
             _tcpServer.ExceptionOccurred += TcpServerOnExceptionOccurred;
 
             // Main app cycle.
-            _tcpServer.CreateServer(IPAddress.Parse("127.0.0.1"), 8082);     
+            _tcpServer.StartServer(IpAddress, PortNumber);     
         }
 
         private void Subscribe()
@@ -46,7 +49,7 @@ namespace Prime.KeysManager
 
             try
             {
-                success = _primeService.TestPrivateApi(testPrivateApiMessage.Id);
+                success = _primeService.TestPrivateApi(testPrivateApiMessage.Id, testPrivateApiMessage.Key, testPrivateApiMessage.Secret, testPrivateApiMessage.Extra);
             }
             catch (Exception e)
             {
@@ -119,7 +122,12 @@ namespace Prime.KeysManager
 
         private void TcpServerOnExceptionOccurred(object sender, Exception exception)
         {
-            Console.WriteLine($"Error: {exception.Message}");
+            Console.WriteLine($"Server error occured: {exception.Message}");
+        }
+
+        public void Exit()
+        {
+            _tcpServer.ShutdownServer();
         }
     }
 }

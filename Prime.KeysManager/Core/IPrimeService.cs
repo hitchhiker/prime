@@ -14,6 +14,6 @@ namespace Prime.KeysManager.Core
         void SaveKeys(string networkId, string key, string secret, string extra);
         void DeleteKeys(string networkId);
 
-        bool TestPrivateApi(string networkId);
+        bool TestPrivateApi(string networkId, string key, string secret, string extra);
     }
 }

@@ -75,7 +75,7 @@ namespace Prime.Common
 
         public void Save()
         {
-            _keys.SaveAll(_context);
+            _keys.SaveAllOverwrite(_context);
         }
 
         private void CollectFilesystem(Network network, FileInfo fileInfo)

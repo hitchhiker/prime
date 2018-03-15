@@ -15,8 +15,7 @@ namespace Prime.Plugins.Services.BitBay
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
-            var rErrorResponse = r.GetContent() as BitBaySchema.ErrorBaseResponse;
-            if (rErrorResponse != null)
+            if (r.GetContent() is BitBaySchema.ErrorBaseResponse rErrorResponse)
             {
                 if (!string.IsNullOrEmpty(rErrorResponse.message))
                     throw new ApiResponseException($"{rErrorResponse.code}: {rErrorResponse.message}", this, method);
