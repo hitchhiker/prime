@@ -8,11 +8,15 @@ namespace Prime.Plugins.Services.BitKonan
     {
         #region Private
 
-        internal class BalanceResponse
+        internal class BaseResponse
         {
             public string status;
-            public BalanceEntryResponse[] data;
             public string[] errors;
+        }
+
+        internal class BalanceResponse
+        {
+            public BalanceEntryResponse[] data;
         }
 
         internal class BalanceEntryResponse
@@ -29,11 +33,9 @@ namespace Prime.Plugins.Services.BitKonan
             public decimal total;
         }
 
-        internal class NewOrderResponse
+        internal class NewOrderResponse : BaseResponse
         {
-            public string status;
             public NewOrderEntryResponse data;
-            public string[] errors;
         }
 
         internal class NewOrderEntryResponse
@@ -43,9 +45,7 @@ namespace Prime.Plugins.Services.BitKonan
 
         internal class OrderInfoResponse
         {
-            public string status;
             public OrderInfoEntryResponse[] data;
-            public string[] errors;
         }
 
         internal class OrderInfoEntryResponse

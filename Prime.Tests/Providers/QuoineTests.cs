@@ -21,6 +21,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()

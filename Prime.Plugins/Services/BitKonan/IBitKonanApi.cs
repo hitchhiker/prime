@@ -19,12 +19,12 @@ namespace Prime.Plugins.Services.BitKonan
         Task<BitKonanSchema.OrderBookResponse> GetOrderBookAsync([Path] string asset);
 
         [Post("/private/balance")]
-        Task<BitKonanSchema.BalanceResponse> GetBalanceAsync();
+        Task<Response<BitKonanSchema.BalanceResponse>> GetBalanceAsync();
 
         [Post("/private/order/new")]
-        Task<BitKonanSchema.NewOrderResponse> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<Response<BitKonanSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
         
         [Post("/private/orders")]
-        Task<BitKonanSchema.OrderInfoResponse> QueryActiveOrdersAsync();
+        Task<Response<BitKonanSchema.OrderInfoResponse>> QueryActiveOrdersAsync();
     }
 }

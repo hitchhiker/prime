@@ -6,6 +6,21 @@ namespace Prime.Plugins.Services.Quoine
 {
     internal class QuoineSchema
     {
+        #region Private
+        internal class ErrorResponse
+        {
+            public string StatusCode;
+            public string ReasonPhrase;
+        }
+
+        internal class AccountBalanceResponse
+        {
+            public string currency;
+            public decimal balance;
+        }
+        #endregion
+
+        #region Public
         internal class ProductResponse
         {
             public int id;
@@ -38,5 +53,6 @@ namespace Prime.Plugins.Services.Quoine
             public decimal[][] buy_price_levels;
             public decimal[][] sell_price_levels;
         }
+        #endregion
     }
 }

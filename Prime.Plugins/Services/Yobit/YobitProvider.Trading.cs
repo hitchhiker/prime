@@ -13,6 +13,18 @@ namespace Prime.Plugins.Services.Yobit
 {
     public partial class YobitProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
+        private Dictionary<string, object> CreateBody()
+        {
+            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
+
+            var body = new Dictionary<string, object>()
+            {
+                { "nonce", timeStamp }
+            };
+
+            return body;
+        }
+
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
             if (r.TryGetContent(out YobitSchema.ErrorResponse rError))
@@ -32,18 +44,12 @@ namespace Prime.Plugins.Services.Yobit
         {
             var api = ApiProviderPrivate.GetApi(context);
 
-            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
-            // TODO: AY: For Sean - create method that will create Dictionary and populate it with nonce.
-
-            var body = new Dictionary<string, object>
-            {
-                { "method","Trade" },
-                { "nonce", timeStamp },
-                { "pair", context.Pair.ToTicker(this) },
-                { "type", context.IsBuy ? "buy" : "sell"},
-                { "amount", context.Quantity},
-                { "rate", context.Rate.ToDecimalValue()}
-            };
+            var body = CreateBody();
+            body.Add("method", "Trade");
+            body.Add("pair", context.Pair.ToTicker(this));
+            body.Add("type", context.IsBuy ? "buy" : "sell");
+            body.Add("amount", context.Quantity);
+            body.Add("rate", context.Rate.ToDecimalValue());
 
             var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -58,15 +64,10 @@ namespace Prime.Plugins.Services.Yobit
             var api = ApiProviderPrivate.GetApi(context);
 
             var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
-
-            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp());
-
-            var bodyActiveOrders = new Dictionary<string, object>
-            {
-                { "method","ActiveOrders" },
-                { "nonce", timeStamp },
-                {"pair", order.pair}
-            };
+            
+            var bodyActiveOrders = CreateBody();
+            bodyActiveOrders.Add("method", "ActiveOrders");
+            bodyActiveOrders.Add("pair", order.pair);
 
             // Checks if this order is contained in active list.
             var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(bodyActiveOrders).ConfigureAwait(false);
@@ -89,15 +90,10 @@ namespace Prime.Plugins.Services.Yobit
         private async Task<YobitSchema.OrderInfoEntryResponse> GetOrderReponseByIdAsync(RemoteIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
-
-            var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
-
-            var bodyOrderInfo = new Dictionary<string, object>
-            {
-                { "method","OrderInfo" },
-                { "nonce", timeStamp },
-                { "order_id", context.RemoteGroupId}
-            };
+            
+            var bodyOrderInfo = CreateBody();
+            bodyOrderInfo.Add("method", "OrderInfo");
+            bodyOrderInfo.Add("order_id", context.RemoteGroupId);
 
             var rOrderRaw = await api.QueryOrderInfoAsync(bodyOrderInfo).ConfigureAwait(false);
             CheckResponseErrors(rOrderRaw);
@@ -116,17 +112,12 @@ namespace Prime.Plugins.Services.Yobit
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
-
-            var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
-
-            var body = new Dictionary<string, object>
-            {
-                { "method","WithdrawCoinsToAddress" },
-                { "nonce", timeStamp },
-                {"coinName", context.Amount.Asset.ShortCode},
-                {"amount", context.Amount.ToDecimalValue()},
-                {"address", context.Address.Address}
-            };
+            
+            var body = CreateBody();
+            body.Add("method", "WithdrawCoinsToAddress");
+            body.Add("coinName", context.Amount.Asset.ShortCode);
+            body.Add("amount", context.Amount.ToDecimalValue());
+            body.Add("address", context.Address.Address);
 
             var rRaw = await api.SubmitWithdrawRequestAsync(body).ConfigureAwait(false);
 

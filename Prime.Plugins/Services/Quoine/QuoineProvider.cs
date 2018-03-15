@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Quoine
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://developers.quoine.com/#introduction
-    public class QuoineProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class QuoineProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string QuoineApiUrl = "https://api.quoine.com/";
 
@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Quoine
 
         public QuoineProvider()
         {
-            ApiProvider = new RestApiClientProvider<IQuoineApi>(QuoineApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IQuoineApi>(QuoineApiUrl, this, (k) => new QuoineAuthenticator(k).GetRequestModifierAsync);
         }
 
         private ConcurrentDictionary<AssetPair, int> _dictionaryProducts;
@@ -81,6 +81,18 @@ namespace Prime.Plugins.Services.Quoine
             var r = await api.GetProductsAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null && r.Length > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

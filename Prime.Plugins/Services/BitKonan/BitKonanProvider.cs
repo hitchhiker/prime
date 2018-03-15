@@ -62,9 +62,13 @@ namespace Prime.Plugins.Services.BitKonan
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalanceAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalanceAsync().ConfigureAwait(false);
 
-            return r != null && r.status.Equals("success", StringComparison.OrdinalIgnoreCase);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+            
+            return r.data != null;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

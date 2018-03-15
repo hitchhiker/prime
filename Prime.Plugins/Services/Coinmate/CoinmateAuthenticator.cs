@@ -18,7 +18,7 @@ namespace Prime.Plugins.Services.Coinmate
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             //TODO: SC - get client ID from ApiKey.Extra
-            var clientId = "123142";
+            var clientId = "49041";
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
             var signatureStr = $"{timeStamp}{clientId}{ApiKey.Key}";
 
@@ -26,12 +26,20 @@ namespace Prime.Plugins.Services.Coinmate
 
             var signature = HashHMACSHA256Hex(signatureStr, ApiKey.Secret).ToUpper();
 
-            var content = $"clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}";
-
-            if (!string.IsNullOrWhiteSpace(parameters))
-                content = $"{parameters}" + content;
-            
-            request.Content = new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded");
+            if (string.IsNullOrWhiteSpace(parameters))
+            {
+                request.Content =
+                    new StringContent(
+                        $"clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}",
+                        Encoding.UTF8, "application/x-www-form-urlencoded");
+            }
+            else
+            {
+                request.Content =
+                    new StringContent(
+                        $"{parameters}&clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}",
+                       Encoding.UTF8, "application/x-www-form-urlencoded");
+            }
         }
     }
 }
