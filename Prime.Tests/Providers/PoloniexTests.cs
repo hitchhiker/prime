@@ -77,6 +77,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            base.PretestPlaceOrderLimit("BTC_LTC".ToAssetPairRaw(), true, new Money(1, Asset.Ltc), new Money(1, Asset.Btc));
+        }
+
+        [Fact]
         public override void TestGetTradeOrderStatus()
         {
             base.PretestGetTradeOrderStatus("123412");
