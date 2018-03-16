@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.Allcoin
             CheckResponseErrors(rRaw);
             var r = rRaw.GetContent();
             
-            return r != null && r.result;
+            return r.result;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -92,7 +92,7 @@ namespace Prime.Plugins.Services.Allcoin
 
             return new MarketPrices(new MarketPrice(Network, context.Pair, r.ticker.last)
             {
-                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell, r.ticker.buy, r.ticker.low, r.ticker.high),
+                PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ticker.sell == 0 ? (decimal?)null : r.ticker.sell, r.ticker.buy == 0 ? (decimal?)null : r.ticker.buy, r.ticker.low, r.ticker.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.ticker.vol)
             });
         }
