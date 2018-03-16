@@ -27,7 +27,7 @@ namespace Prime.Console.Tests.Alyasko
 
             var r = bitmex.GetOhlcAsync(ctx).Result;
 
-            var contents = string.Join("\r\n", r.Select(x => $"{x.DateTimeUtc} - {(x.High + x.Low) / 2}"));
+            var contents = string.Join("\r\n", r.OhlcData.Select(x => $"{x.DateTimeUtc} - {(x.High + x.Low) / 2}"));
 
             File.WriteAllText(@"ohlc-xrp-usd-2.txt", contents);
         }
