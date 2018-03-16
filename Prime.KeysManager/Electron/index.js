@@ -24,7 +24,7 @@ var IndexView = function () {
         inputSearchProvider.on('input', function () {
             throttler.throttle(300, function () {
                 let searchValue = inputSearchProvider.val();
-                let filteredProvidersList = providersList.filter(p => p.Name.indexOf(searchValue) !== -1);
+                let filteredProvidersList = providersList.filter(p => p.Name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1);
                 displayProviders(filteredProvidersList);
             });
         });
