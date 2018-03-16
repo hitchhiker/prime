@@ -6,7 +6,7 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class PublicVolumeResponse
+    public class PublicVolumeResponse : ResponseModelBase
     {
         public readonly IReadOnlyList<NetworkPairVolume> Volume;
         public readonly IReadOnlyDictionary<Network, IReadOnlyList<AssetPair>> Missing;
