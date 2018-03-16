@@ -72,18 +72,18 @@ namespace Prime.Plugins.Services.BitMex
             }
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var resolution = ConvertToBitMexInterval(context.Market);
+            var resolution = ConvertToBitMexInterval(context.Resolution);
             var startDate = context.Range.UtcFrom;
             var endDate = context.Range.UtcTo;
 
             var r = await api.GetTradeHistoryAsync(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
 
-            var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var ohlc = new OhlcDataResponse(context.Resolution);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
             foreach (var instrActive in r)
             {

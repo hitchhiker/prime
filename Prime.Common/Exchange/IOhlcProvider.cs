@@ -5,6 +5,6 @@ namespace Prime.Common
 {
     public interface IOhlcProvider : IDescribesAssets
     {
-        Task<OhlcData> GetOhlcAsync(OhlcContext context);
+        Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context);
     }
 }

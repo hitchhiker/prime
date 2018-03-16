@@ -25,7 +25,7 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetAssetPairsAsync(provider, context));
         }
         
-        public static ApiResponse<OhlcData> GetOhlc(IOhlcProvider provider, OhlcContext context)
+        public static ApiResponse<OhlcDataResponse> GetOhlc(IOhlcProvider provider, OhlcContext context)
         {
             return AsyncContext.Run(() => GetOhlcAsync(provider, context));
         }

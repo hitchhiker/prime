@@ -241,15 +241,15 @@ namespace Prime.Plugins.Services.Coinbase
             return (price, size);
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
             var currencyCode = context.Pair.ToTicker(this);
 
-            var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var ohlc = new OhlcDataResponse(context.Resolution);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
-            var granularitySeconds = GetSeconds(context.Market);
+            var granularitySeconds = GetSeconds(context.Resolution);
             var maxNumberOfCandles = 200;
 
             var tsFrom = (long)context.Range.UtcFrom.ToUnixTimeStamp();

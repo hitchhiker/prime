@@ -26,7 +26,7 @@ namespace Prime.Common
             return AssetPairCache.I.TryAsync(provider, () => ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs), provider, context));
         }
 
-        public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
+        public static Task<ApiResponse<OhlcDataResponse>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetOhlcAsync(context), nameof(GetOhlc), provider, context);
         }

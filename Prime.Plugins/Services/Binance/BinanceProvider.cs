@@ -74,13 +74,13 @@ namespace Prime.Plugins.Services.Binance
             return true;
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var pairCode = context.Pair.ToTicker(this);
 
-            var interval = ConvertToBinanceInterval(context.Market);
+            var interval = ConvertToBinanceInterval(context.Resolution);
             var startDate = (long)(context.Range.UtcFrom.ToUnixTimeStamp() * 1000);
             var endDate = (long)(context.Range.UtcTo.ToUnixTimeStamp() * 1000);
 
@@ -89,9 +89,9 @@ namespace Prime.Plugins.Services.Binance
 
             var r = rRaw.GetContent();
 
-            var ohlc = new OhlcData(context.Market);
+            var ohlc = new OhlcDataResponse(context.Resolution);
 
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
             foreach (var rEntry in r)
             {

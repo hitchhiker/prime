@@ -247,19 +247,19 @@ namespace Prime.Plugins.Services.Kraken
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
+            var krakenTimeInterval = ConvertToKrakenInterval(context.Resolution);
 
             // BUG: "since" is not implemented. Need to be checked.
             var r = await api.GetOhlcDataAsync(context.Pair.ToTicker(this, ""), krakenTimeInterval).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
-            var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var ohlc = new OhlcDataResponse(context.Resolution);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
             if (r.result.pairs.Count != 0)
             {
