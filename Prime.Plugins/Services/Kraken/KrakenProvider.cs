@@ -242,58 +242,24 @@ namespace Prime.Plugins.Services.Kraken
             return null;
         }
 
-        private async Task<WalletAddresses> GetAddressesLocalAsync(IKrakenApi api, string fundingMethod, Asset asset, bool generateNew = false)
-        {
-            var body = CreateKrakenBody();
-
-            // BUG: do we need "aclass"?
-            //body.Add("aclass", asset.ToRemoteCode(this));
-            body.Add("asset", asset.ToRemoteCode(this));
-            body.Add("method", fundingMethod);
-            body.Add("new", generateNew);
-
-            var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
-            CheckResponseErrors(r);
-
-            var walletAddresses = new WalletAddresses();
-
-            foreach (var addr in r.result)
-            {
-                var walletAddress = new WalletAddress(this, asset)
-                {
-                    Address = addr.address
-                };
-
-                if (addr.expiretm != 0)
-                {
-                    var time = addr.expiretm.ToUtcDateTime();
-                    walletAddress.ExpiresUtc = time;
-                }
-
-                walletAddresses.Add(new WalletAddress(this, asset) { Address = addr.address });
-            }
-
-            return walletAddresses;
-        }
-
         public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var krakenTimeInterval = ConvertToKrakenInterval(context.Market);
+            var krakenTimeInterval = ConvertToKrakenInterval(context.Resolution);
 
             // BUG: "since" is not implemented. Need to be checked.
             var r = await api.GetOhlcDataAsync(context.Pair.ToTicker(this, ""), krakenTimeInterval).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
-            var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var ohlc = new OhlcDataResponse(context.Resolution);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
             if (r.result.pairs.Count != 0)
             {

@@ -27,7 +27,7 @@ namespace Prime.Core.Wallet
             if (r.IsNull)
                 return null;
 
-            var ads = r.Response;
+            var ads = r.Response.WalletAddresses;
             var usr = Addresses;
 
             foreach (var a in usr)

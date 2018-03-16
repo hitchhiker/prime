@@ -5,13 +5,13 @@ namespace Prime.Common
     public class OhlcContext : NetworkProviderContext
     {
         public readonly AssetPair Pair;
-        public readonly TimeResolution Market;
+        public readonly TimeResolution Resolution;
         public readonly TimeRange Range;
 
-        public OhlcContext(AssetPair pair, TimeResolution market, TimeRange range, ILogger logger = null) : base(logger)
+        public OhlcContext(AssetPair pair, TimeResolution resolution, TimeRange range, ILogger logger = null) : base(logger)
         {
             Pair = pair;
-            Market = market;
+            Resolution = resolution;
             Range = range;
         }
     }

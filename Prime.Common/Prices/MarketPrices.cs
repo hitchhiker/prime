@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Prime.Common
 {
-    public class MarketPrices : ModelBase, ISerialiseAsObject, IReadOnlyList<MarketPrice>
+    public class MarketPrices : ResponseModelBase, ISerialiseAsObject, IReadOnlyList<MarketPrice>
     {
         public MarketPrices() { }
 

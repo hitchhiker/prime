@@ -171,12 +171,12 @@ namespace Prime.Plugins.Services.Poloniex
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             var rRaw = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -253,12 +253,12 @@ namespace Prime.Plugins.Services.Poloniex
             return null;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             var rRaw = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -278,15 +278,15 @@ namespace Prime.Plugins.Services.Poloniex
             return addresses;
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var pair = context.Pair;
-            var market = context.Market;
+            var resolution = context.Resolution;
 
             var timeStampStart = (long)context.Range.UtcFrom.ToUnixTimeStamp();
             var timeStampEnd = (long)context.Range.UtcTo.ToUnixTimeStamp();
 
-            var period = ConvertToPoloniexInterval(market);
+            var period = ConvertToPoloniexInterval(resolution);
 
             var api = ApiProvider.GetApi(context);
             var rRaw = await api.GetChartDataAsync(pair.ToTicker(this), timeStampStart, timeStampEnd, period).ConfigureAwait(false);
@@ -294,8 +294,8 @@ namespace Prime.Plugins.Services.Poloniex
 
             var r = rRaw.GetContent();
 
-            var ohlc = new OhlcData(market);
-            var seriesid = OhlcUtilities.GetHash(pair, market, Network);
+            var ohlc = new OhlcDataResponse(resolution);
+            var seriesid = OhlcUtilities.GetHash(pair, resolution, Network);
 
             foreach (var ohlcEntry in r)
             {

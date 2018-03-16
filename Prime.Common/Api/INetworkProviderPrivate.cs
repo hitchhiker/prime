@@ -6,6 +6,7 @@ namespace Prime.Common
     {
         ApiConfiguration GetApiConfiguration { get; }
 
+        // TODO: AY: change bool to PrivateApiResponse class.
         Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context);
     }
 }

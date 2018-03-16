@@ -158,10 +158,10 @@ namespace Prime.Plugins.Services.CryptoCompare
             return u.ToList();
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var range = context.Range;
-            var market = context.Market;
+            var resolution = context.Resolution;
             var pair = context.Pair;
 
             var limit = range.GetDistanceInResolutionTicks();
@@ -170,7 +170,7 @@ namespace Prime.Plugins.Services.CryptoCompare
             var api = GetApi<ICryptoCompareApi>();
             CryptoCompareSchema.HistoricListResult apir = null;
 
-            switch (market)
+            switch (resolution)
             {
                 case TimeResolution.Hour:
                     apir = await api.GetHistoricalHourlyAsync(pair.Asset1.ToRemoteCode(this), pair.Asset2.ToRemoteCode(this), Name, "prime", "false", "true", 0, limit, toTs).ConfigureAwait(false);
@@ -186,8 +186,8 @@ namespace Prime.Plugins.Services.CryptoCompare
             if (apir.IsError())
                 return null;
 
-            var r = new OhlcData(market);
-            var seriesid = OhlcUtilities.GetHash(pair, market, Network);
+            var r = new OhlcDataResponse(resolution);
+            var seriesid = OhlcUtilities.GetHash(pair, resolution, Network);
             var from = apir.TimeFrom;
             var to = apir.TimeTo;
             foreach (var i in apir.Data.Where(x=>x.time >= from && x.time<=to))
@@ -206,7 +206,7 @@ namespace Prime.Plugins.Services.CryptoCompare
             }
 
             if (!string.IsNullOrWhiteSpace(apir.ConversionType.conversionSymbol))
-                r.ConvertedFrom = apir.ConversionType.conversionSymbol.ToAsset(this);
+                r.OhlcData.ConvertedFrom = apir.ConversionType.conversionSymbol.ToAsset(this);
             
             return r;
         }

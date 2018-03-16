@@ -117,7 +117,7 @@ namespace Prime.Plugins.Services.Coinbase
             return null;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -144,7 +144,7 @@ namespace Prime.Plugins.Services.Coinbase
             //        r.data.AddRange(cr.data);
             //}
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             foreach (var a in r.data)
             {
@@ -166,11 +166,11 @@ namespace Prime.Plugins.Services.Coinbase
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
             var accs = await api.GetAccountsAsync().ConfigureAwait(false);
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             var accountIds = accs.data.Select(x => new KeyValuePair<string, string>(x.currency, x.id));
 
@@ -241,15 +241,15 @@ namespace Prime.Plugins.Services.Coinbase
             return (price, size);
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
             var currencyCode = context.Pair.ToTicker(this);
 
-            var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var ohlc = new OhlcDataResponse(context.Resolution);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
-            var granularitySeconds = GetSeconds(context.Market);
+            var granularitySeconds = GetSeconds(context.Resolution);
             var maxNumberOfCandles = 200;
 
             var tsFrom = (long)context.Range.UtcFrom.ToUnixTimeStamp();

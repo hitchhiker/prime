@@ -120,25 +120,25 @@ namespace Prime.Plugins.Services.BitStamp
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
             var wac = new WalletAddressAssetContext("ETH".ToAsset(this), context.UserContext, context.L);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
+            addresses.AddRange((await GetAddressesForAssetAsync(wac).ConfigureAwait(false)).WalletAddresses);
 
             wac.Asset = "BTC".ToAsset(this);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
+            addresses.AddRange((await GetAddressesForAssetAsync(wac).ConfigureAwait(false)).WalletAddresses);
 
             wac.Asset = "XRP".ToAsset(this);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
+            addresses.AddRange((await GetAddressesForAssetAsync(wac).ConfigureAwait(false)).WalletAddresses);
 
             wac.Asset = "LTC".ToAsset(this);
-            addresses.AddRange(await GetAddressesForAssetAsync(wac).ConfigureAwait(false));
+            addresses.AddRange((await GetAddressesForAssetAsync(wac).ConfigureAwait(false)).WalletAddresses);
 
             return addresses;
         }
         
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
             var currencyPath = GetCurrencyPath(context.Asset);
@@ -155,7 +155,7 @@ namespace Prime.Plugins.Services.BitStamp
                 Address = processedAddress
             };
 
-            return new WalletAddresses(walletAddress);
+            return new WalletAddressesResult(walletAddress);
         }
 
         private string ProcessAddressResponce(Asset asset, string response)

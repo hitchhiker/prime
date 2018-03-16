@@ -58,9 +58,9 @@ namespace Prime.Core
                 return null;
             }
             
-            r.Response.ForEach(x => x.CollectedNearLive = x.DateTimeUtc.IsLive(Ctx.TimeResolution));
+            r.Response.OhlcData.ForEach(x => x.CollectedNearLive = x.DateTimeUtc.IsLive(Ctx.TimeResolution));
             Ctx.Status("Received data");
-            return r.Response;
+            return r.Response.OhlcData;
         }
 
         private OhlcData Convert(TimeRange range)
@@ -72,7 +72,7 @@ namespace Prime.Core
             if (r1.IsNull)
                 return null;
 
-            var d1 = r1.Response;
+            var d1 = r1.Response.OhlcData;
 
             Ctx.Status("Converting @" + Ctx.PrimaryApiProvider.Title + " " + Ctx.CurrencyConversionApiProvider.Title + " [2]");
 
@@ -82,7 +82,7 @@ namespace Prime.Core
             if (r2.IsNull)
                 return null;
 
-            var d2 = r2.Response;
+            var d2 = r2.Response.OhlcData;
 
             if (d1.IsEmpty() || d2.IsEmpty())
                 return null;

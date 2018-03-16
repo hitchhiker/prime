@@ -11,7 +11,7 @@ namespace Prime.Common
     /// <summary>
     /// TODO: HH: Update other providers to work like 'CoinBase/Korbit' add/ask etc.
     /// </summary>
-    public class OrderBook : ISerialiseAsObject
+    public class OrderBook : ResponseModelBase, ISerialiseAsObject
     {
         public readonly AssetPair Pair;
         public readonly AssetPair PairNormalised;

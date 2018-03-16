@@ -202,7 +202,7 @@ namespace Prime.Tests.Providers
             bool success = true;
             OhlcEntry ohlcEntryPrev = null;
 
-            foreach (var ohlcEntry in ohlc)
+            foreach (var ohlcEntry in ohlc.OhlcData)
             {
                 if (ohlcEntryPrev != null)
                 {
@@ -216,10 +216,10 @@ namespace Prime.Tests.Providers
             }
 
             Assert.True(success);
-            Assert.True(ohlc != null && ohlc.Count > 0);
+            Assert.True(ohlc != null && ohlc.OhlcData.Count > 0);
 
             OutputWriter.WriteLine("OHLC data:");
-            foreach (var entry in ohlc)
+            foreach (var entry in ohlc.OhlcData)
             {
                 OutputWriter.WriteLine($"{entry.DateTimeUtc}: O {entry.Open}, H {entry.High}, L {entry.Low}, C {entry.Close}");
             }
@@ -263,7 +263,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null);
 
             OutputWriter.WriteLine("All deposit addresses:");
-            foreach (var walletAddress in r)
+            foreach (var walletAddress in r.WalletAddresses)
             {
                 OutputWriter.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
             }
@@ -279,7 +279,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null);
 
             OutputWriter.WriteLine($"Deposit addresses for {context.Asset}:");
-            foreach (var walletAddress in r)
+            foreach (var walletAddress in r.WalletAddresses)
             {
                 OutputWriter.WriteLine($"\"{walletAddress.Address}\"");
             }

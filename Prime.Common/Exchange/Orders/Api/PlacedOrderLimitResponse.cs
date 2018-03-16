@@ -2,7 +2,7 @@
 
 namespace Prime.Common
 {
-    public class PlacedOrderLimitResponse
+    public class PlacedOrderLimitResponse : ResponseModelBase
     {
         public PlacedOrderLimitResponse(string remoteOrderGroupId)
         {

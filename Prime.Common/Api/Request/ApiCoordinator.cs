@@ -25,7 +25,7 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetAssetPairsAsync(provider, context));
         }
         
-        public static ApiResponse<OhlcData> GetOhlc(IOhlcProvider provider, OhlcContext context)
+        public static ApiResponse<OhlcDataResponse> GetOhlc(IOhlcProvider provider, OhlcContext context)
         {
             return AsyncContext.Run(() => GetOhlcAsync(provider, context));
         }
@@ -35,12 +35,12 @@ namespace Prime.Common
             return AsyncContext.Run(() => GetTransferSuspensionsAsync(provider, context));
         }
 
-        public static ApiResponse<WalletAddresses> GetDepositAddresses(IDepositProvider provider, WalletAddressAssetContext context)
+        public static ApiResponse<WalletAddressesResult> GetDepositAddresses(IDepositProvider provider, WalletAddressAssetContext context)
         {
             return AsyncContext.Run(() => GetDepositAddressesAsync(provider, context));
         }
 
-        public static ApiResponse<WalletAddresses> FetchAllDepositAddresses(IDepositProvider provider, WalletAddressContext context)
+        public static ApiResponse<WalletAddressesResult> FetchAllDepositAddresses(IDepositProvider provider, WalletAddressContext context)
         {
             return AsyncContext.Run(() => GetAllDepositAddressesAsync(provider, context));
         }

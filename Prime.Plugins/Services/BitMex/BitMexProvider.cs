@@ -72,18 +72,18 @@ namespace Prime.Plugins.Services.BitMex
             }
         }
 
-        public async Task<OhlcData> GetOhlcAsync(OhlcContext context)
+        public async Task<OhlcDataResponse> GetOhlcAsync(OhlcContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var resolution = ConvertToBitMexInterval(context.Market);
+            var resolution = ConvertToBitMexInterval(context.Resolution);
             var startDate = context.Range.UtcFrom;
             var endDate = context.Range.UtcTo;
 
             var r = await api.GetTradeHistoryAsync(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
 
-            var ohlc = new OhlcData(context.Market);
-            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Market, Network);
+            var ohlc = new OhlcDataResponse(context.Resolution);
+            var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
 
             foreach (var instrActive in r)
             {
@@ -191,7 +191,7 @@ namespace Prime.Plugins.Services.BitMex
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -200,7 +200,7 @@ namespace Prime.Plugins.Services.BitMex
 
             depositAddress = depositAddress.Trim('\"');
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
             var walletAddress = new WalletAddress(this, context.Asset) { Address = depositAddress };
 
             addresses.Add(walletAddress);
@@ -208,12 +208,12 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
 
             var api = ApiProvider.GetApi(context);
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             foreach (var assetPair in Pairs)
             {

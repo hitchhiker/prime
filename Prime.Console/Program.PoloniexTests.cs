@@ -87,13 +87,13 @@ namespace Prime.TestConsole
                     var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
 
                     System.Console.WriteLine("Addresses for 1 asset");
-                    foreach (var address in addresses)
+                    foreach (var address in addresses.WalletAddresses)
                     {
                         System.Console.WriteLine($"{address.Asset} : {address.Address}");
                     }
 
                     System.Console.WriteLine("Addresses for all assets");
-                    foreach (var address in addressesAll)
+                    foreach (var address in addressesAll.WalletAddresses)
                     {
                         System.Console.WriteLine($"{address.Asset} : {address.Address}");
                     }
@@ -116,7 +116,7 @@ namespace Prime.TestConsole
                 {
                     var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ctx));
 
-                    foreach (var entry in ohlc)
+                    foreach (var entry in ohlc.OhlcData)
                     {
                         System.Console.WriteLine($"{entry.DateTimeUtc}: {entry.High}, {entry.Low}, {entry.Open}, {entry.Close}");
                     }

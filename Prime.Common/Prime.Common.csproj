@@ -1,11 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Configurations>Debug;Release;All_Debug</Configurations>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Prices\ExchangeRate\**" />
     <Compile Remove="System\Events\**" />
@@ -14,7 +12,6 @@
     <None Remove="Prices\ExchangeRate\**" />
     <None Remove="System\Events\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Remove="Exchange\ExchangeCommand.cs" />
     <Compile Remove="Messages\RenewingSubscriptionsListener.cs" />
@@ -22,25 +19,20 @@
     <Compile Remove="Wallet\Interfaces\Withdrawal\IWithdrawalPlacementProviderExtended.cs" />
     <Compile Remove="Wallet\Withdrawal\Placement\WithdrawalPlacementContextExtended.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="NodaTime" Version="2.2.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="LiteDB">
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="DataLayer\Resolution\" />
   </ItemGroup>
-
 </Project>

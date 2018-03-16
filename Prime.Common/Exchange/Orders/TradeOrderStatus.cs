@@ -1,6 +1,6 @@
 ﻿namespace Prime.Common
 {
-    public class TradeOrderStatus
+    public class TradeOrderStatus : ResponseModelBase
     {
         public TradeOrderStatus() {}
 

@@ -29,7 +29,7 @@ namespace Prime.Ui.Wpf.ViewModel
                 if (r.IsNull)
                     continue;
 
-                foreach (var i in r.Response)
+                foreach (var i in r.Response.WalletAddresses)
                     Addresses.Add(i);
             }
         }

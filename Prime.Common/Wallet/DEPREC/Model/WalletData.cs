@@ -47,7 +47,7 @@ namespace Prime.Common
                 if (r.IsNull)
                     return;
 
-                AddRange(r.Response);
+                AddRange(r.Response.WalletAddresses);
                 this.Save(context);
             }
         }

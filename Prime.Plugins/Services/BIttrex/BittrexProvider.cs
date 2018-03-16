@@ -192,14 +192,14 @@ namespace Prime.Plugins.Services.Bittrex
             return Task.FromResult(new TransferSuspensions(Suspended, Suspended));
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(r);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             foreach (var rBalance in r.result)
             {
@@ -212,7 +212,7 @@ namespace Prime.Plugins.Services.Bittrex
             return addresses;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -220,7 +220,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             CheckResponseErrors(r);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             var address = r.result.FirstOrDefault(x => x.Currency.ToAsset(this).Equals(context.Asset));
 

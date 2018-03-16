@@ -26,7 +26,7 @@ namespace Prime.Common
             return AssetPairCache.I.TryAsync(provider, () => ApiHelpers.WrapExceptionAsync(() => provider.GetAssetPairsAsync(context), nameof(GetAssetPairs), provider, context));
         }
 
-        public static Task<ApiResponse<OhlcData>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
+        public static Task<ApiResponse<OhlcDataResponse>> GetOhlcAsync(IOhlcProvider provider, OhlcContext context)
         {
             return ApiHelpers.WrapExceptionAsync(() => provider.GetOhlcAsync(context), nameof(GetOhlc), provider, context);
         }
@@ -37,7 +37,7 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(() => provider.GetTransferSuspensionsAsync(context), nameof(GetTransferSuspensions), provider, context);
         }
 
-        public static Task<ApiResponse<WalletAddresses>> GetDepositAddressesAsync(IDepositProvider provider, WalletAddressAssetContext context)
+        public static Task<ApiResponse<WalletAddressesResult>> GetDepositAddressesAsync(IDepositProvider provider, WalletAddressAssetContext context)
         {
             // TODO: HH: review.
             //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)
@@ -46,7 +46,7 @@ namespace Prime.Common
             return ApiHelpers.WrapExceptionAsync(() => provider.GetAddressesForAssetAsync(context), nameof(GetDepositAddresses), provider, context);
         }
 
-        public static Task<ApiResponse<WalletAddresses>> GetAllDepositAddressesAsync(IDepositProvider provider, WalletAddressContext context)
+        public static Task<ApiResponse<WalletAddressesResult>> GetAllDepositAddressesAsync(IDepositProvider provider, WalletAddressContext context)
         {
             // TODO: HH: review
             //if (provider.CanGenerateDepositAddress && !provider.CanPeekDepositAddress)

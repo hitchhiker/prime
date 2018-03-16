@@ -7,7 +7,7 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
-    public class AssetPairs : IReadOnlyList<AssetPair>, ISerialiseAsObject
+    public class AssetPairs : ResponseModelBase, IReadOnlyList<AssetPair>, ISerialiseAsObject
     {
         public AssetPairs() { }
 
