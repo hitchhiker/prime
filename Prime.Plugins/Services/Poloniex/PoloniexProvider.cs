@@ -171,12 +171,12 @@ namespace Prime.Plugins.Services.Poloniex
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             var rRaw = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -253,12 +253,12 @@ namespace Prime.Plugins.Services.Poloniex
             return null;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnDepositAddresses);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             var rRaw = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);

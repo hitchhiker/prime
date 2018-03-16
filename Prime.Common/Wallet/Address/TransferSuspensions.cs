@@ -2,7 +2,7 @@
 
 namespace Prime.Common
 {
-    public class TransferSuspensions
+    public class TransferSuspensions : ResponseModelBase
     {
         public readonly IReadOnlyList<Asset> DepositSuspended;
         public readonly IReadOnlyList<Asset> WithdrawalSuspended;

@@ -65,11 +65,12 @@ namespace Prime.Plugins.Services.Poloniex
                 Market = order.currencyPair.ToAssetPair(this),
                 Rate = order.rate,
                 AmountInitial = order.amount,
-                AmountRemaining = order.amount - order.total
+                AmountRemaining = order.amount - order.total,
+                ApiHitsCount = 2
             };
         }
 
-        public async Task<IEnumerable<TradeOrderStatus>> GetOpenOrders(NetworkProviderPrivateContext context)
+        private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrders(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
 

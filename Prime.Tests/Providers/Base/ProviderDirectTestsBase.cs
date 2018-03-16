@@ -263,7 +263,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null);
 
             OutputWriter.WriteLine("All deposit addresses:");
-            foreach (var walletAddress in r)
+            foreach (var walletAddress in r.WalletAddresses)
             {
                 OutputWriter.WriteLine($"{walletAddress.Asset}: \"{walletAddress.Address}\"");
             }
@@ -279,7 +279,7 @@ namespace Prime.Tests.Providers
             Assert.True(r != null);
 
             OutputWriter.WriteLine($"Deposit addresses for {context.Asset}:");
-            foreach (var walletAddress in r)
+            foreach (var walletAddress in r.WalletAddresses)
             {
                 OutputWriter.WriteLine($"\"{walletAddress.Address}\"");
             }

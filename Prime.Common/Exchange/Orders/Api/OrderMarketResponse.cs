@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Prime.Common
 {
-    public class OrderMarketResponse
+    public class OrderMarketResponse : ResponseModelBase
     {
         public OrderMarketResponse(AssetPair market)
         {

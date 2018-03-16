@@ -47,14 +47,14 @@ namespace Prime.Plugins.Services.Binance
             return Task.FromResult(new TransferSuspensions(SuspendedDeposit, SuspendedWithdrawal));
         }
 
-        public Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
-            return Task.FromResult<WalletAddresses>(null);
+            return Task.FromResult<WalletAddressesResult>(null);
         }
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
-            return Task.FromResult<WalletAddresses>(null);
+            return Task.FromResult<WalletAddressesResult>(null);
         }
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;

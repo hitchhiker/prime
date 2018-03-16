@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
+using Prime.Utility;
 
 namespace Prime.Plugins.Services.Kraken
 {
@@ -31,13 +32,47 @@ namespace Prime.Plugins.Services.Kraken
 
             return results;
         }
+        
+        private async Task<WalletAddressesResult> GetAddressesLocalAsync(IKrakenApi api, string fundingMethod, Asset asset, bool generateNew = false)
+        {
+            var body = CreateKrakenBody();
 
-        public async Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+            // BUG: do we need "aclass"?
+            //body.Add("aclass", asset.ToRemoteCode(this));
+            body.Add("asset", asset.ToRemoteCode(this));
+            body.Add("method", fundingMethod);
+            body.Add("new", generateNew);
+
+            var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(r);
+
+            var walletAddresses = new WalletAddressesResult();
+
+            foreach (var addr in r.result)
+            {
+                var walletAddress = new WalletAddress(this, asset)
+                {
+                    Address = addr.address
+                };
+
+                if (addr.expiretm != 0)
+                {
+                    var time = addr.expiretm.ToUtcDateTime();
+                    walletAddress.ExpiresUtc = time;
+                }
+
+                walletAddresses.Add(new WalletAddress(this, asset) { Address = addr.address });
+            }
+
+            return walletAddresses;
+        }
+
+        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
             var assets = await GetAssetPairsAsync(context).ConfigureAwait(false);
 
-            var addresses = new WalletAddresses();
+            var addresses = new WalletAddressesResult();
 
             foreach (var pair in assets)
             {
@@ -48,13 +83,13 @@ namespace Prime.Plugins.Services.Kraken
 
                 var localAddresses = await GetAddressesLocalAsync(api, fundingMethod, pair.Asset1).ConfigureAwait(false);
 
-                addresses.AddRange(localAddresses);
+                addresses.AddRange(localAddresses.WalletAddresses);
             }
 
             return addresses;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
 

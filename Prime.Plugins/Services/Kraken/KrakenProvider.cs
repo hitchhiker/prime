@@ -242,40 +242,6 @@ namespace Prime.Plugins.Services.Kraken
             return null;
         }
 
-        private async Task<WalletAddresses> GetAddressesLocalAsync(IKrakenApi api, string fundingMethod, Asset asset, bool generateNew = false)
-        {
-            var body = CreateKrakenBody();
-
-            // BUG: do we need "aclass"?
-            //body.Add("aclass", asset.ToRemoteCode(this));
-            body.Add("asset", asset.ToRemoteCode(this));
-            body.Add("method", fundingMethod);
-            body.Add("new", generateNew);
-
-            var r = await api.GetDepositAddressesAsync(body).ConfigureAwait(false);
-            CheckResponseErrors(r);
-
-            var walletAddresses = new WalletAddresses();
-
-            foreach (var addr in r.result)
-            {
-                var walletAddress = new WalletAddress(this, asset)
-                {
-                    Address = addr.address
-                };
-
-                if (addr.expiretm != 0)
-                {
-                    var time = addr.expiretm.ToUtcDateTime();
-                    walletAddress.ExpiresUtc = time;
-                }
-
-                walletAddresses.Add(new WalletAddress(this, asset) { Address = addr.address });
-            }
-
-            return walletAddresses;
-        }
-
         public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
             return Task.FromResult<TransferSuspensions>(null);

@@ -9,9 +9,9 @@ namespace Prime.Common
 
         bool CanPeekDepositAddress { get; }
 
-        Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context);
+        Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context);
 
-        Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context);
+        Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context);
 
         Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context);
     }

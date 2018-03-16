@@ -162,7 +162,7 @@ namespace Prime.Plugins.Services.HitBtc
             return assetPairs;
         }
 
-        public async Task<WalletAddresses> GetAddressesForAssetAsync(WalletAddressAssetContext context)
+        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -171,13 +171,11 @@ namespace Prime.Plugins.Services.HitBtc
 
             var r = rRaw.GetContent();
 
-            var walletAddresses = new WalletAddresses
-            {
-                new WalletAddress(this, context.Asset)
+            var walletAddresses = new WalletAddressesResult(new WalletAddress(this, context.Asset)
                 {
                     Address = r.address
                 }
-            };
+            );
 
             return walletAddresses;
         }
@@ -187,7 +185,7 @@ namespace Prime.Plugins.Services.HitBtc
             return Task.FromResult<TransferSuspensions>(null);
         }
 
-        public Task<WalletAddresses> GetAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
         }
