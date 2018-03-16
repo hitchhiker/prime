@@ -33,7 +33,7 @@ namespace Prime.Plugins.Services.BitKonan
 
             var body = new Dictionary<string, object>
             {
-                { "pair", context.Pair.ToTicker(this,'/').ToUpper() },
+                { "pair", context.Pair.ToTicker(this, '/').ToUpper() },
                 { "side", context.IsBuy ? "BUY" : "SELL"},
                 { "type", "LIMIT"},
                 { "amount", context.Quantity.ToDecimalValue()},
@@ -53,54 +53,27 @@ namespace Prime.Plugins.Services.BitKonan
         {
             var api = ApiProvider.GetApi(context);
 
-            var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
-            
-            // Checks if this order is contained in active list.
-            var rRaw = await api.QueryActiveOrdersAsync().ConfigureAwait(false);
+            var rActiveOrdersRaw = await api.QueryActiveOrdersAsync().ConfigureAwait(false);
+            CheckResponseErrors(rActiveOrdersRaw);
 
-            CheckResponseErrors(rRaw);
+            var rActiveOrders = rActiveOrdersRaw.GetContent();
 
-            var activeOrders = rRaw.GetContent();
-            
-            // If the active list contains this order and the request for active orders was successful, then it is open. Otherwise it is not open.
-            var isOpen = activeOrders.data.Any(x => x.id.Equals(context.RemoteGroupId));
+            var activeOrder = rActiveOrders.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
 
-            var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (activeOrder == null)
+                throw new NoTradeOrderException(context, this);
 
-            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
+            var isBuy = activeOrder.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            return new TradeOrderStatus(activeOrder.id, isBuy, true, false)
             {
-                Rate = order.price,
-                AmountInitial = order.amount,
-                Market = order.trade_pair
+                Rate = activeOrder.price,
+                AmountInitial = activeOrder.amount,
+                Market = activeOrder.trade_pair.ToAssetPair(this, '/')
             };
         }
 
-        private async Task<BitKonanSchema.OrderInfoEntryResponse> GetOrderReponseByIdAsync(RemoteIdContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var rRaw = await api.QueryActiveOrdersAsync().ConfigureAwait(false);
-
-            CheckResponseErrors(rRaw);
-
-            var r = rRaw.GetContent();
-
-            var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
-
-            if (order == null)
-                throw new NoTradeOrderException(context, this);
-
-            return order;
-        }
-
-        public async Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
-
-            var orderMarket = order.trade_pair.ToAssetPair(this, '/');
-
-            return new OrderMarketResponse(orderMarket);
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
