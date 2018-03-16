@@ -27,8 +27,7 @@ namespace Prime.Plugins.Services.Quoine
             var payloadBuilder = new StringBuilder("{\"path\":\"" + path + "\",\"nonce\":\"" + nonce + "\", \"token_id\":\"" + ApiKey.Key + "\"}");
             
             var signature = HashHMACSHA256($"{ToBase64(headerBuilder.ToString())}.{ToBase64(payloadBuilder.ToString())}", ApiKey.Secret);
-
-            headers.Add("X-Quoine-API-Version", "2");
+            
             headers.Add("X-Quoine-Auth", $"{ToBase64(headerBuilder.ToString())}.{ToBase64(payloadBuilder.ToString())}.{signature}");
         }
     }

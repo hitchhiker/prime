@@ -21,23 +21,20 @@ namespace Prime.Plugins.Services.Quoine
         [Get("/accounts/balance")]
         Task<Response<QuoineSchema.AccountBalanceResponse[]>> GetBalancesAsync();
 
-        //[Post("/buyLimit")]
-        //Task<Response<CoinmateSchema.NewOrderResponse>> PlaceMarketBuyLimit([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
-        //[Post("/sellLimit")]
-        //Task<Response<CoinmateSchema.NewOrderResponse>> PlaceMarketSellLimit([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        [Post("/orders")]
+        Task<Response<QuoineSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
 
         //[Post("/orderHistory")]
-        //Task<Response<CoinmateSchema.OrderInfoResponse>> QueryOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        //Task<Response<QuoineSchema.OrderInfoResponse>> QueryOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
         //[Post("/bitcoinWithdrawal")]
-        //Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        //Task<Response<QuoineSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
         //[Post("/litecoinWithdrawal")]
-        //Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestLitecoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        //Task<Response<QuoineSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestLitecoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
         //[Post("/bitcoinCashWithdrawal")]
-        //Task<Response<CoinmateSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinCashAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        //Task<Response<QuoineSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinCashAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
     }
 }

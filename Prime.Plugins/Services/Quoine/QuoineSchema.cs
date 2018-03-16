@@ -7,16 +7,38 @@ namespace Prime.Plugins.Services.Quoine
     internal class QuoineSchema
     {
         #region Private
+
         internal class ErrorResponse
         {
-            public string StatusCode;
-            public string ReasonPhrase;
+            public Dictionary<string,string[]> errors;
         }
 
         internal class AccountBalanceResponse
         {
             public string currency;
             public decimal balance;
+        }
+
+        internal class NewOrderResponse
+        {
+            public string id;
+            public string order_type;
+            public int quantity;
+            public int disc_quantity;
+            public int iceberg_total_quantity;
+            public string side;
+            public int filled_quantity;
+            public decimal price;
+            public long created_at;
+            public long updated_at;
+            public string status;
+            public int leverage_level;
+            public string source_exchange;
+            public int product_id;
+            public string product_code;
+            public string funding_currency;
+            public string currency_pair_code;
+            public decimal order_fee;
         }
         #endregion
 

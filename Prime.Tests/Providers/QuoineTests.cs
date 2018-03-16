@@ -57,5 +57,13 @@ namespace Prime.Tests.Providers
         {
             base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
         }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            //TODO: SC: Not tested with real money
+            
+            base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
+        }
     }
 }
