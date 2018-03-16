@@ -68,7 +68,7 @@ namespace Prime.Tests.Providers
         {
             // TODO: SC: Not tested with real money
             var orderId = "21109502";
-            base.PretestGetTradeOrderStatus(orderId);
+            base.PretestGetTradeOrderStatus(orderId, "BTC_EUR".ToAssetPairRaw());
         }
 
         [Fact]

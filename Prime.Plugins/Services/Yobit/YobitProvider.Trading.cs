@@ -100,7 +100,7 @@ namespace Prime.Plugins.Services.Yobit
 
             var orderContent = rOrderRaw.GetContent();
             if (!orderContent.returnData.Key.Equals(context.RemoteGroupId))
-                throw new NoTradeOrderException(context.RemoteGroupId, this);
+                throw new NoTradeOrderException(context, this);
 
             var order = orderContent.returnData.Value;
 

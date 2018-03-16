@@ -28,22 +28,27 @@ namespace Prime.Plugins.Services.Coinmate
 
             var content = $"clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}";
 
-            if (string.IsNullOrWhiteSpace(parameters))
-            {
-                request.Content =
-                    new StringContent(
-                        $"clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}",
-                        Encoding.UTF8, "application/x-www-form-urlencoded");
-            }
-            else
-            {
-                request.Content =
-                    new StringContent(
-                        $"{parameters}&clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}",
-                        Encoding.UTF8, "application/x-www-form-urlencoded");
-            }
+            if (!string.IsNullOrWhiteSpace(parameters))
+                content = $"{parameters}&{content}";
 
             request.Content = new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+            //if (string.IsNullOrWhiteSpace(parameters))
+            //{
+            //    request.Content =
+            //        new StringContent(
+            //            $"clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}",
+            //            Encoding.UTF8, "application/x-www-form-urlencoded");
+            //}
+            //else
+            //{
+            //    request.Content =
+            //        new StringContent(
+            //            $"{parameters}&clientId={clientId}&publicKey={ApiKey.Key}&nonce={timeStamp}&signature={signature}",
+            //            Encoding.UTF8, "application/x-www-form-urlencoded");
+            //}
+
+            //request.Content = new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded");
         }
     }
 }

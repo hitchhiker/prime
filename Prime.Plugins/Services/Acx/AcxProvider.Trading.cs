@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Acx
         {
             if (r.TryGetContent(out AcxSchema.ErrorResponse rError))
                 if (rError.error != null)
-                    throw new ApiResponseException($"Code: {rError.error.code}. Message: {rError.error.message}", this, method);
+                    throw new ApiResponseException($"{rError.error.message.TrimEnd('.')} ({rError.error.code})", this, method);
         }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
@@ -41,22 +41,6 @@ namespace Prime.Plugins.Services.Acx
 
         public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
-
-            var isOpen = order.state.IndexOf("wait", StringComparison.OrdinalIgnoreCase) >= 0;
-
-            var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
-
-            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
-            {
-                Rate = order.price,
-            };
-        }
-
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
-        
-        private async Task<AcxSchema.OrderInfoResponse> GetOrderReponseByIdAsync(RemoteIdContext context)
-        {
             var api = ApiProvider.GetApi(context);
 
             var body = new Dictionary<string, object>
@@ -65,18 +49,21 @@ namespace Prime.Plugins.Services.Acx
             };
 
             var rRaw = await api.GetOrderInfoAsync(body).ConfigureAwait(false);
-
             CheckResponseErrors(rRaw);
 
             var order = rRaw.GetContent();
 
-            if (order == null)
-            {
-                throw new NoTradeOrderException(context.RemoteGroupId, this);
-            }
+            var isOpen = order.state.IndexOf("wait", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return order;
+            // TODO: AY: Sean - check schema during real money testing.
+            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
+            {
+                Rate = order.price,
+            };
         }
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {

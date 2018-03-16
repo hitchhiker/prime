@@ -112,7 +112,7 @@ namespace Prime.Plugins.Services.Coinmate
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
-            var rRaw = await SubmitWithdrawalRequestAsync(context);
+            var rRaw = await SubmitWithdrawalRequestAsync(context).ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 

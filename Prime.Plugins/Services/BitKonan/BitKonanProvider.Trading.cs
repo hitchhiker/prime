@@ -88,9 +88,7 @@ namespace Prime.Plugins.Services.BitKonan
             var order = r.data.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
 
             if (order == null)
-            {
-                throw new NoTradeOrderException(context.RemoteGroupId, this);
-            }
+                throw new NoTradeOrderException(context, this);
 
             return order;
         }

@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Coinmate
 {
+    [AllowAnyStatusCode]
     internal interface ICoinmateApi
     {
         [Get("/ticker?currencyPair={currencyPair}")]

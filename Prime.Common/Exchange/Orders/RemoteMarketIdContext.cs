@@ -18,6 +18,6 @@ namespace Prime.Common
         /// </summary>
         public readonly AssetPair Market;
 
-        public bool HasMarket => Market == null;
+        public bool HasMarket => Market != null;
     }
 }

@@ -19,9 +19,5 @@ namespace Prime.Common.Api.Request.Response
         public NoTradeOrderException(string message) : base(message)
         {
         }
-
-        public NoTradeOrderException(string message, INetworkProvider provider, [CallerMemberName] string method = "Unknown") : base(message, provider, method)
-        {
-        }
     }
 }
