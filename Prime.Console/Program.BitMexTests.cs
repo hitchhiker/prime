@@ -86,7 +86,7 @@ namespace Prime.TestConsole
                 {
                     var ohlc = AsyncContext.Run(() => provider.GetOhlcAsync(ohlcContext));
 
-                    foreach (var data in ohlc)
+                    foreach (var data in ohlc.OhlcData)
                     {
                         System.Console.WriteLine($"{data.DateTimeUtc}: {data.High} {data.Low} {data.Open} {data.Close}");
                     }

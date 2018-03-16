@@ -47,13 +47,13 @@ namespace Prime.TestConsole
 				try
 				{
 					System.Console.WriteLine("Addresses for 1 asset");
-					foreach (var address in addresses)
+					foreach (var address in addresses.WalletAddresses)
 					{
 						System.Console.WriteLine($"{address.Asset} : {address.Address}");
 					}
 
 					System.Console.WriteLine("Addresses for all assets");
-					foreach (var address in addressesAll)
+					foreach (var address in addressesAll.WalletAddresses)
 					{
 						System.Console.WriteLine($"{address.Asset} : {address.Address}");
 					}
