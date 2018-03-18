@@ -11,6 +11,7 @@ namespace Prime.Plugins.Services.Quoine
         internal class ErrorResponse
         {
             public Dictionary<string,string[]> errors;
+            public string message;
         }
 
         internal class AccountBalanceResponse
@@ -18,8 +19,8 @@ namespace Prime.Plugins.Services.Quoine
             public string currency;
             public decimal balance;
         }
-
-        internal class NewOrderResponse
+        
+        internal class OrderInfoResponse
         {
             public string id;
             public string order_type;

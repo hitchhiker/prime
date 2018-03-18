@@ -11,9 +11,9 @@ namespace Prime.Plugins.Services.Bitsane
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitsane.com/info-api
-    public class BitsaneProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class BitsaneProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
-        private const string BitsaneApiUrl = "https://bitsane.com/api/public/";
+        private const string BitsaneApiUrl = "https://bitsane.com/api/";
 
         private static readonly ObjectId IdHash = "prime:bitsane".GetObjectIdHashCode();
         
@@ -36,7 +36,7 @@ namespace Prime.Plugins.Services.Bitsane
 
         public BitsaneProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitsaneApi>(BitsaneApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBitsaneApi>(BitsaneApiUrl, this, (k) => new BitsaneAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -45,6 +45,18 @@ namespace Prime.Plugins.Services.Bitsane
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Count > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+          
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r.result != null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

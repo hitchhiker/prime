@@ -22,19 +22,9 @@ namespace Prime.Plugins.Services.Quoine
         Task<Response<QuoineSchema.AccountBalanceResponse[]>> GetBalancesAsync();
 
         [Post("/orders")]
-        Task<Response<QuoineSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+        Task<Response<QuoineSchema.OrderInfoResponse>> NewOrderAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
 
-        //[Post("/orderHistory")]
-        //Task<Response<QuoineSchema.OrderInfoResponse>> QueryOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
-        //[Post("/bitcoinWithdrawal")]
-        //Task<Response<QuoineSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
-        //[Post("/litecoinWithdrawal")]
-        //Task<Response<QuoineSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestLitecoinAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
-        //[Post("/bitcoinCashWithdrawal")]
-        //Task<Response<QuoineSchema.WithdrawalRequestResponse>> SubmitWithdrawRequestBitcoinCashAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
-
+        [Get("/orders/{id}")]
+        Task<Response<QuoineSchema.OrderInfoResponse>> QueryOrdersAsync([Path] string id);
     }
 }

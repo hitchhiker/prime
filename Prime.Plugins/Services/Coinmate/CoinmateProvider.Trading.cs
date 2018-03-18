@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.Coinmate
 
             var isOpen = order.status.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
-
+            
             return new TradeOrderStatus(order.id, isBuy, isOpen, false)
             {
                 Rate = order.price,

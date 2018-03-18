@@ -6,6 +6,7 @@ namespace Prime.Plugins.Services.Bitsane
 {
     internal class BitsaneSchema
     {
+        #region Public
         internal class TickerResponse : Dictionary<string, TickerEntryResponse>
         {
         }
@@ -43,5 +44,80 @@ namespace Prime.Plugins.Services.Bitsane
             public string statusText;
             public OrderBookEntryResponse result;
         }
+        #endregion
+
+        #region Private
+        internal class BaseResponse
+        {
+            public int statusCode;
+            public string statusText;
+        }
+
+        internal class ErrorResponse
+        {
+            public int statusCode;
+            public string statusText;
+            public ErrorEntryResponse result;
+        }
+
+        internal class ErrorEntryResponse
+        {
+            public string message;
+        }
+
+        internal class BalanceResponse : BaseResponse
+        {
+            public Dictionary<string, BalanceEntryResponse> result;
+        }
+
+        internal class BalanceEntryResponse
+        {
+            public string currency;
+            public decimal amount;
+            public decimal locked;
+            public decimal total;
+        }
+
+        internal class WithdrawalResponse : BaseResponse
+        {
+            public WithdrawalEntryResponse result;
+        }
+
+        internal class WithdrawalEntryResponse
+        {
+            public string withdrawal_id;
+        }
+
+        internal class NewOrderResponse : BaseResponse
+        {
+            public OrderEntryResponse result;
+        }
+
+        internal class OrderEntryResponse
+        {
+            public string order_id;
+        }
+
+        internal class OrderInfoResponse : BaseResponse
+        {
+            public OrderInfoEntryResponse[] result;
+        }
+
+        internal class OrderInfoEntryResponse
+        {
+            public string id;
+            public string pair;
+            public decimal price;
+            public string side;
+            public string type;
+            public long timestamp;
+            public bool is_closed;
+            public bool is_hidden;
+            public decimal executed_amount;
+            public decimal remaining_amount;
+            public decimal original_amount;
+        }
+
+        #endregion
     }
 }
