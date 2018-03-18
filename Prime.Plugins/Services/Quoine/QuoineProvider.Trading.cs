@@ -43,12 +43,10 @@ namespace Prime.Plugins.Services.Quoine
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            var api = ApiProvider.GetApi(context);
-
             if (context.Pair == null)
-            {
-                throw new ApiBaseException("Market is required for this exchange", this);
-            }
+                throw new MarketNotSpecifiedException(this);
+            
+            var api = ApiProvider.GetApi(context);
 
             PairCodeToProductId.TryGetValue(context.Pair, out var productId);
 
