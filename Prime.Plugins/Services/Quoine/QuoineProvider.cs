@@ -43,13 +43,14 @@ namespace Prime.Plugins.Services.Quoine
         }
 
         private ConcurrentDictionary<AssetPair, int> _dictionaryProducts;
-        public ConcurrentDictionary<AssetPair, int> PairCodeToProductId => _dictionaryProducts ?? (_dictionaryProducts = PopulateProductsDictionary());
+        // TODO: AY: test if awaits are working here.
+        private ConcurrentDictionary<AssetPair, int> PairCodeToProductId => _dictionaryProducts ?? (_dictionaryProducts = PopulateProductsDictionary().Result);
 
-        public ConcurrentDictionary<AssetPair, int> PopulateProductsDictionary()
+        private async Task<ConcurrentDictionary<AssetPair, int>> PopulateProductsDictionary()
         {
-            var products = GetAllProductsAsync().Result;
+            var products = await GetAllProductsAsync();
 
-            var result = products.ToDictionary(x => x.currency_pair_code.ToAssetPair(this,3), x => x.id);
+            var result = products.ToDictionary(x => x.currency_pair_code.ToAssetPair(this, 3), x => x.id);
 
             return new ConcurrentDictionary<AssetPair, int>(result);
         }
@@ -61,16 +62,12 @@ namespace Prime.Plugins.Services.Quoine
             var r = await api.GetProductsAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
-            {
                 throw new ApiResponseException("No products returned", this);
-            }
 
             var products = r.Where(x => x.product_type.Equals("CurrencyPair", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             if (products == null || products.Any() == false)
-            {
                 throw new ApiResponseException("No products with currency pairs returned", this);
-            }
 
             return products;
         }
@@ -109,11 +106,8 @@ namespace Prime.Plugins.Services.Quoine
             return pairs;
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
-
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
+        
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
@@ -133,11 +127,9 @@ namespace Prime.Plugins.Services.Quoine
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             PairCodeToProductId.TryGetValue(context.Pair, out var productId);
-
+            // TODO: AY: Sean, check TryGetValue result instead of productId == 0.
             if (productId == 0)
-            {
                 throw new ApiResponseException("No product found with specified asset pair", this);
-            }
 
             var api = ApiProvider.GetApi(context);
             var r = await api.GetProductAsync(productId).ConfigureAwait(false);
@@ -182,11 +174,9 @@ namespace Prime.Plugins.Services.Quoine
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
             PairCodeToProductId.TryGetValue(context.Pair, out var productId);
-
+            // TODO: AY: Sean, check TryGetValue result instead of productId == 0.
             if (productId == 0)
-            {
                 throw new ApiResponseException("No product found with specified asset pair", this);
-            }
 
             var api = ApiProvider.GetApi(context);
             var r = await api.GetOrderBookAsync(productId).ConfigureAwait(false);

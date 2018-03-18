@@ -11,7 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Quoine
 {
-    public partial class QuoineProvider : IOrderLimitProvider
+    public partial class QuoineProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
         {
@@ -21,7 +21,7 @@ namespace Prime.Plugins.Services.Quoine
 
                 if (rawResponse.TryGetContent(out QuoineSchema.ErrorResponse baseResponse))
                 {
-                    if (baseResponse.errors?.Count > 0)
+                    if (baseResponse.errors.Count > 0)
                     {
                         var errors = baseResponse.errors.Values.ElementAt(0);
 
@@ -29,9 +29,6 @@ namespace Prime.Plugins.Services.Quoine
                         {
                             throw new ApiResponseException($"Error: {errors[0].TrimEnd('.')}", this, method);
                         }
-                    } else if (string.IsNullOrWhiteSpace(baseResponse.message) == false)
-                    {
-                        throw new ApiResponseException($"Message: {baseResponse.message.TrimEnd('.')}", this, method);
                     }
                 }
 
@@ -46,10 +43,10 @@ namespace Prime.Plugins.Services.Quoine
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            var api = ApiProvider.GetApi(context);
-
             if (context.Pair == null)
                 throw new MarketNotSpecifiedException(this);
+            
+            var api = ApiProvider.GetApi(context);
 
             PairCodeToProductId.TryGetValue(context.Pair, out var productId);
 
@@ -73,34 +70,13 @@ namespace Prime.Plugins.Services.Quoine
             return new PlacedOrderLimitResponse(r.id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            if (!context.HasMarket)
-                throw new MarketNotSpecifiedException(this);
-
-            var api = ApiProvider.GetApi(context);
-            
-            var rRaw = await api.QueryOrdersAsync(context.RemoteGroupId).ConfigureAwait(false);
-            CheckResponseErrors(rRaw);
-
-            var order = rRaw.GetContent();
-
-            if (order == null)
-                throw new NoTradeOrderException(context, this);
-
-            var isOpen = order.status.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
-            var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
-
-            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
-            {
-                Rate = order.price,
-                Market = context.Market
-            };
+            throw new NotImplementedException();
         }
 
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
         {
-            //Not required since the market is returned in GetOrderStatusAsync method.
             throw new NotImplementedException();
         }
 
