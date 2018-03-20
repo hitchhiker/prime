@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Kuna
 {
+    [AllowAnyStatusCode]
     internal interface IKunaApi
     {
         [Get("/tickers/{currencyPair}")]
@@ -19,5 +20,14 @@ namespace Prime.Plugins.Services.Kuna
 
         [Get("/order_book?market={currencyPair}")]
         Task<KunaSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Get("/members/me")]
+        Task<Response<KunaSchema.UserInfoResponse>> GetUserInfoAsync();
+
+        [Post("/orders")]
+        Task<Response<KunaSchema.OrderInfoResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Get("/orders?market={currencyPair}")]
+        Task<Response<KunaSchema.ActiveOrdersResponse>> QueryActiveOrdersAsync([Path] string currencyPair);
     }
 }

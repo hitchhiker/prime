@@ -1,11 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RestEase;
 
 namespace Prime.Plugins.Services.Kuna
 {
     internal class KunaSchema
     {
+        #region Private
+        internal class ErrorResponse
+        {
+            public ErrorEntryResponse error;
+        }
+
+        internal class ErrorEntryResponse
+        {
+            public int code;
+            public string message;
+        }
+
+        internal class UserInfoResponse
+        {
+            public string email;
+            public bool activated;
+        }
+
+        internal class OrderInfoResponse
+        {
+            public string id;
+            public string side;
+            public string ord_type;
+            public decimal price;
+            public decimal avg_price;
+            public string state;
+            public string market;
+            public long created_at;
+            public decimal volume;
+            public decimal remaining_volume;
+            public decimal executed_volume;
+            public int trades_count;
+        }
+
+        internal class ActiveOrdersResponse : List<OrderInfoResponse>
+        {
+            
+        }
+        #endregion
+
+        #region Public
         internal class AllTickersResponse : Dictionary<string, TickerResponse>
         {
 
@@ -49,5 +91,6 @@ namespace Prime.Plugins.Services.Kuna
             public OrderBookItemResponse[] asks;
             public OrderBookItemResponse[] bids;
         }
+        #endregion
     }
 }

@@ -65,20 +65,5 @@ namespace Prime.Tests.Providers
             
             base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
         }
-
-        [Fact]
-        public override void TestPlaceWithdrawal()
-        {
-            // TODO: SC: Not tested with real money
-            base.PretestPlaceWithdrawal(new WalletAddress("1234"), new Money(22, Asset.Btc));
-        }
-
-        [Fact]
-        public override void TestGetTradeOrderStatus()
-        {
-            // TODO: SC: Not tested with real money
-            var orderId = "21109502";
-            base.PretestGetTradeOrderStatus(orderId, "BTC_EUR".ToAssetPairRaw());
-        }
     }
 }

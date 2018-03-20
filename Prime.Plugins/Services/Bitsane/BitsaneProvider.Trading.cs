@@ -115,7 +115,7 @@ namespace Prime.Plugins.Services.Bitsane
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
-        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.WithinOrderStatus);
+        private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
