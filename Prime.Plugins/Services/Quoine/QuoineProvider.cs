@@ -44,11 +44,11 @@ namespace Prime.Plugins.Services.Quoine
 
         private ConcurrentDictionary<AssetPair, int> _dictionaryProducts;
         // TODO: AY: test if awaits are working here.
-        private ConcurrentDictionary<AssetPair, int> PairCodeToProductId => _dictionaryProducts ?? (_dictionaryProducts = PopulateProductsDictionary().Result);
+        private ConcurrentDictionary<AssetPair, int> PairCodeToProductId => _dictionaryProducts ?? (_dictionaryProducts = PopulateProductsDictionary());
 
-        private async Task<ConcurrentDictionary<AssetPair, int>> PopulateProductsDictionary()
+        private ConcurrentDictionary<AssetPair, int> PopulateProductsDictionary()
         {
-            var products = await GetAllProductsAsync();
+            var products = GetAllProductsAsync().Result;
 
             var result = products.ToDictionary(x => x.currency_pair_code.ToAssetPair(this, 3), x => x.id);
 

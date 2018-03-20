@@ -54,11 +54,11 @@ namespace Prime.Plugins.Services.Quoine
 
             var body = new Dictionary<string, object>
             {
-                { "order_type",  "limit"},
-                {"product_id",productId },
-                { "side",side},
-                { "quantity", context.Quantity.ToDecimalValue()},
-                { "price", context.Rate.ToDecimalValue()}
+                {"order_type", "limit"},
+                {"product_id", productId},
+                {"side", side},
+                {"quantity", context.Quantity.ToDecimalValue()},
+                {"price", context.Rate.ToDecimalValue()}
             };
 
             var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
@@ -75,10 +75,7 @@ namespace Prime.Plugins.Services.Quoine
             throw new NotImplementedException();
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
