@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Xbtce
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.xbtce.com/tradeapi
-    public class XbtceProvider : IPublicPricingProvider, IAssetPairsProvider
+    public class XbtceProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate
     {
         private const string XbtceApiVersion = "v1";
         private const string XbtceApiUrl = "https://cryptottlivewebapi.xbtce.net:8443/api/" + XbtceApiVersion;
@@ -45,10 +45,14 @@ namespace Prime.Plugins.Services.Xbtce
         public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-        
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            return true;
+        }
+
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-
             var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Length > 0;

@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.Quoine
 
             return products;
         }
-        
+
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -100,14 +100,14 @@ namespace Prime.Plugins.Services.Quoine
 
             foreach (var rCurrentTicker in products)
             {
-                pairs.Add(rCurrentTicker.currency_pair_code.ToAssetPair(this,3));
+                pairs.Add(rCurrentTicker.currency_pair_code.ToAssetPair(this, 3));
             }
 
             return pairs;
         }
 
         public IAssetCodeConverter GetAssetCodeConverter() => null;
-        
+
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
             Single = new PricingSingleFeatures() { CanStatistics = true, CanVolume = true },
@@ -126,9 +126,7 @@ namespace Prime.Plugins.Services.Quoine
 
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
-            PairCodeToProductId.TryGetValue(context.Pair, out var productId);
-            // TODO: AY: Sean, check TryGetValue result instead of productId == 0.
-            if (productId == 0)
+            if (!PairCodeToProductId.TryGetValue(context.Pair, out var productId))
                 throw new ApiResponseException("No product found with specified asset pair", this);
 
             var api = ApiProvider.GetApi(context);
@@ -147,7 +145,7 @@ namespace Prime.Plugins.Services.Quoine
 
             var prices = new MarketPrices();
 
-            var rPairsDict = products.ToDictionary(x => x.currency_pair_code.ToAssetPair(this,3), x => x);
+            var rPairsDict = products.ToDictionary(x => x.currency_pair_code.ToAssetPair(this, 3), x => x);
             var pairsQueryable = context.IsRequestAll ? rPairsDict.Keys.ToList() : context.Pairs;
 
             foreach (var pair in pairsQueryable)
@@ -173,9 +171,7 @@ namespace Prime.Plugins.Services.Quoine
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
-            PairCodeToProductId.TryGetValue(context.Pair, out var productId);
-            // TODO: AY: Sean, check TryGetValue result instead of productId == 0.
-            if (productId == 0)
+            if (!PairCodeToProductId.TryGetValue(context.Pair, out var productId))
                 throw new ApiResponseException("No product found with specified asset pair", this);
 
             var api = ApiProvider.GetApi(context);

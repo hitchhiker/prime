@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Kuna
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://kuna.io/documents/api
-    public class KunaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class KunaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string KunaApiVersion = "v2";
         private const string KunaApiUrl = "https://kuna.io/api/" + KunaApiVersion;
@@ -34,10 +34,10 @@ namespace Prime.Plugins.Services.Kuna
         public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-
+        
         public KunaProvider()
         {
-            ApiProvider = new RestApiClientProvider<IKunaApi>(KunaApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IKunaApi>(KunaApiUrl, this, (k) => new KunaAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -46,6 +46,18 @@ namespace Prime.Plugins.Services.Kuna
             var r = await api.GetTimestamp().ConfigureAwait(false);
 
             return r != 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r.activated;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
