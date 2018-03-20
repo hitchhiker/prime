@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Xbtce
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.xbtce.com/tradeapi
-    public class XbtceProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate
+    public partial class XbtceProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate
     {
         private const string XbtceApiVersion = "v1";
         private const string XbtceApiUrl = "https://cryptottlivewebapi.xbtce.net:8443/api/" + XbtceApiVersion;
@@ -24,14 +24,21 @@ namespace Prime.Plugins.Services.Xbtce
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private IXbtceApi _apiProvider;
-        private IXbtceApi ApiProvider => _apiProvider ?? (_apiProvider = RestClient.For<IXbtceApi>(new HttpClient(new HttpClientHandler()
+        //private IXbtceApi _apiProvider;
+        //private IXbtceApi ApiProvider => _apiProvider ?? (_apiProvider = RestClient.For<IXbtceApi>(new HttpClient(new HttpClientHandler()
+        //{
+        //    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+        //})
+        //{
+        //    BaseAddress = new Uri(XbtceApiUrl)
+        //}));
+
+        private RestApiClientProvider<IXbtceApi> ApiProvider { get; }
+
+        public XbtceProvider()
         {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-        })
-        {
-            BaseAddress = new Uri(XbtceApiUrl)
-        }));
+            ApiProvider = new RestApiClientProvider<IXbtceApi>(XbtceApiUrl, this, (k) => new XbtceAuthenticator(k).GetRequestModifierAsync);
+        }
 
         public Network Network { get; } = Networks.I.Get("Xbtce");
 
@@ -53,14 +60,14 @@ namespace Prime.Plugins.Services.Xbtce
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickersAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickersAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
@@ -101,7 +108,7 @@ namespace Prime.Plugins.Services.Xbtce
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var pairsCsv = string.Join(" ", context.Pairs.Select(x => x.ToTicker(this)));
-            var r = await ApiProvider.GetTickerAsync(pairsCsv).ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
@@ -117,7 +124,7 @@ namespace Prime.Plugins.Services.Xbtce
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
-            var r = await ApiProvider.GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickersAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {

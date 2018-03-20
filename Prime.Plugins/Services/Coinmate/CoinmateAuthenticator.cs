@@ -10,7 +10,6 @@ namespace Prime.Plugins.Services.Coinmate
 {
     public class CoinmateAuthenticator : BaseAuthenticator
     {
-
         public CoinmateAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
