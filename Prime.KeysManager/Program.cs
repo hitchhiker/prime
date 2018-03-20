@@ -59,7 +59,7 @@ namespace Prime.KeysManager
             {
                 uiProcess.StartInfo.FileName = "cmd";
                 uiProcess.StartInfo.Arguments = "/C npm start";
-                uiProcess.StartInfo.WorkingDirectory = ConfigManager.AppConfig.UiAppFolderPath;
+                uiProcess.StartInfo.WorkingDirectory = "Electron"; //ConfigManager.AppConfig.UiAppFolderPath;
             }
             
             uiProcess.Start();
