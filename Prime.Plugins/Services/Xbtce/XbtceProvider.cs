@@ -27,7 +27,7 @@ namespace Prime.Plugins.Services.Xbtce
         private IXbtceApi _apiProvider;
         private IXbtceApi ApiProvider => _apiProvider ?? (_apiProvider = RestClient.For<IXbtceApi>(new HttpClient(new HttpClientHandler()
         {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         })
         {
             BaseAddress = new Uri(XbtceApiUrl)
