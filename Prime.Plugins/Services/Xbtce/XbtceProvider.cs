@@ -37,7 +37,10 @@ namespace Prime.Plugins.Services.Xbtce
 
         public XbtceProvider()
         {
-            ApiProvider = new RestApiClientProvider<IXbtceApi>(XbtceApiUrl, this, (k) => new XbtceAuthenticator(k).GetRequestModifierAsync);
+            ApiProvider = new RestApiClientProvider<IXbtceApi>(XbtceApiUrl, this, (k) => new XbtceAuthenticator(k).GetRequestModifierAsync)
+            {
+                DecompressionMethods = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
         }
 
         public Network Network { get; } = Networks.I.Get("Xbtce");
@@ -60,14 +63,14 @@ namespace Prime.Plugins.Services.Xbtce
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context).GetTickersAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context).GetTickersAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
@@ -108,7 +111,7 @@ namespace Prime.Plugins.Services.Xbtce
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var pairsCsv = string.Join(" ", context.Pairs.Select(x => x.ToTicker(this)));
-            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickerAsync(pairsCsv).ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context).GetTickerAsync(pairsCsv).ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {
@@ -124,7 +127,7 @@ namespace Prime.Plugins.Services.Xbtce
 
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
-            var r = await ApiProvider.GetApi(context, DecompressionMethods.GZip | DecompressionMethods.Deflate).GetTickersAsync().ConfigureAwait(false);
+            var r = await ApiProvider.GetApi(context).GetTickersAsync().ConfigureAwait(false);
 
             if (r == null || r.Length == 0)
             {

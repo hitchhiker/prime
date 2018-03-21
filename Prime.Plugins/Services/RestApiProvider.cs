@@ -19,8 +19,9 @@ namespace Prime.Plugins.Services
         private readonly string _apiUrl;
         private readonly INetworkProvider _provider;
         private readonly Func<ApiKey, RequestModifier> _requestModifier;
-
+        
         public JsonSerializerSettings JsonSerializerSettings { get; set; }
+        public DecompressionMethods DecompressionMethods { get; set; }
 
         /// <summary>
         /// Creates instance that supports private API operations.
@@ -45,11 +46,7 @@ namespace Prime.Plugins.Services
 
         public T GetApi(NetworkProviderContext context = null)
         {
-            return new RestClient(_apiUrl)
-            {
-                JsonSerializerSettings = JsonSerializerSettings,
-                //ResponseDeserializer = new DebugDeserialiser()
-            }.For<T>() as T;
+            return CreateClient().For<T>() as T;
         }
 
         public T GetApi(NetworkProviderPrivateContext context)
@@ -59,42 +56,27 @@ namespace Prime.Plugins.Services
 
             var key = context.GetKey(_provider);
 
-            var client = new RestClient(new HttpClient(new ModifyingClientHttpHandler(_requestModifier.Invoke(key)))
-            {
-                BaseAddress = new Uri(_apiUrl),
-            })
-            {
-                JsonSerializerSettings = JsonSerializerSettings
-            };
-            
-            return new RestClient(_apiUrl, _requestModifier.Invoke(key))
-            {
-                JsonSerializerSettings = JsonSerializerSettings,
-                // ResponseDeserializer = new DebugDeserialiser()
-            }.For<T>();
+            return CreateClient(key).For<T>();
         }
 
-        public T GetApi(NetworkProviderPrivateContext context, DecompressionMethods decompressionMethods)
+        private RestClient CreateClient(ApiKey key = null)
         {
-            if(_requestModifier == null)
-                throw new InvalidOperationException("Unable to get api because public constructor was used to create instance of RestApiClientProvider");
+            var handler = key != null ? new ModifyingClientHttpHandler(_requestModifier.Invoke(key)) : new HttpClientHandler();
 
-            var key = context.GetKey(_provider);
+            if (DecompressionMethods != null)
+                handler.AutomaticDecompression = DecompressionMethods;
 
-            var client = new RestClient(
-                new HttpClient(
-                    new ModifyingClientHttpHandler(_requestModifier.Invoke(key))
-                    {
-                        AutomaticDecompression = decompressionMethods
-                    })
-                {
-                    BaseAddress = new Uri(_apiUrl)
-                })
+            var httpClient = new HttpClient(handler)
             {
-                JsonSerializerSettings = JsonSerializerSettings
+                BaseAddress = new Uri(_apiUrl)
             };
-            
-            return client.For<T>();
+
+            var client = new RestClient(httpClient);
+
+            if (JsonSerializerSettings != null)
+                client.JsonSerializerSettings = JsonSerializerSettings;
+
+            return client;
         }
     }
 }
