@@ -230,7 +230,7 @@ namespace Prime.Common
         }
 
         #endregion
-
+        
         public abstract void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken);
 
         public Task GetRequestModifierAsync(HttpRequestMessage request, CancellationToken cancellationToken)
