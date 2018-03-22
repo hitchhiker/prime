@@ -8,7 +8,7 @@ namespace Prime.Common
         Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context);
 
         /// <summary>
-        /// Gets the status of order with specific 
+        /// Gets the status of order with specific id (and market).
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
