@@ -19,7 +19,6 @@ namespace Prime.KeysManager
         {
             Console.WriteLine($"Operating system: " + Environment.OSVersion.Platform);
             Console.WriteLine($"Current directory: " + Environment.CurrentDirectory);
-            Console.WriteLine($"UI app directory: " + ConfigManager.AppConfig.UiAppFolderPath);
 
             // Start server.
             var t = RunServer();
@@ -44,22 +43,20 @@ namespace Prime.KeysManager
         private static void RunUi()
         {
             var uiProcess = new Process();
-            
+
             if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix)
             {
                 uiProcess.StartInfo.FileName = "/bin/bash";
                 uiProcess.StartInfo.Arguments = "-c \"npm start\"";
-                uiProcess.StartInfo.WorkingDirectory = "Electron";//;
+                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory);
                 uiProcess.StartInfo.RedirectStandardOutput = true;
-                //uiProcess.StartInfo.RedirectStandardError = true;
                 uiProcess.StartInfo.UseShellExecute = false;
-                //uiProcess.StartInfo.CreateNoWindow = false;
             }
             else
             {
                 uiProcess.StartInfo.FileName = "cmd";
                 uiProcess.StartInfo.Arguments = "/C npm start";
-                uiProcess.StartInfo.WorkingDirectory = "Electron"; //ConfigManager.AppConfig.UiAppFolderPath;
+                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory); //ConfigManager.AppConfig.UiAppFolderPath;
             }
             
             uiProcess.Start();

@@ -1,27 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.KeysManager\Prime.KeysManager.csproj">
+      <Project>{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}</Project>
+      <Name>Prime.KeysManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="LiteDB">
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>

@@ -6,6 +6,6 @@ namespace Prime.KeysManager.Utils
 {
     public class AppConfig
     {
-        public string UiAppFolderPath;
+        public string ElectronFolderName;
     }
 }
