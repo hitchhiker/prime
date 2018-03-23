@@ -33,6 +33,11 @@ namespace Prime.Plugins.Services.Cryptopia
             return new PlacedOrderLimitResponse(r.Data.OrderId.ToString());
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);

@@ -75,6 +75,11 @@ namespace Prime.Plugins.Services.Bitsane
             return new PlacedOrderLimitResponse(r.result.order_id);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)

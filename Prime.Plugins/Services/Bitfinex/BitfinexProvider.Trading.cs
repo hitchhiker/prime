@@ -34,6 +34,11 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);

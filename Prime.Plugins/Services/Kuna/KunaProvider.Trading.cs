@@ -47,6 +47,11 @@ namespace Prime.Plugins.Services.Kuna
             return new PlacedOrderLimitResponse(r.id);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)

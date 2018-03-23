@@ -47,6 +47,11 @@ namespace Prime.Plugins.Services.Common
             return new PlacedOrderLimitResponse(r.return_.order_id.ToString());
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);

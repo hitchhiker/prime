@@ -39,6 +39,11 @@ namespace Prime.Plugins.Services.Allcoin
             return new PlacedOrderLimitResponse(r.order_id);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var market = context.Market.ToTicker(this).ToLower();

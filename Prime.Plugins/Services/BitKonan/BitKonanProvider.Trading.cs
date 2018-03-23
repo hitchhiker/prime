@@ -49,6 +49,11 @@ namespace Prime.Plugins.Services.BitKonan
             return new PlacedOrderLimitResponse(r.data?.order_id);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);

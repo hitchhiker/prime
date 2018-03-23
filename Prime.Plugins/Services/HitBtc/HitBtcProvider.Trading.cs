@@ -71,6 +71,11 @@ namespace Prime.Plugins.Services.HitBtc
             return new PlacedOrderLimitResponse(r.clientOrderId);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private Dictionary<string, object> CreateHitBtcRequestBody()
         {
             return new Dictionary<string, object>();

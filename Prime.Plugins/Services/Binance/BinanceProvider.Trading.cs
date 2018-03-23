@@ -55,6 +55,11 @@ namespace Prime.Plugins.Services.Binance
             return new PlacedOrderLimitResponse(r.orderId.ToString());
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if(!context.HasMarket)

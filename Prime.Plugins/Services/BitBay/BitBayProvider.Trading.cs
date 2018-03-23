@@ -45,6 +45,11 @@ namespace Prime.Plugins.Services.BitBay
             return new PlacedOrderLimitResponse(r.order_id);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<BitBaySchema.OrdersResponse> GetOrderResponseByOrderId(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);

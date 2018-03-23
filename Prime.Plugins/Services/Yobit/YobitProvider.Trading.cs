@@ -59,6 +59,11 @@ namespace Prime.Plugins.Services.Yobit
             return new PlacedOrderLimitResponse(r.returnData.order_id);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);

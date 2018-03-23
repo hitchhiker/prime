@@ -46,6 +46,11 @@ namespace Prime.Plugins.Services.Coinmate
             return new PlacedOrderLimitResponse(r.data);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if(!context.HasMarket)

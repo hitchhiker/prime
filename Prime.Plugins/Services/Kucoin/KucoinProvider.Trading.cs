@@ -40,6 +40,11 @@ namespace Prime.Plugins.Services.Kucoin
             return new PlacedOrderLimitResponse(r.data.orderOid);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         [Obsolete("Sean please review this method and consider using 'OrderDetails' endpoint", false)]
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
