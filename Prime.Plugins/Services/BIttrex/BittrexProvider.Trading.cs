@@ -99,7 +99,7 @@ namespace Prime.Plugins.Services.Bittrex
             };
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
@@ -110,12 +110,15 @@ namespace Prime.Plugins.Services.Bittrex
 
             var isBuy = order.Type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(order.OrderUuid, isBuy, order.IsOpen, order.CancelInitiated)
+            return new TradeOrderStatusResponse(order.OrderUuid, isBuy, order.IsOpen, order.CancelInitiated)
             {
-                Market = order.Exchange.ToAssetPair(this),
-                Rate = order.Limit,
-                AmountInitial = order.Quantity,
-                AmountRemaining = order.QuantityRemaining
+                TradeOrderStatus =
+                {
+                    Market = order.Exchange.ToAssetPair(this),
+                    Rate = order.Limit,
+                    AmountInitial = order.Quantity,
+                    AmountRemaining = order.QuantityRemaining
+                }
             };
         }
 

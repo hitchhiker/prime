@@ -18,6 +18,15 @@ namespace Prime.Tests.Providers
             if (p.Success)
                 GetTradeOrderStatusTest(p.Provider, remoteOrderId, market);
         }
+        
+        public virtual void TestGetTradeOrders() { }
+
+        public void PretestGetTradeOrders()
+        {
+            var p = IsType<IOrderLimitProvider>();
+            if (p.Success)
+                GetTradeOrdersTest(p.Provider);
+        }
 
         public virtual void TestPlaceOrderLimit() { }
         public void PretestPlaceOrderLimit(AssetPair market, bool isBuy, Money quantity, Money rate)
@@ -50,7 +59,7 @@ namespace Prime.Tests.Providers
         {
             var context = new RemoteMarketIdContext(UserContext.Current, remoteOrderId, market);
             
-            var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
+            var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context)).TradeOrderStatus;
 
             Assert.True(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
             OutputWriter.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
@@ -66,6 +75,13 @@ namespace Prime.Tests.Providers
             if (r.AmountInitial.HasValue) OutputWriter.WriteLine($"Initial amount is {r.AmountInitial.Value}");
             if (r.AmountFilled.HasValue) OutputWriter.WriteLine($"Filled amount is {r.AmountFilled.Value}");
             if (r.AmountRemaining.HasValue) OutputWriter.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
+        }
+
+        private void GetTradeOrdersTest(IOrderLimitProvider provider)
+        {
+            var context = new TradeOrdersContext(UserContext.Current);
+            
+            //var r = AsyncContext.Run(() => provider.Get)
         }
 
         private void PlaceOrderLimitTest(IOrderLimitProvider provider, AssetPair market, bool isBuy, Money quantity, Money rate)

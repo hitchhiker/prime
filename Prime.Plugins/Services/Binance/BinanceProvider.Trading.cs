@@ -55,7 +55,7 @@ namespace Prime.Plugins.Services.Binance
             return new PlacedOrderLimitResponse(r.orderId.ToString());
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if(!context.HasMarket)
                 throw new MarketNotSpecifiedException(this);
@@ -75,11 +75,14 @@ namespace Prime.Plugins.Services.Binance
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatus(r.orderId.ToString(), isBuy, isOpen, isCancelRequested)
+            return new TradeOrderStatusResponse(r.orderId.ToString(), isBuy, isOpen, isCancelRequested)
             {
-                Rate = r.price,
-                AmountInitial = r.origQty,
-                AmountRemaining = r.origQty - r.executedQty
+                TradeOrderStatus =
+                {
+                    Rate = r.price,
+                    AmountInitial = r.origQty,
+                    AmountRemaining = r.origQty - r.executedQty
+                }
             };
         }
 

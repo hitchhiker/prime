@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Kuna
             return new PlacedOrderLimitResponse(r.id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)
                 throw new MarketNotSpecifiedException(this);
@@ -66,12 +66,15 @@ namespace Prime.Plugins.Services.Kuna
 
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(order.id, isBuy, true, false)
+            return new TradeOrderStatusResponse(order.id, isBuy, true, false)
             {
-                Rate = order.price,
-                Market = order.market,
-                AmountRemaining = order.remaining_volume,
-                AmountInitial = order.remaining_volume - order.executed_volume
+                TradeOrderStatus =
+                {
+                    Rate = order.price,
+                    Market = order.market,
+                    AmountRemaining = order.remaining_volume,
+                    AmountInitial = order.remaining_volume - order.executed_volume
+                }
             };
         }
 

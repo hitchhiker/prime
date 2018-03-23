@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Common
             return new PlacedOrderLimitResponse(r.return_.order_id.ToString());
         }
 
-        public virtual async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public virtual async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
 
@@ -64,12 +64,15 @@ namespace Prime.Plugins.Services.Common
 
             var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatus(context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
+            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
             {
-                Market = order.pair.ToAssetPair(this),
-                Rate = order.rate,
-                AmountInitial = order.start_amount,
-                AmountRemaining = order.amount
+                TradeOrderStatus =
+                {
+                    Market = order.pair.ToAssetPair(this),
+                    Rate = order.rate,
+                    AmountInitial = order.start_amount,
+                    AmountRemaining = order.amount
+                }
             };
         }
 

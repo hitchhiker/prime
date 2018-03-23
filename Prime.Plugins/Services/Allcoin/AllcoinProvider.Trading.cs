@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Allcoin
             return new PlacedOrderLimitResponse(r.order_id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var market = context.Market.ToTicker(this).ToLower();
 
@@ -65,11 +65,14 @@ namespace Prime.Plugins.Services.Allcoin
 
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(order.order_id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(order.order_id, isBuy, isOpen, false)
             {
-                Rate = order.price,
-                Market = order.symbol.ToAssetPair(this),
-                AmountInitial = order.amount
+                TradeOrderStatus =
+                {
+                    Rate = order.price,
+                    Market = order.symbol.ToAssetPair(this),
+                    AmountInitial = order.amount
+                }
             };
         }
 

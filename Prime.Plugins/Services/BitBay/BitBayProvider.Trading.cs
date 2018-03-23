@@ -63,18 +63,21 @@ namespace Prime.Plugins.Services.BitBay
             return order;
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var order = await GetOrderResponseByOrderId(context).ConfigureAwait(false);
             var isOpen = order.status.Equals("active", StringComparison.OrdinalIgnoreCase);
 
             var isBuy = order.type.IndexOf("bid", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(order.order_id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(order.order_id, isBuy, isOpen, false)
             {
-                Market = new AssetPair(order.order_currency, order.payment_currency, this),
-                Rate = order.current_price,
-                AmountInitial = order.start_price
+                TradeOrderStatus =
+                {
+                    Market = new AssetPair(order.order_currency, order.payment_currency, this),
+                    Rate = order.current_price,
+                    AmountInitial = order.start_price
+                }
             };
         }
 

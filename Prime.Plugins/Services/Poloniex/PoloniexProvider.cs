@@ -235,11 +235,14 @@ namespace Prime.Plugins.Services.Poloniex
                 case PoloniexBodyType.LimitOrderSell:
                     body.Add("command", "sell");
                     break;
-                case PoloniexBodyType.OrderStatus:
+                case PoloniexBodyType.ReturnOrderStatus:
                     body.Add("command", "returnOrderTrades");
                     break;
-                case PoloniexBodyType.OpenOrders:
+                case PoloniexBodyType.ReturnOpenOrders:
                     body.Add("command", "returnOpenOrders");
+                    break;
+                case PoloniexBodyType.ReturnTradeHistory:
+                    body.Add("command", "returnTradeHistory");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);

@@ -7,7 +7,8 @@
         ReturnDepositAddresses,
         LimitOrderBuy,
         LimitOrderSell,
-        OrderStatus,
-        OpenOrders
+        ReturnOrderStatus,
+        ReturnOpenOrders,
+        ReturnTradeHistory
     }
 }

@@ -37,7 +37,8 @@ namespace Prime.Common.Exchange.Trading_temp
             var finished = false;
             do
             {
-                lastStatus = await Provider.GetOrderStatusAsync(new RemoteMarketIdContext(Context.UserContext, tradeId)).ConfigureAwait(false);
+                var lastStatusResult = await Provider.GetOrderStatusAsync(new RemoteMarketIdContext(Context.UserContext, tradeId)).ConfigureAwait(false);
+                lastStatus = lastStatusResult.TradeOrderStatus;
                 finished = finished || lastStatus.IsClosed;
                 if (!finished)
                     Thread.Sleep(1000);
