@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.NLexch
 {
+    [AllowAnyStatusCode]
     internal interface INLexchApi
     {
         [Get("/tickers/{currencyPair}.json")]
@@ -16,5 +17,14 @@ namespace Prime.Plugins.Services.NLexch
 
         [Get("/order_book.json?market={currencyPair}")]
         Task<NLexchSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Get("/members/me.json")]
+        Task<Response<NLexchSchema.UserInfoResponse>> GetUserInfoAsync();
+
+        [Post("/orders.json")]
+        Task<Response<NLexchSchema.OrderInfoResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Get("/order.json?id={id}")]
+        Task<Response<NLexchSchema.OrderInfoResponse>> QueryOrderAsync([Path] string id);
     }
 }

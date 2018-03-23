@@ -6,6 +6,7 @@ namespace Prime.Plugins.Services.NLexch
 {
     internal class NLexchSchema
     {
+        #region Public
         internal class TickerResponse
         {
             public long at;
@@ -43,5 +44,40 @@ namespace Prime.Plugins.Services.NLexch
             public OrderBookItemResponse[] asks;
             public OrderBookItemResponse[] bids;
         }
+        #endregion
+
+        #region Private
+        internal class ErrorResponse
+        {
+            public ErrorEntryResponse error;
+        }
+
+        internal class ErrorEntryResponse
+        {
+            public int code;
+            public string message;
+        }
+
+        internal class UserInfoResponse
+        {
+            public string email;
+            public bool activated;
+        }
+
+        internal class OrderInfoResponse
+        {
+            public string id;
+            public string side;
+            public string ord_type;
+            public decimal price;
+            public decimal avg_price;
+            public string state;
+            public string market;
+            public long created_at;
+            public decimal volume;
+            public decimal remaining_volume;
+            public decimal executed_volume;
+        }
+        #endregion
     }
 }
