@@ -39,7 +39,12 @@ namespace Prime.Plugins.Services.Acx
             return new PlacedOrderLimitResponse(r.id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -57,9 +62,12 @@ namespace Prime.Plugins.Services.Acx
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
             // TODO: AY: Sean - check schema during real money testing.
-            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(order.id, isBuy, isOpen, false)
             {
-                Rate = order.price,
+                TradeOrderStatus = 
+                {
+                    Rate = order.price
+                }
             };
         }
 

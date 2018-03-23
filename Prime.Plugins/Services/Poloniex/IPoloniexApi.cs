@@ -4,6 +4,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Poloniex
 {
+    [AllowAnyStatusCode]
     internal interface IPoloniexApi
     {
         [Post("/tradingApi")]
@@ -24,6 +25,9 @@ namespace Prime.Plugins.Services.Poloniex
         [Post("/tradingApi")]
         Task<Response<PoloniexSchema.OpenMarketOrdersResponse>> GetOpenOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
+        [Post("/tradingApi")]
+        Task<Response<PoloniexSchema.MarketTradeOrdersResponse>> GetTradeHistoryAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+        
         [Get("/public?command=returnTicker")]
         Task<Response<PoloniexSchema.TickerResponse>> GetTickerAsync();
 

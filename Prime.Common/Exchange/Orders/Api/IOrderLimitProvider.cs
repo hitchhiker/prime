@@ -7,12 +7,14 @@ namespace Prime.Common
     {
         Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context);
 
+        Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context);
+
         /// <summary>
-        /// Gets the status of order with specific 
+        /// Gets the status of order with specific id (and market).
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context);
+        Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context);
 
         /// <summary>
         /// Gets the market where order with specified Remote Id is placed.

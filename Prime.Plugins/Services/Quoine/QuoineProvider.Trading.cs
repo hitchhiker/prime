@@ -70,7 +70,12 @@ namespace Prime.Plugins.Services.Quoine
             return new PlacedOrderLimitResponse(r.id);
         }
 
-        public Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             throw new NotImplementedException();
         }

@@ -46,7 +46,12 @@ namespace Prime.Plugins.Services.Coinmate
             return new PlacedOrderLimitResponse(r.data);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if(!context.HasMarket)
                 throw new MarketNotSpecifiedException(this);
@@ -70,12 +75,15 @@ namespace Prime.Plugins.Services.Coinmate
             var isOpen = order.status.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             
-            return new TradeOrderStatus(order.id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(order.id, isBuy, isOpen, false)
             {
-                Rate = order.price,
-                AmountInitial = order.originalAmount,
-                AmountRemaining = order.remainingAmount,
-                Market = context.Market
+                TradeOrderStatus =
+                {
+                    Rate = order.price,
+                    AmountInitial = order.originalAmount,
+                    AmountRemaining = order.remainingAmount,
+                    Market = context.Market
+                }
             };
         }
 

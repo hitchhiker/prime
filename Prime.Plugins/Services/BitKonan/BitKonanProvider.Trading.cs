@@ -49,7 +49,12 @@ namespace Prime.Plugins.Services.BitKonan
             return new PlacedOrderLimitResponse(r.data?.order_id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -65,11 +70,14 @@ namespace Prime.Plugins.Services.BitKonan
 
             var isBuy = activeOrder.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(activeOrder.id, isBuy, true, false)
+            return new TradeOrderStatusResponse(activeOrder.id, isBuy, true, false)
             {
-                Rate = activeOrder.price,
-                AmountInitial = activeOrder.amount,
-                Market = activeOrder.trade_pair.ToAssetPair(this, '/')
+                TradeOrderStatus =
+                {
+                    Rate = activeOrder.price,
+                    AmountInitial = activeOrder.amount,
+                    Market = activeOrder.trade_pair.ToAssetPair(this, '/')
+                }
             };
         }
 

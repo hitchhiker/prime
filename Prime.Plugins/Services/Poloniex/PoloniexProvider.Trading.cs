@@ -15,6 +15,48 @@ namespace Prime.Plugins.Services.Poloniex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class PoloniexProvider : IOrderLimitProvider
     {
+        public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnTradeHistory);
+            body.Add("currencyPair", "all");
+            body.Add("limit", 10000);
+            body.Add("start", DateTime.UtcNow.AddYears(-1).ToUnixTimeStamp());
+
+            var rRaw = await api.GetTradeHistoryAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var ordersList = new List<TradeOrderStatus>();
+            
+            var openOrders = (await GetOpenOrders(context).ConfigureAwait(false)).ToList();
+            
+            foreach (var rPair in r)
+            {
+                var market = rPair.Key.ToAssetPair(this);
+                
+                foreach (var rOrder in rPair.Value)
+                {
+                    var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                    var isOpen = openOrders.Any(x => x.RemoteOrderId.Equals(rOrder.orderNumber.ToString(), StringComparison.OrdinalIgnoreCase));
+                    
+                    ordersList.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, isOpen, false)
+                    {
+                        AmountInitial = rOrder.amount,
+                        Rate = rOrder.rate,
+                        Market = market
+                    });
+                }
+            }
+            
+            return new TradeOrdersResponse(ordersList)
+            {
+                ApiHitsCount = 2
+            };
+        }
+        
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var buy = context.IsBuy;
@@ -26,20 +68,18 @@ namespace Prime.Plugins.Services.Poloniex
             body.Add("rate", context.Rate);
             body.Add("amount", context.Quantity);
 
-            //fillOrKill //immediateOrCancel //postOnly
-
             var rRaw = await api.PlaceOrderLimitAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
-            return new PlacedOrderLimitResponse(r.orderNumber, r.resultingTrades.Select(x=>x.tradeID));
+            return new PlacedOrderLimitResponse(r.orderNumber, r.resultingTrades.Select(x => x.tradeID));
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var body = CreatePoloniexBody(PoloniexBodyType.OrderStatus);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnOrderStatus);
 
             if(!long.TryParse(context.RemoteGroupId, out var orderNumber))
                 throw new ApiBaseException("Order id has to be of a long type", this);
@@ -60,12 +100,14 @@ namespace Prime.Plugins.Services.Poloniex
 
             var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
             {
-                Market = order.currencyPair.ToAssetPair(this),
-                Rate = order.rate,
-                AmountInitial = order.amount,
-                AmountRemaining = order.amount - order.total,
+                TradeOrderStatus =
+                {
+                    Market = order.currencyPair.ToAssetPair(this),
+                    Rate = order.rate,
+                    AmountInitial = order.amount,
+                },
                 ApiHitsCount = 2
             };
         }
@@ -74,7 +116,7 @@ namespace Prime.Plugins.Services.Poloniex
         {
             var api = ApiProvider.GetApi(context);
 
-            var body = CreatePoloniexBody(PoloniexBodyType.OpenOrders);
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnOpenOrders);
             body.Add("currencyPair", "all");
 
             var rRaw = await api.GetOpenOrdersAsync(body).ConfigureAwait(false);

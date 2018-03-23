@@ -33,6 +33,11 @@ namespace Prime.Plugins.Services.Cryptopia
             return new PlacedOrderLimitResponse(r.Data.OrderId.ToString());
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -82,7 +87,7 @@ namespace Prime.Plugins.Services.Cryptopia
             });
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var openOrders = await GetOpenOrdersAsync(context).ConfigureAwait(false);
 
@@ -122,12 +127,15 @@ namespace Prime.Plugins.Services.Cryptopia
                 market = trade.Market;
             }
 
-            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
             {
-                Market = market,
-                Rate = rate,
-                AmountInitial = amountInitial,
-                AmountRemaining = amountRemaining
+                TradeOrderStatus =
+                {
+                    Market = market,
+                    Rate = rate,
+                    AmountInitial = amountInitial,
+                    AmountRemaining = amountRemaining
+                }
             };
         }
 

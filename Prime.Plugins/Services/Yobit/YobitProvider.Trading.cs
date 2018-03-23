@@ -59,7 +59,12 @@ namespace Prime.Plugins.Services.Yobit
             return new PlacedOrderLimitResponse(r.returnData.order_id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
 
@@ -79,11 +84,14 @@ namespace Prime.Plugins.Services.Yobit
 
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
             {
-                Market = order.pair.ToAssetPair(this),
-                Rate = order.rate,
-                AmountInitial = order.start_amount
+                TradeOrderStatus =
+                {
+                    Market = order.pair.ToAssetPair(this),
+                    Rate = order.rate,
+                    AmountInitial = order.start_amount
+                }
             };
         }
 

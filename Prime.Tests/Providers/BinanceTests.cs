@@ -45,6 +45,20 @@ namespace Prime.Tests.Providers
         {
             base.PretestGetTradeOrderStatus("29772241", "XRP_BTC".ToAssetPairRaw());
         }
+        
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            base.PretestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(22, Asset.Xrp), "3299088538");
+        }
+
+        public async Task TestGetDepositHistory()
+        {
+            var context = new NetworkProviderPrivateContext(UserContext.Current);
+            var binanceProvider = new BinanceProvider();
+
+            await binanceProvider.GetDepositHistoryAsync(context).ConfigureAwait(false);
+        }
 
         #endregion
 
@@ -99,20 +113,6 @@ namespace Prime.Tests.Providers
             var context = new OhlcContext("BTC_USDT".ToAssetPairRaw(), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
             base.PretestGetOhlc(context);
-        }
-
-        [Fact]
-        public override void TestPlaceWithdrawal()
-        {
-            base.PretestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(22, Asset.Xrp), "3299088538");
-        }
-
-        public async Task TestGetDepositHistory()
-        {
-            var context = new NetworkProviderPrivateContext(UserContext.Current);
-            var binanceProvider = new BinanceProvider();
-
-            await binanceProvider.GetDepositHistoryAsync(context).ConfigureAwait(false);
         }
 
         #endregion

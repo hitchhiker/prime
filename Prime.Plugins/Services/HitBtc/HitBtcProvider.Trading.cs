@@ -71,12 +71,17 @@ namespace Prime.Plugins.Services.HitBtc
             return new PlacedOrderLimitResponse(r.clientOrderId);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private Dictionary<string, object> CreateHitBtcRequestBody()
         {
             return new Dictionary<string, object>();
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -90,10 +95,13 @@ namespace Prime.Plugins.Services.HitBtc
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatus(r.clientOrderId, isBuy, isOpen, isCancelRequested)
+            return new TradeOrderStatusResponse(r.clientOrderId, isBuy, isOpen, isCancelRequested)
             {
-                Rate = r.price,
-                AmountInitial = r.quantity
+                TradeOrderStatus =
+                {
+                    Rate = r.price,
+                    AmountInitial = r.quantity
+                }
             };
         }
 

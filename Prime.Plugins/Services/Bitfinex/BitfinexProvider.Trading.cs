@@ -34,7 +34,12 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -54,12 +59,15 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatus(r.id.ToString(), isBuy, r.is_live, r.is_cancelled)
+            return new TradeOrderStatusResponse(r.id.ToString(), isBuy, r.is_live, r.is_cancelled)
             {
-                Market = r.symbol.ToAssetPair(this, 3),
-                Rate = r.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? r.price : r.avg_execution_price,
-                AmountInitial = r.original_amount,
-                AmountRemaining = r.remaining_amount
+                TradeOrderStatus =
+                {
+                    Market = r.symbol.ToAssetPair(this, 3),
+                    Rate = r.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? r.price : r.avg_execution_price,
+                    AmountInitial = r.original_amount,
+                    AmountRemaining = r.remaining_amount
+                }
             };
         }
 

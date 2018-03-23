@@ -20,6 +20,9 @@ namespace Prime.Plugins.Services.Poloniex
 
         internal class DepositAddressesResponse : Dictionary<string, string> { }
 
+        /// <summary>
+        /// returnOrderTrades response model for all markets.
+        /// </summary>
         internal class OpenMarketOrdersResponse : Dictionary<string, OpenOrdersResponse> { }
 
         internal class OpenOrdersResponse : List<OpenOrderResponse> { }
@@ -31,6 +34,22 @@ namespace Prime.Plugins.Services.Poloniex
             public decimal rate;
             public decimal amount;
             public decimal total;
+        }
+        
+        /// <summary>
+        /// ReturnTradeHistory response model for all markets.
+        /// </summary>
+        internal class MarketTradeOrdersResponse : Dictionary<string, TradeOrdersResponse> { }
+        
+        internal class TradeOrdersResponse : List<TradeOrderResponse> { }
+
+        internal class TradeOrderResponse : OpenOrderResponse
+        {
+            public long globalTradeID;
+            public long tradeID;
+            public DateTime date;
+            public decimal fee;
+            public string category;
         }
 
         internal class OrderLimitResponse

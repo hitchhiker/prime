@@ -40,8 +40,13 @@ namespace Prime.Plugins.Services.Kucoin
             return new PlacedOrderLimitResponse(r.data.orderOid);
         }
 
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         [Obsolete("Sean please review this method and consider using 'OrderDetails' endpoint", false)]
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if(context.Market == null)
                 throw new MarketNotSpecifiedException(this);
@@ -88,10 +93,13 @@ namespace Prime.Plugins.Services.Kucoin
             else
                 throw new NoTradeOrderException(context, this);
 
-            return new TradeOrderStatus(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
             {
-                Rate = price,
-                AmountInitial = amountInitial
+                TradeOrderStatus =
+                {
+                    Rate = price,
+                    AmountInitial = amountInitial
+                }
             };
         }
 

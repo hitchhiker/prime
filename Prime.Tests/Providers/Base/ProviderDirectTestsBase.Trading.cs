@@ -18,6 +18,15 @@ namespace Prime.Tests.Providers
             if (p.Success)
                 GetTradeOrderStatusTest(p.Provider, remoteOrderId, market);
         }
+        
+        public virtual void TestGetTradeOrders() { }
+
+        public void PretestGetTradeOrders()
+        {
+            var p = IsType<IOrderLimitProvider>();
+            if (p.Success)
+                GetTradeOrdersTest(p.Provider);
+        }
 
         public virtual void TestPlaceOrderLimit() { }
         public void PretestPlaceOrderLimit(AssetPair market, bool isBuy, Money quantity, Money rate)
@@ -46,26 +55,47 @@ namespace Prime.Tests.Providers
 
         #region Tests
 
+        private void DisplayOrderStatusInfo(TradeOrderStatus tradeOrderStatus)
+        {
+            OutputWriter.WriteLine($"Remote trade order id: {tradeOrderStatus.RemoteOrderId}");
+            OutputWriter.WriteLine($"Order side: {(tradeOrderStatus.IsBuy ? "buy" : "sell")}");
+
+            if (tradeOrderStatus.IsOpen) OutputWriter.WriteLine("Order is open");
+            if (tradeOrderStatus.IsCancelRequested) OutputWriter.WriteLine("Order is requested to be canceled");
+            if (tradeOrderStatus.IsCanceled) OutputWriter.WriteLine("Order is canceled");
+            if (tradeOrderStatus.IsClosed) OutputWriter.WriteLine("Order is closed");
+            if (tradeOrderStatus.IsFound) OutputWriter.WriteLine("Order is found");
+
+            if(tradeOrderStatus.HasMarket) OutputWriter.WriteLine($"The market is '{tradeOrderStatus.Market}'");
+            if (tradeOrderStatus.Rate.HasValue) OutputWriter.WriteLine($"The rate of order is {tradeOrderStatus.Rate.Value}");
+            if (tradeOrderStatus.AmountInitial.HasValue) OutputWriter.WriteLine($"Initial amount is {tradeOrderStatus.AmountInitial.Value}");
+            if (tradeOrderStatus.AmountFilled.HasValue) OutputWriter.WriteLine($"Filled amount is {tradeOrderStatus.AmountFilled.Value}");
+            if (tradeOrderStatus.AmountRemaining.HasValue) OutputWriter.WriteLine($"Remaining amount is {tradeOrderStatus.AmountRemaining.Value}");
+
+            OutputWriter.WriteLine("");
+        }
+
         private void GetTradeOrderStatusTest(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
             var context = new RemoteMarketIdContext(UserContext.Current, remoteOrderId, market);
             
-            var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context));
+            var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context)).TradeOrderStatus;
 
             Assert.True(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
-            OutputWriter.WriteLine($"Remote trade order id: {r.RemoteOrderId}");
-            OutputWriter.WriteLine($"Order side: {(r.IsBuy ? "buy": "sell")}");
 
-            if (r.IsOpen) OutputWriter.WriteLine("Order is open");
-            if (r.IsCancelRequested) OutputWriter.WriteLine("Order is requested to be canceled");
-            if (r.IsCanceled) OutputWriter.WriteLine("Order is canceled");
-            if (r.IsClosed) OutputWriter.WriteLine("Order is closed");
-            if (r.IsFound) OutputWriter.WriteLine("Order is found");
+            DisplayOrderStatusInfo(r);
+        }
 
-            if (r.Rate.HasValue) OutputWriter.WriteLine($"The rate of order is {r.Rate.Value}");
-            if (r.AmountInitial.HasValue) OutputWriter.WriteLine($"Initial amount is {r.AmountInitial.Value}");
-            if (r.AmountFilled.HasValue) OutputWriter.WriteLine($"Filled amount is {r.AmountFilled.Value}");
-            if (r.AmountRemaining.HasValue) OutputWriter.WriteLine($"Remaining amount is {r.AmountRemaining.Value}");
+        private void GetTradeOrdersTest(IOrderLimitProvider provider)
+        {
+            var context = new TradeOrdersContext(UserContext.Current);
+
+            var r = AsyncContext.Run(() => provider.GetTradeOrdersAsync(context));
+
+            foreach (var tradeOrderStatus in r.Orders)
+            {
+                DisplayOrderStatusInfo(tradeOrderStatus);
+            }
         }
 
         private void PlaceOrderLimitTest(IOrderLimitProvider provider, AssetPair market, bool isBuy, Money quantity, Money rate)

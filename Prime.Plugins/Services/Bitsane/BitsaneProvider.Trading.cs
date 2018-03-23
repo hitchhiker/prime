@@ -75,7 +75,12 @@ namespace Prime.Plugins.Services.Bitsane
             return new PlacedOrderLimitResponse(r.result.order_id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)
                 throw new MarketNotSpecifiedException(this);
@@ -99,12 +104,15 @@ namespace Prime.Plugins.Services.Bitsane
 
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             
-            return new TradeOrderStatus(order.id, isBuy, !order.is_closed, false)
+            return new TradeOrderStatusResponse(order.id, isBuy, !order.is_closed, false)
             {
-                Rate = order.price,
-                Market = order.pair,
-                AmountInitial = order.original_amount,
-                AmountRemaining = order.remaining_amount
+                TradeOrderStatus =
+                {
+                    Rate = order.price,
+                    Market = order.pair,
+                    AmountInitial = order.original_amount,
+                    AmountRemaining = order.remaining_amount
+                }
             };
         }
 
