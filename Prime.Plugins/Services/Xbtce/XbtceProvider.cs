@@ -23,16 +23,7 @@ namespace Prime.Plugins.Services.Xbtce
         private static readonly ObjectId IdHash = "prime:xbtce".GetObjectIdHashCode();
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
-
-        //private IXbtceApi _apiProvider;
-        //private IXbtceApi ApiProvider => _apiProvider ?? (_apiProvider = RestClient.For<IXbtceApi>(new HttpClient(new HttpClientHandler()
-        //{
-        //    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-        //})
-        //{
-        //    BaseAddress = new Uri(XbtceApiUrl)
-        //}));
-
+        
         private RestApiClientProvider<IXbtceApi> ApiProvider { get; }
 
         public XbtceProvider()
@@ -54,11 +45,18 @@ namespace Prime.Plugins.Services.Xbtce
         public bool IsDirect => true;
         public char? CommonPairSeparator => null;
 
-        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
+        public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard3;
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return true;
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return !string.IsNullOrWhiteSpace(r.Id);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)

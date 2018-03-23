@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.HitBtc
         {
         }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             //var headers = request.Headers;
             //var nonce = GetLongNonce();

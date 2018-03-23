@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.SouthXchange
 {
+    [AllowAnyStatusCode]
     internal interface ISouthXchangeApi
     {
         [Get("/price/{currencyPair}")]
@@ -16,5 +17,17 @@ namespace Prime.Plugins.Services.SouthXchange
 
         [Get("/book/{currencyPair}")]
         Task<SouthXchangeSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Post("/listBalances")]
+        Task<Response<SouthXchangeSchema.BalanceResponse[]>> GetBalancesAsync();
+
+        [Post("/placeOrder")]
+        Task<Response<string>> NewOrderAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Post("/listOrders")]
+        Task<Response<SouthXchangeSchema.OrderInfoResponse[]>> QueryOrdersAsync();
+
+        [Post("/withdraw")]
+        Task<Response<object>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
     }
 }

@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Quoine
         {
         }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var nonce = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
         

@@ -62,7 +62,7 @@ namespace Prime.KeysManager
                 uiProcess.StartInfo.WorkingDirectory = "Electron"; //ConfigManager.AppConfig.UiAppFolderPath;
             }
             
-            uiProcess.Start();
+            //uiProcess.Start();
         }
     }
 }

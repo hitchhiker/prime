@@ -231,11 +231,11 @@ namespace Prime.Common
 
         #endregion
 
-        public abstract void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken);
+        public abstract void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken);
 
         public Task GetRequestModifierAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return Task.Run(() => RequestModify(request, cancellationToken), cancellationToken);
+            return Task.Run(() => RequestModifyAsync(request, cancellationToken), cancellationToken);
         }
     }
 }

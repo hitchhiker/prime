@@ -6,21 +6,17 @@ using System.Threading;
 using Prime.Common;
 using Prime.Utility;
 
-namespace Prime.Plugins.Services.BitKonan
+namespace Prime.Plugins.Services.SouthXchange
 {
-    public class BitKonanAuthenticator : BaseAuthenticator
+    public class SouthXchangeAuthenticator : BaseAuthenticator
     {
-
-        public BitKonanAuthenticator(ApiKey apiKey) : base(apiKey)
+        public SouthXchangeAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
 
         public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
-
-            var strForSign = $"{ApiKey.Key}{timeStamp}";
-            var signature = HashHMACSHA256Hex(strForSign, ApiKey.Secret);
+            var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
 
             var parameters = request.Content?.ReadAsStringAsync()?.Result;
 
@@ -31,7 +27,7 @@ namespace Prime.Plugins.Services.BitKonan
                 jsonParams = parameters.Replace("=", "\":\"").Replace("&", "\",\"");
             }
 
-            var contentBuilder = new StringBuilder("{\"key\":\"" + ApiKey.Key + "\",\"sign\":\"" + signature + "\", \"timestamp\":\"" + timeStamp + "\"");
+            var contentBuilder = new StringBuilder("{\"key\":\"" + ApiKey.Key + "\", \"nonce\":\"" + timeStamp + "\"");
 
             if (string.IsNullOrWhiteSpace(jsonParams))
             {
@@ -39,12 +35,13 @@ namespace Prime.Plugins.Services.BitKonan
             }
             else
             {
-                contentBuilder.Append(", \"");
-                contentBuilder.Append(jsonParams);
-                contentBuilder.Append("\"}");
-                contentBuilder.Replace("%2F","/");
+                contentBuilder.Append(",");
+                contentBuilder.Append(jsonParams.Replace("{","").Replace("}",""));
+                contentBuilder.Append("}");
+                contentBuilder.Replace("%2F", "/");
             }
 
+            request.Headers.Add("Hash", HashHMACSHA512Hex(contentBuilder.ToString(), ApiKey.Secret));
             request.Content = new StringContent(contentBuilder.ToString(), Encoding.UTF8, "application/json");
         }
     }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using Prime.Common;
@@ -14,17 +16,19 @@ namespace Prime.Plugins.Services.Xbtce
         {
         }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            string webApiId = ApiKey.Extra;
+
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
 
-            var content = request.Content?.ReadAsStringAsync()?.Result;
+            var content = request.Content?.ReadAsStringAsync().Result;
 
-            string strPayload = $"{timeStamp}{ApiKey.Key}{ApiKey.Secret}{request.Method}{request.RequestUri}{content}";
+            string strPayload = $"{timeStamp}{webApiId}{ApiKey.Key}{request.Method}{request.RequestUri}{content}";
 
-            var signature = ToBase64(HashHMACSHA256Hex(strPayload, ApiKey.Secret));
-            
-            request.Headers.Add("Authorization",$"HMAC {ApiKey.Key}:{ApiKey.Secret}:{timeStamp}:{signature}");
+            var signature = HashHMACSHA256(strPayload, ApiKey.Secret);
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("HMAC", string.Format("{0}:{1}:{2}:{3}", webApiId, ApiKey.Key, timeStamp, signature));
         }
     }
 }

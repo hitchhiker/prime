@@ -22,7 +22,7 @@ namespace Prime.Plugins.Services.BitMex
             return DateTime.UtcNow.Ticks - ArbTickEpoch;
         }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var path = request.RequestUri.PathAndQuery;
 

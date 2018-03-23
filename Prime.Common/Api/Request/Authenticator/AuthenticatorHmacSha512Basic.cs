@@ -20,7 +20,7 @@ namespace Prime.Common
             return (DateTime.UtcNow.Ticks - CustomEpochTicks) / 10000;
         }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var headers = request.Headers;
 

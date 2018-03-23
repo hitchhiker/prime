@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Coinbase
     {
         public CoinbaseAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var key = ApiKey.Key;
             var secret = ApiKey.Secret;

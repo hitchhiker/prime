@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Poloniex
         {
         }
 
-        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var headers = request.Headers;
             var postData = request.Content.ReadAsStringAsync().Result;

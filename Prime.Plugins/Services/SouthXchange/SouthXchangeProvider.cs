@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.SouthXchange
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.southxchange.com/Home/Api
-    public class SouthXchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class SouthXchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string SouthXchangeApiUrl = "https://www.southxchange.com/api/" ;
 
@@ -36,7 +36,7 @@ namespace Prime.Plugins.Services.SouthXchange
 
         public SouthXchangeProvider()
         {
-            ApiProvider = new RestApiClientProvider<ISouthXchangeApi>(SouthXchangeApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ISouthXchangeApi>(SouthXchangeApiUrl, this, (k) => new SouthXchangeAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -45,6 +45,18 @@ namespace Prime.Plugins.Services.SouthXchange
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

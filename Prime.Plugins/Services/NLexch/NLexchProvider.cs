@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.NLexch
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.nlexch.com/documents/api_v2
-    public class NLexchProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class NLexchProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string NLexchApiVersion = "v2";
         private const string NLexchApiUrl = "https://www.nlexch.com:443//api/" + NLexchApiVersion;
@@ -37,7 +37,7 @@ namespace Prime.Plugins.Services.NLexch
         public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
-
+        
         public NLexchProvider()
         {
             ApiProvider = new RestApiClientProvider<INLexchApi>(NLexchApiUrl, this, (k) => null);
@@ -49,6 +49,11 @@ namespace Prime.Plugins.Services.NLexch
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Count > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            return true;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
