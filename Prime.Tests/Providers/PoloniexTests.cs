@@ -101,10 +101,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetTradeOrders()
         {
-            // TODO: AY: use generic testing for orders getting.
-
-            var tradingProvider = Provider as PoloniexProvider;
-            var orders = tradingProvider.GetTradeOrdersAsync(new TradeOrdersContext(UserContext.Current)).Result;
+            base.PretestGetTradeOrders();
         }
 
         [Fact]

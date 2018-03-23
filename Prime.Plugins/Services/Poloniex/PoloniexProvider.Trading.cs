@@ -46,13 +46,15 @@ namespace Prime.Plugins.Services.Poloniex
                     {
                         AmountInitial = rOrder.amount,
                         Rate = rOrder.rate,
-                        AmountRemaining = rOrder.amount - rOrder.total,
                         Market = market
                     });
                 }
             }
             
-            return new TradeOrdersResponse(ordersList);
+            return new TradeOrdersResponse(ordersList)
+            {
+                ApiHitsCount = 2
+            };
         }
         
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
@@ -105,7 +107,6 @@ namespace Prime.Plugins.Services.Poloniex
                     Market = order.currencyPair.ToAssetPair(this),
                     Rate = order.rate,
                     AmountInitial = order.amount,
-                    AmountRemaining = order.amount - order.total
                 },
                 ApiHitsCount = 2
             };
