@@ -16,6 +16,8 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
         }
 
+        #region Public
+
         [Fact]
         public override void TestGetPricing()
         {
@@ -35,6 +37,30 @@ namespace Prime.Tests.Providers
         {
             base.TestApiPublic();
         }
+
+        [Fact]
+        public override void TestGetAssetPairs()
+        {
+            var requiredPairs = new AssetPairs()
+            {
+                "BTC_LTC".ToAssetPairRaw(),
+                "BTC_XRP".ToAssetPairRaw(),
+                "BTC_ETH".ToAssetPairRaw(),
+                "BTC_ETC".ToAssetPairRaw(),
+            };
+
+            base.PretestGetAssetPairs(requiredPairs);
+        }
+
+        [Fact]
+        public override void TestGetOrderBook()
+        {
+            base.PretestGetOrderBook("BTC_XRP".ToAssetPairRaw(), false);
+        }
+
+        #endregion
+
+        #region Private
 
         [Fact]
         public override void TestApiPrivate()
@@ -75,29 +101,9 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
-        public override void TestGetAssetPairs()
-        {
-            var requiredPairs = new AssetPairs()
-            {
-                "BTC_LTC".ToAssetPairRaw(),
-                "BTC_XRP".ToAssetPairRaw(),
-                "BTC_ETH".ToAssetPairRaw(),
-                "BTC_ETC".ToAssetPairRaw(),
-            };
-
-            base.PretestGetAssetPairs(requiredPairs);
-        }
-
-        [Fact]
         public override void TestGetBalances()
         {
             base.TestGetBalances();
-        }
-
-        [Fact]
-        public override void TestGetOrderBook()
-        {
-            base.PretestGetOrderBook("BTC_XRP".ToAssetPairRaw(), false);
         }
 
         [Fact]
@@ -105,5 +111,7 @@ namespace Prime.Tests.Providers
         {
             base.PretestPlaceWithdrawal(new WalletAddress("13zPXAsFofXXkczMg9bB6x1L9BWK9Yiawr"), new Money(0.00004911m, Asset.Btc));
         }
+
+        #endregion
     }
 }
