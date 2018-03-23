@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Cryptopia
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var nonce = GetUnixEpochNonce();
             var uri = request.RequestUri.ToString();

@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.Coinmate
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var clientId = ApiKey.Extra;
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.

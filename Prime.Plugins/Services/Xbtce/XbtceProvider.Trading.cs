@@ -45,7 +45,12 @@ namespace Prime.Plugins.Services.Xbtce
             return new PlacedOrderLimitResponse(r.Id);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -61,12 +66,15 @@ namespace Prime.Plugins.Services.Xbtce
             var isOpen = r.Status.IndexOf("New", StringComparison.OrdinalIgnoreCase) >= 0;
             var isBuy = r.Side.IndexOf("Buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(r.Id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(r.Id, isBuy, isOpen, false)
             {
-                Rate = r.Price,
-                AmountInitial = r.InitialAmount,
-                AmountRemaining = r.RemainingAmount,
-                Market = r.Symbol
+                TradeOrderStatus =
+                {
+                    Rate = r.Price,
+                    AmountInitial = r.InitialAmount,
+                    AmountRemaining = r.RemainingAmount,
+                    Market = r.Symbol
+                }
             };
         }
 

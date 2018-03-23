@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Yobit
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var headers = request.Headers;
             var strForSign = request.Content?.ReadAsStringAsync()?.Result;

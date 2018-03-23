@@ -14,7 +14,7 @@ namespace Prime.Plugins.Services.SouthXchange
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var timeStamp = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
 

@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Xbtce
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             string webApiId = ApiKey.Extra;
 

@@ -42,7 +42,12 @@ namespace Prime.Plugins.Services.SouthXchange
             return new PlacedOrderLimitResponse(r);
         }
 
-        public async Task<TradeOrderStatus> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -56,14 +61,17 @@ namespace Prime.Plugins.Services.SouthXchange
 
             if (order == null)
                 throw new NoTradeOrderException(context, this);
-            
+
             var isBuy = order.Type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatus(order.Code, isBuy, true, false)
+            return new TradeOrderStatusResponse(order.Code, isBuy, true, false)
             {
-                Rate = order.LimitPrice,
-                AmountInitial = order.OriginalAmount,
-                Market = $"{order.ListingCurrency}_{order.ReferenceCurrency}".ToUpper().ToAssetPair(this)
+                TradeOrderStatus =
+                {
+                    Rate = order.LimitPrice,
+                    AmountInitial = order.OriginalAmount,
+                    Market = $"{order.ListingCurrency}_{order.ReferenceCurrency}".ToUpper().ToAssetPair(this)
+                }
             };
 
         }

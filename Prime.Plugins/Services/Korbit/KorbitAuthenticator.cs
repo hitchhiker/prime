@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Korbit
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             
         }

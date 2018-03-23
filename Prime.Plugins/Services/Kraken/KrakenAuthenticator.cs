@@ -12,7 +12,7 @@ namespace Prime.Plugins.Services.Kraken
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var path = request.RequestUri.AbsolutePath;
             var postData = request.Content.ReadAsStringAsync().Result;

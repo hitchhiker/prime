@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.BitKonan
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var timeStamp = (long)DateTime.UtcNow.ToUnixTimeStamp();
 

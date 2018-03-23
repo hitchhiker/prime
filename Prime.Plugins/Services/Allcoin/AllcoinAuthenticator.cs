@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.Allcoin
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var parameters = request.Content?.ReadAsStringAsync()?.Result;
             string[] arrParameters;

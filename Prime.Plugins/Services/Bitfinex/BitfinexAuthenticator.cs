@@ -16,7 +16,7 @@ namespace Prime.Plugins.Services.Bitfinex
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var bodyPrevJson = request.Content.ReadAsStringAsync().Result;
             var bodyPrev = JsonConvert.DeserializeObject<object>(bodyPrevJson) as JToken;

@@ -17,7 +17,7 @@ namespace Prime.Plugins.Services.BitStamp
 
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var nonce = GetLongNonce().ToString();
             var customerId = ApiKey.Extra;

@@ -10,7 +10,7 @@ namespace Prime.Plugins.Services.Whaleclub
         {
         }
 
-        public override void RequestModifyAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (ApiKey == null)
                 throw new ApiResponseException("This API cannot be used without authentication.");
