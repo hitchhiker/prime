@@ -93,6 +93,11 @@ namespace Prime.Plugins.Services.Poloniex
 
         internal class CancelOrderResponse : SuccessResponse { }
 
+        internal class WithdrawalResponse
+        {
+            public string response;
+        }
+
         #endregion
 
         #region Public

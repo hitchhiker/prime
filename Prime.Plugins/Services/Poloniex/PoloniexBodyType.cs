@@ -10,6 +10,7 @@
         ReturnOrderStatus,
         ReturnOpenOrders,
         ReturnTradeHistory,
-        CancelOrder
+        CancelOrder,
+        Withdraw
     }
 }

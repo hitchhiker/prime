@@ -100,7 +100,6 @@ namespace Prime.Tests.Providers
 
             // Sell 1 XRP for 5 USDT per 1 XRP.
             base.PretestPlaceOrderLimit("USDT_XRP".ToAssetPairRaw(), false, new Money(1, Asset.Xrp), new Money(5, Asset.UsdT));
-
         }
 
         [Fact]
@@ -128,6 +127,13 @@ namespace Prime.Tests.Providers
         public override void TestGetBalances()
         {
             base.TestGetBalances();
+        }
+
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: AY: test with real money.
+            base.PretestPlaceWithdrawal(new WalletAddress("123123"), new Money(1, Asset.UsdT));
         }
 
         #endregion

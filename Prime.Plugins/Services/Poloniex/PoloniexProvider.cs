@@ -247,6 +247,9 @@ namespace Prime.Plugins.Services.Poloniex
                 case PoloniexBodyType.CancelOrder:
                     body.Add("command", "cancelOrder");
                     break;
+                case PoloniexBodyType.Withdraw:
+                    body.Add("command", "withdraw");
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);
             }

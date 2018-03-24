@@ -29,6 +29,9 @@ namespace Prime.Plugins.Services.Poloniex
         Task<Response<PoloniexSchema.MarketTradeOrdersResponse>> GetTradeHistoryAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
         [Post("/tradingApi")]
+        Task<Response<PoloniexSchema.WithdrawalResponse>> WithdrawAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+
+        [Post("/tradingApi")]
         Task<Response<PoloniexSchema.CancelOrderResponse>> CancelOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
         [Get("/public?command=returnTicker")]

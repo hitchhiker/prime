@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.Poloniex
 {
     // https://poloniex.com/support/api/
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    public partial class PoloniexProvider : IOrderLimitProvider
+    public partial class PoloniexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
         {
@@ -165,5 +165,25 @@ namespace Prime.Plugins.Services.Poloniex
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
+
+        public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
+
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreatePoloniexBody(PoloniexBodyType.Withdraw);
+            body.Add("currency", context.Amount.Asset.ToRemoteCode(this));
+            body.Add("amount", context.Amount.ToDecimalValue());
+            body.Add("address", context.Address.Address);
+
+            if (context.HasDescription)
+                body.Add("paymentId", context.Description);
+
+            var rRaw = await api.WithdrawAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            return new WithdrawalPlacementResult();
+        }
     }
 }
