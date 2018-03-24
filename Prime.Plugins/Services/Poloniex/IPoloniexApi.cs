@@ -20,7 +20,7 @@ namespace Prime.Plugins.Services.Poloniex
         Task<Response<PoloniexSchema.OrderLimitResponse>> PlaceOrderLimitAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
         [Post("/tradingApi")]
-        Task<Response<PoloniexSchema.OrderStatusResponse>> GetOrderStatusAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
+        Task<Response<PoloniexSchema.OrderStatusResponse>> GetOrderTradesAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);
 
         [Post("/tradingApi")]
         Task<Response<PoloniexSchema.OpenMarketOrdersResponse>> GetOpenOrdersAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> data);

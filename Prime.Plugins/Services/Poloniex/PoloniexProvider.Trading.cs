@@ -17,41 +17,21 @@ namespace Prime.Plugins.Services.Poloniex
     {
         public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
         {
-            var api = ApiProvider.GetApi(context);
-
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnTradeHistory);
             body.Add("currencyPair", "all");
             body.Add("limit", 10000);
             body.Add("start", DateTime.UtcNow.AddYears(-1).ToUnixTimeStamp());
 
-            var rRaw = await api.GetTradeHistoryAsync(body).ConfigureAwait(false);
-            CheckResponseErrors(rRaw);
+            var historyOrders = (await GetOrdersHistory(context).ConfigureAwait(false)).ToList();
 
-            var r = rRaw.GetContent();
-
-            var ordersList = new List<TradeOrderStatus>();
-            
             var openOrders = (await GetOpenOrders(context).ConfigureAwait(false)).ToList();
-            
-            foreach (var rPair in r)
+
+            foreach (var historyOrder in historyOrders)
             {
-                var market = rPair.Key.ToAssetPair(this);
-                
-                foreach (var rOrder in rPair.Value)
-                {
-                    var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
-                    var isOpen = openOrders.Any(x => x.RemoteOrderId.Equals(rOrder.orderNumber.ToString(), StringComparison.OrdinalIgnoreCase));
-                    
-                    ordersList.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, isOpen, false)
-                    {
-                        AmountInitial = rOrder.amount,
-                        Rate = rOrder.rate,
-                        Market = market
-                    });
-                }
+                historyOrder.IsOpen = openOrders.Exists(x => x.RemoteOrderId.Equals(historyOrder.RemoteOrderId));
             }
             
-            return new TradeOrdersResponse(ordersList)
+            return new TradeOrdersResponse(historyOrders)
             {
                 ApiHitsCount = 2
             };
@@ -78,40 +58,68 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            var api = ApiProvider.GetApi(context);
-            var body = CreatePoloniexBody(PoloniexBodyType.ReturnOrderStatus);
+            var historyOrders = await GetOrdersHistory(context).ConfigureAwait(false);
 
-            if(!long.TryParse(context.RemoteGroupId, out var orderNumber))
-                throw new ApiBaseException("Order id has to be of a long type", this);
-
-            body.Add("orderNumber", context.RemoteGroupId);
-
-            var rRaw = await api.GetOrderStatusAsync(body).ConfigureAwait(false);
-            CheckResponseErrors(rRaw);
-
-            var r = rRaw.GetContent();
-
-            var order = r.FirstOrDefault(x => x.globalTradeID == orderNumber);
+            var order = historyOrders.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
             if(order == null)
                 throw new NoTradeOrderException(context, this);
 
-            var openOrders = await GetOpenOrders(context).ConfigureAwait(false);
-            var isOpen = openOrders.Any(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
+            var openOrders = (await GetOpenOrders(context).ConfigureAwait(false)).ToList();
 
-            var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            order.IsOpen = openOrders.Exists(x => x.RemoteOrderId.Equals(order.RemoteOrderId));
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(order)
             {
-                TradeOrderStatus =
-                {
-                    Market = order.currencyPair.ToAssetPair(this),
-                    Rate = order.rate,
-                    AmountInitial = order.amount,
-                },
                 ApiHitsCount = 2
             };
         }
 
+        /// <summary>
+        /// Returns orders history, doesn't check if order is open by calling GetOpenOrders endpoint.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task<IEnumerable<TradeOrderStatus>> GetOrdersHistory(NetworkProviderPrivateContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreatePoloniexBody(PoloniexBodyType.ReturnTradeHistory);
+            body.Add("currencyPair", "all");
+            body.Add("limit", 10000);
+            body.Add("start", DateTime.UtcNow.AddYears(-5).ToUnixTimeStamp());
+
+            var rRaw = await api.GetTradeHistoryAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var historyOrders = new List<TradeOrderStatus>();
+
+            foreach (var rMarketOrder in r)
+            {
+                var market = rMarketOrder.Key.ToAssetPair(this);
+
+                foreach (var rOrder in rMarketOrder.Value)
+                {
+                    var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+                    historyOrders.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, false, false)
+                    {
+                        Market = market,
+                        AmountInitial = rOrder.amount,
+                        Rate = rOrder.rate
+                    });
+                }
+            }
+
+            return historyOrders;
+        }
+
+        /// <summary>
+        /// Returns list of currently open orders.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrders(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -137,7 +145,6 @@ namespace Prime.Plugins.Services.Poloniex
                     {
                         Market = market,
                         AmountInitial = rOrder.amount,
-                        AmountRemaining = rOrder.amount - rOrder.total,
                         Rate = rOrder.rate
                     });
                 }

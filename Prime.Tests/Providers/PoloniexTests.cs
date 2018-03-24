@@ -107,7 +107,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetTradeOrderStatus()
         {
-            base.PretestGetTradeOrderStatus("123412");
+            base.PretestGetTradeOrderStatus("5007146039");
         }
 
         [Fact]

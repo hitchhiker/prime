@@ -58,19 +58,17 @@ namespace Prime.Tests.Providers
         private void DisplayOrderStatusInfo(TradeOrderStatus tradeOrderStatus)
         {
             OutputWriter.WriteLine($"Remote trade order id: {tradeOrderStatus.RemoteOrderId}");
-            OutputWriter.WriteLine($"Order side: {(tradeOrderStatus.IsBuy ? "buy" : "sell")}");
+            OutputWriter.WriteLine($"{(tradeOrderStatus.IsBuy ? "Buy" : "Sell")} {tradeOrderStatus.AmountInitial ?? Decimal.MinValue} for {tradeOrderStatus.Rate ?? Decimal.MinValue} on '{tradeOrderStatus.Market ?? AssetPair.Empty}'");
 
-            if (tradeOrderStatus.IsOpen) OutputWriter.WriteLine("Order is open");
-            if (tradeOrderStatus.IsCancelRequested) OutputWriter.WriteLine("Order is requested to be canceled");
-            if (tradeOrderStatus.IsCanceled) OutputWriter.WriteLine("Order is canceled");
-            if (tradeOrderStatus.IsClosed) OutputWriter.WriteLine("Order is closed");
-            if (tradeOrderStatus.IsFound) OutputWriter.WriteLine("Order is found");
-
-            if(tradeOrderStatus.HasMarket) OutputWriter.WriteLine($"The market is '{tradeOrderStatus.Market}'");
-            if (tradeOrderStatus.Rate.HasValue) OutputWriter.WriteLine($"The rate of order is {tradeOrderStatus.Rate.Value}");
-            if (tradeOrderStatus.AmountInitial.HasValue) OutputWriter.WriteLine($"Initial amount is {tradeOrderStatus.AmountInitial.Value}");
             if (tradeOrderStatus.AmountFilled.HasValue) OutputWriter.WriteLine($"Filled amount is {tradeOrderStatus.AmountFilled.Value}");
             if (tradeOrderStatus.AmountRemaining.HasValue) OutputWriter.WriteLine($"Remaining amount is {tradeOrderStatus.AmountRemaining.Value}");
+
+            if (tradeOrderStatus.IsOpen) OutputWriter.WriteLine("Order is open");
+
+            if (tradeOrderStatus.IsCanceled) OutputWriter.WriteLine("Order is canceled");
+            if (tradeOrderStatus.IsClosed) OutputWriter.WriteLine("Order is closed");
+
+            if (tradeOrderStatus.IsCancelRequested) OutputWriter.WriteLine("Order is requested to be canceled");
 
             OutputWriter.WriteLine("");
         }

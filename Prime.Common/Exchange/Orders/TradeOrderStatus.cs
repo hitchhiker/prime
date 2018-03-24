@@ -23,7 +23,7 @@
 
         public bool IsFound { get; }
         public string RemoteOrderId { get; }
-        public bool IsOpen { get; }
+        public bool IsOpen { get; set; }
         public bool IsCancelRequested { get; }
 
         public decimal? Rate { get; set; }
