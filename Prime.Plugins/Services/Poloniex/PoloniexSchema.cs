@@ -12,6 +12,11 @@ namespace Prime.Plugins.Services.Poloniex
             public string error;
         }
 
+        internal class SuccessResponse
+        {
+            public bool success;
+        }
+
         #endregion
 
         #region Private
@@ -85,6 +90,8 @@ namespace Prime.Plugins.Services.Poloniex
             public decimal onOrders;
             public decimal btcValue;
         }
+
+        internal class CancelOrderResponse : SuccessResponse { }
 
         #endregion
 

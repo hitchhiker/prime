@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Nito.AsyncEx;
 using Prime.Common;
+using Prime.Utility;
 using Xunit;
 
 namespace Prime.Tests.Providers
@@ -88,12 +89,12 @@ namespace Prime.Tests.Providers
         {
             var context = new TradeOrdersContext(UserContext.Current);
 
-            var r = AsyncContext.Run(() => provider.GetTradeOrdersAsync(context));
+            var orders = AsyncContext.Run(() => provider.GetTradeOrdersAsync(context)).Orders.ToArray();
 
-            foreach (var tradeOrderStatus in r.Orders)
-            {
-                DisplayOrderStatusInfo(tradeOrderStatus);
-            }
+            if (orders.Length == 0)
+                OutputWriter.WriteLine("No orders returned");
+            else
+                orders.ForEach(DisplayOrderStatusInfo);
         }
 
         private void PlaceOrderLimitTest(IOrderLimitProvider provider, AssetPair market, bool isBuy, Money quantity, Money rate)

@@ -9,6 +9,7 @@
         LimitOrderSell,
         ReturnOrderStatus,
         ReturnOpenOrders,
-        ReturnTradeHistory
+        ReturnTradeHistory,
+        CancelOrder
     }
 }

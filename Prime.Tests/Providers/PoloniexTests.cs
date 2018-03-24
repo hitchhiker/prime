@@ -95,7 +95,12 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestPlaceOrderLimit()
         {
-            // base.PretestPlaceOrderLimit("BTC_LTC".ToAssetPairRaw(), true, new Money(1, Asset.Ltc), new Money(1, Asset.Btc));
+            // Buy 2 BTC for 0.5 USDT per 1 BTC.
+            base.PretestPlaceOrderLimit("USDT_BTC".ToAssetPairRaw(), true, new Money(2, Asset.Btc), new Money(0.5m, Asset.UsdT));
+
+            // Sell 1 XRP for 5 USDT per 1 XRP.
+            base.PretestPlaceOrderLimit("USDT_XRP".ToAssetPairRaw(), false, new Money(1, Asset.Xrp), new Money(5, Asset.UsdT));
+
         }
 
         [Fact]
@@ -107,7 +112,16 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetTradeOrderStatus()
         {
-            base.PretestGetTradeOrderStatus("5007146039");
+            base.PretestGetTradeOrderStatus("94628896507");
+        }
+
+        [Fact]
+        public async void TestCancelOrder()
+        {
+            var provider = Provider as PoloniexProvider;
+            var r = await provider.CancelOrderAsync(new RemoteIdContext(UserContext.Current, "94628896507"));
+
+            Assert.True(r.Success);
         }
 
         [Fact]

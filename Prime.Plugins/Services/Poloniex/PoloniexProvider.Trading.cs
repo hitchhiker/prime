@@ -17,21 +17,10 @@ namespace Prime.Plugins.Services.Poloniex
     {
         public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
         {
-            var body = CreatePoloniexBody(PoloniexBodyType.ReturnTradeHistory);
-            body.Add("currencyPair", "all");
-            body.Add("limit", 10000);
-            body.Add("start", DateTime.UtcNow.AddYears(-1).ToUnixTimeStamp());
-
             var historyOrders = (await GetOrdersHistory(context).ConfigureAwait(false)).ToList();
-
             var openOrders = (await GetOpenOrders(context).ConfigureAwait(false)).ToList();
-
-            foreach (var historyOrder in historyOrders)
-            {
-                historyOrder.IsOpen = openOrders.Exists(x => x.RemoteOrderId.Equals(historyOrder.RemoteOrderId));
-            }
             
-            return new TradeOrdersResponse(historyOrders)
+            return new TradeOrdersResponse(historyOrders.Concat(openOrders))
             {
                 ApiHitsCount = 2
             };
@@ -45,8 +34,8 @@ namespace Prime.Plugins.Services.Poloniex
 
             var body = CreatePoloniexBody(buy ? PoloniexBodyType.LimitOrderBuy : PoloniexBodyType.LimitOrderSell);
             body.Add("currencyPair", pairCode);
-            body.Add("rate", context.Rate);
-            body.Add("amount", context.Quantity);
+            body.Add("rate", context.Rate.ToDecimalValue());
+            body.Add("amount", context.Quantity.ToDecimalValue());
 
             var rRaw = await api.PlaceOrderLimitAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -56,17 +45,31 @@ namespace Prime.Plugins.Services.Poloniex
             return new PlacedOrderLimitResponse(r.orderNumber, r.resultingTrades.Select(x => x.tradeID));
         }
 
+        public async Task<OrderCancelationResponse> CancelOrderAsync(RemoteIdContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreatePoloniexBody(PoloniexBodyType.CancelOrder);
+            body.Add("orderNumber", context.RemoteGroupId);
+
+            var rRaw = await api.CancelOrderAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new OrderCancelationResponse(r.success);
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            var historyOrders = await GetOrdersHistory(context).ConfigureAwait(false);
-
-            var order = historyOrders.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
-            if(order == null)
-                throw new NoTradeOrderException(context, this);
-
+            var historyOrders = (await GetOrdersHistory(context).ConfigureAwait(false)).ToList();
             var openOrders = (await GetOpenOrders(context).ConfigureAwait(false)).ToList();
 
-            order.IsOpen = openOrders.Exists(x => x.RemoteOrderId.Equals(order.RemoteOrderId));
+            var allOrders = historyOrders.Concat(openOrders);
+
+            var order = allOrders.FirstOrDefault(x => x.RemoteOrderId.Equals(context.RemoteGroupId));
+            if(order == null)
+                throw new NoTradeOrderException(context, this);
 
             return new TradeOrderStatusResponse(order)
             {
@@ -75,7 +78,7 @@ namespace Prime.Plugins.Services.Poloniex
         }
 
         /// <summary>
-        /// Returns orders history, doesn't check if order is open by calling GetOpenOrders endpoint.
+        /// Returns orders history, open orders are not present in this list.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -90,6 +93,9 @@ namespace Prime.Plugins.Services.Poloniex
 
             var rRaw = await api.GetTradeHistoryAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
+
+            if(rRaw.TryGetContent<PoloniexSchema.MarketTradeOrdersResponse, object[]>(out var rArray) && rArray.Length == 0)
+                return new List<TradeOrderStatus>();
 
             var r = rRaw.GetContent();
 

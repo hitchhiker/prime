@@ -37,7 +37,7 @@ namespace Prime.Utility
 
         public static TResult MaxOrDefault<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector, TResult defaultValue)
         {
-            if (source==null || !source.Any())
+            if (source == null || !source.Any())
                 return defaultValue;
             try
             {

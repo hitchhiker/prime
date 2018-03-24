@@ -244,6 +244,9 @@ namespace Prime.Plugins.Services.Poloniex
                 case PoloniexBodyType.ReturnTradeHistory:
                     body.Add("command", "returnTradeHistory");
                     break;
+                case PoloniexBodyType.CancelOrder:
+                    body.Add("command", "cancelOrder");
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bodyType), bodyType, null);
             }
