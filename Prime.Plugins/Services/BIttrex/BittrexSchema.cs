@@ -27,11 +27,11 @@ namespace Prime.Plugins.Services.Bittrex
 
         internal class UuidResponse : BaseResponse<UuidEntry> { }
 
-        internal class OpenOrdersResponse : BaseResponse<IList<GetOpenOrdersEntry>> { }
+        internal class OpenOrdersResponse : BaseResponse<List<OpenOrderEntry>> { }
 
-        internal class GetOrderResponse : BaseResponse<GetOrderEntry> { }
+        internal class OrderResponse : BaseResponse<OrderEntry> { }
 
-        internal class GetOrderHistoryResponse : BaseResponse<IList<GetOrderHistoryEntry>> { }
+        internal class OrderHistoryResponse : BaseResponse<List<OrderHistoryEntry>> { }
 
         internal class WithdrawalResponse : BaseResponse<UuidEntry> { }
 
@@ -53,12 +53,13 @@ namespace Prime.Plugins.Services.Bittrex
             public string Condition;
             public string ConditionTarget;
             public bool ImmediateOrCancel;
+
+            public string OrderType;
         }
 
-        internal class GetOpenOrdersEntry : OrderCommonBase
+        internal class OpenOrderEntry : OrderCommonBase
         {
             public string Type => OrderType;
-            public string OrderType;
 
             public string Uuid;
             public decimal CommissionPaid;
@@ -67,10 +68,9 @@ namespace Prime.Plugins.Services.Bittrex
             public bool CancelInitiated;
         }
 
-        internal class GetOrderEntry : OrderCommonBase
+        internal class OrderEntry : OrderCommonBase
         {
-            public string Type;
-            public string OrderType => Type;
+            public string Type => OrderType;
 
             public string AccountId;
             public decimal CommissionPaid;
@@ -83,10 +83,10 @@ namespace Prime.Plugins.Services.Bittrex
             public bool CancelInitiated;
         }
 
-        internal class GetOrderHistoryEntry : OrderCommonBase
+        internal class OrderHistoryEntry : OrderCommonBase
         {
             public string Type => OrderType;
-            public string OrderType;
+            // public string OrderType;
             public string TimeStamp;
             public decimal Commission;
         }

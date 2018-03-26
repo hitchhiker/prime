@@ -42,11 +42,44 @@ namespace Prime.Plugins.Services.Bittrex
             return new PlacedOrderLimitResponse(r.result.uuid);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var rHistoryOrders = await api.GetOrderHistory().ConfigureAwait(false);
+            var rOpenOrders = await api.GetMarketOpenOrders().ConfigureAwait(false);
+
+            CheckResponseErrors(rHistoryOrders);
+            CheckResponseErrors(rOpenOrders);
+
+            var orders = new List<TradeOrderStatus>();
+            orders.AddRange(GetTradeOrderStatusFromResponse(rHistoryOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList()));
+            orders.AddRange(GetTradeOrderStatusFromResponse(rOpenOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList(), true, order => ((BittrexSchema.GetOpenOrdersEntry) order).CancelInitiated));
+
+            return new TradeOrdersResponse(orders);
         }
 
+        private List<TradeOrderStatus> GetTradeOrderStatusFromResponse(List<BittrexSchema.OrderCommonBase> orders, bool isOpen = false, Func<BittrexSchema.OrderCommonBase, bool> checkCancelRequested = null)
+        {
+            var orderStatuses = new List<TradeOrderStatus>();
+
+            foreach (var order in orders)
+            {
+                var isBuy = order.OrderType.Equals("LIMIT_BUY", StringComparison.OrdinalIgnoreCase);
+                orderStatuses.Add(new TradeOrderStatus(order.OrderUuid, isBuy, isOpen, checkCancelRequested?.Invoke(order) ?? false)
+                {
+                    Rate = order.Price,
+                    Market = order.Exchange.ToAssetPair(this),
+                    AmountInitial = order.Quantity,
+                    AmountRemaining = order.QuantityRemaining
+                });
+            }
+
+            return orderStatuses;
+        }
+
+        // TODO: AY: HH, check if it's needed.
+        [Obsolete]
         public async Task<TradeOrders> GetOpenOrdersAsync(PrivatePairContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -68,11 +101,13 @@ namespace Prime.Plugins.Services.Bittrex
             return orders;
         }
 
+        // TODO: AY: HH, check if it's needed.
+        [Obsolete]
         public async Task<TradeOrders> GetOrderHistoryAsync(PrivatePairContext context)
         {
             var api = ApiProvider.GetApi(context);
             var remotePair = context.RemotePairOrNull(this);
-            var r = await api.GetAccountHistory(remotePair).ConfigureAwait(false);
+            var r = await api.GetOrderHistory(remotePair).ConfigureAwait(false);
 
             CheckResponseErrors(r);
 
@@ -89,6 +124,8 @@ namespace Prime.Plugins.Services.Bittrex
             return orders;
         }
 
+        // TODO: AY: HH, check if it's needed.
+        [Obsolete]
         public async Task<TradeOrder> GetOrderDetails(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);

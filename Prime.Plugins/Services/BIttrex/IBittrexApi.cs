@@ -51,7 +51,7 @@ namespace Prime.Plugins.Services.Bittrex
         Task<BittrexSchema.GetOrderResponse> GetAccountOrder([Path] string uuid);
 
         [Get("/account/getorderhistory")]
-        Task<BittrexSchema.GetOrderHistoryResponse> GetAccountHistory([Query] string currencyPair = null);
+        Task<BittrexSchema.GetOrderHistoryResponse> GetOrderHistory([Query] string currencyPair = null);
 
         /// <summary>
         /// Used to withdraw funds from your account.
