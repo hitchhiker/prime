@@ -11,7 +11,7 @@ namespace Prime.Plugins.Services.Globitex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://globitex.com/api/
-    public class GlobitexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class GlobitexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string GlobitexApiVersion = "1";
         private const string GlobitexApiUrl = "https://api.globitex.com/api/" + GlobitexApiVersion;
@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Globitex
 
         public GlobitexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IGlobitexApi>(GlobitexApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IGlobitexApi>(GlobitexApiUrl, this, (k) => new GlobitexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public IAssetCodeConverter GetAssetCodeConverter()
@@ -53,6 +53,18 @@ namespace Prime.Plugins.Services.Globitex
             var r = await api.GetTimeAsync().ConfigureAwait(false);
 
             return r?.timestamp > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalanceAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

@@ -54,7 +54,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             var orders = new List<TradeOrderStatus>();
             orders.AddRange(GetTradeOrderStatusFromResponse(rHistoryOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList()));
-            orders.AddRange(GetTradeOrderStatusFromResponse(rOpenOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList(), true, order => ((BittrexSchema.GetOpenOrdersEntry) order).CancelInitiated));
+            orders.AddRange(GetTradeOrderStatusFromResponse(rOpenOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList(), true, order => ((BittrexSchema.OpenOrderEntry) order).CancelInitiated));
 
             return new TradeOrdersResponse(orders);
         }

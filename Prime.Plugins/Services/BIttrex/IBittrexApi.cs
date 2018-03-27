@@ -48,10 +48,10 @@ namespace Prime.Plugins.Services.Bittrex
         Task<BittrexSchema.OpenOrdersResponse> GetMarketOpenOrders([Query] string currencyPair = null);
 
         [Get("/account/getorder?uuid={uuid}")]
-        Task<BittrexSchema.GetOrderResponse> GetAccountOrder([Path] string uuid);
+        Task<BittrexSchema.OrderResponse> GetAccountOrder([Path] string uuid);
 
         [Get("/account/getorderhistory")]
-        Task<BittrexSchema.GetOrderHistoryResponse> GetOrderHistory([Query] string currencyPair = null);
+        Task<BittrexSchema.OrderHistoryResponse> GetOrderHistory([Query] string currencyPair = null);
 
         /// <summary>
         /// Used to withdraw funds from your account.

@@ -21,6 +21,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()
@@ -46,6 +52,23 @@ namespace Prime.Tests.Providers
         public override void TestGetOrderBook()
         {
             base.PretestGetOrderBook("BTC_EUR".ToAssetPairRaw(), false);
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: SC: Not tested with real money
+            var orderId = "21109502";
+            base.PretestGetTradeOrderStatus(orderId, "BTC_EUR".ToAssetPairRaw());
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            //TODO: SC: Not tested with real money
+
+            //Test for buying
+            base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
         }
     }
 }

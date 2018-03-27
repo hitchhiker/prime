@@ -9,7 +9,7 @@ namespace Prime.Plugins.Services.Bitso
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitso.com/api_info
-    public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitsoApiVersion = "v3";
         private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
@@ -48,6 +48,11 @@ namespace Prime.Plugins.Services.Bitso
             var r = await api.GetTickerAsync("btc_mxn").ConfigureAwait(false);
 
             return r.success;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            return true;
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()

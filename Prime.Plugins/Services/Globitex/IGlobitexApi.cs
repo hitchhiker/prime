@@ -6,6 +6,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Globitex
 {
+    [AllowAnyStatusCode]
     internal interface IGlobitexApi
     {
         [Get("/public/ticker/{currencyPair}")]
@@ -22,5 +23,14 @@ namespace Prime.Plugins.Services.Globitex
 
         [Get("/public/orderbook/{currencyPair}")]
         Task<GlobitexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+
+        [Get("/payment/accounts")]
+        Task<Response<GlobitexSchema.BalanceResponse>> GetBalanceAsync();
+
+        [Post("/trading/new_order")]
+        Task<Response<GlobitexSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        
+        [Get("/trading/orders/active?account={account}")]
+        Task<Response<GlobitexSchema.ActiveOrdersResponse>> QueryActiveOrdersAsync([Path] string account);
     }
 }
