@@ -56,10 +56,12 @@ namespace Prime.Tests.Providers
 
         #region Tests
 
-        private void DisplayOrderStatusInfo(TradeOrderStatus tradeOrderStatus)
+        private void DisplayOrderStatusInfo(TradeOrderStatus tradeOrderStatus, AssetPair market)
         {
             OutputWriter.WriteLine($"Remote trade order id: {tradeOrderStatus.RemoteOrderId}");
-            OutputWriter.WriteLine($"{(tradeOrderStatus.IsBuy ? "Buy" : "Sell")} {tradeOrderStatus.AmountInitial ?? Decimal.MinValue} for {tradeOrderStatus.Rate ?? Decimal.MinValue} on '{tradeOrderStatus.Market ?? AssetPair.Empty}'");
+
+            var marketString = tradeOrderStatus.HasMarket ? tradeOrderStatus.Market: market;
+            OutputWriter.WriteLine($"{(tradeOrderStatus.IsBuy ? "Buy" : "Sell")} {tradeOrderStatus.AmountInitial ?? Decimal.MinValue} for {tradeOrderStatus.Rate ?? Decimal.MinValue} on '{marketString}' market");
 
             if (tradeOrderStatus.AmountFilled.HasValue) OutputWriter.WriteLine($"Filled amount is {tradeOrderStatus.AmountFilled.Value}");
             if (tradeOrderStatus.AmountRemaining.HasValue) OutputWriter.WriteLine($"Remaining amount is {tradeOrderStatus.AmountRemaining.Value}");
@@ -74,6 +76,11 @@ namespace Prime.Tests.Providers
             OutputWriter.WriteLine("");
         }
 
+        private void DisplayOrderStatusInfo(TradeOrderStatus tradeOrderStatus)
+        {
+            DisplayOrderStatusInfo(tradeOrderStatus, AssetPair.Empty);
+        }
+
         private void GetTradeOrderStatusTest(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
             var context = new RemoteMarketIdContext(UserContext.Current, remoteOrderId, market);
@@ -82,7 +89,7 @@ namespace Prime.Tests.Providers
 
             Assert.True(remoteOrderId.Equals(r.RemoteOrderId, StringComparison.Ordinal), "Remote trade order ids don't match");
 
-            DisplayOrderStatusInfo(r);
+            DisplayOrderStatusInfo(r, market);
         }
 
         private void GetTradeOrdersTest(IOrderLimitProvider provider)
