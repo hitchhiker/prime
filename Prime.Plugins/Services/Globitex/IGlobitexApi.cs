@@ -28,9 +28,9 @@ namespace Prime.Plugins.Services.Globitex
         Task<Response<GlobitexSchema.BalanceResponse>> GetBalanceAsync();
 
         [Post("/trading/new_order")]
-        Task<Response<GlobitexSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<Response<GlobitexSchema.NewOrderResponse>> PlaceNewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
         
         [Get("/trading/orders/active?account={account}")]
-        Task<Response<GlobitexSchema.ActiveOrdersResponse>> QueryActiveOrdersAsync([Path] string account);
+        Task<Response<GlobitexSchema.ActiveOrdersResponse>> GetActiveOrdersAsync([Path] string account);
     }
 }

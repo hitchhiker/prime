@@ -40,8 +40,8 @@ namespace Prime.Plugins.Services.Globitex
 
             var api = ApiProvider.GetApi(context);
 
-            string side = context.IsBuy ? "buy" : "sell";
-            string account = "VER564A02";
+            var side = context.IsBuy ? "buy" : "sell";
+            var account = "VER564A02";
 
             var body = new Dictionary<string, object>
             {
@@ -52,7 +52,7 @@ namespace Prime.Plugins.Services.Globitex
                 { "quantity",  context.Quantity.ToDecimalValue().ToString()  }
             };
 
-            var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
+            var rRaw = await api.PlaceNewOrderAsync(body).ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 
@@ -71,8 +71,7 @@ namespace Prime.Plugins.Services.Globitex
             var api = ApiProvider.GetApi(context);
             string account = "VER564A02";
 
-            var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(account).ConfigureAwait(false);
-
+            var rActiveOrdersRaw = await api.GetActiveOrdersAsync(account).ConfigureAwait(false);
             CheckResponseErrors(rActiveOrdersRaw);
 
             var rActiveOrders = rActiveOrdersRaw.GetContent();
@@ -99,7 +98,7 @@ namespace Prime.Plugins.Services.Globitex
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.WithinOrderStatus);
-        public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
+        public OrderLimitFeatures OrderLimitFeatures => throw new NotImplementedException();
 
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
     }
