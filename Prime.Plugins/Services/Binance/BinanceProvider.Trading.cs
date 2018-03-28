@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
@@ -12,10 +13,10 @@ namespace Prime.Plugins.Services.Binance
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
-            var rError = r.GetContent() as BinanceSchema.ErrorResponseBase;
-            if (rError?.success != null && !rError.success.Value)
-                throw new ApiResponseException($"{rError.msg.Trim(new char[] { '.' })}", this, method);
-
+            if (r.TryGetContent(out BinanceSchema.ErrorResponseBase rError))
+                if (rError?.success != null && !rError.success.Value)
+                    throw new ApiResponseException($"{rError.msg.Trim('.')}", this, method);
+            
             if (r.ResponseMessage.IsSuccessStatusCode) return;
 
             if (rError != null && !string.IsNullOrWhiteSpace(rError.msg))
@@ -55,9 +56,39 @@ namespace Prime.Plugins.Services.Binance
             return new PlacedOrderLimitResponse(r.orderId.ToString());
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            if (!context.HasMarket)
+                throw new MarketNotSpecifiedException(this);
+
+            var ticker = context.Market.ToTicker(this);
+            var api = ApiProvider.GetApi(context);
+            
+            var rRaw = await api.GetAllOrdersAsync(ticker).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var rOrders = rRaw.GetContent();
+            
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in rOrders)
+            {
+                var isBuy = rOrder.side.Equals("BUY", StringComparison.OrdinalIgnoreCase);
+                var isOpen = rOrder.status.Equals("NEW", StringComparison.OrdinalIgnoreCase) || rOrder.status.Equals("PARTIALLY_FILLED", StringComparison.OrdinalIgnoreCase);
+                var isCancelRequested = rOrder.status.Equals("PENDING_CANCEL", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(rOrder.orderId.ToString(), isBuy, isOpen, isCancelRequested)
+                {
+                    AmountInitial = rOrder.origQty,
+                    Rate = rOrder.price,
+                    AmountRemaining = rOrder.origQty - rOrder.executedQty,
+                    Market = context.Market
+                });
+            }
+            
+            return new TradeOrdersResponse(orders)
+            {
+                ApiHitsCount = 5 // From API docs: Weight = 5.
+            };
         }
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)

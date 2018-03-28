@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Binance
             public string clientOrderId;
             public long transactTime;
         }
-
+        
         internal class QueryOrderResponse : ErrorResponseBase
         {
             public string symbol;
@@ -65,6 +65,13 @@ namespace Prime.Plugins.Services.Binance
             public long time;
         }
 
+        internal class AllOrdersEntryResponse : QueryOrderResponse
+        {
+            public bool isWorking;
+        }
+
+        internal class AllOrdersResponse : List<AllOrdersEntryResponse> { }
+        
         internal class DepositHistoryResponse : ErrorResponseBase
         {
             public DepositListEntryResponse[] depositList;

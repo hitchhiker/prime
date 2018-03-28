@@ -43,13 +43,19 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetTradeOrderStatus()
         {
-            base.PretestGetTradeOrderStatus("29772241", "XRP_BTC".ToAssetPairRaw());
+            base.PretestGetTradeOrderStatus("34009816", "TRX_BTC".ToAssetPairRaw());
         }
         
         [Fact]
         public override void TestPlaceWithdrawal()
         {
-            base.PretestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(22, Asset.Xrp), "3299088538");
+            base.PretestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(220, Asset.Xrp), "3299088538");
+        }
+
+        [Fact]
+        public override void TestGetTradeOrders()
+        {
+            base.PretestGetTradeOrders("TRX_BTC".ToAssetPairRaw());
         }
 
         public async Task TestGetDepositHistory()

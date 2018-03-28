@@ -62,8 +62,16 @@ namespace Prime.Plugins.Services.Binance
         [Get("/api/v3/order")]
         Task<Response<BinanceSchema.QueryOrderResponse>> QueryOrderAsync([Query] string symbol, [Query] long? orderId = null, [Query] string origClientOrderId = null, [Query] long? recvWindow = null);
 
-        [Post("/api/v3/allOrders")]
-        Task GetAllOrdersAsync([Query] string symbol, [Query] long orderId, [Query] int limit, [Query] long? recvWindow = null);
+        /// <summary>
+        /// Get all account orders; active, canceled, or filled.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="orderId"></param>
+        /// <param name="limit"></param>
+        /// <param name="recvWindow"></param>
+        /// <returns></returns>
+        [Get("/api/v3/allOrders")]
+        Task<Response<BinanceSchema.AllOrdersResponse>> GetAllOrdersAsync([Query] string symbol, [Query] long? orderId = null, [Query] int? limit = null, [Query] long? recvWindow = null);
 
         /// <summary>
         /// Gets the history of deposits to account.
