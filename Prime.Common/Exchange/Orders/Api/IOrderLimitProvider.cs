@@ -16,7 +16,7 @@ namespace Prime.Common
         /// <returns></returns>
         Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context);
 
-        //Task<TradeOrder> GetOpenOrdersAsync();
+        //Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context);
         
         /// <summary>
         /// Gets the status of order with specific id (and market).
