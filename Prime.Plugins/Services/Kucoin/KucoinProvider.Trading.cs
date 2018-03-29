@@ -45,6 +45,11 @@ namespace Prime.Plugins.Services.Kucoin
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         [Obsolete("Sean please review this method and consider using 'OrderDetails' endpoint", false)]
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {

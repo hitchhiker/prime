@@ -50,6 +50,11 @@ namespace Prime.Plugins.Services.BitBay
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<BitBaySchema.OrdersResponse> GetOrderResponseByOrderId(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);

@@ -50,6 +50,11 @@ namespace Prime.Plugins.Services.NLexch
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)

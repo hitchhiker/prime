@@ -38,6 +38,11 @@ namespace Prime.Plugins.Services.Cryptopia
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);

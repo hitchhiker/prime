@@ -44,6 +44,11 @@ namespace Prime.Plugins.Services.Acx
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);

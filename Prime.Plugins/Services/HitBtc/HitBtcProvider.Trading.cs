@@ -76,6 +76,11 @@ namespace Prime.Plugins.Services.HitBtc
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private Dictionary<string, object> CreateHitBtcRequestBody()
         {
             return new Dictionary<string, object>();

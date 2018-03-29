@@ -25,7 +25,12 @@ namespace Prime.Plugins.Services.Poloniex
                 ApiHitsCount = 2
             };
         }
-        
+
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var buy = context.IsBuy;

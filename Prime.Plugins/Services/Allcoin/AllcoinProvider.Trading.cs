@@ -44,6 +44,11 @@ namespace Prime.Plugins.Services.Allcoin
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var market = context.Market.ToTicker(this).ToLower();
