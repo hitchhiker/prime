@@ -60,6 +60,18 @@ namespace Prime.Plugins.Services.Bittrex
             return new TradeOrdersResponse(orders);
         }
 
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            
+            var rOpenOrders = await api.GetMarketOpenOrders().ConfigureAwait(false);
+
+            var orders = new List<TradeOrderStatus>();
+            orders.AddRange(GetTradeOrderStatusFromResponse(rOpenOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList(), true, order => ((BittrexSchema.OpenOrderEntry) order).CancelInitiated));
+            
+            return new OpenOrdersResponse(orders);
+        }
+
         private List<TradeOrderStatus> GetTradeOrderStatusFromResponse(List<BittrexSchema.OrderCommonBase> orders, bool isOpen = false, Func<BittrexSchema.OrderCommonBase, bool> checkCancelRequested = null)
         {
             var orderStatuses = new List<TradeOrderStatus>();
