@@ -208,29 +208,29 @@ namespace Prime.Plugins.Services.BitMex
             return addresses;
         }
 
-        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
+        public Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             throw new NotImplementedException();
 
-            var api = ApiProvider.GetApi(context);
-            var addresses = new WalletAddressesResult();
-
-            foreach (var assetPair in Pairs)
-            {
-                var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);
-
-                var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode).ConfigureAwait(false);
-
-                depositAddress = depositAddress.Trim('\"');
-
-                // BUG: how to convert XBt from Pairs to BTC?
-                addresses.Add(new WalletAddress(this, Asset.Btc)
-                {
-                    Address = depositAddress
-                });
-            }
-
-            return addresses;
+//            var api = ApiProvider.GetApi(context);
+//            var addresses = new WalletAddressesResult();
+//
+//            foreach (var assetPair in Pairs)
+//            {
+//                var adjustedCode = AdjustAssetCode(assetPair.Asset1.ShortCode);
+//
+//                var depositAddress = await api.GetUserDepositAddressAsync(adjustedCode).ConfigureAwait(false);
+//
+//                depositAddress = depositAddress.Trim('\"');
+//
+//                // BUG: how to convert XBt from Pairs to BTC?
+//                addresses.Add(new WalletAddress(this, Asset.Btc)
+//                {
+//                    Address = depositAddress
+//                });
+//            }
+//
+//            return addresses;
         }
 
 
@@ -239,15 +239,15 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        [Obsolete] // BUG: review, should be removed.
-        private string AdjustAssetCode(string input)
-        {
-            var config = new Dictionary<string, string>();
-
-            config.Add("XBT", "XBt");
-
-            return config.ContainsKey(input) ? config[input] : null;
-        }
+//        [Obsolete] // BUG: review, should be removed.
+//        private string AdjustAssetCode(string input)
+//        {
+//            var config = new Dictionary<string, string>();
+//
+//            config.Add("XBT", "XBt");
+//
+//            return config.ContainsKey(input) ? config[input] : null;
+//        }
 
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
@@ -403,24 +403,6 @@ namespace Prime.Plugins.Services.BitMex
             {
                 WithdrawalRemoteId = r.transactID
             };
-        }
-
-        public async Task<NetworkPairVolume> GetAssetPairVolume(PublicVolumeContext context)
-        {
-            //**HH -> For volume, you need a PAIR, this method is returning only for a single ASSET
-
-            return null;
-
-            /*
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPriceAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
-
-            var rPrice = r.FirstOrDefault();
-
-            if (rPrice == null || rPrice.lastPrice.HasValue == false)
-                throw new NoAssetPairException(context.Pair, this);
-
-            return new NetworkPairVolume(Network, context.Pair, rPrice.volume24h);*/
         }
     }
 }

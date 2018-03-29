@@ -22,7 +22,7 @@ namespace Prime.Common
                 var r = await GetNetworkPairsAsync().ConfigureAwait(false);
                 return r.Where(x => x.Value!=null && x.Value.Contains(pair)).Select(x => x.Key).ToUniqueList();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

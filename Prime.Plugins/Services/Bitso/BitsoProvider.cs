@@ -50,9 +50,9 @@ namespace Prime.Plugins.Services.Bitso
             return r.success;
         }
 
-        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
