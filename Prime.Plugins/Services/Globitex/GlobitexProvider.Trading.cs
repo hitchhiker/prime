@@ -82,7 +82,7 @@ namespace Prime.Plugins.Services.Globitex
 
             var isBuy = activeOrder.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(activeOrder.orderId, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, activeOrder.orderId, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

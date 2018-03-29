@@ -66,7 +66,7 @@ namespace Prime.Plugins.Services.Xbtce
             var isOpen = r.Status.IndexOf("New", StringComparison.OrdinalIgnoreCase) >= 0;
             var isBuy = r.Side.IndexOf("Buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(r.Id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, r.Id, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

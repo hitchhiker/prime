@@ -84,7 +84,7 @@ namespace Prime.Plugins.Services.Yobit
 
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

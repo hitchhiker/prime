@@ -7,8 +7,17 @@ namespace Prime.Common
     {
         Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context);
 
+        /// <summary>
+        /// Gets the list of all orders. Includes orders from history list and open orders list.
+        /// TODO: AY: HH, review this method. Implemented iin Bittrex, Poloniex, Binance.
+        /// Stopped implementeation in other providers because of historical and open orders endpoints differences which make it difficult to merge orders into 1 list.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context);
 
+        //Task<TradeOrder> GetOpenOrdersAsync();
+        
         /// <summary>
         /// Gets the status of order with specific id (and market).
         /// </summary>

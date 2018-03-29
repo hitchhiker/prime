@@ -68,7 +68,7 @@ namespace Prime.Plugins.Services.NLexch
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             var isOpen = order.state.IndexOf("wait", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

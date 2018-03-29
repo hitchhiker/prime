@@ -9,6 +9,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Binance
 {
+    // https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
     public partial class BinanceProvider : IBalanceProvider, IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
@@ -76,7 +77,7 @@ namespace Prime.Plugins.Services.Binance
                 var isBuy = rOrder.side.Equals("BUY", StringComparison.OrdinalIgnoreCase);
                 var isOpen = rOrder.status.Equals("NEW", StringComparison.OrdinalIgnoreCase) || rOrder.status.Equals("PARTIALLY_FILLED", StringComparison.OrdinalIgnoreCase);
                 var isCancelRequested = rOrder.status.Equals("PENDING_CANCEL", StringComparison.OrdinalIgnoreCase);
-                orders.Add(new TradeOrderStatus(rOrder.orderId.ToString(), isBuy, isOpen, isCancelRequested)
+                orders.Add(new TradeOrderStatus(Network, rOrder.orderId.ToString(), isBuy, isOpen, isCancelRequested)
                 {
                     AmountInitial = rOrder.origQty,
                     Rate = rOrder.price,
@@ -111,7 +112,7 @@ namespace Prime.Plugins.Services.Binance
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatusResponse(r.orderId.ToString(), isBuy, isOpen, isCancelRequested)
+            return new TradeOrderStatusResponse(Network, r.orderId.ToString(), isBuy, isOpen, isCancelRequested)
             {
                 TradeOrderStatus =
                 {

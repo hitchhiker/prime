@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.Allcoin
 
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.order_id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, order.order_id, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

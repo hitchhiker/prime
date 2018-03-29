@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.Bitfinex
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatusResponse(r.id.ToString(), isBuy, r.is_live, r.is_cancelled)
+            return new TradeOrderStatusResponse(Network, r.id.ToString(), isBuy, r.is_live, r.is_cancelled)
             {
                 TradeOrderStatus =
                 {

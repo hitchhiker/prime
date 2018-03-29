@@ -93,7 +93,7 @@ namespace Prime.Plugins.Services.Kucoin
             else
                 throw new NoTradeOrderException(context, this);
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

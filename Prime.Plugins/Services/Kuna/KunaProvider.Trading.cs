@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.Kuna
 
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.id, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

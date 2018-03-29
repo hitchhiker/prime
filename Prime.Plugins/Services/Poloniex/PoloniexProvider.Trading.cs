@@ -109,7 +109,7 @@ namespace Prime.Plugins.Services.Poloniex
                 {
                     var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-                    historyOrders.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, false, false)
+                    historyOrders.Add(new TradeOrderStatus(Network, rOrder.orderNumber.ToString(), isBuy, false, false)
                     {
                         Market = market,
                         AmountInitial = rOrder.amount,
@@ -147,7 +147,7 @@ namespace Prime.Plugins.Services.Poloniex
                 foreach (var rOrder in rMarketOrders.Value)
                 {
                     var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
-                    openOrders.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, true, false)
+                    openOrders.Add(new TradeOrderStatus(Network, rOrder.orderNumber.ToString(), isBuy, true, false)
                     {
                         Market = market,
                         AmountInitial = rOrder.amount,

@@ -70,7 +70,7 @@ namespace Prime.Plugins.Services.BitKonan
 
             var isBuy = activeOrder.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(activeOrder.id, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, activeOrder.id, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

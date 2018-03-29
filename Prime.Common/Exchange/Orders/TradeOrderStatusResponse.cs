@@ -9,9 +9,10 @@
             TradeOrderStatus = tradeOrderStatus;
         }
 
-        public TradeOrderStatusResponse(string remoteOrderId, bool isBuy, bool isOpen, bool isCancelRequested)
+        public TradeOrderStatusResponse(Network network, string remoteOrderId, bool isBuy, bool isOpen,
+            bool isCancelRequested)
         {
-            TradeOrderStatus = new TradeOrderStatus(remoteOrderId, isBuy, isOpen, isCancelRequested);
+            TradeOrderStatus = new TradeOrderStatus(network, remoteOrderId, isBuy, isOpen, isCancelRequested);
         }
     }
 }

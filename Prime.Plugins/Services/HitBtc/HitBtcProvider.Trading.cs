@@ -95,7 +95,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatusResponse(r.clientOrderId, isBuy, isOpen, isCancelRequested)
+            return new TradeOrderStatusResponse(Network, r.clientOrderId, isBuy, isOpen, isCancelRequested)
             {
                 TradeOrderStatus =
                 {

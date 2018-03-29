@@ -64,7 +64,7 @@ namespace Prime.Plugins.Services.SouthXchange
 
             var isBuy = order.Type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.Code, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, order.Code, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

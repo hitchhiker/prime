@@ -62,7 +62,7 @@ namespace Prime.Plugins.Services.Acx
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
             // TODO: AY: Sean - check schema during real money testing.
-            return new TradeOrderStatusResponse(order.id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, isOpen, false)
             {
                 TradeOrderStatus = 
                 {

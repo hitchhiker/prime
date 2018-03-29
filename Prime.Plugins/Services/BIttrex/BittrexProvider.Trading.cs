@@ -7,6 +7,7 @@ using Prime.Common;
 
 namespace Prime.Plugins.Services.Bittrex
 {
+    // https://bittrex.com/home/api
     public partial class BittrexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
@@ -66,7 +67,7 @@ namespace Prime.Plugins.Services.Bittrex
             foreach (var order in orders)
             {
                 var isBuy = order.OrderType.Equals("LIMIT_BUY", StringComparison.OrdinalIgnoreCase);
-                orderStatuses.Add(new TradeOrderStatus(order.OrderUuid, isBuy, isOpen, checkCancelRequested?.Invoke(order) ?? false)
+                orderStatuses.Add(new TradeOrderStatus(Network, order.OrderUuid, isBuy, isOpen, checkCancelRequested?.Invoke(order) ?? false)
                 {
                     Rate = order.Price,
                     Market = order.Exchange.ToAssetPair(this),
@@ -152,7 +153,7 @@ namespace Prime.Plugins.Services.Bittrex
 
             var isBuy = order.Type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.OrderUuid, isBuy, order.IsOpen, order.CancelInitiated)
+            return new TradeOrderStatusResponse(Network, order.OrderUuid, isBuy, order.IsOpen, order.CancelInitiated)
             {
                 TradeOrderStatus =
                 {

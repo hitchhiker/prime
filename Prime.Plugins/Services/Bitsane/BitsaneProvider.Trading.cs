@@ -104,7 +104,7 @@ namespace Prime.Plugins.Services.Bitsane
 
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             
-            return new TradeOrderStatusResponse(order.id, isBuy, !order.is_closed, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, !order.is_closed, false)
             {
                 TradeOrderStatus =
                 {

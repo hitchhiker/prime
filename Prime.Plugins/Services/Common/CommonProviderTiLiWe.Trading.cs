@@ -69,7 +69,7 @@ namespace Prime.Plugins.Services.Common
 
             var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
             {
                 TradeOrderStatus =
                 {
