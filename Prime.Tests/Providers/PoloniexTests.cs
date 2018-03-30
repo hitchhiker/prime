@@ -109,6 +109,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
+        }
+
+        [Fact]
         public override void TestGetTradeOrderStatus()
         {
             base.PretestGetTradeOrderStatus("94628896507");
@@ -118,7 +124,7 @@ namespace Prime.Tests.Providers
         public async void TestCancelOrder()
         {
             var provider = Provider as PoloniexProvider;
-            var r = await provider.CancelOrderAsync(new RemoteIdContext(UserContext.Current, "94628896507"));
+            var r = await provider.CancelOrderAsync(new RemoteIdContext(UserContext.Current, "168325960666"));
 
             Assert.True(r.Success);
         }

@@ -2,6 +2,9 @@
 
 namespace Prime.Common
 {
+    /// <summary>
+    /// TODO: AY: this class has same members as OpenOrdersResponse.
+    /// </summary>
     public class TradeOrdersResponse : ResponseModelBase
     {
         public IEnumerable<TradeOrderStatus> Orders { get; set; }

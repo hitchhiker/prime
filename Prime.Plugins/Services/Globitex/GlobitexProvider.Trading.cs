@@ -16,8 +16,6 @@ namespace Prime.Plugins.Services.Globitex
         {
             if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
             {
-                var reason = rawResponse.ResponseMessage.ReasonPhrase;
-
                 if (rawResponse.TryGetContent(out GlobitexSchema.ErrorResponse baseResponse))
                 {
                     if (baseResponse.errors.Length > 0)
@@ -29,6 +27,7 @@ namespace Prime.Plugins.Services.Globitex
                     }
                 }
 
+                var reason = rawResponse.ResponseMessage.ReasonPhrase;
                 throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(string.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}", this, method);
             }
         }
@@ -64,6 +63,11 @@ namespace Prime.Plugins.Services.Globitex
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -80,7 +84,7 @@ namespace Prime.Plugins.Services.Globitex
 
             var isBuy = activeOrder.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(activeOrder.orderId, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, activeOrder.orderId, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

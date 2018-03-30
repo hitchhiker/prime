@@ -50,6 +50,11 @@ namespace Prime.Plugins.Services.BitBay
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<BitBaySchema.OrdersResponse> GetOrderResponseByOrderId(RemoteIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -75,7 +80,7 @@ namespace Prime.Plugins.Services.BitBay
 
             var isBuy = order.type.IndexOf("bid", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.order_id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, order.order_id, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

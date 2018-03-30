@@ -80,6 +80,11 @@ namespace Prime.Plugins.Services.Bitsane
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)
@@ -104,7 +109,7 @@ namespace Prime.Plugins.Services.Bitsane
 
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             
-            return new TradeOrderStatusResponse(order.id, isBuy, !order.is_closed, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, !order.is_closed, false)
             {
                 TradeOrderStatus =
                 {

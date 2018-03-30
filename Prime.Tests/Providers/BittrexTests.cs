@@ -109,13 +109,19 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestPlaceWithdrawal()
         {
-            base.PretestPlaceWithdrawal(new WalletAddress("13zPXAsFofXXkczMg9bB6x1L9BWK9Yiawr"), new Money(0.00004911m, Asset.Btc));
+            base.PretestPlaceWithdrawal(new WalletAddress("13zPXAsFofXXkczMg9bB6x1L9BWK9Yiawr"), new Money(0.10004911m, Asset.Btc));
         }
 
         [Fact]
         public override void TestGetTradeOrders()
         {
             base.PretestGetTradeOrders();
+        }
+
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
         }
 
         #endregion

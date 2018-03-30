@@ -52,6 +52,11 @@ namespace Prime.Plugins.Services.Kuna
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if (!context.HasMarket)
@@ -71,7 +76,7 @@ namespace Prime.Plugins.Services.Kuna
 
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.id, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

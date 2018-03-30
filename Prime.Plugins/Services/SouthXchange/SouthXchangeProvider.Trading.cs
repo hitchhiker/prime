@@ -47,6 +47,11 @@ namespace Prime.Plugins.Services.SouthXchange
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -64,7 +69,7 @@ namespace Prime.Plugins.Services.SouthXchange
 
             var isBuy = order.Type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.Code, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, order.Code, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

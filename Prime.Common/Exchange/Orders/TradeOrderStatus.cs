@@ -1,11 +1,15 @@
 ﻿namespace Prime.Common
 {
+    /// <summary>
+    /// Contains information for specific order.
+    /// </summary>
     public class TradeOrderStatus
     {
         public TradeOrderStatus() {}
 
-        public TradeOrderStatus(string remoteOrderId, bool isBuy, bool isOpen, bool isCancelRequested)
+        public TradeOrderStatus(Network network, string remoteOrderId, bool isBuy, bool isOpen, bool isCancelRequested)
         {
+            Network = network;
             IsFound = true;
             RemoteOrderId = remoteOrderId;
             IsBuy = isBuy;
@@ -14,12 +18,14 @@
 
             Market = AssetPair.Empty;
         }
+        
+        public Network Network { get; }
 
         public bool IsBuy { get; }
         public bool IsSell => !IsBuy;
 
         public AssetPair Market { get; set; }
-        public bool HasMarket => !Equals(Market, AssetPair.Empty);
+        public bool HasMarket => !Equals(Market, AssetPair.Empty) || Market.IsRaw;
 
         public bool IsFound { get; }
         public string RemoteOrderId { get; }

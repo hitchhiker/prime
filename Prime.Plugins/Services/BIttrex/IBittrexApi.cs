@@ -7,10 +7,11 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
+    [AllowAnyStatusCode]
     internal interface IBittrexApi
     {
         [Get("/account/getbalances")]
-        Task<BittrexSchema.BalancesResponse> GetAllBalancesAsync();
+        Task<Response<BittrexSchema.BalancesResponse>> GetAllBalancesAsync();
 
         /// <summary>
         /// Gets or generates new deposit address for specified currency.
@@ -21,37 +22,37 @@ namespace Prime.Plugins.Services.Bittrex
         Task<BittrexSchema.DepositAddressResponse> GetDepositAddressAsync([Path] string currency);
 
         [Get("/public/getmarkets")]
-        Task<BittrexSchema.MarketEntriesResponse> GetMarketsAsync();
+        Task<Response<BittrexSchema.MarketEntriesResponse>> GetMarketsAsync();
 
         [Get("/public/getticker?market={market}")]
         Task<BittrexSchema.TickerResponse> GetTickerAsync([Path] string market);
 
         [Get("/public/getmarketsummaries")]
-        Task<BittrexSchema.MarketSummariesResponse> GetMarketSummariesAsync();
+        Task<Response<BittrexSchema.MarketSummariesResponse>> GetMarketSummariesAsync();
 
         [Get("/public/getmarketsummary?market={market}")]
-        Task<BittrexSchema.MarketSummariesResponse> GetMarketSummaryAsync([Path] string market);
+        Task<Response<BittrexSchema.MarketSummariesResponse>> GetMarketSummaryAsync([Path] string market);
 
         [Get("/public/getorderbook?market={currencyPair}&type=both")]
-        Task<BittrexSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
+        Task<Response<BittrexSchema.OrderBookResponse>> GetOrderBookAsync([Path] string currencyPair);
 
         [Get("/market/buylimit")]
-        Task<BittrexSchema.UuidResponse> PlaceMarketBuyLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
+        Task<Response<BittrexSchema.UuidResponse>> PlaceMarketBuyLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
 
         [Get("/market/selllimit")]
-        Task<BittrexSchema.UuidResponse> PlaceMarketSellLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
+        Task<Response<BittrexSchema.UuidResponse>> PlaceMarketSellLimit([Query] string market, [Query] decimal quantity, [Query] decimal rate);
 
         [Get("/market/cancel?uuid={uuid}")]
         Task<BittrexSchema.UuidResponse> GetMarketCancel([Path] string uuid);
 
         [Get("/market/getopenorders")]
-        Task<BittrexSchema.OpenOrdersResponse> GetMarketOpenOrders([Query] string currencyPair = null);
+        Task<Response<BittrexSchema.OpenOrdersResponse>> GetMarketOpenOrders([Query] string currencyPair = null);
 
         [Get("/account/getorder?uuid={uuid}")]
-        Task<BittrexSchema.OrderResponse> GetAccountOrder([Path] string uuid);
+        Task<Response<BittrexSchema.OrderResponse>> GetAccountOrder([Path] string uuid);
 
         [Get("/account/getorderhistory")]
-        Task<BittrexSchema.OrderHistoryResponse> GetOrderHistory([Query] string currencyPair = null);
+        Task<Response<BittrexSchema.OrderHistoryResponse>> GetOrderHistory([Query] string currencyPair = null);
 
         /// <summary>
         /// Used to withdraw funds from your account.
@@ -62,6 +63,6 @@ namespace Prime.Plugins.Services.Bittrex
         /// <param name="paymentid">Used for CryptoNotes/BitShareX/Nxt optional field (memo/paymentid).</param>
         /// <returns>Returns the withdrawal uuid.</returns>
         [Get("/account/withdraw")]
-        Task<BittrexSchema.WithdrawalResponse> Withdraw([Query] string currency, [Query] decimal quantity, [Query] string address, [Query] string paymentid = null);
+        Task<Response<BittrexSchema.WithdrawalResponse>> Withdraw([Query] string currency, [Query] decimal quantity, [Query] string address, [Query] string paymentid = null);
     }
 }

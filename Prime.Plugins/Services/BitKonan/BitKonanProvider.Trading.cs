@@ -54,6 +54,11 @@ namespace Prime.Plugins.Services.BitKonan
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -70,7 +75,7 @@ namespace Prime.Plugins.Services.BitKonan
 
             var isBuy = activeOrder.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(activeOrder.id, isBuy, true, false)
+            return new TradeOrderStatusResponse(Network, activeOrder.id, isBuy, true, false)
             {
                 TradeOrderStatus =
                 {

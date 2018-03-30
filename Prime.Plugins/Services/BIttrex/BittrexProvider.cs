@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Utility;
+using RestEase;
 
 namespace Prime.Plugins.Services.Bittrex
 {
@@ -61,9 +62,10 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             return r != null && r.success && r.result != null;
         }
@@ -85,9 +87,10 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this);
-            var r = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
+            var rRaw = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw, context.Pair);
 
-            CheckResponseErrors(r, context.Pair);
+            var r = rRaw.GetContent();
 
             var e = r.result.FirstOrDefault();
             if (e == null)
@@ -104,9 +107,10 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketSummariesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetMarketSummariesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             var rPairsDict = r.result.ToDictionary(x => x.MarketName.ToAssetPair(this), x => x);
 
@@ -149,9 +153,10 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetMarketsAsync().ConfigureAwait(false);
+            var rRaw = await api.GetMarketsAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             var pairs = new AssetPairs();
 
@@ -168,8 +173,10 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
-            CheckResponseErrors(r);
+            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var balances = new BalanceResults(this);
 
@@ -196,9 +203,11 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
-            CheckResponseErrors(r);
+            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
+            var r = rRaw.GetContent();
+            
             var addresses = new WalletAddressesResult();
 
             foreach (var rBalance in r.result)
@@ -216,9 +225,10 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             var addresses = new WalletAddressesResult();
 
@@ -235,14 +245,22 @@ namespace Prime.Plugins.Services.Bittrex
             return addresses;
         }
 
-        private void CheckResponseErrors<T>(BittrexSchema.BaseResponse<T> response, AssetPair pair = null)
+        private void CheckResponseErrors<T>(Response<T> response, AssetPair pair = null)
         {
-            if (response.success == false)
+            if (response.TryGetContent(out BittrexSchema.ResultResponse rBase))
             {
-                if (response.message.Equals("INVALID_MARKET") && pair != null)
-                    throw new AssetPairNotSupportedException(pair, this);
-                throw new ApiResponseException($"API error: {response.message}", this);
+                if (rBase.success == false)
+                {
+                    if (rBase.message.Equals("INVALID_MARKET") && pair != null)
+                        throw new AssetPairNotSupportedException(pair, this);
+                    throw new ApiResponseException($"API error: {rBase.message}", this);
+                }
             }
+
+            if (!response.ResponseMessage.IsSuccessStatusCode)
+                throw new ApiResponseException(
+                    $"API error: {response.ResponseMessage.ReasonPhrase} ({response.ResponseMessage.StatusCode})",
+                    this);
         }
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
@@ -251,9 +269,10 @@ namespace Prime.Plugins.Services.Bittrex
 
             var pairCode = context.Pair.ToTicker(this);
 
-            var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            var rRaw = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw, context.Pair);
 
-            CheckResponseErrors(r, context.Pair);
+            var r = rRaw.GetContent();
 
             var orderBook = new OrderBook(Network, context.Pair.Reversed); //HH: This is the reversed pair that is returned.
 
@@ -277,7 +296,11 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var pairCode = context.Pair.ToTicker(this).ToLower();
-            var r = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
+
+            var rRaw = await api.GetMarketSummaryAsync(pairCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var summary = r.result.FirstOrDefault();
             var remoteMarker = summary.MarketName.ToAssetPair(this);

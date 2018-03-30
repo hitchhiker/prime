@@ -51,6 +51,11 @@ namespace Prime.Plugins.Services.Coinmate
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             if(!context.HasMarket)
@@ -75,7 +80,7 @@ namespace Prime.Plugins.Services.Coinmate
             var isOpen = order.status.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             
-            return new TradeOrderStatusResponse(order.id, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, order.id, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

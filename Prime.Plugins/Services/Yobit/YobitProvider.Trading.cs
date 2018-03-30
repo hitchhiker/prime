@@ -64,6 +64,11 @@ namespace Prime.Plugins.Services.Yobit
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
@@ -84,7 +89,7 @@ namespace Prime.Plugins.Services.Yobit
 
             var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

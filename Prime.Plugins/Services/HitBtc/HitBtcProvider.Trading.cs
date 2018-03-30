@@ -76,6 +76,11 @@ namespace Prime.Plugins.Services.HitBtc
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private Dictionary<string, object> CreateHitBtcRequestBody()
         {
             return new Dictionary<string, object>();
@@ -95,7 +100,7 @@ namespace Prime.Plugins.Services.HitBtc
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatusResponse(r.clientOrderId, isBuy, isOpen, isCancelRequested)
+            return new TradeOrderStatusResponse(Network, r.clientOrderId, isBuy, isOpen, isCancelRequested)
             {
                 TradeOrderStatus =
                 {

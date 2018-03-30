@@ -53,6 +53,8 @@ namespace Prime.Plugins.Services.Bitfinex
                     return JsonConvert.DeserializeObject<BitfinexSchema.NewOrderRequest>(json);
                 case "WalletBalancesRequest":
                     return JsonConvert.DeserializeObject<BitfinexSchema.WalletBalancesRequest>(json);
+                case "OpenOrdersRequest":
+                    return JsonConvert.DeserializeObject<BitfinexSchema.OpenOrdersRequest>(json);
                 case "AccountInfoRequest":
                     return JsonConvert.DeserializeObject<BitfinexSchema.AccountInfoRequest>(json);
                 case "WithdrawalRequest":

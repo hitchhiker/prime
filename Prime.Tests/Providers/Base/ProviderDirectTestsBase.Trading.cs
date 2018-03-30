@@ -21,12 +21,19 @@ namespace Prime.Tests.Providers
         }
         
         public virtual void TestGetTradeOrders() { }
-
         public void PretestGetTradeOrders(AssetPair market = null)
         {
             var p = IsType<IOrderLimitProvider>();
             if (p.Success)
                 GetTradeOrdersTest(p.Provider, market);
+        }
+        
+        public virtual void TestGetOpenOrders() { }
+        public void PretestGetOpenOrders(AssetPair market = null)
+        {
+            var p = IsType<IOrderLimitProvider>();
+            if (p.Success)
+                GetOpenOrdersTest(p.Provider, market);
         }
 
         public virtual void TestPlaceOrderLimit() { }
@@ -92,17 +99,32 @@ namespace Prime.Tests.Providers
             DisplayOrderStatusInfo(r, market);
         }
 
+        private void GetOpenOrdersTest(IOrderLimitProvider provider, AssetPair market = null)
+        {
+            var context = new OpenOrdersContext(UserContext.Current)
+            {
+                Market = market
+            };
+
+            var orders = AsyncContext.Run(() => provider.GetOpenOrdersAsync(context)).Orders.ToArray();
+
+            if (orders.Length == 0)
+                OutputWriter.WriteLine("No open orders returned");
+            else
+                orders.ForEach(DisplayOrderStatusInfo);
+        }
+
         private void GetTradeOrdersTest(IOrderLimitProvider provider, AssetPair market = null)
         {
-            var context = new TradeOrdersContext(UserContext.Current);
-
-            if (market != null)
-                context.Market = market;
+            var context = new TradeOrdersContext(UserContext.Current)
+            {
+                Market = market
+            };
 
             var orders = AsyncContext.Run(() => provider.GetTradeOrdersAsync(context)).Orders.ToArray();
 
             if (orders.Length == 0)
-                OutputWriter.WriteLine("No orders returned");
+                OutputWriter.WriteLine("No trade orders returned");
             else
                 orders.ForEach(DisplayOrderStatusInfo);
         }

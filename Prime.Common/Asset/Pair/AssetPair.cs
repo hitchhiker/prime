@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using LiteDB;
 using Prime.Common;
@@ -30,6 +31,34 @@ namespace Prime.Common
         public AssetPair(string asset, string quote, IDescribesAssets provider) : this(Assets.I.Get(asset, provider), Assets.I.Get(quote, provider))
         {
         }
+
+        /// <summary>
+        /// Constructs asset pair that doesn't have separated Base and Quote currency. 
+        /// Instead it has glued currency codes that can be parsed later in upper layers.
+        /// This constructor should be used when it's impossible to parse currency codes because no separator is used (USDBTC, XRPUSDT).
+        /// </summary>
+        /// <param name="raw"></param>
+        public AssetPair(string raw)
+        {
+            if(string.IsNullOrWhiteSpace(raw))
+                throw new ArgumentNullException($"{nameof(raw)} is null.");
+
+            if (raw.Any(x => !char.IsLetter(x)))
+                throw new FormatException($"Input asset pair contains separators but treated as raw. Use constructors with divided Base and Quote assets.");
+
+            Raw = raw.ToUpper(CultureInfo.InvariantCulture);
+
+            IsRaw = true;
+
+            Asset1 = Asset2 = Asset.None;
+        }
+
+
+        /// <summary>
+        /// Concatenated Base and Quote currencies without separator.
+        /// </summary>
+        public string Raw { get; }
+        public bool IsRaw { get; }
 
         /// <summary>
         /// Base currency
@@ -125,6 +154,9 @@ namespace Prime.Common
 
         public override string ToString()
         {
+            if (IsRaw && Asset1.Equals(Asset.None) && Asset2.Equals(Asset.None))
+                return Raw;
+
             return Asset1.ShortCode + ":" + Asset2.ShortCode;
         }
 

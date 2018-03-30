@@ -38,6 +38,11 @@ namespace Prime.Plugins.Services.Cryptopia
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrdersAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -54,7 +59,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = rRaw.GetContent();
             
-            return r.Data.Select(x => new TradeOrderStatus(x.OrderId.ToString(), x.Type.Equals("buy", StringComparison.OrdinalIgnoreCase), true, false)
+            return r.Data.Select(x => new TradeOrderStatus(Network, x.OrderId.ToString(), x.Type.Equals("buy", StringComparison.OrdinalIgnoreCase), true, false)
             {
                 Market = x.Market.ToAssetPair(this, '/'),
                 Rate = x.Rate,
@@ -79,7 +84,7 @@ namespace Prime.Plugins.Services.Cryptopia
 
             var r = rRaw.GetContent();
 
-            return r.Data.Select(x => new TradeOrderStatus(x.TradeId.ToString(), x.Type.Equals("buy", StringComparison.OrdinalIgnoreCase), false, false)
+            return r.Data.Select(x => new TradeOrderStatus(Network, x.TradeId.ToString(), x.Type.Equals("buy", StringComparison.OrdinalIgnoreCase), false, false)
             {
                 Market = x.Market.ToAssetPair(this, '/'),
                 Rate = x.Rate,
@@ -127,7 +132,7 @@ namespace Prime.Plugins.Services.Cryptopia
                 market = trade.Market;
             }
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

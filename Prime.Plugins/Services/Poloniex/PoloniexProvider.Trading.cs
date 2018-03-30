@@ -25,7 +25,14 @@ namespace Prime.Plugins.Services.Poloniex
                 ApiHitsCount = 2
             };
         }
-        
+
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            var openOrders = await GetOpenOrders(context, context.Market).ConfigureAwait(false);
+            
+            return new OpenOrdersResponse(openOrders);
+        }
+
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var buy = context.IsBuy;
@@ -109,7 +116,7 @@ namespace Prime.Plugins.Services.Poloniex
                 {
                     var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-                    historyOrders.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, false, false)
+                    historyOrders.Add(new TradeOrderStatus(Network, rOrder.orderNumber.ToString(), isBuy, false, false)
                     {
                         Market = market,
                         AmountInitial = rOrder.amount,
@@ -125,13 +132,14 @@ namespace Prime.Plugins.Services.Poloniex
         /// Returns list of currently open orders.
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="market"></param>
         /// <returns></returns>
-        private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrders(NetworkProviderPrivateContext context)
+        private async Task<IEnumerable<TradeOrderStatus>> GetOpenOrders(NetworkProviderPrivateContext context, AssetPair market = null)
         {
             var api = ApiProvider.GetApi(context);
 
             var body = CreatePoloniexBody(PoloniexBodyType.ReturnOpenOrders);
-            body.Add("currencyPair", "all");
+            body.Add("currencyPair", market != null ? market.ToTicker(this) : "all");
 
             var rRaw = await api.GetOpenOrdersAsync(body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
@@ -142,14 +150,14 @@ namespace Prime.Plugins.Services.Poloniex
 
             foreach (var rMarketOrders in r)
             {
-                var market = rMarketOrders.Key.ToAssetPair(this);
+                var orderMarket = rMarketOrders.Key.ToAssetPair(this);
 
                 foreach (var rOrder in rMarketOrders.Value)
                 {
                     var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
-                    openOrders.Add(new TradeOrderStatus(rOrder.orderNumber.ToString(), isBuy, true, false)
+                    openOrders.Add(new TradeOrderStatus(Network, rOrder.orderNumber.ToString(), isBuy, true, false)
                     {
-                        Market = market,
+                        Market = orderMarket,
                         AmountInitial = rOrder.amount,
                         Rate = rOrder.rate
                     });

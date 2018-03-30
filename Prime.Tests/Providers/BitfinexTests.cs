@@ -31,19 +31,14 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestPlaceOrderLimit()
         {
-            base.PretestPlaceOrderLimit("XRP_USD".ToAssetPairRaw(), true, 34m, new Money(0.1m, "USD".ToAssetRaw()));
+            // Reliable buy order test.
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(0.002m, Asset.Btc), new Money(100_000m, Asset.Usd));
         }
 
         [Fact]
         public override void TestGetTradeOrderStatus()
         {
-            base.PretestGetTradeOrderStatus("876236022465");
-        }
-
-        [Fact]
-        public override void TestGetMarketFromOrder()
-        {
-            base.PretestGetMarketFromOrder("8083100177");
+            base.PretestGetTradeOrderStatus("9991645259");
         }
 
         [Fact]
@@ -51,6 +46,12 @@ namespace Prime.Tests.Providers
         {
             // TODO: AY: Bitfinex - test with real money.
             base.PretestPlaceWithdrawal(new WalletAddress("6a51d6a5wda6w5d1"), new Money(10000, "UAH".ToAssetRaw()));
+        }
+
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
         }
 
         #endregion

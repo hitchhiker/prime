@@ -52,6 +52,11 @@ namespace Prime.Plugins.Services.Common
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProviderPrivate.GetApi(context);
@@ -69,7 +74,7 @@ namespace Prime.Plugins.Services.Common
 
             var isBuy = order.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
-            return new TradeOrderStatusResponse(context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, order.status == 0, order.status == 2 || order.status == 3)
             {
                 TradeOrderStatus =
                 {

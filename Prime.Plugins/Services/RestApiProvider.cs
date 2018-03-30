@@ -21,7 +21,7 @@ namespace Prime.Plugins.Services
         private readonly Func<ApiKey, RequestModifier> _requestModifier;
         
         public JsonSerializerSettings JsonSerializerSettings { get; set; }
-        public DecompressionMethods DecompressionMethods { get; set; }
+        public DecompressionMethods DecompressionMethods { get; set; } = DecompressionMethods.None;
 
         /// <summary>
         /// Creates instance that supports private API operations.
@@ -63,8 +63,7 @@ namespace Prime.Plugins.Services
         {
             var handler = key != null ? new ModifyingClientHttpHandler(_requestModifier.Invoke(key)) : new HttpClientHandler();
 
-            if (DecompressionMethods != null)
-                handler.AutomaticDecompression = DecompressionMethods;
+            handler.AutomaticDecompression = DecompressionMethods;
 
             var httpClient = new HttpClient(handler)
             {
