@@ -9,8 +9,7 @@ using Prime.Common.Wallet.Withdrawal.History;
 
 namespace Prime.Plugins.Services.BitMex
 {
-    public partial class BitMexProvider : IBalanceProvider, IDepositProvider, IWithdrawalPlacementProvider,
-        IWithdrawalHistoryProvider, IWithdrawalCancelationProvider, IWithdrawalConfirmationProvider
+    public partial class BitMexProvider : IBalanceProvider, IDepositProvider, IWithdrawalProvider, IOrderLimitProvider
     {
         public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
@@ -173,5 +172,33 @@ namespace Prime.Plugins.Services.BitMex
                 WithdrawalRemoteId = r.transactID
             };
         }
+
+        public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public MinimumTradeVolume[] MinimumTradeVolume { get; }
+        public OrderLimitFeatures OrderLimitFeatures { get; }
     }
 }

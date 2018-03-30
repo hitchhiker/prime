@@ -128,6 +128,43 @@ namespace Prime.Plugins.Services.BitMex
             public string country;
         }
 
+        internal class OrdersResponse
+        {
+            public string orderID;
+            public string clOrdID;
+            public string clOrdLinkID;
+            public int account;
+            public string symbol;
+            public string side;
+            public int simpleOrderQty;
+            public int orderQty;
+            public int price;
+            public int displayQty;
+            public int stopPx;
+            public int pegOffsetValue;
+            public string pegPriceType;
+            public string currency;
+            public string settlCurrency;
+            public string ordType;
+            public string timeInForce;
+            public string execInst;
+            public string contingencyType;
+            public string exDestination;
+            public string ordStatus;
+            public string triggered;
+            public bool workingIndicator;
+            public string ordRejReason;
+            public int simpleLeavesQty;
+            public int leavesQty;
+            public int simpleCumQty;
+            public int cumQty;
+            public int avgPx;
+            public string multiLegReportingType;
+            public string text;
+            public DateTime transactTime;
+            public DateTime timestamp;
+        }
+
         internal class UserPreferences
         {
             public bool animationsEnabled;

@@ -17,6 +17,8 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
         }
 
+        #region Public
+
         [Fact]
         public override void TestGetPricing()
         {
@@ -32,12 +34,6 @@ namespace Prime.Tests.Providers
         public override void TestApiPublic()
         {
             base.TestApiPublic();
-        }
-
-        [Fact]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
         }
 
         [Fact]
@@ -59,6 +55,22 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestGetOrderBook()
+        {
+            base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
+        }
+
+        #endregion
+
+        #region Private
+     
+        [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+        
+        [Fact]
         public override void TestGetBalances()
         {
             base.TestGetBalances();
@@ -78,13 +90,7 @@ namespace Prime.Tests.Providers
 
             base.PretestGetAddressesForAsset(context);
         }
-
-        [Fact]
-        public override void TestGetOrderBook()
-        {
-            base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
-        }
-
+        
         [Fact]
         public override void TestGetWithdrawalHistory()
         {
@@ -104,7 +110,7 @@ namespace Prime.Tests.Providers
             base.PretestPlaceWithdrawal(new WalletAddress("address"), new Money(1000, Asset.Btc), "Debug payment", new Money(0.004m, Asset.Btc), token2fa);
         }
 
-        // [Fact]
+        [Fact]
         public override void TestCancelWithdrawal()
         {
             var context = new WithdrawalCancelationContext()
@@ -115,7 +121,7 @@ namespace Prime.Tests.Providers
             base.PretestCancelWithdrawal(context);
         }
 
-        // [Fact]
+        [Fact]
         public override void TestConfirmWithdrawal()
         {
             var context = new WithdrawalConfirmationContext(UserContext.Current)
@@ -125,5 +131,7 @@ namespace Prime.Tests.Providers
 
             base.PretestConfirmWithdrawal(context);
         }
+
+        #endregion
     }
 }

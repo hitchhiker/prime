@@ -15,7 +15,18 @@ namespace Prime.Plugins.Services.BitMex
 
         [Get("/user")]
         Task<BitMexSchema.UserInfoResponse> GetUserInfoAsync();
-       
+
+        [Get("/order")]
+        Task<BitMexSchema.OrdersResponse> GetOrdersAsync(
+            [Query] string symbol = null, 
+            [Query] string filter = null,
+            [Query] string columns = null, 
+            [Query] double? count = null, 
+            [Query] double? start = null,
+            [Query] bool? reverse = null, 
+            [Query] DateTime? startTime = null, 
+            [Query] DateTime? endTime = null);
+
         [Get("/trade/bucketed?binSize={binSize}&partial=false&count=500&symbol={currencySymbol}&reverse=true&startTime={startTime}&endTime={endTime}")]
         Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistoryAsync([Path] string currencySymbol, [Path] string binSize, [Path(Format = "yyyy.MM.dd")] DateTime startTime, [Path(Format = "yyyy.MM.dd")] DateTime endTime);
 
