@@ -8,9 +8,7 @@ namespace Prime.Common
     {
         public MinimumTradeVolume()
         {
-            Market = AssetPair.Empty;
-            MinimumBuy = Money.Zero;
-            MinimumSell = Money.Zero;
+
         }
 
         public MinimumTradeVolume(AssetPair market) : this()
@@ -24,10 +22,10 @@ namespace Prime.Common
             MinimumSell = minimumSell;
         }
 
-        public AssetPair Market { get; }
+        public AssetPair Market { get; } = AssetPair.Empty;
 
-        public Money MinimumBuy { get; set; }
-        public Money MinimumSell { get; set; }
+        public Money MinimumBuy { get; set; } = Money.Zero;
+        public Money MinimumSell { get; set; } = Money.Zero;
 
         public bool HasMinimumBase => MinimumBuy != Money.Zero;
         public bool HasMinimumQuote => MinimumSell != Money.Zero;

@@ -103,7 +103,8 @@ namespace Prime.Plugins.Services.Bitfinex
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; } =
         {
-            new MinimumTradeVolume(new AssetPair("XRP", "USD"), new Money(10, Asset.Usd), new Money(12, Asset.Xrp))
+            new MinimumTradeVolume("XRP_USD".ToAssetPairRaw(), new Money(10, Asset.Usd), new Money(12, Asset.Xrp)),
+            new MinimumTradeVolume("BTC_USD".ToAssetPairRaw()) { MinimumSell = new Money(0.002m, Asset.Btc)}
         };
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus)
