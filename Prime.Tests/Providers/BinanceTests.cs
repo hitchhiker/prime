@@ -58,6 +58,12 @@ namespace Prime.Tests.Providers
             base.PretestGetTradeOrders("TRX_BTC".ToAssetPairRaw());
         }
 
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders("TRX_BTC".ToAssetPairRaw());
+        }
+
         public async Task TestGetDepositHistory()
         {
             var context = new NetworkProviderPrivateContext(UserContext.Current);

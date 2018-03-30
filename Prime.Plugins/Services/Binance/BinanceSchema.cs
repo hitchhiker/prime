@@ -65,12 +65,14 @@ namespace Prime.Plugins.Services.Binance
             public long time;
         }
 
-        internal class AllOrdersEntryResponse : QueryOrderResponse
+        internal class OrdersEntryResponse : QueryOrderResponse
         {
             public bool isWorking;
         }
 
-        internal class AllOrdersResponse : List<AllOrdersEntryResponse> { }
+        internal class AllOrdersResponse : List<OrdersEntryResponse> { }
+        
+        internal class OpenOrdersResponse : List<OrdersEntryResponse> { }
         
         internal class DepositHistoryResponse : ErrorResponseBase
         {

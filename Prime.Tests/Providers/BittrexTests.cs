@@ -118,6 +118,12 @@ namespace Prime.Tests.Providers
             base.PretestGetTradeOrders();
         }
 
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
+        }
+
         #endregion
     }
 }

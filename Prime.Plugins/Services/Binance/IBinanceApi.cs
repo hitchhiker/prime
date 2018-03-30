@@ -74,6 +74,17 @@ namespace Prime.Plugins.Services.Binance
         Task<Response<BinanceSchema.AllOrdersResponse>> GetAllOrdersAsync([Query] string symbol, [Query] long? orderId = null, [Query] int? limit = null, [Query] long? recvWindow = null);
 
         /// <summary>
+        /// Get all open orders on a symbol. Careful when accessing this with no symbol.
+        /// Weight: 1 for a single symbol; number of symbols that are TRADING / 2 when the symbol parameter is omitted.
+        /// See: https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#current-open-orders-user_data
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="recvWindow"></param>
+        /// <returns></returns>
+        [Get("/api/v3/openOrders")]
+        Task<Response<BinanceSchema.OpenOrdersResponse>> GetOpenOrdersAsync([Query] string symbol = null, [Query] long? recvWindow = null);
+        
+        /// <summary>
         /// Gets the history of deposits to account.
         /// </summary>
         /// <param name="asset">Asset which deposit history should be returned.</param>

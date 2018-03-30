@@ -92,9 +92,37 @@ namespace Prime.Plugins.Services.Binance
             };
         }
 
-        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            
+            var rRaw = context.HasMarket 
+                ? await api.GetOpenOrdersAsync(context.Market.ToTicker(this)).ConfigureAwait(false)
+                : await api.GetOpenOrdersAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var rOrders = rRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in rOrders)
+            {
+                var isBuy = rOrder.side.Equals("BUY", StringComparison.OrdinalIgnoreCase);
+                var isOpen = rOrder.status.Equals("NEW", StringComparison.OrdinalIgnoreCase) || rOrder.status.Equals("PARTIALLY_FILLED", StringComparison.OrdinalIgnoreCase);
+                var isCancelRequested = rOrder.status.Equals("PENDING_CANCEL", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, rOrder.orderId.ToString(), isBuy, isOpen, isCancelRequested)
+                {
+                    AmountInitial = rOrder.origQty,
+                    Rate = rOrder.price,
+                    AmountRemaining = rOrder.origQty - rOrder.executedQty,
+                    Market = context.Market
+                });
+            }
+            
+            return new OpenOrdersResponse(orders)
+            {
+                ApiHitsCount = 1
+            };
         }
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
