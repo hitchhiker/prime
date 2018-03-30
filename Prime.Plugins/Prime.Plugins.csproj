@@ -1,29 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Configurations>Debug;Release;All_Debug</Configurations>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Services\3rdParty\**" />
     <EmbeddedResource Remove="Services\3rdParty\**" />
     <None Remove="Services\3rdParty\**" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.4.1" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="RestEase" Version="1.4.4" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="Google.Protobuf">
       <HintPath>..\packages\Google.Protobuf.3.4.1\lib\net45\Google.Protobuf.dll</HintPath>
@@ -35,5 +30,4 @@
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Web.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>

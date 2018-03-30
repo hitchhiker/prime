@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.BitMex
 
         [Get("/user")]
         Task<BitMexSchema.UserInfoResponse> GetUserInfoAsync();
-
+       
         [Get("/trade/bucketed?binSize={binSize}&partial=false&count=500&symbol={currencySymbol}&reverse=true&startTime={startTime}&endTime={endTime}")]
         Task<BitMexSchema.BucketedTradeEntriesResponse> GetTradeHistoryAsync([Path] string currencySymbol, [Path] string binSize, [Path(Format = "yyyy.MM.dd")] DateTime startTime, [Path(Format = "yyyy.MM.dd")] DateTime endTime);
 
