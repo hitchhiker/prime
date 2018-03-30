@@ -160,9 +160,17 @@ namespace Prime.Plugins.Services.Bitfinex
             }
         }
 
+        internal class OpenOrdersRequest : BaseRequest
+        {
+            internal class Descriptor : OpenOrdersRequest, IClassDescriptor
+            {
+                public string ClassName => nameof(OpenOrdersRequest);
+            }
+        }
+
         internal class WalletBalancesRequest : BaseRequest
         {
-            internal class Descriptor : AccountInfoRequest, IClassDescriptor
+            internal class Descriptor : WalletBalancesRequest, IClassDescriptor
             {
                 public string ClassName => nameof(WalletBalancesRequest);
             }

@@ -53,6 +53,12 @@ namespace Prime.Tests.Providers
             base.PretestPlaceWithdrawal(new WalletAddress("6a51d6a5wda6w5d1"), new Money(10000, "UAH".ToAssetRaw()));
         }
 
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
+        }
+
         #endregion
 
         #region Public
