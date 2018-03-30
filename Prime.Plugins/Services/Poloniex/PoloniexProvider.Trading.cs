@@ -28,7 +28,7 @@ namespace Prime.Plugins.Services.Poloniex
 
         public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            var openOrders = await GetOpenOrders(context, context.Market);
+            var openOrders = await GetOpenOrders(context, context.Market).ConfigureAwait(false);
             
             return new OpenOrdersResponse(openOrders);
         }
