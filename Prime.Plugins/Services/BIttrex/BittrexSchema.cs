@@ -10,10 +10,14 @@ namespace Prime.Plugins.Services.Bittrex
     {
         #region Base
 
-        internal class BaseResponse<TResult>
+        internal class ResultResponse
         {
             public bool success;
             public string message;
+        }
+
+        internal class BaseResponse<TResult> : ResultResponse
+        {
             public TResult result;
         }
 

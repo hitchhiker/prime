@@ -34,11 +34,12 @@ namespace Prime.Plugins.Services.Bittrex
             var quantity = context.Quantity.ToDecimalValue();
             var rate = context.Rate.ToDecimalValue();
 
-            var r = context.IsSell ?
+            var rRaw = context.IsSell ?
                 await api.PlaceMarketSellLimit(remotePair, quantity, rate).ConfigureAwait(false) :
                 await api.PlaceMarketBuyLimit(remotePair, quantity, rate).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             return new PlacedOrderLimitResponse(r.result.uuid);
         }
@@ -47,11 +48,14 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var rHistoryOrders = await api.GetOrderHistory().ConfigureAwait(false);
-            var rOpenOrders = await api.GetMarketOpenOrders().ConfigureAwait(false);
+            var rHistoryOrdersRaw = await api.GetOrderHistory().ConfigureAwait(false);
+            var rOpenOrdersRaw = await api.GetMarketOpenOrders().ConfigureAwait(false);
 
-            CheckResponseErrors(rHistoryOrders);
-            CheckResponseErrors(rOpenOrders);
+            CheckResponseErrors(rHistoryOrdersRaw);
+            CheckResponseErrors(rOpenOrdersRaw);
+
+            var rHistoryOrders = rHistoryOrdersRaw.GetContent();
+            var rOpenOrders = rOpenOrdersRaw.GetContent();
 
             var orders = new List<TradeOrderStatus>();
             orders.AddRange(GetTradeOrderStatusFromResponse(rHistoryOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList()));
@@ -64,9 +68,11 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             
-            var rOpenOrders = await api.GetMarketOpenOrders().ConfigureAwait(false);
-            CheckResponseErrors(rOpenOrders);
-            
+            var rOpenOrdersRaw = await api.GetMarketOpenOrders().ConfigureAwait(false);
+            CheckResponseErrors(rOpenOrdersRaw);
+
+            var rOpenOrders = rOpenOrdersRaw.GetContent();
+
             var orders = new List<TradeOrderStatus>();
             orders.AddRange(GetTradeOrderStatusFromResponse(rOpenOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList(), true, order => ((BittrexSchema.OpenOrderEntry) order).CancelInitiated));
             
@@ -82,7 +88,7 @@ namespace Prime.Plugins.Services.Bittrex
                 var isBuy = order.OrderType.Equals("LIMIT_BUY", StringComparison.OrdinalIgnoreCase);
                 orderStatuses.Add(new TradeOrderStatus(Network, order.OrderUuid, isBuy, isOpen, checkCancelRequested?.Invoke(order) ?? false)
                 {
-                    Rate = order.Price,
+                    Rate = order.Limit,
                     Market = order.Exchange.ToAssetPair(this),
                     AmountInitial = order.Quantity,
                     AmountRemaining = order.QuantityRemaining
@@ -98,9 +104,11 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var remotePair = context.RemotePairOrNull(this);
-            var r = await api.GetMarketOpenOrders(remotePair).ConfigureAwait(false);
+            
+            var rRaw = await api.GetMarketOpenOrders(remotePair).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             var orders = new TradeOrders(Network);
             foreach (var order in r.result)
@@ -121,9 +129,11 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
             var remotePair = context.RemotePairOrNull(this);
-            var r = await api.GetOrderHistory(remotePair).ConfigureAwait(false);
 
-            CheckResponseErrors(r);
+            var rRaw = await api.GetOrderHistory(remotePair).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var orders = new TradeOrders(Network);
             foreach (var order in r.result)
@@ -143,10 +153,12 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<TradeOrder> GetOrderDetails(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
-            var order = r.result;
+            var rRaw = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
+
+            var order = r.result;
 
             return new TradeOrder(order.OrderUuid, Network, order.Exchange.ToAssetPair(this), GetTradeOrderType(order.Type), order.Price)
             {
@@ -158,9 +170,11 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
 
-            CheckResponseErrors(r);
+            var rRaw = await api.GetAccountOrder(context.RemoteGroupId).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var order = r.result;
 
@@ -183,13 +197,14 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = context.HasDescription
+            var rRaw = context.HasDescription
                 ? await api.Withdraw(context.Amount.Asset.ToRemoteCode(this), context.Amount.ToDecimalValue(),
                     context.Address.Address, context.Description).ConfigureAwait(false)
                 : await api.Withdraw(context.Amount.Asset.ToRemoteCode(this), context.Amount.ToDecimalValue(),
                     context.Address.Address).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(r);
+            var r = rRaw.GetContent();
 
             return new WithdrawalPlacementResult()
             {
