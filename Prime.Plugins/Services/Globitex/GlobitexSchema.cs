@@ -104,11 +104,11 @@ namespace Prime.Plugins.Services.Globitex
             public decimal quantity;
             public string type;
             public string timeInForce;
-            public decimal lastQuantity;
-            public decimal lastPrice;
-            public decimal leavesQuantity;
-            public decimal cumQuantity;
-            public decimal averagePrice;
+            public decimal? lastQuantity;
+            public decimal? lastPrice;
+            public decimal? leavesQuantity;
+            public decimal? cumQuantity;
+            public decimal? averagePrice;
             public long created;
             public string execReportType;
             public long timestamp;
