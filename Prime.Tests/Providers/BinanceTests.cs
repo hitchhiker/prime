@@ -61,7 +61,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetOpenOrders()
         {
-            base.PretestGetOpenOrders("TRX_BTC".ToAssetPairRaw());
+            base.PretestGetOpenOrders();
         }
 
         public async Task TestGetDepositHistory()

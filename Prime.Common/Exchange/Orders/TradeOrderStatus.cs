@@ -25,7 +25,7 @@
         public bool IsSell => !IsBuy;
 
         public AssetPair Market { get; set; }
-        public bool HasMarket => !Equals(Market, AssetPair.Empty);
+        public bool HasMarket => !Equals(Market, AssetPair.Empty) || Market.IsRaw;
 
         public bool IsFound { get; }
         public string RemoteOrderId { get; }

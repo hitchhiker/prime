@@ -15,7 +15,7 @@ namespace Prime.Common
             ShortCode = shortCode.ToUpper();
             Symbol = "#";
         }
-        
+
         internal static Asset InstanceRaw(string shortCode)
         {
             return new Asset(shortCode);
@@ -23,7 +23,7 @@ namespace Prime.Common
 
         public string Name => AssetInfo?.FullName ?? ShortCode;
 
-        public string FullName => AssetInfo!=null ? AssetInfo?.FullName + " (" + ShortCode + ")" : ShortCode;
+        public string FullName => AssetInfo != null ? AssetInfo?.FullName + " (" + ShortCode + ")" : ShortCode;
 
         [Bson]
         public string Symbol { get; private set; }
@@ -37,7 +37,7 @@ namespace Prime.Common
         {
             return CultureInfo.InvariantCulture.NumberFormat;
         }
-        
+
         public AssetPair ToPair(Asset asset2)
         {
             return new AssetPair(this, asset2);
@@ -65,7 +65,7 @@ namespace Prime.Common
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Asset) obj);
+            return Equals((Asset)obj);
         }
 
         public override int GetHashCode()
@@ -82,9 +82,9 @@ namespace Prime.Common
         /// Considered a BASE currency for now.
         /// </summary>
         public static Asset Btc = Assets.I.GetRaw("BTC");
-        
+
         public static Asset Ltc = Assets.I.GetRaw("LTC");
-        
+
         public static Asset Bch = Assets.I.GetRaw("BCH");
 
         public static Asset Eth = Assets.I.GetRaw("ETH");
@@ -100,7 +100,7 @@ namespace Prime.Common
         public static Asset UsdT = Assets.I.GetRaw("USDT");
 
         public static Asset Krw = Assets.I.GetRaw("KRW");
-    
+
         private int? _popularity;
         public int Popularity => _popularity ?? (int)(_popularity = Assets.I.Popular.ToList().IndexOf(this) + 1);
 
