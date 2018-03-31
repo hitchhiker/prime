@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
+using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
     public partial class BitMexProvider : IBalanceProvider, IDepositProvider, IWithdrawalProvider, IOrderLimitProvider
     {
+        private void CheckResponseErrors<T>(Response<T> response, [CallerMemberName] string method = "Unknown")
+        {
+            if (!response.ResponseMessage.IsSuccessStatusCode && response.TryGetContent(out BitMexSchema.ErrorResponse rError))
+            {
+                throw new ApiResponseException($"{rError.error.name}: {rError.error.message}", this, method);
+            }
+        }
+
         public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -57,7 +67,10 @@ namespace Prime.Plugins.Services.BitMex
         {
             var api = ApiProvider.GetApi(context);
 
-            var r = await api.GetUserWalletInfoAsync("XBt").ConfigureAwait(false);
+            var rRaw = await api.GetUserWalletInfoAsync("XBt").ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var results = new BalanceResults(this);
 
@@ -87,7 +100,10 @@ namespace Prime.Plugins.Services.BitMex
 
             body.Add("fee", context.CustomFee.Value.ToDecimalValue() / ConversionRate);
 
-            var r = await api.RequestWithdrawalAsync(body).ConfigureAwait(false);
+            var rRaw = await api.RequestWithdrawalAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return new WithdrawalPlacementResult()
             {
@@ -102,7 +118,10 @@ namespace Prime.Plugins.Services.BitMex
 
             var api = ApiProvider.GetApi(context);
             var remoteCode = context.Asset.ToRemoteCode(this);
-            var r = await api.GetWalletHistoryAsync(remoteCode).ConfigureAwait(false);
+            var rRaw = await api.GetWalletHistoryAsync(remoteCode).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var history = new List<WithdrawalHistoryEntry>();
 
@@ -148,7 +167,10 @@ namespace Prime.Plugins.Services.BitMex
                 { "token", context.WithdrawalRemoteId }
             };
 
-            var r = await api.CancelWithdrawalAsync(body).ConfigureAwait(false);
+            var rRaw = await api.CancelWithdrawalAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return new WithdrawalCancelationResult()
             {
@@ -165,7 +187,10 @@ namespace Prime.Plugins.Services.BitMex
                 { "token", context.WithdrawalRemoteId }
             };
 
-            var r = await api.ConfirmWithdrawalAsync(body).ConfigureAwait(false);
+            var rRaw = await api.ConfirmWithdrawalAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return new WithdrawalConfirmationResult()
             {
@@ -173,9 +198,20 @@ namespace Prime.Plugins.Services.BitMex
             };
         }
 
-        public Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
+        public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var market = context.Pair.ToTicker(this);
+
+            var rRaw = await api.CreateNewLimitOrderAsync(market, context.Quantity.ToDecimalValue(),
+                context.Rate.ToDecimalValue()).ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return new PlacedOrderLimitResponse(r.orderID);
         }
 
         public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)

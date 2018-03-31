@@ -59,6 +59,11 @@ namespace Prime.Plugins.Services.Bitso
             throw new NotImplementedException();
         }
 
+        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -79,7 +84,7 @@ namespace Prime.Plugins.Services.Bitso
             var isBuy = order.side.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
             var isOpen = order.status.IndexOf("open", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return new TradeOrderStatusResponse(order.oid, isBuy, isOpen, false)
+            return new TradeOrderStatusResponse(Network, order.oid, isBuy, isOpen, false)
             {
                 TradeOrderStatus =
                 {

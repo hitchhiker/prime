@@ -132,6 +132,12 @@ namespace Prime.Tests.Providers
             base.PretestConfirmWithdrawal(context);
         }
 
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(0.001m, Asset.Btc), new Money(1, Asset.Usd));
+        }
+
         #endregion
     }
 }

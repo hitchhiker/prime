@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public IRateLimiter RateLimiter => Limiter;
         public bool IsDirect => true;
-        public char? CommonPairSeparator { get; }
+        public char? CommonPairSeparator => null;
 
         public ApiConfiguration GetApiConfiguration => ApiConfiguration.Standard2;
 
@@ -79,7 +79,10 @@ namespace Prime.Plugins.Services.BitMex
             var startDate = context.Range.UtcFrom;
             var endDate = context.Range.UtcTo;
 
-            var r = await api.GetTradeHistoryAsync(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
+            var rRaw = await api.GetTradeHistoryAsync(context.Pair.Asset1.ToRemoteCode(this), resolution, startDate, endDate).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var ohlc = new OhlcDataResponse(context.Resolution);
             var seriesId = OhlcUtilities.GetHash(context.Pair, context.Resolution, Network);
@@ -126,7 +129,10 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPricesAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
+            var rRaw = await api.GetLatestPricesAsync(context.Pair.Asset1.ToRemoteCode(this)).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var rPrice = r.FirstOrDefault(x => x.symbol.Equals(context.Pair.ToTicker(this, "")));
 
@@ -145,7 +151,10 @@ namespace Prime.Plugins.Services.BitMex
         public async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetLatestPricesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetLatestPricesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var pairsDict = r.ToDictionary(x => new AssetPair(x.underlying, x.quoteCurrency, this), x => x);
 
@@ -211,9 +220,12 @@ namespace Prime.Plugins.Services.BitMex
 
             var pairCode = context.Pair.ToTicker(this, "");
 
-            var r = context.MaxRecordsCount == Int32.MaxValue
+            var rRaw = context.MaxRecordsCount == Int32.MaxValue
                 ? await api.GetOrderBookAsync(pairCode, 0).ConfigureAwait(false)
                 : await api.GetOrderBookAsync(pairCode, context.MaxRecordsCount).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var buyAction = "buy";
             var sellAction = "sell";
