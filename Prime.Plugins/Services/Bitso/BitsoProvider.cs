@@ -9,7 +9,7 @@ namespace Prime.Plugins.Services.Bitso
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitso.com/api_info
-    public class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitsoApiVersion = "v3";
         private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Bitso
 
         public BitsoProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitsoApi>(BitsoApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBitsoApi>(BitsoApiUrl, this, (k) => new BitsoAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -50,9 +50,16 @@ namespace Prime.Plugins.Services.Bitso
             return r.success;
         }
 
-        public Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return Task.FromResult(true);
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null && r.success;
         }
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()

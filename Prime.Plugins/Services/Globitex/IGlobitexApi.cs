@@ -30,7 +30,7 @@ namespace Prime.Plugins.Services.Globitex
         [Post("/trading/new_order")]
         Task<Response<GlobitexSchema.NewOrderResponse>> PlaceNewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
         
-        [Get("/trading/orders/active?account={account}")]
-        Task<Response<GlobitexSchema.ActiveOrdersResponse>> GetActiveOrdersAsync([Path] string account);
+        [Get("/trading/orders/active")]
+        Task<Response<GlobitexSchema.ActiveOrdersResponse>> GetActiveOrdersAsync();
     }
 }

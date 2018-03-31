@@ -25,7 +25,17 @@ namespace Prime.Plugins.Services.Globitex
             {
                 parameters = request.RequestUri.Query.TrimStart('?');
             }
-            
+
+            if (request.RequestUri.AbsolutePath.EndsWith("/trading/new_order"))
+            {
+                parameters = string.IsNullOrWhiteSpace(parameters) ? $"account={ApiKey.Extra}" : $"{parameters}&account={ApiKey.Extra}";
+                request.Content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
+            }
+            else if (request.RequestUri.AbsolutePath.EndsWith("/trading/orders/active"))
+            {
+                parameters = string.IsNullOrWhiteSpace(parameters) ? $"account={ApiKey.Extra}" : $"account={ApiKey.Extra}&{parameters}";
+            }
+
             string message = string.IsNullOrWhiteSpace(parameters) ? $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}" : $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}?{parameters}";
 
             var signature = HashHMACSHA512Hex(message, ApiKey.Secret);

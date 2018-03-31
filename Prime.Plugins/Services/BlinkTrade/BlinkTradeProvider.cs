@@ -11,10 +11,11 @@ namespace Prime.Plugins.Services.BlinkTrade
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://blinktrade.com/docs/
-    public class BlinkTradeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class BlinkTradeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BlinkTradeApiVersion = "v1";
-        private const string BlinkTradeApiUrl = "https://api.blinktrade.com/api/" + BlinkTradeApiVersion;
+        private const string BlinkPublicApiUrl = "https://api.blinktrade.com/api/" + BlinkTradeApiVersion;
+        private const string BlinkTradePrivateApiUrl = "https://api.blinktrade.com/tapi/" + BlinkTradeApiVersion + "/message";
 
         private static readonly ObjectId IdHash = "prime:blinktrade".GetObjectIdHashCode();
         private const string PairsCsv = "btcvef,btcvnd,btcbrl,btcpkr,btcclp";
@@ -22,7 +23,8 @@ namespace Prime.Plugins.Services.BlinkTrade
         // No information in API document for REST API (there are rate limits for web sockets API though).
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
-        private RestApiClientProvider<IBlinkTradeApi> ApiProvider { get; }
+        private RestApiClientProvider<IBlinkTradeApi> ApiPublicProvider { get; }
+        private RestApiClientProvider<IBlinkTradeApi> ApiPrivateProvider { get; }
 
         public Network Network { get; } = Networks.I.Get("BlinkTrade");
 
@@ -42,13 +44,33 @@ namespace Prime.Plugins.Services.BlinkTrade
 
         public BlinkTradeProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBlinkTradeApi>(BlinkTradeApiUrl, this, (k) => null);
+            ApiPublicProvider = new RestApiClientProvider<IBlinkTradeApi>(BlinkPublicApiUrl, this, (k) => null);
+            ApiPrivateProvider = new RestApiClientProvider<IBlinkTradeApi>(BlinkTradePrivateApiUrl, this, (k) => new BlinkTradeAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var ctx = new PublicPriceContext("btcvef".ToAssetPair(this, 3));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
+
+            return r != null;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiPrivateProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>
+            {
+                { "MsgType", "U2" },
+                { "BalanceReqID", "1"}
+            };
+
+            var rRaw = await api.GetBalanceAsync(body).ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null;
         }
@@ -72,7 +94,7 @@ namespace Prime.Plugins.Services.BlinkTrade
 
         public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var api = ApiPublicProvider.GetApi(context);
             var r = await api.GetTickerAsync(context.Pair.Asset2.ShortCode, context.Pair.Asset1.ShortCode).ConfigureAwait(false);
 
             if (r == null || r.Count == 0)
@@ -98,7 +120,7 @@ namespace Prime.Plugins.Services.BlinkTrade
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var api = ApiPublicProvider.GetApi(context);
 
             var r = await api.GetOrderBookAsync(context.Pair.Asset2.ShortCode, context.Pair.Asset1.ShortCode).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);
