@@ -13,7 +13,7 @@ namespace Prime.Plugins.Services.BlinkTrade
     {
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
         {
-            if (rawResponse.TryGetContent(out BlinkTradeSchema.ErrorResponse baseResponse))
+            if (!rawResponse.ResponseMessage.IsSuccessStatusCode && rawResponse.TryGetContent(out BlinkTradeSchema.ErrorResponse baseResponse))
             {
                 throw new ApiResponseException(
                     $"Error: {baseResponse.Status} - {baseResponse.Description.TrimEnd('.')}", this, method);

@@ -18,8 +18,8 @@ namespace Prime.Plugins.Services.BlinkTrade
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var nonce = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
-            
-            var signature = HashHMACSHA256(nonce.ToString(), ApiKey.Secret);
+
+            var signature = HashHMACSHA256Hex(nonce.ToString(), ApiKey.Secret);
 
             request.Headers.Add("APIKey", ApiKey.Key);
             request.Headers.Add("Nonce", nonce.ToString());

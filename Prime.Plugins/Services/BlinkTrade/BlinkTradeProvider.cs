@@ -15,7 +15,7 @@ namespace Prime.Plugins.Services.BlinkTrade
     {
         private const string BlinkTradeApiVersion = "v1";
         private const string BlinkPublicApiUrl = "https://api.blinktrade.com/api/" + BlinkTradeApiVersion;
-        private const string BlinkTradePrivateApiUrl = "https://api.blinktrade.com/tapi/" + BlinkTradeApiVersion + "/message";
+        private const string BlinkTradePrivateApiUrl = "https://api_testnet.blinktrade.com/tapi/" + BlinkTradeApiVersion + "/message";
 
         private static readonly ObjectId IdHash = "prime:blinktrade".GetObjectIdHashCode();
         private const string PairsCsv = "btcvef,btcvnd,btcbrl,btcpkr,btcclp";
@@ -63,7 +63,7 @@ namespace Prime.Plugins.Services.BlinkTrade
             var body = new Dictionary<string, object>
             {
                 { "MsgType", "U2" },
-                { "BalanceReqID", "1"}
+                { "BalanceReqID", 1}
             };
 
             var rRaw = await api.GetBalanceAsync(body).ConfigureAwait(false);
