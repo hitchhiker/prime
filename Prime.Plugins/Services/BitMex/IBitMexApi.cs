@@ -29,7 +29,7 @@ namespace Prime.Plugins.Services.BitMex
             [Query] DateTime? endTime = null);
 
         [Post("/order")]
-        Task<Response<BitMexSchema.NewOrdersResponse>> CreateNewLimitOrderAsync([Query] string symbol, [Query] decimal orderQty, [Query] decimal price);
+        Task<Response<BitMexSchema.NewOrderResponse>> CreateNewLimitOrderAsync([Query] string ordType, [Query] string side, [Query] string symbol, [Query] decimal orderQty, [Query] decimal price);
 
         [Get("/trade/bucketed?binSize={binSize}&partial=false&count=500&symbol={currencySymbol}&reverse=true&startTime={startTime}&endTime={endTime}")]
         Task<Response<BitMexSchema.BucketedTradeEntriesResponse>> GetTradeHistoryAsync([Path] string currencySymbol, [Path] string binSize, [Path(Format = "yyyy.MM.dd")] DateTime startTime, [Path(Format = "yyyy.MM.dd")] DateTime endTime);

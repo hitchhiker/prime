@@ -11,6 +11,7 @@ using RestEase;
 
 namespace Prime.Plugins.Services.BitMex
 {
+    // https://www.bitmex.com/api/explorer/
     public partial class BitMexProvider : IBalanceProvider, IDepositProvider, IWithdrawalProvider, IOrderLimitProvider
     {
         private void CheckResponseErrors<T>(Response<T> response, [CallerMemberName] string method = "Unknown")
@@ -203,9 +204,14 @@ namespace Prime.Plugins.Services.BitMex
             var api = ApiProvider.GetApi(context);
 
             var market = context.Pair.ToTicker(this);
+            var side = context.IsBuy ? "Buy" : "Sell";
 
-            var rRaw = await api.CreateNewLimitOrderAsync(market, context.Quantity.ToDecimalValue(),
-                context.Rate.ToDecimalValue()).ConfigureAwait(false);
+            var rRaw = await api.CreateNewLimitOrderAsync("Limit", 
+                side, 
+                market, 
+                context.Quantity.ToDecimalValue(),
+                context.Rate.ToDecimalValue()
+                ).ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 
@@ -219,9 +225,34 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
-        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            string market = null;
+
+            if(context.HasMarket)
+                market = context.Market.ToTicker(this);
+
+            var rRaw = await api.GetOrdersAsync(market, "{\"open\": true}").ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in r)
+            {
+                var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, rOrder.orderID, isBuy, true, false)
+                {
+                    AmountInitial = rOrder.orderQty,
+                    Rate = rOrder.price,
+                    Market = "BTC_USD".ToAssetPairRaw()
+                });
+            }
+
+            return new OpenOrdersResponse(orders);
         }
 
         public Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
