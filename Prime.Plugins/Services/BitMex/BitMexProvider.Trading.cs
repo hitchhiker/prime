@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Prime.Common;
+using Prime.Common.Api.Request.Response;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
@@ -225,12 +226,24 @@ namespace Prime.Plugins.Services.BitMex
             throw new NotImplementedException();
         }
 
+        private TradeOrderStatus ParseTradeOrderStatus(BitMexSchema.OrderResponse rOrder)
+        {
+            var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            return new TradeOrderStatus(Network, rOrder.orderID, isBuy, false, false)
+            {
+                AmountInitial = rOrder.orderQty,
+                Rate = rOrder.price,
+                Market = "BTC_USD".ToAssetPairRaw()
+            };
+        }
+
         public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
             var api = ApiProvider.GetApi(context);
 
             string market = null;
 
+            // Market not required.
             if(context.HasMarket)
                 market = context.Market.ToTicker(this);
 
@@ -243,21 +256,39 @@ namespace Prime.Plugins.Services.BitMex
 
             foreach (var rOrder in r)
             {
-                var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
-                orders.Add(new TradeOrderStatus(Network, rOrder.orderID, isBuy, true, false)
-                {
-                    AmountInitial = rOrder.orderQty,
-                    Rate = rOrder.price,
-                    Market = "BTC_USD".ToAssetPairRaw()
-                });
+                var order = ParseTradeOrderStatus(rOrder);
+                order.IsOpen = true;
+
+                orders.Add(order);
             }
 
             return new OpenOrdersResponse(orders);
         }
 
-        public Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = await api.GetOrdersAsync(filter: $"{{\"orderID\": \"{context.RemoteGroupId}\"}}").ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var rOrders = rRaw.GetContent();
+
+            var rOrder = rOrders.FirstOrDefault(x => x.orderID.Equals(context.RemoteGroupId, StringComparison.Ordinal));
+            if(rOrder == null)
+                throw new NoTradeOrderException(context, this);
+
+            var rOpenOrdersRaw = await api.GetOrdersAsync("{\"open\": true}").ConfigureAwait(false);
+            CheckResponseErrors(rOpenOrdersRaw);
+
+            var rOpenOrders = rOpenOrdersRaw.GetContent();
+
+            var isOpen = rOpenOrders.Exists(x => x.orderID.Equals(context.RemoteGroupId, StringComparison.Ordinal));
+
+            var order = ParseTradeOrderStatus(rOrder);
+            order.IsOpen = isOpen;
+
+            return new TradeOrderStatusResponse(order);
         }
 
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
@@ -266,6 +297,8 @@ namespace Prime.Plugins.Services.BitMex
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; }
-        public OrderLimitFeatures OrderLimitFeatures { get; }
+
+        private static readonly OrderLimitFeatures OrderLimitFeaturesStatic = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
+        public OrderLimitFeatures OrderLimitFeatures => OrderLimitFeaturesStatic;
     }
 }
