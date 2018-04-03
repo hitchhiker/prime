@@ -44,7 +44,7 @@ namespace Prime.Plugins.Services.Bittrex
             return new PlacedOrderLimitResponse(r.result.uuid);
         }
 
-        public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
         {
             var api = ApiProvider.GetApi(context);
 

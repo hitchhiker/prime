@@ -47,7 +47,7 @@ namespace Prime.Plugins.Services.Kuna
             return new PlacedOrderLimitResponse(r.id);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

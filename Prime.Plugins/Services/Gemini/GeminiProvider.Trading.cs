@@ -19,7 +19,7 @@ namespace Prime.Plugins.Services.Gemini
             throw new NotImplementedException();
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

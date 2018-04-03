@@ -40,7 +40,7 @@ namespace Prime.Plugins.Services.Kucoin
             return new PlacedOrderLimitResponse(r.data.orderOid);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

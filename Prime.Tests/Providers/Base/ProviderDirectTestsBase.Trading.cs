@@ -121,7 +121,7 @@ namespace Prime.Tests.Providers
                 Market = market
             };
 
-            var orders = AsyncContext.Run(() => provider.GetTradeOrdersAsync(context)).Orders.ToArray();
+            var orders = AsyncContext.Run(() => provider.GetOrderHistory(context)).Orders.ToArray();
 
             if (orders.Length == 0)
                 OutputWriter.WriteLine("No trade orders returned");

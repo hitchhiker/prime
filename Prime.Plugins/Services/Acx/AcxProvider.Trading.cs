@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Acx
             return new PlacedOrderLimitResponse(r.id);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

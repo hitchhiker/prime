@@ -58,7 +58,7 @@ namespace Prime.Plugins.Services.Globitex
             return new PlacedOrderLimitResponse(r.ExecutionReport.orderId);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }
