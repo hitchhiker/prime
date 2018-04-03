@@ -291,12 +291,9 @@ namespace Prime.Plugins.Services.BitMex
             return new TradeOrderStatusResponse(order);
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
 
-        public MinimumTradeVolume[] MinimumTradeVolume { get; }
+        public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
         private static readonly OrderLimitFeatures OrderLimitFeaturesStatic = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderLimitFeaturesStatic;

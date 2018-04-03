@@ -5,6 +5,86 @@ namespace Prime.Plugins.Services.Coinbase
 {
     internal class CoinbaseSchema
     {
+        internal class BaseResponse<T>
+        {
+            public T data;
+        }
+
+        internal class ErrorResponse
+        {
+            public List<ErrorEntryResponse> errors;
+        }
+
+        internal class ErrorEntryResponse
+        {
+            public string id;
+            public string message;
+        }
+
+        internal class PaymentMethods : BaseResponse<List<PaymentMethod>>
+        {
+            public PaginationResponse pagination;
+        }
+
+        internal class PaymentMethod
+        {
+            public string id;
+            public string type;
+            public string name;
+            public string currency;
+            public bool primary_buy;
+            public bool primary_sell;
+            public bool allow_buy;
+            public bool allow_sell;
+            public bool allow_deposit;
+            public bool allow_withdraw;
+            public bool instant_buy;
+            public bool instant_sell;
+            public DateTime created_at;
+            public DateTime updated_at;
+            public string resource;
+            public string resource_path;
+            public ResourseObjectResponse fiat_account;
+        }
+
+        internal class PlaceBuyOrderResponse : BaseResponse<OrderResponse> { }
+
+        internal class OrderResponse
+        {
+            public string id;
+            public string status;
+            public PaymentMethodResponse payment_method;
+            public TransactionResponse transaction;
+            public PriceResponse amount;
+            public PriceResponse total;
+            public PriceResponse subtotal;
+            public DateTime created_at;
+            public DateTime updated_at;
+            public string resource;
+            public string resource_path;
+            public bool committed;
+            public bool instant;
+            public PriceResponse fee;
+            public DateTime payout_at;
+        }
+
+        internal class PriceResponse
+        {
+            public decimal amount;
+            public string currency;
+        }
+
+        internal class ResourseObjectResponse
+        {
+            public string id;
+            public string resource;
+            public string resource_path;
+        }
+
+        internal class PaymentMethodResponse : ResourseObjectResponse { }
+
+        internal class TransactionResponse : ResourseObjectResponse { }
+
         internal class BaseDocument
         {
             public string id;
@@ -25,10 +105,7 @@ namespace Prime.Plugins.Services.Coinbase
             public string next_uri;
         }
 
-        internal class TimeResponse
-        {
-            public TimeDataResponse data;
-        }
+        internal class TimeResponse : BaseResponse<TimeDataResponse> { }
 
         internal class TimeDataResponse
         {
@@ -36,10 +113,7 @@ namespace Prime.Plugins.Services.Coinbase
             public long epoch;
         }
 
-        internal class SpotPriceResponse
-        {
-            public PriceDataResponse data;
-        }
+        internal class SpotPriceResponse : BaseResponse<PriceDataResponse> { }
 
         internal class PriceDataResponse
         {
@@ -47,10 +121,9 @@ namespace Prime.Plugins.Services.Coinbase
             public string currency;
         }
 
-        internal class AccountsResponse
+        internal class AccountsResponse : BaseResponse<List<AccountResponse>>
         {
             public PaginationResponse pagination;
-            public List<AccountResponse> data;
         }
 
         internal class AccountResponse : BaseDocument
@@ -69,10 +142,9 @@ namespace Prime.Plugins.Services.Coinbase
             public string currency;
         }
 
-        internal class WalletAddressesResponse
+        internal class WalletAddressesResponse : BaseResponse<List<WalletAddressResponse>>
         {
             public PaginationResponse pagination;
-            public List<WalletAddressResponse> data;
         }
 
         internal class WalletAddressResponse : BaseDocument
@@ -81,9 +153,6 @@ namespace Prime.Plugins.Services.Coinbase
             public string network;
         }
 
-        internal class CreateWalletAddressResponse
-        {
-            public List<WalletAddressResponse> data;
-        }
+        internal class CreateWalletAddressResponse : BaseResponse<List<WalletAddressResponse>> { }
     }
 }
