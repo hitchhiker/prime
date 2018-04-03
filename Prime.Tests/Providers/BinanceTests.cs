@@ -53,9 +53,9 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
-        public override void TestGetTradeOrders()
+        public override void TestGetOrdersHistory()
         {
-            base.PretestGetTradeOrders("TRX_BTC".ToAssetPairRaw());
+            base.PretestGetOrdersHistory("TRX_BTC".ToAssetPairRaw());
         }
 
         [Fact]
