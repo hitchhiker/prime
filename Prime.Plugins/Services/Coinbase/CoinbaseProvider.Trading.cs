@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
+using Prime.Common.Api.Request.Response;
 using RestEase;
 
 namespace Prime.Plugins.Services.Coinbase
@@ -37,25 +39,9 @@ namespace Prime.Plugins.Services.Coinbase
         {
             var api = ApiProvider.GetApi(context);
 
-            var accid = "";
+            var accountId = await GetFirstAccountId(context).ConfigureAwait(false);
 
-            var accsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
-            CheckResponseErrors(accsRaw);
-
-            var accs = accsRaw.GetContent();
-
-            var ast = context.Asset.ToRemoteCode(this);
-
-            var acc = accs.data.FirstOrDefault(x => string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
-            if (acc == null)
-                return null;
-
-            accid = acc.id;
-
-            if (accid == null)
-                return null;
-
-            var r = await api.GetAddressesAsync(acc.id).ConfigureAwait(false);
+            var r = await api.GetAddressesAsync(accountId).ConfigureAwait(false);
 
             //if (r.data.Count == 0 && context.CanGenerateAddress)
             //{
@@ -147,18 +133,9 @@ namespace Prime.Plugins.Services.Coinbase
             };
 
             // Get account number.
-            var accountsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
-            CheckResponseErrors(accountsRaw);
-
-            var accounts = accountsRaw.GetContent();
-
             var asset = context.Pair.Asset1.ToRemoteCode(this);
-
-            var account = accounts.data.FirstOrDefault(x => string.Equals(x.currency, asset, StringComparison.OrdinalIgnoreCase));
-            if (account == null)
-                throw new ApiResponseException("No account found to proceed payment on specified market", this);
-
-            var accountId = account.id;
+            var accountId = await GetFirstAccountId(context,
+                x => string.Equals(x.currency, asset, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false);
 
             // Call endpoint.
             var rRaw = context.IsBuy 
@@ -180,20 +157,12 @@ namespace Prime.Plugins.Services.Coinbase
         {
             var api = ApiProvider.GetApi(context);
 
-            // Get account.
+            var accountId = await GetFirstAccountId(context).ConfigureAwait(false);
 
-            var accountsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
-            CheckResponseErrors(accountsRaw);
-            var accounts = accountsRaw.GetContent();
-
-            var account = accounts.data.FirstOrDefault();
-            if(account == null)
-                throw new ApiResponseException("No account found to get list of open orders", this);
-
-            var rBuysRaw = await api.ListBuysAsync(account.id).ConfigureAwait(false);
+            var rBuysRaw = await api.ListBuysAsync(accountId).ConfigureAwait(false);
             CheckResponseErrors(rBuysRaw);
 
-            var rSellsRaw = await api.ListSellsAsync(account.id).ConfigureAwait(false);
+            var rSellsRaw = await api.ListSellsAsync(accountId).ConfigureAwait(false);
             CheckResponseErrors(rSellsRaw);
 
             var rBuys = rBuysRaw.GetContent();
@@ -215,18 +184,73 @@ namespace Prime.Plugins.Services.Coinbase
                 });
             }
 
-            return new OpenOrdersResponse(orders);
+            return new OpenOrdersResponse(orders)
+            {
+                ApiHitsCount = 2
+            };
         }
 
-        public Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
+        private async Task<string> GetFirstAccountId(NetworkProviderPrivateContext context, Func<CoinbaseSchema.AccountResponse, bool> by = null)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var accountsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
+            CheckResponseErrors(accountsRaw);
+            var accounts = accountsRaw.GetContent();
+
+            var account = by == null ? accounts.data.FirstOrDefault() : accounts.data.FirstOrDefault(by);
+            if (account == null)
+                throw new ApiResponseException("No account found to get list of open orders", this);
+
+            return account.id;
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context)
+        public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var accountId = await GetFirstAccountId(context).ConfigureAwait(false);
+
+            var rBuyRaw = await api.ShowBuyOrder(accountId, context.RemoteGroupId).ConfigureAwait(false);
+
+            CoinbaseSchema.ShowOrderResponse order = null;
+            var apiHits = 1;
+
+            if (rBuyRaw.ResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                var rSellRaw = await api.ShowSellOrder(accountId, context.RemoteGroupId).ConfigureAwait(false);
+                apiHits++;
+
+                CheckResponseErrors(rSellRaw);
+
+                order = rSellRaw.GetContent();
+            }
+            else if(rBuyRaw.ResponseMessage.IsSuccessStatusCode)
+            {
+                CheckResponseErrors(rBuyRaw);
+
+                order = rBuyRaw.GetContent();
+            }
+
+            if(order == null) 
+                throw new NoTradeOrderException(context, this);
+            
+            var isBuy = order.data.resource.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            var isOpen = order.data.status.Equals("created", StringComparison.OrdinalIgnoreCase);
+
+            return new TradeOrderStatusResponse(Network, order.data.id, isBuy, isOpen, false)
+            {
+                TradeOrderStatus =
+                {
+                    AmountInitial = order.data.amount.amount,
+                    Market = new AssetPair(order.data.amount.currency, order.data.total.currency, this),
+                    Rate = order.data.subtotal.amount / order.data.amount.amount
+                },
+                ApiHitsCount = apiHits
+            };
         }
+
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 

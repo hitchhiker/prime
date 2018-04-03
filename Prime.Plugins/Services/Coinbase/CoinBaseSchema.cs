@@ -81,6 +81,8 @@ namespace Prime.Plugins.Services.Coinbase
 
         internal class PlaceOrderResponse : BaseResponse<OrderResponse> { }
 
+        internal class ShowOrderResponse : BaseResponse<OrderResponse> { }
+
         internal class OrdersListResponse : BaseResponse<List<OrderResponse>>
         {
             public PaginationResponse pagination;
