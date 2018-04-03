@@ -14,7 +14,10 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountsAsync().ConfigureAwait(false);
+            var rRaw = await api.GetAccountsAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             var results = new BalanceResults(this);
 
@@ -36,7 +39,11 @@ namespace Prime.Plugins.Services.Coinbase
 
             var accid = "";
 
-            var accs = await api.GetAccountsAsync().ConfigureAwait(false);
+            var accsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
+            CheckResponseErrors(accsRaw);
+
+            var accs = accsRaw.GetContent();
+
             var ast = context.Asset.ToRemoteCode(this);
 
             var acc = accs.data.FirstOrDefault(x => string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
@@ -77,7 +84,11 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var accs = await api.GetAccountsAsync().ConfigureAwait(false);
+            var accsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
+            CheckResponseErrors(accsRaw);
+
+            var accs = accsRaw.GetContent();
+
             var addresses = new WalletAddressesResult();
 
             var accountIds = accs.data.Select(x => new KeyValuePair<string, string>(x.currency, x.id));
@@ -136,7 +147,11 @@ namespace Prime.Plugins.Services.Coinbase
             };
 
             // Get account number.
-            var accounts = await api.GetAccountsAsync().ConfigureAwait(false);
+            var accountsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
+            CheckResponseErrors(accountsRaw);
+
+            var accounts = accountsRaw.GetContent();
+
             var asset = context.Pair.Asset1.ToRemoteCode(this);
 
             var account = accounts.data.FirstOrDefault(x => string.Equals(x.currency, asset, StringComparison.OrdinalIgnoreCase));
@@ -161,9 +176,46 @@ namespace Prime.Plugins.Services.Coinbase
             throw new NotImplementedException();
         }
 
-        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            // Get account.
+
+            var accountsRaw = await api.GetAccountsAsync().ConfigureAwait(false);
+            CheckResponseErrors(accountsRaw);
+            var accounts = accountsRaw.GetContent();
+
+            var account = accounts.data.FirstOrDefault();
+            if(account == null)
+                throw new ApiResponseException("No account found to get list of open orders", this);
+
+            var rBuysRaw = await api.ListBuysAsync(account.id).ConfigureAwait(false);
+            CheckResponseErrors(rBuysRaw);
+
+            var rSellsRaw = await api.ListSellsAsync(account.id).ConfigureAwait(false);
+            CheckResponseErrors(rSellsRaw);
+
+            var rBuys = rBuysRaw.GetContent();
+            var rSells = rSellsRaw.GetContent();
+
+            var rAllOrders = rBuys.data.Concat(rSells.data);
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOpenOrder in rAllOrders.Where(x => x.status.Equals("created", StringComparison.OrdinalIgnoreCase)))
+            {
+                var isBuy = rOpenOrder.resource.Equals("buy", StringComparison.OrdinalIgnoreCase);
+
+                orders.Add(new TradeOrderStatus(Network, rOpenOrder.id, isBuy, true, false)
+                {
+                    AmountInitial = rOpenOrder.amount.amount,
+                    Market = new AssetPair(rOpenOrder.amount.currency, rOpenOrder.total.currency, this),
+                    Rate = rOpenOrder.subtotal.amount / rOpenOrder.amount.amount
+                });
+            }
+
+            return new OpenOrdersResponse(orders);
         }
 
         public Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)

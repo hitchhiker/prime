@@ -21,6 +21,38 @@ namespace Prime.Plugins.Services.Coinbase
             public string message;
         }
 
+        internal class PaginationResponse
+        {
+            public string ending_before;
+            public string starting_after;
+            public string limit;
+            public string order;
+            public string previous_uri;
+            public string next_uri;
+        }
+
+        #region Public
+
+        internal class TimeResponse : BaseResponse<TimeDataResponse> { }
+
+        internal class TimeDataResponse
+        {
+            public DateTime iso;
+            public long epoch;
+        }
+
+        internal class SpotPriceResponse : BaseResponse<PriceDataResponse> { }
+
+        internal class PriceDataResponse
+        {
+            public decimal amount;
+            public string currency;
+        }
+
+        #endregion
+
+        #region Private
+
         internal class PaymentMethods : BaseResponse<List<PaymentMethod>>
         {
             public PaginationResponse pagination;
@@ -47,7 +79,12 @@ namespace Prime.Plugins.Services.Coinbase
             public ResourseObjectResponse fiat_account;
         }
 
-        internal class PlaceBuyOrderResponse : BaseResponse<OrderResponse> { }
+        internal class PlaceOrderResponse : BaseResponse<OrderResponse> { }
+
+        internal class OrdersListResponse : BaseResponse<List<OrderResponse>>
+        {
+            public PaginationResponse pagination;
+        }
 
         internal class OrderResponse
         {
@@ -95,31 +132,6 @@ namespace Prime.Plugins.Services.Coinbase
             public string resource_path;
         }
 
-        internal class PaginationResponse
-        {
-            public string ending_before;
-            public string starting_after;
-            public string limit;
-            public string order;
-            public string previous_uri;
-            public string next_uri;
-        }
-
-        internal class TimeResponse : BaseResponse<TimeDataResponse> { }
-
-        internal class TimeDataResponse
-        {
-            public DateTime iso;
-            public long epoch;
-        }
-
-        internal class SpotPriceResponse : BaseResponse<PriceDataResponse> { }
-
-        internal class PriceDataResponse
-        {
-            public decimal amount;
-            public string currency;
-        }
 
         internal class AccountsResponse : BaseResponse<List<AccountResponse>>
         {
@@ -134,7 +146,6 @@ namespace Prime.Plugins.Services.Coinbase
             public BalanceResponse balance;
             public BalanceResponse native_balance;
         }
-
 
         internal class BalanceResponse
         {
@@ -154,5 +165,7 @@ namespace Prime.Plugins.Services.Coinbase
         }
 
         internal class CreateWalletAddressResponse : BaseResponse<List<WalletAddressResponse>> { }
+
+        #endregion
     }
 }

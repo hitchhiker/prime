@@ -107,6 +107,12 @@ namespace Prime.Tests.Providers
             base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(1, Asset.Btc), new Money(100000, Asset.Usd));
         }
 
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
+        }
+
         #endregion
     }
 }

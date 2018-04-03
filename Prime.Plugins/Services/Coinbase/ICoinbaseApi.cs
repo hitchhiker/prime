@@ -8,7 +8,7 @@ namespace Prime.Plugins.Services.Coinbase
     internal interface ICoinbaseApi
     {
         [Get("/accounts")]
-        Task<CoinbaseSchema.AccountsResponse> GetAccountsAsync();
+        Task<Response<CoinbaseSchema.AccountsResponse>> GetAccountsAsync();
 
         [Get("/accounts/{account_id}/addresses")]
         Task<CoinbaseSchema.WalletAddressesResponse> GetAddressesAsync([Path("account_id")] string accountId);
@@ -20,10 +20,16 @@ namespace Prime.Plugins.Services.Coinbase
         Task<CoinbaseSchema.CreateWalletAddressResponse> CreateAddressAsync([Path("account_id")] string accountId);
 
         [Post("/accounts/{account_id}/buys")]
-        Task<Response<CoinbaseSchema.PlaceBuyOrderResponse>> PlaceBuyOrderAsync([Path("account_id")] string accountId, [Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+        Task<Response<CoinbaseSchema.PlaceOrderResponse>> PlaceBuyOrderAsync([Path("account_id")] string accountId, [Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
 
         [Post("/accounts/{account_id}/sells")]
-        Task<Response<CoinbaseSchema.PlaceBuyOrderResponse>> PlaceSellOrderAsync([Path("account_id")] string accountId, [Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+        Task<Response<CoinbaseSchema.PlaceOrderResponse>> PlaceSellOrderAsync([Path("account_id")] string accountId, [Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Get("/accounts/{account_id}/sells")]
+        Task<Response<CoinbaseSchema.OrdersListResponse>> ListSellsAsync([Path("account_id")] string accountId);
+
+        [Get("/accounts/{account_id}/buys")]
+        Task<Response<CoinbaseSchema.OrdersListResponse>> ListBuysAsync([Path("account_id")] string accountId);
 
         [Get("/payment-methods")]
         Task<Response<CoinbaseSchema.PaymentMethods>> GetPaymentMethodsAsync();
