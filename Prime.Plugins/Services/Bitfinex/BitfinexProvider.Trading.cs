@@ -34,9 +34,32 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new BitfinexSchema.OrdersHistoryRequest.Descriptor();
+
+            var rRaw = await api.GetOrdersHistoryAsync(body).ConfigureAwait(false);
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in r)
+            {
+                var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, rOrder.id.ToString(), isBuy, false, rOrder.is_cancelled)
+                {
+                    Rate = rOrder.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? rOrder.price : rOrder.avg_execution_price,
+                    Market = rOrder.symbol.ToAssetPair(this, 3),
+                    AmountInitial = rOrder.original_amount,
+                    AmountRemaining = rOrder.remaining_amount
+                });
+            }
+
+            return new TradeOrdersResponse(orders);
         }
 
         public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)

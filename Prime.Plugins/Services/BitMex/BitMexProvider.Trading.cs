@@ -221,7 +221,7 @@ namespace Prime.Plugins.Services.BitMex
             return new PlacedOrderLimitResponse(r.orderID);
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

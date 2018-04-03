@@ -75,7 +75,7 @@ namespace Prime.Plugins.Services.Bitsane
             return new PlacedOrderLimitResponse(r.result.order_id);
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

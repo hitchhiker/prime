@@ -39,7 +39,7 @@ namespace Prime.Plugins.Services.Allcoin
             return new PlacedOrderLimitResponse(r.order_id);
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

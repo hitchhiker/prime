@@ -148,7 +148,7 @@ namespace Prime.Plugins.Services.Coinbase
             return new PlacedOrderLimitResponse(r.data.id);
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

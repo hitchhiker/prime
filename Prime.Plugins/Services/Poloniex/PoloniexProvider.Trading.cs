@@ -15,9 +15,9 @@ namespace Prime.Plugins.Services.Poloniex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class PoloniexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        public async Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            var historyOrders = (await GetOrdersHistory(context).ConfigureAwait(false)).ToList();
+            var historyOrders = (await GetOrdersHistory((NetworkProviderPrivateContext) context).ConfigureAwait(false)).ToList();
             var openOrders = (await GetOpenOrders(context).ConfigureAwait(false)).ToList();
             
             return new TradeOrdersResponse(historyOrders.Concat(openOrders))

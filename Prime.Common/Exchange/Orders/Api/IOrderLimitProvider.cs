@@ -14,7 +14,7 @@ namespace Prime.Common
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context);
+        Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context);
 
         /// <summary>
         /// Gets the list of currently open orders.

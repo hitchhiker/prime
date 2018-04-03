@@ -71,7 +71,7 @@ namespace Prime.Plugins.Services.HitBtc
             return new PlacedOrderLimitResponse(r.clientOrderId);
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

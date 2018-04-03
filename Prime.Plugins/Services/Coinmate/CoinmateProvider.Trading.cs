@@ -46,7 +46,7 @@ namespace Prime.Plugins.Services.Coinmate
             return new PlacedOrderLimitResponse(r.data);
         }
 
-        public Task<TradeOrdersResponse> GetOrderHistory(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

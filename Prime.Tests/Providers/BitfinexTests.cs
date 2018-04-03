@@ -14,6 +14,48 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BitfinexProvider>().FirstProvider();
         }
 
+        #region Public
+
+        [Fact]
+        public override void TestApiPublic()
+        {
+            base.TestApiPublic();
+        }
+
+        [Fact]
+        public override void TestGetPricing()
+        {
+            var pairs = new List<AssetPair>()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_USD".ToAssetPairRaw()
+            };
+
+            base.PretestGetPricing(pairs, false);
+        }
+
+        [Fact]
+        public override void TestGetAssetPairs()
+        {
+            var requiredPairs = new AssetPairs()
+            {
+                "BTC_USD".ToAssetPairRaw(),
+                "LTC_BTC".ToAssetPairRaw(),
+                "ETH_USD".ToAssetPairRaw()
+            };
+
+            base.PretestGetAssetPairs(requiredPairs);
+        }
+
+        [Fact]
+        public override void TestGetOrderBook()
+        {
+            base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
+        }
+
+        #endregion
+
         #region Private
 
         [Fact]
@@ -54,46 +96,10 @@ namespace Prime.Tests.Providers
             base.PretestGetOpenOrders();
         }
 
-        #endregion
-
-        #region Public
-
         [Fact]
-        public override void TestApiPublic()
+        public override void TestGetOrdersHistory()
         {
-            base.TestApiPublic();
-        }
-
-        [Fact]
-        public override void TestGetPricing()
-        {
-            var pairs = new List<AssetPair>()
-            {
-                "BTC_USD".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "ETH_USD".ToAssetPairRaw()
-            };
-
-            base.PretestGetPricing(pairs, false);
-        }
-
-        [Fact]
-        public override void TestGetAssetPairs()
-        {
-            var requiredPairs = new AssetPairs()
-            {
-                "BTC_USD".ToAssetPairRaw(),
-                "LTC_BTC".ToAssetPairRaw(),
-                "ETH_USD".ToAssetPairRaw()
-            };
-
-            base.PretestGetAssetPairs(requiredPairs);
-        }
-
-        [Fact]
-        public override void TestGetOrderBook()
-        {
-            base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
+            base.PretestGetOrdersHistory();
         }
 
         #endregion
