@@ -17,5 +17,14 @@ namespace Prime.Plugins.Services.BlinkTrade
 
         [Post("/")]
         Task<Response<BlinkTradeSchema.BalanceResponse>> GetBalanceAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Post("/")]
+        Task<Response<BlinkTradeSchema.ActiveOrdersResponse>> QueryActiveOrdersAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Post("/")]
+        Task<Response<BlinkTradeSchema.OrderInfoResponse>> NewOrderAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Post("/")]
+        Task<Response<BlinkTradeSchema.WithdrawalResponse>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
     }
 }
