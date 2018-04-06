@@ -60,5 +60,21 @@ namespace Prime.Tests.Providers
         {
             base.PretestGetOrderBook("BTC_VEF".ToAssetPairRaw(), false);
         }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: SC: Not tested with real money
+            var orderId = "21109502";
+            base.PretestGetTradeOrderStatus(orderId, "BTC_VEF".ToAssetPairRaw());
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            //TODO: SC: Not tested with real money
+
+            base.PretestPlaceOrderLimit("BTC_VEF".ToAssetPairRaw(), true, new Money(10, Assets.I.GetRaw("VEF")), new Money(10m, Assets.I.GetRaw("VEF")));
+        }
     }
 }
