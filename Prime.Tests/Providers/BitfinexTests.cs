@@ -73,8 +73,11 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestPlaceOrderLimit()
         {
-            // Reliable buy order test.
+            // Reliable sell order test.
             base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(0.002m, Asset.Btc), new Money(100_000m, Asset.Usd));
+
+            // Reliable buy order test.
+            base.PretestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, new Money(22, Asset.Xrp), new Money(0.000001m, Asset.Btc));
         }
 
         [Fact]

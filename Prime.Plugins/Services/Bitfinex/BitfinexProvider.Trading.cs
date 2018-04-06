@@ -34,6 +34,12 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
+        /// <summary>
+        /// Gets the history of trade orders.
+        /// Limited to last 3 days and 1 request per minute. Affects rate limiter only for this endpoint.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -127,7 +133,8 @@ namespace Prime.Plugins.Services.Bitfinex
         public MinimumTradeVolume[] MinimumTradeVolume { get; } =
         {
             new MinimumTradeVolume("XRP_USD".ToAssetPairRaw(), new Money(10, Asset.Usd), new Money(12, Asset.Xrp)),
-            new MinimumTradeVolume("BTC_USD".ToAssetPairRaw()) { MinimumSell = new Money(0.002m, Asset.Btc)}
+            new MinimumTradeVolume("BTC_USD".ToAssetPairRaw()) { MinimumSell = new Money(0.002m, Asset.Btc)},
+            new MinimumTradeVolume("XRP_BTC".ToAssetPairRaw()) { MinimumBuy = new Money(22, Asset.Xrp)}
         };
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus)

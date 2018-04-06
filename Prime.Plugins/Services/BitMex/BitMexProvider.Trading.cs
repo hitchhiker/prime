@@ -231,9 +231,9 @@ namespace Prime.Plugins.Services.BitMex
             var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
             return new TradeOrderStatus(Network, rOrder.orderID, isBuy, false, false)
             {
-                AmountInitial = rOrder.orderQty,
+                AmountInitial = rOrder.simpleLeavesQty,
                 Rate = rOrder.price,
-                Market = "BTC_USD".ToAssetPairRaw()
+                Market = rOrder.symbol.ToAssetPair(this, 3)
             };
         }
 

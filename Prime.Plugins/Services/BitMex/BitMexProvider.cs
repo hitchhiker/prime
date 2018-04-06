@@ -18,7 +18,7 @@ namespace Prime.Plugins.Services.BitMex
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";
-        private const String BitMexTestApiUrl = "https://testnet.bitmex.com/api/v1";
+        private const String BitMexApiUrlTest = "https://testnet.bitmex.com/api/v1";
 
         private static readonly string _pairs = "btcusd";
         private const decimal ConversionRate = 0.00000001m;
@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifierAsync);
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrlTest, this, (k) => new BitMexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
