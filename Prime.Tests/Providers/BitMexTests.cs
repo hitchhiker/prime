@@ -135,8 +135,11 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestPlaceOrderLimit()
         {
-            // TODO: AY: HH - weird non-understandable behavior. Please test it. Should be tested with real money.
-            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(10000m, Asset.Btc), new Money(10000m, Asset.Usd));
+            // Spend 10 USD to buy BTC at price 1 USD per BTC. In result 10 BTC will be bought.
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(10, Asset.Usd), new Money(1, Asset.Usd));
+
+            // Sell 10000 USD to buy 0.5 BTC at price 20000 USd.
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(10000, Asset.Usd), new Money(20000, Asset.Usd));
         }
 
         [Fact]
