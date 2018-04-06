@@ -148,8 +148,8 @@ namespace Prime.Plugins.Services.BitMex
             public string symbol;
             public string side;
             public int? simpleOrderQty;
-            public int orderQty;
-            public int price;
+            public decimal orderQty;
+            public decimal price;
             public int? displayQty;
             public int? stopPx;
             public int? pegOffsetValue;

@@ -138,8 +138,8 @@ namespace Prime.Tests.Providers
             // Spend 10 USD to buy BTC at price 1 USD per BTC. In result 10 BTC will be bought.
             base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(10, Asset.Usd), new Money(1, Asset.Usd));
 
-            // Sell 10000 USD to buy 0.5 BTC at price 20000 USd.
-            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(10000, Asset.Usd), new Money(20000, Asset.Usd));
+            // Sell 200 USD to buy 0.02 BTC at price 10000 USd.
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(200, Asset.Usd), new Money(10000, Asset.Usd));
         }
 
         [Fact]
@@ -151,7 +151,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetTradeOrderStatus()
         {
-            base.PretestGetTradeOrderStatus("ordertest");
+            base.PretestGetTradeOrderStatus("14f3fe1c-8881-1618-43ed-6151839a5ffe");
         }
 
         #endregion

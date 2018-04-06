@@ -231,7 +231,7 @@ namespace Prime.Plugins.Services.BitMex
             var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
             return new TradeOrderStatus(Network, rOrder.orderID, isBuy, false, false)
             {
-                AmountInitial = rOrder.simpleLeavesQty,
+                AmountInitial = rOrder.orderQty / rOrder.price,
                 Rate = rOrder.price,
                 Market = rOrder.symbol.ToAssetPair(this, 3)
             };
@@ -278,12 +278,7 @@ namespace Prime.Plugins.Services.BitMex
             if(rOrder == null)
                 throw new NoTradeOrderException(context, this);
 
-            var rOpenOrdersRaw = await api.GetOrdersAsync("{\"open\": true}").ConfigureAwait(false);
-            CheckResponseErrors(rOpenOrdersRaw);
-
-            var rOpenOrders = rOpenOrdersRaw.GetContent();
-
-            var isOpen = rOpenOrders.Exists(x => x.orderID.Equals(context.RemoteGroupId, StringComparison.Ordinal));
+            var isOpen = rOrder.ordStatus.Equals("new", StringComparison.OrdinalIgnoreCase);// rOpenOrders.Exists(x => x.orderID.Equals(context.RemoteGroupId, StringComparison.Ordinal));
 
             var order = ParseTradeOrderStatus(rOrder);
             order.IsOpen = isOpen;
