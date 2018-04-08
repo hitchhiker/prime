@@ -78,6 +78,9 @@
     <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
     </Reference>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
+    </Reference>
     <Reference Include="Elysium">
       <HintPath>..\..\lib\Elysium.dll</HintPath>
     </Reference>
@@ -87,8 +90,8 @@
     <Reference Include="Framework.UI">
       <HintPath>..\..\lib\Framework.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.4.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Google.Protobuf.3.4.1\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.5.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Google.Protobuf.3.5.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
@@ -96,8 +99,8 @@
     <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
     </Reference>
-    <Reference Include="LinqKit.Core, Version=1.1.11.0, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LinqKit.Core.1.1.11\lib\net45\LinqKit.Core.dll</HintPath>
+    <Reference Include="LinqKit.Core, Version=1.1.15.0, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LinqKit.Core.1.1.15\lib\net45\LinqKit.Core.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB">
       <HintPath>..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
@@ -120,27 +123,27 @@
     <Reference Include="MahApps.Extra, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MahApps.Extra.1.0.1.0\lib\net45\MahApps.Extra.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=1.6.1.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.1.6.1\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro.IconPacks.FontAwesome, Version=1.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.IconPacks.FontAwesome.1.9.1\lib\net46\MahApps.Metro.IconPacks.FontAwesome.dll</HintPath>
+    <Reference Include="MahApps.Metro.IconPacks.FontAwesome, Version=2.2.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.IconPacks.FontAwesome.2.2.0\lib\net46\MahApps.Metro.IconPacks.FontAwesome.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro.IconPacks.MaterialLight, Version=1.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.IconPacks.MaterialLight.1.9.1\lib\net46\MahApps.Metro.IconPacks.MaterialLight.dll</HintPath>
+    <Reference Include="MahApps.Metro.IconPacks.MaterialLight, Version=2.2.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.IconPacks.MaterialLight.2.2.0\lib\net46\MahApps.Metro.IconPacks.MaterialLight.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro.IconPacks.Modern, Version=1.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.IconPacks.Modern.1.9.1\lib\net46\MahApps.Metro.IconPacks.Modern.dll</HintPath>
+    <Reference Include="MahApps.Metro.IconPacks.Modern, Version=2.2.0.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.IconPacks.Modern.2.2.0\lib\net46\MahApps.Metro.IconPacks.Modern.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.4.1.6, Culture=neutral, PublicKeyToken=bbbfdff7f500a992, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.SimpleChildWindow.1.4.1\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
+    <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.5.0.16, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.SimpleChildWindow.1.5.0\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.DotNet.PlatformAbstractions.2.0.0\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
+    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=2.0.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.DotNet.PlatformAbstractions.2.0.4\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyModel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.DependencyModel.2.0.0\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyModel, Version=2.0.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.DependencyModel.2.0.4\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
@@ -156,8 +159,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Nito.AsyncEx.Context, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Nito.AsyncEx.Context.5.0.0-pre-05\lib\netstandard2.0\Nito.AsyncEx.Context.dll</HintPath>
@@ -183,11 +186,11 @@
     <Reference Include="Nito.Disposables, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Nito.Disposables.1.2.3\lib\netstandard2.0\Nito.Disposables.dll</HintPath>
     </Reference>
-    <Reference Include="NodaTime, Version=2.2.2.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NodaTime.2.2.2\lib\net45\NodaTime.dll</HintPath>
+    <Reference Include="NodaTime, Version=2.2.5.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NodaTime.2.2.5\lib\net45\NodaTime.dll</HintPath>
     </Reference>
-    <Reference Include="RestEase, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RestEase.1.4.4\lib\net45\RestEase.dll</HintPath>
+    <Reference Include="RestEase, Version=1.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestEase.1.4.5\lib\net45\RestEase.dll</HintPath>
     </Reference>
     <Reference Include="ServiceLocation, Version=1.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ServiceLocation.1.3.1\lib\net45\ServiceLocation.dll</HintPath>
@@ -227,7 +230,7 @@
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -241,23 +244,23 @@
     <Reference Include="WpfControls, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\WpfControls.AutoCompleteTextBox.1.0.0.7\lib\net35\WpfControls.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -862,9 +865,9 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+    <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
-  <Import Project="..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Import Project="..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
 </Project>
