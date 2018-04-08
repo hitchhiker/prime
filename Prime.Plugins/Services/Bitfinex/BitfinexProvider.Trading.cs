@@ -34,9 +34,38 @@ namespace Prime.Plugins.Services.Bitfinex
             return new PlacedOrderLimitResponse(r.order_id.ToString());
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        /// <summary>
+        /// Gets the history of trade orders.
+        /// Limited to last 3 days and 1 request per minute. Affects rate limiter only for this endpoint.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var body = new BitfinexSchema.OrdersHistoryRequest.Descriptor();
+
+            var rRaw = await api.GetOrdersHistoryAsync(body).ConfigureAwait(false);
+            CheckBitfinexResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in r)
+            {
+                var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, rOrder.id.ToString(), isBuy, false, rOrder.is_cancelled)
+                {
+                    Rate = rOrder.type.Equals("exchange limit", StringComparison.OrdinalIgnoreCase) ? rOrder.price : rOrder.avg_execution_price,
+                    Market = rOrder.symbol.ToAssetPair(this, 3),
+                    AmountInitial = rOrder.original_amount,
+                    AmountRemaining = rOrder.remaining_amount
+                });
+            }
+
+            return new TradeOrdersResponse(orders);
         }
 
         public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
@@ -104,7 +133,8 @@ namespace Prime.Plugins.Services.Bitfinex
         public MinimumTradeVolume[] MinimumTradeVolume { get; } =
         {
             new MinimumTradeVolume("XRP_USD".ToAssetPairRaw(), new Money(10, Asset.Usd), new Money(12, Asset.Xrp)),
-            new MinimumTradeVolume("BTC_USD".ToAssetPairRaw()) { MinimumSell = new Money(0.002m, Asset.Btc)}
+            new MinimumTradeVolume("BTC_USD".ToAssetPairRaw()) { MinimumSell = new Money(0.002m, Asset.Btc)},
+            new MinimumTradeVolume("XRP_BTC".ToAssetPairRaw()) { MinimumBuy = new Money(22, Asset.Xrp)}
         };
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus)

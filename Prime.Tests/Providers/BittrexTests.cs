@@ -113,9 +113,9 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
-        public override void TestGetTradeOrders()
+        public override void TestGetOrdersHistory()
         {
-            base.PretestGetTradeOrders();
+            base.PretestGetOrdersHistory();
         }
 
         [Fact]

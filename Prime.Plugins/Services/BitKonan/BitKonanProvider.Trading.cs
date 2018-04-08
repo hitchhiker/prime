@@ -49,7 +49,7 @@ namespace Prime.Plugins.Services.BitKonan
             return new PlacedOrderLimitResponse(r.data?.order_id);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

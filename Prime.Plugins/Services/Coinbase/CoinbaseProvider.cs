@@ -11,12 +11,12 @@ using OrderBook = Prime.Common.OrderBook;
 namespace Prime.Plugins.Services.Coinbase
 {
     // https://developers.coinbase.com/api/v2
-    public class CoinbaseProvider : IBalanceProvider, IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
+    public partial class CoinbaseProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
         private const string CoinbaseApiVersion = "v2";
-        private const string CoinbaseApiUrl = "https://api.coinbase.com/" + CoinbaseApiVersion + "/";
+        private const string CoinbaseApiUrl = "https://api.coinbase.com/" + CoinbaseApiVersion;
 
         private const string GdaxApiUrl = "https://api.gdax.com";
 
@@ -93,104 +93,11 @@ namespace Prime.Plugins.Services.Coinbase
             return r != null;
         }
 
-        public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var r = await api.GetAccountsAsync().ConfigureAwait(false);
-
-            var results = new BalanceResults(this);
-
-            foreach (var a in r.data)
-            {
-                if (a.balance == null)
-                    continue;
-
-                var c = a.balance.currency.ToAsset(this);
-                results.Add(c, a.balance.amount, 0);
-            }
-
-            return results;
-        }
-
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
-
-        public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var accid = "";
-
-            var accs = await api.GetAccountsAsync().ConfigureAwait(false);
-            var ast = context.Asset.ToRemoteCode(this);
-
-            var acc = accs.data.FirstOrDefault(x => string.Equals(x.currency, ast, StringComparison.OrdinalIgnoreCase));
-            if (acc == null)
-                return null;
-
-            accid = acc.id;
-
-            if (accid == null)
-                return null;
-
-            var r = await api.GetAddressesAsync(acc.id).ConfigureAwait(false);
-
-            //if (r.data.Count == 0 && context.CanGenerateAddress)
-            //{
-            //    var cr = await api.CreateAddressAsync(accid);
-            //    if (cr != null)
-            //        r.data.AddRange(cr.data);
-            //}
-
-            var addresses = new WalletAddressesResult();
-
-            foreach (var a in r.data)
-            {
-                if (string.IsNullOrWhiteSpace(a.address))
-                    continue;
-
-                var forasset = FromNetwork(a.network);
-                if (!context.Asset.Equals(forasset))
-                    continue;
-
-                addresses.Add(new WalletAddress(this, context.Asset) { Address = a.address });
-            }
-
-            return addresses;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
             return Task.FromResult<TransferSuspensions>(null);
-        }
-
-        public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-            var accs = await api.GetAccountsAsync().ConfigureAwait(false);
-            var addresses = new WalletAddressesResult();
-
-            var accountIds = accs.data.Select(x => new KeyValuePair<string, string>(x.currency, x.id));
-
-            foreach (var kvp in accountIds)
-            {
-                var r = await api.GetAddressesAsync(kvp.Value).ConfigureAwait(false);
-
-                foreach (var rAddress in r.data)
-                {
-                    if(string.IsNullOrWhiteSpace(rAddress.address))
-                        continue;
-
-                    addresses.Add(new WalletAddress(this, kvp.Key.ToAsset(this))
-                    {
-                        Address = rAddress.address
-                    });
-                }
-            }
-
-            return addresses;
         }
 
         private Asset FromNetwork(string network)

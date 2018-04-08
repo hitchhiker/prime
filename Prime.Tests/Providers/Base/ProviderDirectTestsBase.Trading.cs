@@ -20,12 +20,12 @@ namespace Prime.Tests.Providers
                 GetTradeOrderStatusTest(p.Provider, remoteOrderId, market);
         }
         
-        public virtual void TestGetTradeOrders() { }
-        public void PretestGetTradeOrders(AssetPair market = null)
+        public virtual void TestGetOrdersHistory() { }
+        public void PretestGetOrdersHistory(AssetPair market = null)
         {
             var p = IsType<IOrderLimitProvider>();
             if (p.Success)
-                GetTradeOrdersTest(p.Provider, market);
+                GetOrdersHistoryTest(p.Provider, market);
         }
         
         public virtual void TestGetOpenOrders() { }
@@ -114,14 +114,14 @@ namespace Prime.Tests.Providers
                 orders.ForEach(DisplayOrderStatusInfo);
         }
 
-        private void GetTradeOrdersTest(IOrderLimitProvider provider, AssetPair market = null)
+        private void GetOrdersHistoryTest(IOrderLimitProvider provider, AssetPair market = null)
         {
             var context = new TradeOrdersContext(UserContext.Current)
             {
                 Market = market
             };
 
-            var orders = AsyncContext.Run(() => provider.GetTradeOrdersAsync(context)).Orders.ToArray();
+            var orders = AsyncContext.Run(() => provider.GetOrdersHistory(context)).Orders.ToArray();
 
             if (orders.Length == 0)
                 OutputWriter.WriteLine("No trade orders returned");

@@ -44,22 +44,18 @@ namespace Prime.Plugins.Services.Bittrex
             return new PlacedOrderLimitResponse(r.result.uuid);
         }
 
-        public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var rHistoryOrdersRaw = await api.GetOrderHistory().ConfigureAwait(false);
-            var rOpenOrdersRaw = await api.GetMarketOpenOrders().ConfigureAwait(false);
+            var rRaw = await api.GetOrderHistory().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            CheckResponseErrors(rHistoryOrdersRaw);
-            CheckResponseErrors(rOpenOrdersRaw);
+            var r = rRaw.GetContent();
 
-            var rHistoryOrders = rHistoryOrdersRaw.GetContent();
-            var rOpenOrders = rOpenOrdersRaw.GetContent();
-
-            var orders = new List<TradeOrderStatus>();
-            orders.AddRange(GetTradeOrderStatusFromResponse(rHistoryOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList()));
-            orders.AddRange(GetTradeOrderStatusFromResponse(rOpenOrders.result.Select(x => x as BittrexSchema.OrderCommonBase).ToList(), true, order => ((BittrexSchema.OpenOrderEntry) order).CancelInitiated));
+            var orders =
+                GetTradeOrderStatusFromResponse(r.result.Select(x => x as BittrexSchema.OrderCommonBase)
+                    .ToList());
 
             return new TradeOrdersResponse(orders);
         }

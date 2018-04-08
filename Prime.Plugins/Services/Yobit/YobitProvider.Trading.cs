@@ -59,7 +59,7 @@ namespace Prime.Plugins.Services.Yobit
             return new PlacedOrderLimitResponse(r.returnData.order_id);
         }
 
-        public Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             throw new NotImplementedException();
         }

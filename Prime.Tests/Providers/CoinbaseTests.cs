@@ -14,6 +14,8 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<CoinbaseProvider>().FirstProvider();
         }
 
+        #region Public
+
         [Fact]
         public override void TestApiPublic()
         {
@@ -59,6 +61,16 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestGetOrderBook()
+        {
+            base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
+        }
+
+        #endregion
+
+        #region Private
+
+        [Fact]
         public override void TestApiPrivate()
         {
             base.TestApiPrivate();
@@ -87,9 +99,26 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
-        public override void TestGetOrderBook()
+        public override void TestPlaceOrderLimit()
         {
-            base.PretestGetOrderBook("BTC_USD".ToAssetPairRaw(), false);
+            // AY: Not tested.
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(1, Asset.Btc), new Money(1, Asset.Usd));
+
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(1, Asset.Btc), new Money(100000, Asset.Usd));
         }
+
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.PretestGetTradeOrderStatus("test");
+        }
+
+        #endregion
     }
 }

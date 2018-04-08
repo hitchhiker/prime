@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -57,7 +58,7 @@ namespace Prime.Plugins.Services.Binance
             return new PlacedOrderLimitResponse(r.orderId.ToString());
         }
 
-        public async Task<TradeOrdersResponse> GetTradeOrdersAsync(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
             if (!context.HasMarket)
                 throw new MarketNotSpecifiedException(this);
@@ -72,12 +73,10 @@ namespace Prime.Plugins.Services.Binance
             
             var orders = new List<TradeOrderStatus>();
 
-            foreach (var rOrder in rOrders)
+            foreach (var rOrder in rOrders.Where(x => !x.status.Equals("NEW") && !x.status.Equals("PARTIALLY_FILLED")))
             {
                 var isBuy = rOrder.side.Equals("BUY", StringComparison.OrdinalIgnoreCase);
-                var isOpen = rOrder.status.Equals("NEW", StringComparison.OrdinalIgnoreCase) || rOrder.status.Equals("PARTIALLY_FILLED", StringComparison.OrdinalIgnoreCase);
-                var isCancelRequested = rOrder.status.Equals("PENDING_CANCEL", StringComparison.OrdinalIgnoreCase);
-                orders.Add(new TradeOrderStatus(Network, rOrder.orderId.ToString(), isBuy, isOpen, isCancelRequested)
+                orders.Add(new TradeOrderStatus(Network, rOrder.orderId.ToString(), isBuy, false, false)
                 {
                     AmountInitial = rOrder.origQty,
                     Rate = rOrder.price,
