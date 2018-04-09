@@ -167,9 +167,9 @@ namespace Prime.Plugins.Services.BitMex
             public string ordRejReason;
             public decimal simpleLeavesQty;
             public int leavesQty;
-            public int simpleCumQty;
+            public decimal simpleCumQty;
             public int cumQty;
-            public int? avgPx;
+            public decimal? avgPx;
             public string multiLegReportingType;
             public string text;
             public DateTime transactTime;

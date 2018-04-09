@@ -221,15 +221,25 @@ namespace Prime.Plugins.Services.BitMex
             return new PlacedOrderLimitResponse(r.orderID);
         }
 
-        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var orders = await GetOrdersAsync(context, false).ConfigureAwait(false);
+
+            return new TradeOrdersResponse(orders);
+        }
+
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            var orders = await GetOrdersAsync(context, true).ConfigureAwait(false);
+
+            return new OpenOrdersResponse(orders);
         }
 
         private TradeOrderStatus ParseTradeOrderStatus(BitMexSchema.OrderResponse rOrder)
         {
+            var isOpen = rOrder.ordStatus.Equals("new", StringComparison.OrdinalIgnoreCase);
             var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
-            return new TradeOrderStatus(Network, rOrder.orderID, isBuy, false, false)
+            return new TradeOrderStatus(Network, rOrder.orderID, isBuy, isOpen, false)
             {
                 AmountInitial = rOrder.orderQty / rOrder.price,
                 Rate = rOrder.price,
@@ -237,32 +247,22 @@ namespace Prime.Plugins.Services.BitMex
             };
         }
 
-        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        private async Task<List<TradeOrderStatus>> GetOrdersAsync(MarketOrdersContext context, bool isOpen)
         {
             var api = ApiProvider.GetApi(context);
 
             string market = null;
 
             // Market not required.
-            if(context.HasMarket)
+            if (context.HasMarket)
                 market = context.Market.ToTicker(this);
 
-            var rRaw = await api.GetOrdersAsync(market, "{\"open\": true}").ConfigureAwait(false);
+            var rRaw = await api.GetOrdersAsync(market, isOpen ?  "{\"open\": true}" : null).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
-            var orders = new List<TradeOrderStatus>();
-
-            foreach (var rOrder in r)
-            {
-                var order = ParseTradeOrderStatus(rOrder);
-                order.IsOpen = true;
-
-                orders.Add(order);
-            }
-
-            return new OpenOrdersResponse(orders);
+            return r.Where(x => !x.ordStatus.Equals("new", StringComparison.OrdinalIgnoreCase)).Select(ParseTradeOrderStatus).ToList();
         }
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)

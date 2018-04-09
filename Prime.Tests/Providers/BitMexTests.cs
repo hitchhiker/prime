@@ -149,9 +149,15 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestGetOrdersHistory()
+        {
+            base.PretestGetOrdersHistory();
+        }
+
+        [Fact]
         public override void TestGetTradeOrderStatus()
         {
-            base.PretestGetTradeOrderStatus("14f3fe1c-8881-1618-43ed-6151839a5ffe");
+            base.PretestGetTradeOrderStatus("ecb7f76a-5709-8a34-b4e7-f168d0a27cb8");
         }
 
         #endregion
