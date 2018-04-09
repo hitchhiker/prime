@@ -11,6 +11,8 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Coinbase
 {
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    // https://developers.coinbase.com/api/v2
     public partial class CoinbaseProvider : IBalanceProvider, IDepositProvider, IOrderLimitProvider
     {
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
@@ -39,9 +41,9 @@ namespace Prime.Plugins.Services.Coinbase
         {
             var api = ApiProvider.GetApi(context);
 
-            var accountId = await GetFirstAccountId(context).ConfigureAwait(false);
+            var rAccountId = await GetFirstAccountId(context).ConfigureAwait(false);
 
-            var r = await api.GetAddressesAsync(accountId).ConfigureAwait(false);
+            var r = await api.GetAddressesAsync(rAccountId.Result).ConfigureAwait(false);
 
             //if (r.data.Count == 0 && context.CanGenerateAddress)
             //{
@@ -50,7 +52,10 @@ namespace Prime.Plugins.Services.Coinbase
             //        r.data.AddRange(cr.data);
             //}
 
-            var addresses = new WalletAddressesResult();
+            var addresses = new WalletAddressesResult()
+            {
+                ApiHitsCount = rAccountId.ApiHitsCount + 1
+            };
 
             foreach (var a in r.data)
             {
@@ -102,7 +107,7 @@ namespace Prime.Plugins.Services.Coinbase
         {
             if (!response.ResponseMessage.IsSuccessStatusCode && response.TryGetContent(out CoinbaseSchema.ErrorResponse rError))
             {
-                if(rError.errors.Count > 0)
+                if (rError.errors.Count > 0)
                     throw new ApiResponseException($"API error: {rError.errors[0].id} ({rError.errors[0].message})", this, method);
 
                 throw new ApiResponseException($"API response error occurred - {response.ResponseMessage.ReasonPhrase} ({response.ResponseMessage.StatusCode})", this, method);
@@ -112,14 +117,14 @@ namespace Prime.Plugins.Services.Coinbase
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
             var api = ApiProvider.GetApi(context);
-            
+
             // Get payment method.
             var rPaymentMethodsRaw = await api.GetPaymentMethodsAsync().ConfigureAwait(false);
             CheckResponseErrors(rPaymentMethodsRaw);
 
             var rPaymentMethods = rPaymentMethodsRaw.GetContent();
 
-            if(rPaymentMethods.data.Count == 0)
+            if (rPaymentMethods.data.Count == 0)
                 throw new ApiResponseException("No payment methods found in account", this);
 
             // TODO: AY: HH, we don't support payment methods selection. Maybe we need to consider it in Prime architecture. Just selecting first payment method at the moment.
@@ -134,30 +139,58 @@ namespace Prime.Plugins.Services.Coinbase
 
             // Get account number.
             var asset = context.Pair.Asset1.ToRemoteCode(this);
-            var accountId = await GetFirstAccountId(context,
+            var rAccountId = await GetFirstAccountId(context,
                 x => string.Equals(x.currency, asset, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false);
 
+            var accountId = rAccountId.Result;
+
             // Call endpoint.
-            var rRaw = context.IsBuy 
+            var rRaw = context.IsBuy
                 ? await api.PlaceBuyOrderAsync(accountId, body).ConfigureAwait(false)
                 : await api.PlaceSellOrderAsync(accountId, body).ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
-            return new PlacedOrderLimitResponse(r.data.id);
+            return new PlacedOrderLimitResponse(r.data.id)
+            {
+                ApiHitsCount = rAccountId.ApiHitsCount + 2
+            };
         }
 
-        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var rAllOrders = await GetBuysAndSellsAsync(context).ConfigureAwait(false);
+
+            var orders = rAllOrders.Result.Where(x => !x.status.Equals("created", StringComparison.OrdinalIgnoreCase)).Select(x =>
+            {
+                var isBuy = x.resource.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                var isCanceled = x.status.Equals("canceled", StringComparison.OrdinalIgnoreCase);
+                return new TradeOrderStatus(Network, x.id, isBuy, false, isCanceled)
+                {
+                    AmountInitial = x.amount.amount,
+                    Market = new AssetPair(x.amount.currency, x.total.currency, this),
+                    Rate = x.subtotal.amount / x.amount.amount
+                };
+            });
+
+            return new TradeOrdersResponse(orders)
+            {
+                ApiHitsCount = rAllOrders.ApiHitsCount
+            };
         }
 
-        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        /// <summary>
+        /// Returns merged list of buy and sell orders.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task<ResponseModelBase<IEnumerable<CoinbaseSchema.OrderResponse>>> GetBuysAndSellsAsync(MarketOrdersContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var accountId = await GetFirstAccountId(context).ConfigureAwait(false);
+            var rAccountId = await GetFirstAccountId(context).ConfigureAwait(false);
+            var accountId = rAccountId.Result;
 
             var rBuysRaw = await api.ListBuysAsync(accountId).ConfigureAwait(false);
             CheckResponseErrors(rBuysRaw);
@@ -168,11 +201,20 @@ namespace Prime.Plugins.Services.Coinbase
             var rBuys = rBuysRaw.GetContent();
             var rSells = rSellsRaw.GetContent();
 
-            var rAllOrders = rBuys.data.Concat(rSells.data);
+            return new ResponseModelBase<IEnumerable<CoinbaseSchema.OrderResponse>>(rBuys.data.Concat(rSells.data))
+            {
+                ApiHitsCount = rAccountId.ApiHitsCount + 2
+            };
+        }
+
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        {
+            var rAllOrders = await GetBuysAndSellsAsync(context).ConfigureAwait(false);
+            var allOrders = rAllOrders.Result;
 
             var orders = new List<TradeOrderStatus>();
 
-            foreach (var rOpenOrder in rAllOrders.Where(x => x.status.Equals("created", StringComparison.OrdinalIgnoreCase)))
+            foreach (var rOpenOrder in allOrders.Where(x => x.status.Equals("created", StringComparison.OrdinalIgnoreCase)))
             {
                 var isBuy = rOpenOrder.resource.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
@@ -186,11 +228,17 @@ namespace Prime.Plugins.Services.Coinbase
 
             return new OpenOrdersResponse(orders)
             {
-                ApiHitsCount = 2
+                ApiHitsCount = rAllOrders.ApiHitsCount
             };
         }
 
-        private async Task<string> GetFirstAccountId(NetworkProviderPrivateContext context, Func<CoinbaseSchema.AccountResponse, bool> by = null)
+        /// <summary>
+        /// Returns ID of the first available account. API hits: 1.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="by"></param>
+        /// <returns></returns>
+        private async Task<ResponseModelBase<string>> GetFirstAccountId(NetworkProviderPrivateContext context, Func<CoinbaseSchema.AccountResponse, bool> by = null)
         {
             var api = ApiProvider.GetApi(context);
 
@@ -202,19 +250,25 @@ namespace Prime.Plugins.Services.Coinbase
             if (account == null)
                 throw new ApiResponseException("No account found to get list of open orders", this);
 
-            return account.id;
+            return new ResponseModelBase<string>(account.id)
+            {
+                ApiHitsCount = 1
+            };
         }
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
 
-            var accountId = await GetFirstAccountId(context).ConfigureAwait(false);
+            var rAccountId = await GetFirstAccountId(context).ConfigureAwait(false);
+            var accountId = rAccountId.Result;
+
+            var apiHits = rAccountId.ApiHitsCount;
 
             var rBuyRaw = await api.ShowBuyOrder(accountId, context.RemoteGroupId).ConfigureAwait(false);
 
             CoinbaseSchema.ShowOrderResponse order = null;
-            var apiHits = 1;
+            apiHits++;
 
             if (rBuyRaw.ResponseMessage.StatusCode == HttpStatusCode.NotFound)
             {
@@ -225,16 +279,16 @@ namespace Prime.Plugins.Services.Coinbase
 
                 order = rSellRaw.GetContent();
             }
-            else if(rBuyRaw.ResponseMessage.IsSuccessStatusCode)
+            else if (rBuyRaw.ResponseMessage.IsSuccessStatusCode)
             {
                 CheckResponseErrors(rBuyRaw);
 
                 order = rBuyRaw.GetContent();
             }
 
-            if(order == null) 
+            if (order == null)
                 throw new NoTradeOrderException(context, this);
-            
+
             var isBuy = order.data.resource.Equals("buy", StringComparison.OrdinalIgnoreCase);
             var isOpen = order.data.status.Equals("created", StringComparison.OrdinalIgnoreCase);
 

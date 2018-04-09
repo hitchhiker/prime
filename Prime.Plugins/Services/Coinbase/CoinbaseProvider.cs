@@ -10,6 +10,7 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://developers.coinbase.com/api/v2
     public partial class CoinbaseProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider
     {

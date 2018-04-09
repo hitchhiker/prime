@@ -21,4 +21,18 @@
             ApiHitsCount++;
         }
     }
+
+    /// <summary>
+    /// Generic class for in-provider response classes. It is used to not create new classes for each internal response object which should contain the number of API hits.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    public class ResponseModelBase<TResult> : ResponseModelBase
+    {
+        public ResponseModelBase(TResult result)
+        {
+            Result = result;
+        }
+
+        public TResult Result { get; set; }
+    }
 }
