@@ -20,9 +20,9 @@
     <Compile Remove="Wallet\Withdrawal\Placement\WithdrawalPlacementContextExtended.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
-    <PackageReference Include="NodaTime" Version="2.2.2" />
+    <PackageReference Include="NodaTime" Version="2.2.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />

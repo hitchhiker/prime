@@ -1,6 +1,9 @@
-﻿namespace Prime.Common
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace Prime.Common
 {
-    public class OhlcDataResponse : ResponseModelBase
+    public class OhlcDataResponse : ResponseModelBase, IEnumerable<OhlcEntry>
     {
         public OhlcData OhlcData { get; private set; }
 
@@ -17,6 +20,16 @@
         public void Reverse()
         {
             OhlcData.Reverse();
+        }
+
+        public IEnumerator<OhlcEntry> GetEnumerator()
+        {
+            return OhlcData.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable) this).GetEnumerator();
         }
     }
 }
