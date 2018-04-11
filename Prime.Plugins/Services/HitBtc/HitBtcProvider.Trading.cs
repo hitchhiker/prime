@@ -20,11 +20,6 @@ namespace Prime.Plugins.Services.HitBtc
                 throw new ApiResponseException($"{rError.error.message.Trim(".")} ({rError.error.code}){ (string.IsNullOrWhiteSpace(rError.error.description) ? "" : $": { rError.error.description.Trim(".") }") }", this, method);
         }
 
-        private void ThrowHitBtcErrorException(HitBtcSchema.ErrorResponse error, [CallerMemberName] string method = "Unknown")
-        {
-            throw new ApiResponseException($"{error.message.Trim(".")} ({error.code}){ (string.IsNullOrWhiteSpace(error.description) ? "" : $": { error.description.Trim(".") }") }", this, method);
-        }
-
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -128,10 +123,7 @@ namespace Prime.Plugins.Services.HitBtc
             };
         }
 
-        private Dictionary<string, object> CreateHitBtcRequestBody()
-        {
-            return new Dictionary<string, object>();
-        }
+        private Dictionary<string, object> CreateHitBtcRequestBody() => new Dictionary<string, object>();
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
