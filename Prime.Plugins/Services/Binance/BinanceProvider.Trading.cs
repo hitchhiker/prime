@@ -113,8 +113,7 @@ namespace Prime.Plugins.Services.Binance
                 {
                     AmountInitial = rOrder.origQty,
                     Rate = rOrder.price,
-                    AmountRemaining = rOrder.origQty - rOrder.executedQty,
-                    Market = new AssetPair(rOrder.symbol)
+                    AmountRemaining = rOrder.origQty - rOrder.executedQty
                 });
             }
             

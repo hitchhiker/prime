@@ -8,24 +8,16 @@ using RestEase;
 
 namespace Prime.Plugins.Services.HitBtc
 {
+    // https://api.hitbtc.com/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class HitBtcProvider : IBalanceProvider, IDepositProvider, IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
         {
             if(r.ResponseMessage.IsSuccessStatusCode) return;
 
-            var context = r.GetContent();
-
-            if (context is HitBtcSchema.BaseResponse rError && rError.error != null)
-            {
-                ThrowHitBtcErrorException(rError.error);
-            }
-            else
-            {
-                var innerError = context.GetMemberValue<HitBtcSchema.ErrorResponse>("error");
-                if (innerError != null)
-                    ThrowHitBtcErrorException(innerError);
-            }
+            if (r.TryGetContent(out HitBtcSchema.BaseResponse rError) && rError.error != null)
+                throw new ApiResponseException($"{rError.error.message.Trim(".")} ({rError.error.code}){ (string.IsNullOrWhiteSpace(rError.error.description) ? "" : $": { rError.error.description.Trim(".") }") }", this, method);
         }
 
         private void ThrowHitBtcErrorException(HitBtcSchema.ErrorResponse error, [CallerMemberName] string method = "Unknown")
@@ -36,7 +28,7 @@ namespace Prime.Plugins.Services.HitBtc
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetTradingBalanceAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -57,7 +49,7 @@ namespace Prime.Plugins.Services.HitBtc
             var body = CreateHitBtcRequestBody();
             body.Add("symbol", pair);
             body.Add("side", context.IsBuy ? "buy" : "sell");
-            body.Add("quantity", context.Quantity);
+            body.Add("quantity", context.Quantity.ToDecimalValue());
             body.Add("price", context.Rate.ToDecimalValue());
             body.Add("type", "limit");
             body.Add("timeInForce", "GTC");
@@ -71,14 +63,69 @@ namespace Prime.Plugins.Services.HitBtc
             return new PlacedOrderLimitResponse(r.clientOrderId);
         }
 
-        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = context.HasMarket
+                ? await api.GetOrdersHistoryAsync(context.Market.ToTicker(this).ToUpper()).ConfigureAwait(false)
+                : await api.GetOrdersHistoryAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in r)
+            {
+                var order = ParseOrderResponse(rOrder);
+
+                if (context.HasMarket)
+                    order.Market = context.Market;
+
+                orders.Add(order);
+            }
+
+            return new TradeOrdersResponse(orders);
         }
 
-        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = context.HasMarket
+                ? await api.GetOpenOrdersAsync(context.Market.ToTicker(this).ToUpper()).ConfigureAwait(false)
+                : await api.GetOpenOrdersAsync().ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var rOrder in r)
+            {
+                var order = ParseOrderResponse(rOrder);
+
+                if (context.HasMarket)
+                    order.Market = context.Market;
+
+                orders.Add(order);
+            }
+
+            return new OpenOrdersResponse(orders);
+        }
+
+        private TradeOrderStatus ParseOrderResponse(HitBtcSchema.OrderInfoResponse rOrder)
+        {
+            var isOpen = rOrder.status.Equals("new", StringComparison.OrdinalIgnoreCase);
+            var isCancelRequested = rOrder.status.Equals("canceled", StringComparison.OrdinalIgnoreCase);
+
+            var isBuy = rOrder.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            return new TradeOrderStatus(Network, rOrder.clientOrderId, isBuy, isOpen, isCancelRequested)
+            {
+                Rate = rOrder.price,
+                AmountInitial = rOrder.quantity
+            };
         }
 
         private Dictionary<string, object> CreateHitBtcRequestBody()
@@ -96,7 +143,7 @@ namespace Prime.Plugins.Services.HitBtc
             var r = rRaw.GetContent();
 
             var isOpen = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
-            var isCancelRequested = r.status.Equals("new", StringComparison.OrdinalIgnoreCase);
+            var isCancelRequested = r.status.Equals("canceled", StringComparison.OrdinalIgnoreCase);
 
             var isBuy = r.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
 
@@ -121,7 +168,7 @@ namespace Prime.Plugins.Services.HitBtc
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
 
         // When 50 XRP are submitted, 49.491000 XRP will be received.
-        public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();
+        public bool IsWithdrawalFeeIncluded => true;
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
             var api = ApiProvider.GetApi(context);

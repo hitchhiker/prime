@@ -141,10 +141,7 @@ namespace Prime.Plugins.Services.HitBtc
             return await GetPricesAsync(context).ConfigureAwait(false);
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
@@ -193,7 +190,7 @@ namespace Prime.Plugins.Services.HitBtc
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetTradingBalanceAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();

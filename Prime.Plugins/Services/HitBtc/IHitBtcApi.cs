@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NodaTime.TimeZones;
 using RestEase;
 
 namespace Prime.Plugins.Services.HitBtc
@@ -30,8 +31,8 @@ namespace Prime.Plugins.Services.HitBtc
         /// See https://hitbtc.com/api#paymentbalance.
         /// </summary>
         /// <returns>Multi-currency balance of the main account.</returns>
-        [Get("/account/balance")]
-        Task<Response<HitBtcSchema.BalancesResponse>> GetBalancesAsync();
+        [Get("/trading/balance")]
+        Task<Response<HitBtcSchema.BalancesResponse>> GetTradingBalanceAsync();
 
         /// <summary>
         /// Gets information about placed order.
@@ -40,7 +41,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// <param name="wait"></param>
         /// <returns>Information about the order with specified id.</returns>
         [Get("/order/{clientOrderId}")]
-        Task<Response<HitBtcSchema.ActiveOrderInfoResponse>> GetActiveOrderInfoAsync([Path] string clientOrderId, [Query] int? wait = null);
+        Task<Response<HitBtcSchema.OrderInfoResponse>> GetActiveOrderInfoAsync([Path] string clientOrderId, [Query] int? wait = null);
 
         /// <summary>
         /// Places crypto withdrawal request.
@@ -57,7 +58,28 @@ namespace Prime.Plugins.Services.HitBtc
         /// <param name="body">Post parameters.</param>
         /// <returns></returns>
         [Post("/order")]
-        Task<Response<HitBtcSchema.ActiveOrderInfoResponse>> CreateNewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+        Task<Response<HitBtcSchema.OrderInfoResponse>> CreateNewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        /// <summary>
+        /// Gets all orders. Orders older then 24 hours without trades are deleted.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active orders by symbol.</param>
+        /// <param name="clientOrderId">If set, other parameters will be ignored. Without limit and pagination.</param>
+        /// <param name="from"></param>
+        /// <param name="till"></param>
+        /// <param name="number">Number of orders to be returned.</param>
+        /// <param name="offset">Number of first orders to be skipped.</param>
+        /// <returns></returns>
+        [Get("/history/order")]
+        Task<Response<HitBtcSchema.OrderInfoResponses>> GetOrdersHistoryAsync([Query] string symbol = null, [Query] string clientOrderId = null, [Query] DateTime? from = null, [Query] DateTime? till = null, [Query] int? number = null, [Query] int? offset = null);
+
+        /// <summary>
+        /// Gets array of active orders.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active orders by symbol.</param>
+        /// <returns></returns>
+        [Get("/order")]
+        Task<Response<HitBtcSchema.OrderInfoResponses>> GetOpenOrdersAsync([Query] string symbol = null);
 
         /// <summary>
         /// Gets tickers for all currencies.

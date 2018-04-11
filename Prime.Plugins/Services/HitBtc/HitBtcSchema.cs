@@ -44,9 +44,9 @@ namespace Prime.Plugins.Services.HitBtc
             public string paymentId;
         }
 
-        internal class ActiveOrderInfoResponse : BaseResponse
+        internal class OrderInfoResponse : BaseResponse
         {
-            public int id;
+            public long id;
             public string clientOrderId;
             public string symbol;
             public string side;
@@ -59,6 +59,8 @@ namespace Prime.Plugins.Services.HitBtc
             public DateTime createdAt;
             public DateTime updatedAt;
         }
+
+        internal class OrderInfoResponses : List<OrderInfoResponse> { }
 
         internal class WithdrawCryptoResponse : BaseResponse
         {
