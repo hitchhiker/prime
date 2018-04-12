@@ -14,24 +14,21 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<GlobitexProvider>().FirstProvider();
         }
 
+        #region Public
+
         [Fact]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
         }
-
-        [Fact]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
+       
         [Fact]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()
             {
-                "BTC_EUR".ToAssetPairRaw()
+                "BTC_EUR".ToAssetPairRaw(),
+                "BCH_EUR".ToAssetPairRaw()
             };
 
             base.PretestGetPricing(pairs, false);
@@ -47,13 +44,23 @@ namespace Prime.Tests.Providers
 
             base.PretestGetAssetPairs(requiredPairs);
         }
-
+        
         [Fact]
         public override void TestGetOrderBook()
         {
             base.PretestGetOrderBook("BTC_EUR".ToAssetPairRaw(), false);
         }
 
+        #endregion
+
+        #region Private
+
+        [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+        
         [Fact]
         public override void TestGetTradeOrderStatus()
         {
@@ -70,5 +77,7 @@ namespace Prime.Tests.Providers
             //Test for buying
             base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
         }
+
+        #endregion
     }
 }

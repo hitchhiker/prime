@@ -22,8 +22,6 @@ namespace Prime.Plugins.Services.Globitex
 
         private RestApiClientProvider<IGlobitexApi> ApiProvider { get; }
 
-        private static readonly IAssetCodeConverter AssetCodeConverter = new GlobitexCodeConverter();
-
         public Network Network { get; } = Networks.I.Get("Globitex");
 
         public bool Disabled => false;
@@ -42,10 +40,8 @@ namespace Prime.Plugins.Services.Globitex
             ApiProvider = new RestApiClientProvider<IGlobitexApi>(GlobitexApiUrl, this, (k) => new GlobitexAuthenticator(k).GetRequestModifierAsync);
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return AssetCodeConverter;
-        }
+        private static readonly IAssetCodeConverter AssetCodeConverter = new GlobitexCodeConverter();
+        public IAssetCodeConverter GetAssetCodeConverter() => AssetCodeConverter;
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
@@ -110,7 +106,7 @@ namespace Prime.Plugins.Services.Globitex
             var pairCode = context.Pair.ToTicker(this);
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
-            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last)
+            return new MarketPrices(new MarketPrice(Network, context.Pair, r.last == 0 ? (r.ask + r.bid) / 2 : r.last)
             {
                 PriceStatistics = new PriceStatistics(Network, context.Pair.Asset2, r.ask, r.bid, r.low, r.high),
                 Volume = new NetworkPairVolume(Network, context.Pair, r.volume)
@@ -123,10 +119,8 @@ namespace Prime.Plugins.Services.Globitex
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             if (r?.instruments == null || r.instruments.Length == 0)
-            {
                 throw new ApiResponseException("No tickers returned", this);
-            }
-
+            
             var prices = new MarketPrices();
 
             var rPairsDict = r.instruments.ToDictionary(x => x.symbol.ToAssetPair(this, 3), x => x);
@@ -142,7 +136,7 @@ namespace Prime.Plugins.Services.Globitex
                 }
                 else
                 {
-                    prices.Add(new MarketPrice(Network, pair, currentTicker.last)
+                    prices.Add(new MarketPrice(Network, pair, currentTicker.last == 0 ? (currentTicker.ask + currentTicker.bid) / 2 : currentTicker.last)
                     {
                         PriceStatistics = new PriceStatistics(Network, pair.Asset2, currentTicker.ask, currentTicker.bid, currentTicker.low, currentTicker.high),
                         Volume = new NetworkPairVolume(Network, pair, currentTicker.volume)
