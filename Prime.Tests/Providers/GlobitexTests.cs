@@ -72,10 +72,22 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestPlaceOrderLimit()
         {
-            //TODO: SC: Not tested with real money
+            // TODO: SC: Not tested with real money
 
-            //Test for buying
-            base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Eur), new Money(10m, Asset.Eur));
+            // Test for buying
+            base.PretestPlaceOrderLimit("BTC_EUR".ToAssetPairRaw(), true, new Money(10, Asset.Btc), new Money(10m, Asset.Eur));
+        }
+
+        [Fact]
+        public override void TestGetOrdersHistory()
+        {
+            base.PretestGetOrdersHistory();
+        }
+
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
         }
 
         #endregion

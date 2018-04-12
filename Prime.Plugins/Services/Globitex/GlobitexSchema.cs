@@ -141,6 +141,27 @@ namespace Prime.Plugins.Services.Globitex
             public decimal execQuantity;
         }
 
+        internal class MyTradesResponse
+        {
+            public MyTradesEntryResponse[] trades;
+        }
+
+        internal class MyTradesEntryResponse
+        {
+            public int tradeId;
+            public string symbol;
+            public string side;
+            public int originalOrderId;
+            public string clientOrderId;
+            public decimal execQuantity;
+            public decimal execPrice;
+            public long timestamp;
+            public decimal fee;
+            public bool isLiqProvided;
+            public string feeCurrency;
+            public string account;
+        }
+
         #endregion
     }
 }
