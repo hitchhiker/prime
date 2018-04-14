@@ -14,31 +14,7 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<LiquiProviderTiLiWe>().FirstProvider();
         }
 
-        [Fact]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
-        [Fact]
-        public override void TestGetBalances()
-        {
-            base.TestGetBalances();
-        }
-
-        [Fact]
-        public override void TestGetTradeOrderStatus()
-        {
-            // TODO: AY: test using real money - Liqui.
-            base.PretestGetTradeOrderStatus("98217034");
-        }
-
-        [Fact]
-        public override void TestPlaceOrderLimit()
-        {
-            // TODO: AY: test using real money - Liqui.
-            base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, 1m, new Money(1, Asset.UsdT));
-        }
+        #region Public
 
         [Fact]
         public override void TestApiPublic()
@@ -75,5 +51,37 @@ namespace Prime.Tests.Providers
         {
             base.PretestGetOrderBook("eth_btc".ToAssetPairRaw(), true);
         }
+
+        #endregion
+
+        #region Private
+
+        [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: AY: test using real money - Liqui.
+            base.PretestGetTradeOrderStatus("98217034");
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            // TODO: AY: test using real money - Liqui.
+            base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, 1m, new Money(1, Asset.UsdT));
+        }
+
+        #endregion
     }
 }

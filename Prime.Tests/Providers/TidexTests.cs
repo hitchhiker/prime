@@ -14,34 +14,6 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<TidexProviderTiLiWe>().FirstProvider();
         }
 
-        #region Private
-
-        [Fact]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
-        [Fact]
-        public override void TestGetTradeOrderStatus()
-        {
-            base.PretestGetTradeOrderStatus("98217034");
-        }
-
-        [Fact]
-        public override void TestPlaceOrderLimit()
-        {
-            base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, 1m, new Money(1, Asset.UsdT));
-        }
-
-        [Fact]
-        public override void TestGetBalances()
-        {
-            base.TestGetBalances();
-        }
-
-        #endregion
-
         #region Public
 
         [Fact]
@@ -84,6 +56,36 @@ namespace Prime.Tests.Providers
         public override void TestGetOrderBook()
         {
             base.PretestGetOrderBook("eth_btc".ToAssetPairRaw(), true);
+        }
+
+        #endregion
+
+        #region Private
+
+        [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.PretestGetTradeOrderStatus("153525773");
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, new Money(1, Asset.Eth), new Money(1, Asset.UsdT));
+
+            base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), false, new Money(0.01m, Asset.Eth), new Money(3000, Asset.UsdT));
+        }
+
+        [Fact]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
         }
 
         #endregion

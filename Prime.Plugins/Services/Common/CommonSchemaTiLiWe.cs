@@ -18,7 +18,7 @@ namespace Prime.Plugins.Services.Common
             public T return_;
 
             public string error;
-            public CommonSchemaTiLiWe.StatResponse stat;
+            public StatResponse stat;
         }
 
         public class StatResponse
@@ -40,23 +40,20 @@ namespace Prime.Plugins.Services.Common
 
         #region Private
 
-        public class UserInfoResponse : CommonSchemaTiLiWe.BaseResponse<CommonSchemaTiLiWe.UserInfoDataResponse>
-        {
-
-        }
+        public class UserInfoResponse : BaseResponse<UserInfoDataResponse> { }
 
         public class UserInfoDataResponse : BaseUserInfoDataResponse
         {
             public Dictionary<string, decimal> funds;
-            public CommonSchemaTiLiWe.UserRightResponse rights;
+            public UserRightResponse rights;
         }
 
-        public class UserInfoExtResponse : CommonSchemaTiLiWe.BaseResponse<CommonSchemaTiLiWe.UserInfoDataExtResponse> { }
+        public class UserInfoExtResponse : BaseResponse<UserInfoDataExtResponse> { }
 
         public class UserInfoDataExtResponse : BaseUserInfoDataResponse
         {
-            public Dictionary<string, CommonSchemaTiLiWe.FundInfoResponse> funds;
-            public CommonSchemaTiLiWe.UserRightResponse rights;
+            public Dictionary<string, FundInfoResponse> funds;
+            public UserRightResponse rights;
         }
 
         public class FundInfoResponse
@@ -72,9 +69,9 @@ namespace Prime.Plugins.Services.Common
             public bool withdraw;
         }
 
-        public class OrderInfoResponse : CommonSchemaTiLiWe.BaseResponse<CommonSchemaTiLiWe.OrderInfoDataResponse> { }
+        public class OrderInfoResponse : BaseResponse<OrderInfoDataResponse> { }
 
-        public class OrderInfoDataResponse : Dictionary<string, CommonSchemaTiLiWe.OrderInfoDataEntryResponse> { }
+        public class OrderInfoDataResponse : Dictionary<string, OrderInfoDataEntryResponse> { }
 
         public class OrderInfoDataEntryResponse
         {
@@ -87,7 +84,7 @@ namespace Prime.Plugins.Services.Common
             public short status;
         }
 
-        public class TradeResponse : CommonSchemaTiLiWe.BaseResponse<CommonSchemaTiLiWe.TradeDataResponse> { }
+        public class TradeResponse : BaseResponse<TradeDataResponse> { }
 
         public class TradeDataResponse
         {
@@ -103,10 +100,10 @@ namespace Prime.Plugins.Services.Common
 
         public class AssetPairsResponse
         {
-            public Dictionary<string, CommonSchemaTiLiWe.AssetPairsInfo> pairs;
+            public Dictionary<string, AssetPairsInfo> pairs;
         }
 
-        public class OrderBookResponse : Dictionary<string, CommonSchemaTiLiWe.OrderBookEntryResponse>
+        public class OrderBookResponse : Dictionary<string, OrderBookEntryResponse>
         {
         }
 

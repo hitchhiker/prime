@@ -38,7 +38,7 @@ namespace Prime.Plugins.Services.Common
             body.Add("pair", context.Pair.ToTicker(this).ToLower());
             body.Add("type", context.IsBuy ? "buy" : "sell");
             body.Add("rate", context.Rate.ToDecimalValue());
-            body.Add("amount", context.Quantity);
+            body.Add("amount", context.Quantity.ToDecimalValue());
 
             var r = await api.TradeAsync(body).ConfigureAwait(false);
 

@@ -13,7 +13,7 @@ namespace Prime.Common
         {
         }
 
-        private static readonly long CustomEpochTicks = new DateTime(2018, 1, 1).Ticks;
+        private static readonly long CustomEpochTicks = new DateTime(2018, 4, 1).Ticks;
 
         protected override long GetNonce()
         {

@@ -48,9 +48,14 @@ namespace Prime.Common
             limiter.Limit();
         }
 
-        public static IEnumerable<KeyValuePair<string, string>> DecodeUrlEncodedBody(string body)
+        /// <summary>
+        /// Transforms the string with URL encoded parameters into the array of corresponding KeyValuePair objects.
+        /// </summary>
+        /// <param name="urlEncodedString">The URL encoded string to be transformed.</param>
+        /// <returns>Array of KeyValuePair objects representing parameters of supplied URL encoded string.</returns>
+        public static IEnumerable<KeyValuePair<string, string>> DecodeUrlEncodedBody(string urlEncodedString)
         {
-            return body.Split(new[] {"&"}, StringSplitOptions.RemoveEmptyEntries).Select(x =>
+            return urlEncodedString.Split(new[] {"&"}, StringSplitOptions.RemoveEmptyEntries).Select(x =>
             {
                 var parts = x.Split(new[] {"="}, StringSplitOptions.RemoveEmptyEntries);
 

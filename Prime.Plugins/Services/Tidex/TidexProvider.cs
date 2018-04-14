@@ -6,7 +6,7 @@ namespace Prime.Plugins.Services.Tidex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    // https://tidex.com/public-api
+    // https://tidex.com/exchange/public-api
     public partial class TidexProviderTiLiWe : Common.CommonProviderTiLiWe<ITidexApi>
     {
         private const string TidexApiVersion = "3";

@@ -14,42 +14,12 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<WexProvider>().FirstProvider();
         }
 
+        #region Public
+
         [Fact]
         public override void TestApiPublic()
         {
             base.TestApiPublic();
-        }
-
-        [Fact]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
-        [Fact]
-        public override void TestGetBalances()
-        {
-            base.TestGetBalances();
-        }
-
-        [Fact]
-        public override void TestGetTradeOrderStatus()
-        {
-            base.PretestGetTradeOrderStatus("98217034");
-        }
-
-        [Fact]
-        public override void TestPlaceOrderLimit()
-        {
-            // TODO: AY: Wex - test with real money.
-            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, 1m, new Money(1, Asset.Usd));
-        }
-
-        [Fact]
-        public override void TestPlaceWithdrawal()
-        {
-            // TODO: AY: Wex - test with real money.
-            base.PretestPlaceWithdrawal(new WalletAddress("testaddress"), new Money(1, Asset.Usd));
         }
 
         [Fact]
@@ -85,5 +55,43 @@ namespace Prime.Tests.Providers
         {
             base.PretestGetOrderBook("btc_usd".ToAssetPairRaw(), false);
         }
+
+        #endregion
+
+        #region Private
+
+        [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.PretestGetTradeOrderStatus("98217034");
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            // TODO: AY: Wex - test with real money.
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, 1m, new Money(1, Asset.Usd));
+        }
+
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: AY: Wex - test with real money.
+            base.PretestPlaceWithdrawal(new WalletAddress("testaddress"), new Money(1, Asset.Usd));
+        }
+
+        #endregion
     }
 }
