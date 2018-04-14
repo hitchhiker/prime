@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Api.Request.Response;
+using Prime.Plugins.Services.Common;
 using RestEase;
 
 namespace Prime.Plugins.Services.Globitex
@@ -58,14 +59,54 @@ namespace Prime.Plugins.Services.Globitex
             return new PlacedOrderLimitResponse(r.ExecutionReport.orderId);
         }
 
-        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var rOrdersRaw = await api.GetMyTradesAsync().ConfigureAwait(false);
+            CheckResponseErrors(rOrdersRaw);
+
+            var rOrders = rOrdersRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var order in rOrders.trades)
+            {
+                var isBuy = order.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, order.clientOrderId, isBuy, false, false)
+                {
+                    Market = order.symbol.ToAssetPair(this),
+                    AmountInitial = order.execQuantity,
+                    Rate = order.execPrice
+                });
+            }
+            
+            return new TradeOrdersResponse(orders);
         }
 
-        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+
+            var rOrdersRaw = await api.GetActiveOrdersAsync().ConfigureAwait(false);
+            CheckResponseErrors(rOrdersRaw);
+
+            var rOrders = rOrdersRaw.GetContent();
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var order in rOrders.orders)
+            {
+                var isBuy = order.side.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, order.clientOrderId, isBuy, true, false)
+                {
+                    Market = order.symbol.ToAssetPair(this),
+                    AmountInitial = order.orderQuantity,
+                    Rate = order.orderPrice
+                });
+            }
+            
+            return new OpenOrdersResponse(orders);
         }
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
@@ -89,6 +130,7 @@ namespace Prime.Plugins.Services.Globitex
                 TradeOrderStatus =
                 {
                     Rate = activeOrder.orderPrice,
+                    AmountInitial = activeOrder.execQuantity,
                     Market = activeOrder.symbol.ToAssetPair(this)
                 }
             };

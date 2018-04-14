@@ -8,10 +8,10 @@
         {
             Network = network;
 
-            HighestBid = highestBid == null ? Money.Zero : new Money(highestBid.Value, quoteAsset);
-            LowestAsk = lowestAsk == null ? Money.Zero : new Money(lowestAsk.Value, quoteAsset);
-            Price24Low = price24Low == null ? Money.Zero : new Money(price24Low.Value, quoteAsset);
-            Price24High = price24High == null ? Money.Zero : new Money(price24High.Value, quoteAsset);
+            HighestBid = highestBid == null || highestBid == 0 ? Money.Zero : new Money(highestBid.Value, quoteAsset);
+            LowestAsk = lowestAsk == null || lowestAsk == 0 ? Money.Zero : new Money(lowestAsk.Value, quoteAsset);
+            Price24Low = price24Low == null || price24Low == 0 ? Money.Zero : new Money(price24Low.Value, quoteAsset);
+            Price24High = price24High == null || price24High == 0 ? Money.Zero : new Money(price24High.Value, quoteAsset);
         }
 
         private PriceStatistics _reversed;

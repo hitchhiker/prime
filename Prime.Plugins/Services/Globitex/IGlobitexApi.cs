@@ -32,5 +32,8 @@ namespace Prime.Plugins.Services.Globitex
         
         [Get("/trading/orders/active")]
         Task<Response<GlobitexSchema.ActiveOrdersResponse>> GetActiveOrdersAsync();
+
+        [Get("/trading/trades")]
+        Task<Response<GlobitexSchema.MyTradesResponse>> GetMyTradesAsync();
     }
 }

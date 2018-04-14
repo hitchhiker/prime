@@ -46,13 +46,15 @@ namespace Prime.Tests.Providers
 
             Assert.True(r.IsCompleted, "Request is not completed. Missing pairs: " + string.Join(", ", r.MissedPairs));
 
+            var dist = r.DistinctBy(x => x.Pair).ToList();
+            
             // Multiple prices.
             if (context.IsRequestAll)
                 Assert.True(!context.Pairs.Any(),
                     "Context should not have any pairs when requesting prices for all supported by exchange pairs");
             else
                 Assert.True(r.DistinctBy(x => x.Pair).Count() == context.Pairs.Count,
-                    "Pair duplicates found");
+                    "Number of returned pairs is not equal to requested");
 
             // First price, price value.
             Assert.True(r.FirstPrice != null, "First price is null");
