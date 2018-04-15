@@ -1,11 +1,22 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using LiteDB;
 using Prime.Common;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Prime.Tests
 {
     public class CommonTests
     {
+        private ITestOutputHelper _outputHelper;
+
+        public CommonTests(ITestOutputHelper outputHelper)
+        {
+            _outputHelper = outputHelper;
+        }
+
         [Fact]
         public void TestReverseOrderBook()
         {
@@ -56,6 +67,31 @@ namespace Prime.Tests
             Trace.WriteLine($"{stats}");
             var statsReversed = stats.Reverse(Asset.Btc);
             Trace.WriteLine($"{statsReversed}");
+        }
+
+        [Fact]
+        public void ObjectIdTests()
+        {
+            _outputHelper.WriteLine("Object Id test");
+
+            _outputHelper.WriteLine($"{ObjectId.NewObjectId()}");
+        }
+
+        [Fact]
+        public void EpochTests()
+        {
+            PrintNonce();
+            Thread.Sleep(1000);
+            PrintNonce();
+            Thread.Sleep(1000);
+            PrintNonce();
+            Thread.Sleep(1000);
+
+            void PrintNonce()
+            {
+                var nonce = (DateTime.UtcNow.Ticks - new DateTime(2000, 01, 1).Ticks) / 1000_0000; // 1s
+                _outputHelper.WriteLine($"Nonce: {nonce}");
+            }
         }
     }
 }

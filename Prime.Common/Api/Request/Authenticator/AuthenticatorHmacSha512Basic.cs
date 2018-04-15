@@ -13,11 +13,11 @@ namespace Prime.Common
         {
         }
 
-        private static readonly long CustomEpochTicks = new DateTime(2018, 4, 1).Ticks;
+        private static readonly long CustomEpochTicks = new DateTime(2018, 04, 1).Ticks;
 
         protected override long GetNonce()
         {
-            return (DateTime.UtcNow.Ticks - CustomEpochTicks) / 10000;
+            return (DateTime.UtcNow.Ticks - CustomEpochTicks) / 100_0000; // 100 ms resolution, enough for up to ~10 years - till Uint32.Max.
         }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -26,8 +26,10 @@ namespace Prime.Common
 
             var prevData = ApiHelpers.DecodeUrlEncodedBody(request.Content.ReadAsStringAsync().Result).ToList();
 
+            var nonce = GetNonce();
+
             var postData = new List<KeyValuePair<string, string>>();
-            postData.Add(new KeyValuePair<string, string>("nonce", GetNonce().ToString()));
+            postData.Add(new KeyValuePair<string, string>("nonce", nonce.ToString()));
             postData.AddRange(prevData);
 
             var bodyDataEnc = postData.Select(x => $"{x.Key}={x.Value}").ToArray();
