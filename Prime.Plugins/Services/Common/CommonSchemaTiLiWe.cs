@@ -94,6 +94,19 @@ namespace Prime.Plugins.Services.Common
             public Dictionary<string, decimal> funds;
         }
 
+        public class ActiveOrdersResponse : BaseResponse<Dictionary<string, ActiveOrders>> { }
+
+        public class ActiveOrders
+        {
+            public string pair;
+            public string type;
+            public decimal start_amount;
+            public decimal amount;
+            public decimal rate;
+            public long timestamp_created;
+            public byte status;
+        }
+
         #endregion
 
         #region Public

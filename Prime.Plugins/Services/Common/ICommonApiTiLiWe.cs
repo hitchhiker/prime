@@ -30,5 +30,8 @@ namespace Prime.Plugins.Services.Common
 
         [Post("/")]
         Task<CommonSchemaTiLiWe.TradeResponse> TradeAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/")]
+        Task<CommonSchemaTiLiWe.ActiveOrdersResponse> GetActiveOrders([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }

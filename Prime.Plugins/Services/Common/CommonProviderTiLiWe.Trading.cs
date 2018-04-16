@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Api.Request.Response;
@@ -52,9 +53,30 @@ namespace Prime.Plugins.Services.Common
             throw new NotImplementedException();
         }
 
-        public Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
+        public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProviderPrivate.GetApi(context);
+
+            var body = CreatePostBody();
+            body.Add("method", ApiMethodsConfig[ApiMethodNamesTiLiWe.ActiveOrders]);
+
+            var r = await api.GetActiveOrders(body).ConfigureAwait(false);
+            CheckResponse(r);
+
+            var orders = new List<TradeOrderStatus>();
+
+            foreach (var order in r.return_)
+            {
+                var isBuy = order.Value.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+                orders.Add(new TradeOrderStatus(Network, order.Key, isBuy, true, false)
+                {
+                    Market = order.Value.pair.ToAssetPair(this),
+                    Rate = order.Value.rate,
+                    AmountInitial = order.Value.amount
+                });
+            }
+
+            return new OpenOrdersResponse(orders);
         }
 
         public virtual async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)

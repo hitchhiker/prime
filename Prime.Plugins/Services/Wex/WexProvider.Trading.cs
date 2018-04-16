@@ -7,6 +7,9 @@ using Prime.Plugins.Services.Common;
 
 namespace Prime.Plugins.Services.Wex
 {
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    // https://wex.nz/api/3/docs
+    // https://wex.nz/tapi/docs
     public partial class WexProvider : IWithdrawalPlacementProvider
     {
         public bool IsWithdrawalFeeIncluded => throw new NotImplementedException();

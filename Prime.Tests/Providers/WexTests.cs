@@ -82,7 +82,15 @@ namespace Prime.Tests.Providers
         public override void TestPlaceOrderLimit()
         {
             // TODO: AY: Wex - test with real money.
-            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, 1m, new Money(1, Asset.Usd));
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(1, Asset.Btc), new Money(1, Asset.Usd));
+
+            base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), false, new Money(0.0001m, Asset.Btc), new Money(100000, Asset.Usd));
+        }
+
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
         }
 
         [Fact]

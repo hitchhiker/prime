@@ -39,6 +39,7 @@ namespace Prime.Plugins.Services.Common
             { ApiMethodNamesTiLiWe.OrderInfo, "orderInfo" },
             { ApiMethodNamesTiLiWe.Trade, "Trade" },
             { ApiMethodNamesTiLiWe.GetInfoExt, "getInfoExt" },
+            { ApiMethodNamesTiLiWe.ActiveOrders, "ActiveOrders" }
         };
 
         protected Dictionary<string, object> CreatePostBody()

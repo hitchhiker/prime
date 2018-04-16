@@ -69,6 +69,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
+        }
+
+        [Fact]
         public override void TestGetTradeOrderStatus()
         {
             // TODO: AY: test using real money - Liqui.
