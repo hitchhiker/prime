@@ -78,6 +78,7 @@ namespace Prime.Tests.Providers
         public override void TestPlaceOrderLimit()
         {
             base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), true, new Money(1, Asset.Eth), new Money(1, Asset.UsdT));
+            base.PretestPlaceOrderLimit("LTC_USDT".ToAssetPairRaw(), true, new Money(1, Asset.Ltc), new Money(1, Asset.UsdT));
 
             base.PretestPlaceOrderLimit("ETH_USDT".ToAssetPairRaw(), false, new Money(0.01m, Asset.Eth), new Money(3000, Asset.UsdT));
         }
@@ -86,6 +87,16 @@ namespace Prime.Tests.Providers
         public override void TestGetOpenOrders()
         {
             base.PretestGetOpenOrders();
+
+            base.PretestGetOpenOrders("ETH_USDT".ToAssetPairRaw());
+        }
+
+        [Fact]
+        public override void TestGetOrdersHistory()
+        {
+            base.PretestGetOrdersHistory();
+
+            base.PretestGetOrdersHistory("ETH_USDT".ToAssetPairRaw());
         }
 
         [Fact]

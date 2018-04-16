@@ -7,6 +7,7 @@
         GetInfoExt,
         WithdrawCoin,
         GetInfo,
-        ActiveOrders
+        ActiveOrders,
+        TradeHistory
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
 using Prime.Common;
 using Prime.Common.Api.Request.Response;
 
@@ -42,15 +43,30 @@ namespace Prime.Plugins.Services.Common
             body.Add("amount", context.Quantity.ToDecimalValue());
 
             var r = await api.TradeAsync(body).ConfigureAwait(false);
-
             CheckResponse(r);
 
             return new PlacedOrderLimitResponse(r.return_.order_id.ToString());
         }
 
-        public Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
+        public async Task<TradeOrdersResponse> GetOrdersHistory(TradeOrdersContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProviderPrivate.GetApi(context);
+
+            var body = CreatePostBody();
+            body.Add("method", ApiMethodsConfig[ApiMethodNamesTiLiWe.TradeHistory]);
+            if (context.HasMarket)
+                body.Add("pair", context.Market.ToTicker(this).ToLower());
+
+            var r = await api.GetOrderHistoryAsync(body).ConfigureAwait(false);
+            CheckResponse(r);
+
+            var orders = new List<TradeOrderStatus>();
+
+            if (r.return_ != null)
+                foreach (var order in r.return_)
+                    orders.Add(ParseTradeOrderStatus(order.Key, order.Value));
+
+            return new TradeOrdersResponse(orders);
         }
 
         public async Task<OpenOrdersResponse> GetOpenOrdersAsync(OpenOrdersContext context)
@@ -59,24 +75,30 @@ namespace Prime.Plugins.Services.Common
 
             var body = CreatePostBody();
             body.Add("method", ApiMethodsConfig[ApiMethodNamesTiLiWe.ActiveOrders]);
-
+            if(context.HasMarket)
+                body.Add("pair", context.Market.ToTicker(this).ToLower());
+            
             var r = await api.GetActiveOrders(body).ConfigureAwait(false);
             CheckResponse(r);
 
             var orders = new List<TradeOrderStatus>();
 
-            foreach (var order in r.return_)
-            {
-                var isBuy = order.Value.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
-                orders.Add(new TradeOrderStatus(Network, order.Key, isBuy, true, false)
-                {
-                    Market = order.Value.pair.ToAssetPair(this),
-                    Rate = order.Value.rate,
-                    AmountInitial = order.Value.amount
-                });
-            }
+            if (r.return_ != null)
+                foreach (var order in r.return_)
+                    orders.Add(ParseTradeOrderStatus(order.Key, order.Value));
 
             return new OpenOrdersResponse(orders);
+        }
+
+        private TradeOrderStatus ParseTradeOrderStatus(string remoteOrderId, CommonSchemaTiLiWe.BaseOrderInfoResponse rOrder)
+        {
+            var isBuy = rOrder.type.Equals("buy", StringComparison.OrdinalIgnoreCase);
+            return new TradeOrderStatus(Network, remoteOrderId, isBuy, true, false)
+            {
+                Market = rOrder.pair.ToAssetPair(this),
+                Rate = rOrder.rate,
+                AmountInitial = rOrder.amount
+            };
         }
 
         public virtual async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
@@ -102,8 +124,7 @@ namespace Prime.Plugins.Services.Common
                 {
                     Market = order.pair.ToAssetPair(this),
                     Rate = order.rate,
-                    AmountInitial = order.start_amount,
-                    AmountRemaining = order.amount
+                    AmountInitial = order.amount
                 }
             };
         }

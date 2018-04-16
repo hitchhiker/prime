@@ -106,6 +106,8 @@ namespace Prime.Tests.Providers
                 Market = market
             };
 
+            OutputWriter.WriteLine("Open orders:\n");
+
             var orders = AsyncContext.Run(() => provider.GetOpenOrdersAsync(context)).Orders.ToArray();
 
             if (orders.Length == 0)
@@ -120,6 +122,8 @@ namespace Prime.Tests.Providers
             {
                 Market = market
             };
+
+            OutputWriter.WriteLine("Orders history: \n");
 
             var orders = AsyncContext.Run(() => provider.GetOrdersHistory(context)).Orders.ToArray();
 

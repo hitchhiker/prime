@@ -40,9 +40,17 @@ namespace Prime.Plugins.Services.Wex
             // Add new methods that support exchange.
             ApiMethodsConfig.Add(ApiMethodNamesTiLiWe.WithdrawCoin, "WithdrawCoin");
             ApiMethodsConfig.Add(ApiMethodNamesTiLiWe.GetInfo, "getInfo");
-            
+
             // Update existing common methods that support exchange.
             ApiMethodsConfig[ApiMethodNamesTiLiWe.OrderInfo] = "OrderInfo";
+        }
+
+        protected override void CheckResponse<T>(CommonSchemaTiLiWe.BaseResponse<T> r)
+        {
+            if (r.error.IndexOf("no trades", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                r.error.IndexOf("no orders", StringComparison.OrdinalIgnoreCase) >= 0)
+                return;
+            base.CheckResponse(r);
         }
 
         public override async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)

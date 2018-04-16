@@ -94,6 +94,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestGetOrdersHistory()
+        {
+            base.PretestGetOrdersHistory();
+        }
+
+        [Fact]
         public override void TestPlaceWithdrawal()
         {
             // TODO: AY: Wex - test with real money.

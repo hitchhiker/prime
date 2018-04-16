@@ -39,7 +39,8 @@ namespace Prime.Plugins.Services.Common
             { ApiMethodNamesTiLiWe.OrderInfo, "orderInfo" },
             { ApiMethodNamesTiLiWe.Trade, "Trade" },
             { ApiMethodNamesTiLiWe.GetInfoExt, "getInfoExt" },
-            { ApiMethodNamesTiLiWe.ActiveOrders, "ActiveOrders" }
+            { ApiMethodNamesTiLiWe.ActiveOrders, "ActiveOrders" },
+            { ApiMethodNamesTiLiWe.TradeHistory, "TradeHistory" }
         };
 
         protected Dictionary<string, object> CreatePostBody()
@@ -54,7 +55,7 @@ namespace Prime.Plugins.Services.Common
             return r != null;
         }
 
-        protected void CheckResponse<T>(CommonSchemaTiLiWe.BaseResponse<T> r)
+        protected virtual void CheckResponse<T>(CommonSchemaTiLiWe.BaseResponse<T> r)
         {
             if (r.success != 1)
                 throw new ApiResponseException(r.error, this);

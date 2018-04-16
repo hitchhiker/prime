@@ -36,6 +36,14 @@ namespace Prime.Plugins.Services.Common
             public long server_time;
         }
 
+        public class BaseOrderInfoResponse
+        {
+            public string pair;
+            public string type;
+            public decimal amount;
+            public decimal rate;
+        }
+
         #endregion
 
         #region Private
@@ -73,13 +81,9 @@ namespace Prime.Plugins.Services.Common
 
         public class OrderInfoDataResponse : Dictionary<string, OrderInfoDataEntryResponse> { }
 
-        public class OrderInfoDataEntryResponse
+        public class OrderInfoDataEntryResponse : BaseOrderInfoResponse
         {
-            public string pair;
-            public string type;
             public decimal start_amount;
-            public decimal amount;
-            public decimal rate;
             public long timestamp_created;
             public short status;
         }
@@ -94,17 +98,17 @@ namespace Prime.Plugins.Services.Common
             public Dictionary<string, decimal> funds;
         }
 
-        public class ActiveOrdersResponse : BaseResponse<Dictionary<string, ActiveOrders>> { }
+        public class ActiveOrdersResponse : BaseResponse<Dictionary<string, ActiveOrderResponse>> { }
 
-        public class ActiveOrders
+        public class ActiveOrderResponse : OrderInfoDataEntryResponse { }
+
+        public class TradeHistoryResponse : BaseResponse<Dictionary<string, TradeHistoryEntryResponse>> { }
+
+        public class TradeHistoryEntryResponse : BaseOrderInfoResponse
         {
-            public string pair;
-            public string type;
-            public decimal start_amount;
-            public decimal amount;
-            public decimal rate;
-            public long timestamp_created;
-            public byte status;
+            public int order_id;
+            public bool is_your_order;
+            public long timestamp;
         }
 
         #endregion

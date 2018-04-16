@@ -33,5 +33,8 @@ namespace Prime.Plugins.Services.Common
 
         [Post("/")]
         Task<CommonSchemaTiLiWe.ActiveOrdersResponse> GetActiveOrders([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/")]
+        Task<CommonSchemaTiLiWe.TradeHistoryResponse> GetOrderHistoryAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
     }
 }
