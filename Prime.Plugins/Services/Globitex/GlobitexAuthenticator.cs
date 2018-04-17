@@ -43,7 +43,7 @@ namespace Prime.Plugins.Services.Globitex
                 request.RequestUri = new Uri($"https://{request.RequestUri.Host}{request.RequestUri.AbsolutePath}?{parameters}");
             }
 
-            string message = string.IsNullOrWhiteSpace(parameters) ? $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}" : $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}?{parameters}";
+            var message = string.IsNullOrWhiteSpace(parameters) ? $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}" : $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}?{parameters}";
 
             var signature = HashHMACSHA512Hex(message, ApiKey.Secret);
 
