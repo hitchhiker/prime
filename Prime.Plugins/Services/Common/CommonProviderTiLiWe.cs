@@ -90,10 +90,7 @@ namespace Prime.Plugins.Services.Common
             return pairs;
         }
 
-        public virtual IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public virtual IAssetCodeConverter GetAssetCodeConverter() => null;
 
         public virtual PricingFeatures PricingFeatures { get; } = new PricingFeatures()
         {

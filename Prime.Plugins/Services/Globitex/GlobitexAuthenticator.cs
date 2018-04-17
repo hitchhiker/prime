@@ -15,6 +15,12 @@ namespace Prime.Plugins.Services.Globitex
         {
         }
 
+        private readonly List<string> _getEndpointsWithAccountParam = new List<string>()
+        {
+            "/trading/orders/active",
+            "/trading/trades"
+        };
+
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var headers = request.Headers;
@@ -31,9 +37,10 @@ namespace Prime.Plugins.Services.Globitex
                 parameters = string.IsNullOrWhiteSpace(parameters) ? $"account={ApiKey.Extra}" : $"{parameters}&account={ApiKey.Extra}";
                 request.Content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
-            else if (request.RequestUri.AbsolutePath.EndsWith("/trading/orders/active"))
+            else if (_getEndpointsWithAccountParam.Exists(x => request.RequestUri.AbsolutePath.EndsWith(x)))
             {
                 parameters = string.IsNullOrWhiteSpace(parameters) ? $"account={ApiKey.Extra}" : $"account={ApiKey.Extra}&{parameters}";
+                request.RequestUri = new Uri($"https://{request.RequestUri.Host}{request.RequestUri.AbsolutePath}?{parameters}");
             }
 
             string message = string.IsNullOrWhiteSpace(parameters) ? $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}" : $"{ApiKey.Key}&{nonce}{request.RequestUri.AbsolutePath}?{parameters}";

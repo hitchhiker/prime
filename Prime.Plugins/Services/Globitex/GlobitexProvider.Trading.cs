@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -7,10 +8,14 @@ using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Api.Request.Response;
 using Prime.Plugins.Services.Common;
+using Prime.Utility;
 using RestEase;
 
 namespace Prime.Plugins.Services.Globitex
 {
+    /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
+    // https://globitex.com/api/
     public partial class GlobitexProvider : IOrderLimitProvider
     {
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
@@ -46,8 +51,8 @@ namespace Prime.Plugins.Services.Globitex
             {
                 { "symbol", context.Pair.ToTicker(this).ToUpper()},
                 { "side", side},
-                { "price", context.Rate.ToDecimalValue().ToString()},
-                { "quantity",  context.Quantity.ToDecimalValue().ToString()  }
+                { "price", context.Rate.ToDecimalValue().ToString(CultureInfo.InvariantCulture)},
+                { "quantity",  context.Quantity.ToDecimalValue().ToString(CultureInfo.InvariantCulture)  }
             };
 
             var rRaw = await api.PlaceNewOrderAsync(body).ConfigureAwait(false);

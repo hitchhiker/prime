@@ -10,8 +10,9 @@ using Prime.Utility;
 namespace Prime.Plugins.Services.Globitex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://globitex.com/api/
-    public partial class GlobitexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class GlobitexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string GlobitexApiVersion = "1";
         private const string GlobitexApiUrl = "https://api.globitex.com/api/" + GlobitexApiVersion;

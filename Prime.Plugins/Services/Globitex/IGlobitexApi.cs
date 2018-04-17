@@ -34,6 +34,6 @@ namespace Prime.Plugins.Services.Globitex
         Task<Response<GlobitexSchema.ActiveOrdersResponse>> GetActiveOrdersAsync();
 
         [Get("/trading/trades")]
-        Task<Response<GlobitexSchema.MyTradesResponse>> GetMyTradesAsync();
+        Task<Response<GlobitexSchema.MyTradesResponse>> GetMyTradesAsync([Query] string by = "ts", [Query] int startIndex = 0, [Query] short maxResults = 1000);
     }
 }
