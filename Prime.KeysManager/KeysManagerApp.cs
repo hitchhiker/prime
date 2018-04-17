@@ -15,7 +15,7 @@ namespace Prime.KeysManager
         private readonly IPrimeService _primeService;
 
         public short PortNumber { get; set; } = 19991;
-        public IPAddress IpAddress { get; set; } = IPAddress.Parse("127.0.0.1");
+        public IPAddress IpAddress { get; set; } = IPAddress.Any;
         
         public KeysManagerApp(ITcpServer tcpServer, IPrimeService primeService)
         {
@@ -44,7 +44,7 @@ namespace Prime.KeysManager
 
         private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage)
         {
-            Console.WriteLine("Testing private API...");
+            Console.WriteLine("App: Testing private API...");
             var success = true;
 
             try
@@ -54,7 +54,7 @@ namespace Prime.KeysManager
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"Error while testing private API: {e.Message}");
+                Console.WriteLine($"App: Error while testing private API: {e.Message}");
             }
 
             _tcpServer.Send(new OperationResultModel() { Success = success });
@@ -62,7 +62,7 @@ namespace Prime.KeysManager
 
         private void DeleteProviderKeysHandler(DeleteProviderKeysMessage deleteProviderKeysMessage)
         {
-            Console.WriteLine("Deleting keys...");
+            Console.WriteLine("App: Deleting keys...");
             var success = true;
 
             try
@@ -72,7 +72,7 @@ namespace Prime.KeysManager
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"Error while deleting keys: {e.Message}");
+                Console.WriteLine($"App: Error while deleting keys: {e.Message}");
             }
 
             _tcpServer.Send(new OperationResultModel() { Success = success });
@@ -80,7 +80,7 @@ namespace Prime.KeysManager
 
         private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage)
         {
-            Console.WriteLine("Saving keys...");
+            Console.WriteLine("App: Saving keys...");
             var success = true;
             
             try
@@ -90,7 +90,7 @@ namespace Prime.KeysManager
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"Error while saving keys: {e.Message}");
+                Console.WriteLine($"App: Error while saving keys: {e.Message}");
             }
             
             _tcpServer.Send(new OperationResultModel() { Success = success});
@@ -98,7 +98,7 @@ namespace Prime.KeysManager
 
         private void ProviderDetailsHandler(ProviderDetailsMessage providerDetailsMessage)
         {
-            Console.WriteLine("Sending provider details...");
+            Console.WriteLine("App: Sending provider details...");
 
             var providerDetails = _primeService.GetNetworkDetails(providerDetailsMessage.Id);
             _tcpServer.Send(providerDetails);
@@ -106,7 +106,7 @@ namespace Prime.KeysManager
 
         private void PrivateProvidersListHandler(PrivateProvidersListMessage privateProvidersListMessage)
         {
-            Console.WriteLine("Private providers list requested... Sending...");
+            Console.WriteLine("App: Private providers list requested... Sending...");
 
             var providers = _primeService.GetPrivateNetworks();
             _tcpServer.Send(providers);
@@ -114,7 +114,7 @@ namespace Prime.KeysManager
 
         private void ProvidersListHandler(ProvidersListMessage providersListMessage)
         {
-            Console.WriteLine("Providers list requested... Sending...");
+            Console.WriteLine("App: Providers list requested... Sending...");
 
             var providers = _primeService.GetNetworks();
             _tcpServer.Send(providers);
@@ -122,7 +122,7 @@ namespace Prime.KeysManager
 
         private void TcpServerOnExceptionOccurred(object sender, Exception exception)
         {
-            Console.WriteLine($"Server error occured: {exception.Message}");
+            Console.WriteLine($"App: Server error occurred: {exception.Message}");
         }
 
         public void Exit()

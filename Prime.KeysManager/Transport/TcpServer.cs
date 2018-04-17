@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Prime.KeysManager.Messages;
 using Prime.KeysManager.Utils;
@@ -14,15 +15,16 @@ namespace Prime.KeysManager.Transport
     public class TcpServer : ITcpServer
     {
         private TcpListener _listener;
-        private TcpClient _connectedClient;
+        private List<TcpClient> _connectedClients = new List<TcpClient>();
         private readonly Dictionary<Type, Action<object>> _subscriptions = new Dictionary<Type, Action<object>>();
 
         public void StartServer(IPAddress address, short port)
         {
+            _connectedClients.Clear();
             _listener = new TcpListener(address, port);
             _listener.Start();
 
-            AcceptClient();
+            WaitForClient();
         }
 
         private void HandleResponse(string raw)
@@ -46,17 +48,24 @@ namespace Prime.KeysManager.Transport
             }
         }
 
-        private void AcceptClient()
+        private void WaitForClient()
         {
-            while (true)
+            _listener.BeginAcceptTcpClient(ClientAcceptedCallback, null);
+        }
+
+        private void ClientAcceptedCallback(IAsyncResult ar)
+        {
+            Task.Run(() =>
             {
-                using (_connectedClient = _listener.AcceptTcpClient())
+                try
                 {
-                    try
+                    using (var connectedClient = _listener.EndAcceptTcpClient(ar))
                     {
-                        using (var stream = _connectedClient.GetStream())
+                        _connectedClients.Add(connectedClient);
+
+                        using (var stream = connectedClient.GetStream())
                         {
-                            while (_connectedClient.Connected)
+                            while (connectedClient.Connected)
                             {
                                 ReceiveData(stream, out var data);
 
@@ -67,12 +76,15 @@ namespace Prime.KeysManager.Transport
                             }
                         }
                     }
-                    catch (Exception e)
-                    {
-                        ExceptionOccurred?.Invoke(this, e);
-                    }
                 }
-            }
+                catch (Exception e)
+                {
+                    ExceptionOccurred?.Invoke(this, e);
+                }
+            });
+
+            Console.WriteLine("Server: client connected.");
+            WaitForClient();
         }
 
         private string CleanData(string data)
@@ -94,7 +106,7 @@ namespace Prime.KeysManager.Transport
             data = null;
 
             var buffer = new byte[1024];
-            if(stream.CanRead)
+            if (stream.CanRead)
                 stream.Read(buffer, 0, buffer.Length);
 
             data = buffer.DecodeAscii();
@@ -103,8 +115,14 @@ namespace Prime.KeysManager.Transport
         public void ShutdownServer()
         {
             _listener.Stop();
-            _connectedClient.Dispose();
-            Console.WriteLine("Server closed");
+            Console.WriteLine("Server: disposing clients...");
+
+            foreach (var connectedClient in _connectedClients)
+            {
+                connectedClient.Dispose();
+            }
+            
+            Console.WriteLine("Server: server closed.");
         }
 
         public void Subscribe<T>(Action<T> handler)
@@ -128,7 +146,10 @@ namespace Prime.KeysManager.Transport
         public void Send<T>(T data)
         {
             var json = JsonConvert.SerializeObject(data);
-            SendData(_connectedClient, json);
+            foreach (var client in _connectedClients)
+            {
+                SendData(client, json);
+            }
         }
 
         public event EventHandler<Exception> ExceptionOccurred;

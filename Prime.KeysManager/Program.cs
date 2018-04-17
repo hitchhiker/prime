@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -17,30 +18,57 @@ namespace Prime.KeysManager
         
         static void Main(string[] args)
         {
-            Console.WriteLine($"Operating system: " + Environment.OSVersion.Platform);
-            Console.WriteLine($"Current directory: " + Environment.CurrentDirectory);
+            Console.WriteLine($"> Operating system: " + Environment.OSVersion.Platform);
+            Console.WriteLine($"> Current directory: " + Environment.CurrentDirectory);
 
             // Start server.
-            var t = RunServer();
+            RunServer();
+            Console.WriteLine("> Server started");
 
             // Start UI.
-            RunUi();
+            var command = "";
+            var uiTasks = new List<Task>();
 
-            t.Wait();
+            if (false)
+            {
+                while (!command.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("> Enter command: ");
+                    command = Console.ReadLine();
+
+                    if (command.Equals("ui", StringComparison.OrdinalIgnoreCase))
+                    {
+                        uiTasks.Add(RunUiAsync());
+                    }
+                }
+            }
+
+            uiTasks.Add(RunUiAsync());
+
+            Console.WriteLine("> Waiting for all UI processes exit...");
+            Task.WaitAll(uiTasks.ToArray());
         }
 
         private static Task RunServer()
         {
-            var t = Task.Run(() =>
+            return Task.Run(() =>
             {
                 KeysManagerApp.Run();
             });
-            Console.WriteLine("> Server started");
-
-            return t;
         }
 
-        private static void RunUi()
+        private static Task RunUiAsync()
+        {
+            return Task.Run(() =>
+            {
+                var process = RunUi();
+
+                Console.WriteLine($"> Electron UI started ({process.Id}).");
+                process.WaitForExit();
+            });
+        }
+
+        private static Process RunUi()
         {
             var uiProcess = new Process();
 
@@ -56,10 +84,12 @@ namespace Prime.KeysManager
             {
                 uiProcess.StartInfo.FileName = "cmd";
                 uiProcess.StartInfo.Arguments = "/C npm start";
-                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory); //ConfigManager.AppConfig.UiAppFolderPath;
+                uiProcess.StartInfo.RedirectStandardOutput = true;
+                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory);
             }
             
             uiProcess.Start();
+            return uiProcess;
         }
     }
 }
