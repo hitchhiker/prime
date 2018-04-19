@@ -34,8 +34,15 @@ var IndexView = function () {
         $(document).on("click", "#removeKeys", removeProviderKeys);
         $(document).on("click", "#testPrivateApi", testPrivateApi);
 
-        getProviderProviders();
+        getPrivateProviders();
         initModal();
+
+        primeTcpClient.connect((event, data) => {
+            let response = JSON.parse(data);
+
+            primeTcpClient.clientGuid = response;
+            console.log(primeTcpClient.clientGuid);
+        });
     }
 
     function testPrivateApi(e) {
@@ -114,7 +121,7 @@ var IndexView = function () {
         });
     }
 
-    function getProviderProviders() {
+    function getPrivateProviders() {
         primeTcpClient.getPrivateProvidersList(function (event, data) {
             providersList = JSON.parse(data);
 

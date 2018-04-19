@@ -5,8 +5,12 @@ var PrimeTcpClient = function () {
 
     var internalData = null;
     this.client = null;
-    this.connect = function () {
+    this.clientGuid = null;
 
+    this.connect = function (callback) {
+        ipcRenderer.send('prime:generate-client-guid');
+
+        registerCallback('prime:client-guid-generated', callback);
     }
 
     let registeredCallbacks = [];

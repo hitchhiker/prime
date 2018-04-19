@@ -40,6 +40,15 @@ namespace Prime.KeysManager
             _tcpServer.Subscribe<ProviderKeysMessage>(ProviderKeysHandler);
             _tcpServer.Subscribe<DeleteProviderKeysMessage>(DeleteProviderKeysHandler);
             _tcpServer.Subscribe<TestPrivateApiMessage>(TestPrivateApiHandler);
+            _tcpServer.Subscribe<GenerateGuidMessage>(FakeClientGuidHandler);
+        }
+
+        private void FakeClientGuidHandler(GenerateGuidMessage fakeClientGuidMessage)
+        {
+            Console.WriteLine("Generating client GUID...");
+
+            var guid = Guid.NewGuid();
+            _tcpServer.Send(guid);
         }
 
         private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage)

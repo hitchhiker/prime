@@ -9,6 +9,9 @@ const PrimeTcpClient = require("./PrimeTcpClient");
 let prime = new PrimeTcpClient();
 let dataHandlerChannel = "";
 let win;
+let clientUuid = generateFakeGuid();
+
+console.log("Fake GUID: " + clientUuid);
 
 function createWindow() {
     win = new BrowserWindow({ 'minWidth': 620, 'minHeight': 600 });
@@ -19,6 +22,15 @@ function createWindow() {
         slashes: true
     }));
 }
+
+function generateFakeGuid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  }
 
 function closeWindow() {
     alert("Windows is being closed...");
@@ -41,6 +53,16 @@ client.on('close', function () {
 });
 
 // IPC Main.
+
+ipcMain.on('prime:generate-client-guid', (event, arg) => {
+    console.log("Calling server to generate GUID...");
+    
+    client.write(JSON.stringify({
+        "Type": "GenerateGuidMessage",
+    }));
+
+    dataHandlerChannel = "prime:client-guid-generated";
+});
 
 ipcMain.on('prime:get-private-providers-list', (event, arg) => {
     console.log("Querying providers list...");
