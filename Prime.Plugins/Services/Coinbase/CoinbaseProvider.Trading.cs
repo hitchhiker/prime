@@ -11,8 +11,8 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://developers.coinbase.com/api/v2
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class CoinbaseProvider : IBalanceProvider, IDepositProvider, IOrderLimitProvider
     {
         public async Task<BalanceResults> GetBalancesAsync(NetworkProviderPrivateContext context)

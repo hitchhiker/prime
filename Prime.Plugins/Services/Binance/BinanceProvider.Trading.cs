@@ -157,16 +157,6 @@ namespace Prime.Plugins.Services.Binance
 
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
-        [Obsolete("To be implemented soon.")]
-        public async Task GetDepositHistoryAsync(NetworkProviderPrivateContext context)
-        {
-            var api = ApiProvider.GetApi(context);
-
-            var rRaw = await api.GetDepositHistoryAsync().ConfigureAwait(false);
-
-            throw new NotImplementedException();
-        }
-
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(true, CanGetOrderMarket.FromNowhere)

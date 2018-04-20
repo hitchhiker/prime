@@ -5,6 +5,8 @@ namespace Prime.Plugins.Services.Coinbase
 {
     internal class CoinbaseSchema
     {
+        #region Common&Base
+
         internal class BaseResponse<T>
         {
             public T data;
@@ -30,6 +32,8 @@ namespace Prime.Plugins.Services.Coinbase
             public string previous_uri;
             public string next_uri;
         }
+
+        #endregion
 
         #region Public
 

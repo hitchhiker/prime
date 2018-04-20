@@ -10,8 +10,8 @@ using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Plugins.Services.Coinbase
 {
-    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     // https://developers.coinbase.com/api/v2
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class CoinbaseProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider
     {
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
@@ -71,7 +71,6 @@ namespace Prime.Plugins.Services.Coinbase
             return new MarketPrices(price);
         }
 
-
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = GdaxApiProvider.GetApi(context);
@@ -96,10 +95,7 @@ namespace Prime.Plugins.Services.Coinbase
 
         public IAssetCodeConverter GetAssetCodeConverter() => null;
 
-        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
-        {
-            return Task.FromResult<TransferSuspensions>(null);
-        }
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context) => Task.FromResult<TransferSuspensions>(null);
 
         private Asset FromNetwork(string network)
         {
