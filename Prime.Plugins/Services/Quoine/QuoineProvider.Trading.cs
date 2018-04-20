@@ -85,7 +85,7 @@ namespace Prime.Plugins.Services.Quoine
             throw new NotImplementedException();
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 

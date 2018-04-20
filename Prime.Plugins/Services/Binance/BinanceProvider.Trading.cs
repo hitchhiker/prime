@@ -154,7 +154,7 @@ namespace Prime.Plugins.Services.Binance
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         [Obsolete("To be implemented soon.")]
         public async Task GetDepositHistoryAsync(NetworkProviderPrivateContext context)

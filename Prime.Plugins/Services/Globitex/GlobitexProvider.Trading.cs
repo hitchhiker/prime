@@ -141,7 +141,7 @@ namespace Prime.Plugins.Services.Globitex
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 

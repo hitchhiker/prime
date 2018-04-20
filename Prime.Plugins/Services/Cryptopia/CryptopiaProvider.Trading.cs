@@ -144,7 +144,7 @@ namespace Prime.Plugins.Services.Cryptopia
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         // TODO: AY: find out MinimumTradeVolume in Cryptopia.
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();

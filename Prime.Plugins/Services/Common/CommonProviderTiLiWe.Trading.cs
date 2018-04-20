@@ -129,7 +129,7 @@ namespace Prime.Plugins.Services.Common
             };
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public virtual MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 

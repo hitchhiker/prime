@@ -286,7 +286,7 @@ namespace Prime.Plugins.Services.BitMex
             return new TradeOrderStatusResponse(order);
         }
 
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
 

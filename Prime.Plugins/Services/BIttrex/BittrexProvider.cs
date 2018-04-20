@@ -248,7 +248,7 @@ namespace Prime.Plugins.Services.Bittrex
             {
                 if (rBase.success == false)
                 {
-                    if (rBase.message.Equals("INVALID_MARKET") && pair != null)
+                    if (rBase.message.Equals("INVALID_MARKET", StringComparison.OrdinalIgnoreCase) && pair != null)
                         throw new AssetPairNotSupportedException(pair, this);
                     throw new ApiResponseException($"API error: {rBase.message}", this);
                 }

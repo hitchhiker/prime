@@ -11,21 +11,12 @@ namespace Prime.Plugins.Services.Bittrex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BittrexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;
+        public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public MinimumTradeVolume[] MinimumTradeVolume { get; } = { new MinimumTradeVolume() { MinimumSell = 0.011m, MinimumBuy = 0.011m } }; //50K Satoshi /4 USD
 
         private static readonly OrderLimitFeatures OrderFeatures = new OrderLimitFeatures(false, CanGetOrderMarket.WithinOrderStatus);
         public OrderLimitFeatures OrderLimitFeatures => OrderFeatures;
-
-        private TradeOrderType GetTradeOrderType(string tradeOrderTypeSchema)
-        {
-            if (tradeOrderTypeSchema.Equals("LIMIT_BUY", StringComparison.OrdinalIgnoreCase))
-                return TradeOrderType.LimitBuy;
-            if (tradeOrderTypeSchema.Equals("LIMIT_SELL", StringComparison.OrdinalIgnoreCase))
-                return TradeOrderType.LimitSell;
-            return TradeOrderType.None;
-        }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
