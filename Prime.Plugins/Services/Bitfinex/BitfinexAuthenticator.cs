@@ -12,9 +12,7 @@ namespace Prime.Plugins.Services.Bitfinex
 {
     internal class BitfinexAuthenticator : BaseAuthenticator
     {
-        public BitfinexAuthenticator(ApiKey apiKey) : base(apiKey)
-        {
-        }
+        public BitfinexAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {

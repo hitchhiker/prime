@@ -11,9 +11,9 @@ using RestEase;
 
 namespace Prime.Plugins.Services.Bitfinex
 {
+    // https://bitfinex.readme.io/v1/reference
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
-    // https://bitfinex.readme.io/v1/reference
     public partial class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
         private const string BitfinexApiVersion = "v1";
@@ -21,9 +21,9 @@ namespace Prime.Plugins.Services.Bitfinex
 
         private static readonly ObjectId IdHash = "prime:bitfinex".GetObjectIdHashCode();
 
-        //If an IP address exceeds a certain number of requests per minute (between 10 and 90) to a specific REST API endpoint e.g., /ticker, the requesting IP address will be blocked for 10-60 seconds on that endpoint and the JSON response {"error": "ERR_RATE_LIMIT"} will be returned. 
-        //Please note the exact logic and handling for such DDoS defenses may change over time to further improve reliability.
-        //https://bitfinex.readme.io/v1/docs
+        // If an IP address exceeds a certain number of requests per minute (between 10 and 90) to a specific REST API endpoint e.g., /ticker, the requesting IP address will be blocked for 10-60 seconds on that endpoint and the JSON response {"error": "ERR_RATE_LIMIT"} will be returned. 
+        // Please note the exact logic and handling for such DDoS defenses may change over time to further improve reliability.
+        // https://bitfinex.readme.io/v1/docs
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(90, 1);
 
         private RestApiClientProvider<IBitfinexApi> ApiProvider { get; }
@@ -113,10 +113,7 @@ namespace Prime.Plugins.Services.Bitfinex
             return pairs;
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
