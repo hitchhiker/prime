@@ -166,10 +166,8 @@ namespace Prime.Plugins.Services.Poloniex
             return pairs;
         }
 
-        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
-        {
-            return Task.FromResult<TransferSuspensions>(null);
-        }
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context) =>
+            Task.FromResult<TransferSuspensions>(null);
 
         public async Task<WalletAddressesResult> GetAddressesAsync(WalletAddressContext context)
         {
@@ -257,10 +255,7 @@ namespace Prime.Plugins.Services.Poloniex
             return body;
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         public async Task<WalletAddressesResult> GetAddressesForAssetAsync(WalletAddressAssetContext context)
         {

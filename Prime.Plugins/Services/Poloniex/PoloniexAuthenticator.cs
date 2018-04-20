@@ -7,9 +7,7 @@ namespace Prime.Plugins.Services.Poloniex
 {
     public class PoloniexAuthenticator : BaseAuthenticator
     {
-        public PoloniexAuthenticator(ApiKey apiKey) : base(apiKey)
-        {
-        }
+        public PoloniexAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {

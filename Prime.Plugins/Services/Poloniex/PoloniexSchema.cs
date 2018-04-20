@@ -19,87 +19,6 @@ namespace Prime.Plugins.Services.Poloniex
 
         #endregion
 
-        #region Private
-
-        internal class BalancesDetailedResponse : Dictionary<string, BalanceDetailedResponse> { }
-
-        internal class DepositAddressesResponse : Dictionary<string, string> { }
-
-        /// <summary>
-        /// returnOrderTrades response model for all markets.
-        /// </summary>
-        internal class OpenMarketOrdersResponse : Dictionary<string, OpenOrdersResponse> { }
-
-        internal class OpenOrdersResponse : List<OpenOrderResponse> { }
-
-        internal class OpenOrderResponse
-        {
-            public long orderNumber;
-            public string type;
-            public decimal rate;
-            public decimal amount;
-            public decimal total;
-        }
-        
-        /// <summary>
-        /// ReturnTradeHistory response model for all markets.
-        /// </summary>
-        internal class MarketTradeOrdersResponse : Dictionary<string, TradeOrdersResponse> { }
-        
-        internal class TradeOrdersResponse : List<TradeOrderResponse> { }
-
-        internal class TradeOrderResponse : OpenOrderResponse
-        {
-            public long globalTradeID;
-            public long tradeID;
-            public DateTime date;
-            public decimal fee;
-            public string category;
-        }
-
-        internal class OrderLimitResponse
-        {
-            public string orderNumber;
-            public List<TradeResultResponse> resultingTrades;
-        }
-
-        internal class OrderStatusResponse : List<TradeResultFinalResponse>
-        {
-        }
-
-        internal class TradeResultResponse
-        {
-            public decimal amount;
-            public DateTime date;
-            public decimal rate;
-            public decimal total;
-            public string tradeID;
-            public string type;
-        }
-
-        internal class TradeResultFinalResponse : TradeResultResponse
-        {
-            public decimal fee;
-            public string currencyPair;
-            public long globalTradeID;
-        }
-
-        internal class BalanceDetailedResponse
-        {
-            public decimal available;
-            public decimal onOrders;
-            public decimal btcValue;
-        }
-
-        internal class CancelOrderResponse : SuccessResponse { }
-
-        internal class WithdrawalResponse
-        {
-            public string response;
-        }
-
-        #endregion
-
         #region Public
 
         internal class TickerResponse : Dictionary<string, TickerEntryResponse> { }
@@ -144,5 +63,85 @@ namespace Prime.Plugins.Services.Poloniex
 
         #endregion
 
+        #region Private
+
+        internal class BalancesDetailedResponse : Dictionary<string, BalanceDetailedResponse> { }
+
+        internal class DepositAddressesResponse : Dictionary<string, string> { }
+
+        /// <summary>
+        /// returnOrderTrades response model for all markets.
+        /// </summary>
+        internal class OpenMarketOrdersResponse : Dictionary<string, OpenOrdersResponse> { }
+
+        internal class OpenOrdersResponse : List<OpenOrderResponse> { }
+
+        internal class OpenOrderResponse
+        {
+            public long orderNumber;
+            public string type;
+            public decimal rate;
+            public decimal amount;
+            public decimal total;
+        }
+
+        /// <summary>
+        /// ReturnTradeHistory response model for all markets.
+        /// </summary>
+        internal class MarketTradeOrdersResponse : Dictionary<string, TradeOrdersResponse> { }
+
+        internal class TradeOrdersResponse : List<TradeOrderResponse> { }
+
+        internal class TradeOrderResponse : OpenOrderResponse
+        {
+            public long globalTradeID;
+            public long tradeID;
+            public DateTime date;
+            public decimal fee;
+            public string category;
+        }
+
+        internal class OrderLimitResponse
+        {
+            public string orderNumber;
+            public List<TradeResultResponse> resultingTrades;
+        }
+
+        internal class TradesResponse : List<TradeResultFinalResponse>
+        {
+        }
+
+        internal class TradeResultResponse
+        {
+            public decimal amount;
+            public DateTime date;
+            public decimal rate;
+            public decimal total;
+            public string tradeID;
+            public string type;
+        }
+
+        internal class TradeResultFinalResponse : TradeResultResponse
+        {
+            public decimal fee;
+            public string currencyPair;
+            public long globalTradeID;
+        }
+
+        internal class BalanceDetailedResponse
+        {
+            public decimal available;
+            public decimal onOrders;
+            public decimal btcValue;
+        }
+
+        internal class CancelOrderResponse : SuccessResponse { }
+
+        internal class WithdrawalResponse
+        {
+            public string response;
+        }
+
+        #endregion
     }
 }
