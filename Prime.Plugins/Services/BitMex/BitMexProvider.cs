@@ -45,7 +45,7 @@ namespace Prime.Plugins.Services.BitMex
 
         public BitMexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrlTest, this, (k) => new BitMexAuthenticator(k).GetRequestModifierAsync);
+            ApiProvider = new RestApiClientProvider<IBitMexApi>(BitMexApiUrl, this, (k) => new BitMexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -105,10 +105,7 @@ namespace Prime.Plugins.Services.BitMex
         }
 
         private static readonly IAssetCodeConverter AssetCodeConverter = new BitMexCodeConverter();
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return AssetCodeConverter;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => AssetCodeConverter;
 
         private static readonly PricingFeatures StaticPricingFeatures = new PricingFeatures()
         {
@@ -182,10 +179,7 @@ namespace Prime.Plugins.Services.BitMex
             return prices;
         }
 
-        public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
-        {
-            return Task.Run(() => Pairs);
-        }
+        public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context) => Task.Run(() => Pairs);
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
@@ -194,25 +188,12 @@ namespace Prime.Plugins.Services.BitMex
             return r != null;
         }
 
-        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
-        {
-            return Task.FromResult<TransferSuspensions>(null);
-        }
+        public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context) => Task.FromResult<TransferSuspensions>(null);
 
         public Task<bool> CreateAddressForAssetAsync(WalletAddressAssetContext context)
         {
             throw new NotImplementedException();
         }
-
-//        [Obsolete] // BUG: review, should be removed.
-//        private string AdjustAssetCode(string input)
-//        {
-//            var config = new Dictionary<string, string>();
-//
-//            config.Add("XBT", "XBt");
-//
-//            return config.ContainsKey(input) ? config[input] : null;
-//        }
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {

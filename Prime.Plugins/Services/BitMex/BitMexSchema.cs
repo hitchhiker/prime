@@ -5,6 +5,8 @@ namespace Prime.Plugins.Services.BitMex
 {
     internal class BitMexSchema
     {
+        #region Base
+
         internal class ErrorResponse
         {
             public ErrorDataResponse error;
@@ -16,54 +18,15 @@ namespace Prime.Plugins.Services.BitMex
             public string name;
         }
 
-        internal class BucketedTradeEntriesResponse : List<BucketedTradeEntryResponse> { }
+        #endregion
+
+        #region Public
 
         internal class OrderBookResponse : List<OrderBookRecordResponse> { }
-
-        internal class WalletHistoryResponse : List<WalletHistoryEntryResponse> { }
-
-        internal class WithdrawalResponseBase
-        {
-            public string transactID;
-            public int account;
-            public string currency;
-            public string transactType;
-            public decimal amount;
-            public decimal fee;
-            public string transactStatus;
-            public string address;
-            public string tx;
-            public string text;
-            public DateTime transactTime;
-            public DateTime timestamp;
-        }
-
-        internal class WithdrawalRequestResponse : WithdrawalResponseBase { }
-
-        internal class WithdrawalCancelationResponse : WithdrawalResponseBase { }
-
-        internal class WithdrawalConfirmationResponse : WithdrawalResponseBase { }
-
         internal class ConnectedUsersResponse
         {
             public int users;
             public int bots;
-        }
-
-        internal class WalletHistoryEntryResponse
-        {
-            public string transactID;
-            public int account;
-            public string currency;
-            public string transactType;
-            public decimal amount;
-            public decimal? fee;
-            public string transactStatus;
-            public string address;
-            public DateTime transactTime;
-            public decimal walletBalance;
-            public decimal? marginBalance;
-            public DateTime timestamp;
         }
 
         internal class OrderBookRecordResponse
@@ -74,113 +37,6 @@ namespace Prime.Plugins.Services.BitMex
             public decimal size;
             public decimal price;
         }
-
-        internal class BucketedTradeEntryResponse
-        {
-            public DateTime timestamp;
-            public string symbol;
-            public decimal open;
-            public decimal high;
-            public decimal low;
-            public decimal close;
-            public decimal trades;
-            public decimal volume;
-            public decimal? vwap;
-            public decimal? lastSize;
-            public decimal turnover;
-            public decimal homeNotional;
-            public decimal foreignNotional;
-        }
-
-        internal class WalletInfoResponse
-        {
-            public int account;
-            public string currency;
-            public int prevDeposited;
-            public int prevWithdrawn;
-            public int prevTransferIn;
-            public int prevTransferOut;
-            public int prevAmount;
-            public DateTime prevTimestamp;
-            public int deltaDeposited;
-            public int deltaWithdrawn;
-            public int deltaTransferIn;
-            public int deltaTransferOut;
-            public int deltaAmount;
-            public int deposited;
-            public int withdrawn;
-            public int transferIn;
-            public int transferOut;
-            public int amount;
-            public int pendingCredit;
-            public int pendingDebit;
-            public int confirmedDebit;
-            public DateTime timestamp;
-            public string addr;
-            public string script;
-            public List<string> withdrawalLock;
-        }
-
-        internal class UserInfoResponse
-        {
-            public int id;
-            public int? ownerId;
-            public string firstname;
-            public string lastname;
-            public string username;
-            public string email;
-            public string phone;
-            public DateTime created;
-            public DateTime lastUpdated;
-            public UserPreferences preferences;
-            public string TFAEnabled;
-            public string affiliateID;
-            public string pgpPubKey;
-            public string country;
-        }
-
-        internal class OrderResponseBase
-        {
-            public string orderID;
-            public string clOrdID;
-            public string clOrdLinkID;
-            public int account;
-            public string symbol;
-            public string side;
-            public int? simpleOrderQty;
-            public decimal orderQty;
-            public decimal price;
-            public int? displayQty;
-            public int? stopPx;
-            public int? pegOffsetValue;
-            public string pegPriceType;
-            public string currency;
-            public string settlCurrency;
-            public string ordType;
-            public string timeInForce;
-            public string execInst;
-            public string contingencyType;
-            public string exDestination;
-            public string ordStatus;
-            public string triggered;
-            public bool workingIndicator;
-            public string ordRejReason;
-            public decimal simpleLeavesQty;
-            public int leavesQty;
-            public decimal simpleCumQty;
-            public int cumQty;
-            public decimal? avgPx;
-            public string multiLegReportingType;
-            public string text;
-            public DateTime transactTime;
-            public DateTime timestamp;
-        }
-
-        internal class NewOrderResponse : OrderResponseBase { }
-
-        internal class OrderResponse : OrderResponseBase { }
-
-        internal class OrdersResponse : List<OrderResponse> { }
 
         internal class UserPreferences
         {
@@ -331,5 +187,159 @@ namespace Prime.Plugins.Services.BitMex
             public string settledPrice;
             public DateTime timestamp;
         }
+
+        #endregion
+
+        #region Private
+
+        internal class BucketedTradeEntriesResponse : List<BucketedTradeEntryResponse> { }
+
+        internal class WalletHistoryResponse : List<WalletHistoryEntryResponse> { }
+        internal class WithdrawalResponseBase
+        {
+            public string transactID;
+            public int account;
+            public string currency;
+            public string transactType;
+            public decimal amount;
+            public decimal fee;
+            public string transactStatus;
+            public string address;
+            public string tx;
+            public string text;
+            public DateTime transactTime;
+            public DateTime timestamp;
+        }
+
+        internal class WithdrawalRequestResponse : WithdrawalResponseBase { }
+
+        internal class WithdrawalCancelationResponse : WithdrawalResponseBase { }
+
+        internal class WithdrawalConfirmationResponse : WithdrawalResponseBase { }
+
+        internal class WalletHistoryEntryResponse
+        {
+            public string transactID;
+            public int account;
+            public string currency;
+            public string transactType;
+            public decimal amount;
+            public decimal? fee;
+            public string transactStatus;
+            public string address;
+            public DateTime transactTime;
+            public decimal walletBalance;
+            public decimal? marginBalance;
+            public DateTime timestamp;
+        }
+
+        internal class BucketedTradeEntryResponse
+        {
+            public DateTime timestamp;
+            public string symbol;
+            public decimal open;
+            public decimal high;
+            public decimal low;
+            public decimal close;
+            public decimal trades;
+            public decimal volume;
+            public decimal? vwap;
+            public decimal? lastSize;
+            public decimal turnover;
+            public decimal homeNotional;
+            public decimal foreignNotional;
+        }
+
+        internal class WalletInfoResponse
+        {
+            public int account;
+            public string currency;
+            public int prevDeposited;
+            public int prevWithdrawn;
+            public int prevTransferIn;
+            public int prevTransferOut;
+            public int prevAmount;
+            public DateTime prevTimestamp;
+            public int deltaDeposited;
+            public int deltaWithdrawn;
+            public int deltaTransferIn;
+            public int deltaTransferOut;
+            public int deltaAmount;
+            public int deposited;
+            public int withdrawn;
+            public int transferIn;
+            public int transferOut;
+            public int amount;
+            public int pendingCredit;
+            public int pendingDebit;
+            public int confirmedDebit;
+            public DateTime timestamp;
+            public string addr;
+            public string script;
+            public List<string> withdrawalLock;
+        }
+
+        internal class UserInfoResponse
+        {
+            public int id;
+            public int? ownerId;
+            public string firstname;
+            public string lastname;
+            public string username;
+            public string email;
+            public string phone;
+            public DateTime created;
+            public DateTime lastUpdated;
+            public UserPreferences preferences;
+            public string TFAEnabled;
+            public string affiliateID;
+            public string pgpPubKey;
+            public string country;
+        }
+
+        internal class OrderResponseBase
+        {
+            public string orderID;
+            public string clOrdID;
+            public string clOrdLinkID;
+            public int account;
+            public string symbol;
+            public string side;
+            public int? simpleOrderQty;
+            public decimal orderQty;
+            public decimal price;
+            public int? displayQty;
+            public int? stopPx;
+            public int? pegOffsetValue;
+            public string pegPriceType;
+            public string currency;
+            public string settlCurrency;
+            public string ordType;
+            public string timeInForce;
+            public string execInst;
+            public string contingencyType;
+            public string exDestination;
+            public string ordStatus;
+            public string triggered;
+            public bool workingIndicator;
+            public string ordRejReason;
+            public decimal simpleLeavesQty;
+            public int leavesQty;
+            public decimal simpleCumQty;
+            public int cumQty;
+            public decimal? avgPx;
+            public string multiLegReportingType;
+            public string text;
+            public DateTime transactTime;
+            public DateTime timestamp;
+        }
+
+        internal class NewOrderResponse : OrderResponseBase { }
+
+        internal class OrderResponse : OrderResponseBase { }
+
+        internal class OrdersResponse : List<OrderResponse> { }
+
+        #endregion
     }
 }

@@ -11,9 +11,7 @@ namespace Prime.Plugins.Services.BitMex
 {
     public class BitMexAuthenticator : BaseAuthenticator
     {
-        public BitMexAuthenticator(ApiKey apiKey) : base(apiKey)
-        {
-        }
+        public BitMexAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
         private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
 
@@ -37,6 +35,5 @@ namespace Prime.Plugins.Services.BitMex
             headers.Add("api-signature", signature);
             headers.Add("api-nonce", nonce);
         }
-
     }
 }

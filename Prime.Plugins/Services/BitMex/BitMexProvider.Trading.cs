@@ -13,6 +13,7 @@ using RestEase;
 namespace Prime.Plugins.Services.BitMex
 {
     // https://www.bitmex.com/api/explorer/
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BitMexProvider : IBalanceProvider, IDepositProvider, IWithdrawalProvider, IOrderLimitProvider
     {
         private void CheckResponseErrors<T>(Response<T> response, [CallerMemberName] string method = "Unknown")
