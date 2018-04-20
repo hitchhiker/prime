@@ -9,8 +9,6 @@ namespace Prime.Tests.Providers
 {
     public class BittrexTests : ProviderDirectTestsBase
     {
-        // OHLC data is not provided by API.
-
         public BittrexTests(ITestOutputHelper outputWriter) : base(outputWriter)
         {
             Provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();

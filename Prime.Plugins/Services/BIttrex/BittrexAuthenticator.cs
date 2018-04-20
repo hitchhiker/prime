@@ -11,9 +11,7 @@ namespace Prime.Plugins.Services.Bittrex
 {
     internal class BittrexAuthenticator : BaseAuthenticator
     {
-        public BittrexAuthenticator(ApiKey apiKey) : base(apiKey)
-        {
-        }
+        public BittrexAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -27,7 +25,7 @@ namespace Prime.Plugins.Services.Bittrex
                 $"nonce={nonce}"
             };
 
-            var aggrInitialValue = String.IsNullOrEmpty(request.RequestUri.Query)
+            var aggrInitialValue = string.IsNullOrEmpty(request.RequestUri.Query)
                 ? "?"
                 : request.RequestUri.Query + "&";
 

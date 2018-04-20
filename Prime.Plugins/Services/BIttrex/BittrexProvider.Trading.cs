@@ -8,6 +8,7 @@ using Prime.Common;
 namespace Prime.Plugins.Services.Bittrex
 {
     // https://bittrex.com/home/api
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BittrexProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => null;

@@ -62,7 +62,7 @@ namespace Prime.Plugins.Services.Bittrex
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -173,7 +173,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -189,10 +189,7 @@ namespace Prime.Plugins.Services.Bittrex
             return balances;
         }
 
-        public IAssetCodeConverter GetAssetCodeConverter()
-        {
-            return null;
-        }
+        public IAssetCodeConverter GetAssetCodeConverter() => null;
 
         public Task<TransferSuspensions> GetTransferSuspensionsAsync(NetworkProviderContext context)
         {
@@ -203,7 +200,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -225,7 +222,7 @@ namespace Prime.Plugins.Services.Bittrex
         {
             var api = ApiProvider.GetApi(context);
 
-            var rRaw = await api.GetAllBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
@@ -309,7 +306,5 @@ namespace Prime.Plugins.Services.Bittrex
 
             return new PublicVolumeResponse(Network, context.Pair, summary.BaseVolume, summary.Volume);
         }
-
-        public VolumeFeatures VolumeFeatures { get; }
     }
 }

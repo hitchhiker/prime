@@ -25,12 +25,12 @@ function createWindow() {
 
 function generateFakeGuid() {
     function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
     }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
+}
 
 function closeWindow() {
     alert("Windows is being closed...");
@@ -56,7 +56,7 @@ client.on('close', function () {
 
 ipcMain.on('prime:generate-client-guid', (event, arg) => {
     console.log("Calling server to generate GUID...");
-    
+
     client.write(JSON.stringify({
         "Type": "GenerateGuidMessage",
     }));
