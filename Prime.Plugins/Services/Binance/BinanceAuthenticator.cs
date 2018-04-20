@@ -14,9 +14,7 @@ namespace Prime.Plugins.Services.Binance
     public class BinanceAuthenticator : BaseAuthenticator
     {
 
-        public BinanceAuthenticator(ApiKey apiKey) : base(apiKey)
-        {
-        }
+        public BinanceAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {

@@ -11,6 +11,7 @@ using RestEase;
 namespace Prime.Plugins.Services.Binance
 {
     // https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
+    /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BinanceProvider : IBalanceProvider, IOrderLimitProvider, IWithdrawalPlacementProvider
     {
         private void CheckResponseErrors<T>(Response<T> r, [CallerMemberName] string method = "Unknown")
