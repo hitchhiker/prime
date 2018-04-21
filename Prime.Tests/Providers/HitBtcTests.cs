@@ -21,12 +21,11 @@ namespace Prime.Tests.Providers
         {
             var pairs = new List<AssetPair>()
             {
-                "ETH_USDT".ToAssetPairRaw(),
-                "BTC_USDT".ToAssetPairRaw(),
+                "BTC_USD".ToAssetPairRaw(), // On exchange it is BTC/USDT.
                 "DOGE_BTC".ToAssetPairRaw(),
-                "ETH_USD".ToAssetPairRaw(),
                 "DASH_ETH".ToAssetPairRaw(),
-                "DASH_USDT".ToAssetPairRaw(),
+                "DASH_USD".ToAssetPairRaw(), // On exchange it is DASH/USDT.
+                "ETH_USD".ToAssetPairRaw() // On exchange it is ETH/USDT.
             };
 
             base.PretestGetPricing(pairs, false, false);
@@ -43,12 +42,11 @@ namespace Prime.Tests.Providers
         {
             var requiredPairs = new AssetPairs()
             {
-                "BTC_USDT".ToAssetPairRaw(),
+                "BTC_USD".ToAssetPairRaw(), // On exchange it is BTC/USDT.
                 "DOGE_BTC".ToAssetPairRaw(),
-                "ETH_USDT".ToAssetPairRaw(),
                 "DASH_ETH".ToAssetPairRaw(),
-                "DASH_USDT".ToAssetPairRaw(),
-                "ETH_USDT".ToAssetPairRaw(),
+                "DASH_USD".ToAssetPairRaw(), // On exchange it is DASH/USDT.
+                "ETH_USD".ToAssetPairRaw() // On exchange it is ETH/USDT.
             };
 
             base.PretestGetAssetPairs(requiredPairs);

@@ -56,7 +56,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// For more details see https://api.hitbtc.com/#create-new-order.
         /// </summary>
         /// <param name="body">Post parameters.</param>
-        /// <returns></returns>
+        /// <returns>Information about new order.</returns>
         [Post("/order")]
         Task<Response<HitBtcSchema.OrderInfoResponse>> CreateNewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
 
@@ -65,11 +65,11 @@ namespace Prime.Plugins.Services.HitBtc
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active orders by symbol.</param>
         /// <param name="clientOrderId">If set, other parameters will be ignored. Without limit and pagination.</param>
-        /// <param name="from"></param>
-        /// <param name="till"></param>
+        /// <param name="from">Start time.</param>
+        /// <param name="till">End time.</param>
         /// <param name="number">Number of orders to be returned.</param>
         /// <param name="offset">Number of first orders to be skipped.</param>
-        /// <returns></returns>
+        /// <returns>Orders history list.</returns>
         [Get("/history/order")]
         Task<Response<HitBtcSchema.OrderInfoResponses>> GetOrdersHistoryAsync([Query] string symbol = null, [Query] string clientOrderId = null, [Query] DateTime? from = null, [Query] DateTime? till = null, [Query] int? number = null, [Query] int? offset = null);
 
@@ -77,7 +77,7 @@ namespace Prime.Plugins.Services.HitBtc
         /// Gets array of active orders.
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active orders by symbol.</param>
-        /// <returns></returns>
+        /// <returns>Open orders list.</returns>
         [Get("/order")]
         Task<Response<HitBtcSchema.OrderInfoResponses>> GetOpenOrdersAsync([Query] string symbol = null);
 

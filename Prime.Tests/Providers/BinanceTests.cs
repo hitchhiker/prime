@@ -16,63 +16,6 @@ namespace Prime.Tests.Providers
             Provider = Networks.I.Providers.OfType<BinanceProvider>().FirstProvider();
         }
 
-        #region Private
-
-        [Fact]
-        public override void TestApiPrivate()
-        {
-            base.TestApiPrivate();
-        }
-
-        [Fact]
-        public override void TestGetBalances()
-        {
-            base.TestGetBalances();
-        }
-
-        [Fact]
-        public override void TestPlaceOrderLimit()
-        {
-            // Reliable buy order test.
-            base.PretestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, new Money(100000m, Asset.Xrp), new Money(0.00000001m, Asset.Btc));
-
-            // Reliable sell order test.
-            base.PretestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), false, new Money(1m, Asset.Xrp), new Money(1m, Asset.Btc));
-        }
-
-        [Fact]
-        public override void TestGetTradeOrderStatus()
-        {
-            base.PretestGetTradeOrderStatus("34009816", "TRX_BTC".ToAssetPairRaw());
-        }
-        
-        [Fact]
-        public override void TestPlaceWithdrawal()
-        {
-            base.PretestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(220, Asset.Xrp), "3299088538");
-        }
-
-        [Fact]
-        public override void TestGetOrdersHistory()
-        {
-            base.PretestGetOrdersHistory("TRX_BTC".ToAssetPairRaw());
-        }
-
-        [Fact]
-        public override void TestGetOpenOrders()
-        {
-            base.PretestGetOpenOrders();
-        }
-
-        public async Task TestGetDepositHistory()
-        {
-            var context = new NetworkProviderPrivateContext(UserContext.Current);
-            var binanceProvider = new BinanceProvider();
-
-            await binanceProvider.GetDepositHistoryAsync(context).ConfigureAwait(false);
-        }
-
-        #endregion
 
         #region Public
 
@@ -125,6 +68,56 @@ namespace Prime.Tests.Providers
             var context = new OhlcContext("BTC_USDT".ToAssetPairRaw(), TimeResolution.Minute,
                 new TimeRange(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, TimeResolution.Minute));
             base.PretestGetOhlc(context);
+        }
+
+        #endregion
+
+        #region Private
+
+        [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
+        public override void TestGetBalances()
+        {
+            base.TestGetBalances();
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            // Reliable buy order test.
+            base.PretestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), true, new Money(100000m, Asset.Xrp), new Money(0.00000001m, Asset.Btc));
+
+            // Reliable sell order test.
+            base.PretestPlaceOrderLimit("XRP_BTC".ToAssetPairRaw(), false, new Money(1m, Asset.Xrp), new Money(1m, Asset.Btc));
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            base.PretestGetTradeOrderStatus("34009816", "TRX_BTC".ToAssetPairRaw());
+        }
+        
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            base.PretestPlaceWithdrawal(new WalletAddress("rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm"), new Money(220, Asset.Xrp), "3299088538");
+        }
+
+        [Fact]
+        public override void TestGetOrdersHistory()
+        {
+            base.PretestGetOrdersHistory("TRX_BTC".ToAssetPairRaw());
+        }
+
+        [Fact]
+        public override void TestGetOpenOrders()
+        {
+            base.PretestGetOpenOrders();
         }
 
         #endregion
