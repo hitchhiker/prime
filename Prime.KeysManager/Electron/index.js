@@ -37,12 +37,12 @@ var IndexView = function () {
         getPrivateProviders();
         initModal();
 
-        primeTcpClient.connect((event, data) => {
-            let response = JSON.parse(data);
+        // primeTcpClient.connect((event, data) => {
+        //     let response = JSON.parse(data);
 
-            primeTcpClient.clientGuid = response;
-            console.log(primeTcpClient.clientGuid);
-        });
+        //     primeTcpClient.clientGuid = response;
+        //     console.log(primeTcpClient.clientGuid);
+        // });
     }
 
     function testPrivateApi(e) {
