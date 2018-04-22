@@ -46,7 +46,7 @@ namespace Prime.KeysManager
             uiTasks.Add(RunUiAsync());
 
             Console.WriteLine("> Waiting for all UI processes exit...");
-            Console.ReadLine();
+            //Console.ReadLine();
             Task.WaitAll(uiTasks.ToArray());
         }
 
