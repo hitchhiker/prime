@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Bittrex;
+using Prime.Finance.Services.Services.Bittrex;
 using Xunit;
 using Xunit.Abstractions;
 

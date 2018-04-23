@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.EthexIndia;
+using Prime.Finance.Services.Services.EthexIndia;
 using Xunit;
 using Xunit.Abstractions;
 

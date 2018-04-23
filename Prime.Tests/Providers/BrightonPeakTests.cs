@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.BrightonPeak;
+using Prime.Finance.Services.Services.BrightonPeak;
 using Xunit;
 using Xunit.Abstractions;
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.BitKonan;
+using Prime.Finance.Services.Services.BitKonan;
 using Xunit;
 using Xunit.Abstractions;
 

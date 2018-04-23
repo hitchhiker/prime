@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Whaleclub;
+using Prime.Finance.Services.Services.Whaleclub;
 using Xunit;
 using Xunit.Abstractions;
 

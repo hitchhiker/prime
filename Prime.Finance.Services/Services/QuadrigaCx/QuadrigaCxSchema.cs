@@ -1,0 +1,24 @@
+﻿namespace Prime.Finance.Services.Services.QuadrigaCx
+{
+    internal class QuadrigaCxSchema
+    {
+        internal class TickerResponse
+        {
+            public decimal last;
+            public decimal high;
+            public decimal low;
+            public decimal vwap;
+            public decimal volume;
+            public decimal bid;
+            public decimal ask;
+            public long timestamp;
+        }
+
+        internal class OrderBookResponse
+        {
+            public long timestamp;
+            public decimal[][] bids;
+            public decimal[][] asks;
+        }
+    }
+}

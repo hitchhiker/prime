@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Vaultoro;
+using Prime.Finance.Services.Services.Vaultoro;
 using Xunit;
 using Xunit.Abstractions;
 

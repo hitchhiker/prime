@@ -1,5 +1,4 @@
-﻿using System;
-using Prime.KeysManager.Utils;
+﻿using Prime.KeysManager.Utils;
 using Xunit;
 
 namespace Prime.Tests.KeysManager

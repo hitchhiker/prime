@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.BitFlyer;
+using Prime.Finance.Services.Services.BitFlyer;
 using Xunit;
 using Xunit.Abstractions;
 

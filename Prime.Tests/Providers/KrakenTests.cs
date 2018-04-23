@@ -2,7 +2,7 @@
 using System.Linq;
 using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Plugins.Services.Kraken;
+using Prime.Finance.Services.Services.Kraken;
 using Xunit;
 using Xunit.Abstractions;
 using AssetPair = Prime.Common.AssetPair;

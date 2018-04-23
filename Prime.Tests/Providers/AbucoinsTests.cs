@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Abucoins;
+using Prime.Finance.Services.Services.Abucoins;
 using Xunit;
 using Xunit.Abstractions;
 

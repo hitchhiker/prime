@@ -1,0 +1,35 @@
+﻿using System;
+using System.Net.Http;
+using System.Threading;
+using Prime.Common;
+
+namespace Prime.Finance.Services.Services.BitMex
+{
+    public class BitMexAuthenticator : BaseAuthenticator
+    {
+        public BitMexAuthenticator(ApiKey apiKey) : base(apiKey) { }
+
+        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+
+        protected override long GetNonce()
+        {
+            return DateTime.UtcNow.Ticks - ArbTickEpoch;
+        }
+
+        public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var path = request.RequestUri.PathAndQuery;
+
+            var headers = request.Headers;
+
+            var data = request.Content == null ? "" : request.Content.ReadAsStringAsync().Result;
+            var nonce = GetNonce().ToString(); 
+            var message = $"{request.Method}{path}{nonce}{data}";
+            var signature = HashHMACSHA256Hex(message, ApiKey.Secret);
+
+            headers.Add("api-key", ApiKey.Key);
+            headers.Add("api-signature", signature);
+            headers.Add("api-nonce", nonce);
+        }
+    }
+}

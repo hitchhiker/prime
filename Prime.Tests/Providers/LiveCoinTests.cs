@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.LiveCoin;
+using Prime.Finance.Services.Services.LiveCoin;
 using Xunit;
 using Xunit.Abstractions;
 

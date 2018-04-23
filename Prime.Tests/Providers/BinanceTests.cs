@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Prime.Common;
-using Prime.Plugins.Services.Binance;
+using Prime.Finance.Services.Services.Binance;
 using Xunit;
 using Xunit.Abstractions;
 

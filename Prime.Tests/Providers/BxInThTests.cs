@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.BxInTh;
+using Prime.Finance.Services.Services.BxInTh;
 using Xunit;
 using Xunit.Abstractions;
 

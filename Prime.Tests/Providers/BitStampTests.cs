@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.BitStamp;
+using Prime.Finance.Services.Services.BitStamp;
 using Xunit;
 using Xunit.Abstractions;
 

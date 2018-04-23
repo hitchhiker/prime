@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.MercadoBitcoin;
+using Prime.Finance.Services.Services.MercadoBitcoin;
 using Xunit;
 using Xunit.Abstractions;
 

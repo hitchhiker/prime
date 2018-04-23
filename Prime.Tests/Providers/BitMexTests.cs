@@ -4,7 +4,7 @@ using Prime.Common;
 using Prime.Common.Wallet.Withdrawal.Cancelation;
 using Prime.Common.Wallet.Withdrawal.Confirmation;
 using Prime.Common.Wallet.Withdrawal.History;
-using Prime.Plugins.Services.BitMex;
+using Prime.Finance.Services.Services.BitMex;
 using Xunit;
 using Xunit.Abstractions;
 

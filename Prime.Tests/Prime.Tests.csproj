@@ -11,11 +11,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Prime.KeysManager\Prime.KeysManager.csproj">
       <Project>{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}</Project>
       <Name>Prime.KeysManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Prime.Plugins\Prime.Finance.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LiteDB">

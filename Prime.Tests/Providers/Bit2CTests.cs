@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Bit2C;
+using Prime.Finance.Services.Services.Bit2C;
 using Xunit;
 using Xunit.Abstractions;
 

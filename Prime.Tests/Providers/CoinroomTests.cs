@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Coinroom;
+using Prime.Finance.Services.Services.Coinroom;
 using Xunit;
 using Xunit.Abstractions;
 

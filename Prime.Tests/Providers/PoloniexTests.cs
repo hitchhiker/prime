@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Poloniex;
+using Prime.Finance.Services.Services.Poloniex;
 using Xunit;
 using Xunit.Abstractions;
 

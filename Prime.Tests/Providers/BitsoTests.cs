@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Bitso;
+using Prime.Finance.Services.Services.Bitso;
 using Xunit;
 using Xunit.Abstractions;
 

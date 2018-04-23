@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Paymium;
+using Prime.Finance.Services.Services.Paymium;
 using Xunit;
 using Xunit.Abstractions;
 

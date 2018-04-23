@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.LakeBtc;
+using Prime.Finance.Services.Services.LakeBtc;
 using Xunit;
 using Xunit.Abstractions;
 

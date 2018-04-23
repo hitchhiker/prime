@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Coinfloor;
+using Prime.Finance.Services.Services.Coinfloor;
 using Prime.Tests.Providers;
 using Xunit;
 using Xunit.Abstractions;
