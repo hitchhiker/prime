@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Tests", "Prime.Tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.KeysManager", "Prime.KeysManager\Prime.KeysManager.csproj", "{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Core.App", "Prime.Core.App\Prime.Core.App.csproj", "{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All_Debug|Any CPU = All_Debug|Any CPU
@@ -175,6 +177,30 @@ Global
 		{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}.Release|x64.Build.0 = Release|Any CPU
 		{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}.Release|x86.ActiveCfg = Release|Any CPU
 		{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}.Release|x86.Build.0 = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.All_Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.All_Debug|x64.Build.0 = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.All_Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.All_Debug|x86.Build.0 = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Debug|x64.Build.0 = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release (PDB)|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release (PDB)|Any CPU.Build.0 = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release (PDB)|x64.ActiveCfg = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release (PDB)|x64.Build.0 = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release (PDB)|x86.ActiveCfg = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release (PDB)|x86.Build.0 = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release|x64.ActiveCfg = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release|x64.Build.0 = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFB311D5-1F2D-45D0-AC74-D8AFAF3E13B2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

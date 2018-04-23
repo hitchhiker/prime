@@ -14,7 +14,7 @@
       <Name>Prime.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
+    <ProjectReference Include="..\Prime.Plugins\Prime.Finance.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LiteDB">
