@@ -5,6 +5,7 @@ using Prime.Utility;
 
 namespace Prime.Common
 {
+    [Obsolete("Not used anywhere. To be removed.")]
     public class ApiUtilities
     {
         private ApiUtilities() {}
