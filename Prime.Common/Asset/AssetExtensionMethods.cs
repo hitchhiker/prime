@@ -46,7 +46,6 @@ namespace Prime.Common
             return new AssetPair(assetCode1, assetCode2, provider);
         }
 
-
         /// <summary>
         /// Returns the assetCode as an Asset object, no remote provider conversion of codes is done. 
         /// Use with caution.

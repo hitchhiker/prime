@@ -3,6 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace Prime.Common
 {
+    /// <summary>
+    /// Used as response from super providers.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public struct ApiResponse<T>
     {
         public ApiResponse(Exception e)

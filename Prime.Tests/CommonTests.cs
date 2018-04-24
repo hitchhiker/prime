@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using LiteDB;
 using Prime.Common;
+using Prime.Utility;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -92,6 +93,13 @@ namespace Prime.Tests
                 var nonce = (DateTime.UtcNow.Ticks - new DateTime(2000, 01, 1).Ticks) / 1000_0000; // 1s
                 _outputHelper.WriteLine($"Nonce: {nonce}");
             }
+        }
+
+        [Fact]
+        public void CacheItemTest()
+        {
+            var item = new CacheItem<int>(TimeSpan.FromSeconds(3), 19);
+            var fresh = item.IsFresh;
         }
     }
 }

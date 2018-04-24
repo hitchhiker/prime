@@ -16,8 +16,8 @@ namespace Prime.Common
         /// The first listed currency of a currency pair is called the base currency, and the second currency is called the quote currency.
         /// The currency pair indicates how much of the quote currency is needed to purchase one unit of the base currency.
         /// </summary>
-        /// <param name="asset">Base Currency</param>
-        /// <param name="quote">Quote Currency</param>
+        /// <param name="asset">Base Currency.</param>
+        /// <param name="quote">Quote Currency.</param>
         public AssetPair(Asset asset, Asset quote)
         {
             Asset1 = asset ?? throw new ArgumentException($"{nameof(asset)} is null.");
