@@ -11,8 +11,7 @@ namespace Prime.Common
         public AssetGoCommand(Asset asset)
         {
             Asset = asset;
-            Title = 
-            Command = "ASSET " + asset.ShortCode;
+            Title = Command = "ASSET " + asset.ShortCode;
         }
 
         [Bson]
