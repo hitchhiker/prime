@@ -202,5 +202,7 @@ namespace Prime.Finance.Services.Services.Cex
         };
 
         public VolumeFeatures VolumeFeatures => StaticVolumeFeatures;
+
+        public ApiConfiguration GetApiConfiguration => throw new NotImplementedException();
     }
 }

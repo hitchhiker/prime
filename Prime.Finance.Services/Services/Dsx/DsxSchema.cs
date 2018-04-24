@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using RestEase;
 
 namespace Prime.Finance.Services.Services.Dsx
 {
     internal class DsxSchema
     {
+        #region Public
         internal class TickerResponse : Dictionary<string, TickerEntryResponse>
         {
 
@@ -48,5 +51,41 @@ namespace Prime.Finance.Services.Services.Dsx
             public decimal[][] asks;
             public decimal[][] bids;
         }
+        #endregion
+
+        #region Base
+        internal class BaseResponse<T>
+        {
+            public int success;
+
+            [JsonProperty("return")]
+            public T returnObj;
+        }
+
+        internal class ErrorResponse
+        {
+            public int success;
+            public string error;
+        }
+        #endregion
+
+        #region Private
+
+        internal class BalanceResponse : BaseResponse<BalanceInfoResponse>
+        {
+
+        }
+
+        internal class BalanceInfoResponse
+        {
+            public Dictionary<string, BalanceEntryResponse> funds;
+        }
+
+        internal class BalanceEntryResponse
+        {
+            public decimal total;
+            public decimal available;
+        }
+        #endregion
     }
 }

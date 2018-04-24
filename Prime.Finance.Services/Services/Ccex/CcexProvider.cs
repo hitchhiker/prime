@@ -10,7 +10,7 @@ namespace Prime.Finance.Services.Services.Ccex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://c-cex.com/?id=api
-    public class CcexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
+    public partial class CcexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string CcexApiUrl = "https://c-cex.com/";
 
@@ -35,7 +35,7 @@ namespace Prime.Finance.Services.Services.Ccex
 
         public CcexProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICcexApi>(CcexApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICcexApi>(CcexApiUrl, this, (k) => new CcexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -44,6 +44,18 @@ namespace Prime.Finance.Services.Services.Ccex
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
             return r?.pairs?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null && r.success;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

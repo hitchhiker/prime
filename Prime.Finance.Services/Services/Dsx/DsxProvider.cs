@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
@@ -9,9 +10,11 @@ namespace Prime.Finance.Services.Services.Dsx
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://dsx.docs.apiary.io/#
-    public class DsxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class DsxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
-        private const string DsxApiUrl = "https://dsx.uk/mapi/" ;
+        private const string ApiVersion = "v2";
+        private const string DsxApiPublicUrl = "https://dsx.uk/mapi/";
+        private const string DsxApiPrivateUrl = "https://dsx.uk/tapi/" + ApiVersion + "/";
 
         private static readonly ObjectId IdHash = "prime:dsx".GetObjectIdHashCode();
 
@@ -19,7 +22,8 @@ namespace Prime.Finance.Services.Services.Dsx
         //https://dsx.docs.apiary.io/#introduction/requests-limit
         private static readonly IRateLimiter Limiter = new PerMinuteRateLimiter(60, 1);
 
-        private RestApiClientProvider<IDsxApi> ApiProvider { get; }
+        private RestApiClientProvider<IDsxApi> ApiProviderPublic { get; }
+        private RestApiClientProvider<IDsxApi> ApiProviderPrivate { get; }
 
         public Network Network { get; } = Networks.I.Get("Dsx");
 
@@ -36,20 +40,44 @@ namespace Prime.Finance.Services.Services.Dsx
 
         public DsxProvider()
         {
-            ApiProvider = new RestApiClientProvider<IDsxApi>(DsxApiUrl, this, (k) => null);
+            ApiProviderPublic = new RestApiClientProvider<IDsxApi>(DsxApiPublicUrl, this, (k) => null);
+            ApiProviderPrivate = new RestApiClientProvider<IDsxApi>(DsxApiPrivateUrl, this, (k) => new DsxAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var api = ApiProviderPublic.GetApi(context);
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
             return r.pairs?.Count > 0;
         }
 
+        private Dictionary<string, object> CreateBody()
+        {
+            var nonce = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
+
+            var body = new Dictionary<string, object>()
+            {
+                { "nonce", nonce }
+            };
+
+            return body;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProviderPrivate.GetApi(context);
+            var body = CreateBody();
+            var r = await api.GetBalancesAsync(body).ConfigureAwait(false);
+
+           
+
+            return r != null && r.success == 1;
+        }
+
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var api = ApiProviderPublic.GetApi(context);
 
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
@@ -82,7 +110,7 @@ namespace Prime.Finance.Services.Services.Dsx
 
         public async Task<MarketPrices> GetPricingAsync(PublicPricesContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var api = ApiProviderPublic.GetApi(context);
             var pairCode = context.Pair.ToTicker(this).ToLower();
             var r = await api.GetTickerAsync(pairCode).ConfigureAwait(false);
 
@@ -107,7 +135,7 @@ namespace Prime.Finance.Services.Services.Dsx
 
         public async Task<OrderBook> GetOrderBookAsync(OrderBookContext context)
         {
-            var api = ApiProvider.GetApi(context);
+            var api = ApiProviderPublic.GetApi(context);
             var pairCode = context.Pair.ToTicker(this).ToLower();
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
