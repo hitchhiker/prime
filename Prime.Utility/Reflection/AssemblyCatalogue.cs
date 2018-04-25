@@ -42,12 +42,11 @@ namespace Prime.Utility
                 try
                 {
                     if (a.IsDynamic || a.GlobalAssemblyCache)
-                    continue;
+                        continue;
 
-                if (a.FullName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("NETStandard", StringComparison.OrdinalIgnoreCase))
-                    continue;
+                    if (a.FullName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("NETStandard", StringComparison.OrdinalIgnoreCase))
+                        continue;
 
-                
                     if (a.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright?.Contains("microsoft", StringComparison.OrdinalIgnoreCase) == true)
                         continue;
                 }
@@ -62,7 +61,7 @@ namespace Prime.Utility
                 }
                 catch (ReflectionTypeLoadException tle)
                 {
-                   throw new Exception(string.Join(", ", tle.LoaderExceptions.Select(x => x.Message)) + " This is normally due to an installation issue or missing extension.");
+                    throw new Exception(string.Join(", ", tle.LoaderExceptions.Select(x => x.Message)) + " This is normally due to an installation issue or missing extension.");
                 }
                 catch (Exception e)
                 {
@@ -71,7 +70,7 @@ namespace Prime.Utility
             }
             return result;
         }
-        
+
         private void LoadAllBinDirectoryAssemblies() //http://stackoverflow.com/questions/1288288/how-to-load-all-assemblies-from-within-your-bin-directory
         {
             List<Assembly> allAssemblies = new List<Assembly>();
@@ -111,7 +110,7 @@ namespace Prime.Utility
         private readonly Dictionary<int, Assembly> _typeLookup;
         private readonly List<Assembly> _assemblies;
 
-        public IReadOnlyList<Assembly> Assemblies { get { return _assemblies; } } 
+        public IReadOnlyList<Assembly> Assemblies { get { return _assemblies; } }
 
         public int Get(Assembly assembly)
         {

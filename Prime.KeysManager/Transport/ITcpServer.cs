@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Prime.KeysManager.Transport
 {
@@ -8,10 +9,10 @@ namespace Prime.KeysManager.Transport
         void StartServer(IPAddress address, short port);
         void ShutdownServer();
 
-        void Subscribe<T>(Action<T> handler);
+        void Subscribe<T>(Action<T, TcpClient> handler);
         void Unsubscribe<T>();
 
-        void Send<T>(T data);
+        void Send<T>(TcpClient client, T data);
 
         event EventHandler<Exception> ExceptionOccurred;
     }

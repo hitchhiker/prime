@@ -6,6 +6,7 @@ using Prime.KeysManager.Core;
 using Prime.KeysManager.Core.Models;
 using Prime.KeysManager.Messages;
 using Prime.KeysManager.Transport;
+using Prime.KeysManager.Utils;
 
 namespace Prime.KeysManager
 {
@@ -43,15 +44,15 @@ namespace Prime.KeysManager
             _tcpServer.Subscribe<GenerateGuidMessage>(FakeClientGuidHandler);
         }
 
-        private void FakeClientGuidHandler(GenerateGuidMessage fakeClientGuidMessage)
+        private void FakeClientGuidHandler(GenerateGuidMessage fakeClientGuidMessage, TcpClient sender)
         {
             Console.WriteLine("Generating client GUID...");
 
             var guid = Guid.NewGuid();
-            _tcpServer.Send(guid);
+            _tcpServer.Send(sender, guid);
         }
 
-        private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage)
+        private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage, TcpClient sender)
         {
             Console.WriteLine("App: Testing private API...");
             var success = true;
@@ -66,10 +67,10 @@ namespace Prime.KeysManager
                 Console.WriteLine($"App: Error while testing private API: {e.Message}");
             }
 
-            _tcpServer.Send(new OperationResultModel() { Success = success });
+            _tcpServer.Send(sender, new OperationResultModel() { Success = success });
         }
 
-        private void DeleteProviderKeysHandler(DeleteProviderKeysMessage deleteProviderKeysMessage)
+        private void DeleteProviderKeysHandler(DeleteProviderKeysMessage deleteProviderKeysMessage, TcpClient sender)
         {
             Console.WriteLine("App: Deleting keys...");
             var success = true;
@@ -84,10 +85,10 @@ namespace Prime.KeysManager
                 Console.WriteLine($"App: Error while deleting keys: {e.Message}");
             }
 
-            _tcpServer.Send(new OperationResultModel() { Success = success });
+            _tcpServer.Send(sender, new OperationResultModel() { Success = success });
         }
 
-        private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage)
+        private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage, TcpClient sender)
         {
             Console.WriteLine("App: Saving keys...");
             var success = true;
@@ -102,31 +103,31 @@ namespace Prime.KeysManager
                 Console.WriteLine($"App: Error while saving keys: {e.Message}");
             }
             
-            _tcpServer.Send(new OperationResultModel() { Success = success});
+            _tcpServer.Send(sender, new OperationResultModel() { Success = success});
         }
 
-        private void ProviderDetailsHandler(ProviderDetailsMessage providerDetailsMessage)
+        private void ProviderDetailsHandler(ProviderDetailsMessage providerDetailsMessage, TcpClient sender)
         {
             Console.WriteLine("App: Sending provider details...");
 
             var providerDetails = _primeService.GetNetworkDetails(providerDetailsMessage.Id);
-            _tcpServer.Send(providerDetails);
+            _tcpServer.Send(sender, providerDetails);
         }
 
-        private void PrivateProvidersListHandler(PrivateProvidersListMessage privateProvidersListMessage)
+        private void PrivateProvidersListHandler(PrivateProvidersListMessage privateProvidersListMessage, TcpClient sender)
         {
             Console.WriteLine("App: Private providers list requested... Sending...");
 
             var providers = _primeService.GetPrivateNetworks();
-            _tcpServer.Send(providers);
+            _tcpServer.Send(sender, providers);
         }
 
-        private void ProvidersListHandler(ProvidersListMessage providersListMessage)
+        private void ProvidersListHandler(ProvidersListMessage providersListMessage, TcpClient sender)
         {
             Console.WriteLine("App: Providers list requested... Sending...");
 
             var providers = _primeService.GetNetworks();
-            _tcpServer.Send(providers);
+            _tcpServer.Send(sender, providers);
         }
 
         private void TcpServerOnExceptionOccurred(object sender, Exception exception)
