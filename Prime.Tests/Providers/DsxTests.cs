@@ -58,5 +58,21 @@ namespace Prime.Tests.Providers
         {
             base.PretestGetOrderBook("eth_usd".ToAssetPairRaw(), false);
         }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: SC: Not tested with real money
+            var orderId = "21109502";
+            base.PretestGetTradeOrderStatus(orderId, "eth_usd".ToAssetPairRaw());
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            //TODO: SC: Not tested with real money
+            
+            base.PretestPlaceOrderLimit("eth_usd".ToAssetPairRaw(), true, new Money(10, Asset.Usd), new Money(10m, Asset.Usd));
+        }
     }
 }

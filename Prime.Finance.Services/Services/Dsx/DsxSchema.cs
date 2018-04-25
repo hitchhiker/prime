@@ -86,6 +86,43 @@ namespace Prime.Finance.Services.Services.Dsx
             public decimal total;
             public decimal available;
         }
+
+        internal class OrderResponse : BaseResponse<OrderInfoResponse>
+        {
+
+        }
+
+        internal class OrderInfoResponse
+        {
+            public string orderId;
+        }
+
+        internal class OrderStatusResponse : BaseResponse<OrderStatusInfoResponse>
+        {
+
+        }
+
+        internal class OrderStatusInfoResponse
+        {
+            public string pair;
+            public string type;
+            public decimal remainingVolume;
+            public decimal volume;
+            public decimal rate;
+            public long timestampCreated;
+            public int status;
+            public string orderType;
+        }
+
+        internal class WithdrawalResponse : BaseResponse<WithdrawalInfoResponse>
+        {
+
+        }
+
+        internal class WithdrawalInfoResponse
+        {
+            public string transactionId;
+        }
         #endregion
     }
 }

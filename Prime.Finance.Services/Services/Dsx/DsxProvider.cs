@@ -68,9 +68,11 @@ namespace Prime.Finance.Services.Services.Dsx
         {
             var api = ApiProviderPrivate.GetApi(context);
             var body = CreateBody();
-            var r = await api.GetBalancesAsync(body).ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync(body).ConfigureAwait(false);
 
-           
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null && r.success == 1;
         }
