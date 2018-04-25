@@ -105,6 +105,7 @@ namespace Prime.Finance.Services.Services.Dsx
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
+            //TODO: SC - At the time of writing, this endpoint does not appear to be functioning in the API. Possibly due to an account-related issue.
             var api = ApiProviderPrivate.GetApi(context);
 
             var body = CreateBody();
@@ -112,15 +113,25 @@ namespace Prime.Finance.Services.Services.Dsx
             body.Add("amount", context.Amount.ToDecimalValue());
             body.Add("address", context.Address.Address);
 
-            var rRaw = await api.SubmitWithdrawRequestAsync(body).ConfigureAwait(false);
+            var rRaw = await api.PrepareWithdrawRequestAsync(body).ConfigureAwait(false);
 
             CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
+            var transactionId = r.returnObj.transactionId;
+            
+            var bodySubmit = CreateBody();
+            bodySubmit.Add("transactionId", transactionId);
+            var rSubmitRaw = await api.SubmitWithdrawRequestAsync(bodySubmit).ConfigureAwait(false);
+
+            CheckResponseErrors(rSubmitRaw);
+
+            var rSubmit = rSubmitRaw.GetContent();
+
             return new WithdrawalPlacementResult()
             {
-                WithdrawalRemoteId = r.returnObj.transactionId
+                WithdrawalRemoteId = rSubmit.returnObj.id
             };
         }
 

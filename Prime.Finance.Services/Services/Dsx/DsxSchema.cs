@@ -123,6 +123,24 @@ namespace Prime.Finance.Services.Services.Dsx
         {
             public string transactionId;
         }
+
+        internal class SubmitWithdrawalResponse : BaseResponse<SubmitWithdrawalInfoResponse>
+        {
+
+        }
+
+        internal class SubmitWithdrawalInfoResponse
+        {
+            public string id;
+            public long timestamp;
+            public string type;
+            public decimal amount;
+            public string currency;
+            public int confirmationsCount;
+            public string address;
+            public string status;
+            public decimal commission;
+        }
         #endregion
     }
 }

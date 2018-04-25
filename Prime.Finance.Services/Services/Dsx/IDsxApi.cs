@@ -26,6 +26,9 @@ namespace Prime.Finance.Services.Services.Dsx
         Task<Response<DsxSchema.OrderStatusResponse>> QueryOrderAsync([Body(BodySerializationMethod.Default)] Dictionary<string, object> body);
 
         [Post("/withdraw/crypto")]
-        Task<Response<DsxSchema.WithdrawalResponse>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.Default)] Dictionary<string, object> body);
+        Task<Response<DsxSchema.WithdrawalResponse>> PrepareWithdrawRequestAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);
+
+        [Post("/withdraw/submit")]
+        Task<Response<DsxSchema.SubmitWithdrawalResponse>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.Default)] Dictionary<string, object> body);
     }
 }
