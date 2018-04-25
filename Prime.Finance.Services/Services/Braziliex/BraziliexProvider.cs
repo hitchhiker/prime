@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
@@ -9,7 +10,7 @@ namespace Prime.Finance.Services.Services.Braziliex
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://braziliex.com/exchange/api.php
-    public class BraziliexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class BraziliexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BraziliexApiVersion = "v1";
         private const string BraziliexApiUrl = "https://braziliex.com/api/" + BraziliexApiVersion;
@@ -35,7 +36,7 @@ namespace Prime.Finance.Services.Services.Braziliex
 
         public BraziliexProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBraziliexApi>(BraziliexApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBraziliexApi>(BraziliexApiUrl, this, (k) => new BraziliexAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -44,6 +45,34 @@ namespace Prime.Finance.Services.Services.Braziliex
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Count > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = CreateBody();
+            body.Add("command", "balance");
+
+            var rRaw = await api.GetBalancesAsync(body).ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null;
+        }
+
+        private Dictionary<string, object> CreateBody()
+        {
+            var nonce = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
+
+            var body = new Dictionary<string, object>()
+            {
+                { "nonce", nonce }
+            };
+
+            return body;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
