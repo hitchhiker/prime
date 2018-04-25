@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,8 +16,8 @@ namespace Prime.KeysManager.Transport
     public class TcpServer : ITcpServer
     {
         private TcpListener _listener;
-        private List<TcpClient> _connectedClients = new List<TcpClient>();
-        private readonly Dictionary<Type, Action<object>> _subscriptions = new Dictionary<Type, Action<object>>();
+        private readonly ConcurrentBag<TcpClient> _connectedClients = new ConcurrentBag<TcpClient>();
+        private readonly Dictionary<Type, Action<object, TcpClient>> _subscriptions = new Dictionary<Type, Action<object, TcpClient>>();
 
         public void StartServer(IPAddress address, short port)
         {
@@ -27,7 +28,7 @@ namespace Prime.KeysManager.Transport
             WaitForClient();
         }
 
-        private void HandleResponse(string raw)
+        private void HandleResponse(string raw, TcpClient clientSender)
         {
             var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(raw);
 
@@ -40,7 +41,7 @@ namespace Prime.KeysManager.Transport
             if (subscribedType.Value != null)
             {
                 var parameter = JsonConvert.DeserializeObject(raw, subscribedType.Key);
-                subscribedType.Value(parameter);
+                subscribedType.Value(parameter, clientSender);
             }
             else
             {
@@ -72,7 +73,7 @@ namespace Prime.KeysManager.Transport
                                 data = CleanData(data);
 
                                 if (!string.IsNullOrWhiteSpace(data))
-                                    HandleResponse(data);
+                                    HandleResponse(data, connectedClient);
                             }
                         }
                     }
@@ -121,17 +122,17 @@ namespace Prime.KeysManager.Transport
             {
                 connectedClient.Dispose();
             }
-            
+
             Console.WriteLine("Server: server closed.");
         }
 
-        public void Subscribe<T>(Action<T> handler)
+        public void Subscribe<T>(Action<T, TcpClient> handler)
         {
             var t = typeof(T);
             if (_subscriptions.ContainsKey(t))
                 throw new InvalidOperationException("Handler for specified type has already been added.");
 
-            _subscriptions.Add(t, (o) => handler((T)o));
+            _subscriptions.Add(t, (o, client) => handler((T)o, client));
         }
 
         public void Unsubscribe<T>()
@@ -143,13 +144,11 @@ namespace Prime.KeysManager.Transport
                 throw new InvalidOperationException("Handler for specified type does not exist.");
         }
 
-        public void Send<T>(T data)
+        public void Send<T>(TcpClient client, T data)
         {
             var json = JsonConvert.SerializeObject(data);
-            foreach (var client in _connectedClients)
-            {
-                SendData(client, json);
-            }
+
+            SendData(client, json);
         }
 
         public event EventHandler<Exception> ExceptionOccurred;
