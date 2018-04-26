@@ -2,8 +2,6 @@
 using System.IO;
 using System.Linq;
 using Prime.Common;
-using Prime.Plugins.Services.Binance;
-using Prime.Plugins.Services.BitMex;
 
 namespace Prime.Console.Tests.Alyasko
 {
