@@ -1,9 +1,28 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Prime.Finance.Services.Services.Vaultoro
 {
     internal class VaultoroSchema
     {
+        #region Base
+        internal class BaseResponse<T>
+        {
+            public string status;
+            public T data;
+        }
+
+        internal class ErrorResponse : BaseResponse<ErrorEntryResponse>
+        {
+        }
+
+        internal class ErrorEntryResponse
+        {
+            public string message;
+        }
+        #endregion
+
+        #region Public
         internal class MarketResponse
         {
             public string status;
@@ -32,7 +51,7 @@ namespace Prime.Finance.Services.Services.Vaultoro
             [JsonProperty("24HVolume")]
             public decimal Volume24h;
         }
-        
+
         internal class OrderBookItemResponse
         {
             public decimal Gold_Price;
@@ -50,5 +69,61 @@ namespace Prime.Finance.Services.Services.Vaultoro
             public string status;
             public OrderBookEntryResponse[] data;
         }
+        #endregion
+
+        #region Private
+
+        internal class BalanceResponse : BaseResponse<BalanceEntryResponse[]>
+        {
+
+        }
+
+        internal class BalanceEntryResponse
+        {
+            public string currency_code;
+            public decimal cash;
+            public decimal reserved;
+        }
+
+        internal class OrderResponse
+        {
+            public string action;
+            public string Order_ID;
+            public string type;
+            public string time;
+            public decimal price;
+            public decimal btc;
+            public decimal gld;
+        }
+
+        internal class OrdersResponse : BaseResponse<OrdersEntryResponse[]>
+        {
+
+        }
+
+        internal class OrdersEntryResponse 
+        {
+            public OrderInfoResponse[] b;
+            public OrderInfoResponse[] s;
+        }
+
+        internal class OrderInfoResponse
+        {
+            public string Order_ID;
+            public decimal BTC_Amount;
+            public decimal Gold_Price;
+            public decimal Gold_Amount;
+        }
+
+        internal class WithdrawalResponse : BaseResponse<WithdrawalEntryResponse>
+        {
+        }
+
+        internal class WithdrawalEntryResponse
+        {
+            public decimal amount;
+            public string address;
+        }
+        #endregion
     }
 }

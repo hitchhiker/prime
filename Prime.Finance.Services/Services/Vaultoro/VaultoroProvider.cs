@@ -9,17 +9,21 @@ namespace Prime.Finance.Services.Services.Vaultoro
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.vaultoro.com/#api-Basic_API
-    public class VaultoroProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class VaultoroProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string VaultoroApiUrl = "https://api.vaultoro.com/";
+        private const string VaultoroApiUrlPrivate = "https://api.vaultoro.com/" + privateUrlVersion;
 
         private static readonly ObjectId IdHash = "prime:vaultoro".GetObjectIdHashCode();
+
+        private const string privateUrlVersion = "1";
 
         //The calls are limited to 1-2 per second. We will be testing different settings when load increases.
         //https://api.vaultoro.com/#api-Basic_API
         private static readonly IRateLimiter Limiter = new PerSecondRateLimiter(2, 1);
 
         private RestApiClientProvider<IVaultoroApi> ApiProvider { get; }
+        private RestApiClientProvider<IVaultoroApi> ApiProviderPrivate { get; }
 
         public Network Network { get; } = Networks.I.Get("Vaultoro");
 
@@ -37,6 +41,7 @@ namespace Prime.Finance.Services.Services.Vaultoro
         public VaultoroProvider()
         {
             ApiProvider = new RestApiClientProvider<IVaultoroApi>(VaultoroApiUrl, this, (k) => null);
+            ApiProviderPrivate = new RestApiClientProvider<IVaultoroApi>(VaultoroApiUrlPrivate, this, (k) => new VaultoroAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -45,6 +50,18 @@ namespace Prime.Finance.Services.Services.Vaultoro
             var r = await api.GetMarketsAsync().ConfigureAwait(false);
 
             return r?.status.Equals("success", StringComparison.OrdinalIgnoreCase) == true;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProviderPrivate.GetApi(context);
+            var rRaw = await api.GetBalanceAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null && r.status.Equals("success");
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
