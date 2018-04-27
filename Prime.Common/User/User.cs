@@ -7,6 +7,5 @@ namespace Prime.Common
     {
         [BsonId]
         public ObjectId Id { get; set; }
-
     }
 }

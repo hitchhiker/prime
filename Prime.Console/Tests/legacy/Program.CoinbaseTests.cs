@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using plugins;
 using Prime.Common;
-using Prime.Plugins.Services.Bittrex;
-using Prime.Plugins.Services.Coinbase;
+using Prime.Finance.Services.Services.Coinbase;
 
 namespace Prime.TestConsole
 {

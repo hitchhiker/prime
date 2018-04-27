@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Plugins.Services.Bittrex;
-using Prime.Plugins.Services.Poloniex;
+using Prime.Finance.Services.Services.Bittrex;
 
 namespace Prime.TestConsole
 {

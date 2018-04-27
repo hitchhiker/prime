@@ -5,6 +5,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Worker.cs" />
   </ItemGroup>
@@ -12,7 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime.Plugins\Prime.Plugins.csproj" />
+    <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
+    <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
     <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
   </ItemGroup>
 
@@ -23,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tests\Frank\" />
     <Folder Include="Tests\Sean\" />
   </ItemGroup>
 

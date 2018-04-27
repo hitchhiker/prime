@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using plugins;
 using Prime.Common;
-using Prime.Plugins.Services.Poloniex;
+using Prime.Finance.Services.Services.Poloniex;
 
 namespace Prime.TestConsole
 {

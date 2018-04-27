@@ -6,10 +6,10 @@ using Nito.AsyncEx;
 using Prime.Common;
 using Prime.Console.Tests;
 using Prime.Console.Tests.Alyasko;
+using Prime.Console.Tests.Frank;
 using Prime.Core;
-using Prime.Plugins.Services.BitMex;
-using Prime.Plugins.Services.Kraken;
-using Prime.Plugins.Services.QuadrigaCX;
+using Prime.Finance.Services.Services.BitMex;
+using Prime.Finance.Services.Services.Kraken;
 using Prime.TestConsole;
 using Prime.Utility;
 using AssetPair = Prime.Common.AssetPair;
@@ -39,11 +39,14 @@ namespace TestConsole
             }
             else
             {
+                Frank.Go();
+                /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)
                     Console.WriteLine("Cant find 'Frank' testing modules.");
                 else
                     ft.Go();
+                    */
             }
 
             // ----- Kraken -----
