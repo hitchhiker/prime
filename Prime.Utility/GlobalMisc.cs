@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public class GlobalMisc
     {

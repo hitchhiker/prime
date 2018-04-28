@@ -1,4 +1,4 @@
-﻿namespace Prime.Console.Tests
+﻿namespace Prime.ConsoleApp.Tests
 {
     public interface ITestBase
     {

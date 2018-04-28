@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mime;
 using LiteDB;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

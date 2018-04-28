@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public class DirtyList<T> : IList<T>, IReadOnlyList<T>, IList
     {

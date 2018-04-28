@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// https://stackoverflow.com/a/7439725/1318333

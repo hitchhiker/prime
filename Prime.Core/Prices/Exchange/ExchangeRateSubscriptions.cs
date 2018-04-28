@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Prime.Core;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common.Exchange.Rates
 {

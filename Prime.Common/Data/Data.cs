@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using Prime.Common;
 using LiteDB;
-using Prime.Utility;
 
 namespace Prime.Common
 {
@@ -65,6 +64,7 @@ namespace Prime.Common
                 obj => obj.ShortCode,
                 bson => Assets.I.GetRaw(bson.AsString)
             );
+
             g.RegisterType<AssetPair>
             (
                 obj => obj==null ? "" : obj.Asset1?.ShortCode + ":" + obj.Asset2?.ShortCode,

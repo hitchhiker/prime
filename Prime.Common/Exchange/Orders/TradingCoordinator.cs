@@ -5,7 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Prime.Common.Exchange.Trading_temp;
 using Prime.Common.Exchange.Trading_temp.Messages;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

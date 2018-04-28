@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Utility;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.BitMarket

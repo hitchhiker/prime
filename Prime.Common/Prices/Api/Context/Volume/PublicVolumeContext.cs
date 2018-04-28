@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

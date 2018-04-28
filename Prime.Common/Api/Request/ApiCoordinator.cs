@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Nito.AsyncEx;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

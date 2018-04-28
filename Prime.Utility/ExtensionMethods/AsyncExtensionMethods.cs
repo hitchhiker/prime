@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class AsyncExtensionMethods
     {

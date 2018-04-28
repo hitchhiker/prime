@@ -9,11 +9,11 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Prime.Utility;
+using Prime.Common;
 
 #endregion
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     [Flags]
     public enum TruncateOptions

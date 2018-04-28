@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class Reflection
     {

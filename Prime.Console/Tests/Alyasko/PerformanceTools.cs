@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Prime.Console.Tests.Alyasko
+namespace Prime.ConsoleApp.Tests.Alyasko
 {
     public class PerformanceTools : ITestBase
     {

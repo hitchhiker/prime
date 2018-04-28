@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Collections;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// Miscellaneous and parsing methods for DateTime

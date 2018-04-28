@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Finance.Services.Services.Common;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.Wex
 {

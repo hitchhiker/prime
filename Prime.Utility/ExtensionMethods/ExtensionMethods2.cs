@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 //mod from: http://aonnull.blogspot.com/2010/08/dynamic-sql-like-linq-orderby-extension.html
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static partial class ExtensionMethods
     {

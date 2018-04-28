@@ -6,7 +6,6 @@ using LiteDB;
 using Prime.Common;
 using Prime.Common.Wallet;
 using Prime.Core;
-using Prime.Utility;
 
 namespace Prime.Core.Wallet
 {

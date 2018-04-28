@@ -3,7 +3,7 @@
 
 using LiteDB;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class TypeConverterExtensions
     {

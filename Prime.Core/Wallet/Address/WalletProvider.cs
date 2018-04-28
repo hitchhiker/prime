@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Core.Wallet
 {

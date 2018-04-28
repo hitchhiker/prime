@@ -5,8 +5,8 @@ namespace Prime.Common
     {
         public ServiceLineItem()
         {
-            Title = global::Prime.Utility.RandomText.Generate(10);
-            Description = global::Prime.Utility.RandomText.Generate(30);
+            Title = global::Prime.Common.RandomText.Generate(10);
+            Description = global::Prime.Common.RandomText.Generate(30);
         }
 
         private readonly INetworkProvider _provider;

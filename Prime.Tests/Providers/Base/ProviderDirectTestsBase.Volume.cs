@@ -2,7 +2,6 @@
 using System.Linq;
 using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Utility;
 using Xunit;
 
 namespace Prime.Tests.Providers

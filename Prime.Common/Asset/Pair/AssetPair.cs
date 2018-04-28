@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using LiteDB;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Common
 {

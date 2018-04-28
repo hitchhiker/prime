@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LiteDB;
-using Prime.Utility;
+using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Common
 {
@@ -105,7 +106,7 @@ namespace Prime.Common
             _keys.RemoveAll(x=>x.Network.Id.Equals(networkId));
         }
 
-        public static DirectoryInfo ApiConfigPath = new DirectoryInfo(Path.Combine(CommonFs.I.UserConfigDirectory.FullName, "keys"));
+        public static DirectoryInfo ApiConfigPath = new DirectoryInfo(Path.Combine(ApplicationFs.I.ConfigDirectory.FullName, "keys"));
 
         public IEnumerator<ApiKey> GetEnumerator()
         {

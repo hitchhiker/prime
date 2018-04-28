@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public class ConsoleEntries : List<ConsoleEntry>
     {

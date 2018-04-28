@@ -1,8 +1,8 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
-using Prime.Utility;
-using Prime.Utility.Misc;
+using Prime.Common;
+using Prime.Common.Misc;
 
 namespace Prime.Common.Exchange.Rates
 {

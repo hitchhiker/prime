@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// Contains 2 seperate *oppositely indexed* type dictionaries for extremely fast lookup.

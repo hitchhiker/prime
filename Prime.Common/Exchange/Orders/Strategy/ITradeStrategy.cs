@@ -1,5 +1,5 @@
 ﻿using LiteDB;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common.Exchange.Trading_temp
 {

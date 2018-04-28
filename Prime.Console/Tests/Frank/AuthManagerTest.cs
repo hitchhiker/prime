@@ -2,17 +2,18 @@
 using System.Text;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Prime.Core.Authentication;
+using Prime.Common;
 
-namespace Prime.Console.Tests.Frank
+namespace Prime.ConsoleApp.Tests.Frank
 {
     public static class AuthManagerTest
     {
-        public static void Go()
+        public static void Go(ILogger logger)
         {
             var password = "hello world!";
             var identity = "prime-user";
 
-            var krgen = AuthUtilities.GenerateKeyRingGenerator(identity, password);
+            var krgen = AuthUtilities.GenerateKeyRingGenerator(new KeyRingParams(identity, password) { Length = 1024 });
 
             UnicodeEncoding uniEncoding = new UnicodeEncoding();
 
@@ -31,7 +32,10 @@ namespace Prime.Console.Tests.Frank
             var pubKey = AuthUtilities.GetKeyString(krgen.GeneratePublicKeyRing());
 
             // Generate private key.
-            var secKey = AuthUtilities.GetKeyString(krgen.GenerateSecretKeyRing());
+            var privateKey = AuthUtilities.GetKeyString(krgen.GenerateSecretKeyRing());
+
+            logger.Log("Pub: " + pubKey);
+            logger.Log("Priv: " + privateKey);
         }
     }
 }

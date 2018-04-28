@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class DictionaryExtensions
     {

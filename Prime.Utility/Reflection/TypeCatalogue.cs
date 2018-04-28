@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// Manages a collection of all system types and their hashes in 2 seperate *oppositely indexed* dictionaries for extremely fast lookup.

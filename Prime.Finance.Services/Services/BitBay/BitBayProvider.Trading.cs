@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Api.Request.Response;
-using Prime.Utility;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.BitBay

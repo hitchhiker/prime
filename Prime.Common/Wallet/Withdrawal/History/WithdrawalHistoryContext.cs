@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common.Wallet.Withdrawal.History
 {

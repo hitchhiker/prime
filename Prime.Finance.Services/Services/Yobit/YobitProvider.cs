@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.Yobit
 {

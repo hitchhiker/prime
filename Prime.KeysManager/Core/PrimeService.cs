@@ -6,7 +6,6 @@ using System.Text;
 using LiteDB;
 using Prime.Common;
 using Prime.KeysManager.Core.Models;
-using Prime.Utility;
 
 namespace Prime.KeysManager.Core
 {

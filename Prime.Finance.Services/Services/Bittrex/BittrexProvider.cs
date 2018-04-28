@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
-using Prime.Utility;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.Bittrex

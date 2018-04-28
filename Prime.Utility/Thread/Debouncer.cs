@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// Provides Debounce() and Throttle() methods.

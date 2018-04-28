@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class ReflectionExtensionMethods
     {

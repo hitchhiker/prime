@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using Prime.Common.Exchange.Rates;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common.Wallet
 {

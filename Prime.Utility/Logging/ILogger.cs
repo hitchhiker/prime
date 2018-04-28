@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public interface ILogger
     {
@@ -18,7 +18,6 @@ namespace Prime.Utility
         void Fatal(string message, params object[] parameters);
         void Error(Exception e);
         void Error(Exception e, string message);
-        void Status(string message);
         T Trace<T>(string messagePrefix, Func<T> action);
         void Log(LoggingLevel level, string message);
     }

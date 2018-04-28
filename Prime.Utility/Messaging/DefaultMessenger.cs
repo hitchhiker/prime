@@ -1,7 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public class DefaultMessenger
     {

@@ -8,11 +8,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Prime.Utility;
+using Prime.Common;
 
 #endregion
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static partial class ExtensionMethods
     {

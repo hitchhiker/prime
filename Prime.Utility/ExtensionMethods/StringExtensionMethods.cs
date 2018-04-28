@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static partial class StringExtensionMethods
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Prime.Utility.Encrypt
+namespace Prime.Common.Encrypt
 {
     public abstract class CryptBase
     {

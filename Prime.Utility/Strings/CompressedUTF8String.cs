@@ -11,7 +11,7 @@ using System.Text;
 //http://www.codeproject.com/KB/files/GZipStream.aspx
 //http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/093b4906-3b26-493d-8d90-fc527d433c7c
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class CompressedUtf8String
     {

@@ -5,7 +5,6 @@ using System.Linq;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
 using Prime.Core.Prices.Latest;
-using Prime.Utility;
 
 namespace Prime.Core
 {

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class UniqueListExtensions
     {

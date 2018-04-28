@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Prime.Utility;
+using Prime.Common;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class ListExtensionMethods
     {

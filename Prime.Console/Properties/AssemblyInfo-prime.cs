@@ -1,2 +1,2 @@
-﻿using Prime.Utility;
+﻿using Prime.Common;
 [assembly: IncludeInTypeCatalogue]

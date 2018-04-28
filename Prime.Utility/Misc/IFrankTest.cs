@@ -1,4 +1,4 @@
-﻿namespace Prime.Utility.Misc
+﻿namespace Prime.Common.Misc
 {
     public interface IFrankTest
     {

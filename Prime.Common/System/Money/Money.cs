@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Prime.Common;
-using Prime.Utility;
 
 ///http://www.codeproject.com/Articles/28244/A-Money-type-for-the-CLR
 namespace Prime.Common

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Common;
 using Prime.Common.Messages;
-using Prime.Utility;
 
 namespace Prime.Core
 {

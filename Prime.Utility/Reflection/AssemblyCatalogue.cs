@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// Manages a collection of all non-GAC assemblies and their short name (survives rebuild) hashes in 2 seperate *oppositely indexed* dictionaries for extremely fast lookup.

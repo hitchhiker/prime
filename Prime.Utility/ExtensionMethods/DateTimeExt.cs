@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NodaTime;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class DateTimeExt
     {

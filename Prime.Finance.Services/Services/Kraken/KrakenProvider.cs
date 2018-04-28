@@ -8,7 +8,6 @@ using LiteDB;
 using Newtonsoft.Json;
 using Prime.Common;
 using Prime.Finance.Services.Services.Kraken.Converters;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.Kraken
 {

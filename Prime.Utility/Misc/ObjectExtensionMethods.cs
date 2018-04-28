@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Prime.Utility.Misc
+namespace Prime.Common.Misc
 {
     public static class ObjectExtensionMethods
     {

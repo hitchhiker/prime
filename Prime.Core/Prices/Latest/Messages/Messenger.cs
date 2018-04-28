@@ -5,7 +5,6 @@ using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
-using Prime.Utility;
 
 namespace Prime.Core.Prices.Latest
 {

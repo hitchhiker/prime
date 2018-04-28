@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <inheritdoc />
     /// <summary>

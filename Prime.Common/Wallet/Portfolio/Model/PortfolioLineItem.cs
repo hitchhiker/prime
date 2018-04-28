@@ -1,6 +1,5 @@
 using System;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Common.Wallet
 {

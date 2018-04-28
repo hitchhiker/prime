@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.BitStamp
 {

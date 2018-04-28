@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public interface IUniqueList<T> : IList<T> where T : IEquatable<T>
     {

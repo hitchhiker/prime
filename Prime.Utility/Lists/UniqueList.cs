@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// ignores items during an add if they're already present

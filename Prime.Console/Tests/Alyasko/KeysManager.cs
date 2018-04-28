@@ -4,9 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Prime.Common;
-using Prime.Utility;
 
-namespace Prime.Console.Tests.Alyasko
+namespace Prime.ConsoleApp.Tests.Alyasko
 {
     public class KeysManager : ITestBase
     {

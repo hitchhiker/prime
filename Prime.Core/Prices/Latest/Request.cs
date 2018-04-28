@@ -2,7 +2,7 @@
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
 using Prime.Core.Prices.Latest.Messages;
-using Prime.Utility.Misc;
+using Prime.Common.Misc;
 
 namespace Prime.Core.Prices.Latest
 {

@@ -1,4 +1,4 @@
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class ExtensionMethodsNumeric
     {

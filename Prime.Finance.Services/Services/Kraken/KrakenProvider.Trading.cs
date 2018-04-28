@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.Kraken
 {

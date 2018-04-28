@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class EnumerableExtensionMethods
     {

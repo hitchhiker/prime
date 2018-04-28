@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Core.AssetMessages
 {

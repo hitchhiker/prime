@@ -22,41 +22,36 @@ namespace Prime.Core.Authentication
             {
                 using (var pubout = new BufferedStream(ms))
                 {
-                    if (kr is PgpSecretKeyRing skr)
-                        skr.Encode(pubout);
-                    else if (kr is PgpSecretKeyRing pkr)
-                        pkr.Encode(pubout);
-                    ms.Seek(0, SeekOrigin.Begin);
+                    switch (kr)
+                    {
+                        case PgpSecretKeyRing skr:
+                            skr.Encode(pubout);
+                            break;
+                        case PgpPublicKeyRing pkr:
+                            pkr.Encode(pubout);
+                            break;
+                    }
+
+                    pubout.Flush();
+
                     return Convert.ToBase64String(ms.ToArray());
                 }
             }
         }
 
-        public static PgpKeyRingGenerator GenerateKeyRingGenerator(string identity, string password)
+        public static byte[] ReadFully(Stream input)
         {
-            var keyRingParams = new KeyRingParams
+            using (MemoryStream ms = new MemoryStream())
             {
-                Password = password,
-                Identity = identity,
-                PrivateKeyEncryptionAlgorithm = SymmetricKeyAlgorithmTag.Aes256,
-                SymmetricAlgorithms = new[]
-                {
-                    SymmetricKeyAlgorithmTag.Aes256,
-                    SymmetricKeyAlgorithmTag.Aes192,
-                    SymmetricKeyAlgorithmTag.Aes128
-                },
-                HashAlgorithms = new[]
-                {
-                    HashAlgorithmTag.Sha256,
-                    HashAlgorithmTag.Sha1,
-                    HashAlgorithmTag.Sha384,
-                    HashAlgorithmTag.Sha512,
-                    HashAlgorithmTag.Sha224
-                }
-            };
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
 
+        public static PgpKeyRingGenerator GenerateKeyRingGenerator(KeyRingParams keyRingParams)
+        {
             var generator = GeneratorUtilities.GetKeyPairGenerator("RSA");
-            generator.Init(keyRingParams.RsaParams);
+            generator.Init(keyRingParams.RsaParams());
 
             /* Create the master (signing-only) key. */
             var masterKeyPair = new PgpKeyPair(PublicKeyAlgorithmTag.RsaSign, generator.GenerateKeyPair(), DateTime.UtcNow);
@@ -69,7 +64,7 @@ namespace Prime.Core.Authentication
             masterSubpckGen.SetPreferredHashAlgorithms(false, keyRingParams.HashAlgorithms.Select(a => (int) a).ToArray());
 
             /* Create a signing and encryption key for daily use. */
-            var encKeyPair = new PgpKeyPair(PublicKeyAlgorithmTag.RsaGeneral,generator.GenerateKeyPair(),DateTime.UtcNow);
+            var encKeyPair = new PgpKeyPair(PublicKeyAlgorithmTag.RsaGeneral, generator.GenerateKeyPair(), DateTime.UtcNow);
 
             Debug.WriteLine("Generated encryption key with ID "+ encKeyPair.KeyId.ToString("X"));
 
@@ -80,7 +75,8 @@ namespace Prime.Core.Authentication
             masterSubpckGen.SetPreferredHashAlgorithms(false, (keyRingParams.HashAlgorithms.Select(a => (int) a)).ToArray());
 
             /* Create the key ring. */
-            PgpKeyRingGenerator keyRingGen = new PgpKeyRingGenerator(
+
+            var keyRingGen = new PgpKeyRingGenerator(
                 PgpSignature.DefaultCertification,
                 masterKeyPair,
                 keyRingParams.Identity,
@@ -95,30 +91,6 @@ namespace Prime.Core.Authentication
             keyRingGen.AddSubKey(encKeyPair, encSubpckGen.Generate(), null);
 
             return keyRingGen;
-        }
-
-        // Define other methods and classes here
-        class KeyRingParams
-        {
-            public KeyRingParams()
-            {
-                //Org.BouncyCastle.Crypto.Tls.EncryptionAlgorithm
-                RsaParams = new RsaKeyGenerationParameters(BigInteger.ValueOf(0x10001), new SecureRandom(), 1024, 12);
-            }
-
-            public SymmetricKeyAlgorithmTag? PrivateKeyEncryptionAlgorithm { get; set; }
-            public SymmetricKeyAlgorithmTag[] SymmetricAlgorithms { get; set; }
-            public HashAlgorithmTag[] HashAlgorithms { get; set; }
-            public RsaKeyGenerationParameters RsaParams { get; }
-            public string Identity { get; set; }
-
-            public string Password { get; set; }
-            //= EncryptionAlgorithm.NULL;
-
-            public char[] GetPassword()
-            {
-                return Password.ToCharArray();
-            }
         }
     }
 }

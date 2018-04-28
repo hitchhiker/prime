@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using LiteDB;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Core
 {

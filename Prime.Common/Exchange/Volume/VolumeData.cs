@@ -5,7 +5,7 @@ using System.Linq;
 using LiteDB;
 using Nito.AsyncEx;
 using Prime.Core.Market;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

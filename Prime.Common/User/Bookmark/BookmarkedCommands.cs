@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

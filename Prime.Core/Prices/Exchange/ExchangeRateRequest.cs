@@ -1,5 +1,5 @@
 using System;
-using Prime.Utility.Misc;
+using Prime.Common.Misc;
 
 namespace Prime.Common.Exchange.Rates
 {

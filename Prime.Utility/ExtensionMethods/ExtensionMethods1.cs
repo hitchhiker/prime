@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 using Formatting = Newtonsoft.Json.Formatting;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static partial class ExtensionMethods
     {

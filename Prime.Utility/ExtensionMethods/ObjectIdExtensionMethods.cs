@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using LiteDB;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class ObjectIdExtensionMethods
     {

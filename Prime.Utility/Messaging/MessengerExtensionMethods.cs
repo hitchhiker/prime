@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public static class MessengerExtensionMethods
     {

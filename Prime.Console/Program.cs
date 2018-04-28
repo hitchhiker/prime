@@ -4,14 +4,13 @@ using System.Linq;
 using System.Reflection;
 using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Console.Tests;
-using Prime.Console.Tests.Alyasko;
-using Prime.Console.Tests.Frank;
+using Prime.ConsoleApp.Tests;
+using Prime.ConsoleApp.Tests.Alyasko;
+using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
 using Prime.Finance.Services.Services.BitMex;
 using Prime.Finance.Services.Services.Kraken;
 using Prime.TestConsole;
-using Prime.Utility;
 using AssetPair = Prime.Common.AssetPair;
 
 namespace TestConsole
@@ -20,6 +19,11 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
+            // if this is removed DEBUG wont work across projects!??
+            var i = ClassTestCommon.Test();
+            i=i+ ClassTestCore.Test();
+            // end HACK
+
             if (args != null && args.Length == 2 && args[0] == "-ext")
             {
                // var asm = Assembly.LoadFrom(args[1]);
@@ -37,7 +41,7 @@ namespace TestConsole
             {
                 
             }
-            else
+            else if (Environment.UserName.Equals("hitchhiker"))
             {
                 Frank.Go();
                 /*

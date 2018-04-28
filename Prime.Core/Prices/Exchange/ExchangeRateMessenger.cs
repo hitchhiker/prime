@@ -4,7 +4,7 @@ using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Prime.Common.Wallet;
 using Prime.Core;
-using Prime.Utility;
+using Prime.Common;
 using System.Linq;
 
 namespace Prime.Common.Exchange.Rates

@@ -1,5 +1,5 @@
 using System.Linq;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

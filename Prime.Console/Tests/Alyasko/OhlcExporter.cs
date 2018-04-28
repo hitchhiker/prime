@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Prime.Common;
 
-namespace Prime.Console.Tests.Alyasko
+namespace Prime.ConsoleApp.Tests.Alyasko
 {
     public class OhlcExporter : ITestBase
     {

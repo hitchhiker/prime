@@ -1,7 +1,7 @@
 using System;
-using Prime.Utility;
+using Prime.Common;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     public class CacheItem<T>
     {

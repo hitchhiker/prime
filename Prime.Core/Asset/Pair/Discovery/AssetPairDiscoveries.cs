@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Core
 {

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using LiteDB;
 using Prime.Common;
 using Prime.Finance.Services.Services.Gdax;
-using Prime.Utility;
 using OrderBook = Prime.Common.OrderBook;
 
 namespace Prime.Finance.Services.Services.Coinbase

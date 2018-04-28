@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     /// <summary>
     /// https://stackoverflow.com/a/29274238/1318333

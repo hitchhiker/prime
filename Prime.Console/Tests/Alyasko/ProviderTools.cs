@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Prime.Common;
-using Prime.Utility;
 
-namespace Prime.Console.Tests.Alyasko
+namespace Prime.ConsoleApp.Tests.Alyasko
 {
     public class ProviderTools : ITestBase
     {

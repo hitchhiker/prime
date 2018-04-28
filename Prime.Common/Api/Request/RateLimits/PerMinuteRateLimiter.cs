@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

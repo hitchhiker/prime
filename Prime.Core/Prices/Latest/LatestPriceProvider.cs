@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Utility;
 using System.Linq;
 using Nito.AsyncEx;
 using Prime.Common;

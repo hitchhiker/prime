@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Prime.Utility.Encrypt
+namespace Prime.Common.Encrypt
 {
     public class PrimeEncrypt : CryptBase
     {

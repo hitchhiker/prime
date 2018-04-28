@@ -8,7 +8,7 @@ using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Nito.AsyncEx;
 using Prime.Common.Exchange.Rates;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common.Wallet
 {

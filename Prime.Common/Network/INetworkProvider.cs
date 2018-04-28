@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.Dsx
 {

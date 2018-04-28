@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Prime.Common;
 using Prime.Common.Exchange.Rates;
-using Prime.Utility;
 
 namespace TestConsole
 {

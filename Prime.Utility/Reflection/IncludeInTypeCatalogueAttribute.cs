@@ -1,6 +1,6 @@
 using System;
 
-namespace Prime.Utility
+namespace Prime.Common
 {
     [AttributeUsage(AttributeTargets.Assembly)]
     public class IncludeInTypeCatalogueAttribute : Attribute

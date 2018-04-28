@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 using Prime.Core.Market;
-using Prime.Utility;
+using Prime.Common;
 
 namespace Prime.Common
 {

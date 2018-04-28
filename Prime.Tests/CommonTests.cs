@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading;
 using LiteDB;
 using Prime.Common;
-using Prime.Utility;
 using Xunit;
 using Xunit.Abstractions;
 
