@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using Prime.Common;
-using Prime.Utility;
 
 namespace Prime.Finance.Services.Services.Vaultoro
 {
