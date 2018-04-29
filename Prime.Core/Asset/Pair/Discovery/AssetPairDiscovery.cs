@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core
 {

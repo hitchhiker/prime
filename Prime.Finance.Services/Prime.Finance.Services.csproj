@@ -18,9 +18,8 @@
     <PackageReference Include="RestEase" Version="1.4.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
+    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Google.Protobuf">

@@ -1,8 +1,8 @@
 ﻿using System;
-using Prime.Common;
-using Prime.Common.Exchange.Rates;
+using Prime.Core;
+using Prime.Core.Exchange.Rates;
 using Prime.Core.Prices.Latest.Messages;
-using Prime.Common.Misc;
+using Prime.Core.Misc;
 
 namespace Prime.Core.Prices.Latest
 {

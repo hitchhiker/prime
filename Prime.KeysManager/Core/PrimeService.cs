@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 using Prime.KeysManager.Core.Models;
 
 namespace Prime.KeysManager.Core

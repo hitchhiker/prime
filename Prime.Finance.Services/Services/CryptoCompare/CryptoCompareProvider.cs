@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using Prime.Common;
+using Prime.Core;
 
 // BUG: unable to move to correct namespace because of dynamic assembly loading.
 namespace Prime.Finance.Services.Services.CryptoCompare

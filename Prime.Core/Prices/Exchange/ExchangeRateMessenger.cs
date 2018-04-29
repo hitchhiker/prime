@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
-using Prime.Common.Wallet;
+using Prime.Core.Wallet;
 using Prime.Core;
-using Prime.Common;
 using System.Linq;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core.Exchange.Rates
 {
     //internal class ExchangeRateMessenger : RenewingSubscriberList<ExchangeRateSubscribe, ExchangeRateSubscriptions>, IStartupMessenger, IDisposable
     //{

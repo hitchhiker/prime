@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
-using Prime.Common;
+using Prime.Core;
 using RestEase;
 using RestEase.Implementation;
 

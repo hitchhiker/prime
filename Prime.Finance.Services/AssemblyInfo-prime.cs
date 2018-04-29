@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
-using Prime.Common;
+using Prime.Core;
+using Prime.Core.Messaging;
 using RestEase;
 
 [assembly: IncludeInTypeCatalogue]

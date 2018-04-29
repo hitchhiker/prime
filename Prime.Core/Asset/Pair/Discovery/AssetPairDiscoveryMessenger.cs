@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core
 {

@@ -4,8 +4,8 @@ using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using System.Linq;
 using Nito.AsyncEx;
-using Prime.Common;
-using Prime.Common.Exchange.Rates;
+using Prime.Core;
+using Prime.Core.Exchange.Rates;
 using Prime.Core.Prices.Latest;
 
 namespace Prime.Core

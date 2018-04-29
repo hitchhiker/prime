@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Alphapoint
 {

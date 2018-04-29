@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core
 {

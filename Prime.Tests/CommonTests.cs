@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 using Xunit;
 using Xunit.Abstractions;
 

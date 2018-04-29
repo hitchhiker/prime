@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
-using Prime.Common;
+using Prime.Core;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.Poloniex

@@ -15,11 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
+    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
-    <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

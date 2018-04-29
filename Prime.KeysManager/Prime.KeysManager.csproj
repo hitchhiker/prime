@@ -9,10 +9,7 @@
     <None Remove="ElectronUI\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
-      <Project>{C22EFECA-8587-4975-84EF-4BF59E768537}</Project>
-      <Name>Prime.Common</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
   </ItemGroup>

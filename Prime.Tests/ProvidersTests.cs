@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Nito.AsyncEx;
-using Prime.Common;
+using Prime.Core;
 using Xunit;
 
 namespace Prime.Tests

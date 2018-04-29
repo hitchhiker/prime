@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Prime.Core;
-using Prime.Common;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core.Exchange.Rates
 {
     internal class ExchangeRateSubscriptions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.ConsoleApp.Tests.Alyasko
 {

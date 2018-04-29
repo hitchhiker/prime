@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Prime.Core.Authentication;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.ConsoleApp.Tests.Frank
 {

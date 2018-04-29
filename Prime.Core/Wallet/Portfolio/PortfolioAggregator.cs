@@ -7,10 +7,10 @@ using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Nito.AsyncEx;
-using Prime.Common.Exchange.Rates;
-using Prime.Common;
+using Prime.Core;
+using Prime.Core.Exchange.Rates;
 
-namespace Prime.Common.Wallet
+namespace Prime.Core.Wallet
 {
     internal class PortfolioAggregator
     {

@@ -1,7 +1,7 @@
 using System;
-using Prime.Common.Misc;
+using Prime.Core.Misc;
 
-namespace Prime.Common.Exchange.Rates
+namespace Prime.Core.Exchange.Rates
 {
     public class ExchangeRateRequest : IEquatable<ExchangeRateRequest>
     {

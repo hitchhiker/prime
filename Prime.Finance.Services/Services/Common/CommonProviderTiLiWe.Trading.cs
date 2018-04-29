@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Prime.Common;
-using Prime.Common.Api.Request.Response;
+using Prime.Core;
+using Prime.Core.Api.Request.Response;
 
 namespace Prime.Finance.Services.Services.Common
 {

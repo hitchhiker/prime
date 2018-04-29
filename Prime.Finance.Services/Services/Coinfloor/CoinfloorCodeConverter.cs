@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Coinfloor
 {
