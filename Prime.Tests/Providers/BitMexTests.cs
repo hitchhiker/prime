@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Prime.Core;
-using Prime.Core.Wallet.Withdrawal.Cancelation;
-using Prime.Core.Wallet.Withdrawal.Confirmation;
-using Prime.Core.Wallet.Withdrawal.History;
+using Prime.Core; using Prime.Finance;
+using Prime.Finance.Wallet.Withdrawal.Cancelation;
+using Prime.Finance.Wallet.Withdrawal.Confirmation;
+using Prime.Finance.Wallet.Withdrawal.History;
 using Prime.Finance.Services.Services.BitMex;
 using Xunit;
 using Xunit.Abstractions;

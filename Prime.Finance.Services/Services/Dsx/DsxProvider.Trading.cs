@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
-using Prime.Core.Api.Request.Response;
+using Prime.Finance;
 using Prime.Finance.Services.Services.Bitso;
 using RestEase;
 

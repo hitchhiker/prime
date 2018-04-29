@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 using Prime.Core;
-using Prime.Core.Wallet;
+using Prime.Finance;
 using Prime.Finance.Services.Services.BitMex;
+using Prime.Finance.Wallet;
 
 namespace Prime.TestConsole
 {
@@ -36,7 +37,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.QuoteAsset, 0);
+                var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.Finance().QuoteAsset, 0);
                 var scanner = new PortfolioProvider(c);
                 try
                 {

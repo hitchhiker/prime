@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Prime.Core;
+using Prime.Finance;
 
 namespace Prime.ConsoleApp.Tests.Alyasko
 {

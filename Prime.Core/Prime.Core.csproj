@@ -7,34 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Asset\Command\**" />
-    <Compile Remove="Common\Asset\Command\**" />
-    <Compile Remove="Common\UiCommands\**" />
-    <EmbeddedResource Remove="Asset\Command\**" />
-    <EmbeddedResource Remove="Common\Asset\Command\**" />
-    <EmbeddedResource Remove="Common\UiCommands\**" />
-    <None Remove="Asset\Command\**" />
-    <None Remove="Common\Asset\Command\**" />
-    <None Remove="Common\UiCommands\**" />
+    <Compile Remove="System\DateTime\Time\Resolution\**" />
+    <EmbeddedResource Remove="System\DateTime\Time\Resolution\**" />
+    <None Remove="System\DateTime\Time\Resolution\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Common\Exchange\ExchangeCommand.cs" />
-    <Compile Remove="Common\Messages\RenewingSubscriptionsListener.cs" />
-    <Compile Remove="Common\Wallet\Interfaces\Withdrawal\IWithdrawalPlacementProviderExtended.cs" />
-    <Compile Remove="Common\Wallet\Withdrawal\Placement\WithdrawalPlacementContextExtended.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Common\Asset\Command\AssetGoCommand.cs" />
-    <Compile Include="Common\UiCommands\CommandBase.cs" />
-    <Compile Include="Common\UiCommands\Messages\CommandAcceptedMessage.cs" />
-    <Compile Include="Common\UiCommands\Messages\CommandIssuedMessage.cs" />
-    <Compile Include="Common\UiCommands\Navigation\Messages\NavigationGoMessage.cs" />
-    <Compile Include="Common\UiCommands\Navigation\Page\CommandContent.cs" />
-    <Compile Include="Common\UiCommands\Navigation\Page\GetUriResponse.cs" />
-    <Compile Include="Common\UiCommands\Navigation\Page\IPageUriProvider.cs" />
-    <Compile Include="Common\UiCommands\Navigation\Page\PageUris.cs" />
+    <Compile Remove="Messaging\RenewingSubscriptionsListener.cs" />
+    <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\DataLayer\Resolution\" />
+    <Folder Include="System\Design\" />
   </ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ using Prime.Core;
 
 namespace Prime.Core
 {
-    internal abstract class RenewingSubscriberList<TMessage, TContainer> : SubscriberList<TMessage,TContainer> where TMessage : RenewableSubscribeMessageBase
+    public abstract class RenewingSubscriberList<TMessage, TContainer> : SubscriberList<TMessage,TContainer> where TMessage : RenewableSubscribeMessageBase
     {
         private readonly Timer _timer = new Timer();
 

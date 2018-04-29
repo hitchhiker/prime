@@ -8,10 +8,10 @@ using Prime.ConsoleApp.Tests.Alyasko;
 using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
 using Prime.Core.Messaging;
+using Prime.Finance;
 using Prime.Finance.Services.Services.BitMex;
 using Prime.Finance.Services.Services.Kraken;
 using Prime.TestConsole;
-using AssetPair = Prime.Core.AssetPair;
 
 namespace TestConsole
 {

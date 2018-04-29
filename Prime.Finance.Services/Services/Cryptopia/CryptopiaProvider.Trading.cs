@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Prime.Core;
-using Prime.Core.Api.Request.Response;
+using Prime.Finance;
 
 namespace Prime.Finance.Services.Services.Cryptopia
 {

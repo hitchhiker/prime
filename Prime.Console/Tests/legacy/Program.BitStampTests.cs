@@ -2,6 +2,7 @@
 using System.Linq;
 using Nito.AsyncEx;
 using Prime.Core;
+using Prime.Finance;
 using Prime.Finance.Services.Services.BitStamp;
 
 namespace Prime.TestConsole

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Nito.AsyncEx;
-using Prime.Core;
+using Prime.Core; using Prime.Finance;
+using Prime.Finance;
 using Prime.Finance.Services.Services.Kraken;
 using Xunit;
 using Xunit.Abstractions;
-using AssetPair = Prime.Core.AssetPair;
 
 namespace Prime.Tests.Providers
 {

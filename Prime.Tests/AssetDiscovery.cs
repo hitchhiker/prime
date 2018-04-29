@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Prime.Core;
+using Prime.Finance;
 using Xunit;
 
 namespace Prime.Tests
@@ -10,9 +11,9 @@ namespace Prime.Tests
         [Fact]
         public void TestCompareAggregatorDataWithAssetPairData()
         {
-            var pub = PublicContext.I.PubData;
+            var pub = FinanceCommon.I.PubData;
             var d = new Dictionary<Network, AssetPairs>();
-            foreach (var prov in Networks.I.AssetPairsProviders)
+            foreach (var prov in Networks.I.GetProviders<IAssetPairsProvider>())
             {
                 var r = ApiCoordinator.GetAssetPairs(prov);
                 if (r.IsFailed)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Prime.Core;
-using Prime.Core.Api.Request.Response;
+using Prime.Finance;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.BlinkTrade

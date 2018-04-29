@@ -4,4 +4,27 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Exchange\ExchangeCommand.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LiteDB">
+      <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

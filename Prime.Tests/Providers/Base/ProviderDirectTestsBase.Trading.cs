@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Nito.AsyncEx;
-using Prime.Core;
+using Prime.Core; using Prime.Finance;
+using Prime.Finance;
 using Xunit;
 
 namespace Prime.Tests.Providers

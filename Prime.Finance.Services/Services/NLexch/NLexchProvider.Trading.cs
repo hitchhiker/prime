@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Prime.Core;
-using Prime.Core.Api.Request.Response;
+using Prime.Finance;
 using Prime.Finance.Services.Services.Kuna;
 using RestEase;
 
