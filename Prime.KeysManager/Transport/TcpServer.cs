@@ -17,7 +17,7 @@ namespace Prime.KeysManager.Transport
     {
         private TcpListener _listener;
         private readonly ConcurrentBag<TcpClient> _connectedClients = new ConcurrentBag<TcpClient>();
-        private readonly Dictionary<Type, Action<object, TcpClient>> _subscriptions = new Dictionary<Type, Action<object, TcpClient>>();
+        private readonly ConcurrentDictionary<Type, Action<object, TcpClient>> _subscriptions = new ConcurrentDictionary<Type, Action<object, TcpClient>>();
 
         private readonly IDataProvider _dataProvider;
 
@@ -111,14 +111,14 @@ namespace Prime.KeysManager.Transport
             if (_subscriptions.ContainsKey(t))
                 throw new InvalidOperationException("Handler for specified type has already been added.");
 
-            _subscriptions.Add(t, (o, client) => handler((T)o, client));
+            _subscriptions.TryAdd(t, (o, client) => handler((T)o, client));
         }
 
         public void Unsubscribe<T>()
         {
             var t = typeof(T);
             if (_subscriptions.ContainsKey(t))
-                _subscriptions.Remove(t);
+                _subscriptions.TryRemove(t, out var action);
             else
                 throw new InvalidOperationException("Handler for specified type does not exist.");
         }
