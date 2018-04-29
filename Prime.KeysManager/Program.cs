@@ -14,7 +14,7 @@ namespace Prime.KeysManager
 {
     class Program
     {
-        private static readonly KeysManagerApp KeysManagerApp = new KeysManagerApp(new TcpServer(), new PrimeService());
+        private static readonly KeysManagerApp KeysManagerApp = new KeysManagerApp(new TcpServer(new JsonDataProvider()), new PrimeService());
         
         static void Main(string[] args)
         {

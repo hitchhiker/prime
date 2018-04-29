@@ -19,6 +19,13 @@ namespace Prime.KeysManager.Transport
         private readonly ConcurrentBag<TcpClient> _connectedClients = new ConcurrentBag<TcpClient>();
         private readonly Dictionary<Type, Action<object, TcpClient>> _subscriptions = new Dictionary<Type, Action<object, TcpClient>>();
 
+        private readonly IDataProvider _dataProvider;
+
+        public TcpServer(IDataProvider dataProvider)
+        {
+            _dataProvider = dataProvider;
+        }
+        
         public void StartServer(IPAddress address, short port)
         {
             _connectedClients.Clear();
@@ -28,9 +35,9 @@ namespace Prime.KeysManager.Transport
             WaitForClient();
         }
 
-        private void HandleResponse(string raw, TcpClient clientSender)
+        private void HandleResponse(object response, TcpClient clientSender)
         {
-            var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(raw);
+            var baseMessage = _dataProvider.Deserialize<BaseMessage>(response);
 
             var subscribedTypes = _subscriptions.Where(x =>
                 x.Key.Name.Equals(baseMessage.Type, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -40,7 +47,7 @@ namespace Prime.KeysManager.Transport
             var subscribedType = subscribedTypes.First();
             if (subscribedType.Value != null)
             {
-                var parameter = JsonConvert.DeserializeObject(raw, subscribedType.Key);
+                var parameter = _dataProvider.Deserialize(response, subscribedType.Key);
                 subscribedType.Value(parameter, clientSender);
             }
             else
@@ -68,12 +75,9 @@ namespace Prime.KeysManager.Transport
                         {
                             while (connectedClient.Connected)
                             {
-                                ReceiveData(stream, out var data);
-
-                                data = CleanData(data);
-
-                                if (!string.IsNullOrWhiteSpace(data))
-                                    HandleResponse(data, connectedClient);
+                                var data = _dataProvider.ReceiveData(stream);
+                                
+                                HandleResponse(data, connectedClient);
                             }
                         }
                     }
@@ -86,31 +90,6 @@ namespace Prime.KeysManager.Transport
 
             Console.WriteLine("Server: client connected.");
             WaitForClient();
-        }
-
-        private string CleanData(string data)
-        {
-            return data.Replace("\r", "").Replace("\n", "");
-        }
-
-        private void SendData(TcpClient client, string data)
-        {
-            if (!client.Connected)
-                return;
-
-            var dataBytes = Encoding.Default.GetBytes(data);
-            client.GetStream().Write(dataBytes, 0, data.Length);
-        }
-
-        private void ReceiveData(NetworkStream stream, out string data)
-        {
-            data = null;
-
-            var buffer = new byte[1024];
-            if (stream.CanRead)
-                stream.Read(buffer, 0, buffer.Length);
-
-            data = buffer.DecodeAscii();
         }
 
         public void ShutdownServer()
@@ -146,9 +125,7 @@ namespace Prime.KeysManager.Transport
 
         public void Send<T>(TcpClient client, T data)
         {
-            var json = JsonConvert.SerializeObject(data);
-
-            SendData(client, json);
+            _dataProvider.SendData(client, data);
         }
 
         public event EventHandler<Exception> ExceptionOccurred;
