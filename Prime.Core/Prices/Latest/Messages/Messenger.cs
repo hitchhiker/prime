@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
-using Prime.Common;
-using Prime.Common.Exchange.Rates;
+using Prime.Core;
+using Prime.Core.Exchange.Rates;
 
 namespace Prime.Core.Prices.Latest
 {

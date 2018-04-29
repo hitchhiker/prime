@@ -1,5 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
-using Prime.Common;
+using Prime.Core;
+using Prime.Core.Messaging;
+
 [assembly: IncludeInTypeCatalogue]
 [assembly: InternalsVisibleTo("Prime.Console")]
 [assembly: InternalsVisibleTo("Prime.TestConsole")]

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Common;
-using Prime.Common.Messages;
+using Prime.Core;
+using Prime.Core.Messages;
 
 namespace Prime.Core
 {

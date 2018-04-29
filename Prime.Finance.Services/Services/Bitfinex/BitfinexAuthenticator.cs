@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Bitfinex
 {

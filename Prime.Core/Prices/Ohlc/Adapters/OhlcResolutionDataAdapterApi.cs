@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core
 {
@@ -19,7 +19,7 @@ namespace Prime.Core
 
         public readonly OhlcResolutionAdapterContext Ctx;
 
-        public readonly Common.ILogger L;
+        public readonly Core.ILogger L;
 
         public OhlcResolutionAdapter Adapter => _adapter;
 

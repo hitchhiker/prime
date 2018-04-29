@@ -173,9 +173,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj">
+    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj">
       <Project>{c22efeca-8587-4975-84ef-4bf59e768537}</Project>
-      <Name>Prime.Common</Name>
+      <Name>Prime.Core.Messaging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj">
       <Project>{b43d0d10-1c5a-4b7e-b331-aabd61beccfc}</Project>

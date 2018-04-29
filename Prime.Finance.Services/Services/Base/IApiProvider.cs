@@ -1,4 +1,4 @@
-﻿using Prime.Common;
+﻿using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Base
 {

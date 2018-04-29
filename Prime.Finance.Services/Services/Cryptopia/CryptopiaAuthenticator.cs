@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Web;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Cryptopia
 {

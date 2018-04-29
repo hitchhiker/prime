@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Fiat
 {

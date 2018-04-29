@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using System.Linq;
 using System.Threading;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core
 {

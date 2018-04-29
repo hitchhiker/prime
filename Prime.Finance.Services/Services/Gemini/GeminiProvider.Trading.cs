@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Gemini
 {

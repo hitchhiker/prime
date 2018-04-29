@@ -2,7 +2,7 @@
 using System.Text;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Prime.Core.Authentication;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.ConsoleApp.Tests.Frank
 {

@@ -2,8 +2,8 @@
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Common;
-using Prime.Common.Messages;
+using Prime.Core;
+using Prime.Core.Messages;
 
 namespace Prime.Core
 {

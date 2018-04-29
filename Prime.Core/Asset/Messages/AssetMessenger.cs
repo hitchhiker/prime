@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core.AssetMessages
 {
@@ -17,7 +17,7 @@ namespace Prime.Core.AssetMessages
         private async void AllRequestMessage(AssetAllRequestMessage m)
         {
             var assets = await AssetProvider.I.GetAllAsync(true).ConfigureAwait(false);
-            var currentAsssets = assets.Where(x => !Equals(x, Common.Asset.None)).OrderBy(x => x.ShortCode).ToList();
+            var currentAsssets = assets.Where(x => !Equals(x, Core.Asset.None)).OrderBy(x => x.ShortCode).ToList();
             _messenger.SendAsync(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
         }
 

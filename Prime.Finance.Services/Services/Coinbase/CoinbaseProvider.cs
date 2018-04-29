@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
-using Prime.Common;
+using Prime.Core;
 using Prime.Finance.Services.Services.Gdax;
-using OrderBook = Prime.Common.OrderBook;
+using OrderBook = Prime.Core.OrderBook;
 
 namespace Prime.Finance.Services.Services.Coinbase
 {

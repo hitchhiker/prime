@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Prime.Common;
-using Prime.Common.Api.Request.Response;
-using Prime.Common.Wallet.Withdrawal.Cancelation;
-using Prime.Common.Wallet.Withdrawal.Confirmation;
-using Prime.Common.Wallet.Withdrawal.History;
+using Prime.Core;
+using Prime.Core.Api.Request.Response;
+using Prime.Core.Wallet.Withdrawal.Cancelation;
+using Prime.Core.Wallet.Withdrawal.Confirmation;
+using Prime.Core.Wallet.Withdrawal.History;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.BitMex

@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Prime.Common.Tests
+namespace Prime.Core.Tests
 {
     public class ApiCoordinatorTests
     {

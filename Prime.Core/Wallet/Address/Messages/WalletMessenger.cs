@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.Common;
+using Prime.Core;
 
 namespace Prime.Core.Wallet.Addresses
 {

@@ -7,19 +7,54 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <Compile Remove="Asset\Command\**" />
+    <Compile Remove="Common\Asset\Command\**" />
+    <Compile Remove="Common\UiCommands\**" />
+    <EmbeddedResource Remove="Asset\Command\**" />
+    <EmbeddedResource Remove="Common\Asset\Command\**" />
+    <EmbeddedResource Remove="Common\UiCommands\**" />
+    <None Remove="Asset\Command\**" />
+    <None Remove="Common\Asset\Command\**" />
+    <None Remove="Common\UiCommands\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Common\Prime.Common.csproj" />
-    <ProjectReference Include="..\Prime.Utility\Prime.Utility.csproj" />
+    <Compile Remove="Common\Exchange\ExchangeCommand.cs" />
+    <Compile Remove="Common\Messages\RenewingSubscriptionsListener.cs" />
+    <Compile Remove="Common\Wallet\Interfaces\Withdrawal\IWithdrawalPlacementProviderExtended.cs" />
+    <Compile Remove="Common\Wallet\Withdrawal\Placement\WithdrawalPlacementContextExtended.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Common\Asset\Command\AssetGoCommand.cs" />
+    <Compile Include="Common\UiCommands\CommandBase.cs" />
+    <Compile Include="Common\UiCommands\Messages\CommandAcceptedMessage.cs" />
+    <Compile Include="Common\UiCommands\Messages\CommandIssuedMessage.cs" />
+    <Compile Include="Common\UiCommands\Navigation\Messages\NavigationGoMessage.cs" />
+    <Compile Include="Common\UiCommands\Navigation\Page\CommandContent.cs" />
+    <Compile Include="Common\UiCommands\Navigation\Page\GetUriResponse.cs" />
+    <Compile Include="Common\UiCommands\Navigation\Page\IPageUriProvider.cs" />
+    <Compile Include="Common\UiCommands\Navigation\Page\PageUris.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="NodaTime" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="LiteDB">
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\DataLayer\Resolution\" />
   </ItemGroup>
 
 </Project>

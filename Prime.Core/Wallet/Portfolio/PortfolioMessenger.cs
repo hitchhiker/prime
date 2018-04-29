@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
-using Prime.Common;
-using Prime.Common.Wallet;
+using Prime.Core.Wallet;
 using Prime.Core;
 
 namespace Prime.Core.Wallet

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using Prime.Common.Exchange.Rates;
-using Prime.Common;
+using Prime.Core.Exchange.Rates;
+using Prime.Core;
 
-namespace Prime.Common.Wallet
+namespace Prime.Core.Wallet
 {
     internal class PortfolioProvider : IDisposable
     {

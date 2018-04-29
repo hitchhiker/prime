@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using Prime.Common;
-using Prime.Common.Wallet;
+using Prime.Core;
+using Prime.Core.Wallet;
 using Prime.Finance.Services.Services.BitMex;
 
 namespace Prime.TestConsole

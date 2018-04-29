@@ -1,6 +1,6 @@
-using Prime.Common;
+using Prime.Core;
 
-namespace Prime.Common.Wallet
+namespace Prime.Core.Wallet
 {
     public class PortfolioProviderContext
     {

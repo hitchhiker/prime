@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Prime.Common;
+using Prime.Core;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.Quoine
