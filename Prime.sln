@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Bootstrap", "Prime.Bootstrap\Prime.Bootstrap.csproj", "{DAE4BC0E-D8FF-445C-B1D6-A5DA7DD19AAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core", "Prime.Core\Prime.Core.csproj", "{F434D5B9-88A4-414B-BA96-28479D7C954D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime", "Prime\Prime.csproj", "{F434D5B9-88A4-414B-BA96-28479D7C954D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1BD6FB29-2E35-4BBE-82C7-B48992C3724A}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.PackageManager", "Pri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Tests", "Prime.Tests\Prime.Tests.csproj", "{5B56BE65-FC57-4EC3-BF1D-D27A065B5CDE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core.Messaging", "Prime.Core.Messaging\Prime.Core.Messaging.csproj", "{607A37B0-B49D-4D47-A9B5-F5495A64D757}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core", "Prime.Core\Prime.Core.csproj", "{607A37B0-B49D-4D47-A9B5-F5495A64D757}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{21062BD8-3B82-4E32-A929-6CA5AC9CBFBD}"
 EndProject

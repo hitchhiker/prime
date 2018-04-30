@@ -213,20 +213,6 @@ namespace Prime.Core
             return dict.Get(name, "").ToObjectId(defaultValue);
         }
 
-        public static Type GetType(this IDictionary<string, string> dict, string name)
-        {
-            var i = dict.GetIntN(name);
-            return i == null ? null : TypeCatalogue.I.Get(i);
-        }
-
-        public static T GetInstance<T>(this IDictionary<string, string> dict, string name) where T : class
-        {
-            var i = dict.GetIntN(name);
-            if (i == null)
-                return null;
-            var t = TypeCatalogue.I.Get(i);
-            return t == null ? null : t.InstanceAny<T>();
-        }
 
         public static List<T> GetMany<T>(this IDictionary<string, string> dict, string name, char seperator, Func<string, T> creator) where T : class
         {

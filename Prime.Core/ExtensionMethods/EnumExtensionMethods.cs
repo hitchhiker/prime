@@ -21,12 +21,6 @@ namespace Prime.Core
 
             return Enum.GetValues(typeof (T)).Cast<T>().OrderBy(x => Guid.NewGuid()).FirstOrDefault();
         }
-
-        public static ObjectId GetObjectIdHashCode(this Enum e)
-        {
-            return Obcache.GetOrAdd(e, @enum => @enum.ToString().ToLower().GetObjectIdHashCode());
-        }
-
-        private readonly static ConcurrentDictionary<Enum, ObjectId> Obcache = new ConcurrentDictionary<Enum, ObjectId>(); 
+        
     }
 }

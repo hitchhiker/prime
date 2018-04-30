@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;All_Debug</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="NodaTime" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LiteDB">
+      <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="System\Design\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+
+</Project>

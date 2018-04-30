@@ -5,6 +5,8 @@ namespace Prime.Core
 {
     public abstract class RenewableSubscribeMessageBase : SubscribeMessageBase
     {
+        internal bool Unsubscribe;
+
         protected RenewableSubscribeMessageBase(ObjectId subscriberId, SubscriptionType type = SubscriptionType.KeepAlive) : base(subscriberId, type)
         {
         }

@@ -18,8 +18,8 @@
     <PackageReference Include="RestEase" Version="1.4.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime\Prime.csproj" />
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
   </ItemGroup>
   <ItemGroup>

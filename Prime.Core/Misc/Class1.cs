@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Prime.Core
+namespace Prime.Core.Messaging
 {
-    public class ClassTestCore
+    public class ClassTestCommon
     {
         public static int Test()
         {

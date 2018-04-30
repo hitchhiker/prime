@@ -11,7 +11,7 @@ namespace Prime.Core
         }
 
         public static DefaultMessenger I => Lazy.Value;
-        private static readonly Lazy<DefaultMessenger> Lazy = new Lazy<DefaultMessenger>(()=>new DefaultMessenger());
+        private static readonly Lazy<DefaultMessenger> Lazy = new Lazy<DefaultMessenger>(() => new DefaultMessenger());
 
         public IMessenger Default;
 
