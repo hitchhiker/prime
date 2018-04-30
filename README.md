@@ -2,7 +2,7 @@
 
 https://getprime.org
 
-Project status: PRE-ALPHA - not production ready. CORE in LINUX/MAC/WIN - UI in WINDOWS only
+Project status: PRE-ALPHA - not production ready.
 
 Open source decentralised **(ODC)** crypto asset trading application, browser, exchange connector, data visualizer, coin + exchange catalogue and ODC communication system.
 
@@ -25,6 +25,7 @@ Your keys NEVER leave your machine.
 
 **Trading on any exchange.**
 
+* .NetCore/NodeJs Win/Lin/Mac/BSD
 * Connects to all exchanges that support APIs, translating their APIs to a common protocol. Manages new account authorisation establishing the highest-grade of security each exchange offers.
 * Trade easily on single, or simultaneously on multiple, exchanges.
 * Manages wallets on exchanges for easy arbitrage opportunities or for spreading assets equally among a number of exchanges. 
