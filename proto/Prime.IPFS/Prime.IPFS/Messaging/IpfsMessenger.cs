@@ -1,17 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Ipfs.Api;
 using Newtonsoft.Json;
-using Prime.Common;
-using Prime.Common.Encrypt;
-using Prime.Utility;
 
-namespace Prime.Radiant.Components.IPFS.Messenging
+namespace Prime.IPFS.Components.IPFS.Messenging
 {
     public class IpfsMessenger
     {
+        /*
         private IpfsMessenger() { }
 
-        public IpfsMessenger(Radiant radiant, string userKey, PrimeEncrypt encrypt)
+        public IpfsMessenger(Prime.IPFS radiant, string userKey, PrimeEncrypt encrypt)
         {
             _radiant = radiant;
             _encrypt = encrypt;
@@ -21,7 +19,7 @@ namespace Prime.Radiant.Components.IPFS.Messenging
 
         private string _pubKey;
         private string _privKey;
-        private readonly Radiant _radiant;
+        private readonly Prime.IPFS _radiant;
         private readonly PrimeEncrypt _encrypt;
 
         [JsonProperty]
@@ -65,6 +63,6 @@ namespace Prime.Radiant.Components.IPFS.Messenging
             var keys = _radiant.IpFsApi.GetIpfsKeys();
             _pubKey = keys.pubKey;
             _privKey = keys.privKey;
-        }
+        }*/
     }
 }

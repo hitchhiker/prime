@@ -1,4 +1,3 @@
-using Prime.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,19 +5,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows;
-using System.Windows.Threading;
-using Ipfs.Api;
-using Nito.AsyncEx;
 using Timer = System.Timers.Timer;
 using Prime.Core;
 
-namespace Prime.Radiant
+namespace Prime.IPFS
 {
-    public class IpFsDaemon
+    public class IpfsWindowsDaemon : IpfsDaemonBase
     {
-        private readonly Dispatcher _dispatcher;
-        public readonly ILogger L;
+        private readonly IpfsInstance _instance;
 
         public event EventHandler OnStateChanged;
 
@@ -26,73 +20,41 @@ namespace Prime.Radiant
         private bool _requiresInit;
         private bool _lockWait;
         private Timer _externalPollTimer;
-        private IpFsDaemonState _state;
+        private IpFsDaemonState _currentState;
         private ExecuteDos.DosContext _dosContext;
 
         public bool RedirectRepository { get; set; }
 
         public bool AutoRestart { get; set; } = true;
 
-        public readonly IpfsClient Client;
-
-        public IpFsDaemon(ILogger logger = null, Dispatcher dispatcher = null)
+        public IpfsWindowsDaemon(IpfsInstance instance) : base(instance)
         {
-            _dispatcher = dispatcher;
-            L = logger ?? Logging.I.DefaultLogger;
-            State = IpFsDaemonState.Stopped;
-            Client = new IpfsClient();
+            _instance = instance;
+            CurrentState = IpFsDaemonState.Stopped;
         }
 
-        public IpFsDaemon(DeploymentManager manager) : this(manager.L, manager.Dispatcher)
-        {
-        }
+        public ILogger L => _instance.L;
 
-        public IpFsDaemonState State
+        private IpFsDaemonState CurrentState
         {
-            get => _state;
-            private set
+            get => _currentState;
+            set
             {
-                _state = value;
+                _currentState = value;
                 OnStateChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public void WaitTillRunning(Action<IpfsClient> action)
-        {
-            Start();
-
-            enjoyGotoPurists:
-
-            if (State == IpFsDaemonState.Running || State == IpFsDaemonState.System)
-            {
-                action.Invoke(Client);
-                return;
-            }
-
-            Thread.Sleep(1);
-
-            goto enjoyGotoPurists;
-        }
-
-        public T WaitTillRunning<T>(Func<IpfsClient, T> function)
-        {
-            Start();
-
-            enjoyGotoPurists:
-
-            if (State == IpFsDaemonState.Running || State == IpFsDaemonState.System)
-                return function.Invoke(Client);
-
-            Thread.Sleep(1);
-
-            goto enjoyGotoPurists;
-        }
-
         private volatile bool _isStarted;
 
-        public void Start()
+        public override IpFsDaemonState State()
         {
-            if (_isStarted && State!= IpFsDaemonState.Stopped)
+            return CurrentState;
+        }
+
+        public override void Start()
+        {
+            if (_isStarted && CurrentState!= IpFsDaemonState.Stopped)
                 return;
 
             _isStarted = true;
@@ -101,7 +63,7 @@ namespace Prime.Radiant
 
         private void StartInternal(bool allowInitialisation)
         {
-            if (IsIpfsExternalRunning())
+            if (Instance.IsIpfsExternalRunning())
             {
                 InitForExternal();
                 return;
@@ -110,9 +72,9 @@ namespace Prime.Radiant
             StartLocal(allowInitialisation);
         }
 
-        public void Stop()
+        public override void Stop()
         {
-            if (State != IpFsDaemonState.Running)
+            if (CurrentState != IpFsDaemonState.Running)
                 return;
 
             _externalPollTimer?.Close();
@@ -122,23 +84,14 @@ namespace Prime.Radiant
             else
                 _process?.Kill();
 
-            State = IpFsDaemonState.Stopping;
+            CurrentState = IpFsDaemonState.Stopping;
         }
 
-        private bool IsIpfsExternalRunning()
-        {
-            var client = new IpfsClient();
-
-            try { AsyncContext.Run(() => client.VersionAsync()); }
-            catch { return false; }
-
-            return true;
-        }
 
         private void InitForExternal()
         {
             L.Info("IPFS is already running on this machine, we're using that instance.");
-            State = IpFsDaemonState.System;
+            CurrentState = IpFsDaemonState.System;
             _externalPollTimer = new Timer
             {
                 Interval = 1000 * 2,
@@ -151,9 +104,9 @@ namespace Prime.Radiant
 
         private void ExternalPollTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            if (!IsIpfsExternalRunning())
+            if (!Instance.IsIpfsExternalRunning())
             {
-                State = IpFsDaemonState.Stopped;
+                CurrentState = IpFsDaemonState.Stopped;
                 if (AutoRestart)
                     Start();
                 return;
@@ -167,16 +120,16 @@ namespace Prime.Radiant
             _requiresInit = false;
             _lockWait = false;
 
-            State = IpFsDaemonState.Starting;
+            CurrentState = IpFsDaemonState.Starting;
 
-            var processContext = new IpfsProcessContext("daemon",
+            var processContext = new DosProcessContext("daemon",
                 message =>
                 {
                     if (message.Contains("daemon is ready", StringComparison.OrdinalIgnoreCase))
-                        State = IpFsDaemonState.Running;
+                        CurrentState = IpFsDaemonState.Running;
                     if (message.Contains("interrupt signal", StringComparison.OrdinalIgnoreCase))
                     {
-                        State = IpFsDaemonState.Stopping;
+                        CurrentState = IpFsDaemonState.Stopping;
                         return DosCancellation.StopLogging;
                     }
                     return DosCancellation.None;
@@ -187,7 +140,7 @@ namespace Prime.Radiant
                         error.Contains("no IPFS repo found", StringComparison.OrdinalIgnoreCase))
                     {
                         _requiresInit = true;
-                        State = IpFsDaemonState.Stopped;
+                        CurrentState = IpFsDaemonState.Stopped;
                         return DosCancellation.Terminate;
                     }
 
@@ -195,7 +148,7 @@ namespace Prime.Radiant
                         return DosCancellation.None;
 
                     _lockWait = true;
-                    State = IpFsDaemonState.Stopped;
+                    CurrentState = IpFsDaemonState.Stopped;
                     return DosCancellation.Terminate;
                 },
                 process => { _process = process; })
@@ -210,7 +163,7 @@ namespace Prime.Radiant
             var task = IssueIpfsNativeCommand(processContext);
 
             if (task == null)
-                State = IpFsDaemonState.Stopped;
+                CurrentState = IpFsDaemonState.Stopped;
 
             task.ContinueWith(task1 => FinalStep(task1, allowInitialisation));
 
@@ -219,7 +172,7 @@ namespace Prime.Radiant
 
         private Task FinalStep(Task<ExecuteDos.ProcessResult> pr, bool allowInitialisation)
         {
-            State = IpFsDaemonState.Stopped;
+            CurrentState = IpFsDaemonState.Stopped;
 
             if (_requiresInit && allowInitialisation)
             {
@@ -250,7 +203,7 @@ namespace Prime.Radiant
 
         private async Task<bool> InitialiseRepository(Action onSuccess)
         {
-            var task = IssueIpfsNativeCommand(new IpfsProcessContext("init", message =>
+            var task = IssueIpfsNativeCommand(new DosProcessContext("init", message =>
             {
                 if (!message.Contains("peer identity"))
                     return DosCancellation.None;
@@ -269,13 +222,13 @@ namespace Prime.Radiant
             return pr?.Success == true;
         }
 
-        private Task<ExecuteDos.ProcessResult> IssueIpfsNativeCommand(IpfsProcessContext ipfsProcessContext)
+        private Task<ExecuteDos.ProcessResult> IssueIpfsNativeCommand(DosProcessContext ipfsProcessContext)
         {
-            var ipfsexe = new FileInfo(IpfsExePath);
+            var ipfsexe = Instance.NativeExecutable;
 
             if (!ipfsexe.Exists)
             {
-                L.Info("Could not find ipfs.exe @ " + ipfsexe.FullName);
+                L.Info("Could not find ipfs executable @ " + ipfsexe.FullName);
                 return null;
             }
 
@@ -320,61 +273,15 @@ namespace Prime.Radiant
             };
 
             if (RedirectRepository)
-                dosContext.Environment.Add("IPFS_PATH", RepoDirectory.FullName);
+                dosContext.Environment.Add("IPFS_PATH", Instance.RepoDirectory.FullName);
 
-            if (_dispatcher != null)
-                _dispatcher.Invoke(() => BindExit(dosContext));
-            else
-                BindExit(dosContext);
+            // if (_dispatcher != null)
+            //    _dispatcher.Invoke(() => BindExit(dosContext));
+            //else
+
+            //BindExit(dosContext);
             
             return new ExecuteDos().CmdAsync(dosContext);
-        }
-
-        private DirectoryInfo _ipfsDirectory;
-        public DirectoryInfo IpfsDirectory => _ipfsDirectory ?? (_ipfsDirectory = CommonFs.I.GetCreateUsrSubDirectory("ipfs"));
-
-        private DirectoryInfo _repoDirectory;
-        public DirectoryInfo RepoDirectory => _repoDirectory ?? (_repoDirectory = CommonFs.I.GetCreateSubDirectory(IpfsDirectory, "repo"));
-
-        private DirectoryInfo _staticExeDirectory;
-        public DirectoryInfo StaticExeDirectory => _staticExeDirectory ?? (_staticExeDirectory = CommonFs.I.GetCreateSubDirectory(IpfsDirectory, "native"));
-
-        private static void BindExit(ExecuteDos.DosContext dosContext)
-        {
-            if (Application.Current != null)
-                Application.Current.Exit += delegate
-                {
-                    if (dosContext != null)
-                        dosContext.Cancelled = true;
-                };
-        }
-
-        private string _ipfsExePath;
-        public string IpfsExePath => _ipfsExePath ?? (_ipfsExePath = GetIpfsExe());
-
-        /// <summary>
-        /// We copy to the USR location so that windows et al. won't bother us with constant firewall requests.
-        /// </summary>
-        /// <returns></returns>
-        
-        [Obsolete("Doesn't take versions into account")]
-        private string GetIpfsExe()
-        {
-            var cpuExe = Environment.Is64BitOperatingSystem ? "ipfs-x64.exe" : "ipfs-x86.exe";
-            var native = StaticExeDirectory;
-            var staticExePath = Path.Combine(native.FullName, cpuExe);
-
-            if (File.Exists(staticExePath))
-                return staticExePath;
-
-            var binDirectory = new DirectoryInfo(System.AppDomain.CurrentDomain.BaseDirectory);
-            var binLocation = Path.Combine(binDirectory.FullName, cpuExe);
-
-            if (!File.Exists(binLocation))
-                throw new Exception(binLocation + " is not found.");
-
-            File.Copy(Path.Combine(binDirectory.FullName, cpuExe), staticExePath, true);
-            return staticExePath;
         }
     }
 }

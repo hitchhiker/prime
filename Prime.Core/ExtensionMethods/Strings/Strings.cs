@@ -24,7 +24,7 @@ namespace Prime.Core
         IncludeEllipsis = 0x4
     }
 
-    public static partial class StringExtensions1
+    public static partial class Strings
     {
         public const int ObShift = 119;
       

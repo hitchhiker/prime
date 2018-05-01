@@ -25,21 +25,12 @@ namespace Prime.Core
         private DirectoryInfo GetPrimeDirectory()
         {
             var di = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
-            return CreateSubDirectory(di, "Prime");
+            return di.EnsureSubDirectory("Prime");
         }
 
         public DirectoryInfo GetCreatePrimeSubDirectory(string directoryName)
         {
-            return CreateSubDirectory(PrimeDirectory, directoryName);
-        }
-
-        private DirectoryInfo CreateSubDirectory(DirectoryInfo dir, string directoryName)
-        {
-            var di = new DirectoryInfo(Path.Combine(dir.FullName, directoryName));
-            if (!di.Exists)
-                di.Create();
-
-            return di;
+            return PrimeDirectory.EnsureSubDirectory(directoryName);
         }
     }
 }

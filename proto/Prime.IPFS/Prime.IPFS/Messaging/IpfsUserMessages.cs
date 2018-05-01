@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Ipfs.Api;
 using Newtonsoft.Json;
-using Prime.Utility.Encrypt;
 
-namespace Prime.Radiant.Components.IPFS.Messenging
+namespace Prime.IPFS.Components.IPFS.Messenging
 {
     public class IpfsUserMessages
     {
+        /*
         private readonly PrimeEncrypt _encrypt;
 
         public IpfsUserMessages() { }
@@ -36,6 +36,6 @@ namespace Prime.Radiant.Components.IPFS.Messenging
         {
             var raw = Newtonsoft.Json.JsonConvert.SerializeObject(doc);
             AddOrUpdate(itemKey, raw);
-        }
+        }*/
     }
 }

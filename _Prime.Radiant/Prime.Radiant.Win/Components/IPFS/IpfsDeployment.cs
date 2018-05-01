@@ -1,36 +1,28 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using Ipfs.Api;
-using Prime.Utility;
 using Ipfs;
+using Ipfs.Api;
 using Newtonsoft.Json.Linq;
 using Nito.AsyncEx;
 using Prime.Core;
-using Prime.Radiant.Components;
 
-namespace Prime.Radiant
+namespace Prime.IPFS
 {
-    public class IpFsApi
+    public class IpfsDeployment
     {
         private readonly IpFsDaemon _daemon;
         private readonly ILogger L;
         private readonly IpfsClient _client;
 
-        public IpFsApi(IpFsDaemon daemon)
+        public IpfsDeployment(IpFsDaemon daemon)
         {
             _daemon = daemon;
             _client = daemon.Client;
             L = daemon.L;
         }
 
-        public IpFsApi(DeploymentManager manager) : this(manager.Daemon) { }
+        public IpfsDeployment(DeploymentManager manager) : this(manager.Daemon) { }
 
         public void Connect()
         {

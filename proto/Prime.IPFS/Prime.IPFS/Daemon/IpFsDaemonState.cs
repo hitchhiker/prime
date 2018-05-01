@@ -1,4 +1,4 @@
-namespace Prime.Radiant
+namespace Prime.IPFS
 {
     public enum IpFsDaemonState
     {

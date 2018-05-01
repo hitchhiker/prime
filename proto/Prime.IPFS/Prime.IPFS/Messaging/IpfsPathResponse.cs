@@ -1,4 +1,4 @@
-﻿namespace Prime.Radiant.Components.IPFS.Messenging
+﻿namespace Prime.IPFS.Components.IPFS.Messenging
 {
     public class IpfsPathResponse
     {

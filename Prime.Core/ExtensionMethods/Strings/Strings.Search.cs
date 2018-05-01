@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Prime.Core
 {
-    public static partial class StringExtensions1
+    public static partial class Strings
     {
         /// <summary>
         /// Simple function to remove email addresses from any text, replaces with given string

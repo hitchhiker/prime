@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Prime.Radiant
+namespace Prime.IPFS
 {
     public class IpfsDeployStatus
     {

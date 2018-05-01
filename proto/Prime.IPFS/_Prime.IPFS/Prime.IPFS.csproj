@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Ipfs.Api" Version="0.18.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
   </ItemGroup>
 
