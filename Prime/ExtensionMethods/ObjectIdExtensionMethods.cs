@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,7 +17,7 @@ namespace Prime.Core
         /// <returns></returns>
         public static ObjectId GetObjectIdHashCode(this string k, bool autoLower = false, bool autoTrim = false)
         {
-            if (string.IsNullOrWhiteSpace(k))
+            if (String.IsNullOrWhiteSpace(k))
                 return ObjectId.Empty;
 
             if (autoLower)
@@ -39,6 +41,12 @@ namespace Prime.Core
             foreach (var k in ks)
                 sb.Append($"{k}:");
             return GetObjectIdHashCode(sb.ToString(), autoLower, autoTrim);
+        }
+
+        private static readonly ConcurrentDictionary<Enum, ObjectId> Obcache = new ConcurrentDictionary<Enum, ObjectId>();
+        public static ObjectId GetObjectIdHashCode(this Enum e)
+        {
+            return Obcache.GetOrAdd(e, @enum => @enum.ToString().ToLower().GetObjectIdHashCode());
         }
     }
 }

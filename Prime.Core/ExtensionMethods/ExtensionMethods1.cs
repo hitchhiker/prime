@@ -345,10 +345,6 @@ namespace Prime.Core
             return result;
         }
 
-        public static DateTime ChangedUtc(this FileInfo fileInfo)
-        {
-            return fileInfo.LastWriteTimeUtc > fileInfo.CreationTimeUtc ? fileInfo.LastWriteTimeUtc : fileInfo.CreationTimeUtc;
-        }
 
         /// <summary>
         /// Compares the strings in the supplied set to ensure they all exist in the source set.

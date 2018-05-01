@@ -149,7 +149,7 @@
     <Compile Include="Thread\SmartThreadPool\WorkItemsQueue.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj">
+    <ProjectReference Include="..\Prime.Core\Prime.Core.Messaging.csproj">
       <Project>{c22efeca-8587-4975-84ef-4bf59e768537}</Project>
       <Name>Prime.Core.Messaging</Name>
     </ProjectReference>

@@ -1,36 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using NodaTime;
 using Prime.Core;
 
 namespace Prime.Core
 {
     public static class TimeResolutionExtensionMethods {
-
-        public static double GetAxisModifier(this TimeResolution timeResolution)
-        {
-            switch (timeResolution)
-            {
-                case TimeResolution.Second:
-                    return NodaConstants.TicksPerSecond;
-
-                case TimeResolution.Minute:
-                    return NodaConstants.TicksPerMinute;
-
-                case TimeResolution.Hour:
-                    return NodaConstants.TicksPerHour;
-
-                case TimeResolution.Day:
-                    return NodaConstants.TicksPerDay;
-
-                case TimeResolution.Millisecond:
-                    return NodaConstants.MillisecondsPerDay;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(GetAxisModifier) + " in " + typeof(TimeResolutionExtensionMethods));
-            }
-        }
-
+        
         public static TimeSpan GetDefaultTimeSpan(this TimeResolution timeResolution)
         {
             switch (timeResolution)

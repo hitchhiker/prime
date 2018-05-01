@@ -154,13 +154,5 @@ namespace Prime.Core
 
             func(type);
         }
-
-        public static string ToElapsed(this Stopwatch stopwatch, bool seconds = true)
-        {
-            var ts = stopwatch.Elapsed;
-            if (seconds)
-                return $"{ts.Seconds:0}.{ts.Milliseconds / 10:00}s";
-            return $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}";
-        }
     }
 }

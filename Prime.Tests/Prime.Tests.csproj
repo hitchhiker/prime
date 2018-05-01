@@ -10,7 +10,7 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime\Prime.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Prime.KeysManager\Prime.KeysManager.csproj">
       <Project>{2717CC47-4DA1-4CCF-A7B3-B947D1BAB3D9}</Project>

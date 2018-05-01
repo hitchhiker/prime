@@ -1,40 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Configurations>Debug;Release;All_Debug</Configurations>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Remove="System\DateTime\Time\Resolution\**" />
-    <EmbeddedResource Remove="System\DateTime\Time\Resolution\**" />
-    <None Remove="System\DateTime\Time\Resolution\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Messaging\RenewingSubscriptionsListener.cs" />
-    <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
-    <PackageReference Include="NodaTime" Version="2.2.5" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Prime.Core.Messaging\Prime.Core.Messaging.csproj" />
-  </ItemGroup>
-
   <ItemGroup>
     <Reference Include="LiteDB">
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="System\Design\" />
-  </ItemGroup>
-
 </Project>
