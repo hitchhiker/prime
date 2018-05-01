@@ -17,9 +17,8 @@ namespace Prime.Finance.Services.Services.Coinfloor
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-
             var credentials = $"{ApiKey.Key}/{ApiKey.Secret}:{ApiKey.Extra}";
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", ToBase64(credentials));
+            request.Headers.Add("Authorization", $"Basic {ToBase64(credentials)}");
         }
     }
 }

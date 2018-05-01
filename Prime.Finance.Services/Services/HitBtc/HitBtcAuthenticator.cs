@@ -11,7 +11,7 @@ namespace Prime.Finance.Services.Services.HitBtc
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            request.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(FromUtf8($"{ApiKey.Key}:{ApiKey.Secret}"))}");
+            request.Headers.Add("Authorization", $"Basic {ToBase64($"{ApiKey.Key}:{ApiKey.Secret}")}");
         }
     }
 }

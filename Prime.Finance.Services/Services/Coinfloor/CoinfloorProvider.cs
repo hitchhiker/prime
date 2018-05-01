@@ -55,7 +55,7 @@ namespace Prime.Finance.Services.Services.Coinfloor
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalancesAsync("XBT/USD").ConfigureAwait(false);
+            var r = await api.GetBalancesAsync("XBT/GBP").ConfigureAwait(false);
 
             return r != null;
         }
