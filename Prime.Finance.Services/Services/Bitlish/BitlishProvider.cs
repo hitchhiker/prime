@@ -8,7 +8,7 @@ namespace Prime.Finance.Services.Services.Bitlish
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://bitlish.com/api
-    public class BitlishProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class BitlishProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string BitlishApiVersion = "v1";
         private const string BitlishApiUrl = "https://bitlish.com/api/" + BitlishApiVersion;
@@ -34,7 +34,7 @@ namespace Prime.Finance.Services.Services.Bitlish
 
         public BitlishProvider()
         {
-            ApiProvider = new RestApiClientProvider<IBitlishApi>(BitlishApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IBitlishApi>(BitlishApiUrl, this, (k) => new BitlishAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -43,6 +43,18 @@ namespace Prime.Finance.Services.Services.Bitlish
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Count > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.AuthenticateUserAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return !string.IsNullOrWhiteSpace(r?.token);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
