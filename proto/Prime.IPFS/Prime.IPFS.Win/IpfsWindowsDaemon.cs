@@ -23,7 +23,7 @@ namespace Prime.IPFS
         private IpFsDaemonState _currentState;
         private ExecuteDos.DosContext _dosContext;
 
-        public bool RedirectRepository { get; set; }
+        public bool RedirectRepository { get; set; } = true;
 
         public bool AutoRestart { get; set; } = true;
 
@@ -122,10 +122,10 @@ namespace Prime.IPFS
 
             CurrentState = IpFsDaemonState.Starting;
 
-            var processContext = new DosProcessContext("daemon",
+            var processContext = new DosProcessContext("daemon --init",
                 message =>
                 {
-                    if (message.Contains("daemon is ready", StringComparison.OrdinalIgnoreCase))
+                    if (message.Contains("Daemon is ready", StringComparison.OrdinalIgnoreCase))
                         CurrentState = IpFsDaemonState.Running;
                     if (message.Contains("interrupt signal", StringComparison.OrdinalIgnoreCase))
                     {
@@ -155,7 +155,9 @@ namespace Prime.IPFS
             {
                 OnProcessEnded = () =>
                 {
-                   // if (AutoRestart && !_requiresInit && !_lockWait)
+                    CurrentState = IpFsDaemonState.Stopped;
+
+                    // if (AutoRestart && !_requiresInit && !_lockWait)
                     //    Start();
                 }
             };

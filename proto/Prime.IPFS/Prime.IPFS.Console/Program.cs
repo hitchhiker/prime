@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Prime.IPFS
@@ -13,6 +15,7 @@ namespace Prime.IPFS
     {
         static void Main(string[] args)
         {
+
             var logger = new ConsoleLogger();
 
             var dir = new DirectoryInfo("c://tmp//ipfs-ext");
@@ -26,9 +29,35 @@ namespace Prime.IPFS
 
             ipfs.Daemon.Start();
 
-            Console.ReadLine();
+            /* cleanup */
+            bool ConsoleEventCallback(int eventType)
+            {
+                if (eventType == 2)
+                    Stop(ipfs);
+                return false;
+            }
 
-            ipfs.Daemon.Stop();
+            handler = new ConsoleEventDelegate(ConsoleEventCallback);
+            SetConsoleCtrlHandler(handler, true);
+            /* cleanup */
+
+            Console.ReadLine();
+            Stop(ipfs);
         }
+
+        private static void Stop(IpfsInstance ipfs)
+        {
+            ipfs.Daemon.Stop();
+            do
+            {
+                Thread.Sleep(1);
+            } while (ipfs.Daemon.State() != IpFsDaemonState.Stopped && ipfs.Daemon.State() != IpFsDaemonState.System);
+        }
+
+        static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected
+        // Pinvoke
+        private delegate bool ConsoleEventDelegate(int eventType);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
     }
 }

@@ -142,7 +142,7 @@ namespace Prime.Core
         {
             try
             {
-                ProcessExiter.Exit(process);
+                //ProcessExiter.Exit(process);
                 if (!process.HasExited)
                     process.Kill();
             }
