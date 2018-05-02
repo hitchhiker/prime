@@ -1,124 +1,36 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-
-const url = require('url');
-const path = require('path');
-const net = require('net');
-
-const PrimeTcpClient = require("./PrimeTcpClient");
-
-let prime = new PrimeTcpClient();
-let dataHandlerChannel = "";
-let win;
-let clientUuid = generateFakeGuid();
-
-console.log("Fake GUID: " + clientUuid);
-
-function createWindow() {
-    win = new BrowserWindow({ 'minWidth': 620, 'minHeight': 600 });
-
-    win.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file:',
-        slashes: true
-    }));
-}
-
-function generateFakeGuid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var KeysManager_1 = require("./src/core/KeysManager");
+var Main = /** @class */ (function () {
+    function Main() {
     }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-}
-
-function closeWindow() {
-    alert("Windows is being closed...");
-}
-
-// TCP client.
-let client = new net.Socket();
-
-client.connect(19991, '127.0.0.1', function () {
-    console.log('Connected to Prime API server.');
-});
-
-client.on('data', function (data) {
-    win.webContents.send(dataHandlerChannel, data);
-    console.log("Client received data. Sending to '" + dataHandlerChannel + "' channel...");
-});
-
-client.on('close', function () {
-    console.log('Connection closed.');
-});
-
-// IPC Main.
-
-ipcMain.on('prime:generate-client-guid', (event, arg) => {
-    console.log("Calling server to generate GUID...");
-
-    client.write(JSON.stringify({
-        "Type": "GenerateGuidMessage",
-    }));
-
-    dataHandlerChannel = "prime:client-guid-generated";
-});
-
-ipcMain.on('prime:get-private-providers-list', (event, arg) => {
-    console.log("Querying providers list...");
-
-    client.write(JSON.stringify({
-        "Type": "PrivateProvidersListMessage"
-    }));
-    dataHandlerChannel = "prime:private-providers-list";
-});
-
-ipcMain.on('prime:get-provider-details', (event, arg) => {
-    console.log("Querying provider details...");
-
-    client.write(JSON.stringify({
-        "Type": "ProviderDetailsMessage",
-        "Id": arg
-    }));
-    dataHandlerChannel = "prime:provider-details";
-})
-
-ipcMain.on('prime:save-provider-keys', (event, arg) => {
-    console.log("Saving provider keys...");
-
-    client.write(JSON.stringify({
-        "Type": "ProviderKeysMessage",
-        "Id": arg.id,
-        "Key": arg.keys.Key,
-        "Secret": arg.keys.Secret,
-        "Extra": arg.keys.Extra
-    }));
-    dataHandlerChannel = "prime:provider-keys-saved";
-})
-
-ipcMain.on('prime:delete-provider-keys', (event, arg) => {
-    console.log("Saving provider keys...");
-
-    client.write(JSON.stringify({
-        "Type": "DeleteProviderKeysMessage",
-        "Id": arg,
-    }));
-    dataHandlerChannel = "prime:provider-keys-deleted";
-});
-
-ipcMain.on('prime:test-private-api', (event, arg) => {
-    console.log("Testing private API...");
-
-    client.write(JSON.stringify({
-        "Type": "TestPrivateApiMessage",
-        "Id": arg.id,
-        "Key": arg.keys.Key,
-        "Secret": arg.keys.Secret,
-        "Extra": arg.keys.Extra
-    }));
-    dataHandlerChannel = "prime:private-api-tested";
-});
-
-app.on('close', closeWindow);
-app.on('ready', createWindow);
-
+    Main.onWindowAllClosed = function () {
+        if (process.platform !== 'darwin')
+            Main.application.quit();
+    };
+    Main.onClose = function () {
+        Main.mainWindow = null;
+    };
+    Main.onReady = function () {
+        Main.mainWindow = new Main.BrowserWindow({
+            width: 800,
+            height: 600,
+            minHeight: 620,
+            minWidth: 600
+        });
+        Main.mainWindow.loadURL('file://' + __dirname + '/index.html');
+        Main.mainWindow.on('closed', Main.onClose);
+        // Start KeysManager.
+        var keysManager = new KeysManager_1.KeysManager();
+        keysManager.run();
+    };
+    Main.main = function (app, browserWindow) {
+        Main.BrowserWindow = browserWindow;
+        Main.application = app;
+        Main.application.on('window-all-closed', Main.onWindowAllClosed);
+        Main.application.on('ready', Main.onReady);
+    };
+    return Main;
+}());
+exports.default = Main;
+//# sourceMappingURL=Main.js.map
