@@ -10,8 +10,7 @@ namespace Prime.ExtensionPackager
         static void Main(string[] args)
         {
             var sourcePath = "./";
-            var stagingDirectory = "./";
-            var distDirectory = "./";
+            var workspacePath = "./";
             var isPrime = false;
 
             if (args != null && args.Length > 0)
@@ -22,27 +21,24 @@ namespace Prime.ExtensionPackager
             if (Debugger.IsAttached)
             {
                 sourcePath = "V:\\prime\\src\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug";
-                stagingDirectory = "V:\\prime\\src\\publish\\stage";
-                distDirectory = "V:\\prime\\src\\publish\\dist";
+                workspacePath = "V:\\prime\\src\\publish\\";
             }
             else
             {
-                if (args == null || args.Length < 3)
+                if (args == null || args.Length < 2)
                 {
-                    logger.Info("Usage: [sourcePath] [stagePath] [distPath] [-m]");
+                    logger.Info("Usage: [sourcePath] [workspacePath] [-m]");
                     return;
                 }
 
                 sourcePath = args[0];
-                stagingDirectory = args[1];
-                distDirectory = args[2];
+                workspacePath = args[1];
 
                 isPrime = args.Length > 3 && args[3] == "-m";
             }
 
             sourcePath = Path.GetFullPath(sourcePath);
-            stagingDirectory = Path.GetFullPath(stagingDirectory);
-            distDirectory = Path.GetFullPath(distDirectory);
+            workspacePath = Path.GetFullPath(workspacePath);
 
             logger.Info("Current: " + Path.GetFullPath("./"));
 
@@ -54,14 +50,12 @@ namespace Prime.ExtensionPackager
             }
 
             logger.Info("Source: " + sourcePath);
-            logger.Info("Staging: " + stagingDirectory);
-            logger.Info("Distrubtion: " + distDirectory);
+            logger.Info("Workspace: " + workspacePath);
 
             var ctx = new ProgramContext()
             {
                 SourceDirectory = sourceDir,
-                StagingDirectory = new DirectoryInfo(stagingDirectory),
-                DistributionDirectory = new DirectoryInfo(distDirectory),
+                WorkspaceDirectory = new DirectoryInfo(workspacePath),
                 IsPrime = isPrime,
                 Logger = logger
             };

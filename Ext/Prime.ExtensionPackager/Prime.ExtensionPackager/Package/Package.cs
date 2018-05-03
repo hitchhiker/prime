@@ -58,6 +58,11 @@ namespace Prime.ExtensionPackager
                     Extension.Version + "-" + Extension.Platform + Path.DirectorySeparatorChar).ToLower();
         }
 
+        public string GetCatName()
+        {
+            return "prime-" + (Extension.Id + "-" + Extension.Version + "-" + Extension.Platform).ToLower() + ".json";
+        }
+
         public List<FileInfo> StagedFiles { get; private set; }
         public FileInfo StagedMeta { get; private set; }
         public DirectoryInfo StagedRoot { get; private set; }
