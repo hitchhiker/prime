@@ -43,6 +43,35 @@ namespace Prime.Finance.Services.Services.Bitlish
             public string type;
             public long user_id;
         }
+
+        internal class TemplateWalletResponse
+        {
+            public string account;
+            public long created;
+            public int enabled;
+            public string id;
+        }
+
+        internal class WithdrawalResponse
+        {
+            public PaymentResponse[] payments;
+        }
+
+        internal class PaymentResponse
+        {
+            public string amount;
+            public string amount_f;
+            public long created;
+            public string currency;
+            public string deposit_wallet_id;
+            public string direction;
+            public string errcode;
+            public string fee;
+            public decimal from_amount;
+            public string from_currency;
+            public string id;
+            public string withdraw_wallet_id;
+        }
         #endregion
 
         #region Public 
