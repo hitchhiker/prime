@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Prime.Core;
 
 namespace Prime.ExtensionPackager
 {
@@ -9,57 +10,62 @@ namespace Prime.ExtensionPackager
         static void Main(string[] args)
         {
             var sourcePath = "./";
-            var stagingDirectory = "./";
-            var distDirectory = "./";
+            var workspacePath = "./";
             var isPrime = false;
 
             if (args != null && args.Length > 0)
                 sourcePath = args[0];
 
+            var logger = new ConsoleLogger() {IncludePreamble = false};
+
             if (Debugger.IsAttached)
             {
-                sourcePath = "C:\\tmp\\packer\\src";
-                stagingDirectory = "C:\\tmp\\packer\\stage";
-                distDirectory = "C:\\tmp\\packer\\dist";
+                sourcePath = "V:\\prime\\src\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug";
+                workspacePath = "V:\\prime\\src\\publish\\";
             }
             else
             {
-                if (args == null || args.Length < 3)
+                if (args == null || args.Length < 2)
                 {
-                    Console.WriteLine("Usage: [sourcePath] [stagePath] [distPath] [-m]");
+                    logger.Info("Usage: [sourcePath] [workspacePath] [-m]");
                     return;
                 }
 
-                sourcePath = Path.GetFullPath(args[0]);
-                stagingDirectory = Path.GetFullPath(args[1]);
-                distDirectory = Path.GetFullPath(args[2]);
+                sourcePath = args[0];
+                workspacePath = args[1];
+
                 isPrime = args.Length > 3 && args[3] == "-m";
             }
 
-            Console.WriteLine("Current: " + Path.GetFullPath("./"));
+            sourcePath = Path.GetFullPath(sourcePath);
+            workspacePath = Path.GetFullPath(workspacePath);
+
+            logger.Info("Current: " + Path.GetFullPath("./"));
 
             var sourceDir = new DirectoryInfo(sourcePath);
             if (!sourceDir.Exists)
             {
-                Console.WriteLine("No such directory: " + sourcePath);
+                logger.Info("No such directory: " + sourcePath);
                 return;
             }
 
-            Console.WriteLine("Source: " + sourcePath);
-            Console.WriteLine("Staging: " + stagingDirectory);
-            Console.WriteLine("Distrubtion: " + distDirectory);
+            logger.Info("Source: " + sourcePath);
+            logger.Info("Workspace: " + workspacePath);
 
             var ctx = new ProgramContext()
             {
                 SourceDirectory = sourceDir,
-                StagingDirectory = new DirectoryInfo(stagingDirectory),
-                DistributionDirectory = new DirectoryInfo(distDirectory),
-                IsPrime = isPrime
+                WorkspaceDirectory = new DirectoryInfo(workspacePath),
+                IsPrime = isPrime,
+                Logger = logger
             };
 
             Process.Go(ctx);
 
-            Console.WriteLine("");
+            logger.Info("");
+
+            if (Debugger.IsAttached)
+                Console.ReadLine();
         }
     }
 }

@@ -11,12 +11,15 @@ namespace Prime.ExtensionPackager
 
             if (pmi.Package == null)
             {
-                Console.WriteLine("No package found.");
+                ctx.Logger.Info("No package found.");
                 return;
             }
 
             var stageing = new PackageStaging(pmi.Package, ctx);
             stageing.Stage();
+
+            var bundler = new PackageBundler(pmi.Package, ctx);
+            bundler.Bundle();
         }
     }
 }

@@ -10,12 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Package\PackageBundler.cs" />
+    <Compile Remove="Package\PackageBundler2.cs" />
     <Compile Remove="Package\PackageFiller.cs" />
+    <Compile Remove="Package\PackageFiller2.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ManagedLzma" Version="0.2.0-alpha-7" />
+    <PackageReference Include="sharpcompress" Version="0.20.0" />
   </ItemGroup>
 
   <ItemGroup>

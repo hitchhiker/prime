@@ -1,118 +1,127 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SevenZip;
 using System.Linq;
-using SevenZip.Compression.LZMA;
+using SharpCompress.Archives.GZip;
+using SharpCompress.Common;
+using SharpCompress.Writers;
 
-namespace Prime.Radiant.Components
+namespace Prime.ExtensionPackager
 {
     public class PackageBundler
     {
-        private readonly PublishManager _publishManager;
-        public readonly string ProjectKey;
-        public readonly string ProjectPath;
-        private readonly PublishManagerContext _context;
-        public readonly ILogger L;
-        public readonly DirectoryInfo SourceDirectory;
-        public readonly IReadOnlyList<FileInfo> Files;
-        private readonly List<Package> _packed = new List<Package>();
+        public static readonly string ArchiveName = "arc.tar.bz";
 
-        public string Hash { get; set; }
+        private readonly Package _package;
+        public readonly ProgramContext Context;
+        private int _inc = 1;
 
-        public IReadOnlyList<Package> Packed => _packed;
-        
-        public PackageBundler(PublishManager publishManager, string projectKey, string projectPath)
+        public PackageBundler(Package package, ProgramContext context)
         {
-            SevenZipNativeLibrary.Install();
+            _package = package;
+            Context = context;
+        }
 
-            _publishManager = publishManager;
-            ProjectKey = projectKey;
-            ProjectPath = projectPath;
-            _context = publishManager.Context;
-            L = _context.L;
+        public void Bundle()
+        {
+            if (_package.StagedFiles?.Count != 0)
+                Process();
+            else
+                Context.Logger.Warn("No staged files to process.");
+        }
 
-            SetUpDirectories();
+        private void Process()
+        {
+            Filter(_package.StagedFiles);
+            var vpOffset = _package.StagedRoot.FullName.Length;
 
-            var dirPath = Path.Combine(_context.SourcePath, ProjectPath);
-            if (!Directory.Exists(dirPath))
-            {
-                L.Info("No project path for " + ProjectKey + " @ " + dirPath);
-                return;
-            }
+            var remaining = _package.StagedFiles.ToList();
 
-            SourceDirectory = new DirectoryInfo(dirPath);
-            Files = SourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+            var distDir = new DirectoryInfo(Path.Combine(Context.DistributionDirectory.FullName, _package.GetDirectory()) + Path.DirectorySeparatorChar);
+            if (distDir.Exists)
+                distDir.Delete(true);
+
+            distDir.Create();
+
+            //move any archives, avoiding re-compression, increase probability of existing hash hit, retain identical folder structure.
+
+            MoveOnly(distDir, vpOffset, remaining);
+
+            //organise files into groups to reduce probability of re-transmission of unchanged files (hash hit) in the future.
+
+            CompressToArchive(distDir, remaining.Where(x => x.Length > 1024 * 150), remaining, true);
+            CompressToArchive(distDir, remaining.Where(x => x.Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)), remaining);
+            CompressToArchive(distDir, remaining.Where(x => x.Name.StartsWith("System.", StringComparison.OrdinalIgnoreCase)), remaining);
+            CompressToArchive(distDir, remaining.Where(x => x.Length< 1024 * 30), remaining);
+            CompressToArchive(distDir, FilterMod3(remaining, 1), remaining);
+            CompressToArchive(distDir, FilterMod3(remaining, 2), remaining);
+            CompressToArchive(distDir, remaining, remaining);
+
+            var dMetaPath = Path.Combine(distDir.FullName, PackageMetaInspector.ExtFileName);
+            _package.StagedMeta.CopyTo(dMetaPath, true);
+
+            Context.Logger.Info("Compression complete.");
         }
 
         private void Filter(List<FileInfo> items)
         {
-            items.RemoveAll(x => !(x.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
-                                   x.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
-                                   x.Name.EndsWith(".config", StringComparison.OrdinalIgnoreCase)));
+            items.RemoveAll(x => x.Name.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase));
         }
 
-        public Package CreatePackage(string packageName, Func<IReadOnlyList<FileInfo>, List<FileInfo>> filter)
+        private void MoveOnly(DirectoryInfo distDir, int vpOffset, List<FileInfo> remaining)
         {
-            L.Info("Creating package: " + packageName);
+            var items = remaining.Where(x => string.Equals(x.Extension, ".zip", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".gz", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".rar", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".7z", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".lz", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".lzma", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".bz2", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".z", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".arj", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Extension, ".tar", StringComparison.OrdinalIgnoreCase)).ToList();
 
-            var cores = filter.Invoke(Files);
-            return PackGroup(packageName, cores);
+
+            foreach (var fi in items)
+            {
+                var vp = fi.FullName.Substring(vpOffset);
+
+                if (vp.StartsWith(Path.DirectorySeparatorChar))
+                    vp = vp.Substring(1);
+
+                var dst = new FileInfo(Path.Combine(distDir.FullName, vp));
+
+                if (!dst.Directory.Exists)
+                    dst.Directory.Create();
+
+                fi.CopyTo(dst.FullName, true);
+            }
+
+            Context.Logger.Info($"Moved {items.Count} existing archives(s).");
+
+            remaining.RemoveAll(items.Contains);
         }
 
-        private Package PackGroup(string packageName, List<FileInfo> paths)
+        private void CompressToArchive(DirectoryInfo distDir, IEnumerable<FileInfo> src, List<FileInfo> remaining, bool asSingle = false)
         {
-            Filter(paths);
+            var items = src.ToList();
 
-            if (paths.Count == 0)
-                return new Package();
+            if (items.Count == 0)
+                return;
 
-            L.Info("Packaging " + paths.Count + " objects");
-
-            var compressor = new SevenZip.Compression.LZMA.Encoder();
-            var arcname = "arc." + packageName + ".7z";
-            var path = Path.Combine(PublishProjectDirectory.FullName, "arc." + packageName + ".7z");
-
-            var old = PublishProjectDirectory.GetFiles("*").Where(x=>x.Name == arcname || x.Name.StartsWith(arcname));
-            old.ForEach(x => x.Delete());
-
-            var fi = new FileInfo(path);
-            if (fi.Exists)
-                fi.Delete();
-
-            L.Info($"Compressing LZMA2 ULTRA: {paths.Count} file(s), {paths.Sum(x=>x.Length)/1024}K ");
-
-            var tocompress = paths.Select(x => x.FullName).ToArray();
-
-            compressor.FastCompression = false;
-            compressor.CompressionMode = CompressionMode.Create;
-            compressor.CompressionLevel = CompressionLevel.Ultra;
-            compressor.CompressionMethod = CompressionMethod.Lzma2;
-            compressor.VolumeSize = 1024 * 1024 * 1;
-            compressor.CompressFiles(path, tocompress);
-
-            L.Info("Complete");
-
-            fi.Refresh();
-            var pack = new Package(packageName, paths, fi);
-            _packed.Add(pack);
-            return pack;
+            if (asSingle)
+                foreach (var i in items)
+                    Compression.CreateArchive(_package.StagedRoot, new List<FileInfo> {i}, Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
+            else
+                Compression.CreateArchive(_package.StagedRoot, items, Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
+            
+            Context.Logger.Info($"Compressed {items.Count} files(s).");
+            remaining.RemoveAll(items.Contains);
         }
 
-        public DirectoryInfo PublishProjectDirectory { get; private set; }
-
-        private void SetUpDirectories()
+        public IEnumerable<FileInfo> FilterMod3(IEnumerable<FileInfo> files, int position)
         {
-
-            var di = CommonFs.I.GetCreateUsrSubDirectory("publish");
-            if (!di.Exists)
-                di.Create();
-
-            PublishProjectDirectory = new DirectoryInfo(Path.Combine(di.FullName, ProjectKey));
-            if (PublishProjectDirectory.Exists)
-                PublishProjectDirectory.Delete(true);
-
-            PublishProjectDirectory.Create();
+            return files.Where(x => Math.Abs(x.Name.GetHashCode()) % 3 == position);
         }
     }
 }
