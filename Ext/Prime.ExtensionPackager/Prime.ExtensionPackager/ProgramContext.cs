@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Prime.Core;
 
 namespace Prime.ExtensionPackager
 {
@@ -11,5 +12,7 @@ namespace Prime.ExtensionPackager
         public DirectoryInfo DistributionDirectory { get; set; }
 
         public bool IsPrime { get; set; }
+
+        public ILogger Logger { get; set; }
     }
 }

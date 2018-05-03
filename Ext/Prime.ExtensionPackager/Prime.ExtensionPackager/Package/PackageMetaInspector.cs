@@ -32,23 +32,23 @@ namespace Prime.ExtensionPackager
             var extj = fis.FirstOrDefault(x => string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase));
 
             if (extj == null)
-                Console.WriteLine("Cannot find '" + ExtFileName +"' in " + dir.FullName);
+                Context.Logger.Info("Cannot find '" + ExtFileName +"' in " + dir.FullName);
             
             var exts = FindExtensionDll(dir, fis);
             if (exts.Count == 0)
             {
-                Console.WriteLine("Cannot find any extensions in " + dir.FullName);
+               Context.Logger.Info("Cannot find any extensions in " + dir.FullName);
                 return;
             }
 
             if (exts.Count > 1)
             {
-                Console.WriteLine("Found more than one extension in " + dir.FullName);
+               Context.Logger.Info("Found more than one extension in " + dir.FullName);
                 return;
             }
 
             Package = exts[0];
-            Package.AddRange(fis.Where(x => !string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase)));
+            Package.AddStagingRange(fis.Where(x => !string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase)));
         }
 
         private List<Package> FindExtensionDll(DirectoryInfo dir, List<FileInfo> files)
@@ -69,7 +69,7 @@ namespace Prime.ExtensionPackager
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message + ": " + fi.FullName);
+                   Context.Logger.Info(e.Message + ": " + fi.FullName);
                 }
             }
 
@@ -96,13 +96,13 @@ namespace Prime.ExtensionPackager
 
             if (types.Count == 0)
             {
-                //Console.WriteLine("Cannot find any type in " + file.FullName + " that implements " + extt);
+                //logger.Info("Cannot find any type in " + file.FullName + " that implements " + extt);
                 return null;
             }
 
             if (types.Count > 1)
             {
-                Console.WriteLine("Found multiple types in " + file.FullName + " implementing " + extt);
+               Context.Logger.Info("Found multiple types in " + file.FullName + " implementing " + extt);
                 return null;
             }
 
