@@ -15,8 +15,8 @@ namespace Prime.ExtensionPackager
                 return;
             }
 
-            var stageing = new PackageStaging(pmi.Package, ctx);
-            stageing.Stage();
+            var staging = new PackageStaging(pmi.Package, ctx);
+            staging.Stage();
 
             var bundler = new PackageBundler(pmi.Package, ctx);
             bundler.Bundle();
