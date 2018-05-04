@@ -8,7 +8,7 @@ namespace Prime.Finance.Services.Services.Coinfloor
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://github.com/coinfloor/API/blob/master/BIST.md
-    public class CoinfloorProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class CoinfloorProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string CoinfloorApiUrl = "https://webapi.coinfloor.co.uk:8090/bist/";
 
@@ -55,7 +55,11 @@ namespace Prime.Finance.Services.Services.Coinfloor
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalancesAsync("XBT/GBP").ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync("XBT/GBP").ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null;
         }

@@ -9,6 +9,6 @@ namespace Prime.Core
 
         Version Version { get; }
 
-        void Main(AppContext context);
+        Platform Platform { get; }
     }
 }

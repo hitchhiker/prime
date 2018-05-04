@@ -71,7 +71,7 @@ namespace Prime.Finance.Services.Services.Vaultoro
                 TradeOrderStatus =
                 {
                     Rate =  isBuy ? buyOrder.Gold_Price : sellOrder.Gold_Price,
-                    AmountRemaining = isBuy ? buyOrder.Gold_Amount : sellOrder.Gold_Amount
+                    AmountRemaining = isBuy ? buyOrder.BTC_Amount : sellOrder.BTC_Amount
                 }
             };
         }

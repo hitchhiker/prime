@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>DEBUG;;RELEASE;NETCOREAPP2_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Package\PackageBundler2.cs" />
+    <Compile Remove="Package\PackageFiller.cs" />
+    <Compile Remove="Package\PackageFiller2.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="sharpcompress" Version="0.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LiteDB">
+      <HintPath>..\..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Prime.Core">
+      <HintPath>..\..\..\Prime.Core\bin\Debug\netstandard2.0\Prime.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)\..\..\publish\packer&quot; /i /d /y" />
+  </Target>
+
+</Project>

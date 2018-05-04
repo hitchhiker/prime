@@ -32,4 +32,8 @@
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExtensionMethods\" />
+  </ItemGroup>
+
 </Project>

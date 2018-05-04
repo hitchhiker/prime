@@ -10,9 +10,14 @@ namespace Prime.Core
 {
     public class ConsoleLogger : CommonLoggerBase
     {
+        public bool IncludePreamble { get; set; } = true;
+
         public override void Log(LoggingLevel level, string message)
         {
-            Console.WriteLine(DateTime.UtcNow.ToLocalTime() + " " + level + " " + message);
+            if (IncludePreamble)
+                Console.WriteLine(DateTime.UtcNow.ToLocalTime() + " " + level + " " + message);
+            else
+                Console.WriteLine(message);
         }
     }
 }
