@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExtensionMethods\**" />
     <Compile Remove="System\Design\**" />
+    <EmbeddedResource Remove="ExtensionMethods\**" />
     <EmbeddedResource Remove="System\Design\**" />
+    <None Remove="ExtensionMethods\**" />
     <None Remove="System\Design\**" />
   </ItemGroup>
 
@@ -30,10 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ExtensionMethods\" />
   </ItemGroup>
 
 </Project>
