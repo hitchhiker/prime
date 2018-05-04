@@ -36,7 +36,50 @@ var PrimeTcpClient = /** @class */ (function () {
             _this.tcpClient.write(JSON.stringify({
                 "Type": "PrivateProvidersListMessage"
             }));
-            console.log(context);
+            _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
+            return null;
+        });
+        IpcManager_1.IpcManager.i().getProviderDetailsMessage.handle(function (context) {
+            console.log("Querying provider details...");
+            _this.tcpClient.write(JSON.stringify({
+                "Type": "ProviderDetailsMessage",
+                "Id": context.data
+            }));
+            _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
+            return null;
+        });
+        IpcManager_1.IpcManager.i().saveProviderKeysMessage.handle(function (context) {
+            console.log("Saving provider keys...");
+            var data = context.data;
+            _this.tcpClient.write(JSON.stringify({
+                "Type": "ProviderKeysMessage",
+                "Id": data.id,
+                "Key": data.keys.Key,
+                "Secret": data.keys.Secret,
+                "Extra": data.keys.Extra
+            }));
+            _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
+            return null;
+        });
+        IpcManager_1.IpcManager.i().deleteProviderKeysMessage.handle(function (context) {
+            console.log("Deleting provider keys...");
+            _this.tcpClient.write(JSON.stringify({
+                "Type": "DeleteProviderKeysMessage",
+                "Id": context.data,
+            }));
+            _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
+            return null;
+        });
+        IpcManager_1.IpcManager.i().testPrivateApiMessage.handle(function (context) {
+            console.log("Testing private API...");
+            var data = context.data;
+            _this.tcpClient.write(JSON.stringify({
+                "Type": "TestPrivateApiMessage",
+                "Id": data.id,
+                "Key": data.keys.Key,
+                "Secret": data.keys.Secret,
+                "Extra": data.keys.Extra
+            }));
             _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
             return null;
         });

@@ -14,9 +14,9 @@ var Main = /** @class */ (function () {
     Main.onReady = function () {
         Main.mainWindow = new Main.BrowserWindow({
             width: 800,
-            height: 600,
-            minHeight: 620,
-            minWidth: 600
+            height: 610,
+            minHeight: 650,
+            minWidth: 700
         });
         Main.mainWindow.loadURL('file://' + __dirname + '/index.html');
         Main.mainWindow.on('closed', Main.onClose);

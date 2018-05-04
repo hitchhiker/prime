@@ -13,6 +13,7 @@ var IpcMessageBase = /** @class */ (function () {
     }
     IpcMessageBase.prototype.call = function (dataString, callback) {
         electron_1.ipcRenderer.send(this.requestChannel, dataString);
+        electron_1.ipcRenderer.removeListener(this.responseChannel, callback);
         electron_1.ipcRenderer.on(this.responseChannel, callback);
     };
     IpcMessageBase.prototype.callBackLast = function (data) {

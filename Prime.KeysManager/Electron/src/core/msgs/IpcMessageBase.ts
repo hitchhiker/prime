@@ -7,6 +7,8 @@ export abstract class IpcMessageBase implements IIpcMessage {
     private requestChannel: string = null;
     private responseChannel: string = null;
 
+    privat 
+
     private lastSender : WebContents = null;
 
     public constructor() {
@@ -19,6 +21,7 @@ export abstract class IpcMessageBase implements IIpcMessage {
 
     call(dataString: any, callback: (event: any, data: any) => void) {
         ipcRenderer.send(this.requestChannel, dataString);
+        ipcRenderer.removeListener(this.responseChannel, callback);
         ipcRenderer.on(this.responseChannel, callback);
     }
 
