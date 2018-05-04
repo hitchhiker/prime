@@ -1,44 +1,34 @@
 import { Logger } from "../utils/Logger";
-import { TcpClient } from "../transport/TcpClient";
 import Main from "../../Main";
 import { ipcMain as IpcMain, WebContents } from "electron";
 import { IpcManager } from "./IpcManager";
+import { PrimeTcpClient } from "./PrimeTcpClient";
+import { IIpcHandlerContext } from "./models/IIpcHandlerContext";
 
 export class KeysManager {
     private dataHandlerChannel: string;
-    private tcpClient: TcpClient;
+    private primeTcpClient: PrimeTcpClient;
+
+    constructor() {
+        this.primeTcpClient = new PrimeTcpClient();
+    }
 
     run() {
-        this.startClient();
+        this.primeTcpClient.connect();
+        this.primeTcpClient.registerIpc();
         this.registerIpc();
     }
 
-    private startClient() {
-        Logger.log("Starting TCP client...");
-
-        this.tcpClient = new TcpClient();
-
-        this.tcpClient.onClientConnected = () => { 
-            Logger.log("Connected to Prime API server.");
-        };
-        this.tcpClient.onDataReceived = (data: any) => {
-            Main.mainWindow.webContents.send(this.dataHandlerChannel, data);
-            Logger.log("Client received data. Sending to '" + this.dataHandlerChannel + "' channel...");
-        };
-        this.tcpClient.onConnectionClosed = () => {
-            Logger.log("Connection closed.");
-        };
-
-        this.tcpClient.connect(19991, '127.0.0.1');
-    }
-
     private registerIpc() {
+        // IpcManager.i().getPrivateProvidersListMessage.handle((context: IIpcHandlerContext) => {
+        //     Logger.log("Querying providers list...");
 
-        IpcManager.i().helloMessage.handle((sender: WebContents, data) => {
-            console.log(data);
+        //     this.tcpClient.write(JSON.stringify({
+        //         "Type": "PrivateProvidersListMessage"
+        //     }));
 
-            return JSON.stringify({main:'Me'});
-        });
+        //     return "";
+        // });
 
         // IpcMain.on('hello-main', (e, data) => {
         //     let sender: WebContents = e.sender;

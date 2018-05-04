@@ -1,6 +1,6 @@
 import { ipcMain, ipcRenderer, WebContents } from "electron";
-import { IIpcMessage } from "./msgs/IIpsMessage";
-import { HelloMessage } from "./msgs/HelloMessage";
+import { IIpcMessage } from "./msgs/IIpcMessage";
+import { HelloMessage, GetPrivateProvidersListMessage, GetProviderDetailsMessage, SaveProviderKeysMessage, DeleteProviderKeysMessage, TestPrivateApiMessage } from "./msgs/Messages";
 
 export class IpcManager {
     private static ipcManager: IpcManager = null;
@@ -16,5 +16,9 @@ export class IpcManager {
     }
 
     helloMessage: IIpcMessage = new HelloMessage();
+    getPrivateProvidersListMessage: IIpcMessage = new GetPrivateProvidersListMessage();
+    getProviderDetailsMessage: IIpcMessage = new GetProviderDetailsMessage();
+    saveProviderKeysMessage: IIpcMessage = new SaveProviderKeysMessage();
+    deleteProviderKeysMessage: IIpcMessage = new DeleteProviderKeysMessage();
+    testPrivateApiMessage: IIpcMessage = new TestPrivateApiMessage;
 }
-

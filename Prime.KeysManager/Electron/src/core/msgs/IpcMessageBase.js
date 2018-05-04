@@ -6,6 +6,7 @@ var IpcMessageBase = /** @class */ (function () {
     function IpcMessageBase() {
         this.requestChannel = null;
         this.responseChannel = null;
+        this.lastSender = null;
         var channelBase = this.channelBaseId();
         this.requestChannel = channelBase + "-req";
         this.responseChannel = channelBase + "-resp";
@@ -14,11 +15,22 @@ var IpcMessageBase = /** @class */ (function () {
         electron_1.ipcRenderer.send(this.requestChannel, dataString);
         electron_1.ipcRenderer.on(this.responseChannel, callback);
     };
+    IpcMessageBase.prototype.callBackLast = function (data) {
+        this.lastSender.send(this.responseChannel, data);
+    };
     IpcMessageBase.prototype.handle = function (callback) {
         var _this = this;
         electron_1.ipcMain.on(this.requestChannel, function (event, data) {
             var sender = event.sender;
-            var responseData = callback(sender, data);
+            _this.lastSender = sender;
+            var innerContext = {
+                sender: sender,
+                data: data,
+                requestChannel: _this.requestChannel,
+                responseChannel: _this.responseChannel,
+                ipcMessageCaller: _this
+            };
+            var responseData = callback(innerContext);
             // Sends data back only if not NULL returned.
             if (responseData !== null)
                 sender.send(_this.responseChannel, responseData);

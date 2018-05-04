@@ -1,39 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Logger_1 = require("../utils/Logger");
-var TcpClient_1 = require("../transport/TcpClient");
-var Main_1 = require("../../Main");
 var electron_1 = require("electron");
-var IpcManager_1 = require("./IpcManager");
+var PrimeTcpClient_1 = require("./PrimeTcpClient");
 var KeysManager = /** @class */ (function () {
     function KeysManager() {
+        this.primeTcpClient = new PrimeTcpClient_1.PrimeTcpClient();
     }
     KeysManager.prototype.run = function () {
-        this.startClient();
+        this.primeTcpClient.connect();
+        this.primeTcpClient.registerIpc();
         this.registerIpc();
     };
-    KeysManager.prototype.startClient = function () {
-        var _this = this;
-        Logger_1.Logger.log("Starting TCP client...");
-        this.tcpClient = new TcpClient_1.TcpClient();
-        this.tcpClient.onClientConnected = function () {
-            Logger_1.Logger.log("Connected to Prime API server.");
-        };
-        this.tcpClient.onDataReceived = function (data) {
-            Main_1.default.mainWindow.webContents.send(_this.dataHandlerChannel, data);
-            Logger_1.Logger.log("Client received data. Sending to '" + _this.dataHandlerChannel + "' channel...");
-        };
-        this.tcpClient.onConnectionClosed = function () {
-            Logger_1.Logger.log("Connection closed.");
-        };
-        this.tcpClient.connect(19991, '127.0.0.1');
-    };
     KeysManager.prototype.registerIpc = function () {
+        // IpcManager.i().getPrivateProvidersListMessage.handle((context: IIpcHandlerContext) => {
+        //     Logger.log("Querying providers list...");
         var _this = this;
-        IpcManager_1.IpcManager.i().helloMessage.handle(function (sender, data) {
-            console.log(data);
-            return JSON.stringify({ main: 'Me' });
-        });
+        //     this.tcpClient.write(JSON.stringify({
+        //         "Type": "PrivateProvidersListMessage"
+        //     }));
+        //     return "";
+        // });
         // IpcMain.on('hello-main', (e, data) => {
         //     let sender: WebContents = e.sender;
         //     console.log(data);
