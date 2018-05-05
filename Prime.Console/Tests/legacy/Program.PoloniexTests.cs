@@ -17,7 +17,7 @@ namespace Prime.TestConsole
             public void GetBalances()
             {
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
-                var privateProvider = new NetworkProviderPrivateContext(UserContext.Current);
+                var privateProvider = new NetworkProviderPrivateContext(UserContext.Testing);
 
                 try
                 {
@@ -38,7 +38,7 @@ namespace Prime.TestConsole
             public void ApiTest()
             {
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
-                var apiTestCtx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
+                var apiTestCtx = new ApiPrivateTestContext(UserContext.Testing.GetApiKey(provider));
 
                 try
                 {
@@ -78,8 +78,8 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<PoloniexProvider>().FirstProvider();
 
-                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
-                var ctxAll = new WalletAddressContext(UserContext.Current);
+                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Testing);
+                var ctxAll = new WalletAddressContext(UserContext.Testing);
 
                 try
                 {

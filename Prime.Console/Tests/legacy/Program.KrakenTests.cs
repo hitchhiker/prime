@@ -18,7 +18,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
+                var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Testing);
 
                 try
                 {
@@ -58,7 +58,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+                var ctx = new NetworkProviderPrivateContext(UserContext.Testing);
 
                 try
                 {
@@ -76,7 +76,7 @@ namespace Prime.TestConsole
             public void GetAssetPairs()
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
-                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+                var ctx = new NetworkProviderPrivateContext(UserContext.Testing);
 
                 var pairs = AsyncContext.Run(() => provider.GetAssetPairsAsync(ctx));
 
@@ -97,7 +97,7 @@ namespace Prime.TestConsole
             public void GetBalances()
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
-                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+                var ctx = new NetworkProviderPrivateContext(UserContext.Testing);
 
                 try
                 {
@@ -149,7 +149,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
+                var ctx = new ApiPrivateTestContext(UserContext.Testing.GetApiKey(provider));
 
                 try
                 {
@@ -169,7 +169,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<KrakenProvider>().FirstProvider();
 
-                var ctx = new WalletAddressContext(UserContext.Current);
+                var ctx = new WalletAddressContext(UserContext.Testing);
 
                 try
                 {

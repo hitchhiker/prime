@@ -59,7 +59,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetAddressesForAsset()
         {
-            var context = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Current);
+            var context = new WalletAddressAssetContext("BTC".ToAssetRaw(), UserContext.Testing);
             base.PretestGetAddressesForAsset(context);
         }
 

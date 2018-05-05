@@ -80,14 +80,14 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetAddresses()
         {
-            var context = new WalletAddressContext(UserContext.Current);
+            var context = new WalletAddressContext(UserContext.Testing);
             PretestGetAddresses(context);
         }
 
         [Fact]
         public override void TestGetAddressesForAsset()
         {
-            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Current);
+            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Testing);
 
             base.PretestGetAddressesForAsset(context);
         }
@@ -124,7 +124,7 @@ namespace Prime.Tests.Providers
         public async void TestCancelOrder()
         {
             var provider = Provider as PoloniexProvider;
-            var r = await provider.CancelOrderAsync(new RemoteIdContext(UserContext.Current, "168325960666"));
+            var r = await provider.CancelOrderAsync(new RemoteIdContext(UserContext.Testing, "168325960666"));
 
             Assert.True(r.Success);
         }

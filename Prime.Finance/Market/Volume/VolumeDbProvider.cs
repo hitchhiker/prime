@@ -31,7 +31,7 @@ namespace Prime.Finance.Market
 
         public VolumeDbProvider(ObjectId dataId) : this()
         {
-            Data = PublicFast.GetCreate(dataId, () => new VolumeData());
+            //Data = PublicFast.GetCreate(dataId, () => new VolumeData());
             CanSave = true;
         }
 
@@ -119,7 +119,7 @@ namespace Prime.Finance.Market
 
         public static void Clear(ObjectId id)
         {
-            PublicFast.Delete<VolumeData>(id);
+            //PublicFast.Delete<VolumeData>(id);
         }
     }
 }

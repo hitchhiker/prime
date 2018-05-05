@@ -178,7 +178,7 @@ namespace Prime.Tests.Providers
 
         private void ApiPrivateTest(INetworkProviderPrivate provider)
         {
-            var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
+            var ctx = new ApiPrivateTestContext(UserContext.Testing.GetApiKey(provider));
 
             var r = AsyncContext.Run(() => provider.TestPrivateApiAsync(ctx));
             Assert.True(r);
@@ -352,7 +352,7 @@ namespace Prime.Tests.Providers
 
         private void PlaceWithdrawalTest(IWithdrawalPlacementProvider provider, WalletAddress address, Money amount, string description = null, Money? customFee = null, string authToken = null)
         {
-            var context = new WithdrawalPlacementContext(address, amount, UserContext.Current)
+            var context = new WithdrawalPlacementContext(address, amount, UserContext.Testing)
             {
                 Description = description,
                 CustomFee = customFee,

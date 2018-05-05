@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Finance", "Finance", "{F0CE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Console", "Prime.Console\Prime.Console.csproj", "{61534319-C259-43A8-8026-50B2298966CE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform", "Platform", "{F9F7DD6A-4A08-4569-8CBD-1028BA95A228}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All_Debug|Any CPU = All_Debug|Any CPU

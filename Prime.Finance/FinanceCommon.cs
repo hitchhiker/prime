@@ -11,7 +11,7 @@ namespace Prime.Finance
     {
         private FinanceCommon()
         {
-            Aggregator = Core.Prime.I.StartupMessengers.OfType<Messenger>().FirstOrDefault()?.Aggregator;
+            //Aggregator = Core.Prime.I.StartupMessengers.OfType<Messenger>().FirstOrDefault()?.Aggregator;
         }
 
         public static FinanceCommon I => Lazy.Value;

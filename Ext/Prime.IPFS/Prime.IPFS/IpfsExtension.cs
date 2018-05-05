@@ -12,11 +12,13 @@ namespace Prime.IPFS
 
         public ObjectId Id => _id;
 
+        public IpfsMessenger Messenger;
+
         public void Main(Core.AppContext context)
         {
             var ctx = new IpfsInstanceContext(null, null);
             var ipfs = new IpfsInstance(ctx);
-            var messenger = new IpfsMessenger(context, ipfs);
+            Messenger = new IpfsMessenger(context, ipfs);
         }
 
         public string Title => "Ipfs";

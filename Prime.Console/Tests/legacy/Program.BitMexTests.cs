@@ -19,7 +19,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var ctx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
+                var ctx = new ApiPrivateTestContext(UserContext.Testing.GetApiKey(provider));
   
                 try
                 {
@@ -37,7 +37,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
 
-                var c = new PortfolioProviderContext(UserContext.Current, provider, UserContext.Current.Finance().QuoteAsset, 0);
+                var c = new PortfolioProviderContext(UserContext.Testing, provider, UserContext.Testing.Finance().QuoteAsset, 0);
                 var scanner = new PortfolioProvider(c);
                 try
                 {
@@ -57,7 +57,7 @@ namespace Prime.TestConsole
 
                 var asset = "BTC".ToAsset(provider);
 
-                var ctx = new WalletAddressAssetContext(asset, UserContext.Current);
+                var ctx = new WalletAddressAssetContext(asset, UserContext.Testing);
 
                 try
                 {
@@ -144,7 +144,7 @@ namespace Prime.TestConsole
             public void GetBalances()
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
-                var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+                var ctx = new NetworkProviderPrivateContext(UserContext.Testing);
 
                 try
                 {
@@ -166,7 +166,7 @@ namespace Prime.TestConsole
             {
                 var provider = Networks.I.Providers.OfType<BitMexProvider>().FirstProvider();
                 
-                var ctx = new WalletAddressContext(UserContext.Current);
+                var ctx = new WalletAddressContext(UserContext.Testing);
 
                 try
                 {

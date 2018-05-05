@@ -79,14 +79,14 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetAddresses()
         {
-            var context = new WalletAddressContext(UserContext.Current);
+            var context = new WalletAddressContext(UserContext.Testing);
             base.PretestGetAddresses(context);
         }
 
         [Fact]
         public override void TestGetAddressesForAsset()
         {
-            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Current);
+            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Testing);
 
             base.PretestGetAddressesForAsset(context);
         }
@@ -94,7 +94,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetWithdrawalHistory()
         {
-            var context = new WithdrawalHistoryContext(UserContext.Current)
+            var context = new WithdrawalHistoryContext(UserContext.Testing)
             {
                 Asset = Asset.Btc
             };
@@ -124,7 +124,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestConfirmWithdrawal()
         {
-            var context = new WithdrawalConfirmationContext(UserContext.Current)
+            var context = new WithdrawalConfirmationContext(UserContext.Testing)
             {
                 WithdrawalRemoteId = "41022240-e2bd-80d4-3e23-ad4c872bd43a"
             };

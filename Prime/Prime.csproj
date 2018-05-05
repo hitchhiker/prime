@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="System\Design\**" />
-    <EmbeddedResource Remove="System\Design\**" />
-    <None Remove="System\Design\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
   </ItemGroup>
 
@@ -20,6 +14,8 @@
     <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="NodaTime" Version="2.2.5" />
+    <PackageReference Include="System.Composition" Version="1.1.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ExtensionMethods\" />
   </ItemGroup>
 
 </Project>

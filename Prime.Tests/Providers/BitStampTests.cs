@@ -46,7 +46,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetAddresses()
         {
-            var context = new WalletAddressContext(UserContext.Current);
+            var context = new WalletAddressContext(UserContext.Testing);
 
             base.PretestGetAddresses(context);
         }
@@ -54,7 +54,7 @@ namespace Prime.Tests.Providers
         [Fact]
         public override void TestGetAddressesForAsset()
         {
-            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Current);
+            var context = new WalletAddressAssetContext(Asset.Btc, UserContext.Testing);
 
             base.PretestGetAddressesForAsset(context);
         }

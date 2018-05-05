@@ -45,7 +45,7 @@ namespace Prime.KeysManager.Core
 
             if (networkProvider != null)
             {
-                var apiKey = UserContext.Current.GetApiKey(networkProvider);
+                var apiKey = UserContext.Testing.GetApiKey(networkProvider);
 
                 result = new NetworkDetailsModel() { Name = networkProvider.Network.Name, Id = objectId};
 
@@ -68,7 +68,7 @@ namespace Prime.KeysManager.Core
             if (networkProvider == null)
                 throw new NullReferenceException("Network provider not found.");
 
-            var keys = UserContext.Current.ApiKeys;
+            var keys = UserContext.Testing.ApiKeys;
 
             keys.RemoveNetwork(networkId.ToObjectId());
 
@@ -83,7 +83,7 @@ namespace Prime.KeysManager.Core
 
         public void DeleteKeys(string networkId)
         {
-            var keys = UserContext.Current.ApiKeys;
+            var keys = UserContext.Testing.ApiKeys;
             keys.RemoveNetwork(networkId.ToObjectId());
             keys.Save();
         }
@@ -100,7 +100,7 @@ namespace Prime.KeysManager.Core
 
         public IEnumerable<NetworkModel> GetPrivateNetworks(bool direct = true)
         {
-            var userContext = UserContext.Current;
+            var userContext = UserContext.Testing;
             return Networks.I.Providers.AsEnumerable().FilterType<INetworkProvider, INetworkProviderPrivate>()
                 .Where(x => x.IsDirect == direct).Select(x =>
                     new NetworkModel()

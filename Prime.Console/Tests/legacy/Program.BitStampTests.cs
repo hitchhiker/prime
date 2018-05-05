@@ -35,7 +35,7 @@ namespace Prime.TestConsole
 		    {
 		        var provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
 
-		        var privateContext = new NetworkProviderPrivateContext(UserContext.Current);
+		        var privateContext = new NetworkProviderPrivateContext(UserContext.Testing);
 
                 try
                 {
@@ -78,8 +78,8 @@ namespace Prime.TestConsole
 		    {
 		        var provider = Networks.I.Providers.OfType<BitStampProvider>().FirstProvider();
 
-		        var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
-		        var ctxAll = new WalletAddressContext(UserContext.Current);
+		        var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Testing);
+		        var ctxAll = new WalletAddressContext(UserContext.Testing);
 
                 try
 		        {

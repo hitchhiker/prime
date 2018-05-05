@@ -18,7 +18,7 @@ namespace Prime.ConsoleApp.Tests.Alyasko
             foreach (var provider in providers)
             {
                 System.Console.WriteLine($"{provider.Network.Name}");
-                var providerKey = UserContext.Current.GetApiKey(provider);
+                var providerKey = UserContext.Testing.GetApiKey(provider);
                 if(providerKey != null)
                     System.Console.WriteLine($"Key: {providerKey.Key}");
 
@@ -43,7 +43,7 @@ namespace Prime.ConsoleApp.Tests.Alyasko
                 var secret = System.Console.ReadLine();
 
                 var apiKey = new ApiKey(exchange.Network, "Default", key, secret);
-                var keys = UserContext.Current.ApiKeys;
+                var keys = UserContext.Testing.ApiKeys;
                 keys.RemoveNetwork(exchange.Network.Id);
 
                 keys.Add(apiKey);

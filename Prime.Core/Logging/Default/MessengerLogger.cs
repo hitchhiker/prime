@@ -12,11 +12,18 @@ namespace Prime.Core
     {
         public readonly string Key;
         public readonly Action<string> StatusConsumer;
-        public readonly IMessenger Messenger = DefaultMessenger.I.Default;
+        public readonly IMessenger Messenger;
+
+        public MessengerLogger(IMessenger messenger, string key = null)
+        {
+            Messenger = messenger;
+            Key = key;
+        }
 
         public MessengerLogger(string key = null)
         {
             Key = key;
+            Messenger = DefaultMessenger.I.Default;
         }
 
         public MessengerLogger(Action<string> statusConsumer, string key = null) : this(key)

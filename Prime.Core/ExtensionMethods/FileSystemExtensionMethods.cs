@@ -15,7 +15,7 @@ namespace Prime.Core
 
         public static DirectoryInfo EnsureTempSubDirectory(this DirectoryInfo dir)
         {
-            return dir.EnsureSubDirectory(Strings.RandomFastString(10));
+            return dir.EnsureSubDirectory(RandomText.RandomFastString(10));
         }
     }
 }

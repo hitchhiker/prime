@@ -89,7 +89,7 @@ namespace Prime.Tests.Providers
 
         private void GetTradeOrderStatusTest(IOrderLimitProvider provider, string remoteOrderId, AssetPair market = null)
         {
-            var context = new RemoteMarketIdContext(UserContext.Current, remoteOrderId, market);
+            var context = new RemoteMarketIdContext(UserContext.Testing, remoteOrderId, market);
             
             var r = AsyncContext.Run(() => provider.GetOrderStatusAsync(context)).TradeOrderStatus;
 
@@ -100,7 +100,7 @@ namespace Prime.Tests.Providers
 
         private void GetOpenOrdersTest(IOrderLimitProvider provider, AssetPair market = null)
         {
-            var context = new OpenOrdersContext(UserContext.Current)
+            var context = new OpenOrdersContext(UserContext.Testing)
             {
                 Market = market
             };
@@ -117,7 +117,7 @@ namespace Prime.Tests.Providers
 
         private void GetOrdersHistoryTest(IOrderLimitProvider provider, AssetPair market = null)
         {
-            var context = new TradeOrdersContext(UserContext.Current)
+            var context = new TradeOrdersContext(UserContext.Testing)
             {
                 Market = market
             };
@@ -134,7 +134,7 @@ namespace Prime.Tests.Providers
 
         private void PlaceOrderLimitTest(IOrderLimitProvider provider, AssetPair market, bool isBuy, Money quantity, Money rate)
         {
-            var context = new PlaceOrderLimitContext(UserContext.Current, market, isBuy, quantity, rate);
+            var context = new PlaceOrderLimitContext(UserContext.Testing, market, isBuy, quantity, rate);
 
             var r = AsyncContext.Run(() => provider.PlaceOrderLimitAsync(context));
 
@@ -144,7 +144,7 @@ namespace Prime.Tests.Providers
 
         private void GetMarketFromOrderTest(IOrderLimitProvider provider, string remoteOrderId)
         {
-            var context = new RemoteIdContext(UserContext.Current, remoteOrderId);
+            var context = new RemoteIdContext(UserContext.Testing, remoteOrderId);
 
             var r = AsyncContext.Run(() => provider.GetMarketFromOrderAsync(context));
 
@@ -156,7 +156,7 @@ namespace Prime.Tests.Providers
 
         private void GetBalancesTest(IBalanceProvider provider)
         {
-            var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+            var ctx = new NetworkProviderPrivateContext(UserContext.Testing);
 
             var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
 

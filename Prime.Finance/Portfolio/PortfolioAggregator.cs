@@ -257,7 +257,7 @@ namespace Prime.Finance.Wallet
         {
             lock (_lock)
             {
-                var qa = UserContext.Current.Finance().QuoteAsset;
+                var qa = UserContext.Testing.Finance().QuoteAsset;
                 var ti = _items.Where(x => Equals(x.Total.Asset, m.Pair.Asset1) && Equals(qa, m.Pair.Asset2));
 
                 if (DoConversion(ti, m, qa))

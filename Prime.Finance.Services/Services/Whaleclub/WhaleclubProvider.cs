@@ -38,7 +38,7 @@ namespace Prime.Finance.Services.Services.Whaleclub
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
-            var privateCtx = new NetworkProviderPrivateContext(UserContext.Current);
+            var privateCtx = new NetworkProviderPrivateContext(UserContext.Testing);
             var pairs = await GetAssetPairsAsync(privateCtx).ConfigureAwait(false);
 
             return pairs?.Count > 0;
@@ -51,7 +51,7 @@ namespace Prime.Finance.Services.Services.Whaleclub
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
-            var ctxPrivate = new NetworkProviderPrivateContext(UserContext.Current);
+            var ctxPrivate = new NetworkProviderPrivateContext(UserContext.Testing);
 
             var api = ApiProvider.GetApi(ctxPrivate);
             var r = await api.GetMarkets().ConfigureAwait(false);
@@ -86,7 +86,7 @@ namespace Prime.Finance.Services.Services.Whaleclub
 
         private async Task<MarketPrices> GetPricesAsync(PublicPricesContext context)
         {
-            var privateCtx = new NetworkProviderPrivateContext(UserContext.Current);
+            var privateCtx = new NetworkProviderPrivateContext(UserContext.Testing);
             var api = ApiProvider.GetApi(privateCtx);
 
             var pairsCsv = string.Join(",", context.Pairs.Select(x => x.ToTicker(this)));
@@ -114,7 +114,7 @@ namespace Prime.Finance.Services.Services.Whaleclub
 
         private async Task<MarketPrices> GetPriceAsync(PublicPricesContext context)
         {
-            var privateCtx = new NetworkProviderPrivateContext(UserContext.Current);
+            var privateCtx = new NetworkProviderPrivateContext(UserContext.Testing);
 
             var api = ApiProvider.GetApi(privateCtx);
             var code = context.Pair.ToTicker(this);

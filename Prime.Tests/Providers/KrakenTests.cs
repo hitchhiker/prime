@@ -58,7 +58,7 @@ namespace Prime.Tests.Providers
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
 
-            var context = new WalletAddressContext(UserContext.Current);
+            var context = new WalletAddressContext(UserContext.Testing);
             base.PretestGetAddresses(context);
         }
 
@@ -66,7 +66,7 @@ namespace Prime.Tests.Providers
         public override void TestGetAddressesForAsset()
         {
             // BUG: EFunding:Too many addresses. Should investigate that.
-            var context = new WalletAddressAssetContext("MLN".ToAssetRaw(), UserContext.Current);
+            var context = new WalletAddressAssetContext("MLN".ToAssetRaw(), UserContext.Testing);
             base.PretestGetAddressesForAsset(context);
         }
 

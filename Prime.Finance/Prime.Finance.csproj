@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Asset\Command\AssetGoCommand.cs" />
     <Compile Remove="Exchange\ExchangeCommand.cs" />
   </ItemGroup>
 
@@ -25,6 +26,10 @@
     <Reference Include="LiteDB">
       <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Asset\Command\" />
   </ItemGroup>
 
 </Project>

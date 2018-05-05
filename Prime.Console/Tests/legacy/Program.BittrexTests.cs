@@ -17,7 +17,7 @@ namespace Prime.TestConsole
 			public void ApiTest()
 			{
 				var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
-				var apiTestCtx = new ApiPrivateTestContext(UserContext.Current.GetApiKey(provider));
+				var apiTestCtx = new ApiPrivateTestContext(UserContext.Testing.GetApiKey(provider));
 
 				var ok = AsyncContext.Run(() => provider.TestPrivateApiAsync(apiTestCtx));
 
@@ -38,8 +38,8 @@ namespace Prime.TestConsole
 			{
 				var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
 
-				var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Current);
-				var ctxAll = new WalletAddressContext(UserContext.Current);
+				var ctx = new WalletAddressAssetContext("BTC".ToAsset(provider), UserContext.Testing);
+				var ctxAll = new WalletAddressContext(UserContext.Testing);
 
 				var addresses = AsyncContext.Run(() => provider.GetAddressesForAssetAsync(ctx));
 				var addressesAll = AsyncContext.Run(() => provider.GetAddressesAsync(ctxAll));
@@ -89,7 +89,7 @@ namespace Prime.TestConsole
 			public void GetBalances()
 			{
 				var provider = Networks.I.Providers.OfType<BittrexProvider>().FirstProvider();
-				var ctx = new NetworkProviderPrivateContext(UserContext.Current);
+				var ctx = new NetworkProviderPrivateContext(UserContext.Testing);
 
 				var balances = AsyncContext.Run(() => provider.GetBalancesAsync(ctx));
 
