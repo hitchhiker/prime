@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Prime.Core;
 using Prime.KeysManager.Core;
 using Prime.KeysManager.Core.Models;
 using Prime.KeysManager.Messages;
@@ -10,18 +11,27 @@ using Prime.KeysManager.Utils;
 
 namespace Prime.KeysManager
 {
-    public class KeysManagerApp
+    public class KeysManager
     {
         private readonly ITcpServer _tcpServer;
         private readonly IPrimeService _primeService;
 
         public short PortNumber { get; set; } = 19991;
         public IPAddress IpAddress { get; set; } = IPAddress.Any;
+
+        public ILogger Logger { get; set; }
         
-        public KeysManagerApp(ITcpServer tcpServer, IPrimeService primeService)
+        public KeysManager(ITcpServer tcpServer, IPrimeService primeService, ILogger logger)
         {
             _tcpServer = tcpServer;
             _primeService = primeService;
+
+            Logger = logger;
+        }
+
+        private void Log(string text)
+        {
+            Logger.Log($"({typeof(KeysManager).Name}) : {text}");
         }
         
         public void Run()
@@ -46,7 +56,7 @@ namespace Prime.KeysManager
 
         private void FakeClientGuidHandler(GenerateGuidMessage fakeClientGuidMessage, TcpClient sender)
         {
-            Console.WriteLine("Generating client GUID...");
+            Log("Generating client GUID...");
 
             var guid = Guid.NewGuid();
             _tcpServer.Send(sender, guid);
@@ -54,7 +64,7 @@ namespace Prime.KeysManager
 
         private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage, TcpClient sender)
         {
-            Console.WriteLine("App: Testing private API...");
+            Log("Testing private API...");
             var success = true;
 
             try
@@ -64,7 +74,7 @@ namespace Prime.KeysManager
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"App: Error while testing private API: {e.Message}");
+                Log($"Error while testing private API: {e.Message}");
             }
 
             _tcpServer.Send(sender, new OperationResultModel() { Success = success });
@@ -72,7 +82,7 @@ namespace Prime.KeysManager
 
         private void DeleteProviderKeysHandler(DeleteProviderKeysMessage deleteProviderKeysMessage, TcpClient sender)
         {
-            Console.WriteLine("App: Deleting keys...");
+            Log("Deleting keys...");
             var success = true;
 
             try
@@ -82,7 +92,7 @@ namespace Prime.KeysManager
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"App: Error while deleting keys: {e.Message}");
+                Log($"Error while deleting keys: {e.Message}");
             }
 
             _tcpServer.Send(sender, new OperationResultModel() { Success = success });
@@ -90,7 +100,7 @@ namespace Prime.KeysManager
 
         private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage, TcpClient sender)
         {
-            Console.WriteLine("App: Saving keys...");
+            Log("Saving keys...");
             var success = true;
             
             try
@@ -100,7 +110,7 @@ namespace Prime.KeysManager
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"App: Error while saving keys: {e.Message}");
+                Log($"Error while saving keys: {e.Message}");
             }
             
             _tcpServer.Send(sender, new OperationResultModel() { Success = success});
@@ -108,7 +118,7 @@ namespace Prime.KeysManager
 
         private void ProviderDetailsHandler(ProviderDetailsMessage providerDetailsMessage, TcpClient sender)
         {
-            Console.WriteLine("App: Sending provider details...");
+            Log("Sending provider details...");
 
             var providerDetails = _primeService.GetNetworkDetails(providerDetailsMessage.Id);
             _tcpServer.Send(sender, providerDetails);
@@ -116,7 +126,7 @@ namespace Prime.KeysManager
 
         private void PrivateProvidersListHandler(PrivateProvidersListMessage privateProvidersListMessage, TcpClient sender)
         {
-            Console.WriteLine("App: Private providers list requested... Sending...");
+            Log("Private providers list requested... Sending...");
 
             var providers = _primeService.GetPrivateNetworks();
             _tcpServer.Send(sender, providers);
@@ -124,7 +134,7 @@ namespace Prime.KeysManager
 
         private void ProvidersListHandler(ProvidersListMessage providersListMessage, TcpClient sender)
         {
-            Console.WriteLine("App: Providers list requested... Sending...");
+            Log("Providers list requested... Sending...");
 
             var providers = _primeService.GetNetworks();
             _tcpServer.Send(sender, providers);
@@ -132,7 +142,7 @@ namespace Prime.KeysManager
 
         private void TcpServerOnExceptionOccurred(object sender, Exception exception)
         {
-            Console.WriteLine($"App: Server error occurred: {exception.Message}");
+            Log($"Server error occurred: {exception.Message}");
         }
 
         public void Exit()
