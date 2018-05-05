@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime\Prime.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +29,10 @@
 
   <ItemGroup>
     <Folder Include="Asset\Command\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NodaTime" Version="2.2.6" />
   </ItemGroup>
 
 </Project>

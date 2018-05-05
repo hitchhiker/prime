@@ -10,7 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime\Prime.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
