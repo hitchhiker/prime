@@ -46,13 +46,8 @@ namespace Prime.Core
                 }
         }
 
+        [Obsolete("This should not be used in production code")]
         public static UserContext Testing = new UserContext(PrimeContext.Testing, new ObjectId("50709e6e210a18719ea877a2"), "test");
-
-        public static UserContext Get(ObjectId id)
-        {
-            //temp
-            return id == Testing.Id ? Testing : null;
-        }
 
         ObjectId IDataContext.Id => Id;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Nito.AsyncEx;
-using Prime.Core; using Prime.Finance;
+using Prime.Core;
 using Prime.Finance;
 using Prime.Finance.Wallet.Withdrawal.Cancelation;
 using Prime.Finance.Wallet.Withdrawal.Confirmation;

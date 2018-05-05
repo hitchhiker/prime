@@ -16,7 +16,7 @@ namespace Prime.Tests.KeysManager
         {
             var path = ElectronUtils.FindElectronUiDirectory(folderName, rootFolderName);
             
-            Assert.True(string.Equals(path, result));
+            Assert.Equal(path, result);
         }
     }
 }
