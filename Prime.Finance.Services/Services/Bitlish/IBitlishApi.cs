@@ -20,5 +20,11 @@ namespace Prime.Finance.Services.Services.Bitlish
 
         [Get("/trade_details?id={orderId}&authentication_token={authenticationToken}")]
         Task<Response<BitlishSchema.OrderResponse>> QueryOrderAsync([Path(UrlEncode = false)] string authenticationToken, [Path] string orderId);
+
+        [Get("/create_template_wallet?payment_method={paymentMethod}&account={account}&authentication_token={authenticationToken}")]
+        Task<Response<BitlishSchema.TemplateWalletResponse>> CreateTemplateWalletAsync([Path(UrlEncode = false)] string authenticationToken, [Path] string paymentMethod, [Path] string account);
+
+        [Get("/withdraw_by_id?wallet_id={walletId}&amount={amount}&currency={currency}&authentication_token={authenticationToken}")]
+        Task<Response<BitlishSchema.WithdrawalResponse>> PlaceWithdrawalAsync([Path(UrlEncode = false)] string authenticationToken, [Path] string walletId, [Path] decimal amount, [Path] string currency);
     }
 }

@@ -4,11 +4,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
+using Prime.Finance.Wallet.Withdrawal.Cancelation;
+using Prime.Finance.Wallet.Withdrawal.Confirmation;
+using Prime.Finance.Wallet.Withdrawal.History;
 using RestEase;
 
 namespace Prime.Finance.Services.Services.Bitlish
 {
-    public partial class BitlishProvider : IOrderLimitProvider
+    public partial class BitlishProvider : IOrderLimitProvider, IWithdrawalProvider
     {
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
         {
@@ -95,7 +98,69 @@ namespace Prime.Finance.Services.Services.Bitlish
             throw new NotImplementedException();
         }
 
-        public Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        private static readonly Lazy<Dictionary<Asset, string>> WithdrawalAssetsToTypes = new Lazy<Dictionary<Asset, string>>(() => new Dictionary<Asset, string>()
+        {
+            { "BTC".ToAssetRaw(), "bitcoin" },
+            { "LTC".ToAssetRaw(), "litecoin" },
+            { "ETH".ToAssetRaw(), "ethereum" },
+            { "ETC".ToAssetRaw(), "ethereumc" },
+            { "mastercoin".ToAssetRaw(), "mastercoin" },
+            { "ZEC".ToAssetRaw(), "zcash" },
+            { "XMR".ToAssetRaw(), "monero" },
+            { "wire".ToAssetRaw(), "wire" },
+            { "DASH".ToAssetRaw(), "dash" },
+            { "XRP".ToAssetRaw(), "ripple" },
+            { "EOS".ToAssetRaw(), "eos" },
+            { "NEO".ToAssetRaw(), "neo" }
+        });
+
+        public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var authenticationRaw = await api.AuthenticateUserAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(authenticationRaw);
+
+            var authentication = authenticationRaw.GetContent();
+
+            if (!WithdrawalAssetsToTypes.Value.TryGetValue(context.Amount.Asset, out var withdrawalType))
+                throw new ApiResponseException("Withdrawal of specified asset is not supported", this);
+
+            var walletTemplateRaw = await api.CreateTemplateWalletAsync(authentication.token, withdrawalType, context.Address.Address).ConfigureAwait(false);
+
+            CheckResponseErrors(walletTemplateRaw);
+
+            var walletTemplate = walletTemplateRaw.GetContent();
+
+            var rRaw = await api.PlaceWithdrawalAsync(authentication.token, walletTemplate.id, context.Amount.ToDecimalValue(),context.Amount.Asset.ShortCode.ToLower()).ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            if (r.payments.Length > 0)
+            {
+                return new WithdrawalPlacementResult()
+                {
+                    WithdrawalRemoteId = r.payments[0].id
+                };
+            }
+
+            return null;
+        }
+
+        public Task<List<WithdrawalHistoryEntry>> GetWithdrawalHistoryAsync(WithdrawalHistoryContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WithdrawalCancelationResult> CancelWithdrawalAsync(WithdrawalCancelationContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WithdrawalConfirmationResult> ConfirmWithdrawalAsync(WithdrawalConfirmationContext context)
         {
             throw new NotImplementedException();
         }

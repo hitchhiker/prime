@@ -32,18 +32,18 @@ namespace Prime.ExtensionPackager
             var extj = fis.FirstOrDefault(x => string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase));
 
             if (extj == null)
-                Context.Logger.Info("Cannot find '" + ExtFileName +"' in " + dir.FullName);
-            
+                Context.Logger.Info("Cannot find '" + ExtFileName + "' in " + dir.FullName);
+
             var exts = FindExtensionDll(dir, fis);
             if (exts.Count == 0)
             {
-               Context.Logger.Info("Cannot find any extensions in " + dir.FullName);
+                Context.Logger.Info("Cannot find any extensions in " + dir.FullName);
                 return;
             }
 
             if (exts.Count > 1)
             {
-               Context.Logger.Info("Found more than one extension in " + dir.FullName);
+                Context.Logger.Info("Found more than one extension in " + dir.FullName);
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace Prime.ExtensionPackager
                 }
                 catch (Exception e)
                 {
-                   Context.Logger.Info(e.Message + ": " + fi.FullName);
+                    Context.Logger.Info(e.Message + ": " + fi.FullName);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace Prime.ExtensionPackager
 
             if (types.Count > 1)
             {
-               Context.Logger.Info("Found multiple types in " + file.FullName + " implementing " + extt);
+                Context.Logger.Info("Found multiple types in " + file.FullName + " implementing " + extt);
                 return null;
             }
 

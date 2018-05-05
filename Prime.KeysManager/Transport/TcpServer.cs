@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Prime.Core;
 using Prime.KeysManager.Messages;
 using Prime.KeysManager.Utils;
 
@@ -21,9 +22,18 @@ namespace Prime.KeysManager.Transport
 
         private readonly IDataProvider _dataProvider;
 
-        public TcpServer(IDataProvider dataProvider)
+        public ILogger Logger { get; set; }
+
+        public TcpServer(IDataProvider dataProvider, ILogger logger)
         {
             _dataProvider = dataProvider;
+
+            Logger = logger;
+        }
+
+        private void Log(string text)
+        {
+            Logger.Log($"({typeof(TcpServer).Name}) : {text}");
         }
         
         public void StartServer(IPAddress address, short port)
@@ -88,21 +98,21 @@ namespace Prime.KeysManager.Transport
                 }
             });
 
-            Console.WriteLine("Server: client connected.");
+            Log("Client connected");
             WaitForClient();
         }
 
         public void ShutdownServer()
         {
             _listener.Stop();
-            Console.WriteLine("Server: disposing clients...");
+            Log("Disposing clients...");
 
             foreach (var connectedClient in _connectedClients)
             {
                 connectedClient.Dispose();
             }
 
-            Console.WriteLine("Server: server closed.");
+            Log("Server closed");
         }
 
         public void Subscribe<T>(Action<T, TcpClient> handler)

@@ -8,7 +8,7 @@ namespace Prime.Finance.Services.Services.Exmo
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://exmo.com/en/api#/public_api
-    public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string ExmoApiVersion = "v1";
         private const string ExmoApiUrl = "https://api.exmo.com/" + ExmoApiVersion;
@@ -45,6 +45,11 @@ namespace Prime.Finance.Services.Services.Exmo
             var r = await api.GetCurrencyAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            return true;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

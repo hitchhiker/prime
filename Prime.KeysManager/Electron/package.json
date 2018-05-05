@@ -2,7 +2,7 @@
   "name": "prime-keys-manager",
   "version": "1.0.0",
   "description": "Client app for Prime.KeysManager API.",
-  "main": "main.js",
+  "main": "App.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +13,8 @@
     "jquery": "^3.3.1"
   },
   "devDependencies": {
-    "electron": "^1.8.3"
+    "@types/jquery": "^3.3.1",
+    "electron": "^1.8.3",
+    "typescript": "^2.8.3"
   }
 }

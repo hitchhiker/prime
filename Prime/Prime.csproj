@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExtensionMethods\**" />
+    <EmbeddedResource Remove="ExtensionMethods\**" />
+    <None Remove="ExtensionMethods\**" />
     <Compile Remove="UiCommands\Navigation\NavigationProvider.cs" />
   </ItemGroup>
 

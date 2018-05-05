@@ -73,5 +73,12 @@ namespace Prime.Tests.Providers
             var orderId = "21109502";
             base.PretestGetTradeOrderStatus(orderId, "btc_eur".ToAssetPairRaw());
         }
+
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: SC: Not tested with real money
+            base.PretestPlaceWithdrawal(new WalletAddress("1234"), new Money(22, Asset.Btc));
+        }
     }
 }

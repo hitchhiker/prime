@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Prime Keys Manager UI</title>
-    <script src="./common.js"></script>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="./assets/css/materialize.min.css" media="screen,projection" />
@@ -52,7 +51,11 @@
     <script type="text/javascript" src="./assets/js/hammer.min.js"></script>
     <script type="text/javascript" src="./assets/js/materialize.min.js"></script>
 
-    <script src="./index.js"></script>
+    <script>
+        var IndexView = require('./src/view/IndexView.js').IndexView;
+        var view = new IndexView();
+        view.run();
+    </script>
 </body>
 
 </html>

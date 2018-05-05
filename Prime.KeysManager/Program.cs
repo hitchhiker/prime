@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Prime.Core;
 using Prime.KeysManager.Core;
 using Prime.KeysManager.Transport;
 using Prime.KeysManager.Utils;
@@ -14,59 +15,32 @@ namespace Prime.KeysManager
 {
     class Program
     {
-        private static readonly KeysManagerApp KeysManagerApp = new KeysManagerApp(new TcpServer(new JsonDataProvider()), new PrimeService());
-        
         static void Main(string[] args)
         {
-            Console.WriteLine($"> Operating system: " + Environment.OSVersion.Platform);
-            Console.WriteLine($"> Current directory: " + Environment.CurrentDirectory);
+            var logger = new ConsoleLogger() { IncludePreamble = true };
+
+            logger.Log(": Operating system: " + Environment.OSVersion.Platform);
+            logger.Log(": Current directory: " + Environment.CurrentDirectory);
 
             // Start server.
-            RunServer();
-            Console.WriteLine("> Server started");
+            var keysManager = new KeysManager(new TcpServer(new JsonDataProvider(), logger), new PrimeService(), logger);
+
+            Task.Run(() => { keysManager.Run(); });
+            logger.Log(": Server started");
 
             // Start UI.
-            var command = "";
-            var uiTasks = new List<Task>();
-
-            if (false)
-            {
-                while (!command.Equals("exit", StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("> Enter command: ");
-                    command = Console.ReadLine();
-
-                    if (command.Equals("ui", StringComparison.OrdinalIgnoreCase))
-                    {
-                        uiTasks.Add(RunUiAsync());
-                    }
-                }
-            }
-
-            uiTasks.Add(RunUiAsync());
-
-            Console.WriteLine("> Waiting for all UI processes exit...");
-            //Console.ReadLine();
-            Task.WaitAll(uiTasks.ToArray());
-        }
-
-        private static Task RunServer()
-        {
-            return Task.Run(() =>
-            {
-                KeysManagerApp.Run();
-            });
-        }
-
-        private static Task RunUiAsync()
-        {
-            return Task.Run(() =>
+            var uiTask = Task.Run(() =>
             {
                 var process = RunUi();
 
-                Console.WriteLine($"> Electron UI started ({process.Id}).");
+                logger.Log($": Electron UI started ({process.Id}).");
                 process.WaitForExit();
             });
+
+            logger.Log(": UI started");
+            logger.Log(": Waiting for all UI processes exit...");
+
+            uiTask.Wait();
         }
 
         private static Process RunUi()
