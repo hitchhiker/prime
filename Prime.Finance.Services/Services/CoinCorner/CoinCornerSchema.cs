@@ -4,6 +4,39 @@ namespace Prime.Finance.Services.Services.CoinCorner
 {
     internal class CoinCornerSchema
     {
+        #region Private
+        internal class BalancesResponse
+        {
+            public decimal GBPBalance;
+            public decimal BTCBalance;
+            public decimal EURBalance;
+            public decimal GBPReserved;
+            public decimal BTCReserved;
+            public decimal EURReserved;
+            public decimal LTCBalance;
+            public decimal DOGEBalance;
+            public decimal LTCReserved;
+            public decimal DOGEReserved;
+        }
+
+        internal class OrderResponse
+        {
+            public string CreateDate;
+            public string OrderId;
+            public decimal Amount;
+            public decimal Price;
+            public string CoinTypeOne;
+            public string CoinTypeTwo;
+            public string TradeType;
+        }
+
+        internal class ErrorResponse
+        {
+            public string message;
+        }
+        #endregion
+
+        #region Public
         internal class TickerResponse
         {
             public decimal LastPrice;
@@ -29,5 +62,6 @@ namespace Prime.Finance.Services.Services.CoinCorner
             public decimal Amount;
             public decimal Price;
         }
+        #endregion
     }
 }

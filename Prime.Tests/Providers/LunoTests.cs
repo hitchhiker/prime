@@ -21,6 +21,12 @@ namespace Prime.Tests.Providers
         }
 
         [Fact]
+        public override void TestApiPrivate()
+        {
+            base.TestApiPrivate();
+        }
+
+        [Fact]
         public override void TestGetPricing()
         {
             var pairs = new List<AssetPair>()
@@ -52,6 +58,28 @@ namespace Prime.Tests.Providers
         public override void TestGetOrderBook()
         {
             base.PretestGetOrderBook("XBT_MYR".ToAssetPairRaw(), false);
+        }
+
+        [Fact]
+        public override void TestGetTradeOrderStatus()
+        {
+            // TODO: SC: Not tested with real money
+            var orderId = "21109502";
+            base.PretestGetTradeOrderStatus(orderId, "XBT_ZAR".ToAssetPairRaw());
+        }
+
+        [Fact]
+        public override void TestPlaceOrderLimit()
+        {
+            //TODO: SC: Not tested with real money
+            base.PretestPlaceOrderLimit("ETH_XBT".ToAssetPairRaw(), true, new Money(10, Assets.I.GetRaw("XBT")), new Money(10m, Assets.I.GetRaw("XBT")));
+        }
+
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: SC: Not tested with real money
+            base.PretestPlaceWithdrawal(new WalletAddress("1234"), new Money(22, Asset.Eth));
         }
     }
 }

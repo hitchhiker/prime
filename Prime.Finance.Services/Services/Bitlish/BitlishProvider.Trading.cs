@@ -126,7 +126,7 @@ namespace Prime.Finance.Services.Services.Bitlish
 
             if (!WithdrawalAssetsToTypes.Value.TryGetValue(context.Amount.Asset, out var withdrawalType))
                 throw new ApiResponseException("Withdrawal of specified asset is not supported", this);
-
+            
             var walletTemplateRaw = await api.CreateTemplateWalletAsync(authentication.token, withdrawalType, context.Address.Address).ConfigureAwait(false);
 
             CheckResponseErrors(walletTemplateRaw);
