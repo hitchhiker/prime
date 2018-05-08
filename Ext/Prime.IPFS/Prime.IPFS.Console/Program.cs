@@ -19,7 +19,9 @@ namespace Prime.IPFS
 
             var dir = new DirectoryInfo("c://tmp//ipfs-ext");
 
-            var ctx = new IpfsInstanceContext(dir, new IpfsWin64())
+            var pc = new PrimeContext("..//..//..//..//..//..//instance/prime.config");
+
+            var ctx = new IpfsInstanceContext(pc, new IpfsWin64(new IpfsWin64Extension()))
             {
                 Logger = logger
             };

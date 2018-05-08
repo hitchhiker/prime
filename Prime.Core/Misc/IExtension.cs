@@ -8,7 +8,5 @@ namespace Prime.Core
         string Title { get; }
 
         Version Version { get; }
-
-        Platform Platform { get; }
     }
 }

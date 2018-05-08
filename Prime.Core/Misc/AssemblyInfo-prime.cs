@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using Prime.Core.Messaging;
+using Prime.Core;
 
 [assembly: IncludeInTypeCatalogue]
 [assembly: InternalsVisibleTo("Prime.Core")]

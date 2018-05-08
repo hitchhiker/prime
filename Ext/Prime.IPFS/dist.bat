@@ -1,5 +1,2 @@
-@cd V:\prime\src\publish
-@V:
-
-@dotnet .\packer\Prime.ExtensionPackager.dll ..\Ext\Prime.IPFS\Prime.IPFS.Win64\bin\Debug\ .\
-@dotnet .\packer\Prime.ExtensionPackager.dll ..\Ext\Prime.IPFS\Prime.IPFS.Win32\bin\Debug\ .\
+@dotnet ..\..\..\util\packer\Prime.ExtensionPackager.dll ..\..\..\instance\prime.config Prime.IPFS.Win64\bin\Debug\
+@dotnet ..\..\..\util\packer\Prime.ExtensionPackager.dll ..\..\..\instance\prime.config Prime.IPFS.Win32\bin\Debug\

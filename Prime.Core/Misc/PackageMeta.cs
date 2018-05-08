@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
 using LiteDB;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Prime.Core
 {
-    public class PackageMeta : IExtension
+    public class PackageMeta : IExtensionPlatform
     {
         public PackageMeta() { }
 
@@ -11,21 +14,42 @@ namespace Prime.Core
         {
             Title = ext.Title;
             Id = ext.Id;
-            Platform = ext.Platform;
+
             Version = ext.Version;
+
+            if (ext is IExtensionPlatform plat)
+                Platform = plat.Platform;
         }
 
+        [JsonProperty("title")]
         public string Title { get; set; }
 
+        [JsonProperty("id"), JsonConverter(typeof(ObjectIdJsonConverter))]
         public ObjectId Id { get; set; }
 
-        public Platform Platform { get; set; }
+        [JsonProperty("platform"), JsonConverter(typeof(StringEnumConverter))]
+        public Platform Platform { get; set; } = Platform.NotSpecified;
 
+        [JsonProperty("version"), JsonConverter(typeof(VersionJsonConverter))]
         public Version Version { get; set; }
 
         public string ToJsonSimple()
         {
-            return $"{{\"title\":\"{Title}\",{Environment.NewLine}\"id\":\"{Id}\",{Environment.NewLine}\"platform\":\"{Platform}\",{Environment.NewLine}\"version\":\"{Version}\"}}";
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public static PackageMeta From(FileInfo fileInfo)
+        {
+            if (!fileInfo.Exists)
+                return null;
+
+            var txt = File.ReadAllText(fileInfo.FullName);
+            return From(txt);
+        }
+
+        public static PackageMeta From(string json)
+        {
+            return string.IsNullOrWhiteSpace(json) ? null : JsonConvert.DeserializeObject<PackageMeta>(json);
         }
     }
 }

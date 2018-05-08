@@ -5,15 +5,18 @@ namespace Prime.ExtensionPackager
 {
     public class ProgramContext
     {
+        private readonly PrimeContext _context;
+
+        public ProgramContext(PrimeContext context)
+        {
+            _context = context;
+        }
+
         public DirectoryInfo SourceDirectory { get; set; }
 
-        public DirectoryInfo WorkspaceDirectory { get; set; }
+        public DirectoryInfo StagingDirectory => _context.FileSystem.StagingDirectory;
 
-        private DirectoryInfo _stagingDirectory;
-        public DirectoryInfo StagingDirectory => _stagingDirectory ?? (_stagingDirectory = WorkspaceDirectory.EnsureSubDirectory("stage"));
-
-        private DirectoryInfo _distributionDirectory;
-        public DirectoryInfo DistributionDirectory => _distributionDirectory ?? (_distributionDirectory = WorkspaceDirectory.EnsureSubDirectory("dist"));
+        public DirectoryInfo DistributionDirectory => _context.FileSystem.DistributionDirectory;
 
         public bool IsPrime { get; set; }
 

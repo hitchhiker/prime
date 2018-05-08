@@ -8,6 +8,7 @@
     <PackageReference Include="Ipfs.Api" Version="0.19.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="System.Composition" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,7 +16,7 @@
       <HintPath>..\..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="Prime.Core">
-      <HintPath>..\..\..\Prime\bin\Debug\netstandard2.0\Prime.Core.dll</HintPath>
+      <HintPath>..\..\..\Prime.Core\bin\Debug\netstandard2.0\Prime.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

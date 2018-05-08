@@ -32,18 +32,18 @@ namespace Prime.ExtensionPackager
             var extj = fis.FirstOrDefault(x => string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase));
 
             if (extj == null)
-                Context.Logger.Info("Cannot find '" + ExtFileName + "' in " + dir.FullName);
+                Context.Logger.Info("Currently no '" + ExtFileName + "' in " + dir.FullName);
 
             var exts = FindExtensionDll(dir, fis);
             if (exts.Count == 0)
             {
-                Context.Logger.Info("Cannot find any extensions in " + dir.FullName);
+                Context.Logger.Warn("Cannot find any extensions in " + dir.FullName);
                 return;
             }
 
             if (exts.Count > 1)
             {
-                Context.Logger.Info("Found more than one extension in " + dir.FullName);
+                Context.Logger.Error("Found more than one extension in " + dir.FullName);
                 return;
             }
 
@@ -59,7 +59,10 @@ namespace Prime.ExtensionPackager
             {
                 try
                 {
-                    if (!Context.IsPrime && fi.Name.StartsWith("prime.core.", StringComparison.OrdinalIgnoreCase))
+                    if (!Context.IsPrime && 
+                        fi.Name.StartsWith("prime.core.", StringComparison.OrdinalIgnoreCase) ||
+                        fi.Name.StartsWith("system.", StringComparison.OrdinalIgnoreCase) ||
+                        fi.Name.StartsWith("microsoft.", StringComparison.OrdinalIgnoreCase))
                         continue;
 
                     var a = AssemblyLoadContext.Default.LoadFromAssemblyPath(fi.FullName);
@@ -69,7 +72,8 @@ namespace Prime.ExtensionPackager
                 }
                 catch (Exception e)
                 {
-                    Context.Logger.Info(e.Message + ": " + fi.FullName);
+                    if (!e.Message.Contains("Reference assemblies", StringComparison.OrdinalIgnoreCase))
+                        Context.Logger.Info(e.Message + ": " + fi.FullName);
                 }
             }
 

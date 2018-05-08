@@ -1,4 +1,5 @@
 ﻿using System;
+using Prime.Core;
 
 namespace Prime.ExtensionPackager
 {

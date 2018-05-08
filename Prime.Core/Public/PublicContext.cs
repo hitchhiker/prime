@@ -32,7 +32,7 @@ namespace Prime.Core
         public bool IsPublic => true;
         
         private DirectoryInfo _storageDirectory;
-        public DirectoryInfo StorageDirectoryPub => _storageDirectory ?? (_storageDirectory = PrimeContext.FileSystem.WorkspaceDirectory.EnsureSubDirectory("pub"));
+        public DirectoryInfo StorageDirectoryPub => _storageDirectory ?? (_storageDirectory = PrimeContext.FileSystem.PrimeWorkspaceDirectory.EnsureSubDirectory("pub"));
         
         /*
         private ExchangeDatas _exchangeData;

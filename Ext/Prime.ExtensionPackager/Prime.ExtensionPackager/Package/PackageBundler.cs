@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Prime.Core;
 using SharpCompress.Archives.GZip;
 using SharpCompress.Common;
 using SharpCompress.Writers;
@@ -10,7 +11,7 @@ namespace Prime.ExtensionPackager
 {
     public class PackageBundler
     {
-        public static readonly string ArchiveName = "arc.tar.bz";
+        public static readonly string ArchiveName = "arc.bz2";
 
         private readonly Package _package;
         public readonly ProgramContext Context;
@@ -50,9 +51,12 @@ namespace Prime.ExtensionPackager
             //organise files into groups to reduce probability of re-transmission of unchanged files (hash hit) in the future.
 
             CompressToArchive(distDir, remaining.Where(x => x.Length > 1024 * 150), remaining, true);
+
             CompressToArchive(distDir, remaining.Where(x => x.Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)), remaining);
             CompressToArchive(distDir, remaining.Where(x => x.Name.StartsWith("System.", StringComparison.OrdinalIgnoreCase)), remaining);
+
             CompressToArchive(distDir, remaining.Where(x => x.Length< 1024 * 30), remaining);
+
             CompressToArchive(distDir, FilterMod3(remaining, 1), remaining);
             CompressToArchive(distDir, FilterMod3(remaining, 2), remaining);
             CompressToArchive(distDir, remaining, remaining);
@@ -113,7 +117,7 @@ namespace Prime.ExtensionPackager
                 foreach (var i in items)
                     Compression.CreateArchive(_package.StagedRoot, new List<FileInfo> {i}, Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
             else
-                Compression.CreateArchive(_package.StagedRoot, items, Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
+                Compression.CreateArchive(_package.StagedRoot, items.OrderBy(x => x.Name), Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
             
             Context.Logger.Info($"Compressed {items.Count} files(s).");
             remaining.RemoveAll(items.Contains);

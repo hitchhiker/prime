@@ -19,17 +19,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core", "Prime.Core\Pr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{21062BD8-3B82-4E32-A929-6CA5AC9CBFBD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance.Services", "Prime.Finance.Services\Prime.Finance.Services.csproj", "{CD1E8436-65E0-4E8D-9977-6C94CE631A21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance.Services", "Ext\Prime.Finance.Services\Prime.Finance.Services.csproj", "{CD1E8436-65E0-4E8D-9977-6C94CE631A21}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.KeysManager", "Prime.KeysManager\Prime.KeysManager.csproj", "{EBAE560E-4432-4343-B781-560FCF4A96A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.KeysManager", "Ext\Prime.KeysManager\Prime.KeysManager.csproj", "{EBAE560E-4432-4343-B781-560FCF4A96A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance", "Prime.Finance\Prime.Finance.csproj", "{BB9FAB25-C19C-4013-B88C-FBAC06F58715}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance", "Ext\Prime.Finance\Prime.Finance.csproj", "{BB9FAB25-C19C-4013-B88C-FBAC06F58715}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Finance", "Finance", "{F0CE665D-85E4-4355-A660-0FCEF82423C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Console", "Prime.Console\Prime.Console.csproj", "{61534319-C259-43A8-8026-50B2298966CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform", "Platform", "{F9F7DD6A-4A08-4569-8CBD-1028BA95A228}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core.Windows", "Prime.Windows\Prime.Core.Windows.csproj", "{4CDA9122-3776-4ED3-A49A-F20D426FCB16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.PackageCoordinator", "Ext\Prime.PackageCoordinator\Prime.PackageCoordinator.csproj", "{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +90,18 @@ Global
 		{61534319-C259-43A8-8026-50B2298966CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61534319-C259-43A8-8026-50B2298966CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61534319-C259-43A8-8026-50B2298966CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +116,8 @@ Global
 		{BB9FAB25-C19C-4013-B88C-FBAC06F58715} = {F0CE665D-85E4-4355-A660-0FCEF82423C2}
 		{F0CE665D-85E4-4355-A660-0FCEF82423C2} = {C47657DB-3FA3-4C0C-B506-96A685E3B714}
 		{61534319-C259-43A8-8026-50B2298966CE} = {BFEFEECE-EC7F-47C9-8E16-931DFC08943A}
+		{4CDA9122-3776-4ED3-A49A-F20D426FCB16} = {F9F7DD6A-4A08-4569-8CBD-1028BA95A228}
+		{2D62F1A3-8EBC-47F7-B455-02F7BC6364C4} = {C47657DB-3FA3-4C0C-B506-96A685E3B714}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9BA2A119-8A5F-4F1E-87E5-DF9ECABDF7C4}

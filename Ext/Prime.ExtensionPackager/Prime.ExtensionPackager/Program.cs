@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 using Prime.Core;
 
 namespace Prime.ExtensionPackager
@@ -9,53 +10,55 @@ namespace Prime.ExtensionPackager
     {
         static void Main(string[] args)
         {
-            var sourcePath = "./";
-            var workspacePath = "./";
+            ExtensionInfo.DummyRef();
+            
+            var extPath = "./";
+            var configPath = "./";
+
             var isPrime = false;
 
             if (args != null && args.Length > 0)
-                sourcePath = args[0];
+                extPath = args[0];
 
             var logger = new ConsoleLogger() {IncludePreamble = false};
 
             if (Debugger.IsAttached)
             {
-                sourcePath = "V:\\prime\\src\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug";
-                workspacePath = "V:\\prime\\src\\publish\\";
+                configPath = "..\\..\\..\\..\\..\\..\\instance\\prime.config";
+                extPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug";
             }
             else
             {
                 if (args == null || args.Length < 2)
                 {
-                    logger.Info("Usage: [sourcePath] [workspacePath] [-m]");
+                    logger.Info("Usage: [configPath] [extPath] [-core]");
                     return;
                 }
 
-                sourcePath = args[0];
-                workspacePath = args[1];
+                configPath = args[0];
+                extPath = args[1];
 
-                isPrime = args.Length > 3 && args[3] == "-m";
+                isPrime = args.Length > 2 && args[3] == "-core";
             }
 
-            sourcePath = Path.GetFullPath(sourcePath);
-            workspacePath = Path.GetFullPath(workspacePath);
+            configPath = Path.GetFullPath(configPath);
+            extPath = Path.GetFullPath(extPath);
 
-            logger.Info("Current: " + Path.GetFullPath("./"));
-
-            var sourceDir = new DirectoryInfo(sourcePath);
-            if (!sourceDir.Exists)
+            var extDir = new DirectoryInfo(extPath);
+            if (!extDir.Exists)
             {
-                logger.Info("No such directory: " + sourcePath);
+                logger.Info("No such directory: " + extPath);
                 return;
             }
 
-            logger.Info("Source: " + sourcePath);
-            logger.Info("Workspace: " + workspacePath);
+            var pc = new PrimeContext(configPath);
 
-            var ctx = new ProgramContext()
+            logger.Info("config: " + configPath);
+            logger.Info("extension: " + extPath);
+
+            var ctx = new ProgramContext(pc)
             {
-                SourceDirectory = sourceDir,
-                WorkspaceDirectory = new DirectoryInfo(workspacePath),
+                SourceDirectory = extDir,
                 IsPrime = isPrime,
                 Logger = logger
             };

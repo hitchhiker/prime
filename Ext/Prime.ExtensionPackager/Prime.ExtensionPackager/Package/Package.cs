@@ -54,13 +54,19 @@ namespace Prime.ExtensionPackager
 
         public string GetDirectory()
         {
-            return (Extension.Title + "-" + Extension.Id.ToString() + Path.DirectorySeparatorChar +
-                    Extension.Version + "-" + Extension.Platform + Path.DirectorySeparatorChar).ToLower();
+            var fsTitle = Extension.Title.Replace(" ", "-");
+            if (Extension is IExtensionPlatform plt)
+                if (plt.Platform != Platform.NotSpecified)
+                    return (fsTitle + "-" + Extension.Id + Path.DirectorySeparatorChar + Extension.Version + "-" + plt.Platform).ToLower() + Path.DirectorySeparatorChar;
+
+            return (fsTitle + "-" + Extension.Id + Path.DirectorySeparatorChar + Extension.Version).ToLower() + Path.DirectorySeparatorChar;
         }
 
         public string GetCatName()
         {
-            return "prime-" + (Extension.Id + "-" + Extension.Version + "-" + Extension.Platform).ToLower() + ".json";
+            if (Extension is IExtensionPlatform plt)
+                return "prime-" + (Extension.Id + "-" + Extension.Version + "-" + plt.Platform).ToLower() + ".json";
+            return "prime-" + (Extension.Id + "-" + Extension.Version).ToLower() + ".json";
         }
 
         public List<FileInfo> StagedFiles { get; private set; }

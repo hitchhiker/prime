@@ -7,16 +7,16 @@ using Prime.Core;
 namespace Prime.IPFS {
     public class IpfsMessenger : IStartupMessenger
     {
-        private readonly AppContext _context;
+        private readonly PrimeContext _context;
         private readonly IpfsInstance _ipfs;
         private readonly IMessenger _m;
 
-        public IpfsMessenger(AppContext context, IpfsInstance ipfs)
+        public IpfsMessenger(PrimeContext context, IpfsInstance ipfs)
         {
             _context = context;
             _ipfs = ipfs;
             _m = context.Messenger;
-            _m.RegisterAsync<IpfsVersionRequest>(this, x => { _m.SendAsync(new IpfsVersionResponse() {Version = "Hello world!"}); });
+            _m.RegisterAsync<IpfsVersionRequest>(this, x => { _m.SendAsync(new IpfsVersionResponse() {Version = "Hello IPFS world!"}); });
         }
 
         /*

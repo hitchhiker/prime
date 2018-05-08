@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
-using Prime.Core.Win;
+using Prime.Core.Windows;
 
 namespace Prime.IPFS
 {
     public abstract class IpfsWin : IpfsPlatformBase
     {
+        protected IpfsWin(IExtension instance) : base(instance) {} 
+
         public override string NativeExecutable => "ipfs.exe";
 
         public override IpfsDaemonBase GetDaemon(IpfsInstance instance)

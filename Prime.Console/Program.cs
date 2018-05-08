@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using LiteDB;
 using Nito.AsyncEx;
 using Prime.ConsoleApp.Tests;
 using Prime.ConsoleApp.Tests.Alyasko;
@@ -19,6 +20,11 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
+            var ctx = new PrimeContext
+            {
+                Logger = new ConsoleLogger()
+            };
+
             // if this is removed DEBUG wont work across projects!??
             var i = ClassTestCommon.Test();
             i=i+ ClassTestCore.Test();
@@ -28,9 +34,6 @@ namespace TestConsole
             {
                // var asm = Assembly.LoadFrom(args[1]);
             }
-
-            var prime = TypeCatalogue.I.ImplementInstancesI<ICore>().FirstOrDefault();
-            prime.Start(); //INIT PRIME //THIS IS A HACK FOR NOW
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
@@ -43,7 +46,7 @@ namespace TestConsole
             }
             else if (Environment.UserName.Equals("hitchhiker"))
             {
-                Frank.Go();
+                Frank.Go(ctx);
                 /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)

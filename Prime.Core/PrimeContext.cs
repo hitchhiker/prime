@@ -10,14 +10,18 @@ namespace Prime.Core
     {
         public readonly IMessenger Messenger;
         public readonly Users Users;
+        public readonly PrimeConfig PrimeConfig;
 
-        public PrimeContext() : this(DefaultMessenger.I.Default)
+        public PrimeContext() : this("..//..//..//..//instance//prime.config") { } //used for testing / debug
+
+        public PrimeContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
+
+        public PrimeContext(string configPath, IMessenger messenger)
         {
+            if (string.IsNullOrWhiteSpace(configPath))
+                throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
-        }
-
-        public PrimeContext(IMessenger messenger)
-        {
+            PrimeConfig = PrimeConfig.Get(Path.GetFullPath(configPath));
             Messenger = messenger;
             Users = new Users(this);
             Public = new PublicContext(this);
@@ -27,12 +31,8 @@ namespace Prime.Core
 
         public static PublicContext Public;
 
-        private DirectoryInfo _workContainerDirectoryInfo;
-        public DirectoryInfo WorkContainerDirectoryInfo
-        {
-            get => _workContainerDirectoryInfo ?? (_workContainerDirectoryInfo = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
-            set =>  _workContainerDirectoryInfo = value;
-        }
+        private DirectoryInfo _appDataDirectoryInfo;
+        public DirectoryInfo AppDataDirectoryInfo => _appDataDirectoryInfo ?? (_appDataDirectoryInfo = GetAppBase());
 
         private ILogger _logger;
         public ILogger Logger
@@ -43,5 +43,16 @@ namespace Prime.Core
 
         private PrimeFileSystem _fileSystem;
         public PrimeFileSystem FileSystem => _fileSystem ?? (_fileSystem = new PrimeFileSystem(this));
+
+        private DirectoryInfo GetAppBase()
+        {
+            if (!string.IsNullOrWhiteSpace(PrimeConfig.BasePath))
+                return new DirectoryInfo(Path.GetFullPath(PrimeConfig.BasePath));
+
+            if (PrimeConfig.ConfigLoadedFrom!=null)
+                return PrimeConfig.ConfigLoadedFrom.Directory;
+
+            return new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+        }
     }
 }

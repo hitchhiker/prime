@@ -7,8 +7,8 @@ namespace Prime.ExtensionPackager
 {
     public class Compression
     {
-        public static CompressionType CompressionType = CompressionType.GZip;
-        public static ArchiveType ArchiveType = ArchiveType.Tar;
+        public static CompressionType CompressionType = CompressionType.BZip2;
+        public static ArchiveType ArchiveType = ArchiveType.Zip;
 
         public static void CreateArchive(DirectoryInfo root, IEnumerable<FileInfo> files, string destinationPath)
         {

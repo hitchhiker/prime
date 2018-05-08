@@ -8,13 +8,17 @@ namespace Prime.ConsoleApp.Tests.Frank
 {
     public class Frank
     {
-        public static void Go()
+        public static void Go(PrimeContext context)
         {
-            var logger = new ConsoleLogger();
-
             //AuthManagerTest.Go(logger);
 
-            new ExtensionLoader().Compose();
+            //new ExtensionLoader().Compose();
+
+            var pm = new PackageCoordinator(context);
+
+            pm.EnsureInstalled();
+
+            context.Logger.Info(pm.Distribution.Count);
         }
     }
 }

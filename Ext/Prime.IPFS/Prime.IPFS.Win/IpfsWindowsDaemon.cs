@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Timer = System.Timers.Timer;
 using Prime.Core;
+using Prime.Core.Windows;
 
 namespace Prime.IPFS
 {
@@ -271,6 +272,9 @@ namespace Prime.IPFS
                 }
                 
                 if (error.Contains("prometheus collector", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
+                    return;
+
+                if (error.Contains("mbinding.go:", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
                     return;
 
                 if (!stoplogging && !string.IsNullOrEmpty(error))
