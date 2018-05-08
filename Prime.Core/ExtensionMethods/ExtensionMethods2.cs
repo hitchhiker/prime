@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using LiteDB;
 using System.Diagnostics;
+using Prime.Base;
 
 //mod from: http://aonnull.blogspot.com/2010/08/dynamic-sql-like-linq-orderby-extension.html
 

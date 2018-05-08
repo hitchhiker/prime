@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LiteDB;
 using Nito.AsyncEx;
+using Prime.Base;
 using Prime.Core;
 using Prime.Finance.Market;
 

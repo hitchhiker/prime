@@ -1,6 +1,7 @@
 using System;
 using LiteDB;
 using Newtonsoft.Json;
+using Prime.Base;
 
 namespace Prime.Core
 {

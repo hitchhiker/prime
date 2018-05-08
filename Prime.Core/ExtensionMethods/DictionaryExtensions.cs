@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
+using Prime.Base;
 
 namespace Prime.Core
 {

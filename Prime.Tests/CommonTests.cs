@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 using Prime.Finance;
 using Xunit;

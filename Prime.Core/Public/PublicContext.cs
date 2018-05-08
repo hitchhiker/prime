@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Core

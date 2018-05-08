@@ -29,7 +29,7 @@ namespace Prime.ExtensionPackager
         private void InspectDirectory(DirectoryInfo dir)
         {
             var fis = dir.GetFiles("*", SearchOption.AllDirectories).ToList();
-            var extj = fis.FirstOrDefault(x => string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase));
+            var extj = fis.Where(x => string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             if (extj == null)
                 Context.Logger.Info("Currently no '" + ExtFileName + "' in " + dir.FullName);

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Prime.Core;
 using System.Linq;
 using LiteDB;
+using Prime.Base;
 
 namespace Prime.Finance
 {

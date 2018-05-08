@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using LiteDB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Prime.Base;
 using Formatting = Newtonsoft.Json.Formatting;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 

@@ -7,6 +7,7 @@ using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
 using Nito.AsyncEx;
+using Prime.Base;
 using Prime.Core;
 using Prime.Core.Exchange.Rates;
 using Prime.Finance.Exchange.Rates;

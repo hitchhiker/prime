@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Prime.Base;
 
 namespace Prime.Finance.Exchange.Trading_temp.Messages
 {

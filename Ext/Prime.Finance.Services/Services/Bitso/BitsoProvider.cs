@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Bitso

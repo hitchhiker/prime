@@ -1,5 +1,6 @@
 using System.Xml.Serialization;
 using LiteDB;
+using Prime.Base;
 
 namespace Prime.Core
 {

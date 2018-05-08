@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LiteDB;
 using System.Linq;
 using System.Threading;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Finance

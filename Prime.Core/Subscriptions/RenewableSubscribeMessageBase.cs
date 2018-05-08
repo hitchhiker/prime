@@ -1,5 +1,6 @@
 using System;
 using LiteDB;
+using Prime.Base;
 
 namespace Prime.Core
 {

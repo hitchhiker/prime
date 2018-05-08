@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 using Prime.Finance.Exchange.Trading_temp;
 using Prime.Finance.Exchange.Trading_temp.Messages;

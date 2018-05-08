@@ -1,5 +1,6 @@
 using LiteDB;
 using System;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Finance

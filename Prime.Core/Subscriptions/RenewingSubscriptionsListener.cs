@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
+using Prime.Base;
 
 namespace Prime.Core
 {

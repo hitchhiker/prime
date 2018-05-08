@@ -23,4 +23,10 @@
   <ItemGroup>
     <Folder Include="Messages\IPFS\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).*&quot; &quot;$(SolutionDir)\lib\prime&quot; /i /d /y" />
+  </Target>
 </Project>

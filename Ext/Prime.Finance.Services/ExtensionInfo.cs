@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Finance.Services

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 using RestEase;
 

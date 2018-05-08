@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Finance.Services.Services.Coinone
