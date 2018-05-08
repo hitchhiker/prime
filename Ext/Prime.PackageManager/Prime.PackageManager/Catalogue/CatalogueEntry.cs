@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using LiteDB;
 using Newtonsoft.Json;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.PackageManager

@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using LiteDB;
-using Prime.Core;
 
 namespace Prime.Core
 {
-    public class Packages : UniqueList<PackageContainer>
+    public class Packages : UniqueList<Package>
     {
         public readonly PackageCoordinator Coordinator;
         public readonly DirectoryInfo BaseDirectory;
@@ -19,7 +16,7 @@ namespace Prime.Core
             Context = coordinator.Context;
             foreach (var d in baseDirectory.GetDirectories("*", SearchOption.TopDirectoryOnly))
             {
-                var pc = new PackageContainer(this, d);
+                var pc = new Package(this, d);
                 if (!pc.IsEmpty)
                     base.Add(pc);
             }

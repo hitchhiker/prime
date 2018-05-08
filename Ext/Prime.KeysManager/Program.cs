@@ -17,7 +17,11 @@ namespace Prime.KeysManager
     {
         static void Main(string[] args)
         {
+            var pc = new PrimeContext("..//..//..//..//..//instance//prime.config");
+
             var logger = new ConsoleLogger() { IncludePreamble = true };
+
+            pc.Logger = logger;
 
             logger.Log(": Operating system: " + Environment.OSVersion.Platform);
             logger.Log(": Current directory: " + Environment.CurrentDirectory);

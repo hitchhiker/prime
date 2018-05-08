@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using LiteDB;
 using Prime.Base;
 using Prime.Core;
 
@@ -9,7 +8,7 @@ namespace Prime.Core
 {
     public class PackageInstance : IEquatable<PackageInstance>
     {
-        public readonly PackageContainer Package;
+        public readonly Package Package;
 
         public readonly DirectoryInfo Directory;
 
@@ -25,7 +24,7 @@ namespace Prime.Core
 
         private readonly string _key;
 
-        private PackageInstance(PackageContainer package, DirectoryInfo directory, PackageMeta metaInfo)
+        private PackageInstance(Package package, DirectoryInfo directory, PackageMeta metaInfo)
         {
             Package = package;
             Directory = directory;
@@ -37,7 +36,7 @@ namespace Prime.Core
             _key = PackageId + ":" + Platform + ":" + Version;
         }
 
-        public static PackageInstance Inspect(PackageContainer container, DirectoryInfo directory)
+        public static PackageInstance Inspect(Package container, DirectoryInfo directory)
         {
             var pm = directory.GetFiles(PackageCoordinator.PrimeExtName);
             if (pm.Length != 1)

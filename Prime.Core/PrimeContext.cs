@@ -18,6 +18,9 @@ namespace Prime.Core
 
         public PrimeContext(string configPath, IMessenger messenger)
         {
+            if (Testing != null)
+                throw new Exception(nameof(PrimeContext) + " is already initialised in this app domain.");
+
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
@@ -25,9 +28,10 @@ namespace Prime.Core
             Messenger = messenger;
             Users = new Users(this);
             Public = new PublicContext(this);
+            Testing = this;
         }
 
-        public static PrimeContext Testing => new PrimeContext();
+        public static PrimeContext Testing { get; private set; }
 
         public static PublicContext Public;
 

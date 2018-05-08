@@ -21,16 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Prime.Base">
-      <HintPath>..\..\..\lib\prime\Prime.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Prime.Core">
-      <HintPath>..\..\..\lib\prime\Prime.Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime.Core\Prime.Core.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)\..\..\..\util\packer&quot; /i /d /y" />
+    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)\..\util\packer&quot; /i /d /y" />
   </Target>
 
 </Project>

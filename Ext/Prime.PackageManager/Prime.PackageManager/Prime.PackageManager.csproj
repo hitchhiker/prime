@@ -9,12 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LiteDB">
-      <HintPath>..\..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
-    </Reference>
-    <Reference Include="Prime.Core">
-      <HintPath>..\..\..\Prime.Core\bin\Debug\netstandard2.0\Prime.Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime.Core\Prime.Core.csproj" />
   </ItemGroup>
 
 </Project>

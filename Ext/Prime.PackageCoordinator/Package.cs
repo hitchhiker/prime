@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LiteDB;
 using Prime.Base;
 using Prime.Core;
 using SharpCompress.Common;
@@ -10,14 +9,14 @@ using SharpCompress.Writers;
 
 namespace Prime.Core
 {
-    public class PackageContainer : UniqueList<PackageInstance>, IEquatable<PackageContainer>
+    public class Package : UniqueList<PackageInstance>, IEquatable<Package>
     {
         public readonly Packages Packages;
         private readonly DirectoryInfo _dir;
         public ObjectId Id { get; private set; }
         public PackageCoordinator PackageCoordinator => Packages.Coordinator;
 
-        public PackageContainer(Packages packages, DirectoryInfo dir)
+        public Package(Packages packages, DirectoryInfo dir)
         {
             Packages = packages;
             _dir = dir;
@@ -45,7 +44,7 @@ namespace Prime.Core
             }
         }
 
-        public bool Equals(PackageContainer other)
+        public bool Equals(Package other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -57,7 +56,7 @@ namespace Prime.Core
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((PackageContainer) obj);
+            return Equals((Package) obj);
         }
 
         public override int GetHashCode()

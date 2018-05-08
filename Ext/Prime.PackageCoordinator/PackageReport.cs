@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using Prime.Base;
+﻿using Prime.Base;
 
 namespace Prime.Core
 {
