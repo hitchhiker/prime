@@ -8,7 +8,7 @@ namespace Prime.Finance.Services.Services.CoinCorner
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://api.coincorner.com/
-    public class CoinCornerProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class CoinCornerProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string CoinCornerApiUrl = "https://api.coincorner.com/api";
 
@@ -38,13 +38,25 @@ namespace Prime.Finance.Services.Services.CoinCorner
 
         public CoinCornerProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICoinCornerApi>(CoinCornerApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICoinCornerApi>(CoinCornerApiUrl, this, (k) => new CoinCornerAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var ctx = new PublicPriceContext("btceur".ToAssetPair(this, 3));
             var r = await GetPricingAsync(ctx).ConfigureAwait(false);
+
+            return r != null;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null;
         }

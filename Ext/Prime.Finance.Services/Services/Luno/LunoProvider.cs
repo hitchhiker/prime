@@ -8,7 +8,7 @@ namespace Prime.Finance.Services.Services.Luno
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     //https://www.luno.com/en/api
-    public class LunoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class LunoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string LunoApiVersion = "1";
         private const string LunoApiUrl = "https://api.mybitx.com/api/" + LunoApiVersion;
@@ -36,7 +36,7 @@ namespace Prime.Finance.Services.Services.Luno
 
         public LunoProvider()
         {
-            ApiProvider = new RestApiClientProvider<ILunoApi>(LunoApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ILunoApi>(LunoApiUrl, this, (k) => new LunoAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -45,6 +45,18 @@ namespace Prime.Finance.Services.Services.Luno
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.tickers?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r != null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
