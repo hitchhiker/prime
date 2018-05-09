@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="System.Composition" Version="1.1.0" />
@@ -21,10 +22,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Messages\IPFS\" />
+    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
+    <Folder Include="Messages\" />
+    <Folder Include="Public\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).*&quot; &quot;$(SolutionDir)\lib\prime&quot; /i /d /y" />

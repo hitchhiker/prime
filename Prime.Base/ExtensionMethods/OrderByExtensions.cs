@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 //mod from: http://aonnull.blogspot.com/2010/08/dynamic-sql-like-linq-orderby-extension.html
-using LiteDB;
+
 
 namespace Prime.Core
 {

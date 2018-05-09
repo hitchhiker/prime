@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using LiteDB;
 using Prime.Base;
 
 namespace Prime.Core
