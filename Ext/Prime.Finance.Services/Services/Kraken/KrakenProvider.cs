@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LiteDB;
 using Newtonsoft.Json;
+using Prime.Base;
 using Prime.Core;
 using Prime.Finance.Services.Services.Kraken.Converters;
 

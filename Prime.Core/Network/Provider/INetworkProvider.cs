@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Core

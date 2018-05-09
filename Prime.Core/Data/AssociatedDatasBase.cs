@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Core

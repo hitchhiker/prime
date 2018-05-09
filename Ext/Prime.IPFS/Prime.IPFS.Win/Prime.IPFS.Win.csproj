@@ -14,14 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LiteDB">
-      <HintPath>..\..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
+    <Reference Include="Prime.Base">
+      <HintPath>..\..\..\lib\prime\Prime.Base.dll</HintPath>
     </Reference>
     <Reference Include="Prime.Core">
-      <HintPath>..\..\..\Prime.Core\bin\Debug\netstandard2.0\Prime.Core.dll</HintPath>
+      <HintPath>..\..\..\lib\prime\Prime.Core.dll</HintPath>
     </Reference>
     <Reference Include="Prime.Core.Windows">
-      <HintPath>..\..\..\Prime.Windows\bin\Debug\netstandard2.0\Prime.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\lib\prime\Prime.Core.Windows.dll</HintPath>
     </Reference>
   </ItemGroup>
 

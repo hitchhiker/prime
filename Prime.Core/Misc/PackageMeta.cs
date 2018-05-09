@@ -3,6 +3,7 @@ using System.IO;
 using LiteDB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Prime.Base;
 
 namespace Prime.Core
 {

@@ -5,6 +5,7 @@ using System.Text;
 using Prime.Core;
 using LiteDB;
 using System.Collections;
+using Prime.Base;
 
 namespace Prime.Finance
 {

@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v3.5": {},
+    ".NETFramework,Version=v3.5/win": {}
+  },
+  "libraries": {},
+  "projectFileDependencyGroups": {
+    "": [],
+    ".NETFramework,Version=v3.5": []
+  },
+  "packageFolders": {
+    "C:\\Users\\hitchhiker\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "restore": {
+      "projectUniqueName": "V:\\prime\\LiteDB\\LiteDB\\LiteDB.csproj",
+      "projectName": "LiteDB",
+      "projectPath": "V:\\prime\\LiteDB\\LiteDB\\LiteDB.csproj",
+      "projectJsonPath": "V:\\prime\\LiteDB\\LiteDB\\LiteDB.project.json",
+      "packagesPath": "C:\\Users\\hitchhiker\\.nuget\\packages\\",
+      "outputPath": "V:\\prime\\LiteDB\\LiteDB\\obj\\",
+      "projectStyle": "ProjectJson",
+      "configFilePaths": [
+        "C:\\Users\\hitchhiker\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://www.myget.org/F/abtsoftware-bleeding-edge/api/v3/index.json": {},
+        "https://www.nuget.org/api/v2/": {}
+      }
+    },
+    "frameworks": {
+      "net35": {}
+    },
+    "runtimes": {
+      "win": {
+        "#import": []
+      }
+    }
+  }
+}

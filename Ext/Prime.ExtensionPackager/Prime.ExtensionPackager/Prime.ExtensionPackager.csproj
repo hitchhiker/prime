@@ -16,21 +16,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="sharpcompress" Version="0.20.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LiteDB">
-      <HintPath>..\..\..\lib\litedb-net-standard\LiteDB.dll</HintPath>
-    </Reference>
-    <Reference Include="Prime.Core">
-      <HintPath>..\..\..\Prime.Core\bin\Debug\netstandard2.0\Prime.Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime.Core\Prime.Core.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)\..\..\..\util\packer&quot; /i /d /y" />
+    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)\..\util\packer&quot; /i /d /y" />
   </Target>
 
 </Project>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Prime.Core;
 using LiteDB;
+using Prime.Base;
 
 namespace Prime.Core
 {

@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using LiteDB;
+using Prime.Base;
 using Prime.Core;
 using Prime.Finance.Exchange.Trading_temp.Messages;
 
