@@ -19,7 +19,7 @@ namespace Prime.Extensions
 
         public void Compose()
         {
-            var path = "V:\\prime\\instance\\prime\\tmp\\staging\\ipfs-3575ddcb0d8647d75fbf044c\\1.3.0-win386\\";
+            var path = "V:\\prime\\instance\\prime-client\\tmp\\staging\\ipfs-3575ddcb0d8647d75fbf044c\\1.3.0-win386\\";
             var dir = new DirectoryInfo(path);
 
             var files = dir.GetFiles("*.dll", SearchOption.AllDirectories).AsEnumerable();
@@ -49,7 +49,7 @@ namespace Prime.Extensions
                 ExtensionsExecute = container.GetExports<Lazy<IExtensionExecute>>();
             }
 
-            var pc = new PrimeContext();
+            var pc = new ServerContext();
             var m = pc.Messenger;
 
             foreach (var i in ExtensionsExecute)

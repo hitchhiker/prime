@@ -6,20 +6,20 @@ namespace Prime.Core
 {
     //Singleton, one per application.
 
-    public class PrimeContext
+    public class ServerContext
     {
         public readonly IMessenger Messenger;
         public readonly Users Users;
         public readonly PrimeConfig PrimeConfig;
 
-        public PrimeContext() : this("..//..//..//..//instance//prime.config") { } //used for testing / debug
+        public ServerContext() : this("..//..//..//..//instance//prime.config") { } //used for testing / debug
 
-        public PrimeContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
+        public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
 
-        public PrimeContext(string configPath, IMessenger messenger)
+        public ServerContext(string configPath, IMessenger messenger)
         {
             if (Testing != null)
-                throw new Exception(nameof(PrimeContext) + " is already initialised in this app domain.");
+                throw new Exception(nameof(ServerContext) + " is already initialised in this app domain.");
 
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
@@ -31,7 +31,7 @@ namespace Prime.Core
             Testing = this;
         }
 
-        public static PrimeContext Testing { get; private set; }
+        public static ServerContext Testing { get; private set; }
 
         public static PublicContext Public;
 
@@ -45,8 +45,8 @@ namespace Prime.Core
             set => _logger = value;
         }
 
-        private PrimeFileSystem _fileSystem;
-        public PrimeFileSystem FileSystem => _fileSystem ?? (_fileSystem = new PrimeFileSystem(this));
+        private ServerFileSystem _serverFileSystem;
+        public ServerFileSystem FileSystem => _serverFileSystem ?? (_serverFileSystem = new ServerFileSystem(this));
 
         private DirectoryInfo GetAppBase()
         {

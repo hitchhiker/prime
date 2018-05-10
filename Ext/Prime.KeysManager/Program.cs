@@ -17,7 +17,7 @@ namespace Prime.KeysManager
     {
         static void Main(string[] args)
         {
-            var pc = new PrimeContext("..//..//..//..//..//instance//prime.config");
+            var pc = new ServerContext("..//..//..//..//..//instance//prime.config");
 
             var logger = new ConsoleLogger() { IncludePreamble = true };
 

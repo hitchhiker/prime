@@ -2,6 +2,6 @@
 {
     public interface IExtensionExecute : IExtension
     {
-        void Main(PrimeContext context);
+        void Main(ServerContext context);
     }
 }

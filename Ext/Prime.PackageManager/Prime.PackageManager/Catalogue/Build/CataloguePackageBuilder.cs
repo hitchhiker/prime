@@ -6,9 +6,9 @@ using Prime.Core;
 
 namespace Prime.PackageManager
 {
-    public class CatalogueEntry
+    public class CataloguePackageBuilder
     {
-        public CatalogueEntry(PackageMeta metaData, DirectoryInfo source)
+        public CataloguePackageBuilder(PackageMeta metaData, DirectoryInfo source)
         {
             MetaData = metaData;
             Source = source;
@@ -20,17 +20,17 @@ namespace Prime.PackageManager
 
         public static string MetaName = "prime-ext.json";
 
-        public static CatalogueEntry Rebuild(DirectoryInfo source)
+        public static CataloguePackageBuilder Rebuild(DirectoryInfo source)
         {
             var metaFile = new FileInfo(Path.Combine(source.FullName, MetaName));
             if (!metaFile.Exists)
                 return null;
 
-            var meta = JsonConvert.DeserializeObject<PackageMetaSchema>(File.ReadAllText(metaFile.FullName));
+            var meta = JsonConvert.DeserializeObject<PackageMeta>(File.ReadAllText(metaFile.FullName));
 
-            var ext = new PackageMeta() {Title = meta.Title, Id = new ObjectId(meta.Id), Platform = meta.Platform.ToEnum<Platform>(), Version = Version.Parse(meta.Version)};
+            var ext = new PackageMeta() {Title = meta.Title, Id = meta.Id, Platform = meta.Platform, Version = meta.Version};
 
-            return new CatalogueEntry(ext, source);
+            return new CataloguePackageBuilder(ext, source);
         }
     }
 }

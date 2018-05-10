@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using LiteDB;
 using Newtonsoft.Json;
@@ -28,7 +29,7 @@ namespace Prime.Core
         [JsonProperty("id"), JsonConverter(typeof(ObjectIdJsonConverter))]
         public ObjectId Id { get; set; }
 
-        [JsonProperty("platform"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("platform", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(StringEnumConverter)), DefaultValue(Platform.NotSpecified)]
         public Platform Platform { get; set; } = Platform.NotSpecified;
 
         [JsonProperty("version"), JsonConverter(typeof(VersionJsonConverter))]

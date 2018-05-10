@@ -5,9 +5,9 @@ namespace Prime.ExtensionPackager
 {
     public class ProgramContext
     {
-        private readonly PrimeContext _context;
+        private readonly ServerContext _context;
 
-        public ProgramContext(PrimeContext context)
+        public ProgramContext(ServerContext context)
         {
             _context = context;
         }

@@ -20,7 +20,7 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var ctx = new PrimeContext
+            var ctx = new ServerContext
             {
                 Logger = new ConsoleLogger()
             };

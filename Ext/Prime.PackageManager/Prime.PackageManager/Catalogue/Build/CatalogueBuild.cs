@@ -2,9 +2,9 @@
 
 namespace Prime.PackageManager
 {
-    public class Catalogue : List<CatalogueEntry>
+    public class CatalogueBuild : List<CataloguePackageBuilder>
     {
-        public Catalogue()
+        public CatalogueBuild()
         {
 
         }

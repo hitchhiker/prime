@@ -3,14 +3,14 @@ using Newtonsoft.Json;
 
 namespace Prime.PackageManager
 {
-    public class CatalogueSchema
+    public class Catalogue
     {
-        public CatalogueSchema() { }
+        public Catalogue() { }
 
         [JsonProperty("owner")]
         public string Owner { get; set; }
 
         [JsonProperty("catalogue")]
-        public List<CatalogueEntrySchema> Catalogue { get; set; } = new List<CatalogueEntrySchema>();
+        public List<CataloguePackage> Entries { get; set; } = new List<CataloguePackage>();
     }
 }

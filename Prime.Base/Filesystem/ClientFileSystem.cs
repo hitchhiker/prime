@@ -7,25 +7,22 @@ using System.Threading.Tasks;
 
 namespace Prime.Core
 {
-    public class PrimeFileSystem
+    public class ClientFileSystem
     {
-        private readonly PrimeContext _context;
-        public readonly DirectoryInfo PrimeLocalDirectory;
+        private readonly ClientContext _context;
+        public readonly DirectoryInfo PrimeWorkspaceDirectory;
 
-        public PrimeFileSystem(PrimeContext context)
+        public ClientFileSystem(ClientContext context)
         {
             _context = context;
-            PrimeLocalDirectory = GetPrimeDirectory();
+            PrimeWorkspaceDirectory = GetPrimeDirectory();
         }
-        
+
         private DirectoryInfo _configDirectory;
         public DirectoryInfo ConfigDirectory => _configDirectory ?? (_configDirectory = GetSubDirectory("config"));
 
         private DirectoryInfo _workspaceDirectory;
         public DirectoryInfo WorkspaceDirectory => _workspaceDirectory ?? (_workspaceDirectory = GetSubDirectory("workspace"));
-
-        private DirectoryInfo _primeWorkspaceDirectory;
-        public DirectoryInfo PrimeWorkspaceDirectory => _primeWorkspaceDirectory ?? (_primeWorkspaceDirectory = WorkspaceDirectory.EnsureSubDirectory("prime"));
 
         private DirectoryInfo _tmpDirectory;
         public DirectoryInfo TmpDirectory => _tmpDirectory ?? (_tmpDirectory = GetSubDirectory("tmp"));
@@ -49,16 +46,16 @@ namespace Prime.Core
         public DirectoryInfo StagingDirectory => _stagingDirectory ?? (_stagingDirectory = TmpDirectory.EnsureSubDirectory("staging"));
 
         private DirectoryInfo _catDirectory;
-        public DirectoryInfo CatalogueDirectory => _catDirectory ?? (_catDirectory = PrimeWorkspaceDirectory.EnsureSubDirectory("catalogue"));
+        public DirectoryInfo CatalogueDirectory => _catDirectory ?? (_catDirectory = PackageDirectory.EnsureSubDirectory("catalogue"));
 
         private DirectoryInfo GetPrimeDirectory()
         {
-            return _context.AppDataDirectoryInfo.EnsureSubDirectory("prime");
+            return _context.AppDataDirectoryInfo.EnsureSubDirectory("prime-client");
         }
 
         public DirectoryInfo GetSubDirectory(string directoryName)
         {
-            return PrimeLocalDirectory.EnsureSubDirectory(directoryName);
+            return PrimeWorkspaceDirectory.EnsureSubDirectory(directoryName);
         }
 
         public DirectoryInfo GetExtWorkspace(IExtension ext)
@@ -67,7 +64,7 @@ namespace Prime.Core
             if (!(ext is IExtensionPlatform plt))
                 return WorkspaceDirectory.EnsureSubDirectory(ws);
 
-            if (plt.Platform!= Platform.NotSpecified)
+            if (plt.Platform != Platform.NotSpecified)
                 ws += "-" + plt.Platform.ToString().ToLower();
             return WorkspaceDirectory.EnsureSubDirectory(ws);
         }

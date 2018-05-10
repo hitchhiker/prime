@@ -12,11 +12,11 @@ namespace Prime.Core
     public class PublicContext : IDataContext
     {
         public static string Version = "v0.02";
-        public readonly PrimeContext PrimeContext;
+        public readonly ServerContext ServerContext;
 
-        public PublicContext(PrimeContext primeContext)
+        public PublicContext(ServerContext serverContext)
         {
-            PrimeContext = primeContext;
+            ServerContext = serverContext;
             Id = "prime:public:context".GetObjectIdHashCode();
             I = this;
         }
@@ -32,7 +32,7 @@ namespace Prime.Core
         public bool IsPublic => true;
         
         private DirectoryInfo _storageDirectory;
-        public DirectoryInfo StorageDirectoryPub => _storageDirectory ?? (_storageDirectory = PrimeContext.FileSystem.PrimeWorkspaceDirectory.EnsureSubDirectory("pub"));
+        public DirectoryInfo StorageDirectoryPub => _storageDirectory ?? (_storageDirectory = ServerContext.FileSystem.PrimeWorkspaceDirectory.EnsureSubDirectory("pub"));
         
         /*
         private ExchangeDatas _exchangeData;

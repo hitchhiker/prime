@@ -16,7 +16,7 @@ namespace Prime.Finance
 
         public Version Version { get; } = new Version("1.0.0");
 
-        public void Main(PrimeContext context)
+        public void Main(ServerContext context)
         {
             //
         }

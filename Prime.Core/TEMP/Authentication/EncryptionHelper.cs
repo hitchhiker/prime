@@ -4,18 +4,52 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
 #endregion
 
-namespace Prime.Core.Authentication
+namespace Prime.Core.Encryption
 {
-    public class AuthUtilities
+    public class EncryptionHelper
     {
+        public static AsymmetricCipherKeyPair GenerateKeys(AsymmetricKeySize keySize)
+        {
+            var gen = new ECKeyPairGenerator();
+            var secureRandom = new SecureRandom();
+            var keyGenParam = new KeyGenerationParameters(secureRandom, (int)keySize);
+            gen.Init(keyGenParam);
+            return gen.GenerateKeyPair();
+        }
+
+        public static bool VerifySignature(AsymmetricCipherKeyPair key, string plainText, byte[] signature)
+        {
+            var encoder = new ASCIIEncoding();
+            var inputData = encoder.GetBytes(plainText);
+            var signer = SignerUtilities.GetSigner("ECDSA");
+            signer.Init(false, key.Public);
+            signer.BlockUpdate(inputData, 0, inputData.Length);
+            return signer.VerifySignature(signature);
+        }
+
+        public static byte[] GetSignature(string plainText, AsymmetricCipherKeyPair key)
+        {
+            var encoder = new ASCIIEncoding();
+            var inputData = encoder.GetBytes(plainText);
+
+            var signer = SignerUtilities.GetSigner("ECDSA");
+            signer.Init(true, key.Private);
+            signer.BlockUpdate(inputData, 0, inputData.Length);
+
+            return signer.GenerateSignature();
+        }
+
         public static string GetKeyString(PgpKeyRing kr)
         {
             using (var ms = new MemoryStream())
@@ -41,7 +75,7 @@ namespace Prime.Core.Authentication
 
         public static byte[] ReadFully(Stream input)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 input.CopyTo(ms);
                 return ms.ToArray();
@@ -58,7 +92,7 @@ namespace Prime.Core.Authentication
 
             Debug.WriteLine("Generated master key with ID " + masterKeyPair.KeyId.ToString("X"));
 
-            PgpSignatureSubpacketGenerator masterSubpckGen = new PgpSignatureSubpacketGenerator();
+            var masterSubpckGen = new PgpSignatureSubpacketGenerator();
             masterSubpckGen.SetKeyFlags(false, PgpKeyFlags.CanSign | PgpKeyFlags.CanCertify);
             masterSubpckGen.SetPreferredSymmetricAlgorithms(false, keyRingParams.SymmetricAlgorithms.Select(a => (int) a).ToArray());
             masterSubpckGen.SetPreferredHashAlgorithms(false, keyRingParams.HashAlgorithms.Select(a => (int) a).ToArray());
@@ -68,7 +102,7 @@ namespace Prime.Core.Authentication
 
             Debug.WriteLine("Generated encryption key with ID "+ encKeyPair.KeyId.ToString("X"));
 
-            PgpSignatureSubpacketGenerator encSubpckGen = new PgpSignatureSubpacketGenerator();
+            var encSubpckGen = new PgpSignatureSubpacketGenerator();
             encSubpckGen.SetKeyFlags(false, PgpKeyFlags.CanEncryptCommunications | PgpKeyFlags.CanEncryptStorage);
 
             masterSubpckGen.SetPreferredSymmetricAlgorithms(false, (keyRingParams.SymmetricAlgorithms.Select(a => (int) a)).ToArray());

@@ -23,11 +23,11 @@ namespace Prime.Core
 
         public readonly IList<IUserContextMessenger> Messengers;
 
-        public readonly PrimeContext PrimeContext;
+        public readonly ServerContext ServerContext;
 
-        public UserContext(PrimeContext context, ObjectId id, string username)
+        public UserContext(ServerContext context, ObjectId id, string username)
         {
-            PrimeContext = context;
+            ServerContext = context;
 
             Id = id;
             Token = id.ToString();
@@ -48,7 +48,7 @@ namespace Prime.Core
         }
 
         [Obsolete("This should not be used in production code")]
-        public static UserContext Testing = new UserContext(PrimeContext.Testing, new ObjectId("50709e6e210a18719ea877a2"), "test");
+        public static UserContext Testing = new UserContext(ServerContext.Testing, new ObjectId("50709e6e210a18719ea877a2"), "test");
 
         ObjectId IDataContext.Id => Id;
 
@@ -73,7 +73,7 @@ namespace Prime.Core
 
         private DirectoryInfo GetDirInfo()
         {
-            var pc = Path.Combine(PrimeContext.FileSystem.UsrDirectory.FullName, Version);
+            var pc = Path.Combine(ServerContext.FileSystem.UsrDirectory.FullName, Version);
             pc = Path.Combine(pc, Id.ToString());
             var di = new DirectoryInfo(pc);
             if (!di.Exists)

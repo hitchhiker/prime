@@ -1,4 +1,4 @@
-﻿namespace Prime.Core.Authentication
+﻿namespace Prime.Core.Encryption
 {
     public class AuthTest
     {
