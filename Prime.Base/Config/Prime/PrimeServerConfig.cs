@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 
 namespace Prime.Core
 {
+    [XmlRoot("config")]
     public class PrimeServerConfig : XmlConfigBase
     {
         private static string FileName = "prime-server.config";

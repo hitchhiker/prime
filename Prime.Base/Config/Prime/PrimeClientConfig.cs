@@ -5,11 +5,12 @@ using System.Xml.Serialization;
 
 namespace Prime.Core
 {
+    [XmlRoot("config")]
     public class PrimeClientConfig : XmlConfigBase
     {
         private static string FileName = "prime-client.config";
 
-        private PrimeClientConfig() {}
+        public PrimeClientConfig() {}
 
         public static PrimeClientConfig Get(string path)
         {

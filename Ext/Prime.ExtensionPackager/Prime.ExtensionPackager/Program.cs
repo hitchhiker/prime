@@ -51,7 +51,7 @@ namespace Prime.ExtensionPackager
                 return;
             }
 
-            var pc = new ServerContext(configPath);
+            var pc = new ClientContext(configPath);
 
             logger.Info("config: " + configPath);
             logger.Info("extension: " + extPath);
