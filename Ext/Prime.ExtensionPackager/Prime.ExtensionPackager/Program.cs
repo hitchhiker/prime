@@ -24,7 +24,7 @@ namespace Prime.ExtensionPackager
 
             if (Debugger.IsAttached)
             {
-                configPath = "..\\..\\..\\..\\..\\..\\instance\\prime.config";
+                configPath = "..\\..\\..\\..\\..\\..\\instance\\prime-client.config";
                 extPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug";
             }
             else

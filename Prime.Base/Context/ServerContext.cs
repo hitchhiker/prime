@@ -12,7 +12,7 @@ namespace Prime.Core
         public readonly Users Users;
         public readonly PrimeServerConfig Config;
 
-        public ServerContext() : this("..//..//..//..//instance//prime.config") { } //used for testing / debug
+        public ServerContext() : this("..//..//..//..//instance//prime-server.config") { } //used for testing / debug
 
         public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
 

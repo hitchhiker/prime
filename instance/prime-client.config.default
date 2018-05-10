@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<PrimeConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<PrimeClientConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <path></path>
   <packages>
 	  <installed>
 		<install id="3575ddcb0d8647d75fbf044c" friendly="ipfs" />
 	  </installed>
  </packages>
-</PrimeConfig>
+</PrimeClientConfig>

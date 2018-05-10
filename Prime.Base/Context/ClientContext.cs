@@ -11,7 +11,7 @@ namespace Prime.Core
         public readonly IMessenger Messenger;
         public readonly PrimeClientConfig Config;
 
-        public ClientContext() : this("..//..//..//..//instance//prime.config") { } //used for testing / debug
+        public ClientContext() : this("..//..//..//..//instance//prime-client.config") { } //used for testing / debug
 
         public ClientContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
 
