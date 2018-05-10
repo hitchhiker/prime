@@ -4,6 +4,54 @@ namespace Prime.Finance.Services.Services.Exmo
 {
     internal class ExmoSchema
     {
+        #region Base
+
+        internal class BaseResponse
+        {
+            public bool result;
+            public string error;
+        }
+
+        #endregion
+
+        #region Private
+
+        internal class UserInfoResponse
+        {
+            public long uid;
+            public long server_date;
+            public Dictionary<string, decimal> balances;
+            public Dictionary<string, decimal> reserved;
+        }
+
+        internal class NewOrderResponse : BaseResponse
+        {
+            public string order_id;
+        }
+
+        internal class ActiveOrdersResponse : Dictionary<string, OrderInfoResponse[]>
+        {
+        }
+
+        internal class OrderInfoResponse
+        {
+            public string order_id;
+            public long created;
+            public string type;
+            public string pair;
+            public decimal price;
+            public decimal quantity;
+            public decimal amount;
+        }
+
+        internal class WithdrawalResponse : BaseResponse
+        {
+            public string task_id;
+        }
+
+        #endregion
+
+        #region Public
         internal class TickerResponse : Dictionary<string, TickerEntryResponse> { }
 
         internal class OrderBookResponse : Dictionary<string, OrderBookEntryResponse> { }
@@ -32,5 +80,6 @@ namespace Prime.Finance.Services.Services.Exmo
             public decimal[][] ask;
             public decimal[][] bid;
         }
+        #endregion
     }
 }

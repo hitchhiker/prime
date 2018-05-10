@@ -9,7 +9,7 @@ namespace Prime.Finance.Services.Services.Exmo
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://exmo.com/en/api#/public_api
-    public class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string ExmoApiVersion = "v1";
         private const string ExmoApiUrl = "https://api.exmo.com/" + ExmoApiVersion;
@@ -37,7 +37,7 @@ namespace Prime.Finance.Services.Services.Exmo
 
         public ExmoProvider()
         {
-            ApiProvider = new RestApiClientProvider<IExmoApi>(ExmoApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IExmoApi>(ExmoApiUrl, this, (k) => new ExmoAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -50,7 +50,14 @@ namespace Prime.Finance.Services.Services.Exmo
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return true;
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            //CheckResponseErrors(rRaw);
+
+            //var r = rRaw.GetContent();
+
+            return r != null/* && r.success*/;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
