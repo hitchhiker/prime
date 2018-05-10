@@ -10,7 +10,7 @@ namespace Prime.Core
     {
         public readonly IMessenger Messenger;
         public readonly Users Users;
-        public readonly PrimeConfig PrimeConfig;
+        public readonly PrimeServerConfig Config;
 
         public ServerContext() : this("..//..//..//..//instance//prime.config") { } //used for testing / debug
 
@@ -24,7 +24,7 @@ namespace Prime.Core
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
-            PrimeConfig = PrimeConfig.Get(Path.GetFullPath(configPath));
+            Config = PrimeServerConfig.Get(Path.GetFullPath(configPath));
             Messenger = messenger;
             Users = new Users(this);
             Public = new PublicContext(this);
@@ -50,11 +50,11 @@ namespace Prime.Core
 
         private DirectoryInfo GetAppBase()
         {
-            if (!string.IsNullOrWhiteSpace(PrimeConfig.BasePath))
-                return new DirectoryInfo(Path.GetFullPath(PrimeConfig.BasePath));
+            if (!string.IsNullOrWhiteSpace(Config.BasePath))
+                return new DirectoryInfo(Path.GetFullPath(Config.BasePath));
 
-            if (PrimeConfig.ConfigLoadedFrom!=null)
-                return PrimeConfig.ConfigLoadedFrom.Directory;
+            if (Config.ConfigLoadedFrom!=null)
+                return Config.ConfigLoadedFrom.Directory;
 
             return new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
         }

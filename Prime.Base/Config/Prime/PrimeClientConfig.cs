@@ -5,13 +5,13 @@ using System.Xml.Serialization;
 
 namespace Prime.Core
 {
-    public class PrimeConfig : XmlConfigBase
+    public class PrimeClientConfig : XmlConfigBase
     {
-        private static string FileName = "prime.config";
+        private static string FileName = "prime-client.config";
 
-        private PrimeConfig() {}
+        private PrimeClientConfig() {}
 
-        public static PrimeConfig Get(string path)
+        public static PrimeClientConfig Get(string path)
         {
             var fi = new FileInfo(path);
             if (!fi.Exists)
@@ -20,11 +20,11 @@ namespace Prime.Core
                     throw new Exception(fi.FullName + " does not exist, and no .default file present.");
             }
 
-            var pc = Load<PrimeConfig>(new FileInfo(path));
+            var pc = Load<PrimeClientConfig>(new FileInfo(path));
             if (pc != null)
                 pc.ConfigLoadedFrom = fi;
 
-            return pc ?? new PrimeConfig();
+            return pc ?? new PrimeClientConfig();
         }
 
         private static bool TryDefault(FileInfo fi)
