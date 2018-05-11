@@ -18,13 +18,13 @@ export class KeysManager {
         this.primeTcpClient.registerIpc();
         this.registerIpc();
     }
-
+	   
     private registerIpc() {
         // IpcManager.i().getPrivateProvidersListMessage.handle((context: IIpcHandlerContext) => {
         //     Logger.log("Querying providers list...");
 
         //     this.tcpClient.write(JSON.stringify({
-        //         "Type": "PrivateProvidersListMessage"
+        //         "$type": "prime.keysmanager.privateproviderslistrequestmessage"
         //     }));
 
         //     return "";
@@ -41,9 +41,9 @@ export class KeysManager {
             Logger.log("Calling server to generate GUID...");
         
             this.tcpClient.write(JSON.stringify({
-                "Type": "GenerateGuidMessage",
-            }));
-        
+                "$type": "GenerateGuidMessage",
+            })); 
+          
             this.dataHandlerChannel = "prime:client-guid-generated";
         });
         
@@ -51,7 +51,7 @@ export class KeysManager {
             Logger.log("Querying providers list...");
         
             this.tcpClient.write(JSON.stringify({
-                "Type": "PrivateProvidersListMessage"
+                "$type": "prime.keysmanager.privateproviderslistrequestmessage"
             }));
             this.dataHandlerChannel = "prime:private-providers-list";
         });
@@ -60,7 +60,7 @@ export class KeysManager {
             Logger.log("Querying provider details...");
         
             this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderDetailsMessage",
+                "$type": "prime.keysmanager.providerdetailsrequestmessage",
                 "Id": arg
             }));
             this.dataHandlerChannel = "prime:provider-details";
@@ -70,7 +70,7 @@ export class KeysManager {
             Logger.log("Saving provider keys...");
         
             this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderKeysMessage",
+                "$type": "prime.keysmanager.providerkeysrequestmessage",
                 "Id": arg.id,
                 "Key": arg.keys.Key,
                 "Secret": arg.keys.Secret,
@@ -83,20 +83,20 @@ export class KeysManager {
             Logger.log("Saving provider keys...");
         
             this.tcpClient.write(JSON.stringify({
-                "Type": "DeleteProviderKeysMessage",
+                "$type": "prime.keysmanager.deleteproviderkeysrequestmessage",
                 "Id": arg,
             }));
-            this.dataHandlerChannel = "prime:provider-keys-deleted";
+            this.dataHandlerChannel = "prime:provider-keys-deleted"; 
         });
         
         IpcMain.on('prime:test-private-api', (event, arg) => {
             Logger.log("Testing private API...");
         
             this.tcpClient.write(JSON.stringify({
-                "Type": "TestPrivateApiMessage",
+                "$type": "prime.keysmanager.testprivateapirequestmessage", 
                 "Id": arg.id,
-                "Key": arg.keys.Key,
-                "Secret": arg.keys.Secret,
+                "Key": arg.keys.Key, 
+                "Secret": arg.keys.Secret, 
                 "Extra": arg.keys.Extra
             }));
             this.dataHandlerChannel = "prime:private-api-tested";

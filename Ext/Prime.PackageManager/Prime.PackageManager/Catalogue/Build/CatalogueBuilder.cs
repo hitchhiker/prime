@@ -23,17 +23,17 @@ namespace Prime.PackageManager
 
             var dirs = dDir.EnumerateDirectories().ToList();
 
-            _context.Logger.Info("Scanning distribution directory: " + dDir.FullName);
+            _context.L.Info("Scanning distribution directory: " + dDir.FullName);
 
             if (dirs.Count == 0)
             {
-                _context.Logger.Warn("Distribution directory is empty.");
+                _context.L.Warn("Distribution directory is empty.");
                 return null;
             }
 
             var cat = Discover(dirs);
 
-            _context.Logger.Info($"{cat.Count} entries found.");
+            _context.L.Info($"{cat.Count} entries found.");
 
             var jsonObject = CreateJsonObject(cat);
 
@@ -62,7 +62,7 @@ namespace Prime.PackageManager
                     }
                     catch (Exception e)
                     {
-                        _context.Logger.Error(e.Message + " in " + sd.FullName);
+                        _context.L.Error(e.Message + " in " + sd.FullName);
                     }
                 }
             }

@@ -19,7 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Ext\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance\Prime.Finance.csproj" />
+    <ProjectReference Include="..\Ext\Prime.KeysManager\Prime.KeysManager.csproj" />
     <ProjectReference Include="..\Ext\Prime.PackageManager\Prime.PackageManager\Prime.PackageManager.csproj" />
+    <ProjectReference Include="..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Windows\Prime.Core.Windows.csproj" />
   </ItemGroup>
@@ -31,11 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tests\Sean\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

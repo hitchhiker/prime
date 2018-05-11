@@ -25,7 +25,7 @@ namespace Prime.Core
                 if (!_collected)
                 {
                     _collected = true;
-                    KnownNetworks.AddRange(TypeCatalogue.I.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).Select(x => x.Network));
+                    KnownNetworks.AddRange(ServerContext.Testing.Extensions.Types.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).Select(x => x.Network));
                 }
             }
             return _cache.GetOrAdd(Network.GetHash(name), k => new Network(name));
@@ -33,7 +33,7 @@ namespace Prime.Core
 
         private bool _collected;
         private IReadOnlyList<INetworkProvider> _providers;
-        public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = TypeCatalogue.I.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).OrderByDescending(x=>x.Priority).ToList());
+        public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = ServerContext.Testing.Extensions.Types.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).OrderByDescending(x=>x.Priority).ToList());
 
         private readonly ConcurrentDictionary<Type, IReadOnlyList<INetworkProvider>> _providersTypeDictionary = new ConcurrentDictionary<Type, IReadOnlyList<INetworkProvider>>();
 

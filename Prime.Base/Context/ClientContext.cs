@@ -13,7 +13,7 @@ namespace Prime.Core
 
         public ClientContext() : this("..//..//..//..//instance//prime-client.config") { } //used for testing / debug
 
-        public ClientContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
+        public ClientContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultClient) { }
 
         public ClientContext(string configPath, IMessenger messenger)
         {

@@ -6,7 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Data\Misc\PublicFast.cs" />
-    <Compile Remove="System\Reflection\ExtensionLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.OpenPgp" Version="1.8.1.1" />

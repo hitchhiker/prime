@@ -20,7 +20,12 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var ctx = new ServerContext
+            var serverCtx = new ServerContext
+            {
+                L = new ConsoleLogger()
+            };
+
+            var clientCtx = new ClientContext
             {
                 Logger = new ConsoleLogger()
             };
@@ -37,8 +42,8 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
-                var test = new KeysManager() as ITestBase;
-                test.Go();
+                //var test = new KeysManager() as ITestBase;
+                //test.Go();
             }
             else if (Environment.UserName.Equals("Sean"))
             {
@@ -46,7 +51,7 @@ namespace TestConsole
             }
             else if (Environment.UserName.Equals("hitchhiker"))
             {
-                Frank.Go(ctx);
+                Frank.Go(serverCtx, clientCtx);
                 /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)

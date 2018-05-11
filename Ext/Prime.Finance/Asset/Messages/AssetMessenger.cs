@@ -6,7 +6,7 @@ namespace Prime.Finance.AssetMessages
 {
     public class AssetMessenger : IStartupMessenger
     {
-        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
+        private readonly IMessenger _messenger = DefaultMessenger.I.DefaultServer;
 
         public AssetMessenger()
         {

@@ -33,11 +33,11 @@ namespace Prime.Core
             messenger.Register<TMessage>(recipient, token, Ka);
         }
 
-        public static void RegisterAsync<TMessage>(this IMessenger messenger, object recipient, Action<TMessage> action)
+        public static void RegisterAsync<TMessage>(this IMessenger messenger, object recipient, Action<TMessage> action, bool derivedMessagesToo = false)
         {
             void Ka(TMessage m) => RegisterAction(action, m);
             KeepAlive.Add(new Tuple<object, object>(recipient, (Action<TMessage>)Ka));
-            messenger.Register<TMessage>(recipient, Ka);
+            messenger.Register<TMessage>(recipient, derivedMessagesToo, Ka);
         }
 
         private static void RegisterAction<TMessage>(Action<TMessage> action, TMessage t)
@@ -61,6 +61,7 @@ namespace Prime.Core
             KeepAlive.RemoveAll(x => x.Item1 == recipient);
         }
 
+        /*
         public static T WaitForResponse<TSend, T>(this TSend requestMessage, Func<T, bool> messageCheck = null)
         {
             var registrationobj = new object();
@@ -82,6 +83,6 @@ namespace Prime.Core
 
             m.Unregister(registrationobj);
             return r;
-        }
+        }*/
     }
 }

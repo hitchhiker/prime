@@ -31,7 +31,7 @@ namespace Prime.Finance
             var a = _cache.GetOrAdd(assetCode, Asset.InstanceRaw);
 
             if (!contains)
-                DefaultMessenger.I.Default.Send(new AssetFoundMessage(a));
+                DefaultMessenger.I.DefaultServer.Send(new AssetFoundMessage(a));
             
             return a;
         }

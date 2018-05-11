@@ -7,7 +7,7 @@ namespace Prime.Core
 {
     public abstract class CoordinatorBase
     {
-        protected readonly IMessenger _messenger = DefaultMessenger.I.Default;
+        protected readonly IMessenger _messenger = DefaultMessenger.I.DefaultServer;
 
         protected int TimerInterval { get; set; }
         public int SubscribersCount { get; protected set; } = 0;

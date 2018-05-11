@@ -12,7 +12,7 @@ namespace Prime.Finance.Prices.Latest
 {
     internal sealed class Messenger : RenewingSubscriberList<LatestPriceRequestSubscription, SubscriptionRequests>, IStartupMessenger, IDisposable
     {
-        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
+        private readonly IMessenger _messenger = DefaultMessenger.I.DefaultServer;
         public readonly Aggregator Aggregator;
 
         internal Messenger()

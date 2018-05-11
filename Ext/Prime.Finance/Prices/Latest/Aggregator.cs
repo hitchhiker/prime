@@ -17,7 +17,7 @@ namespace Prime.Finance.Prices.Latest
         private readonly object _resultsLock = new object();
         private readonly object _commonLock = new object();
         private readonly int _timerInterval = 5000;
-        public IMessenger M { get; } = DefaultMessenger.I.Default;
+        public IMessenger M { get; } = DefaultMessenger.I.DefaultServer;
 
         internal Aggregator(Messenger lpm)
         {

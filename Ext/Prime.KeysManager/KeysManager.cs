@@ -1,75 +1,65 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
 using Prime.KeysManager.Core;
 using Prime.KeysManager.Core.Models;
 using Prime.KeysManager.Messages;
-using Prime.KeysManager.Transport;
 using Prime.KeysManager.Utils;
 
 namespace Prime.KeysManager
 {
-    public class KeysManager
+    public class KeyManagerServer
     {
-        private readonly ITcpServer _tcpServer;
-        private readonly IPrimeService _primeService;
+        private readonly ServerContext _context;
+        private readonly IApiKeyService _apiKeyService;
 
-        public short PortNumber { get; set; } = 19991;
-        public IPAddress IpAddress { get; set; } = IPAddress.Any;
-
-        public ILogger Logger { get; set; }
+        public readonly ILogger L;
+        public readonly IMessenger M;
         
-        public KeysManager(ITcpServer tcpServer, IPrimeService primeService, ILogger logger)
+        public KeyManagerServer(ServerContext context)
         {
-            _tcpServer = tcpServer;
-            _primeService = primeService;
-
-            Logger = logger;
+            _context = context;
+            _apiKeyService = new ApiKeyService(context);
+            L = _context.L;
+            M = _context.M;
         }
 
         private void Log(string text)
         {
-            Logger.Log($"({typeof(KeysManager).Name}) : {text}");
+            L.Log($"({typeof(KeyManagerServer).Name}) : {text}");
         }
         
         public void Run()
         {
-            Subscribe();
-            _tcpServer.ExceptionOccurred += TcpServerOnExceptionOccurred;
-
-            // Main app cycle.
-            _tcpServer.StartServer(IpAddress, PortNumber);     
+            M.RegisterAsync<ProvidersListRequestMessage>(this, ProvidersListHandler);
+            M.RegisterAsync<PrivateProvidersListRequestMessage>(this, PrivateProvidersListHandler);
+            M.RegisterAsync<ProviderDetailsRequestMessage>(this, ProviderDetailsHandler);
+            M.RegisterAsync<ProviderKeysRequestMessage>(this, ProviderKeysHandler);
+            M.RegisterAsync<DeleteProviderKeysRequestMessage>(this, DeleteProviderKeysHandler);
+            M.RegisterAsync<TestPrivateApiRequestMessage>(this, TestPrivateApiHandler);
+            M.RegisterAsync<GenerateGuidRequestMessage>(this, FakeClientGuidHandler);
         }
 
-        private void Subscribe()
-        {
-            _tcpServer.Subscribe<ProvidersListMessage>(ProvidersListHandler);
-            _tcpServer.Subscribe<PrivateProvidersListMessage>(PrivateProvidersListHandler);
-            _tcpServer.Subscribe<ProviderDetailsMessage>(ProviderDetailsHandler);
-            _tcpServer.Subscribe<ProviderKeysMessage>(ProviderKeysHandler);
-            _tcpServer.Subscribe<DeleteProviderKeysMessage>(DeleteProviderKeysHandler);
-            _tcpServer.Subscribe<TestPrivateApiMessage>(TestPrivateApiHandler);
-            _tcpServer.Subscribe<GenerateGuidMessage>(FakeClientGuidHandler);
-        }
-
-        private void FakeClientGuidHandler(GenerateGuidMessage fakeClientGuidMessage, TcpClient sender)
+        private void FakeClientGuidHandler(GenerateGuidRequestMessage request)
         {
             Log("Generating client GUID...");
 
             var guid = Guid.NewGuid();
-            _tcpServer.Send(sender, guid);
+            M.SendAsync(new GenerateGuidResponseMessage(request, guid));
         }
 
-        private void TestPrivateApiHandler(TestPrivateApiMessage testPrivateApiMessage, TcpClient sender)
+        private void TestPrivateApiHandler(TestPrivateApiRequestMessage request)
         {
             Log("Testing private API...");
             var success = true;
 
             try
             {
-                success = _primeService.TestPrivateApi(testPrivateApiMessage.Id, testPrivateApiMessage.Key, testPrivateApiMessage.Secret, testPrivateApiMessage.Extra);
+                success = _apiKeyService.TestPrivateApi(request.Id, request.Key, request.Secret, request.Extra);
             }
             catch (Exception e)
             {
@@ -77,17 +67,17 @@ namespace Prime.KeysManager
                 Log($"Error while testing private API: {e.Message}");
             }
 
-            _tcpServer.Send(sender, new OperationResultModel() { Success = success });
+            M.SendAsync(new TestPrivateApiResponseMessage(request, success));
         }
 
-        private void DeleteProviderKeysHandler(DeleteProviderKeysMessage deleteProviderKeysMessage, TcpClient sender)
+        private void DeleteProviderKeysHandler(DeleteProviderKeysRequestMessage request)
         {
             Log("Deleting keys...");
             var success = true;
 
             try
             {
-                _primeService.DeleteKeys(deleteProviderKeysMessage.Id);
+                _apiKeyService.DeleteKeys(request.Id);
             }
             catch (Exception e)
             {
@@ -95,59 +85,54 @@ namespace Prime.KeysManager
                 Log($"Error while deleting keys: {e.Message}");
             }
 
-            _tcpServer.Send(sender, new OperationResultModel() { Success = success });
+            M.SendAsync(new DeleteProviderKeysResponseMessage(request, success));
         }
 
-        private void ProviderKeysHandler(ProviderKeysMessage providerKeysMessage, TcpClient sender)
+        private void ProviderKeysHandler(ProviderKeysRequestMessage request)
         {
             Log("Saving keys...");
             var success = true;
             
             try
             {
-                _primeService.SaveKeys(providerKeysMessage.Id, providerKeysMessage.Key, providerKeysMessage.Secret, providerKeysMessage.Extra);
+                _apiKeyService.SaveKeys(request.Id, request.Key, request.Secret, request.Extra);
             }
             catch (Exception e)
             {
                 success = false;
                 Log($"Error while saving keys: {e.Message}");
             }
-            
-            _tcpServer.Send(sender, new OperationResultModel() { Success = success});
+
+            M.SendAsync(new ProviderKeysResponseMessage(request, success));
         }
 
-        private void ProviderDetailsHandler(ProviderDetailsMessage providerDetailsMessage, TcpClient sender)
+        private void ProviderDetailsHandler(ProviderDetailsRequestMessage request)
         {
             Log("Sending provider details...");
 
-            var providerDetails = _primeService.GetNetworkDetails(providerDetailsMessage.Id);
-            _tcpServer.Send(sender, providerDetails);
+            var response = _apiKeyService.GetNetworkDetails(request.Id);
+            M.SendAsync(new ProviderDetailsResponseMessage(request, response));
         }
 
-        private void PrivateProvidersListHandler(PrivateProvidersListMessage privateProvidersListMessage, TcpClient sender)
+        private void PrivateProvidersListHandler(PrivateProvidersListRequestMessage request)
         {
             Log("Private providers list requested... Sending...");
 
-            var providers = _primeService.GetPrivateNetworks();
-            _tcpServer.Send(sender, providers);
+            var response = _apiKeyService.GetPrivateNetworks().AsList();
+            M.SendAsync(new PrivateProvidersListResponseMessage(request, response));
         }
 
-        private void ProvidersListHandler(ProvidersListMessage providersListMessage, TcpClient sender)
+        private void ProvidersListHandler(ProvidersListRequestMessage request)
         {
             Log("Providers list requested... Sending...");
 
-            var providers = _primeService.GetNetworks();
-            _tcpServer.Send(sender, providers);
+            var response = _apiKeyService.GetNetworks().AsList();
+            M.SendAsync(new ProvidersListResponseMessage(request, response));
         }
 
-        private void TcpServerOnExceptionOccurred(object sender, Exception exception)
+        public void Stop()
         {
-            Log($"Server error occurred: {exception.Message}");
-        }
-
-        public void Exit()
-        {
-            _tcpServer.ShutdownServer();
+            M.UnregisterAsync(this);
         }
     }
 }

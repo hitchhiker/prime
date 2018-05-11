@@ -11,7 +11,7 @@ export class PrimeTcpClient {
     private responseBuffer: any[];
     private dataHandlerChannel: string;
 
-    private tcpClientDataReceivedCallbackMessage: IIpcMessage = null;
+    private tcpClientDataReceivedCallbackMessage: IIpcMessage = null; 
 
     connect() {
         Logger.log("Starting TCP client...");
@@ -41,7 +41,7 @@ export class PrimeTcpClient {
             Logger.log("Querying providers list...");
 
             this.tcpClient.write(JSON.stringify({
-                "Type": "PrivateProvidersListMessage"
+                "$type": "prime.keysmanager.privateproviderslistrequestmessage"
             }));
 
             this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
@@ -52,7 +52,7 @@ export class PrimeTcpClient {
             console.log("Querying provider details...");
 
             this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderDetailsMessage",
+                "$type": "ProviderDetailsMessage",
                 "Id": context.data
             }));
 
@@ -65,7 +65,7 @@ export class PrimeTcpClient {
 
             var data = context.data;
             this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderKeysMessage",
+                "$type": "ProviderKeysMessage",
                 "Id": data.id,
                 "Key": data.keys.Key,
                 "Secret": data.keys.Secret,
@@ -80,7 +80,7 @@ export class PrimeTcpClient {
             console.log("Deleting provider keys...");
 
             this.tcpClient.write(JSON.stringify({
-                "Type": "DeleteProviderKeysMessage",
+                "$type": "DeleteProviderKeysMessage",
                 "Id": context.data,
             }));
 
@@ -94,7 +94,7 @@ export class PrimeTcpClient {
             var data = context.data;
 
             this.tcpClient.write(JSON.stringify({
-                "Type": "TestPrivateApiMessage",
+                "$type": "TestPrivateApiMessage",
                 "Id": data.id,
                 "Key": data.keys.Key,
                 "Secret": data.keys.Secret,

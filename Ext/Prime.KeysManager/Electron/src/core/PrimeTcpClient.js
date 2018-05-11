@@ -34,7 +34,7 @@ var PrimeTcpClient = /** @class */ (function () {
         IpcManager_1.IpcManager.i().getPrivateProvidersListMessage.handle(function (context) {
             Logger_1.Logger.log("Querying providers list...");
             _this.tcpClient.write(JSON.stringify({
-                "Type": "PrivateProvidersListMessage"
+                "$type": "prime.keysmanager.privateproviderslistrequestmessage"
             }));
             _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
             return null;
@@ -42,7 +42,7 @@ var PrimeTcpClient = /** @class */ (function () {
         IpcManager_1.IpcManager.i().getProviderDetailsMessage.handle(function (context) {
             console.log("Querying provider details...");
             _this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderDetailsMessage",
+                "$type": "ProviderDetailsMessage",
                 "Id": context.data
             }));
             _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
@@ -52,7 +52,7 @@ var PrimeTcpClient = /** @class */ (function () {
             console.log("Saving provider keys...");
             var data = context.data;
             _this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderKeysMessage",
+                "$type": "ProviderKeysMessage",
                 "Id": data.id,
                 "Key": data.keys.Key,
                 "Secret": data.keys.Secret,
@@ -64,7 +64,7 @@ var PrimeTcpClient = /** @class */ (function () {
         IpcManager_1.IpcManager.i().deleteProviderKeysMessage.handle(function (context) {
             console.log("Deleting provider keys...");
             _this.tcpClient.write(JSON.stringify({
-                "Type": "DeleteProviderKeysMessage",
+                "$type": "DeleteProviderKeysMessage",
                 "Id": context.data,
             }));
             _this.tcpClientDataReceivedCallbackMessage = context.ipcMessageCaller;
@@ -74,7 +74,7 @@ var PrimeTcpClient = /** @class */ (function () {
             console.log("Testing private API...");
             var data = context.data;
             _this.tcpClient.write(JSON.stringify({
-                "Type": "TestPrivateApiMessage",
+                "$type": "TestPrivateApiMessage",
                 "Id": data.id,
                 "Key": data.keys.Key,
                 "Secret": data.keys.Secret,

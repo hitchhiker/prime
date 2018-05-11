@@ -36,14 +36,14 @@ var KeysManager = /** @class */ (function () {
         electron_1.ipcMain.on('prime:get-private-providers-list', function (event, arg) {
             Logger_1.Logger.log("Querying providers list...");
             _this.tcpClient.write(JSON.stringify({
-                "Type": "PrivateProvidersListMessage"
+                "type": "prime.keysmanager.privateproviderslistrequestmessage"
             }));
             _this.dataHandlerChannel = "prime:private-providers-list";
         });
         electron_1.ipcMain.on('prime:get-provider-details', function (event, arg) {
             Logger_1.Logger.log("Querying provider details...");
             _this.tcpClient.write(JSON.stringify({
-                "Type": "ProviderDetailsMessage",
+                "type": "prime.keysmanager.providerdetailsrequestmessage",
                 "Id": arg
             }));
             _this.dataHandlerChannel = "prime:provider-details";

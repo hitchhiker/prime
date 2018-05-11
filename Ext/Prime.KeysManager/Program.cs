@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
 using Prime.KeysManager.Core;
-using Prime.KeysManager.Transport;
 using Prime.KeysManager.Utils;
 
 namespace Prime.KeysManager
@@ -17,17 +16,23 @@ namespace Prime.KeysManager
     {
         static void Main(string[] args)
         {
-            var pc = new ServerContext("..//..//..//..//..//instance//prime.config");
+            var sCtx = new ServerContext("..//..//..//..//..//instance//prime-server.config");
 
             var logger = new ConsoleLogger() { IncludePreamble = true };
 
-            pc.Logger = logger;
+            sCtx.L = logger;
 
             logger.Log(": Operating system: " + Environment.OSVersion.Platform);
             logger.Log(": Current directory: " + Environment.CurrentDirectory);
 
-            // Start server.
-            var keysManager = new KeysManager(new TcpServer(new JsonDataProvider(), logger), new PrimeService(), logger);
+            var server = new MessageServer(sCtx);
+            server.Start();
+
+            foreach (var i in server.TypeBinder.TypeCatalogue)
+                logger.Log(server.TypeBinder.TypeCatalogue.Get(i));
+
+                // Start message listener.
+            var keysManager = new KeyManagerServer(sCtx);
 
             Task.Run(() => { keysManager.Run(); });
             logger.Log(": Server started");

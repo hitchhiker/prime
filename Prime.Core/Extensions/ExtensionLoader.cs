@@ -50,7 +50,7 @@ namespace Prime.Extensions
             }
 
             var pc = new ServerContext();
-            var m = pc.Messenger;
+            var m = pc.M;
 
             foreach (var i in ExtensionsExecute)
                 i.Value.Main(pc);

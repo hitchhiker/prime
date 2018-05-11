@@ -5,11 +5,11 @@ namespace Prime.IPFS
 {
     public class IpfsInstanceContext
     {
-        public readonly PrimeContext PrimeContext;
+        public readonly ServerContext ServerContext;
 
-        public IpfsInstanceContext(PrimeContext context, IpfsPlatformBase platform)
+        public IpfsInstanceContext(ServerContext context, IpfsPlatformBase platform)
         {
-            PrimeContext = context;
+            ServerContext = context;
             WorkspaceDirectory = context.FileSystem.GetExtWorkspace(platform.Instance);
             Platform = platform;
         }

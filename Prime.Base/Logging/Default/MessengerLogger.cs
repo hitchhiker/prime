@@ -20,17 +20,6 @@ namespace Prime.Core
             Key = key;
         }
 
-        public MessengerLogger(string key = null)
-        {
-            Key = key;
-            Messenger = DefaultMessenger.I.Default;
-        }
-
-        public MessengerLogger(Action<string> statusConsumer, string key = null) : this(key)
-        {
-            StatusConsumer = statusConsumer;
-        }
-
         public void Status(string message)
         {
             StatusConsumer?.Invoke(message);

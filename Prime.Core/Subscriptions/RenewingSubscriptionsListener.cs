@@ -31,7 +31,7 @@ namespace Prime.Core
 
         private TimeSpan _expirationSpan = TimeSpan.MinValue;
         private readonly Action<SubscriptionState, ObjectId, T> _stateChanged;
-        protected readonly IMessenger Messenger = DefaultMessenger.I.Default;
+        protected readonly IMessenger Messenger = DefaultMessenger.I.DefaultServer;
         private readonly Dictionary<ObjectId, SubscriptionEntry> _subs = new Dictionary<ObjectId, SubscriptionEntry>();
         protected int TimerInterval { get; set; }
         public bool IsStarted { get; protected set; }

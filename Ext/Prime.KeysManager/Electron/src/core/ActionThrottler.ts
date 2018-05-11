@@ -6,6 +6,6 @@ export class ActionThrottler {
         clearTimeout(this.timer);
         this.timer = setTimeout(function() {
             action();
-        }, period);
+        }, period); 
     }
 }

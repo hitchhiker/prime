@@ -11,7 +11,7 @@ namespace Prime.Core
     {
         protected readonly Dictionary<ObjectId, MessageListEntry<TMessage, TSubscriber>> Subscribers = new Dictionary<ObjectId, MessageListEntry<TMessage, TSubscriber>>();
 
-        protected readonly IMessenger M = DefaultMessenger.I.Default;
+        protected readonly IMessenger M = DefaultMessenger.I.DefaultServer;
 
         protected readonly object Lock = new object();
 

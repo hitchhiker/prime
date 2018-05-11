@@ -16,7 +16,7 @@ namespace Prime.Core
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
             var v = (string) reader.Value;
-            return new ObjectId(v);
+            return string.IsNullOrWhiteSpace(v) ? null : new ObjectId(v);
         }
 
         public override bool CanConvert(Type objectType)

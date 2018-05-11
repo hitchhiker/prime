@@ -31,7 +31,7 @@ namespace Prime.Finance.Wallet
         private readonly ObjectId _id;
         private readonly TimerIrregular _timer;
         public readonly int TimerInterval;
-        protected readonly IMessenger M = DefaultMessenger.I.Default;
+        protected readonly IMessenger M = DefaultMessenger.I.DefaultServer;
         private readonly Debouncer _debouncer;
         private readonly List<PortfolioProvider> _scanners;
         public readonly UserContext Context;

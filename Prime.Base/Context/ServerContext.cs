@@ -8,15 +8,15 @@ namespace Prime.Core
 
     public class ServerContext
     {
-        public readonly IMessenger Messenger;
+        public readonly IMessenger M;
         public readonly Users Users;
         public readonly PrimeServerConfig Config;
 
         public ServerContext() : this("..//..//..//..//instance//prime-server.config") { } //used for testing / debug
 
-        public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.Default) { }
+        public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultServer) { }
 
-        public ServerContext(string configPath, IMessenger messenger)
+        public ServerContext(string configPath, IMessenger m)
         {
             if (Testing != null)
                 throw new Exception(nameof(ServerContext) + " is already initialised in this app domain.");
@@ -25,7 +25,7 @@ namespace Prime.Core
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
             Config = PrimeServerConfig.Get(Path.GetFullPath(configPath));
-            Messenger = messenger;
+            M = m;
             Users = new Users(this);
             Public = new PublicContext(this);
             Testing = this;
@@ -38,10 +38,17 @@ namespace Prime.Core
         private DirectoryInfo _appDataDirectoryInfo;
         public DirectoryInfo AppDataDirectoryInfo => _appDataDirectoryInfo ?? (_appDataDirectoryInfo = GetAppBase());
 
+        private ExtensionManager _extensions;
+        public ExtensionManager Extensions => _extensions ?? (_extensions = new ExtensionManager(this));
+
+        public TypeCatalogue Types => Extensions.Types;
+
+        public AssemblyCatalogue Assemblies => Extensions.Assemblies;
+
         private ILogger _logger;
-        public ILogger Logger
+        public ILogger L
         {
-            get => _logger ?? (_logger = new MessengerLogger(Messenger));
+            get => _logger ?? (_logger = new MessengerLogger(M));
             set => _logger = value;
         }
 

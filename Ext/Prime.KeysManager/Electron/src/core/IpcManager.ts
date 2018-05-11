@@ -18,7 +18,7 @@ export class IpcManager {
     helloMessage: IIpcMessage = new HelloMessage();
     getPrivateProvidersListMessage: IIpcMessage = new GetPrivateProvidersListMessage();
     getProviderDetailsMessage: IIpcMessage = new GetProviderDetailsMessage();
-    saveProviderKeysMessage: IIpcMessage = new SaveProviderKeysMessage();
+    saveProviderKeysMessage: IIpcMessage = new SaveProviderKeysMessage(); 
     deleteProviderKeysMessage: IIpcMessage = new DeleteProviderKeysMessage();
     testPrivateApiMessage: IIpcMessage = new TestPrivateApiMessage;
 }

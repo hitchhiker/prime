@@ -66,9 +66,6 @@ namespace Prime.ExtensionPackager
             Process.Go(ctx);
 
             logger.Info("");
-
-            if (Debugger.IsAttached)
-                Console.ReadLine();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Prime.Core
             Token = id.ToString();
             Username = username;
 
-            var messengers = TypeCatalogue.I.ImplementInstancesUninitialised<IUserContextMessenger>().ToList();
+            var messengers = context.Types.ImplementInstancesUninitialised<IUserContextMessenger>().ToList();
             Messengers = new List<IUserContextMessenger>();
 
             foreach (var m in messengers)

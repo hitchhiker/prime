@@ -6,7 +6,7 @@ namespace Prime.Finance
 {
     internal class AssetPairDiscoveryMessenger : IStartupMessenger
     {
-        private readonly IMessenger _m = DefaultMessenger.I.Default;
+        private readonly IMessenger _m = DefaultMessenger.I.DefaultServer;
         
         internal AssetPairDiscoveryMessenger()
         {

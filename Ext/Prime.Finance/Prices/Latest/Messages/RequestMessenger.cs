@@ -12,7 +12,7 @@ namespace Prime.Finance.Prices.Latest
     internal sealed class RequestMessenger : IDisposable
     {
         private readonly Request _request;
-        private readonly IMessenger _m = DefaultMessenger.I.Default;
+        private readonly IMessenger _m = DefaultMessenger.I.DefaultServer;
         private readonly AssetPairNetworks _nets;
         private readonly bool _isReversed;
         private readonly bool _isConverted;

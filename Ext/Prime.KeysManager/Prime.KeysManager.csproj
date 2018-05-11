@@ -9,9 +9,22 @@
     <None Remove="ElectronUI\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Electron\src\core\ActionThrottler.js" />
+    <None Remove="Electron\src\core\ActionThrottler.js.map" />
+    <None Remove="Electron\src\core\IpcManager.js" />
+    <None Remove="Electron\src\core\IpcManager.js.map" />
+    <None Remove="Electron\src\core\KeysManager.js" />
+    <None Remove="Electron\src\core\KeysManager.js.map" />
+    <None Remove="Electron\src\core\PrimeTcpClient.js" />
+    <None Remove="Electron\src\core\PrimeTcpClient.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
+    <ProjectReference Include="..\Prime.MessageServer\Prime.MessageServer.csproj" />
+    <ProjectReference Include="..\Prime.SocketServer\Prime.SocketServer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Electron\" />

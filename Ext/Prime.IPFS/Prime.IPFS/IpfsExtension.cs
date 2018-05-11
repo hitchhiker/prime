@@ -14,14 +14,14 @@ namespace Prime.IPFS
 
         public IpfsMessenger Messenger;
 
-        public void Main(PrimeContext context)
+        public void Main(ServerContext context)
         {
             var ctx = new IpfsInstanceContext(context, GetPlatformBase());
             var ipfs = new IpfsInstance(ctx);
             Messenger = new IpfsMessenger(context, ipfs);
         }
 
-        public string Title => "Ipfs";
+        public string Title => "Prime Ipfs Go";
 
         public Version Version => new Version(1, 3, 0);
 

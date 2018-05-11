@@ -6,7 +6,7 @@ namespace Prime.Finance
 {
     public class TradingMessenger : IStartupMessenger
     {
-        private readonly IMessenger _m = DefaultMessenger.I.Default;
+        private readonly IMessenger _m = DefaultMessenger.I.DefaultServer;
 
         public TradingMessenger()
         {

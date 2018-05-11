@@ -23,9 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
-    <ProjectReference Include="..\..\..\Prime.Core\Prime.Core.csproj">
-      <Private>true</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\..\..\Prime.Core\Prime.Core.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
