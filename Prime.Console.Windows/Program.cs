@@ -30,6 +30,9 @@ namespace TestConsole
                 L = new ConsoleLogger()
             };
 
+            var prime = new Prime.Core.Prime(serverCtx);
+            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+
             // if this is removed DEBUG wont work across projects!??
             var i = ClassTestBase.Test();
             i=i+ ClassTestCore.Test();
@@ -61,6 +64,8 @@ namespace TestConsole
                     ft.Go();
                     */
             }
+
+            Console.ReadLine();
 
             // ----- Kraken -----
 

@@ -24,11 +24,16 @@ namespace Prime.Core
             L = ServerContext.L;
             _helper =  new MessageTypedSender(M);
             TypeBinder = new MessageTypeNameSerializationBinder(serverContext);
+            LoadExtensions();
+        }
+
+        public void Inject(IMessageServerExtension extension)
+        {
+            _extensions.Add(extension);
         }
 
         public void Start()
         {
-            LoadExtensions();
             L.Log("Starting message servers");
             M.RegisterAsync<BaseTransportMessage>(this, PossibleSendMessage, true);
             M.RegisterAsync<ExternalMessage>(this, ReceiveMessage);

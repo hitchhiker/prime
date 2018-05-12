@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.MessageServer", "Ext\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Console.Windows", "Prime.Console.Windows\Prime.Console.Windows.csproj", "{E796ABCD-1905-4DDD-A884-0C0D6267DADA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.WebSocketServer", "Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj", "{954DBAEF-55B9-4516-84C6-796F6657852A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.WebSocketServer", "Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj", "{954DBAEF-55B9-4516-84C6-796F6657852A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +138,12 @@ Global
 		{E796ABCD-1905-4DDD-A884-0C0D6267DADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E796ABCD-1905-4DDD-A884-0C0D6267DADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E796ABCD-1905-4DDD-A884-0C0D6267DADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{954DBAEF-55B9-4516-84C6-796F6657852A}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954DBAEF-55B9-4516-84C6-796F6657852A}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954DBAEF-55B9-4516-84C6-796F6657852A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954DBAEF-55B9-4516-84C6-796F6657852A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954DBAEF-55B9-4516-84C6-796F6657852A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{954DBAEF-55B9-4516-84C6-796F6657852A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +164,7 @@ Global
 		{054D8B91-C52F-4D2A-9200-990DB48BDBF1} = {C47657DB-3FA3-4C0C-B506-96A685E3B714}
 		{2F73C077-B8CB-47A1-89CA-140C47705F53} = {C47657DB-3FA3-4C0C-B506-96A685E3B714}
 		{E796ABCD-1905-4DDD-A884-0C0D6267DADA} = {BFEFEECE-EC7F-47C9-8E16-931DFC08943A}
+		{954DBAEF-55B9-4516-84C6-796F6657852A} = {C47657DB-3FA3-4C0C-B506-96A685E3B714}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9BA2A119-8A5F-4F1E-87E5-DF9ECABDF7C4}

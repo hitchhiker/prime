@@ -24,7 +24,7 @@ namespace Prime.Core
         public void LoadAllBinDirectoryAssemblies()
         {
             var di = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
-            _manager.Loader.LoadAssemblies(di);
+            var asm = LoadAssemblies(di);
         }
 
         public T LoadExtension<T>(DirectoryInfo dir) where T : class, IExtension
@@ -84,7 +84,7 @@ namespace Prime.Core
                 if (dll.Name.Contains("roslyn", StringComparison.OrdinalIgnoreCase) || dll.DirectoryName.Contains("roslyn", StringComparison.OrdinalIgnoreCase))
                     return null;
 
-                var a = LoadAssembly(dll);
+                var a = LoadAssemblyLegacy(dll);
                 if (a != null)
                     usableAssemblies.Add(a);
             }

@@ -81,12 +81,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alyasko\AlyaskoTest.cs" />
     <Compile Include="Alyasko\ITestBase.cs" />
     <Compile Include="Alyasko\KeysManager.cs" />
     <Compile Include="Alyasko\OhlcExporter.cs" />
     <Compile Include="Alyasko\PerformanceTools.cs" />
     <Compile Include="Alyasko\ProviderInfo.cs" />
     <Compile Include="Alyasko\ProviderTools.cs" />
+    <Compile Include="Alyasko\WebSocket\HelloWsRequest.cs" />
+    <Compile Include="Alyasko\WebSocket\HelloWsResponse.cs" />
+    <Compile Include="Alyasko\WebSocket\WebSocketServerTest.cs" />
     <Compile Include="Frank\AuthManagerTest.cs" />
     <Compile Include="Frank\Data\DataTest.cs" />
     <Compile Include="Frank\Data\DataTestModel.cs" />

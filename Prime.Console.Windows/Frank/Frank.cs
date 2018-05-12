@@ -11,9 +11,9 @@ namespace Prime.ConsoleApp.Tests.Frank
         {
             //new ReflectionTests(s).Go();
 
-            new IpfsMessageTest(s).Go();
+            //new IpfsMessageTest(s).Go();
 
-            //new SocketServerTest(s, c).Go();
+            new SocketServerTestClientServer(s, c).Go();
 
             //AuthManagerTest.EcdsaKeySign(s);
 

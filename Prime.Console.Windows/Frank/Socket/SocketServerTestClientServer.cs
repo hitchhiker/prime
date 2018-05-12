@@ -17,21 +17,22 @@ namespace Prime.ConsoleApp.Tests.Frank
             var mr = false;
 
             var server = new MessageServer(S);
+            server.Inject(new SocketServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
                 S.M.Send(new HelloResponse(x));
             });
 
-            C.Messenger.RegisterAsync<HelloResponse>(this, x =>
+            C.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                C.Logger.Log(x.Response + " " + x.ClientId);
+                S.L.Log(x.Response + " " + x.ClientId);
                 mr = true;
             });
 
             server.Start();
 
-            SendAsClient(server, C.Messenger, new HelloRequest());
+            SendAsClient(server, S.M, new HelloRequest());
 
             do
             {
@@ -67,7 +68,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             Task.Run(() =>
             {
-                var helper = new MessageTypedSender(C.Messenger);
+                var helper = new MessageTypedSender(C.M);
 
                 do
                 {
