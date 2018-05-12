@@ -8,9 +8,7 @@ namespace Prime.Core
         [XmlAttribute("id")]
         public string IdString { get; set; }
 
-        [XmlIgnore]
         private ObjectId _id;
-
         [XmlIgnore]
         public ObjectId Id => _id ?? (_id = new ObjectId(IdString));
     }

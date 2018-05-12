@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 using Prime.Base;
 using Prime.Core;
+using Prime.IPFS.Messaging;
 
 namespace Prime.IPFS
 {
-    public abstract class IpfsExtension : IExtensionExecute, IExtensionPlatform
+    public abstract class IpfsExtensionBase : IExtensionExecute, IExtensionPlatform
     {
         private static readonly ObjectId _id = new ObjectId("3575ddcb0d8647d75fbf044c"); // "prime:ipfs";
 
         public ObjectId Id => _id;
 
-        public IpfsMessenger Messenger;
+        internal IpfsInstance IpfsInstance { get; private set; }
 
         public void Main(ServerContext context)
         {
             var ctx = new IpfsInstanceContext(context, GetPlatformBase());
-            var ipfs = new IpfsInstance(ctx);
-            Messenger = new IpfsMessenger(context, ipfs);
+            IpfsInstance = new IpfsInstance(ctx);
+            IpfsInstance.Start();
         }
 
         public string Title => "Prime Ipfs Go";

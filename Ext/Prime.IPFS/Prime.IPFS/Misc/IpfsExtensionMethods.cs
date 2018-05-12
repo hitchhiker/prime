@@ -21,7 +21,7 @@ namespace Prime.IPFS
 
             enjoyGotoPurists:
 
-            if (daemon.State() == IpFsDaemonState.Running || daemon.State() == IpFsDaemonState.System)
+            if (daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System)
             {
                 onRunning.Invoke();
                 return;
@@ -38,7 +38,7 @@ namespace Prime.IPFS
 
             enjoyGotoPurists:
 
-            if (daemon.State() == IpFsDaemonState.Running || daemon.State() == IpFsDaemonState.System)
+            if (daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System)
                 return onRunning.Invoke();
             
             Thread.Sleep(1);

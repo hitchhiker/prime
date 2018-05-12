@@ -6,17 +6,23 @@ namespace Prime.Finance
 {
     internal class AssetPairDiscoveryMessenger : IStartupMessenger
     {
-        private readonly IMessenger _m = DefaultMessenger.I.DefaultServer;
-        
-        internal AssetPairDiscoveryMessenger()
+        public IMessenger M { get; private set; }
+
+        public void Start(ServerContext context)
         {
-            _m.RegisterAsync<AssetPairDiscoveryRequestMessage>(this, AssetPairProviderDiscoveryMessage);
+            M = context.M;
+            M.RegisterAsync<AssetPairDiscoveryRequestMessage>(this, AssetPairProviderDiscoveryMessage);
+        }
+
+        public void Stop()
+        {
+            M?.UnregisterAsync(this);
         }
 
         private void AssetPairProviderDiscoveryMessage(AssetPairDiscoveryRequestMessage m)
         {
             var networks = AssetPairDiscovery.I.Discover(m);
-            _m.SendAsync(new AssetPairDiscoveryResultMessage(m, networks.DiscoverFirst, networks.Discovered));
+            M.SendAsync(new AssetPairDiscoveryResultMessage(m, networks.DiscoverFirst, networks.Discovered));
         }
     }
 }

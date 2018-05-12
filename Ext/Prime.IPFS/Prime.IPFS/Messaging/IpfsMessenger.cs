@@ -1,24 +1,54 @@
-﻿using System.Threading.Tasks;
-using GalaSoft.MvvmLight.Messaging;
-using Ipfs.Api;
-using Newtonsoft.Json;
+﻿using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
 
-namespace Prime.IPFS {
-    public class IpfsMessenger : IStartupMessenger
+namespace Prime.IPFS.Messaging {
+
+    public class IpfsMessenger
     {
         private readonly ServerContext _context;
         private readonly IpfsInstance _ipfs;
-        private readonly IMessenger _m;
+        public readonly IMessenger M;
 
-        public IpfsMessenger(ServerContext context, IpfsInstance ipfs)
+        public IpfsMessenger(IpfsInstance ipfs)
         {
-            _context = context;
+            _context = ipfs.Context.ServerContext;
             _ipfs = ipfs;
-            _m = context.M;
-            _m.RegisterAsync<IpfsVersionRequest>(this, x => { _m.SendAsync(new IpfsVersionResponse() {Version = "Hello IPFS world!"}); });
+            M = _context.M;
         }
 
+        public void Start()
+        {
+            M.RegisterAsync<IpfsStartRequest>(this, IpfsStartRequest);
+            M.RegisterAsync<IpfsStopRequest>(this, IpfsStopRequest);
+            M.RegisterAsync<IpfsStatusRequest>(this, m=> SendIpfsStatus());
+            M.RegisterAsync<IpfsVersionRequest>(this, m=> SendIpfsVersion());
+        }
+
+        private void IpfsStartRequest(IpfsStartRequest m)
+        {
+            _ipfs.Start();
+        }
+
+        private void IpfsStopRequest(IpfsStopRequest m)
+        {
+            _ipfs.Stop();
+        }
+
+        private void SendIpfsVersion()
+        {
+            M.SendAsync(new IpfsVersionResponse() {Version = "Hello IPFS world!"});
+        }
+
+        public void SendIpfsStatus()
+        {
+            M.SendAsync(new IpfsStatusMessage(_ipfs.Daemon.State().GetServiceStatus()));
+        }
+
+        public void Stop()
+        {
+            M.UnregisterAsync(this);
+        }
+    
         /*
         private IpfsMessenger() { }
 

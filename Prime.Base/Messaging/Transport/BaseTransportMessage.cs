@@ -6,7 +6,7 @@ namespace Prime.Core
 {
     public abstract class BaseTransportMessage
     {
-        [JsonProperty("clientid", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(ObjectIdJsonConverter))]
+        [JsonProperty("clientId", NullValueHandling = NullValueHandling.Ignore), JsonConverter(typeof(ObjectIdJsonConverter))]
         public ObjectId ClientId { get; set; }
 
         [JsonIgnore]

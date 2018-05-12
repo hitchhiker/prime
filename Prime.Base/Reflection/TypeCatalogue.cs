@@ -13,21 +13,21 @@ namespace Prime.Core
     /// </summary>
     public sealed class TypeCatalogue : TypeIndexDictionariesBase<int>
     {
-        private readonly ExtensionManager _manager;
+        private readonly AssemblyCatalogue _assemblies;
         public static object Lock = new object();
         public static bool FilterTypeCatalogueAttribute = false;
 
-        public TypeCatalogue(ExtensionManager manager) : base(Results(manager), ReflectionExtensionMethods.GetFullHash)
+        public TypeCatalogue(AssemblyCatalogue assemblyCatalogue) : base(Results(assemblyCatalogue), t=> t.GetHashCode())
         {
-            _manager = manager;
+            _assemblies = assemblyCatalogue;
         }
 
-        private static IEnumerable<Type> Results(ExtensionManager manager)
+        private static IEnumerable<Type> Results(AssemblyCatalogue assemblyCatalogue)
         {
             var result = new List<Type>();
             var t = typeof(IncludeInTypeCatalogueAttribute);
 
-            foreach (var a in manager.Assemblies)
+            foreach (var a in assemblyCatalogue)
             {
                 if (FilterTypeCatalogueAttribute && a.CustomAttributes.All(x => x.AttributeType != t))
                     continue;

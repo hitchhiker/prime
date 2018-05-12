@@ -10,7 +10,7 @@ namespace Prime.Core
         public ApiSource(INetworkProvider provider, Type interfaceType)
         {
             Provider = provider;
-            InterfaceTypeId = ServerContext.Testing.Extensions.Types.Get(interfaceType);
+            InterfaceTypeId = ServerContext.Testing.Types.Get(interfaceType);
         }
 
         [Bson]
@@ -21,7 +21,7 @@ namespace Prime.Core
 
         public override string ToString()
         {
-            var i = ServerContext.Testing.Extensions.Types.Get(InterfaceTypeId);
+            var i = ServerContext.Testing.Types.Get(InterfaceTypeId);
             return $"{Provider?.Title} -> {i.Name}";
         }
     }

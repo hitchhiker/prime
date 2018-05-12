@@ -17,5 +17,10 @@ namespace Prime.Core
         {
             return dir.EnsureSubDirectory(RandomText.RandomFastString(10));
         }
+
+        public static string GetFullPath(this string path, DirectoryInfo root)
+        {
+            return !path.StartsWith(".") ? path : Path.Combine(root.FullName, path);
+        }
     }
 }

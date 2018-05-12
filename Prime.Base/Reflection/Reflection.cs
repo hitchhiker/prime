@@ -264,7 +264,7 @@ namespace Prime.Core
 
                 try
                 {
-                    var types = a.GetTypes().Where(t => CheckType(t, type));
+                    var types = a.GetTypes().Where(t => IsAssignableStandard(t, type));
                     result.AddRange(types);
                 }
                 catch (ReflectionTypeLoadException tle)
@@ -279,7 +279,7 @@ namespace Prime.Core
             return result;
         }
 
-        private static bool CheckType(Type t, Type compareToType)
+        public static bool IsAssignableStandard(this Type t, Type compareToType)
         {
             return !t.GetTypeInfo().IsGenericType && !t.GetTypeInfo().IsAbstract && compareToType.IsAssignableFrom(t);
         }

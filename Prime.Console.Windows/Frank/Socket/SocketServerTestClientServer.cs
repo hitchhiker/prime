@@ -8,33 +8,30 @@ using Prime.SocketServer;
 
 namespace Prime.ConsoleApp.Tests.Frank
 {
-    public class SocketServerTest
+    public class SocketServerTestClientServer : TestClientServerBase
     {
-        private ClientContext _cCtx;
-        private ServerContext _sCtx;
+        public SocketServerTestClientServer(ServerContext server, ClientContext c) : base(server, c) { }
 
-        public void Go(ServerContext sCtx, ClientContext cCtx)
+        public override void Go()
         {
-            _sCtx = sCtx;
-            _cCtx = cCtx;
-
             var mr = false;
-            var server = new MessageServer(sCtx);
 
-            sCtx.M.RegisterAsync<HelloRequest>(this, x =>
+            var server = new MessageServer(S);
+
+            S.M.RegisterAsync<HelloRequest>(this, x =>
             {
-                sCtx.M.Send(new HelloResponse(x));
+                S.M.Send(new HelloResponse(x));
             });
 
-            cCtx.Messenger.RegisterAsync<HelloResponse>(this, x =>
+            C.Messenger.RegisterAsync<HelloResponse>(this, x =>
             {
-                cCtx.Logger.Log(x.Response + " " + x.ClientId);
+                C.Logger.Log(x.Response + " " + x.ClientId);
                 mr = true;
             });
 
             server.Start();
 
-            SendAsClient(server, cCtx.Messenger, new HelloRequest());
+            SendAsClient(server, C.Messenger, new HelloRequest());
 
             do
             {
@@ -61,7 +58,7 @@ namespace Prime.ConsoleApp.Tests.Frank
             };
 
             var dataString = JsonConvert.SerializeObject(msg, settings);
-            dataString = "{\"type\":\"prime.keysmanager.privateproviderslistrequestmessage\"}";
+
             l.Log("Connection established, sending message: " + dataString);
 
             var dataBytes = dataString.GetBytes();
@@ -70,7 +67,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             Task.Run(() =>
             {
-                var helper = new MessageTypedSender(_cCtx.Messenger);
+                var helper = new MessageTypedSender(C.Messenger);
 
                 do
                 {

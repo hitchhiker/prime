@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using GalaSoft.MvvmLight.Messaging;
 
 namespace Prime.Core
@@ -11,6 +12,10 @@ namespace Prime.Core
         public readonly IMessenger M;
         public readonly Users Users;
         public readonly PrimeServerConfig Config;
+        public readonly DirectoryInfo ConfigDirectoryInfo;
+        public readonly Platform PlatformCurrent;
+        public readonly AssemblyCatalogue Assemblies;
+        public readonly TypeCatalogue Types;
 
         public ServerContext() : this("..//..//..//..//instance//prime-server.config") { } //used for testing / debug
 
@@ -18,12 +23,18 @@ namespace Prime.Core
 
         public ServerContext(string configPath, IMessenger m)
         {
+            PlatformCurrent = OsInformation.GetPlatform();
+
             if (Testing != null)
                 throw new Exception(nameof(ServerContext) + " is already initialised in this app domain.");
 
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
+            Assemblies = new AssemblyCatalogue();
+            Types = new TypeCatalogue(Assemblies);
+
+            ConfigDirectoryInfo = new FileInfo(Path.GetFullPath(configPath)).Directory;
             Config = PrimeServerConfig.Get(Path.GetFullPath(configPath));
             M = m;
             Users = new Users(this);
@@ -37,13 +48,6 @@ namespace Prime.Core
 
         private DirectoryInfo _appDataDirectoryInfo;
         public DirectoryInfo AppDataDirectoryInfo => _appDataDirectoryInfo ?? (_appDataDirectoryInfo = GetAppBase());
-
-        private ExtensionManager _extensions;
-        public ExtensionManager Extensions => _extensions ?? (_extensions = new ExtensionManager(this));
-
-        public TypeCatalogue Types => Extensions.Types;
-
-        public AssemblyCatalogue Assemblies => Extensions.Assemblies;
 
         private ILogger _logger;
         public ILogger L

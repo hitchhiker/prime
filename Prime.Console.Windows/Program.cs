@@ -12,7 +12,6 @@ using Prime.Core.Messaging;
 using Prime.Finance;
 using Prime.Finance.Services.Services.BitMex;
 using Prime.Finance.Services.Services.Kraken;
-using Prime.TestConsole;
 
 namespace TestConsole
 {
@@ -20,18 +19,18 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var serverCtx = new ServerContext
+            var serverCtx = new ServerContext("..//..//..//instance//prime-server.config")
             {
                 L = new ConsoleLogger()
             };
 
-            var clientCtx = new ClientContext
+            var clientCtx = new ClientContext("..//..//..//instance//prime-client.config")
             {
                 Logger = new ConsoleLogger()
             };
 
             // if this is removed DEBUG wont work across projects!??
-            var i = ClassTestCommon.Test();
+            var i = ClassTestBase.Test();
             i=i+ ClassTestCore.Test();
             // end HACK
 

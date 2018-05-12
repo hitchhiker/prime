@@ -1,4 +1,4 @@
-﻿namespace Prime.Base.Storage
+﻿namespace Prime.Core
 {
     public enum ServiceStatus
     {

@@ -11,7 +11,7 @@ namespace Prime.Core
 
         public MessageTypeNameSerializationBinder(ServerContext context)
         {
-            TypeCatalogue = new MessageTypeCatalogue(context.Extensions);
+            TypeCatalogue = new MessageTypeCatalogue(context);
         }
 
         public void BindToName(Type serializedType, out string assemblyName, out string typeName)

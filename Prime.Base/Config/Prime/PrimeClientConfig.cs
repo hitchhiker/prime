@@ -47,11 +47,18 @@ namespace Prime.Core
         [XmlIgnore]
         public FileInfo ConfigLoadedFrom { get; private set; }
 
-        [XmlElement("path")]
+        [XmlElement("fileSystemPath")]
         public string BasePath { get; set; }
+        
+        [XmlElement("service")]
+        public ServiceTypeEnum ServiceType { get; set; }
+
+        [XmlElement("connection")]
+        public string ConnectionString { get; set; }
+
+        public bool IsStandalone => ServiceType == ServiceTypeEnum.Standalone;
 
         [XmlElement("packages")]
         public PackageConfig PackageConfig { get; set; } = new PackageConfig();
-
     }
 }

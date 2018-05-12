@@ -4,10 +4,10 @@ using System.Composition;
 namespace Prime.IPFS.Win64
 {
     [Export(typeof(IExtensionExecute))]
-    public class IpfsWin64Extension : IpfsExtension
+    public class IpfsWin64Extension : IpfsExtensionBase
     {
         public override Platform Platform => Platform.WinAmd64;
 
-        public override IpfsPlatformBase GetPlatformBase() => new IpfsWin64(this);
+        public override IpfsPlatformBase GetPlatformBase() => new IpfsPlatformWin64(this);
     }
 }

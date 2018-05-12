@@ -1,4 +1,6 @@
-﻿namespace Prime.Base.Storage
+﻿using Prime.Core;
+
+namespace Prime.Base.Storage
 {
     public interface IService
     {

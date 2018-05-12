@@ -6,12 +6,18 @@ namespace Prime.Finance
 {
     public class TradingMessenger : IStartupMessenger
     {
-        private readonly IMessenger _m = DefaultMessenger.I.DefaultServer;
+        public IMessenger M { get; private set; }
 
-        public TradingMessenger()
+        public void Start(ServerContext context)
         {
-            _m.RegisterAsync<RequestTradeMessage>(this, RequestTradeMessage);
-            _m.RegisterAsync<TradeStatusChangedMessage>(this, TradeStatusChangedMessage);
+            M = context.M;
+            M.RegisterAsync<RequestTradeMessage>(this, RequestTradeMessage);
+            M.RegisterAsync<TradeStatusChangedMessage>(this, TradeStatusChangedMessage);
+        }
+
+        public void Stop()
+        {
+            M.UnregisterAsync(this);
         }
 
         private void RequestTradeMessage(RequestTradeMessage m)

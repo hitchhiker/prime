@@ -19,9 +19,9 @@ namespace Prime.IPFS
 
             var dir = new DirectoryInfo("c://tmp//ipfs-ext");
 
-            var pc = new ServerContext("..//..//..//..//..//..//instance/prime-server.config");
+            var pc = new ServerContext("..//..//..//..//..//instance/prime-server.config");
 
-            var ctx = new IpfsInstanceContext(pc, new IpfsWin64(new IpfsWin64Extension()))
+            var ctx = new IpfsInstanceContext(pc, new IpfsPlatformWin64(new IpfsWin64Extension()))
             {
                 Logger = logger
             };
@@ -52,7 +52,7 @@ namespace Prime.IPFS
             do
             {
                 Thread.Sleep(1);
-            } while (ipfs.Daemon.State() != IpFsDaemonState.Stopped && ipfs.Daemon.State() != IpFsDaemonState.System);
+            } while (ipfs.Daemon.State() != DaemonState.Stopped && ipfs.Daemon.State() != DaemonState.System);
         }
 
         static ConsoleEventDelegate handler;   // Keeps it from getting garbage collected

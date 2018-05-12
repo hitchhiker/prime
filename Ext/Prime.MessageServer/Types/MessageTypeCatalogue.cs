@@ -10,13 +10,13 @@ namespace Prime.Core
     /// </summary>
     public sealed class MessageTypeCatalogue : TypeIndexDictionariesBase<string>
     {
-        private readonly ExtensionManager _manager;
+        private readonly ServerContext _context;
         public static object Lock = new object();
         public static bool FilterTypeCatalogueAttribute = false;
 
-        public MessageTypeCatalogue(ExtensionManager manager) : base(Results(manager), GetHash)
+        public MessageTypeCatalogue(ServerContext context) : base(Results(context.Types), GetHash)
         {
-            _manager = manager;
+            _context = context;
         }
 
         private static string GetHash(Type type)
@@ -24,9 +24,9 @@ namespace Prime.Core
             return type.FullName.ToLower().Replace(".messages","");
         }
 
-        private static IEnumerable<Type> Results(ExtensionManager manager)
+        private static IEnumerable<Type> Results(TypeCatalogue types)
         {
-            return manager.Types.Implements<BaseTransportMessage>();
+            return types.Implements<BaseTransportMessage>();
         }
     }
 }

@@ -8,11 +8,10 @@ using System.Reflection;
 namespace Prime.Core
 {
     /// <summary>
-    /// Manages a collection of all non-GAC assemblies and their short name (survives rebuild) hashes in 2 seperate *oppositely indexed* dictionaries for extremely fast lookup.
+    /// Manages a collection of all non-GAC assemblies hashes in 2 seperate *oppositely indexed* dictionaries for extremely fast lookup.
     /// </summary>
     public sealed class AssemblyCatalogue : IEnumerable<Assembly>
     {
-        private readonly ExtensionManager _manager;
         public static object Lock = new object();
 
         private readonly Dictionary<Assembly, int> _hashLookup;
@@ -20,11 +19,10 @@ namespace Prime.Core
         private readonly List<Assembly> _assemblies;
         public IReadOnlyList<Assembly> Assemblies => _assemblies;
 
-        public AssemblyCatalogue(ExtensionManager manager)
+        public AssemblyCatalogue()
         {
-            _manager = manager;
             _assemblies = Results();
-            _hashLookup = _assemblies.ToDictionary(x => x, y => y.GetHashShortName());
+            _hashLookup = _assemblies.ToDictionary(x => x, y => y.GetHashCode());
             try
             {
                 _typeLookup = _hashLookup.ToDictionary(x => x.Value, y => y.Key);
@@ -39,8 +37,6 @@ namespace Prime.Core
         private List<Assembly> Results()
         {
             var result = new List<Assembly>();
-
-            LoadAllBinDirectoryAssemblies();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var a in assemblies)
@@ -75,38 +71,6 @@ namespace Prime.Core
                 }
             }
             return result;
-        }
-
-        private void LoadAllBinDirectoryAssemblies() //http://stackoverflow.com/questions/1288288/how-to-load-all-assemblies-from-within-your-bin-directory
-        {
-            List<Assembly> allAssemblies = new List<Assembly>();
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var dll in Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
-            {
-                if (dll.Contains("roslyn", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                var name = Path.GetFileName(dll);
-                if (string.IsNullOrWhiteSpace(name))
-                    continue;
-
-                if (loadedAssemblies.Any(x => !x.IsDynamic && Path.GetFileName(x.Location) == name))
-                    continue;
-                try
-                {
-                    allAssemblies.Add(Assembly.LoadFile(dll));
-                }
-                catch (FileLoadException loadEx)
-                {
-                    var x = loadEx;
-                } // The Assembly has already been loaded.
-                catch
-                { } // If a BadImageFormatException exception is thrown, the file is not an assembly.
-
-            } // foreach dll
         }
 
         public int Get(Assembly assembly)

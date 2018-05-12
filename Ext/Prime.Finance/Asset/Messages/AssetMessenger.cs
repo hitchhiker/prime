@@ -6,19 +6,25 @@ namespace Prime.Finance.AssetMessages
 {
     public class AssetMessenger : IStartupMessenger
     {
-        private readonly IMessenger _messenger = DefaultMessenger.I.DefaultServer;
+        public IMessenger M { get; private set; }
 
-        public AssetMessenger()
+        public void Start(ServerContext context)
         {
-            _messenger.RegisterAsync<AssetAllRequestMessage>(this, AllRequestMessage);
-            _messenger.RegisterAsync<AssetNetworkRequestMessage>(this, AssetNetworkRequestMessage);
+            M = context.M;
+            M.RegisterAsync<AssetAllRequestMessage>(this, AllRequestMessage);
+            M.RegisterAsync<AssetNetworkRequestMessage>(this, AssetNetworkRequestMessage);
+        }
+
+        public void Stop()
+        {
+            M?.UnregisterAsync(this);
         }
 
         private async void AllRequestMessage(AssetAllRequestMessage m)
         {
             var assets = await AssetProvider.I.GetAllAsync(true).ConfigureAwait(false);
             var currentAsssets = assets.Where(x => !Equals(x, Asset.None)).OrderBy(x => x.ShortCode).ToList();
-            _messenger.SendAsync(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
+            M.SendAsync(new AssetAllResponseMessage(currentAsssets, m.RequesterToken));
         }
 
         private async void AssetNetworkRequestMessage(AssetNetworkRequestMessage m)
@@ -26,7 +32,7 @@ namespace Prime.Finance.AssetMessages
             var assets = await AssetProvider.I.GetAssetsAsync(m.Network).ConfigureAwait(false);
 
             if (assets?.Any() == true)
-                _messenger.SendAsync(new AssetNetworkResponseMessage(m.Network, assets));
+                M.SendAsync(new AssetNetworkResponseMessage(m.Network, assets));
         }
     }
 }

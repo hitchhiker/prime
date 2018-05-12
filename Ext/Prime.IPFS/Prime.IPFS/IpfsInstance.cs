@@ -3,14 +3,17 @@ using System.IO;
 using Ipfs.Api;
 using Nito.AsyncEx;
 using Prime.Core;
+using Prime.IPFS.Messaging;
 
 namespace Prime.IPFS
 {
     public class IpfsInstance
     {
         public readonly IpfsInstanceContext Context;
-        public readonly DirectoryInfo WorkspaceDirectory;
         public readonly IpfsPlatformBase Platform;
+        public readonly IpfsMessenger Messenger;
+
+        public readonly DirectoryInfo WorkspaceDirectory;
         public readonly DirectoryInfo ExecutingDirectory;
 
         public IpfsInstance(IpfsInstanceContext context)
@@ -28,6 +31,8 @@ namespace Prime.IPFS
 
             if (!IsInstalled())
                 context.Platform.Install(this);
+
+            Messenger = new IpfsMessenger(this);
         }
 
         public ILogger L => Context.Logger;
@@ -49,6 +54,20 @@ namespace Prime.IPFS
 
         private IpfsClient _client;
         public IpfsClient Client => _client ?? (_client = new IpfsClient());
+
+        public void Start()
+        {
+            Daemon.Start();
+            Messenger.Start();
+            Messenger.SendIpfsStatus();
+        }
+
+        public void Stop()
+        {
+            Messenger.Stop();
+            Daemon.Stop();
+            Messenger.SendIpfsStatus();
+        }
 
         private bool IsInstalled()
         {

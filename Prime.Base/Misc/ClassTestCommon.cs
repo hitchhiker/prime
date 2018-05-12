@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Prime.Core.Messaging
 {
-    public class ClassTestCommon
+    public class ClassTestBase
     {
         public static int Test()
         {

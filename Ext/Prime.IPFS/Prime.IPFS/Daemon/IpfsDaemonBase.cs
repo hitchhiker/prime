@@ -9,7 +9,7 @@ namespace Prime.IPFS
             Instance = instance;
         }
 
-        public abstract IpFsDaemonState State();
+        public abstract DaemonState State();
 
         public abstract void Start();
 
