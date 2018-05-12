@@ -31,7 +31,7 @@ namespace Prime.KeysManager
             foreach (var i in server.TypeBinder.TypeCatalogue)
                 logger.Log(server.TypeBinder.TypeCatalogue.Get(i));
 
-                // Start message listener.
+            // Start message listener.
             var keysManager = new KeyManagerServer(sCtx);
 
             Task.Run(() => { keysManager.Run(); });

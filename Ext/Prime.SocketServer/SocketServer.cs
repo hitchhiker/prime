@@ -12,13 +12,15 @@ namespace Prime.SocketServer
         private readonly ServerContext _serverContext;
         internal readonly TcpServer TcpServer;
 
-        public ILogger Logger { get; set; }
+        public readonly ILogger L;
 
         public SocketServer(SocketServerContext socketServerContext)
         {
             Context = socketServerContext;
             _serverContext = Context.ServerContext;
             TcpServer = new TcpServer(this);
+
+            L = socketServerContext?.MessageServer?.L ?? new NullLogger();
         }
         
         public void Start()
@@ -57,7 +59,7 @@ namespace Prime.SocketServer
 
         private void Log(string text)
         {
-            Logger.Log($"({typeof(SocketServer).Name}) : {text}");
+            L.Log($"({typeof(SocketServer).Name}) : {text}");
         }
     }
 }

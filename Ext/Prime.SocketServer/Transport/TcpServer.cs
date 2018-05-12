@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 
@@ -19,6 +20,8 @@ namespace Prime.SocketServer
         private readonly JsonDataProvider _dataProvider;
         public readonly ILogger L;
         public readonly IMessenger M;
+
+        private bool _stoppedRequested;
 
         public TcpServer(SocketServer server, IMessenger messenger = null)
         {
@@ -38,6 +41,8 @@ namespace Prime.SocketServer
 
         public void Start(IPAddress address, short port)
         {
+            _stoppedRequested = false;
+
             _connectedClients.Clear();
             _listener = new TcpListener(address, port);
             _listener.Start();
@@ -48,6 +53,8 @@ namespace Prime.SocketServer
 
         public void Stop()
         {
+            _stoppedRequested = true;
+
             _listener.Stop();
 
             foreach (var connectedClient in _connectedClients)
@@ -63,7 +70,8 @@ namespace Prime.SocketServer
 
         private void WaitForClient()
         {
-            _listener.BeginAcceptTcpClient(ClientAcceptedCallback, null);
+            if(!_stoppedRequested)
+                _listener.BeginAcceptTcpClient(ClientAcceptedCallback, null);
         }
 
         private void ClientAcceptedCallback(IAsyncResult ar)
@@ -109,7 +117,7 @@ namespace Prime.SocketServer
 
         public void Send<T>(IdentifiedClient identifiedClient, T data)
         {
-            if (identifiedClient==null)
+            if (identifiedClient == null)
                 foreach (var c in _connectedClients)
                     _dataProvider.SendData(c, data);
             else

@@ -7,11 +7,13 @@ namespace Prime.ConsoleApp.Tests.Frank
     {
         public static void PackageCoordinator(ServerContext context)
         {
-            var pm = new PackageCoordinator(context);
+            // BUG: AY: PackageCoordinator is not found.
 
-            pm.EnsureInstalled();
+            //var pm = new PackageCoordinator(context);
 
-            context.L.Info(pm.Distribution.Count);
+            //pm.EnsureInstalled();
+
+            //context.L.Info(pm.Distribution.Count);
         }
 
         public static void PackageCatalogue(ServerContext context)

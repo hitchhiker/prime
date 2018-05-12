@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.MessageServer", "Ext\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Console.Windows", "Prime.Console.Windows\Prime.Console.Windows.csproj", "{E796ABCD-1905-4DDD-A884-0C0D6267DADA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.WebSocketServer", "Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj", "{954DBAEF-55B9-4516-84C6-796F6657852A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All_Debug|Any CPU = All_Debug|Any CPU

@@ -5,8 +5,9 @@ using GalaSoft.MvvmLight.Messaging;
 
 namespace Prime.Core
 {
-    //Singleton, one per application.
-
+    /// <summary>
+    /// Singleton, one per application.
+    /// </summary>
     public class ServerContext
     {
         public readonly IMessenger M;
@@ -64,7 +65,7 @@ namespace Prime.Core
             if (!string.IsNullOrWhiteSpace(Config.BasePath))
                 return new DirectoryInfo(Path.GetFullPath(Config.BasePath));
 
-            if (Config.ConfigLoadedFrom!=null)
+            if (Config.ConfigLoadedFrom != null)
                 return Config.ConfigLoadedFrom.Directory;
 
             return new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
