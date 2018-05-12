@@ -12,18 +12,12 @@ namespace Prime.Core
 
         public static void SendAsync<TMessage>(this IMessenger messenger, TMessage message)
         {
-            new Task(() =>
-            {
-                messenger.Send(message);
-            }).Start();
+            Task.Run(() => { messenger.Send(message); });
         }
 
         public static void SendAsync<TMessage>(this IMessenger messenger, TMessage message, object token)
         {
-            new Task(() =>
-            {
-                messenger.Send(message, token);
-            }).Start();
+            Task.Run(() => { messenger.Send(message, token); });
         }
 
         public static void RegisterAsync<TMessage>(this IMessenger messenger, object recipient, object token, Action<TMessage> action)
@@ -42,7 +36,7 @@ namespace Prime.Core
 
         private static void RegisterAction<TMessage>(Action<TMessage> action, TMessage t)
         {
-            new Task(() =>
+            Task.Run(() =>
             {
                 try
                 {
@@ -52,7 +46,7 @@ namespace Prime.Core
                 {
                     Logging.I.DefaultLogger?.Error(e, "Message exception");
                 }
-            }).Start();
+            });
         }
 
         public static void UnregisterAsync(this IMessenger messenger, object recipient)
