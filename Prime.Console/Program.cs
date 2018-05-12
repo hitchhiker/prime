@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using LiteDB;
 using Nito.AsyncEx;
+using Prime.Console.Alyasko;
 using Prime.ConsoleApp.Tests;
 using Prime.ConsoleApp.Tests.Alyasko;
 using Prime.ConsoleApp.Tests.Frank;
@@ -27,7 +28,7 @@ namespace TestConsole
 
             var clientCtx = new ClientContext
             {
-                Logger = new ConsoleLogger()
+                L = new ConsoleLogger()
             };
 
             // if this is removed DEBUG wont work across projects!??
@@ -42,7 +43,7 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
-                Frank.Go(serverCtx, clientCtx);
+                AlyaskoTest.Go(serverCtx, clientCtx);
                 //var test = new KeysManager() as ITestBase;
                 //test.Go();
             }

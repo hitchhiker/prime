@@ -28,7 +28,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             cCtx.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                cCtx.Logger.Log(x.Response + " " + x.ClientId);
+                cCtx.L.Log(x.Response + " " + x.ClientId);
                 mr = true;
             });
 

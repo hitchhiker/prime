@@ -35,7 +35,7 @@ namespace Prime.Core
         public DirectoryInfo AppDataDirectoryInfo => _appDataDirectoryInfo ?? (_appDataDirectoryInfo = GetAppBase());
 
         private ILogger _logger;
-        public ILogger Logger
+        public ILogger L
         {
             get => _logger ?? (_logger = new MessengerLogger(M));
             set => _logger = value;
