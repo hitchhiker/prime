@@ -7,8 +7,9 @@ using Prime.Core;
 
 namespace Prime.Core
 {
-    //Singleton, one per application.
-
+    /// <summary>
+    /// Singleton, one per application.
+    /// </summary>
     public class PublicContext : IDataContext
     {
         public static string Version = "v0.02";

@@ -42,6 +42,7 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
+                Frank.Go(serverCtx, clientCtx);
                 //var test = new KeysManager() as ITestBase;
                 //test.Go();
             }

@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
 using Prime.KeysManager.Core;
-using Prime.KeysManager.Core.Models;
 using Prime.KeysManager.Messages;
-using Prime.KeysManager.Utils;
 
 namespace Prime.KeysManager
 {

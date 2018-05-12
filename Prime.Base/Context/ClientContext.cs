@@ -4,18 +4,19 @@ using GalaSoft.MvvmLight.Messaging;
 
 namespace Prime.Core
 {
-    //Singleton, one per application.
-
+    /// <summary>
+    /// Singleton, one per application.
+    /// </summary>
     public class ClientContext
     {
-        public readonly IMessenger Messenger;
+        public readonly IMessenger M;
         public readonly PrimeClientConfig Config;
 
         public ClientContext() : this("..//..//..//..//instance//prime-client.config") { } //used for testing / debug
 
         public ClientContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultClient) { }
 
-        public ClientContext(string configPath, IMessenger messenger)
+        public ClientContext(string configPath, IMessenger m)
         {
             if (Testing != null)
                 throw new Exception(nameof(ClientContext) + " is already initialised in this app domain.");
@@ -24,7 +25,7 @@ namespace Prime.Core
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
             Config = PrimeClientConfig.Get(Path.GetFullPath(configPath));
-            Messenger = messenger;
+            M = m;
             Testing = this;
         }
 
@@ -36,7 +37,7 @@ namespace Prime.Core
         private ILogger _logger;
         public ILogger Logger
         {
-            get => _logger ?? (_logger = new MessengerLogger(Messenger));
+            get => _logger ?? (_logger = new MessengerLogger(M));
             set => _logger = value;
         }
 
@@ -48,7 +49,7 @@ namespace Prime.Core
             if (!string.IsNullOrWhiteSpace(Config.BasePath))
                 return new DirectoryInfo(Path.GetFullPath(Config.BasePath));
 
-            if (Config.ConfigLoadedFrom!=null)
+            if (Config.ConfigLoadedFrom != null)
                 return Config.ConfigLoadedFrom.Directory;
 
             return new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));

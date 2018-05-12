@@ -26,7 +26,7 @@ namespace Prime.ConsoleApp.Tests.Frank
                 sCtx.M.Send(new HelloResponse(x));
             });
 
-            cCtx.Messenger.RegisterAsync<HelloResponse>(this, x =>
+            cCtx.M.RegisterAsync<HelloResponse>(this, x =>
             {
                 cCtx.Logger.Log(x.Response + " " + x.ClientId);
                 mr = true;
@@ -34,7 +34,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             server.Start();
 
-            SendAsClient(server, cCtx.Messenger, new HelloRequest());
+            SendAsClient(server, cCtx.M, new HelloRequest());
 
             do
             {
@@ -61,7 +61,7 @@ namespace Prime.ConsoleApp.Tests.Frank
             };
 
             var dataString = JsonConvert.SerializeObject(msg, settings);
-            dataString = "{\"type\":\"prime.keysmanager.privateproviderslistrequestmessage\"}";
+            //dataString = "{\"type\":\"prime.keysmanager.privateproviderslistrequestmessage\"}";
             l.Log("Connection established, sending message: " + dataString);
 
             var dataBytes = dataString.GetBytes();
@@ -70,7 +70,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             Task.Run(() =>
             {
-                var helper = new MessageTypedSender(_cCtx.Messenger);
+                var helper = new MessageTypedSender(_cCtx.M);
 
                 do
                 {

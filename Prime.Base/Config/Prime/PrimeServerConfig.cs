@@ -18,7 +18,7 @@ namespace Prime.Core
             if (!fi.Exists)
             {
                 if (!TryDefault(fi) || !fi.Exists)
-                    throw new Exception(fi.FullName + " does not exist, and no .default file present.");
+                    throw new FileNotFoundException(fi.FullName + " does not exist, and no .default file present.");
             }
 
             var pc = Load<PrimeServerConfig>(new FileInfo(path));

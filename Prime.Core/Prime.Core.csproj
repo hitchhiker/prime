@@ -5,6 +5,14 @@
     <Configurations>Debug;Release;All_Debug</Configurations>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Messages\**" />
+    <Compile Remove="Public\**" />
+    <EmbeddedResource Remove="Messages\**" />
+    <EmbeddedResource Remove="Public\**" />
+    <None Remove="Messages\**" />
+    <None Remove="Public\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Data\Misc\PublicFast.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -22,10 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Messages\" />
-    <Folder Include="Public\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).*&quot; &quot;$(SolutionDir)\lib\prime&quot; /i /d /y" />

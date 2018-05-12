@@ -21,7 +21,7 @@ namespace Prime.Core
 
         private static string GetHash(Type type)
         {
-            return type.FullName.ToLower().Replace(".messages","");
+            return type.FullName.ToLower().Replace(".messages", "");
         }
 
         private static IEnumerable<Type> Results(ExtensionManager manager)
