@@ -8,9 +8,9 @@ using Prime.SocketServer;
 
 namespace Prime.ConsoleApp.Tests.Frank
 {
-    public class SocketServerTestClientServer : TestClientServerBase
+    public class SocketServerTest : TestClientServerBase
     {
-        public SocketServerTestClientServer(ServerContext server, ClientContext c) : base(server, c) { }
+        public SocketServerTest(ServerContext server, ClientContext c) : base(server, c) { }
 
         public override void Go()
         {

@@ -14,8 +14,7 @@ namespace Prime.Console.Alyasko
 
             logger.Log("Alyasko Test started...");
 
-            var test = new WebSocketServerTest(serverCtx, clientCtx);
-            test.Run();
+            new WebSocketServerTest(serverCtx, clientCtx).Go();
         }
     }
 }

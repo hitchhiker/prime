@@ -101,7 +101,7 @@
     <Compile Include="Frank\ReflectionTests.cs" />
     <Compile Include="Frank\Socket\HelloRequest.cs" />
     <Compile Include="Frank\Socket\HelloResponse.cs" />
-    <Compile Include="Frank\Socket\SocketServerTestClientServer.cs" />
+    <Compile Include="Frank\Socket\SocketServerTest.cs" />
     <Compile Include="Frank\TestClientServerBase.cs" />
     <Compile Include="Frank\TestServerBase.cs" />
     <Compile Include="Program.cs" />
@@ -131,6 +131,10 @@
     <ProjectReference Include="..\Ext\Prime.SocketServer\Prime.SocketServer.csproj">
       <Project>{054d8b91-c52f-4d2a-9200-990db48bdbf1}</Project>
       <Name>Prime.SocketServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj">
+      <Project>{954dbaef-55b9-4516-84c6-796f6657852a}</Project>
+      <Name>Prime.WebSocketServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Prime.Base\Prime.Base.csproj">
       <Project>{51044a3a-27b8-4a00-a032-52fff4559321}</Project>

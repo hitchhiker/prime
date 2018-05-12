@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Prime.Console.Alyasko.WebSocket;
 using Prime.Core.Encryption;
 using Prime.Core;
 using Prime.Extensions;
@@ -13,7 +14,9 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             //new IpfsMessageTest(s).Go();
 
-            new SocketServerTestClientServer(s, c).Go();
+            new WebSocketServerTest(s, c).Go();
+
+            //new SocketServerTest(s, c).Go();
 
             //AuthManagerTest.EcdsaKeySign(s);
 
