@@ -1,6 +1,6 @@
 ﻿using Prime.Core;
 
-namespace Prime.ConsoleApp.Tests.Frank
+namespace Prime.Core.Testing
 {
     public class HelloRequest : BaseTransportRequestMessage
     {

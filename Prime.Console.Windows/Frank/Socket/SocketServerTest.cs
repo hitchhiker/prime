@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Core;
+using Prime.Core.Testing;
 using Prime.SocketServer;
 
 namespace Prime.ConsoleApp.Tests.Frank
@@ -21,7 +22,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
-                S.M.Send(new HelloResponse(x));
+                S.M.Send(new HelloResponse(x, "Hello World from Sockets!"));
             });
 
             C.M.RegisterAsync<HelloResponse>(this, x =>

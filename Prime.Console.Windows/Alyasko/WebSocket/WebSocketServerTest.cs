@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Prime.Console.Windows.Frank.Socket;
 using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
+using Prime.Core.Testing;
 using Prime.WebSocketServer;
 using Prime.WebSocketServer.Messages;
 
@@ -24,12 +25,12 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
             var server = new MessageServer(S);
             server.Inject(new WsServerExtension());
 
-            S.M.RegisterAsync<HelloWsRequest>(this, x =>
+            S.M.RegisterAsync<HelloRequest>(this, x =>
             {
-                S.M.Send(new HelloWsResponse(x));
+                S.M.Send(new HelloResponse(x, "Hello World from WebSockets!"));
             });
 
-            C.M.RegisterAsync<HelloWsResponse>(this, x =>
+            C.M.RegisterAsync<HelloResponse>(this, x =>
             {
                 S.L.Log(x.Response + " " + x.ClientId);
                 mr = true;
