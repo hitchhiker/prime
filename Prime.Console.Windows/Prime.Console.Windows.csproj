@@ -100,8 +100,6 @@
     <Compile Include="Frank\Ipfs\IpfsMessageTest.cs" />
     <Compile Include="Frank\PackageTests.cs" />
     <Compile Include="Frank\ReflectionTests.cs" />
-    <Compile Include="Frank\Socket\HelloRequest.cs" />
-    <Compile Include="Frank\Socket\HelloResponse.cs" />
     <Compile Include="Frank\Socket\SocketServerTest.cs" />
     <Compile Include="Frank\Socket\TestRequest.cs" />
     <Compile Include="Frank\TestClientServerBase.cs" />
