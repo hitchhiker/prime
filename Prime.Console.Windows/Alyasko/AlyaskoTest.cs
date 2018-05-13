@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Prime.Console.Alyasko.WebSocket;
+﻿using Prime.Console.Windows.Alyasko.WebSocket;
 using Prime.Core;
 
-namespace Prime.Console.Alyasko
+namespace Prime.Console.Windows.Alyasko
 {
     public static class AlyaskoTest
     {

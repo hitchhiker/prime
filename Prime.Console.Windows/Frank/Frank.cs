@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Prime.Console.Alyasko.WebSocket;
+using Prime.Console.Windows.Alyasko.WebSocket;
 using Prime.Core.Encryption;
 using Prime.Core;
 using Prime.Extensions;

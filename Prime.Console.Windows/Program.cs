@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using LiteDB;
 using Nito.AsyncEx;
-using Prime.Console.Alyasko;
+using Prime.Console.Windows.Alyasko;
 using Prime.ConsoleApp.Tests;
 using Prime.ConsoleApp.Tests.Alyasko;
 using Prime.ConsoleApp.Tests.Frank;

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Prime.Core;
+﻿using Prime.Core;
 
-namespace Prime.Console.Alyasko.WebSocket
+namespace Prime.WebSocketServer.Messages
 {
     public class HelloWsResponse : BaseTransportResponseMessage
     {

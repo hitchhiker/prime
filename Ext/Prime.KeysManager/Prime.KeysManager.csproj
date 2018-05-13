@@ -4,8 +4,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ElectronAngular\**" />
     <Compile Remove="ElectronUI\**" />
+    <EmbeddedResource Remove="ElectronAngular\**" />
     <EmbeddedResource Remove="ElectronUI\**" />
+    <None Remove="ElectronAngular\**" />
     <None Remove="ElectronUI\**" />
   </ItemGroup>
   <ItemGroup>
