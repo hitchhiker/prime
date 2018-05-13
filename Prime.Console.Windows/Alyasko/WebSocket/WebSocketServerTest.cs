@@ -16,8 +16,6 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
     {
         public WebSocketServerTest(ServerContext server, ClientContext c) : base(server, c) { }
 
-        private static int hitCount = 0;
-
         public override void Go()
         {
             var mr = false;
