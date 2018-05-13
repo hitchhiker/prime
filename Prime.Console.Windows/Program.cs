@@ -56,7 +56,7 @@ namespace TestConsole
             }
             else if (Environment.UserName.Equals("hitchhiker"))
             {
-                
+                Frank.Go(serverCtx, clientCtx);
                 /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)
