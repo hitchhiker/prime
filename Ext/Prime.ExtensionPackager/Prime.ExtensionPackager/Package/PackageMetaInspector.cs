@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using Prime.Base;
 
 namespace Prime.ExtensionPackager
 {
@@ -41,13 +42,23 @@ namespace Prime.ExtensionPackager
                 return;
             }
 
+            Package found = null;
+
             if (exts.Count > 1)
             {
-                Context.Logger.Error("Found more than one extension in " + dir.FullName);
-                return;
-            }
+                if (Context.ExtId != null)
+                    found = exts.Where(x => x.Extension.Id == Context.ExtId).FirstOrDefault();
 
-            Package = exts[0];
+                if (found == null)
+                {
+                    Context.Logger.Error("Found more than one extension in " + dir.FullName);
+                    return;
+                }
+            }
+            else
+                found = exts[0];
+
+            Package = found;
             Package.AddStagingRange(fis.Where(x => !string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase)));
         }
 
@@ -55,20 +66,20 @@ namespace Prime.ExtensionPackager
         {
             var r = new List<Package>();
 
+            var possible = new List<(Assembly,FileInfo)>();
+
             foreach (var fi in files.Where(x => x.Extension == ".dll"))
             {
                 try
                 {
-                    if (!Context.IsPrime && 
+                    if (!Context.IsPrime &&
                         fi.Name.StartsWith("prime.core.", StringComparison.OrdinalIgnoreCase) ||
                         fi.Name.StartsWith("system.", StringComparison.OrdinalIgnoreCase) ||
                         fi.Name.StartsWith("microsoft.", StringComparison.OrdinalIgnoreCase))
                         continue;
 
                     var a = AssemblyLoadContext.Default.LoadFromAssemblyPath(fi.FullName);
-                    var metaFi = LoadPossibleExtensionDll(a, dir, fi);
-                    if (metaFi != null)
-                        r.Add(metaFi);
+                    possible.Add((a, fi));
                 }
                 catch (Exception e)
                 {
@@ -77,7 +88,14 @@ namespace Prime.ExtensionPackager
                 }
             }
 
-            return r;
+            foreach (var i in possible)
+            {
+                var metaFi = LoadPossibleExtensionDll(i.Item1, dir, i.Item2);
+                if (metaFi != null)
+                    r.Add(metaFi);
+            }
+
+        return r;
         }
 
         private Package LoadPossibleExtensionDll(Assembly a, DirectoryInfo dir, FileInfo file)
@@ -104,14 +122,26 @@ namespace Prime.ExtensionPackager
                 return null;
             }
 
+            Type foundType = null;
+
             if (types.Count > 1)
             {
-                Context.Logger.Info("Found multiple types in " + file.FullName + " implementing " + extt);
+               
+                    Context.Logger.Info("Found multiple types in " + file.FullName + " implementing " + extt);
                 return null;
             }
 
-            var pm = types[0].InstanceAny<IExtension>();
-            var meta = new PackageMeta(pm);
+            foundType = types[0];
+
+            var refrs = new List<Assembly>();
+            var loaded = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            InspectReferences(a, refrs, loaded);
+
+            var extRefs = GetExtensionReferences(refrs);
+
+            var pm = foundType.InstanceAny<IExtension>();
+            var meta = new PackageMeta(pm) {ExtensionReferences = extRefs};
+
             var json = meta.ToJsonSimple();
             var fi = new FileInfo(Path.Combine(dir.FullName, ExtFileName));
             if (fi.Exists)
@@ -120,6 +150,36 @@ namespace Prime.ExtensionPackager
             File.WriteAllText(fi.FullName, json);
             fi.Refresh();
             return new Package(meta, fi);
+        }
+
+        public void InspectReferences(Assembly a, List<Assembly> assemblies, List<Assembly> loaded)
+        {
+            foreach (var r in a.GetReferencedAssemblies())
+            {
+                var ra = loaded.Where(x => x.FullName == r.FullName).FirstOrDefault();
+                if (ra == null)
+                    continue;
+                if (ra.IsDynamic || ra.GlobalAssemblyCache || assemblies.Contains(ra))
+                    continue;
+
+                assemblies.Add(ra);
+                InspectReferences(ra, assemblies, loaded);
+            }
+        }
+
+        public List<ObjectId> GetExtensionReferences(List<Assembly> references)
+        {
+            var extt = typeof(IExtension);
+            var list = new List<ObjectId>();
+            foreach (var a in references)
+            {
+                var types = a.GetLoadableTypes().Where(x => !x.IsAbstract && extt.IsAssignableFrom(x)).ToList();
+                if (types.Count != 1)
+                    continue;
+                var pm = types[0].InstanceAny<IExtension>();
+                list.Add(pm.Id);
+            }
+            return list;
         }
     }
 }

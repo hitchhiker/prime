@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using LiteDB;
@@ -34,6 +35,9 @@ namespace Prime.Core
 
         [JsonProperty("version"), JsonConverter(typeof(VersionJsonConverter))]
         public Version Version { get; set; }
+
+        [JsonProperty("extReferences")]
+        public List<ObjectId> ExtensionReferences { get; set; } = new List<ObjectId>();
 
         public string ToJsonSimple()
         {
