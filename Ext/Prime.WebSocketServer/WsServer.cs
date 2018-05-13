@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using Prime.Core;
+using Prime.Core.Testing;
 using Prime.WebSocketServer.Transport;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -30,6 +31,7 @@ namespace Prime.WebSocketServer
             {
                 x.M = context.MessageServer.M;
                 x.L = context.MessageServer.L;
+                x.MessageServer = context.MessageServer;
 
                 _service = x;
                 //SessionManager = x.SessionManager;
@@ -46,6 +48,7 @@ namespace Prime.WebSocketServer
 
         public void Stop()
         {
+            _webSocketServer.RemoveWebSocketService("/");
             _webSocketServer.Stop();
             L.Log($"WsServer stopped.");
         }
@@ -53,7 +56,14 @@ namespace Prime.WebSocketServer
         public void Send<T>(T message) where T : BaseTransportMessage
         {
             L.Log($"WsServer sending message...");
-            _service.SendData(JsonConvert.SerializeObject(message));
+
+            var settings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+                SerializationBinder = _context.MessageServer.TypeBinder
+            };
+
+            _service.SendData(JsonConvert.SerializeObject(message, settings));
         }
     }
 }

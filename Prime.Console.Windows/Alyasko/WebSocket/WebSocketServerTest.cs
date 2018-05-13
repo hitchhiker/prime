@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
@@ -43,6 +44,10 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                 Thread.Sleep(1);
             } while (!mr);
 
+            S.L.Log("Stopping WS server...");
+
+            Thread.Sleep(1000);
+
             server.Stop();
         }
 
@@ -56,19 +61,32 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                 l.Log("Establishing connection to local socket server.");
                 using (var ws = new WebSocketSharp.WebSocket($"ws://{IPAddress.Loopback}:{ctx.Port}/"))
                 {
-                    ws.OnMessage += (sender, args) =>
-                    {
-                        l.Log($"Client received: {args.Data}");
-                    };
-
-                    ws.Connect();
-
-
                     var settings = new JsonSerializerSettings()
                     {
                         TypeNameHandling = TypeNameHandling.Objects,
                         SerializationBinder = server.TypeBinder
                     };
+
+                    var helper = new MessageTypedSender(C.M);
+
+                    ws.OnMessage += (sender, args) =>
+                    {
+                        if (args.IsText)
+                        {
+                            var dataText = args.Data;
+                            if (string.IsNullOrWhiteSpace(dataText))
+                                return;
+
+                            if (JsonConvert.DeserializeObject(dataText, settings) is BaseTransportMessage m)
+                                helper.UnPackSendReceivedMessage(new ExternalMessage(m.ClientId, m));
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("Only text data is supported.");
+                        }
+                    };
+
+                    ws.Connect();
 
                     var json = JsonConvert.SerializeObject(new HelloRequest(), settings);
 
