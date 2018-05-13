@@ -36,9 +36,6 @@ namespace Prime.WebSocketServer.Transport
 
             var textData = e.Data;
 
-            // Hack for now.
-            var objId = ObjectId.NewObjectId();
-
             var settings = new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.Objects,
@@ -47,9 +44,12 @@ namespace Prime.WebSocketServer.Transport
 
             var m = !(JsonConvert.DeserializeObject(textData, settings) is BaseTransportMessage message)
                 ? null
-                : new ExternalMessage(objId, message);
+                : new ExternalMessage(SessionId, message);
 
             M.Send(m);
         }
+
+        private ObjectId _sessionId;
+        public ObjectId SessionId => _sessionId ?? (_sessionId = ID.GetObjectIdHashCode());
     }
 }
