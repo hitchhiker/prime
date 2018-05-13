@@ -21,16 +21,14 @@ namespace Prime.WebSocketServer.Transport
             SessionManager = Sessions;
         }
 
+        public void SendData(string data)
+        {
+            base.Send(data);
+        }
+
         protected override void OnMessage(MessageEventArgs e)
         {
-            L.Log($"WsCommonService message received: '{e.Data}'. Sending back...");
-            Send("Hello from Server!");
-
-            M.Send(new HelloWsRequest());
-            M.Register<HelloWsResponse>(this, x =>
-            {
-                L.Log("Session send");
-            });
+            L.Log($"WsCommonService message received: '{e.Data}'.");
         }
     }
 }

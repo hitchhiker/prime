@@ -46,6 +46,7 @@ namespace TestConsole
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
                 AlyaskoTest.Go(serverCtx, clientCtx);
+                //Frank.Go(serverCtx, clientCtx);
                 //var test = new KeysManager() as ITestBase;
                 //test.Go();
             }
@@ -55,7 +56,7 @@ namespace TestConsole
             }
             else if (Environment.UserName.Equals("hitchhiker"))
             {
-                Frank.Go(serverCtx, clientCtx);
+                
                 /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)

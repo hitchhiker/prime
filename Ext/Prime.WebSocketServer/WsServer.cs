@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 using Prime.Core;
 using Prime.WebSocketServer.Transport;
 using WebSocketSharp;
@@ -16,6 +17,8 @@ namespace Prime.WebSocketServer
 
         public readonly ILogger L;
 
+        private WsCommonService _service;
+
         //public WebSocketSessionManager SessionManager;
 
         public WsServer(WsServerContext context)
@@ -27,6 +30,8 @@ namespace Prime.WebSocketServer
             {
                 x.M = context.MessageServer.M;
                 x.L = context.MessageServer.L;
+
+                _service = x;
                 //SessionManager = x.SessionManager;
             });
 
@@ -48,6 +53,7 @@ namespace Prime.WebSocketServer
         public void Send<T>(T message) where T : BaseTransportMessage
         {
             L.Log($"WsServer sending message...");
+            _service.SendData(JsonConvert.SerializeObject(message));
         }
     }
 }

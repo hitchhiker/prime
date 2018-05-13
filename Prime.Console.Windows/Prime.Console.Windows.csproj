@@ -103,6 +103,7 @@
     <Compile Include="Frank\Socket\HelloRequest.cs" />
     <Compile Include="Frank\Socket\HelloResponse.cs" />
     <Compile Include="Frank\Socket\SocketServerTest.cs" />
+    <Compile Include="Frank\Socket\TestRequest.cs" />
     <Compile Include="Frank\TestClientServerBase.cs" />
     <Compile Include="Frank\TestServerBase.cs" />
     <Compile Include="Program.cs" />

@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
+using Newtonsoft.Json;
+using Prime.Console.Windows.Frank.Socket;
 using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
 using Prime.WebSocketServer;
@@ -12,6 +14,8 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
     public class WebSocketServerTest : TestClientServerBase
     {
         public WebSocketServerTest(ServerContext server, ClientContext c) : base(server, c) { }
+
+        private static int hitCount = 0;
 
         public override void Go()
         {
@@ -55,11 +59,21 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                 {
                     ws.OnMessage += (sender, args) =>
                     {
-                        l.Log($"Received data: {args.Data}");
+                        l.Log($"Client received: {args.Data}");
                     };
 
                     ws.Connect();
-                    ws.Send("Hello from client!");
+
+
+                    var settings = new JsonSerializerSettings()
+                    {
+                        TypeNameHandling = TypeNameHandling.Objects,
+                        SerializationBinder = server.TypeBinder
+                    };
+
+                    var json = JsonConvert.SerializeObject(new TestRequest(), settings);
+
+                    ws.Send(json);
 
                     while (ws.IsAlive) { }
                 }
