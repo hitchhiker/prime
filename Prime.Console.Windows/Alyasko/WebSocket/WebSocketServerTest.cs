@@ -71,7 +71,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                         SerializationBinder = server.TypeBinder
                     };
 
-                    var json = JsonConvert.SerializeObject(new TestRequest(), settings);
+                    var json = JsonConvert.SerializeObject(new HelloRequest(), settings);
 
                     ws.Send(json);
 
