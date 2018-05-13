@@ -6,18 +6,18 @@ namespace Prime.Core
 {
     public class ExternalMessage
     {
-        public readonly ObjectId ClientId;
+        public readonly ObjectId SessionId;
         public readonly BaseTransportMessage Message;
 
-        public ExternalMessage(ObjectId clientId, BaseTransportMessage message)
+        public ExternalMessage(ObjectId sessionId, BaseTransportMessage message)
         {
-            ClientId = clientId;
+            SessionId = sessionId;
             Message = message;
 
             if (message == null)
                 return;
 
-            message.ClientId = clientId;
+            message.SessionId = sessionId;
             message.IsRemote = true;
         }
 

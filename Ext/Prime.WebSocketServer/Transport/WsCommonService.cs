@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Prime.Base;
 using Prime.Core;
 using Prime.Core.Testing;
-using Prime.WebSocketServer.Messages;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 

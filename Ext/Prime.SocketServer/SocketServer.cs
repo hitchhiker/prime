@@ -40,13 +40,13 @@ namespace Prime.SocketServer
             if (message.IsRemote)
                 return;
 
-            if (message.ClientId.IsNullOrEmpty())
+            if (message.SessionId.IsNullOrEmpty())
                 TcpServer.Send(null, message);
             else
             {
-                var client = TcpServer.GetClient(message.ClientId);
+                var client = TcpServer.GetClient(message.SessionId);
                 if (client == null)
-                    _serverContext.L.Error("Socket server: ClientID " + message.ClientId + " is not a registered client.");
+                    _serverContext.L.Error("Socket server: ClientID " + message.SessionId + " is not a registered client.");
                 else
                     TcpServer.Send(client, message);
             }

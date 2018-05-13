@@ -6,7 +6,7 @@
 
         protected BaseTransportResponseMessage(BaseTransportRequestMessage request)
         {
-            ClientId = request.ClientId;
+            SessionId = request.SessionId;
         }
     }
 }

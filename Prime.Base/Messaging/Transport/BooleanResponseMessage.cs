@@ -9,7 +9,7 @@
         protected BooleanResponseMessage(BaseTransportRequestMessage request, bool success) : base(request)
         {
             Success = success;
-            ClientId = request.ClientId;
+            SessionId = request.SessionId;
         }
     }
 }

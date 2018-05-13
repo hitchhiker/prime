@@ -9,7 +9,6 @@ using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.WebSocketServer;
-using Prime.WebSocketServer.Messages;
 
 namespace Prime.Console.Windows.Alyasko.WebSocket
 {
@@ -31,7 +30,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             C.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                S.L.Log(x.Response + " " + x.ClientId);
+                S.L.Log(x.Response + " " + x.SessionId);
                 mr = true;
             });
 
@@ -78,7 +77,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                                 return;
 
                             if (JsonConvert.DeserializeObject(dataText, settings) is BaseTransportMessage m)
-                                helper.UnPackSendReceivedMessage(new ExternalMessage(m.ClientId, m));
+                                helper.UnPackSendReceivedMessage(new ExternalMessage(m.SessionId, m));
                         }
                         else
                         {

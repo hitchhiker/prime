@@ -27,7 +27,7 @@ namespace Prime.ConsoleApp.Tests.Frank
 
             C.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                S.L.Log(x.Response + " " + x.ClientId);
+                S.L.Log(x.Response + " " + x.SessionId);
                 mr = true;
             });
 
@@ -81,7 +81,7 @@ namespace Prime.ConsoleApp.Tests.Frank
                         continue;
 
                     if (JsonConvert.DeserializeObject(recv, settings) is BaseTransportMessage m)
-                        helper.UnPackSendReceivedMessage(new ExternalMessage(m.ClientId, m));
+                        helper.UnPackSendReceivedMessage(new ExternalMessage(m.SessionId, m));
 
                 } while (client.Connected);
             });
