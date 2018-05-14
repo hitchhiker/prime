@@ -9,7 +9,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://gatecoin.com/api/
-    public class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string GatecoinApiUrl = "https://api.gatecoin.com/Public/";
 
@@ -50,7 +50,14 @@ namespace Prime.Finance.Services.Services.Gatecoin
 
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
-            return true;
+            var api = ApiProvider.GetApi(context);
+            var r = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            //CheckResponseErrors(rRaw);
+
+            //var r = rRaw.GetContent();
+
+            return r != null/* && r.success*/;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
