@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ipfs.Api" Version="0.19.0" />
+    <PackageReference Include="Ipfs.Api" Version="0.20.0" />
+    <PackageReference Include="Ipfs.Core" Version="0.25.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
     <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="System.Composition" Version="1.1.0" />

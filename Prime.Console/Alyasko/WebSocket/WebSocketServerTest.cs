@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
+using Prime.Console.Frank;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.MessagingServer;
@@ -11,42 +12,17 @@ using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
 using ServerExtension = Prime.WebSocketServer.ServerExtension;
 
-namespace Prime.Bootstrap
+namespace Prime.Console.Windows.Alyasko.WebSocket
 {
-    public class WebSocketTestApp
+    public class WebSocketServerTest : TestClientServerBase
     {
-        public WebSocketTestApp()
-        {
-        }
-        
-        public ServerContext S { get; set; }
-        public ClientContext C { get; set; }
+        public WebSocketServerTest(Core.ServerContext server, ClientContext c) : base(server, c) { }
 
-        public void Run() 
-        {
-            Console.WriteLine($"{nameof(WebSocketTestApp)} has started.");
-
-            S = new ServerContext()
-            {
-                L = new ConsoleLogger()
-            };
-
-            C = new ClientContext()
-            {
-                L = new ConsoleLogger()
-            };
-            
-            var prime = new Prime.Core.Prime(S);
-            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
-            
-            StartServer();
-        }
-
-        public void StartServer()
+        public override void Go()
         {
             var mr = false;
 
-            var server = new Server(S); 
+            var server = new Server(S);
             server.Inject(new ServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
@@ -75,7 +51,7 @@ namespace Prime.Bootstrap
 
             server.Stop();
         }
-        
+
         public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg)
         {
             var ctx = new WebSocketServerContext(server);
@@ -120,6 +96,39 @@ namespace Prime.Bootstrap
                     while (ws.IsAlive) { }
                 }
             });
+
+            //var settings = new JsonSerializerSettings()
+            //{
+            //    TypeNameHandling = TypeNameHandling.Objects,
+            //    SerializationBinder = server.TypeBinder
+            //};
+
+            //var dataString = JsonConvert.SerializeObject(msg, settings);
+
+            //l.Log("Connection established, sending message: " + dataString);
+
+            //var dataBytes = dataString.GetBytes();
+
+            //client.Send(dataBytes);
+
+            //Task.Run(() =>
+            //{
+            //    var helper = new MessageTypedSender(C.M);
+
+            //    do
+            //    {
+            //        var buffer = new byte[1024];
+            //        var iRx = client.Receive(buffer);
+            //        var recv = buffer.GetString().Substring(0, iRx);
+
+            //        if (string.IsNullOrWhiteSpace(recv))
+            //            continue;
+
+            //        if (JsonConvert.DeserializeObject(recv, settings) is BaseTransportMessage m)
+            //            helper.UnPackSendReceivedMessage(new ExternalMessage(m.ClientId, m));
+
+            //    } while (client.Connected);
+            //});
         }
     }
 }

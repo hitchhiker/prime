@@ -24,14 +24,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
-      <BinFiles Include="$(TargetDir)$(TargetName).*"/>
+      <BinFiles Include="$(TargetDir)$(TargetName).*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime"/>
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" />
   </Target>
 
 </Project>

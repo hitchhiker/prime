@@ -18,12 +18,14 @@ namespace Prime.Core
         public readonly AssemblyCatalogue Assemblies;
         public readonly TypeCatalogue Types;
 
-        public ServerContext() : this("..//..//..//..//instance//prime-server.config") { } //used for testing / debug
+        public ServerContext() : this("[SRC]//instance//prime-server.config") { } //used for testing / debug
 
         public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultServer) { }
 
         public ServerContext(string configPath, IMessenger m)
         {
+            configPath = configPath.ResolveSpecial();
+
             PlatformCurrent = OsInformation.GetPlatform();
 
             if (Testing != null)

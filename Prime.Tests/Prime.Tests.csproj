@@ -14,14 +14,10 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Ext\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance\Prime.Finance.csproj" />
     <ProjectReference Include="..\Ext\Prime.Manager.Client\Prime.Manager.Client.csproj" />
     <ProjectReference Include="..\Ext\Prime.Manager\Prime.Manager.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="LiteDB">
-      <HintPath>..\lib\litedb-net-standard\LiteDB.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

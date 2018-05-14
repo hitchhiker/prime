@@ -337,3 +337,4 @@ lib/prime/
 # OSX
 .DS_Store
 
+/instance/

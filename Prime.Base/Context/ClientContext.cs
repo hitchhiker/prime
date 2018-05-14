@@ -12,12 +12,14 @@ namespace Prime.Core
         public readonly IMessenger M;
         public readonly PrimeClientConfig Config;
 
-        public ClientContext() : this("..//..//..//..//instance//prime-client.config") { } //used for testing / debug
+        public ClientContext() : this("[SRC]//instance//prime-client.config") { } //used for testing / debug
 
         public ClientContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultClient) { }
 
         public ClientContext(string configPath, IMessenger m)
         {
+            configPath = configPath.ResolveSpecial();
+
             if (Testing != null)
                 throw new Exception(nameof(ClientContext) + " is already initialised in this app domain.");
 
