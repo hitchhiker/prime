@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Prime.Base;
 using Prime.Core;
 using Prime.Core.Testing;
-using Prime.MessageServer.Data;
+using Prime.MessagingServer.Data;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -16,7 +16,7 @@ namespace Prime.WebSocketServer.Transport
     {
         public const string ServicePath = "/";
 
-        public JsonDataProvider DataProvider;
+        public CommonJsonDataProvider DataProvider;
 
         protected override void OnMessage(MessageEventArgs e)
         {

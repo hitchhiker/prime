@@ -5,13 +5,13 @@ using Prime.MessagingServer.Types;
 
 namespace Prime.MessagingServer.Data
 {
-    public class JsonDataProvider
+    public class CommonJsonDataProvider
     {
         private readonly Prime.MessagingServer.Server _server;
         private readonly MessageTypeNameSerializationBinder _typeBinder;
         private readonly JsonSerializerSettings _settings;
 
-        public JsonDataProvider(Prime.MessagingServer.Server server)
+        public CommonJsonDataProvider(Prime.MessagingServer.Server server)
         {
             _server = server;
             _typeBinder = server.TypeBinder;

@@ -4,7 +4,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Prime.Core;
 using Prime.Core.Testing;
-using Prime.MessageServer.Data;
+using Prime.MessagingServer.Data;
 using Prime.WebSocketServer.Transport;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -16,7 +16,7 @@ namespace Prime.WebSocketServer
         private readonly WsServerContext _context;
 
         private readonly WebSocketSharp.Server.WebSocketServer _webSocketServer;
-        private readonly JsonDataProvider _jsonDataProvider;
+        private readonly CommonJsonDataProvider _commonJsonDataProvider;
 
         public readonly ILogger L;
 
@@ -25,7 +25,7 @@ namespace Prime.WebSocketServer
         public WsServer(WsServerContext context)
         {
             _context = context;
-            _jsonDataProvider = new JsonDataProvider(_context.MessageServer);
+            _commonJsonDataProvider = new CommonJsonDataProvider(_context.MessageServer);
 
             _webSocketServer = new WebSocketSharp.Server.WebSocketServer(context.IpAddress, context.Port, false);
             _webSocketServer.AddWebSocketService<WsRootHandler>(WsRootHandler.ServicePath, (x) =>
@@ -33,7 +33,7 @@ namespace Prime.WebSocketServer
                 x.M = context.MessageServer.M;
                 x.L = context.MessageServer.L;
                 x.MessageServer = context.MessageServer;
-                x.DataProvider = _jsonDataProvider;
+                x.DataProvider = _commonJsonDataProvider;
 
                 _rootHandlerInst = x;
             });
@@ -58,7 +58,7 @@ namespace Prime.WebSocketServer
         {
             L.Log($"WsServer sending message...");
 
-            var data = _jsonDataProvider.Serialize(message);
+            var data = _commonJsonDataProvider.Serialize(message);
             _rootHandlerInst.SendTo(data.ToString(), "TEST");
         }
     }

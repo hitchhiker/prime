@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Core;
 using Prime.Core.Testing;
+using Prime.MessagingServer;
 using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
 
@@ -44,7 +45,7 @@ namespace Prime.Bootstrap
         {
             var mr = false;
 
-            var server = new MessagingServer(S); 
+            var server = new Server(S); 
             server.Inject(new WsServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
@@ -74,7 +75,7 @@ namespace Prime.Bootstrap
             server.Stop();
         }
         
-        public void SendAsClient(MessagingServer server, IMessenger msgr, BaseTransportMessage msg)
+        public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg)
         {
             var ctx = new WsServerContext(server);
             var l = server.ServerContext.L;

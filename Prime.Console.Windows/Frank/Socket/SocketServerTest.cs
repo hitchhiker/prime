@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Core;
 using Prime.Core.Testing;
+using Prime.MessagingServer;
 using Prime.MessagingServer.Types;
 using Prime.SocketServer;
 
@@ -18,7 +19,7 @@ namespace Prime.ConsoleApp.Tests.Frank
         {
             var mr = false;
 
-            var server = new MessagingServer(S);
+            var server = new Server(S);
             server.Inject(new SocketServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
@@ -44,7 +45,7 @@ namespace Prime.ConsoleApp.Tests.Frank
             server.Stop();
         }
 
-        public void SendAsClient(MessagingServer server, IMessenger msgr, BaseTransportMessage msg)
+        public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg)
         {
             var ctx = new SocketServerContext(server);
             var l = server.ServerContext.L;

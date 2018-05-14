@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Prime.Core;
 using Prime.KeysManager.Core;
 using Prime.KeysManager.Utils;
+using Prime.MessagingServer;
 
 namespace Prime.KeysManager
 {
@@ -25,7 +26,7 @@ namespace Prime.KeysManager
             logger.Log(": Operating system: " + Environment.OSVersion.Platform);
             logger.Log(": Current directory: " + Environment.CurrentDirectory);
 
-            var server = new MessagingServer(sCtx);
+            var server = new Server(sCtx);
             server.Start();
 
             foreach (var i in server.TypeBinder.TypeCatalogue)

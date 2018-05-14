@@ -4,6 +4,7 @@ using System.Text;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Base;
 using Prime.Core;
+using Prime.MessagingServer;
 using WebSocketSharp.Server;
 
 namespace Prime.WebSocketServer.Transport
@@ -12,7 +13,7 @@ namespace Prime.WebSocketServer.Transport
     {
         public IMessenger M;
         public ILogger L;
-        public MessagingServer MessageServer;
+        public Server MessageServer;
 
         public void SendTo(string data, string id)
         {

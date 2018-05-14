@@ -18,7 +18,7 @@ namespace Prime.SocketServer
 
         internal SocketServer SocketServerInstance;
 
-        public void Start(MessagingServer server)
+        public void Start(Server server)
         {
             SocketServerInstance = new SocketServer(new SocketServerContext(server));
             SocketServerInstance.Start();

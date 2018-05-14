@@ -18,7 +18,7 @@ namespace Prime.SocketServer
         private readonly SocketServer _server;
         private TcpListener _listener;
         private readonly ConcurrentBag<IdentifiedClient> _connectedClients = new ConcurrentBag<IdentifiedClient>();
-        private readonly JsonDataProvider _dataProvider;
+        private readonly CommonJsonDataProvider _dataProvider;
         public readonly ILogger L;
         public readonly IMessenger M;
 
@@ -29,7 +29,7 @@ namespace Prime.SocketServer
             _server = server;
             L = _server?.Context?.MessagingServer?.L ?? new NullLogger();
             M = messenger ?? _server.Context.MessagingServer.M;
-            _dataProvider = new JsonDataProvider(server.Context.MessagingServer);
+            _dataProvider = new CommonJsonDataProvider(server.Context.MessagingServer);
         }
 
         public TcpServer(MessagingServer.Server server, IMessenger messenger = null)
@@ -37,7 +37,7 @@ namespace Prime.SocketServer
             _server = null;
             L = _server?.Context?.MessagingServer?.L ?? new NullLogger();
             M = messenger ?? _server.Context.MessagingServer.M;
-            _dataProvider = new JsonDataProvider(server);
+            _dataProvider = new CommonJsonDataProvider(server);
         }
 
         public void Start(IPAddress address, short port)

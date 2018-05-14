@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Prime.Core;
+using Prime.MessagingServer;
 
 namespace Prime.WebSocketServer
 {
     public class WsServerContext
     {
-        public readonly MessagingServer MessageServer;
+        public readonly Server MessageServer;
         public readonly IPAddress IpAddress;
         public readonly short Port;
 
-        public WsServerContext(MessagingServer server) : this(server, IPAddress.Any, 9991)
+        public WsServerContext(Server server) : this(server, IPAddress.Any, 9991)
         {
             MessageServer = server;
         }
 
-        public WsServerContext(MessagingServer server, IPAddress ipAddress, short port)
+        public WsServerContext(Server server, IPAddress ipAddress, short port)
         {
             MessageServer = server;
             IpAddress = ipAddress;

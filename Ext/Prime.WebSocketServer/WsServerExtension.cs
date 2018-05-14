@@ -16,7 +16,7 @@ namespace Prime.WebSocketServer
 
         private WsServer _webSocketServerInstance;
 
-        public void Start(MessagingServer server)
+        public void Start(Server server)
         {
             _webSocketServerInstance = new WsServer(new WsServerContext(server));
             _webSocketServerInstance.Start();
