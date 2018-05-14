@@ -8,5 +8,5 @@
 @dotnet ..\..\util\packer\Prime.ExtensionPackager.dll -c .\prime-client.config -e ..\Ext\Prime.KeysManager\bin\Debug\netcoreapp2.0 --key prime:KeysManagerExtension
 @dotnet ..\..\util\packer\Prime.ExtensionPackager.dll -c .\prime-client.config -e ..\Ext\Prime.SocketServer\bin\Debug\netstandard2.0 --key prime:socketserver
 @dotnet ..\..\util\packer\Prime.ExtensionPackager.dll -c .\prime-client.config -e ..\Ext\Prime.WebSocketServer\bin\Debug\netstandard2.0 --key prime:websocketserver
-@dotnet ..\..\util\packer\Prime.ExtensionPackager.dll -c .\prime-client.config -e ..\Ext\Prime.MessageServer\bin\Debug\netstandard2.0
+@dotnet ..\..\util\packer\Prime.ExtensionPackager.dll -c .\prime-client.config -e ..\Ext\Prime.MessagingServer\bin\Debug\netstandard2.0
 @pause

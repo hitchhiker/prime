@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Prime.MessageServer\Prime.MessageServer.csproj" />
+    <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

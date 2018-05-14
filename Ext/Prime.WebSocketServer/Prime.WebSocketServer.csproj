@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Prime.MessageServer\Prime.MessageServer.csproj" />
+    <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
+    <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
   </ItemGroup>
 
 </Project>
