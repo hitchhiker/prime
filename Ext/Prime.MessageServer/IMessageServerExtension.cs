@@ -2,7 +2,7 @@
 {
     public interface IMessageServerExtension : IExtension
     {
-        void Start(MessageServer server);
+        void Start(MessagingServer server);
 
         void Stop();
 

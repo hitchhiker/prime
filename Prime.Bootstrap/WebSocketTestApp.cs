@@ -4,23 +4,46 @@ using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
-using Prime.Console.Windows.Frank.Socket;
-using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.WebSocketServer;
 
-namespace Prime.Console.Windows.Alyasko.WebSocket
+namespace Prime.Bootstrap
 {
-    public class WebSocketServerTest : TestClientServerBase
+    public class WebSocketTestApp
     {
-        public WebSocketServerTest(ServerContext server, ClientContext c) : base(server, c) { }
+        public WebSocketTestApp()
+        {
+        }
+        
+        public ServerContext S { get; set; }
+        public ClientContext C { get; set; }
 
-        public override void Go()
+        public void Run() 
+        {
+            Console.WriteLine($"{nameof(WebSocketTestApp)} has started.");
+
+            S = new ServerContext("..//..//..//instance//prime-server.config")
+            {
+                L = new ConsoleLogger()
+            };
+
+            C = new ClientContext("..//..//..//instance//prime-client.config")
+            {
+                L = new ConsoleLogger()
+            };
+            
+            var prime = new Prime.Core.Prime(S);
+            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            
+            StartServer();
+        }
+
+        public void StartServer()
         {
             var mr = false;
 
-            var server = new MessagingServer(S);
+            var server = new MessagingServer(S); 
             server.Inject(new WsServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
@@ -49,7 +72,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             server.Stop();
         }
-
+        
         public void SendAsClient(MessagingServer server, IMessenger msgr, BaseTransportMessage msg)
         {
             var ctx = new WsServerContext(server);
@@ -94,39 +117,6 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                     while (ws.IsAlive) { }
                 }
             });
-
-            //var settings = new JsonSerializerSettings()
-            //{
-            //    TypeNameHandling = TypeNameHandling.Objects,
-            //    SerializationBinder = server.TypeBinder
-            //};
-
-            //var dataString = JsonConvert.SerializeObject(msg, settings);
-
-            //l.Log("Connection established, sending message: " + dataString);
-
-            //var dataBytes = dataString.GetBytes();
-
-            //client.Send(dataBytes);
-
-            //Task.Run(() =>
-            //{
-            //    var helper = new MessageTypedSender(C.M);
-
-            //    do
-            //    {
-            //        var buffer = new byte[1024];
-            //        var iRx = client.Receive(buffer);
-            //        var recv = buffer.GetString().Substring(0, iRx);
-
-            //        if (string.IsNullOrWhiteSpace(recv))
-            //            continue;
-
-            //        if (JsonConvert.DeserializeObject(recv, settings) is BaseTransportMessage m)
-            //            helper.UnPackSendReceivedMessage(new ExternalMessage(m.ClientId, m));
-
-            //    } while (client.Connected);
-            //});
         }
     }
 }

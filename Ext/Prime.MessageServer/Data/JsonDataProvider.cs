@@ -1,20 +1,16 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.IO;
 using Newtonsoft.Json;
 using Prime.Core;
-using Prime.SocketServer;
 
-namespace Prime.SocketServer
+namespace Prime.MessageServer.Data
 {
     public class JsonDataProvider
     {
-        private readonly MessageServer _server;
+        private readonly Core.MessagingServer _server;
         private readonly MessageTypeNameSerializationBinder _typeBinder;
         private readonly JsonSerializerSettings _settings;
 
-        public JsonDataProvider(MessageServer server)
+        public JsonDataProvider(Core.MessagingServer server)
         {
             _server = server;
             _typeBinder = server.TypeBinder;

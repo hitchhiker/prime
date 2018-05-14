@@ -7,7 +7,7 @@ using GalaSoft.MvvmLight.Messaging;
 
 namespace Prime.Core
 {
-    public class MessageServer
+    public class MessagingServer
     {
         public readonly ServerContext ServerContext;
         public readonly IMessenger M;
@@ -17,7 +17,7 @@ namespace Prime.Core
         private readonly MessageTypedSender _helper;
         public readonly MessageTypeNameSerializationBinder TypeBinder;
 
-        public MessageServer(ServerContext serverContext)
+        public MessagingServer(ServerContext serverContext)
         {
             ServerContext = serverContext;
             M = ServerContext.M;

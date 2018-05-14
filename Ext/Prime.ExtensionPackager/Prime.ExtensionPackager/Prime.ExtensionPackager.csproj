@@ -28,7 +28,10 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(SolutionDir)\..\util\packer&quot; /i /d /y" />
+    <ItemGroup>
+      <BinFiles Include="$(TargetDir)$(TargetName).*"/>
+    </ItemGroup>
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime"/>
   </Target>
 
 </Project>
