@@ -15,7 +15,7 @@ namespace Prime.SocketServer
 {
     public class TcpServer
     {
-        private readonly SocketServer _server;
+        private readonly Server _server;
         private TcpListener _listener;
         private readonly ConcurrentBag<IdentifiedClient> _connectedClients = new ConcurrentBag<IdentifiedClient>();
         private readonly CommonJsonDataProvider _dataProvider;
@@ -24,7 +24,7 @@ namespace Prime.SocketServer
 
         private bool _stoppedRequested;
 
-        public TcpServer(SocketServer server, IMessenger messenger = null)
+        public TcpServer(Server server, IMessenger messenger = null)
         {
             _server = server;
             L = _server?.Context?.MessagingServer?.L ?? new NullLogger();

@@ -9,6 +9,7 @@ using Prime.Core.Testing;
 using Prime.MessagingServer;
 using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
+using ServerExtension = Prime.WebSocketServer.ServerExtension;
 
 namespace Prime.Bootstrap
 {
@@ -18,14 +19,14 @@ namespace Prime.Bootstrap
         {
         }
         
-        public ServerContext S { get; set; }
+        public Core.ServerContext S { get; set; }
         public ClientContext C { get; set; }
 
         public void Run() 
         {
             Console.WriteLine($"{nameof(WebSocketTestApp)} has started.");
 
-            S = new ServerContext("..//..//..//instance//prime-server.config")
+            S = new Core.ServerContext("..//..//..//instance//prime-server.config")
             {
                 L = new ConsoleLogger()
             };
@@ -46,7 +47,7 @@ namespace Prime.Bootstrap
             var mr = false;
 
             var server = new Server(S); 
-            server.Inject(new WsServerExtension());
+            server.Inject(new ServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
@@ -77,7 +78,7 @@ namespace Prime.Bootstrap
         
         public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg)
         {
-            var ctx = new WsServerContext(server);
+            var ctx = new WebSocketServerContext(server);
             var l = server.ServerContext.L;
 
             Task.Run(() =>

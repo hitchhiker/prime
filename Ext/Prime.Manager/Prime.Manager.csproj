@@ -6,11 +6,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
-    <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Messages\" />
   </ItemGroup>
 
 </Project>

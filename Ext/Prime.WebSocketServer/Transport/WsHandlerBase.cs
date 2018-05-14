@@ -13,7 +13,7 @@ namespace Prime.WebSocketServer.Transport
     {
         public IMessenger M;
         public ILogger L;
-        public Server MessageServer;
+        public MessagingServer.Server MessageServer;
 
         public void SendTo(string data, string id)
         {

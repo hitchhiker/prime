@@ -11,19 +11,20 @@ using Prime.Core.Testing;
 using Prime.MessagingServer;
 using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
+using ServerExtension = Prime.WebSocketServer.ServerExtension;
 
 namespace Prime.Console.Windows.Alyasko.WebSocket
 {
     public class WebSocketServerTest : TestClientServerBase
     {
-        public WebSocketServerTest(ServerContext server, ClientContext c) : base(server, c) { }
+        public WebSocketServerTest(Core.ServerContext server, ClientContext c) : base(server, c) { }
 
         public override void Go()
         {
             var mr = false;
 
             var server = new Server(S);
-            server.Inject(new WsServerExtension());
+            server.Inject(new ServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
@@ -54,7 +55,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
         public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg)
         {
-            var ctx = new WsServerContext(server);
+            var ctx = new WebSocketServerContext(server);
             var l = server.ServerContext.L;
 
             Task.Run(() =>

@@ -8,6 +8,8 @@ using Prime.Core.Testing;
 using Prime.MessagingServer;
 using Prime.MessagingServer.Types;
 using Prime.SocketServer;
+using Server = Prime.MessagingServer.Server;
+using ServerExtension = Prime.SocketServer.ServerExtension;
 
 namespace Prime.ConsoleApp.Tests.Frank
 {
@@ -20,7 +22,7 @@ namespace Prime.ConsoleApp.Tests.Frank
             var mr = false;
 
             var server = new Server(S);
-            server.Inject(new SocketServerExtension());
+            server.Inject(new ServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {

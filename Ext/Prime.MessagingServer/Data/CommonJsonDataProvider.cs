@@ -7,11 +7,11 @@ namespace Prime.MessagingServer.Data
 {
     public class CommonJsonDataProvider
     {
-        private readonly Prime.MessagingServer.Server _server;
+        private readonly Server _server;
         private readonly MessageTypeNameSerializationBinder _typeBinder;
         private readonly JsonSerializerSettings _settings;
 
-        public CommonJsonDataProvider(Prime.MessagingServer.Server server)
+        public CommonJsonDataProvider(Server server)
         {
             _server = server;
             _typeBinder = server.TypeBinder;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
@@ -28,6 +29,9 @@ namespace Prime.MessagingServer
 
         public void Inject(IMessageServerExtension extension)
         {
+            if (_extensions.Any(x => x.Id == extension.Id))
+                return; //TODO: Eventually we'll allow same package on diff parameters.
+
             _extensions.Add(extension);
         }
 
