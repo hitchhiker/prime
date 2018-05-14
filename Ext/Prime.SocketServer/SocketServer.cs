@@ -20,7 +20,7 @@ namespace Prime.SocketServer
             _serverContext = Context.ServerContext;
             TcpServer = new TcpServer(this);
 
-            L = socketServerContext?.MessageServer?.L ?? new NullLogger();
+            L = socketServerContext?.MessagingServer?.L ?? new NullLogger();
         }
         
         public void Start()

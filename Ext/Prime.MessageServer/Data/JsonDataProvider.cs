@@ -6,11 +6,11 @@ namespace Prime.MessageServer.Data
 {
     public class JsonDataProvider
     {
-        private readonly Core.MessageServer _server;
+        private readonly Core.MessagingServer _server;
         private readonly MessageTypeNameSerializationBinder _typeBinder;
         private readonly JsonSerializerSettings _settings;
 
-        public JsonDataProvider(Core.MessageServer server)
+        public JsonDataProvider(Core.MessagingServer server)
         {
             _server = server;
             _typeBinder = server.TypeBinder;

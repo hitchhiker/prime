@@ -25,7 +25,7 @@ namespace Prime.KeysManager
             logger.Log(": Operating system: " + Environment.OSVersion.Platform);
             logger.Log(": Current directory: " + Environment.CurrentDirectory);
 
-            var server = new MessageServer(sCtx);
+            var server = new MessagingServer(sCtx);
             server.Start();
 
             foreach (var i in server.TypeBinder.TypeCatalogue)

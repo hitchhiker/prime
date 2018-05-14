@@ -17,7 +17,7 @@ namespace Prime.ConsoleApp.Tests.Frank
         {
             var mr = false;
 
-            var server = new MessageServer(S);
+            var server = new MessagingServer(S);
             server.Inject(new SocketServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
@@ -43,7 +43,7 @@ namespace Prime.ConsoleApp.Tests.Frank
             server.Stop();
         }
 
-        public void SendAsClient(MessageServer server, IMessenger msgr, BaseTransportMessage msg)
+        public void SendAsClient(MessagingServer server, IMessenger msgr, BaseTransportMessage msg)
         {
             var ctx = new SocketServerContext(server);
             var l = server.ServerContext.L;

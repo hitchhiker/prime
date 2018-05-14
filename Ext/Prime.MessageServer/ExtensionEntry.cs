@@ -12,11 +12,11 @@ namespace Prime.Core
 
         public Version Version { get; } = new Version("1.0.0");
 
-        internal MessageServer MessageServerInstance;
+        internal MessagingServer MessageServerInstance;
 
         public void Main(ServerContext context)
         {
-            MessageServerInstance = new MessageServer(context);
+            MessageServerInstance = new MessagingServer(context);
         }
     }
 }

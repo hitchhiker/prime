@@ -43,7 +43,7 @@ namespace Prime.Bootstrap
         {
             var mr = false;
 
-            var server = new MessageServer(S); 
+            var server = new MessagingServer(S); 
             server.Inject(new WsServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
@@ -73,7 +73,7 @@ namespace Prime.Bootstrap
             server.Stop();
         }
         
-        public void SendAsClient(MessageServer server, IMessenger msgr, BaseTransportMessage msg)
+        public void SendAsClient(MessagingServer server, IMessenger msgr, BaseTransportMessage msg)
         {
             var ctx = new WsServerContext(server);
             var l = server.ServerContext.L;

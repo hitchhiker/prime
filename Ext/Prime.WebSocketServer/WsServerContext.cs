@@ -8,16 +8,16 @@ namespace Prime.WebSocketServer
 {
     public class WsServerContext
     {
-        public readonly MessageServer MessageServer;
+        public readonly MessagingServer MessageServer;
         public readonly IPAddress IpAddress;
         public readonly short Port;
 
-        public WsServerContext(MessageServer server) : this(server, IPAddress.Any, 9991)
+        public WsServerContext(MessagingServer server) : this(server, IPAddress.Any, 9991)
         {
             MessageServer = server;
         }
 
-        public WsServerContext(MessageServer server, IPAddress ipAddress, short port)
+        public WsServerContext(MessagingServer server, IPAddress ipAddress, short port)
         {
             MessageServer = server;
             IpAddress = ipAddress;
