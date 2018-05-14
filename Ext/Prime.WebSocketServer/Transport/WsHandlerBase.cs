@@ -14,9 +14,16 @@ namespace Prime.WebSocketServer.Transport
         public ILogger L;
         public MessagingServer MessageServer;
 
-        public void SendData(string data)
+        public void SendTo(string data, string id)
         {
-            // TODO: re-implement using clientIds (sessionIds).
+            // TODO: re-implement using clientIds (sessionIds). HACK
+            Broadcast(data);
+
+            //Sessions.SendTo(data, id);
+        }
+
+        public void Broadcast(string data)
+        {
             Sessions.Broadcast(data);
         }
 
