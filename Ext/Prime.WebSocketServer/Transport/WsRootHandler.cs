@@ -11,28 +11,13 @@ using WebSocketSharp.Server;
 
 namespace Prime.WebSocketServer.Transport
 {
-    public class WsCommonService : WebSocketBehavior
+    public class WsRootHandler : WsHandlerBase
     {
-        public IMessenger M;
-        public ILogger L;
-        public MessageServer MessageServer;
-
-        public WebSocketSessionManager SessionManager;
-
-        public WsCommonService()
-        {
-            SessionManager = Sessions;
-        }
-
-        public void SendData(string data)
-        {
-            Sessions.Broadcast(data);
-            //base.Send(data);
-        }
+        public const string ServicePath = "/";
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            L.Log($"WsCommonService message received: '{e.Data}'.");
+            L.Log($"WsRootHandler message received: '{e.Data}'.");
 
             var textData = e.Data;
 
@@ -48,8 +33,5 @@ namespace Prime.WebSocketServer.Transport
 
             M.Send(m);
         }
-
-        private ObjectId _sessionId;
-        public ObjectId SessionId => _sessionId ?? (_sessionId = ID.GetObjectIdHashCode());
     }
 }

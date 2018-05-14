@@ -14,9 +14,9 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
-      <BinFiles Include="$(TargetDir)$(TargetName).*"/>
+      <BinFiles Include="$(TargetDir)$(TargetName).*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime"/>
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />
   </Target>
 
   <ItemGroup>

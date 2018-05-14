@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using Prime.Base;
 
-namespace Prime.SocketServer
+namespace Prime.MessageServer.Data
 {
     public class IdentifiedClient : IDisposable
     {

@@ -18,23 +18,20 @@ namespace Prime.WebSocketServer
 
         public readonly ILogger L;
 
-        private WsCommonService _service;
-
-        //public WebSocketSessionManager SessionManager;
+        private WsRootHandler _rootHandlerInst;
 
         public WsServer(WsServerContext context)
         {
             _context = context;
 
             _webSocketServer = new WebSocketSharp.Server.WebSocketServer(context.IpAddress, context.Port, false);
-            _webSocketServer.AddWebSocketService<WsCommonService>("/", (x) =>
+            _webSocketServer.AddWebSocketService<WsRootHandler>(WsRootHandler.ServicePath, (x) =>
             {
                 x.M = context.MessageServer.M;
                 x.L = context.MessageServer.L;
                 x.MessageServer = context.MessageServer;
 
-                _service = x;
-                //SessionManager = x.SessionManager;
+                _rootHandlerInst = x;
             });
 
             L = context.MessageServer.L;
@@ -63,7 +60,7 @@ namespace Prime.WebSocketServer
                 SerializationBinder = _context.MessageServer.TypeBinder
             };
 
-            _service.SendData(JsonConvert.SerializeObject(message, settings));
+            _rootHandlerInst.SendData(JsonConvert.SerializeObject(message, settings));
         }
     }
 }
