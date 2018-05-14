@@ -1,6 +1,7 @@
 ﻿namespace Prime.Core
 {
-    public interface IStartupMessenger
+    public interface IStartupMessenger : IMessengerService
     {
+
     }
 }

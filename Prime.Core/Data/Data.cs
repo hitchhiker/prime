@@ -9,11 +9,6 @@ using Prime.Base;
 
 namespace Prime.Core
 {
-    class Test
-    {
-        public string Something { get; set; }
-    }
-
     public class Data : IDisposable
     {
         private static void MemoryStreamTest()

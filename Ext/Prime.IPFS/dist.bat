@@ -1,2 +1,0 @@
-@dotnet ..\..\util\packer\Prime.ExtensionPackager.dll ..\..\instance\prime.config Prime.IPFS.Win64\bin\Debug\
-@dotnet ..\..\util\packer\Prime.ExtensionPackager.dll ..\..\instance\prime.config Prime.IPFS.Win32\bin\Debug\

@@ -13,7 +13,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="LiteDB.NetStandard.nuget.targets" />
+    <None Remove="LiteDB.nuget.cache" />
+    <None Remove="LiteDB.nuget.targets" />
+    <None Remove="LiteDB.project.json" />
+    <None Remove="LiteDB.project.lock.json" />
+    <None Remove="LiteDB.snk" />
+    <None Remove="project.json" />
+    <None Remove="project.lock.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>

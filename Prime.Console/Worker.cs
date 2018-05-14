@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
-using plugins;
+using Prime.Base;
 using Prime.Common;
+using Prime.Core;
+using Prime.Finance;
+using Prime.Finance.Services.Services.BitMex;
 using Prime.Plugins.Services.BitMex;
 
 namespace Prime.TestConsole

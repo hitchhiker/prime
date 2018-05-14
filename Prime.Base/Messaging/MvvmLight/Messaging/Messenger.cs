@@ -369,6 +369,8 @@ namespace GalaSoft.MvvmLight.Messaging
             RequestCleanup();
         }
 
+        public string FriendlyName { get; set; }
+
         #endregion
 
         /// <summary>
@@ -641,6 +643,11 @@ namespace GalaSoft.MvvmLight.Messaging
             public WeakAction Action;
 
             public object Token;
+
+            public override string ToString()
+            {
+                return Action?.Target?.GetType()?.Name + " " + (Token != null ? "token" : "");
+            }
         }
 
         #endregion

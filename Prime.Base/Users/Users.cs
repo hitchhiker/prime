@@ -6,9 +6,9 @@ namespace Prime.Core
 {
     public class Users
     {
-        private readonly PrimeContext _context;
+        private readonly ServerContext _context;
 
-        public Users(PrimeContext context)
+        public Users(ServerContext context)
         {
             _context = context;
         }

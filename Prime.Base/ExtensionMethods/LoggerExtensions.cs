@@ -49,6 +49,11 @@ namespace Prime.Core
             Log(logger, LoggingLevel.Panic, message);
         }
 
+        public static void Log(this ILogger logger, string message, params object[] parameters)
+        {
+            logger.Log(message, LoggingLevel.Trace, parameters);
+        }
+
         public static void Trace(this ILogger logger, string message, params object[] parameters)
         {
             logger.Log(message, LoggingLevel.Trace, parameters);

@@ -46,7 +46,7 @@ namespace Prime.Core
 
         private void CheckFileSystem()
         {
-            var cdir = _context.PrimeContext.FileSystem.ApiConfigPath;
+            var cdir = _context.ServerContext.FileSystem.ApiConfigPath;
 
             if (_keys.Any() || !cdir.Exists)
                 return;

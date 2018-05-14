@@ -12,7 +12,7 @@ namespace Prime.Finance
 {
     public class TradingCoordinator
     {
-        private readonly IMessenger _m = DefaultMessenger.I.Default;
+        private readonly IMessenger _m = DefaultMessenger.I.DefaultServer;
 
         private TradingCoordinator()
         {

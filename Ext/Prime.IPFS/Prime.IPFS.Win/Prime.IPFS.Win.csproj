@@ -5,24 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ipfs.Api" Version="0.20.0" />
+    <PackageReference Include="Ipfs.Core" Version="0.25.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
     <PackageReference Include="System.Composition" Version="1.1.0" />
+    <PackageReference Include="System.Composition.TypedParts" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime.Windows\Prime.Core.Windows.csproj" />
     <ProjectReference Include="..\Prime.IPFS\Prime.IPFS.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Prime.Base">
-      <HintPath>..\..\..\lib\prime\Prime.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Prime.Core">
-      <HintPath>..\..\..\lib\prime\Prime.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Prime.Core.Windows">
-      <HintPath>..\..\..\lib\prime\Prime.Core.Windows.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

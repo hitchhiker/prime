@@ -1,6 +1,6 @@
 namespace Prime.IPFS
 {
-    public enum IpFsDaemonState
+    public enum DaemonState
     {
         Stopped,
         Starting,

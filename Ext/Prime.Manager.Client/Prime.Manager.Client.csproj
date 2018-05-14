@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="ElectronAngular\**" />
+    <Compile Remove="ElectronUI\**" />
+    <EmbeddedResource Remove="ElectronAngular\**" />
+    <EmbeddedResource Remove="ElectronUI\**" />
+    <None Remove="ElectronAngular\**" />
+    <None Remove="ElectronUI\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Electron\src\core\ActionThrottler.js" />
+    <None Remove="Electron\src\core\ActionThrottler.js.map" />
+    <None Remove="Electron\src\core\IpcManager.js" />
+    <None Remove="Electron\src\core\IpcManager.js.map" />
+    <None Remove="Electron\src\core\KeysManager.js" />
+    <None Remove="Electron\src\core\KeysManager.js.map" />
+    <None Remove="Electron\src\core\PrimeTcpClient.js" />
+    <None Remove="Electron\src\core\PrimeTcpClient.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Manager\Prime.Manager.csproj" />
+    <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Electron\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

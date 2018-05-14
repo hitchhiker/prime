@@ -4,15 +4,15 @@ using System.Linq;
 using System.Reflection;
 using LiteDB;
 using Nito.AsyncEx;
-using Prime.ConsoleApp.Tests;
-using Prime.ConsoleApp.Tests.Alyasko;
-using Prime.ConsoleApp.Tests.Frank;
+using Prime.Console.Frank;
+using Prime.Console.Windows.Alyasko;
+using Prime.Console.Frank.Tests;
+using Prime.Console.Frank.Tests.Alyasko;
 using Prime.Core;
 using Prime.Core.Messaging;
 using Prime.Finance;
 using Prime.Finance.Services.Services.BitMex;
 using Prime.Finance.Services.Services.Kraken;
-using Prime.TestConsole;
 
 namespace TestConsole
 {
@@ -20,13 +20,21 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var ctx = new PrimeContext
+            var serverCtx = new ServerContext()
             {
-                Logger = new ConsoleLogger()
+                L = new ConsoleLogger()
             };
 
+            var clientCtx = new ClientContext()
+            {
+                L = new ConsoleLogger()
+            };
+
+            var prime = new Prime.Core.Prime(serverCtx);
+            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+
             // if this is removed DEBUG wont work across projects!??
-            var i = ClassTestCommon.Test();
+            var i = ClassTestBase.Test();
             i=i+ ClassTestCore.Test();
             // end HACK
 
@@ -37,8 +45,10 @@ namespace TestConsole
 
             if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
             {
-                var test = new KeysManager() as ITestBase;
-                test.Go();
+                AlyaskoTest.Go(serverCtx, clientCtx);
+                //Frank.Go(serverCtx, clientCtx);
+                //var test = new KeysManager() as ITestBase;
+                //test.Go();
             }
             else if (Environment.UserName.Equals("Sean"))
             {
@@ -46,7 +56,7 @@ namespace TestConsole
             }
             else if (Environment.UserName.Equals("hitchhiker"))
             {
-                Frank.Go(ctx);
+                Frank.Go(serverCtx, clientCtx);
                 /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)
@@ -55,6 +65,8 @@ namespace TestConsole
                     ft.Go();
                     */
             }
+
+            Console.ReadLine();
 
             // ----- Kraken -----
 

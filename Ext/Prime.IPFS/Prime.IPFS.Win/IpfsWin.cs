@@ -9,9 +9,9 @@ using Prime.Core.Windows;
 
 namespace Prime.IPFS
 {
-    public abstract class IpfsWin : IpfsPlatformBase
+    public abstract class IpfsPlatformWin : IpfsPlatformBase
     {
-        protected IpfsWin(IExtension instance) : base(instance) {} 
+        protected IpfsPlatformWin(IExtension instance) : base(instance) {} 
 
         public override string NativeExecutable => "ipfs.exe";
 

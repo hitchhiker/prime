@@ -12,14 +12,20 @@ namespace Prime.Finance.Prices.Latest
 {
     internal sealed class Messenger : RenewingSubscriberList<LatestPriceRequestSubscription, SubscriptionRequests>, IStartupMessenger, IDisposable
     {
-        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
-        public readonly Aggregator Aggregator;
+        public Aggregator Aggregator;
 
-        internal Messenger()
+        public void Start(ServerContext context)
         {
-            Aggregator = new Aggregator(this);
+            Aggregator = new Aggregator(this, context);
+            M = context.M;
         }
-        
+
+        public void Stop()
+        {
+            M?.Unregister(this);
+            M?.UnregisterAsync(this);
+        }
+
         protected override SubscriptionRequests OnCreatingSubscriber(ObjectId subscriberId, LatestPriceRequestSubscription message)
         {
             lock (Lock)
@@ -80,7 +86,7 @@ namespace Prime.Finance.Prices.Latest
 
         public override void Dispose()
         {
-            _messenger.Unregister(this);
+            Stop();
         }
     }
 }

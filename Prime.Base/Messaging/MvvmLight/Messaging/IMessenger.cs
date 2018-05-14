@@ -232,5 +232,7 @@ namespace GalaSoft.MvvmLight.Messaging
         /// <param name="action">The action that must be unregistered for
         /// the recipient and for the message type TMessage.</param>
         void Unregister<TMessage>(object recipient, object token, Action<TMessage> action);
+
+        string FriendlyName { get; set; }
     }
 }

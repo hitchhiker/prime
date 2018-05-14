@@ -1,13 +1,14 @@
 ﻿using System.IO;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.ExtensionPackager
 {
     public class ProgramContext
     {
-        private readonly PrimeContext _context;
+        private readonly ClientContext _context;
 
-        public ProgramContext(PrimeContext context)
+        public ProgramContext(ClientContext context)
         {
             _context = context;
         }
@@ -18,7 +19,9 @@ namespace Prime.ExtensionPackager
 
         public DirectoryInfo DistributionDirectory => _context.FileSystem.DistributionDirectory;
 
-        public bool IsPrime { get; set; }
+        public bool IsBase { get; set; }
+
+        public ObjectId ExtId { get; set; }
 
         public ILogger Logger { get; set; }
     }

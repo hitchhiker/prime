@@ -21,7 +21,7 @@ namespace Prime.IPFS
         private bool _requiresInit;
         private bool _lockWait;
         private Timer _externalPollTimer;
-        private IpFsDaemonState _currentState;
+        private DaemonState _currentState;
         private ExecuteDos.DosContext _dosContext;
 
         public bool RedirectRepository { get; set; } = true;
@@ -31,12 +31,12 @@ namespace Prime.IPFS
         public IpfsWindowsDaemon(IpfsInstance instance) : base(instance)
         {
             _instance = instance;
-            CurrentState = IpFsDaemonState.Stopped;
+            CurrentState = DaemonState.Stopped;
         }
 
         public ILogger L => _instance.L;
 
-        private IpFsDaemonState CurrentState
+        private DaemonState CurrentState
         {
             get => _currentState;
             set
@@ -48,14 +48,14 @@ namespace Prime.IPFS
 
         private volatile bool _isStarted;
 
-        public override IpFsDaemonState State()
+        public override DaemonState State()
         {
             return CurrentState;
         }
 
         public override void Start()
         {
-            if (_isStarted && CurrentState!= IpFsDaemonState.Stopped)
+            if (_isStarted && CurrentState!= DaemonState.Stopped)
                 return;
 
             _isStarted = true;
@@ -75,7 +75,7 @@ namespace Prime.IPFS
 
         public override void Stop()
         {
-            if (CurrentState != IpFsDaemonState.Running)
+            if (CurrentState != DaemonState.Running)
                 return;
 
             _externalPollTimer?.Close();
@@ -85,14 +85,14 @@ namespace Prime.IPFS
             else
                 _process?.Kill();
 
-            CurrentState = IpFsDaemonState.Stopping;
+            CurrentState = DaemonState.Stopping;
         }
 
 
         private void InitForExternal()
         {
             L.Info("IPFS is already running on this machine, we're using that instance.");
-            CurrentState = IpFsDaemonState.System;
+            CurrentState = DaemonState.System;
             _externalPollTimer = new Timer
             {
                 Interval = 1000 * 2,
@@ -107,7 +107,7 @@ namespace Prime.IPFS
         {
             if (!Instance.IsIpfsExternalRunning())
             {
-                CurrentState = IpFsDaemonState.Stopped;
+                CurrentState = DaemonState.Stopped;
                 if (AutoRestart)
                     Start();
                 return;
@@ -121,16 +121,16 @@ namespace Prime.IPFS
             _requiresInit = false;
             _lockWait = false;
 
-            CurrentState = IpFsDaemonState.Starting;
+            CurrentState = DaemonState.Starting;
 
             var processContext = new DosProcessContext("daemon --init",
                 message =>
                 {
                     if (message.Contains("Daemon is ready", StringComparison.OrdinalIgnoreCase))
-                        CurrentState = IpFsDaemonState.Running;
+                        CurrentState = DaemonState.Running;
                     if (message.Contains("interrupt signal", StringComparison.OrdinalIgnoreCase))
                     {
-                        CurrentState = IpFsDaemonState.Stopping;
+                        CurrentState = DaemonState.Stopping;
                         return DosCancellation.StopLogging;
                     }
                     return DosCancellation.None;
@@ -141,7 +141,7 @@ namespace Prime.IPFS
                         error.Contains("no IPFS repo found", StringComparison.OrdinalIgnoreCase))
                     {
                         _requiresInit = true;
-                        CurrentState = IpFsDaemonState.Stopped;
+                        CurrentState = DaemonState.Stopped;
                         return DosCancellation.Terminate;
                     }
 
@@ -149,14 +149,14 @@ namespace Prime.IPFS
                         return DosCancellation.None;
 
                     _lockWait = true;
-                    CurrentState = IpFsDaemonState.Stopped;
+                    CurrentState = DaemonState.Stopped;
                     return DosCancellation.Terminate;
                 },
                 process => { _process = process; })
             {
                 OnProcessEnded = () =>
                 {
-                    CurrentState = IpFsDaemonState.Stopped;
+                    CurrentState = DaemonState.Stopped;
 
                     // if (AutoRestart && !_requiresInit && !_lockWait)
                     //    Start();
@@ -166,7 +166,7 @@ namespace Prime.IPFS
             var task = IssueIpfsNativeCommand(processContext);
 
             if (task == null)
-                CurrentState = IpFsDaemonState.Stopped;
+                CurrentState = DaemonState.Stopped;
 
             task.ContinueWith(task1 => FinalStep(task1, allowInitialisation));
 
@@ -175,7 +175,7 @@ namespace Prime.IPFS
 
         private Task FinalStep(Task<ExecuteDos.ProcessResult> pr, bool allowInitialisation)
         {
-            CurrentState = IpFsDaemonState.Stopped;
+            CurrentState = DaemonState.Stopped;
 
             if (_requiresInit && allowInitialisation)
             {

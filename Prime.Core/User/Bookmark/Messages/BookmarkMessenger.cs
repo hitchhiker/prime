@@ -6,7 +6,7 @@ namespace Prime.Core
 {
     public class BookmarkMessenger : IUserContextMessenger
     {
-        private readonly IMessenger _messenger = DefaultMessenger.I.Default;
+        private readonly IMessenger _messenger = DefaultMessenger.I.DefaultServer;
         private readonly UserContext _userContext;
         private readonly BookmarkedCommands _bookmarks;
 

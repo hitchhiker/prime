@@ -12,7 +12,7 @@ namespace Prime.Finance
         {
             _adapter = adapter;
             Ctx = adapter.Ctx;
-            L = new MessengerLogger(Ctx.Status);
+            L = new NullLogger();
         }
 
         private readonly OhlcResolutionAdapter _adapter;

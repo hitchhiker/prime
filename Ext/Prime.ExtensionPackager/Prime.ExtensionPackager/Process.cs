@@ -12,7 +12,7 @@ namespace Prime.ExtensionPackager
 
             if (pmi.Package == null)
             {
-                ctx.Logger.Info("No package found.");
+                ctx.Logger.Info("No package created.");
                 return;
             }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Core;
-using Prime.Core.Exchange.Rates;
 using Prime.Finance.Exchange.Rates;
 using Prime.Finance.Prices.Latest.Messages;
 
@@ -12,16 +11,18 @@ namespace Prime.Finance.Prices.Latest
     internal class Aggregator : IDisposable
     {
         private readonly Messenger _lpm;
+        private readonly ServerContext _context;
         private readonly List<LatestPriceProvider> _providers = new List<LatestPriceProvider>();
         private readonly List<LatestPriceResultMessage> _results = new List<LatestPriceResultMessage>();
         private readonly object _resultsLock = new object();
         private readonly object _commonLock = new object();
         private readonly int _timerInterval = 5000;
-        public IMessenger M { get; } = DefaultMessenger.I.Default;
+        public IMessenger M => _context.M;
 
-        internal Aggregator(Messenger lpm)
+        internal Aggregator(Messenger lpm, ServerContext context)
         {
             _lpm = lpm;
+            _context = context;
             M.RegisterAsync<VerifiedMessage>(this, LatestPriceRequestVerifiedMessage);
             M.RegisterAsync<LatestPriceResultMessage>(this, LatestPriceResultMessage);
         }

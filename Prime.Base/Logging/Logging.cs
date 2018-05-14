@@ -7,7 +7,7 @@ namespace Prime.Core
     {
         private Logging()
         {
-            DefaultLogger = new MessengerLogger();
+            DefaultLogger = new NullLogger();
         }
 
         public static Logging I => Lazy.Value;

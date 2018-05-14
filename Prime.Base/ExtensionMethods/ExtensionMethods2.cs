@@ -146,8 +146,7 @@ namespace Prime.Core
 
         public static void DoAs<T>(this object ob, Action<T> func) where T : class
         {
-            var type = ob as T;
-            if (type == null)
+            if (!(ob is T type))
                 return;
 
             func(type);

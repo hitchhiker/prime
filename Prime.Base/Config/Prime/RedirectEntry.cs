@@ -1,17 +1,19 @@
 using System.IO;
 using System.Xml.Serialization;
+using Prime.Base;
 
 namespace Prime.Core
 {
-    public class RedirectEntry
+    public class RedirectEntry : IUniqueIdentifier<ObjectId>
     {
         [XmlAttribute("id")]
-        public string Id { get; set; }
+        public string IdString { get; set; }
+
+        private ObjectId _id;
+        [XmlIgnore]
+        public ObjectId Id => _id ?? (_id = new ObjectId(IdString));
 
         [XmlAttribute("path")]
         public string Path { get; set; }
-
-        [XmlIgnore]
-        public DirectoryInfo DirectoryInfo => new DirectoryInfo(Path);
     }
 }

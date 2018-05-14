@@ -7,9 +7,9 @@ using Prime.Core;
 
 namespace Prime.IPFS.Win32
 {
-    public class IpfsWin32 : IpfsWin
+    public class IpfsPlatformWin32 : IpfsPlatformWin
     {
-        public IpfsWin32(IExtension instance) : base(instance) {}
+        public IpfsPlatformWin32(IExtension instance) : base(instance) {}
 
         public override string PackageInstallName => "go-ipfs_v0.4.14_windows-386.zip";
     }

@@ -333,3 +333,8 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 lib/prime/
+
+# OSX
+.DS_Store
+
+/instance/

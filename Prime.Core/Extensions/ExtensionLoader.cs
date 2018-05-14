@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Composition;
 using System.Composition.Hosting;
@@ -6,88 +6,135 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
-using System.Threading;
-using Prime.Core;
 
-namespace Prime.Extensions
+namespace Prime.Core
 {
     public class ExtensionLoader
     {
+        private readonly ExtensionManager _manager;
+
         [ImportMany]
-        public IEnumerable<Lazy<IExtensionExecute>> ExtensionsExecute { get; set; }
+        public IEnumerable<Lazy<IExtension>> Extensions { get; private set; }
 
-        public void Compose()
+        public ExtensionLoader(ExtensionManager manager)
         {
-            var path = "V:\\prime\\instance\\prime\\tmp\\staging\\ipfs-3575ddcb0d8647d75fbf044c\\1.3.0-win386\\";
-            var dir = new DirectoryInfo(path);
+            _manager = manager;
+        }
 
-            var files = dir.GetFiles("*.dll", SearchOption.AllDirectories).AsEnumerable();
-            //files = files.Where(x => !x.Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase));
-            //files = files.Where(x => !x.Name.StartsWith("System.", StringComparison.OrdinalIgnoreCase));
+        public void LoadAllBinDirectoryAssemblies()
+        {
+            var di = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
+            var asm = LoadAssemblies(di);
+        }
 
-            Assembly LoadAsm(FileInfo x)
+        public T LoadExtension<T>(DirectoryInfo dir) where T : class, IExtension
+        {
+            var assemblies = LoadAssemblies(dir);
+            if (assemblies.Count == 0)
+                return default;
+
+            var type = typeof(T);
+
+            var typematches = assemblies.SelectMany(x => x.GetLoadableTypes()).Where(x=> x.IsAssignableStandard(type)).ToList();
+            if (typematches.Count == 1)
+                return Reflection.InstanceAny(typematches[0]) as T;
+
+            return default;
+        }
+
+        public T LoadExtensionFromAssembly<T>(FileInfo file) where T : IExtension
+        {
+            var assembly = LoadAssembly(file);
+
+            if (assembly == null)
+                return default;
+
+            return default;// assembly.GetLoadableTypes().FirstOrDefault(x => x == typeof(T));
+        }
+
+        public List<T> LoadExtensions<T>(DirectoryInfo dir)
+        {
+            var results = new List<T>();
+
+            /*
+            if (!dir.Exists)
+                return results;
+
+            var files = dir.GetFiles("*.dll");
+
+            if (files == null || files.Length <= 0)
+                return results;
+
+            foreach (var fi in files)
             {
-                try { return AssemblyLoadContext.Default.LoadFromAssemblyPath(x.FullName); }
-                catch { return null; }
+                var loaded = LoadExtensionFromAssembly<T>(fi);
+                if (loaded?.Count > 0)
+                    results.AddRange(loaded);
             }
+            */
+            return results;
+        }
 
-            var assemblies = files.Select(LoadAsm).Where(x=>x!=null).ToList();
+        public IReadOnlyList<Assembly> LoadAssemblies(DirectoryInfo path)
+        {
+           var usableAssemblies = new List<Assembly>();
+            
+            foreach (var dll in path.GetFiles("*.dll", SearchOption.AllDirectories))
+            {
+                if (dll.Name.Contains("roslyn", StringComparison.OrdinalIgnoreCase) || dll.DirectoryName.Contains("roslyn", StringComparison.OrdinalIgnoreCase))
+                    return null;
 
-            var types = new List<Type>();
-
-            var extT = typeof(IExtension);
-
-            foreach (var a in assemblies)
-                types.AddRange(a.GetLoadableTypes().Where(x=> x.IsClass && !x.IsAbstract && !x.IsInterface && extT.IsAssignableFrom(x)).ToList());
-
+                var a = LoadAssemblyLegacy(dll);
+                if (a != null)
+                    usableAssemblies.Add(a);
+            }
+            /*
             var configuration = new ContainerConfiguration();
-            configuration.WithAssemblies(types.Select(x=>x.Assembly).Distinct());
+            configuration.WithAssemblies(usableAssemblies);
 
             using (var container = configuration.CreateContainer())
             {
-                ExtensionsExecute = container.GetExports<Lazy<IExtensionExecute>>();
-            }
+                Extensions = container.GetExports<Lazy<IExtension>>();
+            }*/
 
-            var pc = new PrimeContext();
-            var m = pc.Messenger;
-
-            foreach (var i in ExtensionsExecute)
-                i.Value.Main(pc);
-
-            m.RegisterAsync<IpfsVersionResponse>(this, x => { Console.WriteLine(x.Version); });
-            m.Send(new IpfsVersionRequest());
-
-            Thread.Sleep(5000);
+            return usableAssemblies;
         }
 
-        private void ComposeSafe()
+        public Assembly LoadAssembly(FileInfo x)
         {
-            /*
-            var di = new DirectoryInfo(Server.MapPath("../../bin/"));
-
-            if (!di.Exists) throw new Exception("Folder not exists: " + di.FullName);
-
-            var dlls = di.GetFileSystemInfos("*.dll");
-            AggregateCatalog agc = new AggregateCatalog();
-
-            foreach (var fi in dlls)
+            try
             {
-                try
-                {
-                    var ac = new AssemblyCatalog(Assembly.LoadFile(fi.FullName));
-                    var parts = ac.Parts.ToArray(); // throws ReflectionTypeLoadException 
-                    agc.Catalogs.Add(ac);
-                }
-                catch (ReflectionTypeLoadException ex)
-                {
-                    Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
-                }
+                return AssemblyLoadContext.Default.LoadFromAssemblyPath(x.FullName);
             }
+            catch { return null; }
+        }
 
-            CompositionContainer cc = new CompositionContainer(agc);
+        public Assembly LoadAssemblyLegacy(FileInfo dll)
+        {
+            try
+            {
+                var a = Assembly.LoadFrom(dll.FullName);
 
-            _providers = cc.GetExports<IDataExchangeProvider>();*/
+                
+                if (a.IsDynamic || a.GlobalAssemblyCache)
+                    return null;
+                /*
+                if (a.FullName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || a.FullName.StartsWith("NETStandard", StringComparison.OrdinalIgnoreCase))
+                    return null;
+
+                if (a.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright?.Contains("microsoft", StringComparison.OrdinalIgnoreCase) == true)
+                    return null;
+                    */
+                return a;
+            }
+            catch (FileLoadException loadEx)
+            {
+                var x = loadEx;
+            } // The Assembly has already been loaded.
+            catch
+            {
+            } // If a BadImageFormatException exception is thrown, the file is not an assembly.
+            return null;
         }
     }
 }
