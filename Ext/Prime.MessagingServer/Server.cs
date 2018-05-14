@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Core;
+using Prime.MessagingServer.Types;
 
-namespace Prime.Core
+namespace Prime.MessagingServer
 {
-    public class MessagingServer
+    public class Server
     {
         public readonly ServerContext ServerContext;
         public readonly IMessenger M;
@@ -17,7 +16,7 @@ namespace Prime.Core
         private readonly MessageTypedSender _helper;
         public readonly MessageTypeNameSerializationBinder TypeBinder;
 
-        public MessagingServer(ServerContext serverContext)
+        public Server(ServerContext serverContext)
         {
             ServerContext = serverContext;
             M = ServerContext.M;

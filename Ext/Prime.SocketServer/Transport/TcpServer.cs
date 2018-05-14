@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
-using Prime.MessageServer.Data;
+using Prime.MessagingServer.Data;
 
 namespace Prime.SocketServer
 {
@@ -32,7 +32,7 @@ namespace Prime.SocketServer
             _dataProvider = new JsonDataProvider(server.Context.MessagingServer);
         }
 
-        public TcpServer(Core.MessagingServer server, IMessenger messenger = null)
+        public TcpServer(MessagingServer.Server server, IMessenger messenger = null)
         {
             _server = null;
             L = _server?.Context?.MessagingServer?.L ?? new NullLogger();

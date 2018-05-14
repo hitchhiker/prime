@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Core;
 using Prime.Core.Testing;
+using Prime.MessagingServer.Types;
 using Prime.SocketServer;
 
 namespace Prime.ConsoleApp.Tests.Frank

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using Prime.Core;
 
-namespace Prime.Core
+namespace Prime.MessagingServer.Types
 {
     /// <summary>
     /// Manages a collection of all system types and their hashes in 2 seperate *oppositely indexed* dictionaries for extremely fast lookup.

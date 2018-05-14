@@ -2,8 +2,9 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Core;
 
-namespace Prime.Core
+namespace Prime.MessagingServer.Types
 {
     public class MessageTypedSender
     {

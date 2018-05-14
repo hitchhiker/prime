@@ -8,6 +8,7 @@ using Prime.Console.Windows.Frank.Socket;
 using Prime.ConsoleApp.Tests.Frank;
 using Prime.Core;
 using Prime.Core.Testing;
+using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
 
 namespace Prime.Console.Windows.Alyasko.WebSocket
