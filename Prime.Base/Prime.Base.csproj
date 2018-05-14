@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -15,6 +20,10 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).*&quot; &quot;$(SolutionDir)\lib\prime&quot; /i /d /y" />
   </Target>
+
+  <ItemGroup>
+    <None Remove="Prime.Base.csproj.DotSettings" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />

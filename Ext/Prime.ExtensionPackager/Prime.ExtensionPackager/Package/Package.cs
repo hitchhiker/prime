@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Prime.Core;
 
 namespace Prime.ExtensionPackager
@@ -12,22 +13,21 @@ namespace Prime.ExtensionPackager
         public readonly string Name;
         private readonly List<FileInfo> _files;
         public readonly FileInfo MetaInfo;
-        public readonly IExtension Extension;
+        public readonly Assembly Assembly;
+        public readonly PackageMeta PackageMeta;
 
-        public Package(IExtension ext, FileInfo metaInfo)
+        public List<FileInfo> StagedFiles { get; private set; }
+        public FileInfo StagedMeta { get; private set; }
+        public DirectoryInfo StagedRoot { get; private set; }
+        public readonly List<PackageAssemblyReference> AssemblyReferences = new List<PackageAssemblyReference>();
+
+        public Package(Assembly assembly, PackageMeta meta, FileInfo metaInfo)
         {
-            Extension = ext;
-            Name = ext.Title.ToLower();
+            PackageMeta = meta;
+            Name = meta.Title.ToLower();
             _files = new List<FileInfo>();
             MetaInfo = metaInfo;
-        }
-
-        public Package(IExtension ext, List<FileInfo> files, FileInfo metaInfo)
-        {
-            Extension = ext;
-            Name = ext.Title.ToLower();
-            _files = files;
-            MetaInfo = metaInfo;
+            Assembly = assembly;
         }
 
         public void AddStagingRange(IEnumerable<FileInfo> files)
@@ -54,23 +54,30 @@ namespace Prime.ExtensionPackager
 
         public string GetDirectory()
         {
-            var fsTitle = Extension.Title.Replace(" ", "-");
-            if (Extension is IExtensionPlatform plt)
+            var fsTitle = PackageMeta.Title.Replace(" ", "-");
+            if (PackageMeta is IExtensionPlatform plt)
                 if (plt.Platform != Platform.NotSpecified)
-                    return (fsTitle + "-" + Extension.Id + Path.DirectorySeparatorChar + Extension.Version + "-" + plt.Platform).ToLower() + Path.DirectorySeparatorChar;
+                    return (fsTitle + "-" + PackageMeta.Id + Path.DirectorySeparatorChar + PackageMeta.Version + "-" + plt.Platform).ToLower() + Path.DirectorySeparatorChar;
 
-            return (fsTitle + "-" + Extension.Id + Path.DirectorySeparatorChar + Extension.Version).ToLower() + Path.DirectorySeparatorChar;
+            return (fsTitle + "-" + PackageMeta.Id + Path.DirectorySeparatorChar + PackageMeta.Version).ToLower() + Path.DirectorySeparatorChar;
         }
 
         public string GetCatName()
         {
-            if (Extension is IExtensionPlatform plt)
-                return "prime-" + (Extension.Id + "-" + Extension.Version + "-" + plt.Platform).ToLower() + ".json";
-            return "prime-" + (Extension.Id + "-" + Extension.Version).ToLower() + ".json";
+            if (PackageMeta is IExtensionPlatform plt)
+                return "prime-" + (PackageMeta.Id + "-" + PackageMeta.Version + "-" + plt.Platform).ToLower() + ".json";
+            return "prime-" + (PackageMeta.Id + "-" + PackageMeta.Version).ToLower() + ".json";
         }
 
-        public List<FileInfo> StagedFiles { get; private set; }
-        public FileInfo StagedMeta { get; private set; }
-        public DirectoryInfo StagedRoot { get; private set; }
+        public void WriteFile()
+        {
+            if (MetaInfo.Exists)
+                MetaInfo.Delete();
+
+            var json = PackageMeta.ToJsonSimple();
+            File.WriteAllText(MetaInfo.FullName, json);
+            MetaInfo.Refresh();
+        }
+
     }
 }
