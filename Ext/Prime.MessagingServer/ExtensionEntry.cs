@@ -1,7 +1,8 @@
 ﻿using System;
 using Prime.Base;
+using Prime.Core;
 
-namespace Prime.Core
+namespace Prime.MessagingServer
 {
     public class ExtensionEntry : IExtensionExecute
     {
@@ -12,11 +13,11 @@ namespace Prime.Core
 
         public Version Version { get; } = new Version("1.0.0");
 
-        internal MessagingServer MessageServerInstance;
+        internal Server MessageServerInstance;
 
         public void Main(ServerContext context)
         {
-            MessageServerInstance = new MessagingServer(context);
+            MessageServerInstance = new Server(context);
         }
     }
 }

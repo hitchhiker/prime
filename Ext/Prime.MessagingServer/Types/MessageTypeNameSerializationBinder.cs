@@ -1,9 +1,8 @@
-using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+using Newtonsoft.Json.Serialization;
+using Prime.Core;
 
-namespace Prime.Core
+namespace Prime.MessagingServer.Types
 {
     public class MessageTypeNameSerializationBinder : ISerializationBinder
     {

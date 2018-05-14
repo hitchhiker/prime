@@ -4,7 +4,7 @@ using Prime.Base;
 
 namespace Prime.Core
 {
-    public class PrimePackageInfo : IPrime
+    public class PrimeCoreExtension : IPrime
     {
         private static readonly ObjectId _id = "prime:core".GetObjectIdHashCode();
         public ObjectId Id => _id;

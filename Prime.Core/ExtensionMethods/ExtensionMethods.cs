@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using LiteDB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prime.Base;

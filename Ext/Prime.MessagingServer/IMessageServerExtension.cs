@@ -1,8 +1,10 @@
-﻿namespace Prime.Core
+﻿using Prime.Core;
+
+namespace Prime.MessagingServer
 {
     public interface IMessageServerExtension : IExtension
     {
-        void Start(MessagingServer server);
+        void Start(Server server);
 
         void Stop();
 

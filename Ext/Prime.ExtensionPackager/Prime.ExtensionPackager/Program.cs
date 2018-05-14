@@ -19,9 +19,6 @@ namespace Prime.ExtensionPackager
             [Option('e', "ext", Required = true, HelpText = "Path to the extension directory for inspection.")]
             public string ExtPath { get; set; }
 
-            [Option("core", HelpText = "Set to true if inspecting the prime core project")]
-            public bool IsCore { get; set; }
-
             [Option("key", HelpText = "Used to force inspection of only the extension matching this hashed name key.")]
             public string ExtensionKey { get; set; }
 
@@ -40,13 +37,13 @@ namespace Prime.ExtensionPackager
                 Run(new Options()
                 {
                     ConfigPath = "..\\..\\..\\..\\..\\..\\instance\\prime-client.config",
-                    //ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug"
-                    ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.KeysManager\\bin\\Debug\\netcoreapp2.0",
-                    ExtensionKey = "prime:KeysManagerExtension"
+                    ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug"
+                    //ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.KeysManager\\bin\\Debug\\netcoreapp2.0",
+                    //ExtensionKey = "prime:KeysManagerExtension"
                 });
+                Console.ReadLine();
             } else
-                CommandLine.Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(Run);
-        }
+                CommandLine.Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(Run);        }
 
         static void Run(Options opts)
         {
@@ -75,7 +72,7 @@ namespace Prime.ExtensionPackager
             var ctx = new ProgramContext(pc)
             {
                 SourceDirectory = extDir,
-                IsPrime = opts.IsCore,
+                IsBase = opts.ExtensionKey=="prime:base",
                 Logger = logger
             };
 
@@ -88,6 +85,7 @@ namespace Prime.ExtensionPackager
             Process.Go(ctx);
 
             logger.Info("");
+
         }
     }
 }

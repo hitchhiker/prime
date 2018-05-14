@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Prime.Core;
-using SharpCompress.Archives.GZip;
-using SharpCompress.Common;
-using SharpCompress.Writers;
 
 namespace Prime.ExtensionPackager
 {

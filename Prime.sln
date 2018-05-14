@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.ExtensionPackager", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.SocketServer", "Ext\Prime.SocketServer\Prime.SocketServer.csproj", "{054D8B91-C52F-4D2A-9200-990DB48BDBF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.MessageServer", "Ext\Prime.MessageServer\Prime.MessageServer.csproj", "{2F73C077-B8CB-47A1-89CA-140C47705F53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.MessagingServer", "Ext\Prime.MessagingServer\Prime.MessagingServer.csproj", "{2F73C077-B8CB-47A1-89CA-140C47705F53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Console.Windows", "Prime.Console.Windows\Prime.Console.Windows.csproj", "{E796ABCD-1905-4DDD-A884-0C0D6267DADA}"
 EndProject

@@ -19,7 +19,7 @@ namespace Prime.ExtensionPackager
 
         public DirectoryInfo DistributionDirectory => _context.FileSystem.DistributionDirectory;
 
-        public bool IsPrime { get; set; }
+        public bool IsBase { get; set; }
 
         public ObjectId ExtId { get; set; }
 

@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Core;
 using Prime.Core.Testing;
+using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
 
 namespace Prime.Bootstrap

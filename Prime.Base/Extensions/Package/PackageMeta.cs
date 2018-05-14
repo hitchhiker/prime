@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using LiteDB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Prime.Base;
@@ -37,7 +36,7 @@ namespace Prime.Core
         public Version Version { get; set; }
 
         [JsonProperty("extReferences")]
-        public List<ObjectId> ExtensionReferences { get; set; } = new List<ObjectId>();
+        public List<PackageReference> PackageReferences { get; set; } = new List<PackageReference>();
 
         public string ToJsonSimple()
         {

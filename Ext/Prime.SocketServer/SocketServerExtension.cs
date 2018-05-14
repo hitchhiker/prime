@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Prime.Base;
 using Prime.Core;
+using Prime.MessagingServer;
 
 namespace Prime.SocketServer
 {
