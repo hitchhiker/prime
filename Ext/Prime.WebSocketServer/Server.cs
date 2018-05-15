@@ -59,7 +59,7 @@ namespace Prime.WebSocketServer
             L.Log($"WsServer sending message...");
 
             var data = _commonJsonDataProvider.Serialize(message);
-            _rootHandlerInst.SendTo(data.ToString(), message.SessionId);
+            _rootHandlerInst.SendToCurrentClient(data.ToString());
         }
     }
 }

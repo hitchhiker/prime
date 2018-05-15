@@ -27,20 +27,24 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
+                S.L.Log($"From client [{x.SessionId}]: {nameof(x)}");
                 S.M.Send(new HelloResponse(x, "Hello World from WebSockets!"));
             });
 
             C.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                S.L.Log($"{x.SessionId}: {x.Response}");
-                mr = true;
+                C.L.Log($"Client[{x.SessionId}]: {x.Response}");
+                //mr = true;
                 
-                S.L.Log("Test is working!");
+                //S.L.Log("Test is working!");
             });
 
             server.Start();
 
-            SendAsClient(server, S.M, new HelloRequest());
+            for (int i = 0; i < 2; i++)
+            {
+                SendAsClient(server, S.M, new HelloRequest());
+            }
 
             do
             {

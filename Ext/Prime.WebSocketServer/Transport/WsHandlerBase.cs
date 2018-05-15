@@ -16,6 +16,12 @@ namespace Prime.WebSocketServer.Transport
         
         protected readonly ConcurrentDictionary<ObjectId, string> SessionsLookup = new ConcurrentDictionary<ObjectId, string>();
 
+        /// <summary>
+        /// Sends to client with specified ObjectId.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="objectId"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void SendTo(string data, ObjectId objectId)
         {
             if(!SessionsLookup.TryGetValue(objectId, out var remoteId)) 
@@ -24,6 +30,19 @@ namespace Prime.WebSocketServer.Transport
             Sessions.SendTo(data, remoteId);
         }
 
+        /// <summary>
+        /// Sends data to currently connected client.
+        /// </summary>
+        /// <param name="data"></param>
+        public void SendToCurrentClient(string data)
+        {
+            Send(data);
+        }
+
+        /// <summary>
+        /// Broadcasts data to all connected clients.
+        /// </summary>
+        /// <param name="data"></param>
         public void Broadcast(string data)
         {
             Sessions.Broadcast(data);
