@@ -32,8 +32,10 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             C.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                S.L.Log(x.Response + " " + x.SessionId);
+                S.L.Log($"{x.SessionId}: {x.Response}");
                 mr = true;
+                
+                S.L.Log("Test is working!");
             });
 
             server.Start();
@@ -46,8 +48,6 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
             } while (!mr);
 
             S.L.Log("Stopping WS server...");
-
-            Thread.Sleep(1000);
 
             server.Stop();
         }

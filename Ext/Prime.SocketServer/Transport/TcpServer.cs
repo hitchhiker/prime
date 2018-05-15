@@ -3,6 +3,7 @@ using Prime.Core;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -17,8 +18,10 @@ namespace Prime.SocketServer
     {
         private readonly Server _server;
         private TcpListener _listener;
-        private readonly ConcurrentBag<IdentifiedClient> _connectedClients = new ConcurrentBag<IdentifiedClient>();
         private readonly CommonJsonDataProvider _dataProvider;
+        
+        private readonly ConcurrentBag<IdentifiedClient> _connectedClients = new ConcurrentBag<IdentifiedClient>();
+        
         public readonly ILogger L;
         public readonly IMessenger M;
 
@@ -27,19 +30,13 @@ namespace Prime.SocketServer
         public TcpServer(Server server, IMessenger messenger = null)
         {
             _server = server;
+            
             L = _server?.Context?.MessagingServer?.L ?? new NullLogger();
-            M = messenger ?? _server.Context.MessagingServer.M;
+            M = messenger ?? _server?.Context?.MessagingServer?.M;
+            
             _dataProvider = new CommonJsonDataProvider(server.Context.MessagingServer);
         }
-
-        public TcpServer(MessagingServer.Server server, IMessenger messenger = null)
-        {
-            _server = null;
-            L = _server?.Context?.MessagingServer?.L ?? new NullLogger();
-            M = messenger ?? _server.Context.MessagingServer.M;
-            _dataProvider = new CommonJsonDataProvider(server);
-        }
-
+        
         public void Start(IPAddress address, short port)
         {
             _stoppedRequested = false;
@@ -64,7 +61,7 @@ namespace Prime.SocketServer
             Log("TCP socket server stopped.");
         }
 
-        public ExternalMessage UnpackResponse(object response, IdentifiedClient sender)
+        private ExternalMessage UnpackResponse(string response, IdentifiedClient sender)
         {
             return !(_dataProvider.Deserialize(response) is BaseTransportMessage message) ? null : new ExternalMessage(sender?.Id, message);
         }
@@ -73,6 +70,15 @@ namespace Prime.SocketServer
         {
             if(!_stoppedRequested)
                 _listener.BeginAcceptTcpClient(ClientAcceptedCallback, null);
+        }
+        
+        private string ReceiveData(Stream stream, int receiveBufferSize = 1024)
+        {
+            var buffer = new byte[receiveBufferSize];
+            if (stream.CanRead)
+                stream.Read(buffer, 0, buffer.Length);
+
+            return buffer.GetString();
         }
 
         private void ClientAcceptedCallback(IAsyncResult ar)
@@ -89,7 +95,7 @@ namespace Prime.SocketServer
                         {
                             while (connectedClient.TcpClient.Connected)
                             {
-                                var data = _dataProvider.ReceiveData(stream);
+                                var data = ReceiveData(stream);
 
                                 try
                                 {
@@ -120,10 +126,23 @@ namespace Prime.SocketServer
         {
             if (identifiedClient == null)
                 foreach (var c in _connectedClients)
-                    _dataProvider.SendData(c, data);
+                    TcpSendInternal(c, data);
             else
-                _dataProvider.SendData(identifiedClient, data);
+                TcpSendInternal(identifiedClient, data);
+        }
 
+        private void TcpSendInternal<T>(IdentifiedClient identifiedClient, T data)
+        {
+            if (!identifiedClient.TcpClient.Connected)
+            {
+                L.Warn("Attemped to write to closed TcpClient.");
+                return;
+            }
+
+            var dataString = _dataProvider.Serialize(data).ToString();
+            var dataBytes = dataString.GetBytes();
+            
+            identifiedClient.TcpClient.GetStream().Write(dataBytes, 0, dataBytes.Length);
         }
 
         public IdentifiedClient GetClient(ObjectId clientId)

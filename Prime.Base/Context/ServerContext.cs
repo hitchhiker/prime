@@ -24,6 +24,10 @@ namespace Prime.Core
 
         public ServerContext(string configPath, IMessenger m)
         {
+            // HACK //
+            configPath = "/Users/alexander/Projects/prime/instance/prime-server.config";
+            // END HACK //
+            
             configPath = configPath.ResolveSpecial();
 
             PlatformCurrent = OsInformation.GetPlatform();
