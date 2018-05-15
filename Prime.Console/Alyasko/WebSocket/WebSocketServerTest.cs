@@ -43,7 +43,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             for (int i = 0; i < 2; i++)
             {
-                SendAsClient(server, S.M, new HelloRequest());
+                //SendAsClient(server, S.M, new HelloRequest());
             }
             SendAsClient(server, S.M, new HelloRequest(), true);
 
