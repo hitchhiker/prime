@@ -47,6 +47,9 @@ namespace Prime.Core
         [XmlIgnore]
         public FileInfo ConfigLoadedFrom { get; private set; }
 
+        [XmlElement("nugetPath")]
+        public string NugetPath { get; set; } = "[USER]//.nuget";
+
         [XmlElement("fileSystemPath")]
         public string BasePath { get; set; }
         

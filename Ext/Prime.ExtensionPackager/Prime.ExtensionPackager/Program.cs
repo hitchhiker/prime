@@ -37,7 +37,8 @@ namespace Prime.ExtensionPackager
                 Run(new Options()
                 {
                     ConfigPath = "..\\..\\..\\..\\..\\..\\instance\\prime-client.config",
-                    ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug"
+                    //ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.IPFS\\Prime.IPFS.Win64\\bin\\Debug"
+                    ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.Finance\\bin\\Debug\\netstandard2.0"
                     //ExtPath = "..\\..\\..\\..\\..\\..\\Ext\\Prime.KeysManager\\bin\\Debug\\netcoreapp2.0",
                     //ExtensionKey = "prime:KeysManagerExtension"
                 });
@@ -53,6 +54,9 @@ namespace Prime.ExtensionPackager
             var configPath = "./";
 
             var logger = new ConsoleLogger() {IncludePreamble = false};
+
+            logger.Info("config: " + opts.ConfigPath);
+            logger.Info("extension: " + opts.ExtPath);
 
             configPath = Path.GetFullPath(opts.ConfigPath);
             extPath = Path.GetFullPath(opts.ExtPath);

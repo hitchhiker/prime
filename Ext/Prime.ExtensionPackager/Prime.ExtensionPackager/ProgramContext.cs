@@ -6,18 +6,18 @@ namespace Prime.ExtensionPackager
 {
     public class ProgramContext
     {
-        private readonly ClientContext _context;
+        public readonly ClientContext ClientContext;
 
-        public ProgramContext(ClientContext context)
+        public ProgramContext(ClientContext clientContext)
         {
-            _context = context;
+            ClientContext = clientContext;
         }
 
         public DirectoryInfo SourceDirectory { get; set; }
 
-        public DirectoryInfo StagingDirectory => _context.FileSystem.StagingDirectory;
+        public DirectoryInfo StagingDirectory => ClientContext.FileSystem.StagingDirectory;
 
-        public DirectoryInfo DistributionDirectory => _context.FileSystem.DistributionDirectory;
+        public DirectoryInfo DistributionDirectory => ClientContext.FileSystem.DistributionDirectory;
 
         public bool IsBase { get; set; }
 

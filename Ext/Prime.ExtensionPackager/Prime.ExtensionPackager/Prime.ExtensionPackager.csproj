@@ -31,10 +31,10 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
-      <BinFiles Include="$(TargetDir)$(TargetName).*" />
+      <AllFiles Include="$(TargetDir)*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />
   </Target>
 
 </Project>

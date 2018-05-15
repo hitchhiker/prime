@@ -1,17 +1,19 @@
-@set packer=".\util\packer\Prime.ExtensionPackager.dll" -c .\prime-client.config -e"
+@set packer=".\util\packer\Prime.ExtensionPackager.dll"
 @set config=".\prime-client.config"
+@set dist=Debug
 
-@dotnet %packer% -c %config% ..\Prime.Base\bin\Debug\netstandard2.0 --key prime:base
-@dotnet %packer% -c %config% ..\Prime.Core\bin\Debug\netstandard2.0 --key prime:core
-@dotnet %packer% -c %config% ..\Ext\Prime.Finance\bin\Debug\netstandard2.0
-@dotnet %packer% -c %config% ..\Ext\Prime.Finance.Services\bin\Debug\netstandard2.0
-@dotnet %packer% -c %config% ..\Ext\Prime.IPFS\Prime.IPFS.Win64\bin\Debug\netstandard2.0
-@dotnet %packer% -c %config% ..\Ext\Prime.IPFS\Prime.IPFS.Win32\bin\Debug\netstandard2.0
-@dotnet %packer% -c %config% ..\Ext\Prime.ExtensionPackager\Prime.ExtensionPackager\bin\Debug\netcoreapp2.0\
-@dotnet %packer% -c %config% ..\Ext\Prime.Manager\bin\Debug\netstandard2.0 --key prime:managerservice
-@dotnet %packer% -c %config% ..\Ext\Prime.Manager.Client\bin\Debug\netcoreapp2.0 --key prime:manager-client
-@dotnet %packer% -c %config% ..\Ext\Prime.SocketServer\bin\Debug\netstandard2.0 --key prime:socketserver
-@dotnet %packer% -c %config% ..\Ext\Prime.WebSocketServer\bin\Debug\netstandard2.0 --key prime:websocketserver
-@dotnet %packer% -c %config% ..\Ext\Prime.MessagingServer\bin\Debug\netstandard2.0
+@dotnet %packer% -c %config% -e ..\Prime.Base\bin\%dist%\netstandard2.0 --key prime:base
+@dotnet %packer% -c %config% -e ..\Prime.Core\bin\%dist%\netstandard2.0 --key prime:core
+@dotnet %packer% -c %config% -e ..\Ext\Prime.Finance\bin\%dist%\netstandard2.0
+@dotnet %packer% -c %config% -e ..\Ext\Prime.Finance.Services\bin\%dist%\netstandard2.0
+@dotnet %packer% -c %config% -e ..\Ext\Prime.IPFS\Prime.IPFS.Win64\bin\%dist%\netstandard2.0
+@dotnet %packer% -c %config% -e ..\Ext\Prime.IPFS\Prime.IPFS.Win32\bin\%dist%\netstandard2.0
+@dotnet %packer% -c %config% -e ..\Ext\Prime.Manager\bin\%dist%\netstandard2.0 --key prime:managerservice
+@dotnet %packer% -c %config% -e ..\Ext\Prime.SocketServer\bin\%dist%\netstandard2.0 --key prime:socketserver
+@dotnet %packer% -c %config% -e ..\Ext\Prime.WebSocketServer\bin\%dist%\netstandard2.0 --key prime:websocketserver
+@dotnet %packer% -c %config% -e ..\Ext\Prime.MessagingServer\bin\%dist%\netstandard2.0
+
+@dotnet %packer% -c %config% -e ..\Ext\Prime.Manager.Client\bin\%dist%\netcoreapp2.0 --key prime:manager-client
+@dotnet %packer% -c %config% -e ..\Ext\Prime.ExtensionPackager\Prime.ExtensionPackager\bin\%dist%\netcoreapp2.0\
 
 @pause
