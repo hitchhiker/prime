@@ -37,6 +37,7 @@ namespace Prime.WebSocketServer
 
                 _rootHandlerInst = x;
             });
+            _webSocketServer.AddWebSocketService<WsEchoHandler>(WsEchoHandler.ServicePath);
 
             L = context.MessageServer.L;
         }
