@@ -19,7 +19,7 @@ namespace Prime.Core
         public ClientContext(string configPath, IMessenger m)
         {
             // HACK //
-            configPath = "/Users/alexander/Projects/prime/instance/prime-client.config";
+            configPath = @"P:\Projects\Git\prime\instance\prime-client.config";
             // END HACK //
             
             configPath = configPath.ResolveSpecial();
