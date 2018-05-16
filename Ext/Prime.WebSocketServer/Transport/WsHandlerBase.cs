@@ -4,6 +4,7 @@ using System.Threading;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Base;
 using Prime.Core;
+using WebSocketSharp;
 using WebSocketSharp.Server;
 
 namespace Prime.WebSocketServer.Transport
@@ -13,6 +14,8 @@ namespace Prime.WebSocketServer.Transport
         public IMessenger M;
         public ILogger L;
         public MessagingServer.Server MessageServer;
+        public EventHandler OnClientDisconnected;
+        public EventHandler OnClientConnected;
         
         protected readonly ConcurrentDictionary<ObjectId, string> SessionsLookup = new ConcurrentDictionary<ObjectId, string>();
 
@@ -48,10 +51,22 @@ namespace Prime.WebSocketServer.Transport
             Sessions.Broadcast(data);
         }
 
+        protected override void OnClose(CloseEventArgs e)
+        {
+            L?.Log($"Client {SessionId} disconnected from WebSocket server.");
+            OnClientDisconnected?.Invoke(this, new EventArgs());
+        }
+
+        protected override void OnOpen()
+        {
+            L?.Log($"Client {SessionId} connected to WebSocket server.");
+            OnClientConnected?.Invoke(this, new EventArgs());
+        }
+
         protected string RemoteId => ID;
 
         private ObjectId _sessionId;
-        protected ObjectId SessionId
+        public ObjectId SessionId
         {
             get
             {

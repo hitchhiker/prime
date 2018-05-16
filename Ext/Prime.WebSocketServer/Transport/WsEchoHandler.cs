@@ -1,4 +1,5 @@
-﻿using WebSocketSharp;
+﻿using Prime.Core;
+using WebSocketSharp;
 
 namespace Prime.WebSocketServer.Transport
 {

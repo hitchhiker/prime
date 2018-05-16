@@ -27,7 +27,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
-                S.L.Log($"From client [{x.SessionId}]: {nameof(x)}");
+                S.L.Log($"Request from client [{x.SessionId}]: {nameof(HelloRequest)}");
                 S.M.Send(new HelloResponse(x, "Hello World from WebSockets!"));
             });
 
@@ -45,7 +45,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
             {
                 //SendAsClient(server, S.M, new HelloRequest());
             }
-            SendAsClient(server, S.M, new HelloRequest(), true);
+            //SendAsClient(server, S.M, new HelloRequest(), true);
 
             do
             {
