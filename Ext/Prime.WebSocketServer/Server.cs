@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using Prime.Base;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.MessagingServer.Data;
@@ -20,7 +22,7 @@ namespace Prime.WebSocketServer
 
         public readonly ILogger L;
 
-        private WsRootHandler _rootHandlerInst;
+        private ConcurrentDictionary<ObjectId, WsRootHandler> _clientsHandlers = new ConcurrentDictionary<ObjectId, WsRootHandler>();
 
         public Server(WebSocketServerContext context)
         {
@@ -35,9 +37,24 @@ namespace Prime.WebSocketServer
                 x.MessageServer = context.MessageServer;
                 x.DataProvider = _commonJsonDataProvider;
 
-                _rootHandlerInst = x;
+                x.OnClientDisconnected = (sender, args) =>
+                {
+                    if(!_clientsHandlers.TryRemove(x.SessionId, out x))
+                        throw new InvalidOperationException($"Client {x.SessionId} is not registered and cannot be deleted.");
+                };
+
+                x.OnClientConnected = (sender, args) =>
+                {
+                    if (!_clientsHandlers.TryAdd(x.SessionId, x))
+                        throw new InvalidOperationException($"Client {x.SessionId} has already been connected to WebSocket server.");
+                };
+
+                
             });
-            _webSocketServer.AddWebSocketService<WsEchoHandler>(WsEchoHandler.ServicePath);
+            _webSocketServer.AddWebSocketService<WsEchoHandler>(WsEchoHandler.ServicePath, (x) =>
+                {
+                    x.L = context.MessageServer.L;
+                });
 
             L = context.MessageServer.L;
         }
@@ -60,7 +77,11 @@ namespace Prime.WebSocketServer
             L.Log($"WsServer sending message...");
 
             var data = _commonJsonDataProvider.Serialize(message);
-            _rootHandlerInst.SendToCurrentClient(data.ToString());
+
+            if (!_clientsHandlers.TryGetValue(message.SessionId, out var client))
+                throw new InvalidOperationException($"Unable to send data to client {message.SessionId} because it's not registered on WebSocket server.");
+
+            client.SendToCurrentClient(data.ToString());
         }
     }
 }
