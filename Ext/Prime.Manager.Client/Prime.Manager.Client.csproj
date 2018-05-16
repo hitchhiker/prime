@@ -22,21 +22,26 @@
     <None Remove="Electron\src\core\PrimeTcpClient.js.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
-    <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime.Manager\Prime.Manager.csproj" />
-    <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
-    <ProjectReference Include="..\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Electron\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\Prime.Manager\Prime.Manager.csproj" />
+    <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <AllFiles Include="$(SourceDir)/Electron/*" />
+    </ItemGroup>
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(TargetDir)\Electron" />
+  </Target>
 </Project>

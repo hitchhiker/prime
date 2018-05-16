@@ -20,21 +20,11 @@ namespace Prime.WebSocketServer.Transport
 
         protected override void OnMessage(MessageEventArgs e)
         {
-            L.Log($"WsRootHandler message received: '{e.Data}'.");
-
-            var textData = e.Data;
-
-            var settings = new JsonSerializerSettings()
-            {
-                TypeNameHandling = TypeNameHandling.Objects,
-                SerializationBinder = MessageServer.TypeBinder
-            };
-
-            var m = !(JsonConvert.DeserializeObject(textData, settings) is BaseTransportMessage message)
+            var msg = !(DataProvider.Deserialize(e.Data) is BaseTransportMessage baseMsg)
                 ? null
-                : new ExternalMessage(SessionId, message);
-
-            M.Send(m);
+                : new ExternalMessage(SessionId, baseMsg);
+            
+            M.Send(msg);
         }
     }
 }

@@ -286,6 +286,11 @@ namespace Prime.Core
             return type.GetHashCode();
         }
 
+        public static string GetStrongHash(this Type type)
+        {
+            return (type.FullName + type.GetHashCode()).GetObjectIdHashCode().ToString();
+        }
+
         /// <summary>
         /// This only hashes the short name, not the version or any other part of 'FullName'.
         /// It then appends assembly the short type name.

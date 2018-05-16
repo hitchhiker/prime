@@ -24,12 +24,16 @@ namespace Prime.Core
 
         public ServerContext(string configPath, IMessenger m)
         {
+            // HACK //
+            //configPath = @"P:\Projects\Git\prime\instance\prime-server.config";
+            // END HACK //
+            
             configPath = configPath.ResolveSpecial();
 
             PlatformCurrent = OsInformation.GetPlatform();
 
             if (Testing != null)
-                throw new Exception(nameof(ServerContext) + " is already initialised in this app domain.");
+                throw new Exception(nameof(ServerContext) + " is already initialized in this app domain.");
 
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
@@ -45,7 +49,7 @@ namespace Prime.Core
             Testing = this;
         }
 
-        public static ServerContext Testing { get; private set; }
+        public static ServerContext Testing { get; private set; } = new ServerContext(@"P:\Projects\Git\prime\instance\prime-server.config");
 
         public static PublicContext Public;
 

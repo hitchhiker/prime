@@ -27,18 +27,25 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
+                S.L.Log($"Request from client [{x.SessionId}]: {nameof(HelloRequest)}");
                 S.M.Send(new HelloResponse(x, "Hello World from WebSockets!"));
             });
 
             C.M.RegisterAsync<HelloResponse>(this, x =>
             {
-                S.L.Log(x.Response + " " + x.SessionId);
-                mr = true;
+                C.L.Log($"Client[{x.SessionId}]: {x.Response}");
+                //mr = true;
+                
+                //S.L.Log("Test is working!");
             });
 
             server.Start();
 
-            SendAsClient(server, S.M, new HelloRequest());
+            for (int i = 0; i < 2; i++)
+            {
+                //SendAsClient(server, S.M, new HelloRequest());
+            }
+            //SendAsClient(server, S.M, new HelloRequest(), true);
 
             do
             {
@@ -47,12 +54,10 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
 
             S.L.Log("Stopping WS server...");
 
-            Thread.Sleep(1000);
-
             server.Stop();
         }
 
-        public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg)
+        public void SendAsClient(Server server, IMessenger msgr, BaseTransportMessage msg, bool echoClient = false)
         {
             var ctx = new WebSocketServerContext(server);
             var l = server.ServerContext.L;
@@ -60,7 +65,7 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
             Task.Run(() =>
             {
                 l.Log("Establishing connection to local socket server.");
-                using (var ws = new WebSocketSharp.WebSocket($"ws://{IPAddress.Loopback}:{ctx.Port}/"))
+                using (var ws = new WebSocketSharp.WebSocket($"ws://{IPAddress.Loopback}:{ctx.Port}/{(echoClient ? "echo": "")}"))
                 {
                     var settings = new JsonSerializerSettings()
                     {
@@ -77,6 +82,8 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
                             var dataText = args.Data;
                             if (string.IsNullOrWhiteSpace(dataText))
                                 return;
+                            
+                            l.Log($"Raw from server: {dataText}");
 
                             if (JsonConvert.DeserializeObject(dataText, settings) is BaseTransportMessage m)
                                 helper.UnPackSendReceivedMessage(new ExternalMessage(m.SessionId, m));

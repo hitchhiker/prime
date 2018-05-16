@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WS Client Test</title>
+    <script type="text/javascript">
+        var ws;
+
+        window.onload = function() {
+            
+        }
+
+        function connect() {
+            ws = new WebSocket("ws://localhost:9991/");
+            ws.addEventListener("open", (w, ev) => {
+                console.log("Connected.");
+            });
+            ws.addEventListener("message", (ev) => {
+                console.log("Message: " + ev.data);
+            });
+        }
+
+        function send() {
+            console.log("Sending");
+            ws.send('{"$type":"prime.core.testing.hellorequest"}');
+        }
+    </script>
+</head>
+<body>
+    <h1>WS Client Test</h1>
+    <div>
+        <button onclick="connect()">Connect</button>
+        <button onclick="send()">Send</button>
+    </div>
+</body>
+</html>

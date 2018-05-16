@@ -1,21 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;1705;CS0618</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Worker.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Ext\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance.Services\Prime.Finance.Services.csproj" />
@@ -34,15 +30,13 @@
     <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\Prime.Bootstrap\Prime.Bootstrap.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
-    <ProjectReference Include="..\Prime.Windows\Prime.Core.Windows.csproj" />
+    <ProjectReference Include="..\Platform\Prime.Windows\Prime.Core.Windows.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="BouncyCastle.Crypto.dll" Version="1.8.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
-    <PackageReference Include="SharpCompress" Version="0.21.0" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.2" />
+    <PackageReference Include="SharpCompress" Version="0.21.1" />
   </ItemGroup>
-
 </Project>

@@ -43,18 +43,20 @@ namespace TestConsole
                // var asm = Assembly.LoadFrom(args[1]);
             }
 
-            if (Environment.UserName.Equals("yasko") || Environment.UserName.Equals("Alexander"))
+            var userName = Environment.UserName.ToLower();
+            
+            if (userName.Equals("yasko") || userName.Equals("alexander"))
             {
                 AlyaskoTest.Go(serverCtx, clientCtx);
                 //Frank.Go(serverCtx, clientCtx);
                 //var test = new KeysManager() as ITestBase;
                 //test.Go();
             }
-            else if (Environment.UserName.Equals("Sean"))
+            else if (userName.Equals("Sean"))
             {
                 
             }
-            else if (Environment.UserName.Equals("hitchhiker"))
+            else if (userName.Equals("hitchhiker"))
             {
                 Frank.Go(serverCtx, clientCtx);
                 /*

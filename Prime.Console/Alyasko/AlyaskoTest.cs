@@ -1,4 +1,5 @@
-﻿using Prime.Console.Windows.Alyasko.WebSocket;
+﻿using Prime.Console.Alyasko.Manager;
+using Prime.Console.Windows.Alyasko.WebSocket;
 using Prime.Core;
 
 namespace Prime.Console.Windows.Alyasko
@@ -12,6 +13,7 @@ namespace Prime.Console.Windows.Alyasko
             logger.Log("Alyasko Test started...");
 
             new WebSocketServerTest(serverCtx, clientCtx).Go();
+            //new ManagerTest(serverCtx, clientCtx).Go();
         }
     }
 }

@@ -78,6 +78,5 @@ namespace Prime.ExtensionPackager
             File.WriteAllText(MetaInfo.FullName, json);
             MetaInfo.Refresh();
         }
-
     }
 }

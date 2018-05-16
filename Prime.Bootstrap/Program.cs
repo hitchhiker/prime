@@ -10,7 +10,9 @@ namespace Prime.Bootstrap
     {
         static void Main(string[] args)
         {
-            new WebSocketTestApp().Run();
+            Console.WriteLine("Hello World");
+
+            //ew WebSocketTestApp().Run();
         }
     }
 }
