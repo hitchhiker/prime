@@ -10,7 +10,7 @@ namespace Prime.Core
     public sealed class Networks : IEnumerable<Network>
     {
         public static Networks I => Lazy.Value;
-        private static readonly Lazy<Networks> Lazy = new Lazy<Networks>(()=>new Networks());
+        private static readonly Lazy<Networks> Lazy = new Lazy<Networks>(() => new Networks());
         private readonly object _lock = new object();
         public readonly UniqueList<Network> KnownNetworks = new UniqueList<Network>();
 
@@ -23,7 +23,7 @@ namespace Prime.Core
                 if (!_collected)
                 {
                     _collected = true;
-                    KnownNetworks.AddRange(ServerContext.Testing.Types.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).Select(x => x.Network));
+                    KnownNetworks.AddRange(ServerContext.Testing.Types.ImplementInstances<INetworkProvider>().Where(x => !x.Disabled).Select(x => x.Network));
                 }
             }
             return _cache.GetOrAdd(Network.GetHash(name), k => new Network(name));
@@ -31,7 +31,7 @@ namespace Prime.Core
 
         private bool _collected;
         private IReadOnlyList<INetworkProvider> _providers;
-        public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = ServerContext.Testing.Types.ImplementInstances<INetworkProvider>().Where(x=>!x.Disabled).OrderByDescending(x=>x.Priority).ToList());
+        public IReadOnlyList<INetworkProvider> Providers => _providers ?? (_providers = ServerContext.Testing.Types.ImplementInstances<INetworkProvider>().Where(x => !x.Disabled).OrderByDescending(x => x.Priority).ToList());
 
         private readonly ConcurrentDictionary<Type, IReadOnlyList<INetworkProvider>> _providersTypeDictionary = new ConcurrentDictionary<Type, IReadOnlyList<INetworkProvider>>();
 

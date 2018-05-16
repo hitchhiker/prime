@@ -20,18 +20,18 @@ namespace Prime.Core
             {
                 _typeLookup = Types.ToDictionary(hashFunction, t => t);
             }
-            catch
+            catch(Exception ex)
             {
                 var table = Types.ToDictionary(t => t, hashFunction);
                 var dupes = new UniqueList<string>();
                 foreach (var t in table)
                 {
-                    if (table.Values.Count(x=>x.Equals(t.Value))>1)
+                    if (table.Values.Count(x => x.Equals(t.Value)) > 1)
                         dupes.Add(t.Key.FullName);
                 }
 
                 var dup = string.Join(", ", dupes);
-                throw new Exception("Type(s) '" + dup + "' cannot be added to " + GetType() + " because of a hash collision.");
+                throw new Exception("Type(s) '" + dup + "' cannot be added to " + GetType() + " because of a hash collision.", ex);
             }
             _hashLookup = _typeLookup.ToDictionary(k => k.Value, v => v.Key);
         }
@@ -40,7 +40,7 @@ namespace Prime.Core
         private readonly Dictionary<Type, T> _hashLookup = new Dictionary<Type, T>();
         private readonly Dictionary<T, Type> _typeLookup = new Dictionary<T, Type>();
         protected readonly List<Type> Types;
-        
+
         public List<T> Get(IEnumerable<Type> type)
         {
             return type.Select(Get).ToList();

@@ -7,13 +7,13 @@ namespace Prime.Core
     {
         public static Type GetType(this IDictionary<string, string> dict, string name)
         {
-            var i = dict.GetIntN(name);
+            var i = dict.Get(name);
             return i == null ? null : ServerContext.Testing.Types.Get(i);
         }
 
         public static T GetInstance<T>(this IDictionary<string, string> dict, string name) where T : class
         {
-            var i = dict.GetIntN(name);
+            var i = dict.Get(name);
             if (i == null)
                 return null;
             var t = ServerContext.Testing.Types.Get(i);

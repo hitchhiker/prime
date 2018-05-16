@@ -17,7 +17,7 @@ namespace Prime.Core
         public INetworkProvider Provider { get; set; }
 
         [Bson]
-        public int InterfaceTypeId { get; set; }
+        public string InterfaceTypeId { get; set; }
 
         public override string ToString()
         {

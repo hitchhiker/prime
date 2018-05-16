@@ -11,13 +11,13 @@ namespace Prime.Core
     /// <summary>
     /// Manages a collection of all system types and their hashes in 2 seperate *oppositely indexed* dictionaries for extremely fast lookup.
     /// </summary>
-    public sealed class TypeCatalogue : TypeIndexDictionariesBase<int>
+    public sealed class TypeCatalogue : TypeIndexDictionariesBase<string>
     {
         private readonly AssemblyCatalogue _assemblies;
         public static object Lock = new object();
         public static bool FilterTypeCatalogueAttribute = false;
 
-        public TypeCatalogue(AssemblyCatalogue assemblyCatalogue) : base(Results(assemblyCatalogue), t=> t.GetHashCode())
+        public TypeCatalogue(AssemblyCatalogue assemblyCatalogue) : base(Results(assemblyCatalogue), t => t.GetStrongHash())
         {
             _assemblies = assemblyCatalogue;
         }
@@ -49,9 +49,9 @@ namespace Prime.Core
             return result;
         }
 
-        public Type Get(int? hash)
-        {
-            return hash == null ? null : base.Get((int)hash);
-        }
+        //public Type Get(int? hash)
+        //{
+        //    return hash == null ? null : base.Get((int)hash);
+        //}
     }
 }
