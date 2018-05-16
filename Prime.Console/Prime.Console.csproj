@@ -37,6 +37,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.2" />
-    <PackageReference Include="SharpCompress" Version="0.21.0" />
+    <PackageReference Include="SharpCompress" Version="0.21.1" />
   </ItemGroup>
 </Project>
