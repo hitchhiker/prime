@@ -13,7 +13,7 @@ namespace Prime.Finance.Services.Services
         private readonly string _apiUrl;
         private readonly INetworkProvider _provider;
         private readonly Func<ApiKey, RequestModifier> _requestModifier;
-        
+
         public JsonSerializerSettings JsonSerializerSettings { get; set; }
         public DecompressionMethods DecompressionMethods { get; set; } = DecompressionMethods.None;
 
@@ -40,26 +40,22 @@ namespace Prime.Finance.Services.Services
 
         public T GetApi(NetworkProviderContext context = null)
         {
-            return CreateClient().For<T>() as T;
+            return CreateClientPublic().For<T>() as T;
         }
 
         public T GetApi(NetworkProviderPrivateContext context)
         {
-            if(_requestModifier == null)
+            if (_requestModifier == null)
                 throw new InvalidOperationException("Unable to get api because public constructor was used to create instance of RestApiClientProvider");
 
             var key = context.GetKey(_provider);
 
-            return CreateClient(key).For<T>();
+            return CreateClientPrivate(key).For<T>();
         }
 
-        private RestClient CreateClient(ApiKey key = null)
+        private RestClient CreateRestClient(HttpClientHandler clientHandler)
         {
-            var handler = key != null ? new ModifyingClientHttpHandler(_requestModifier.Invoke(key)) : new HttpClientHandler();
-
-            handler.AutomaticDecompression = DecompressionMethods;
-
-            var httpClient = new HttpClient(handler)
+            var httpClient = new HttpClient(clientHandler)
             {
                 BaseAddress = new Uri(_apiUrl)
             };
@@ -70,6 +66,24 @@ namespace Prime.Finance.Services.Services
                 client.JsonSerializerSettings = JsonSerializerSettings;
 
             return client;
+        }
+
+        private RestClient CreateClientPublic()
+        {
+            return CreateRestClient(new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods
+            });
+        }
+
+        private RestClient CreateClientPrivate(ApiKey key)
+        {
+            var handler = new ModifyingClientHttpHandler(_requestModifier.Invoke(key))
+            {
+                AutomaticDecompression = DecompressionMethods
+            };
+
+            return CreateRestClient(handler);
         }
     }
 }
