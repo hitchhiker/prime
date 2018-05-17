@@ -73,7 +73,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
             if (r == null)
                 throw new NoTradeOrderException(context, this);
 
-            var isBuy = rRaw.side == 0;
+            var isBuy = r.side == 0;
 
             return new TradeOrderStatusResponse(Network, r.clOrderId, isBuy, true, false)
             {

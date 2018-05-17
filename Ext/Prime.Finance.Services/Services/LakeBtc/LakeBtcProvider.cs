@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
@@ -9,7 +10,7 @@ namespace Prime.Finance.Services.Services.LakeBtc
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.lakebtc.com/s/api_v2
-    public class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string LakeBtcApiVersion = "v2";
         private const string LakeBtcApiUrl = "https://api.LakeBTC.com/api_" + LakeBtcApiVersion;
@@ -46,6 +47,25 @@ namespace Prime.Finance.Services.Services.LakeBtc
             var r = await api.GetTickersAsync().ConfigureAwait(false);
 
             return r?.Count > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var body = new Dictionary<string, object>
+            {
+                { "method", "getAccountInfo"},
+                { "params", ""}
+            };
+
+            var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
+
+            //CheckResponseErrors(rRaw);
+
+            //var r = rRaw.GetContent();
+
+            return r != null/* && r.success*/;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

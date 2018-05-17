@@ -169,6 +169,49 @@ namespace Prime.Core
 
         #endregion
 
+        #region Hash HMACSHA1
+
+        // ReSharper disable once InconsistentNaming
+        public string HashHMACSHA1(string message, string secret)
+        {
+            return ToBase64(HashHMACSHA1Raw(message, secret));
+        }
+
+        public string HashHmacsha1WithoutBase64(string message, string secret)
+        {
+            var buffer = HashHMACSHA1Raw(message, secret);
+            string s = System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+
+            return s;
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public byte[] HashHMACSHA1Raw(string message, string secret)
+        {
+            using (var hmac = new HMACSHA1(FromUtf8(secret)))
+            {
+                var bytes = FromUtf8(message);
+                return hmac.ComputeHash(bytes);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public byte[] HashHMACSHA1Raw(byte[] message, byte[] secret)
+        {
+            using (var hmac = new HMACSHA1(secret))
+            {
+                return hmac.ComputeHash(message);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashHMACSHA1Hex(string message, string secret)
+        {
+            return ToHex(HashHMACSHA256Raw(message, secret));
+        }
+
+        #endregion
+
         #region Hash MD5
 
         // ReSharper disable once InconsistentNaming

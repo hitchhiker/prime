@@ -6,13 +6,13 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     internal interface IGatecoinApi
     {
-        [Get("/LiveTicker/{currencyPair}")]
+        [Get("/Public/LiveTicker/{currencyPair}")]
         Task<GatecoinSchema.TickerResponse> GetTickerAsync([Path] string currencyPair);
 
-        [Get("/LiveTickers")]
+        [Get("/Public/LiveTickers")]
         Task<GatecoinSchema.TickersResponse> GetTickersAsync();
 
-        [Get("/MarketDepth/{currencyPair}")]
+        [Get("/Public/MarketDepth/{currencyPair}")]
         Task<GatecoinSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
 
         [Get("/Balance/Balances")]
