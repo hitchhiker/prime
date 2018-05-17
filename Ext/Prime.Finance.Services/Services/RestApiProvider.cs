@@ -70,7 +70,10 @@ namespace Prime.Finance.Services.Services
 
         private RestClient CreateClientPublic()
         {
-            return CreateRestClient(new HttpClientHandler());
+            return CreateRestClient(new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods
+            });
         }
 
         private RestClient CreateClientPrivate(ApiKey key)
