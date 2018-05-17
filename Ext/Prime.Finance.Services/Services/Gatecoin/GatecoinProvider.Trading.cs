@@ -1,28 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
+using RestEase;
 
 namespace Prime.Finance.Services.Services.Gatecoin
 {
     public partial class GatecoinProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        //private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
-        //{
-        //    if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
-        //    {
-        //        var reason = rawResponse.ResponseMessage.ReasonPhrase;
+        private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
+        {
+            if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
+            {
+                var reason = rawResponse.ResponseMessage.ReasonPhrase;
 
-        //        if (rawResponse.TryGetContent(out GatecoinSchema.ErrorResponse baseResponse))
-        //        {
-        //            throw new ApiResponseException($"Error Code: {baseResponse.error.code} - {baseResponse.error.message.TrimEnd('.')}", this, method);
+                if (rawResponse.TryGetContent(out GatecoinSchema.BaseResponse baseResponse))
+                {
+                    //throw new ApiResponseException($"Error Code: {baseResponse.error.code} - {baseResponse.error.message.TrimEnd('.')}", this, method);
 
-        //        }
+                }
 
-        //        throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(string.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}", this, method);
-        //    }
-        //}
+                throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(string.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}", this, method);
+            }
+        }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {

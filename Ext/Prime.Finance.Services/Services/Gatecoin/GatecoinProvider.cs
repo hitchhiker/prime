@@ -37,7 +37,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 
         public GatecoinProvider()
         {
-            ApiProvider = new RestApiClientProvider<IGatecoinApi>(GatecoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IGatecoinApi>(GatecoinApiUrl, this, (k) => new GatecoinAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -51,13 +51,13 @@ namespace Prime.Finance.Services.Services.Gatecoin
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetBalancesAsync().ConfigureAwait(false);
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
-            //var r = rRaw.GetContent();
+            var r = rRaw.GetContent();
 
-            return r != null/* && r.success*/;
+            return r != null /*&& r.success*/;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
