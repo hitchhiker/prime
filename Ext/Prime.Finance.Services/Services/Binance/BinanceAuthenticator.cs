@@ -8,7 +8,6 @@ namespace Prime.Finance.Services.Services.Binance
 {
     public class BinanceAuthenticator : BaseAuthenticator
     {
-
         public BinanceAuthenticator(ApiKey apiKey) : base(apiKey) { }
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
