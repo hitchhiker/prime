@@ -24,9 +24,11 @@ namespace Prime.Finance.Services.Services.Exmo
             var content = request.Content?.ReadAsStringAsync()?.Result;
             var headers = request.Headers;
 
-            var parameters = string.IsNullOrWhiteSpace(content) ? nonce.ToString() : $"nonce={nonce}&{content}";
+            var parameters = string.IsNullOrWhiteSpace(content) ? $"nonce={nonce}" : $"nonce={nonce}&{content}";
 
             var signature = HashHMACSHA512Hex(parameters,/* ApiKey.Secret*/secret);
+            
+            request.Content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
 
             headers.Add("Key", /*ApiKey.Key*/ publicKey);
             headers.Add("Sign", signature);

@@ -6,7 +6,7 @@ namespace Prime.Finance.Services.Services.Exmo
     {
         #region Base
 
-        internal class BaseResponse
+        internal class ErrorResponse
         {
             public bool result;
             public string error;
@@ -24,7 +24,7 @@ namespace Prime.Finance.Services.Services.Exmo
             public Dictionary<string, decimal> reserved;
         }
 
-        internal class NewOrderResponse : BaseResponse
+        internal class NewOrderResponse : ErrorResponse
         {
             public string order_id;
         }
@@ -44,7 +44,7 @@ namespace Prime.Finance.Services.Services.Exmo
             public decimal amount;
         }
 
-        internal class WithdrawalResponse : BaseResponse
+        internal class WithdrawalResponse : ErrorResponse
         {
             public string task_id;
         }

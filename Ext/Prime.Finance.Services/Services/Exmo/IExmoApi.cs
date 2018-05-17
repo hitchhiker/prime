@@ -16,7 +16,7 @@ namespace Prime.Finance.Services.Services.Exmo
         Task<ExmoSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair);
 
         [Post("/user_info")]
-        Task<ExmoSchema.UserInfoResponse> GetUserInfoAsync();
+        Task<Response<ExmoSchema.UserInfoResponse>> GetUserInfoAsync();
 
         [Post("/order_create")]
         Task<Response<ExmoSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> body);

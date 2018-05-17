@@ -11,21 +11,19 @@ namespace Prime.Finance.Services.Services.Exmo
 {
     public partial class ExmoProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        //private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
-        //{
-        //    if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
-        //    {
-        //        var reason = rawResponse.ResponseMessage.ReasonPhrase;
+        private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
+        {
+            var reason = rawResponse.ResponseMessage.ReasonPhrase;
 
-        //        if (rawResponse.TryGetContent(out ExmoSchema.ErrorResponse baseResponse))
-        //        {
-        //            throw new ApiResponseException($"Error Code: {baseResponse.error.code} - {baseResponse.error.message.TrimEnd('.')}", this, method);
+            if (rawResponse.TryGetContent(out ExmoSchema.ErrorResponse baseResponse))
+            {
+                if (baseResponse.result == false && !string.IsNullOrWhiteSpace(baseResponse.error))
+                    throw new ApiResponseException($"Error: {baseResponse.error.TrimEnd(".")}", this, method);
+            }
 
-        //        }
-
-        //        throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(string.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}", this, method);
-        //    }
-        //}
+            if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
+                throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(string.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}", this, method);
+        }
 
         public async Task<PlacedOrderLimitResponse> PlaceOrderLimitAsync(PlaceOrderLimitContext context)
         {
@@ -38,7 +36,7 @@ namespace Prime.Finance.Services.Services.Exmo
 
             var body = new Dictionary<string, object>
             {
-                { "pair", context.Pair.ToTicker(this).ToLower()},
+                { "pair", context.Pair.ToTicker(this)},
                 { "type", side},
                 { "price", context.Rate.ToDecimalValue()},
                 { "quantity", context.Quantity.ToDecimalValue()}
@@ -46,7 +44,7 @@ namespace Prime.Finance.Services.Services.Exmo
 
             var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
@@ -66,10 +64,10 @@ namespace Prime.Finance.Services.Services.Exmo
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
             var api = ApiProvider.GetApi(context);
-            
+
             var rActiveOrdersRaw = await api.QueryActiveOrdersAsync().ConfigureAwait(false);
 
-            //CheckResponseErrors(rActiveOrdersRaw);
+            CheckResponseErrors(rActiveOrdersRaw);
 
             var rActiveOrders = rActiveOrdersRaw.GetContent();
 
@@ -84,7 +82,7 @@ namespace Prime.Finance.Services.Services.Exmo
                     break;
                 }
             }
-            
+
             if (order == null)
                 throw new NoTradeOrderException(context, this);
 
@@ -119,7 +117,7 @@ namespace Prime.Finance.Services.Services.Exmo
 
             var rRaw = await api.SubmitWithdrawRequestAsync(body).ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 

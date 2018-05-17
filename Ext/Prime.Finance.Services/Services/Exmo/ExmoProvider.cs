@@ -51,13 +51,13 @@ namespace Prime.Finance.Services.Services.Exmo
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);
-            var r = await api.GetUserInfoAsync().ConfigureAwait(false);
+            var rRaw = await api.GetUserInfoAsync().ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
-            //var r = rRaw.GetContent();
+            var r = rRaw.GetContent();
 
-            return r != null/* && r.success*/;
+            return r != null;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
