@@ -10,6 +10,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     public partial class GatecoinProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
+        //TODO - SC: Still a work-in-progress
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
         {
             if (!rawResponse.ResponseMessage.IsSuccessStatusCode)

@@ -48,6 +48,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
             return r?.responseStatus?.message?.Equals("OK", StringComparison.InvariantCultureIgnoreCase) == true;
         }
 
+        //TODO - SC: Still a work-in-progress
         public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
         {
             var api = ApiProvider.GetApi(context);

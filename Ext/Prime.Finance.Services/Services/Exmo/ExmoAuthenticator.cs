@@ -16,6 +16,7 @@ namespace Prime.Finance.Services.Services.Exmo
 
         public override void RequestModify(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            //TODO - SC: Remove hardcoded keys
             string publicKey = "K-d0e5e4dacff774ad56cc2e7f8f33737eb27ff416";
             string secret = "S-64621cfae424107ce9338aa6449f00b997e5e39b";
 

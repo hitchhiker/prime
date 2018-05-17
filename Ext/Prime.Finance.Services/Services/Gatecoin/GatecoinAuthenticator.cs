@@ -9,6 +9,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     public class GatecoinAuthenticator : BaseAuthenticator
     {
+        //TODO - SC: Remove hard-coded keys
         private const string key = "HjXdYxPHwMl0gPhO6YB6t3xL6Vyr45gX";
         private const string secret = "410585562AE51057E6F0FA8B56AAC7E9";
 
