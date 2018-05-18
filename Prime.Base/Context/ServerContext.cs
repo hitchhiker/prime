@@ -18,16 +18,12 @@ namespace Prime.Core
         public readonly AssemblyCatalogue Assemblies;
         public readonly TypeCatalogue Types;
 
-        public ServerContext() : this("[SRC]//instance//prime-server.config") { } //used for testing / debug
+        public ServerContext() : this("../instance/prime-server.config") { } //used for testing / debug
 
         public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultServer) { }
 
         public ServerContext(string configPath, IMessenger m)
         {
-            // HACK //
-            //configPath = @"P:\Projects\Git\prime\instance\prime-server.config";
-            // END HACK //
-            
             configPath = configPath.ResolveSpecial();
 
             PlatformCurrent = OsInformation.GetPlatform();
@@ -49,7 +45,7 @@ namespace Prime.Core
             Testing = this;
         }
 
-        public static ServerContext Testing { get; private set; } = new ServerContext(@"D:\Dropbox\Documents\Freelance Work\Projects\Current Projects\Prime\Code\instance\prime-server.config.default");
+        public static ServerContext Testing { get; private set; }
 
         public static PublicContext Public;
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
+using Newtonsoft.Json;
 using Prime.Core;
+using Prime.Core.Testing;
 using Prime.Manager.Core;
 using Prime.Manager.Messages;
 

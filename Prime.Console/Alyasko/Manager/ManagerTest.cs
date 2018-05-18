@@ -16,7 +16,7 @@ namespace Prime.Console.Alyasko.Manager
         public override void Go()
         {
             var server = new MessagingServer.Server(S);
-            server.Inject(new ServerExtension());
+            server.Inject(new WebSocketServer.ServerExtension());
 
             var managerExt = new ManagerServiceExtension();
             managerExt.Main(S);

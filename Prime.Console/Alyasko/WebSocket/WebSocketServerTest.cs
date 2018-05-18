@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using Prime.Console.Frank;
 using Prime.Core;
 using Prime.Core.Testing;
+using Prime.Manager.Messages;
 using Prime.MessagingServer;
 using Prime.MessagingServer.Types;
 using Prime.WebSocketServer;
-using ServerExtension = Prime.WebSocketServer.ServerExtension;
 
 namespace Prime.Console.Windows.Alyasko.WebSocket
 {
@@ -23,7 +23,16 @@ namespace Prime.Console.Windows.Alyasko.WebSocket
             var mr = false;
 
             var server = new Server(S);
-            server.Inject(new ServerExtension());
+            server.Inject(new WebSocketServer.ServerExtension());
+            
+            // Message JSON test.
+            var settings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+                SerializationBinder = server.TypeBinder
+            };
+            var json = JsonConvert.SerializeObject(new ProvidersListRequestMessage(), settings);
+            // End test.
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {
