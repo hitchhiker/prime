@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{ exchangeDetails.title }} details</h2>
+<mat-dialog-content>
+
+  <mat-form-field class="full-width">
+    <input matInput [(ngModel)]="exchangeDetails.privateApiContext.key" placeholder="Public Key">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <input matInput [(ngModel)]="exchangeDetails.privateApiContext.secret" placeholder="Secret Key">
+  </mat-form-field>
+
+  <mat-slide-toggle [(ngModel)]="extraEnabled" >Has Extra data</mat-slide-toggle>
+
+  <mat-form-field class="full-width">
+    <input matInput [disabled]="!extraEnabled" [(ngModel)]="exchangeDetails.privateApiContext.extra" placeholder="Extra">
+  </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="true">Close</button>
+  <span class="fill-space"></span>
+
+  <button mat-button (click)="testPrivateApi()">Test Private API</button>
+  <button mat-button color="warn">Delete</button>
+  <button mat-raised-button color="primary">Save</button>
+</mat-dialog-actions>

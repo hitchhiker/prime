@@ -1,0 +1,14 @@
+
+.tab-content {
+    overflow-y: auto;
+}
+
+.tab-chart {
+    height: 500px;
+}
+
+.mat-tab-group {
+    padding-top: 64px;
+}
+
+

@@ -1,0 +1,17 @@
+
+.exchange-card {
+    margin: 10px;
+}
+
+.header .title {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.header .description {
+    color: rgba(0, 0, 0, 0.6)
+}
+
+.mat-card-actions {
+    margin-top: 10px;
+}

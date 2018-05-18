@@ -1,0 +1,11 @@
+<mat-card class="exchange-card">
+  <mat-card-content class="header">
+    <mat-card-title class="title">
+        {{ exchange.title }}
+    </mat-card-title>
+    <mat-card-subtitle class="description">{{ exchange.exchangeId }}</mat-card-subtitle>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" (click)="openDialog(exchange.exchangeId)">MANAGE</button>
+  </mat-card-actions>
+</mat-card>
