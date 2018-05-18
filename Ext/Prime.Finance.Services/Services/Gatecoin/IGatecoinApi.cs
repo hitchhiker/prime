@@ -4,6 +4,7 @@ using RestEase;
 
 namespace Prime.Finance.Services.Services.Gatecoin
 {
+    [AllowAnyStatusCode]
     internal interface IGatecoinApi
     {
         [Get("/Public/LiveTicker/{currencyPair}")]
