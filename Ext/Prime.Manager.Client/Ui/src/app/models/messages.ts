@@ -1,3 +1,4 @@
+import { Exchange } from "./Exchange";
 
 export abstract class BaseMessage {
     abstract $type: string;
@@ -26,7 +27,7 @@ export class ProvidersListRequestMessage extends BaseMessage {
 export class ProvidersListResponseMessage extends BaseResponseMessage {
     $type: string = "prime.manager.providerslistresponsemessage";
 
-    response: any[];
+    response: Exchange[];
 }
 
 export class ProviderDetailsRequestMessage extends BaseMessage {

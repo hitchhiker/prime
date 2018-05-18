@@ -23,7 +23,7 @@ export class ExchangeComponent implements OnInit {
   @Input() exchange: Exchange;
 
   openDialog(idHash: string) {
-    LoggerService.log("Opening dialog (" + this.exchange.exchangeId + ")...");
+    LoggerService.log("Opening dialog (" + this.exchange.id + ")...");
 
     this.primeSocket.getProviderDetails(idHash, (data) => {
       console.log(data);

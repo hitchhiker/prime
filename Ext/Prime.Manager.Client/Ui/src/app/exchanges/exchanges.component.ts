@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Exchange } from '../models/Exchange';
+import { PrimeSocketService } from '../services/prime-socket.service';
+import { ProvidersListResponseMessage } from '../models/messages';
+import { LoggerService } from '../services/logger.service';
 
 @Component({
   selector: 'app-exchanges',
@@ -8,15 +11,18 @@ import { Exchange } from '../models/Exchange';
 })
 export class ExchangesComponent implements OnInit {
 
-  exchanges: Exchange[] = [
-    new Exchange("Poloniex", "123awd23"),
-    new Exchange("Bittrex", "123awd23"),
-    new Exchange("Binance", "123awd23")
-  ];
+  exchanges: Exchange[];
 
-  constructor() { }
+  constructor(private primeTcpClient: PrimeSocketService) { }
 
   ngOnInit() {
+    this.primeTcpClient.connect(() => {
+
+      this.primeTcpClient.getProviderProvidersList((data: ProvidersListResponseMessage) => {
+        LoggerService.logObj(data);
+        this.exchanges = data.response;
+      });
+    });
   }
 
 }

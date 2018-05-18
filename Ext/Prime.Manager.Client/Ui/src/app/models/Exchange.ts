@@ -2,7 +2,8 @@
 export class Exchange {
     
     constructor(
-        public title: string,
-        public exchangeId: string
+        public name: string,
+        public id: string,
+        public hasKeys: boolean = false
     ) {}
 }
