@@ -16,9 +16,7 @@ export class AppComponent implements OnInit {
     this.primeTcpClient.connect(() => {
 
       this.primeTcpClient.getProviderProvidersList((data: ProvidersListResponseMessage) => {
-
-        // Display data.
-        LoggerService.log(data.$type);
+        LoggerService.logObj(data);
       });
     });
   }

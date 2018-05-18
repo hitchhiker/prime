@@ -31,7 +31,7 @@ namespace Prime.Core
             Testing = this;
         }
 
-        public static ClientContext Testing { get; private set; }
+        public static ClientContext Testing { get; private set; } = new ClientContext("../instance/prime-client.config");
 
         private DirectoryInfo _appDataDirectoryInfo;
         public DirectoryInfo AppDataDirectoryInfo => _appDataDirectoryInfo ?? (_appDataDirectoryInfo = GetAppBase());

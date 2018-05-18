@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using Prime.Console.Frank;
 using Prime.Core;
+using Prime.Finance.Services.Services.Binance;
 using Prime.KeysManager;
 using Prime.Manager;
 using Prime.WebSocketServer;

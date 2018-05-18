@@ -10,4 +10,8 @@ export class LoggerService {
   static log(message: string) {
     console.log(message);
   }
+  
+  static logObj(object: any) {
+    console.log(object);
+  }
 }

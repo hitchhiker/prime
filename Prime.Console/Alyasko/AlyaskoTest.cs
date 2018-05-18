@@ -8,8 +8,8 @@ namespace Prime.Console.Windows.Alyasko
     {
         public static void Go(ServerContext serverCtx, ClientContext clientCtx)
         {
-            var logger = serverCtx.L;
-
+            var logger = new ConsoleLogger();
+            serverCtx.L = logger;
             logger.Log("Alyasko Test started...");
 
             //new WebSocketServerTest(serverCtx, clientCtx).Go();

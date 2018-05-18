@@ -45,7 +45,7 @@ namespace Prime.Core
             Testing = this;
         }
 
-        public static ServerContext Testing { get; private set; }
+        public static ServerContext Testing { get; private set; } = new ServerContext("../instance/prime-server.config");
 
         public static PublicContext Public;
 

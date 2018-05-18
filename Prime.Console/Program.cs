@@ -11,6 +11,7 @@ using Prime.Console.Frank.Tests.Alyasko;
 using Prime.Core;
 using Prime.Core.Messaging;
 using Prime.Finance;
+using Prime.Finance.Services.Services.Binance;
 using Prime.Finance.Services.Services.BitMex;
 using Prime.Finance.Services.Services.Kraken;
 
@@ -20,15 +21,15 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var serverCtx = new ServerContext()
-            {
-                L = new ConsoleLogger()
-            };
+            // DLL loading hack.
 
-            var clientCtx = new ClientContext()
-            {
-                L = new ConsoleLogger()
-            };
+            var binance = new BinanceProvider();
+            var t = binance.GetType();
+            
+            // End hack.
+            
+            var serverCtx = ServerContext.Testing;
+            var clientCtx = ClientContext.Testing;
 
             var prime = new Prime.Core.Prime(serverCtx);
             prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
@@ -44,6 +45,7 @@ namespace TestConsole
             }
 
             var userName = Environment.UserName.ToLower();
+            
             
             if (userName.Equals("yasko") || userName.Equals("alexander"))
             {
