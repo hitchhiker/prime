@@ -10,7 +10,7 @@ namespace Prime.Finance.Services.Services.LakeBtc
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.lakebtc.com/s/api_v2
-    public class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
+    public partial class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         private const string LakeBtcApiVersion = "v2";
         private const string LakeBtcApiUrl = "https://api.LakeBTC.com/api_" + LakeBtcApiVersion;
@@ -38,7 +38,7 @@ namespace Prime.Finance.Services.Services.LakeBtc
 
         public LakeBtcProvider()
         {
-            ApiProvider = new RestApiClientProvider<ILakeBtcApi>(LakeBtcApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ILakeBtcApi>(LakeBtcApiUrl, this, (k) => new LakeBtcAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -55,17 +55,18 @@ namespace Prime.Finance.Services.Services.LakeBtc
 
             var body = new Dictionary<string, object>
             {
+                { "id", "1"},
                 { "method", "getAccountInfo"},
                 { "params", ""}
             };
 
-            var r = await api.GetUserInfoAsync(body).ConfigureAwait(false);
+            var rRaw = await api.GetUserInfoAsync(body).ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
-            //var r = rRaw.GetContent();
+            var r = rRaw.GetContent();
 
-            return r != null/* && r.success*/;
+            return r != null && !string.IsNullOrWhiteSpace(r.profile?.uid);
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
