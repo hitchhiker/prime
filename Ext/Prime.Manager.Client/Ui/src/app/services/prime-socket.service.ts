@@ -69,6 +69,10 @@ export class PrimeSocketService {
     this.writeSocketMessage(new ProviderDetailsRequestMessage(idHash), callback);
   }
 
+  saveApiKeys() {
+    //this.writeSocketMessage();
+  }
+
   testPrivateApi(privateApiContext: PrivateApiContext) {
     this.writeSocketMessage(new TestPrivateApiMessageRequest(
       privateApiContext.exchangeId,

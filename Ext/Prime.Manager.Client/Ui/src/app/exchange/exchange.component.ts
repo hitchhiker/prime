@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { Exchange } from '../models/Exchange';
 
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from "@angular/material";
 import { ExchangeDialogComponent } from '../exchange-dialog/exchange-dialog.component';
 import { LoggerService } from '../services/logger.service';
 import { PrimeSocketService } from '../services/prime-socket.service';
@@ -33,6 +33,7 @@ export class ExchangeComponent implements OnInit {
 
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
+    dialogConfig.data = this.exchange;
 
     this.dialog.open(ExchangeDialogComponent, dialogConfig);
   }

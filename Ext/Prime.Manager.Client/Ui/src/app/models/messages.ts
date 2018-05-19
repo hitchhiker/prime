@@ -42,6 +42,14 @@ export class ProviderDetailsRequestMessage extends BaseMessage {
 }
 export class ProviderDetailsResponseMessage extends BaseResponseMessage {
     $type: string = "prime.manager.providerdetailsresponsemessage";
+
+    response: {
+        extra: string;
+        id: string;
+        key: string;
+        name: string;
+        secret: string;
+    }
 }
 
 export class TestPrivateApiMessageRequest extends BaseMessage {

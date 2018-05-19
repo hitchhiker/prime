@@ -71,7 +71,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 MIT
 MIT
 
-@angular/cdk@6.0.1-96d5550
+@angular/cdk@6.0.2-abc3d38
 MIT
 The MIT License
 
@@ -111,7 +111,7 @@ MIT
 MIT
 MIT
 
-@angular/material@6.0.1-96d5550
+@angular/material@6.0.2-abc3d38
 MIT
 The MIT License
 

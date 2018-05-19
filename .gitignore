@@ -338,3 +338,4 @@ lib/prime/
 .DS_Store
 
 /instance/
+dist/prime-keysmanager/

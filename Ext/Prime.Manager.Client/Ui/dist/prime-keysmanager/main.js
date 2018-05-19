@@ -73,8 +73,9 @@ var AppComponent = /** @class */ (function () {
         this.primeTcpClient = primeTcpClient;
         this.url = 'http://localhost:3001';
         this.title = 'Prime.KeysManager';
-        primeTcpClient.connect();
     }
+    AppComponent.prototype.ngOnInit = function () {
+    };
     AppComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-root',
@@ -274,7 +275,7 @@ module.exports = "\r\n.exchange-card {\r\n    margin: 10px;\r\n}\r\n\r\n.header 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-card class=\"exchange-card\">\n  <mat-card-content class=\"header\">\n    <mat-card-title class=\"title\">\n        {{ exchange.title }}\n    </mat-card-title>\n    <mat-card-subtitle class=\"description\">{{ exchange.exchangeId }}</mat-card-subtitle>\n  </mat-card-content>\n  <mat-card-actions>\n    <button mat-button color=\"primary\" (click)=\"openDialog()\">MANAGE</button>\n  </mat-card-actions>\n</mat-card>"
+module.exports = "<mat-card class=\"exchange-card\">\n  <mat-card-content class=\"header\">\n    <mat-card-title class=\"title\">\n        {{ exchange.name }}\n    </mat-card-title>\n    <mat-card-subtitle class=\"description\">{{ exchange.id }}</mat-card-subtitle>\n  </mat-card-content>\n  <mat-card-actions>\n    <button mat-button color=\"primary\" (click)=\"openDialog(exchange.id)\">MANAGE</button>\n  </mat-card-actions>\n</mat-card>"
 
 /***/ }),
 
@@ -314,9 +315,11 @@ var ExchangeComponent = /** @class */ (function () {
         this.dialog = dialog;
         this.primeSocket = primeSocket;
     }
-    ExchangeComponent.prototype.openDialog = function () {
-        _services_logger_service__WEBPACK_IMPORTED_MODULE_4__["LoggerService"].log("Opening dialog...");
-        this.primeSocket.getProviderProvidersList();
+    ExchangeComponent.prototype.openDialog = function (idHash) {
+        _services_logger_service__WEBPACK_IMPORTED_MODULE_4__["LoggerService"].log("Opening dialog (" + this.exchange.id + ")...");
+        this.primeSocket.getProviderDetails(idHash, function (data) {
+            console.log(data);
+        });
         var dialogConfig = new _angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogConfig"]();
         dialogConfig.disableClose = false;
         dialogConfig.autoFocus = true;
@@ -377,7 +380,8 @@ module.exports = "<app-exchange *ngFor=\"let exchange of exchanges\" [exchange]=
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExchangesComponent", function() { return ExchangesComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _models_Exchange__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/Exchange */ "./src/app/models/Exchange.ts");
+/* harmony import */ var _services_prime_socket_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/prime-socket.service */ "./src/app/services/prime-socket.service.ts");
+/* harmony import */ var _services_logger_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/logger.service */ "./src/app/services/logger.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -389,15 +393,19 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
 var ExchangesComponent = /** @class */ (function () {
-    function ExchangesComponent() {
-        this.exchanges = [
-            new _models_Exchange__WEBPACK_IMPORTED_MODULE_1__["Exchange"]("Poloniex", "123awd23"),
-            new _models_Exchange__WEBPACK_IMPORTED_MODULE_1__["Exchange"]("Bittrex", "123awd23"),
-            new _models_Exchange__WEBPACK_IMPORTED_MODULE_1__["Exchange"]("Binance", "123awd23")
-        ];
+    function ExchangesComponent(primeTcpClient) {
+        this.primeTcpClient = primeTcpClient;
     }
     ExchangesComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.primeTcpClient.connect(function () {
+            _this.primeTcpClient.getProviderProvidersList(function (data) {
+                _services_logger_service__WEBPACK_IMPORTED_MODULE_2__["LoggerService"].logObj(data);
+                _this.exchanges = data.response;
+            });
+        });
     };
     ExchangesComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -405,7 +413,7 @@ var ExchangesComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./exchanges.component.html */ "./src/app/exchanges/exchanges.component.html"),
             styles: [__webpack_require__(/*! ./exchanges.component.css */ "./src/app/exchanges/exchanges.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_services_prime_socket_service__WEBPACK_IMPORTED_MODULE_1__["PrimeSocketService"]])
     ], ExchangesComponent);
     return ExchangesComponent;
 }());
@@ -494,9 +502,11 @@ var MaterialModule = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Exchange", function() { return Exchange; });
 var Exchange = /** @class */ (function () {
-    function Exchange(title, exchangeId) {
-        this.title = title;
-        this.exchangeId = exchangeId;
+    function Exchange(name, id, hasKeys) {
+        if (hasKeys === void 0) { hasKeys = false; }
+        this.name = name;
+        this.id = id;
+        this.hasKeys = hasKeys;
     }
     return Exchange;
 }());
@@ -545,14 +555,18 @@ var ExchangeDetails = /** @class */ (function (_super) {
 /*!************************************!*\
   !*** ./src/app/models/messages.ts ***!
   \************************************/
-/*! exports provided: BaseMessage, UserMessageRequest, ProvidersListMessageRequest, TestPrivateApiMessageRequest, TestPrivateApiMessageResponse, ProviderKeysMessageRequest, ProviderKeysMessageResponse */
+/*! exports provided: BaseMessage, BaseResponseMessage, UserMessageRequest, ProvidersListRequestMessage, ProvidersListResponseMessage, ProviderDetailsRequestMessage, ProviderDetailsResponseMessage, TestPrivateApiMessageRequest, TestPrivateApiMessageResponse, ProviderKeysMessageRequest, ProviderKeysMessageResponse */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseMessage", function() { return BaseMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseResponseMessage", function() { return BaseResponseMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserMessageRequest", function() { return UserMessageRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProvidersListMessageRequest", function() { return ProvidersListMessageRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProvidersListRequestMessage", function() { return ProvidersListRequestMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProvidersListResponseMessage", function() { return ProvidersListResponseMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProviderDetailsRequestMessage", function() { return ProviderDetailsRequestMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProviderDetailsResponseMessage", function() { return ProviderDetailsResponseMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TestPrivateApiMessageRequest", function() { return TestPrivateApiMessageRequest; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TestPrivateApiMessageResponse", function() { return TestPrivateApiMessageResponse; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ProviderKeysMessageRequest", function() { return ProviderKeysMessageRequest; });
@@ -579,25 +593,64 @@ var BaseMessage = /** @class */ (function () {
     return BaseMessage;
 }());
 
+var BaseResponseMessage = /** @class */ (function (_super) {
+    __extends(BaseResponseMessage, _super);
+    function BaseResponseMessage() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return BaseResponseMessage;
+}(BaseMessage));
+
 var UserMessageRequest = /** @class */ (function (_super) {
     __extends(UserMessageRequest, _super);
     function UserMessageRequest() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.Type = UserMessageRequest.name;
+        _this.$type = UserMessageRequest.name;
         return _this;
     }
     return UserMessageRequest;
 }(BaseMessage));
 
-var ProvidersListMessageRequest = /** @class */ (function (_super) {
-    __extends(ProvidersListMessageRequest, _super);
-    function ProvidersListMessageRequest() {
+var ProvidersListRequestMessage = /** @class */ (function (_super) {
+    __extends(ProvidersListRequestMessage, _super);
+    function ProvidersListRequestMessage() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.Type = ProvidersListMessageRequest.name;
+        _this.$type = "prime.manager.providerslistrequestmessage";
         return _this;
     }
-    return ProvidersListMessageRequest;
+    return ProvidersListRequestMessage;
 }(BaseMessage));
+
+var ProvidersListResponseMessage = /** @class */ (function (_super) {
+    __extends(ProvidersListResponseMessage, _super);
+    function ProvidersListResponseMessage() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.$type = "prime.manager.providerslistresponsemessage";
+        return _this;
+    }
+    return ProvidersListResponseMessage;
+}(BaseResponseMessage));
+
+var ProviderDetailsRequestMessage = /** @class */ (function (_super) {
+    __extends(ProviderDetailsRequestMessage, _super);
+    function ProviderDetailsRequestMessage(id) {
+        var _this = _super.call(this) || this;
+        _this.$type = "prime.manager.providerdetailsrequestmessage";
+        _this.id = id;
+        return _this;
+    }
+    return ProviderDetailsRequestMessage;
+}(BaseMessage));
+
+var ProviderDetailsResponseMessage = /** @class */ (function (_super) {
+    __extends(ProviderDetailsResponseMessage, _super);
+    function ProviderDetailsResponseMessage() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.$type = "prime.manager.providerdetailsresponsemessage";
+        return _this;
+    }
+    return ProviderDetailsResponseMessage;
+}(BaseResponseMessage));
 
 var TestPrivateApiMessageRequest = /** @class */ (function (_super) {
     __extends(TestPrivateApiMessageRequest, _super);
@@ -607,7 +660,7 @@ var TestPrivateApiMessageRequest = /** @class */ (function (_super) {
         _this.Key = Key;
         _this.Secret = Secret;
         _this.Extra = Extra;
-        _this.Type = TestPrivateApiMessageRequest.name;
+        _this.$type = TestPrivateApiMessageRequest.name;
         return _this;
     }
     return TestPrivateApiMessageRequest;
@@ -623,7 +676,7 @@ var ProviderKeysMessageRequest = /** @class */ (function (_super) {
     __extends(ProviderKeysMessageRequest, _super);
     function ProviderKeysMessageRequest() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.Type = ProviderKeysMessageRequest.name;
+        _this.$type = ProviderKeysMessageRequest.name;
         return _this;
     }
     return ProviderKeysMessageRequest;
@@ -709,6 +762,9 @@ var LoggerService = /** @class */ (function () {
     LoggerService.log = function (message) {
         console.log(message);
     };
+    LoggerService.logObj = function (object) {
+        console.log(object);
+    };
     LoggerService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
@@ -755,35 +811,46 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 var PrimeSocketService = /** @class */ (function () {
     function PrimeSocketService(socketClient) {
         this.socketClient = socketClient;
+        this.lastCallback = null;
         this.socketState = _models_socket_state__WEBPACK_IMPORTED_MODULE_2__["SocketState"].Disconnected;
     }
-    PrimeSocketService.prototype.connect = function () {
+    PrimeSocketService.prototype.connect = function (callback) {
         var _this = this;
         _logger_service__WEBPACK_IMPORTED_MODULE_1__["LoggerService"].log("Starting TCP client...");
         this.socketClient.onClientConnected = function () {
             _logger_service__WEBPACK_IMPORTED_MODULE_1__["LoggerService"].log("Connected to Prime API server.");
             _this.socketState = _models_socket_state__WEBPACK_IMPORTED_MODULE_2__["SocketState"].Connected;
+            callback();
         };
         this.socketClient.onDataReceived = function (data) {
-            _logger_service__WEBPACK_IMPORTED_MODULE_1__["LoggerService"].log("Client received data: " + data.data);
+            var objectData = JSON.parse(data.data);
+            if (_this.lastCallback !== null) {
+                _this.lastCallback(objectData);
+            }
         };
         this.socketClient.onConnectionClosed = function () {
             _logger_service__WEBPACK_IMPORTED_MODULE_1__["LoggerService"].log("Connection closed.");
             _this.socketState = _models_socket_state__WEBPACK_IMPORTED_MODULE_2__["SocketState"].Disconnected;
         };
-        this.socketClient.connect('ws://0.0.0.0:8081/echo');
+        this.socketClient.connect('ws://127.0.0.1:9991/');
     };
-    PrimeSocketService.prototype.writeSocket = function (data) {
+    PrimeSocketService.prototype.writeSocket = function (data, callback) {
+        if (callback !== null) {
+            this.lastCallback = callback;
+        }
         this.socketClient.write(data);
     };
-    PrimeSocketService.prototype.writeSocketMessage = function (data) {
-        this.writeSocket(data.serialize());
+    PrimeSocketService.prototype.writeSocketMessage = function (data, callback) {
+        this.writeSocket(data.serialize(), callback);
     };
     PrimeSocketService.prototype.test = function () {
         this.writeSocket("Hello");
     };
-    PrimeSocketService.prototype.getProviderProvidersList = function () {
-        this.writeSocketMessage(new _models_messages__WEBPACK_IMPORTED_MODULE_3__["ProvidersListMessageRequest"]());
+    PrimeSocketService.prototype.getProviderProvidersList = function (callback) {
+        this.writeSocketMessage(new _models_messages__WEBPACK_IMPORTED_MODULE_3__["ProvidersListRequestMessage"](), callback);
+    };
+    PrimeSocketService.prototype.getProviderDetails = function (idHash, callback) {
+        this.writeSocketMessage(new _models_messages__WEBPACK_IMPORTED_MODULE_3__["ProviderDetailsRequestMessage"](idHash), callback);
     };
     PrimeSocketService.prototype.testPrivateApi = function (privateApiContext) {
         this.writeSocketMessage(new _models_messages__WEBPACK_IMPORTED_MODULE_3__["TestPrivateApiMessageRequest"](privateApiContext.exchangeId, privateApiContext.key, privateApiContext.secret, privateApiContext.extra));
@@ -975,7 +1042,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/alexander/Desktop/AngularElectron/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/alexander/Projects/prime/Ext/Prime.Manager.Client/Ui/src/main.ts */"./src/main.ts");
 
 
 /***/ })

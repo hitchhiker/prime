@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "prime-keysmanager": {
+    "prime-manager": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/prime-keysmanager",
+            "outputPath": "dist/prime-manager",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "prime-keysmanager:build"
+            "browserTarget": "prime-manager:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "prime-keysmanager:build:production"
+              "browserTarget": "prime-manager:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "prime-keysmanager:build"
+            "browserTarget": "prime-manager:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "prime-keysmanager-e2e": {
+    "prime-manager-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -103,7 +103,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "prime-keysmanager:serve"
+            "devServerTarget": "prime-manager:serve"
           }
         },
         "lint": {
@@ -118,5 +118,5 @@
       }
     }
   },
-  "defaultProject": "prime-keysmanager"
+  "defaultProject": "prime-manager"
 }

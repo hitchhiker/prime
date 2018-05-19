@@ -539,7 +539,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/alexander/Desktop/AngularElectron/src/styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! /Users/alexander/Projects/prime/Ext/Prime.Manager.Client/Ui/src/styles.css */"./src/styles.css");
 
 
 /***/ })

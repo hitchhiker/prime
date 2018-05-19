@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ exchangeDetails.title }} details</h2>
+<h2 mat-dialog-title>{{ exchangeDetails.name }} details</h2>
 <mat-dialog-content>
 
   <mat-form-field class="full-width">
@@ -22,5 +22,5 @@
 
   <button mat-button (click)="testPrivateApi()">Test Private API</button>
   <button mat-button color="warn">Delete</button>
-  <button mat-raised-button color="primary">Save</button>
+  <button mat-raised-button color="primary" (click)="saveApiKeys()">Save</button>
 </mat-dialog-actions>
