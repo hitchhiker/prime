@@ -4,6 +4,7 @@ using RestEase;
 
 namespace Prime.Finance.Services.Services.Exmo
 {
+    [AllowAnyStatusCode]
     internal interface IExmoApi
     {
         [Get("/ticker")]
