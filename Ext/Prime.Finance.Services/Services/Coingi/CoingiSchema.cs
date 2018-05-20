@@ -28,6 +28,15 @@ namespace Prime.Finance.Services.Services.Coingi
             public string baseAsset;
             public string counter;
         }
+
+        internal class TransactionResponse
+        {
+            public string id;
+            public long timestamp;
+            public decimal amount;
+            public decimal price;
+            public CurrencyPair currencyPair;
+        }
         #endregion
     }
 }

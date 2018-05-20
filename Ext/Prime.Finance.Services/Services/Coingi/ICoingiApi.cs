@@ -10,5 +10,8 @@ namespace Prime.Finance.Services.Services.Coingi
     {
         [Get("/order-book/{currencyPair}/{maxAskCount}/{maxBidCount}/{maxDepthRangeCount}")]
         Task<CoingiSchema.OrderBookResponse> GetOrderBookAsync([Path] string currencyPair, [Path] int maxAskCount, [Path] int maxBidCount, [Path] int maxDepthRangeCount);
+
+        [Get("/transactions/{currencyPair}/{maxCount}")]
+        Task<CoingiSchema.TransactionResponse[]> GetTransactionListAsync([Path] string currencyPair, [Path] int maxCount);
     }
 }
