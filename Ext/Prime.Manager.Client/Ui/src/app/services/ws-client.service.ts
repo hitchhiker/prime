@@ -17,6 +17,7 @@ export class WsClientService implements ISocketClient {
     this.ws.onopen = this.onClientConnected;
     this.ws.onmessage = this.onDataReceived;
     this.ws.onclose = this.onConnectionClosed;
+    this.ws.onerror = this.onErrorOccurred;
   }
 
   write(data: string) {
@@ -26,4 +27,5 @@ export class WsClientService implements ISocketClient {
   onClientConnected: () => void;
   onDataReceived: (data: any) => void;
   onConnectionClosed: () => void;  
+  onErrorOccurred: () => void;
 }

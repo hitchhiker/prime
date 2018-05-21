@@ -2,7 +2,7 @@
 
 namespace Prime.Manager.Messages
 {
-    public class ProviderKeysRequestMessage : BaseTransportRequestMessage
+    public class ProviderSaveKeysRequestMessage : BaseTransportRequestMessage
     {
         public string Id { get; set; }
         

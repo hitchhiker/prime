@@ -25,10 +25,6 @@ export class ExchangeComponent implements OnInit {
   openDialog(idHash: string) {
     LoggerService.log("Opening dialog (" + this.exchange.id + ")...");
 
-    this.primeSocket.getProviderDetails(idHash, (data) => {
-      console.log(data);
-    });
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
@@ -39,6 +35,9 @@ export class ExchangeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.primeSocket.onClientConnected = () => {
+      console.log("Overried connection");
+    }
   }
 
 }
