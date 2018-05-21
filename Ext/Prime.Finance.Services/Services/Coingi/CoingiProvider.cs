@@ -10,10 +10,9 @@ namespace Prime.Finance.Services.Services.Coingi
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coingi.docs.apiary.io/#reference
-    public class CoingiProvider : IOrderBookProvider
+    public partial class CoingiProvider : IOrderBookProvider, INetworkProviderPrivate
     {
-        private const string CoingiApiVersion = "current";
-        private const string CoingiApiUrl = "https://api.coingi.com/" + CoingiApiVersion;
+        private const string CoingiApiUrl = "https://api.coingi.com/";
 
         private static readonly ObjectId IdHash = "prime:Coingi".GetObjectIdHashCode();
 
@@ -44,13 +43,30 @@ namespace Prime.Finance.Services.Services.Coingi
 
         public CoingiProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICoingiApi>(CoingiApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICoingiApi>(CoingiApiUrl, this, (k) => new CoingiAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
             var r = await api.GetTransactionListAsync("ltc-btc", 50).ConfigureAwait(false);
+
+            return r != null && r.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var body = new Dictionary<string, object>
+            {
+                { "currencies","ltc,btc" }
+            };
+
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetBalancesAsync(body).ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
 
             return r != null && r.Length > 0;
         }

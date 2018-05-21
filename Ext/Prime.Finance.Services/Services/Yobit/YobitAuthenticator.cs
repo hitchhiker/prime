@@ -6,7 +6,6 @@ namespace Prime.Finance.Services.Services.Yobit
 {
     public class YobitAuthenticator : BaseAuthenticator
     {
-
         public YobitAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }

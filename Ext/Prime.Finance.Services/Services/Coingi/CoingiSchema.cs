@@ -38,5 +38,40 @@ namespace Prime.Finance.Services.Services.Coingi
             public CurrencyPair currencyPair;
         }
         #endregion
+
+        #region Private
+
+        internal class ErrorResponse
+        {
+            public ErrorInfoResponse[] errors;
+        }
+
+        internal class ErrorInfoResponse
+        {
+            public int code;
+            public string message;
+        }
+
+        internal class CurrencyResponse
+        {
+            public string name;
+            public string crypto;
+        }
+
+        internal class BalanceResponse
+        {
+            public CurrencyResponse currency;
+            public decimal available;
+            public decimal inOrders;
+            public decimal deposited;
+            public decimal withdrawing;
+            public decimal blocked;
+        }
+
+        internal class NewOrderResponse
+        {
+            public string result;
+        }
+        #endregion
     }
 }
