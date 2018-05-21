@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
+using Prime.Base.Messaging.Manager;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.Manager.Core;
@@ -38,6 +39,16 @@ namespace Prime.Manager
             M.RegisterAsync<DeleteProviderKeysRequestMessage>(this, DeleteProviderKeysHandler);
             M.RegisterAsync<TestPrivateApiRequestMessage>(this, TestPrivateApiHandler);
             M.RegisterAsync<GenerateGuidRequestMessage>(this, FakeClientGuidHandler);
+            M.RegisterAsync<ProviderHasKeysRequestMessage>(this, ProviderHasKeysHandler);
+        }
+
+        private void ProviderHasKeysHandler(ProviderHasKeysRequestMessage request)
+        {
+            Log("Checking if provider has keys...");
+            var details = _apiKeyService.GetNetworkDetails(request.Id);
+            var hasKeys = !string.IsNullOrWhiteSpace(details.Key) && !string.IsNullOrWhiteSpace(details.Secret);
+
+            M.SendAsync(new ProviderHasKeysResponsetMessage(request, hasKeys));
         }
 
         private void FakeClientGuidHandler(GenerateGuidRequestMessage request)

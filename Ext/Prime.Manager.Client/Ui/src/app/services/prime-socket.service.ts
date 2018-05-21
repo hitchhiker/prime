@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { ISocketClient } from '../models/interfaces/ISocketClient';
 import { LoggerService } from './logger.service';
 import { SocketState } from '../models/socket-state';
-import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage } from '../models/messages';
+import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage } from '../models/messages';
 import { PrivateApiContext } from '../models/private-api-context';
 import { GetProviderDetailsMessage } from 'models/core/msgs/Messages';
 import { ExchangeDetails } from '../models/ExchangeDetails';
@@ -88,6 +88,13 @@ export class PrimeSocketService {
         this.writeSocketMessage(new ProviderDetailsRequestMessage(idHash), callback);
     }
 
+    checkProvidersKeys(idHash: string, callback: (data: ProviderHasKeysResponseMessage) => void) {
+        let msg = new ProviderHasKeysRequestMessage();
+        msg.id = idHash;
+        
+        this.writeSocketMessage(msg, callback);
+    }
+
     saveApiKeys(exchangeDetails: ExchangeDetails, callback: (data: ProviderSaveKeysResponseMessage) => void) {
         let msg = new ProviderSaveKeysRequestMessage();
         msg.id = exchangeDetails.privateApiContext.exchangeId,
@@ -110,7 +117,7 @@ export class PrimeSocketService {
         msg.id = privateApiContext.exchangeId;
         msg.key = privateApiContext.key;
         msg.secret = privateApiContext.secret;
-        msg.extra = privateApiContext.secret
+        msg.extra = privateApiContext.extra;
 
         this.writeSocketMessage(msg, callback);
     }

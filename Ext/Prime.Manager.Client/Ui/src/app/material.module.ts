@@ -7,6 +7,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule } from "@angular/material";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
             MatFormFieldModule,
             MatInputModule,
             MatSlideToggleModule,
-            MatSnackBarModule
+            MatSnackBarModule,
+            MatIconModule
         ],
     exports:
         [
@@ -34,7 +36,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
             MatFormFieldModule,
             MatInputModule,
             MatSlideToggleModule,
-            MatSnackBarModule
+            MatSnackBarModule,
+            MatIconModule
         ],
 })
 export class MaterialModule { }

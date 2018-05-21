@@ -99,6 +99,14 @@ export class TestPrivateApiResponseMessage extends BooleanResponseMessage {
     $type: string = "prime.manager.testprivateapiresponsemessage";
 }
 
+export class ProviderHasKeysRequestMessage extends BaseMessage {
+    $type: string = "prime.manager.providerhaskeysrequestmessage";
+    id: string;
+}
+export class ProviderHasKeysResponseMessage extends BooleanResponseMessage {
+    $type: string = "prime.manager.providerhaskeysresponsemessage";
+}
+
 export class ProviderKeysMessageRequest extends BaseMessage {
     $type: string = ProviderKeysMessageRequest.name;
 }

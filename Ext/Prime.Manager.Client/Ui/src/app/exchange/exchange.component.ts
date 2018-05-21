@@ -12,7 +12,6 @@ import { PrimeSocketService } from '../services/prime-socket.service';
   styleUrls: ['./exchange.component.css']
 })
 export class ExchangeComponent implements OnInit {
-
   constructor(
     private dialog: MatDialog,
     private primeSocket: PrimeSocketService
@@ -31,7 +30,12 @@ export class ExchangeComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.data = this.exchange;
 
-    this.dialog.open(ExchangeDialogComponent, dialogConfig);
+    let dialog = this.dialog.open(ExchangeDialogComponent, dialogConfig);
+    dialog.beforeClose().subscribe(r => {
+      this.primeSocket.checkProvidersKeys(idHash, (data) => {
+        this.exchange.hasKeys = data.success;
+      });
+    });
   }
 
   ngOnInit() {
