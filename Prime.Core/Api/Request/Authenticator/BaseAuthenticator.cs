@@ -176,15 +176,7 @@ namespace Prime.Core
         {
             return ToBase64(HashHMACSHA1Raw(message, secret));
         }
-
-        public string HashHmacsha1WithoutBase64(string message, string secret)
-        {
-            var buffer = HashHMACSHA1Raw(message, secret);
-            string s = System.Text.Encoding.UTF8.GetString(buffer, 0, buffer.Length);
-
-            return s;
-        }
-
+        
         // ReSharper disable once InconsistentNaming
         public byte[] HashHMACSHA1Raw(string message, string secret)
         {
@@ -193,6 +185,17 @@ namespace Prime.Core
                 var bytes = FromUtf8(message);
                 return hmac.ComputeHash(bytes);
             }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public string HashHMACSHA1WithoutBase64(string message, string secret)
+        {
+            var enc = Encoding.ASCII;
+            HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(secret));
+            hmac.Initialize();
+
+            byte[] buffer = enc.GetBytes(message);
+            return BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
         }
 
         // ReSharper disable once InconsistentNaming
