@@ -72,6 +72,30 @@ namespace Prime.Finance.Services.Services.Coingi
         {
             public string result;
         }
+
+        internal class ActiveOrdersResponse
+        {
+            public OrderResponse[] orders;
+        }
+
+        internal class OrderResponse
+        {
+            public string id;
+            public int type;
+            public long timestamp;
+            public decimal price;
+            public decimal baseAmount;
+            public decimal counterAmount;
+            public decimal originalBaseAmount;
+            public decimal originalCounterAmount;
+            public int status;
+            public CurrencyPair currencyPair;
+        }
+
+        internal class WithdrawalResponse
+        {
+            public bool result;
+        }
         #endregion
     }
 }

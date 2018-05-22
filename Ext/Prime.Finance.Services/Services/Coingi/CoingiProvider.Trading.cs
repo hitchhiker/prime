@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,56 +60,60 @@ namespace Prime.Finance.Services.Services.Coingi
 
         public async Task<TradeOrderStatusResponse> GetOrderStatusAsync(RemoteMarketIdContext context)
         {
-            throw new NotImplementedException();
-            //var api = ApiProvider.GetApi(context);
+            var api = ApiProvider.GetApi(context);
 
-            //var order = await GetOrderReponseByIdAsync(context).ConfigureAwait(false);
+            var body = new Dictionary<string, object>
+            {
+                {"pageNumber",1 },
+                {"pageSize",100 },
+                { "currencyPair", context.Market.ToTicker(this).ToLower() }
+            };
 
-            //var bodyActiveOrders = CreateBody();
-            //bodyActiveOrders.Add("method", "ActiveOrders");
-            //bodyActiveOrders.Add("pair", order.pair);
+            var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(body).ConfigureAwait(false);
 
-            //// Checks if this order is contained in active list.
-            //var rActiveOrdersRaw = await api.QueryActiveOrdersAsync(bodyActiveOrders).ConfigureAwait(false);
-            //CheckResponseErrors(rActiveOrdersRaw);
+            CheckResponseErrors(rActiveOrdersRaw);
 
-            //var activeOrders = rActiveOrdersRaw.GetContent().returnData;
-            //// If the active list contains this order and the request for active orders was successful, then it is active. Otherwise it is not active.
-            //var isOpen = activeOrders.ContainsKey(context.RemoteGroupId);
+            var activeOrders = rActiveOrdersRaw.GetContent().orders;
 
-            //var isBuy = order.type.IndexOf("buy", StringComparison.OrdinalIgnoreCase) >= 0;
+            var order = activeOrders.FirstOrDefault(x => x.id.Equals(context.RemoteGroupId));
 
-            //return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, isOpen, false)
-            //{
-            //    TradeOrderStatus =
-            //    {
-            //        Market = order.pair.ToAssetPair(this),
-            //        Rate = order.rate,
-            //        AmountInitial = order.start_amount
-            //    }
-            //};
+            if (order == null)
+                throw new NoTradeOrderException(context, this);
+
+            var isBuy = order.type == 0;
+
+            return new TradeOrderStatusResponse(Network, context.RemoteGroupId, isBuy, true, false)
+            {
+                TradeOrderStatus =
+                {
+                    Market = new AssetPair(order.currencyPair.baseAsset,order.currencyPair.counter),
+                    Rate = order.price,
+                    AmountInitial = order.originalCounterAmount,
+                    AmountRemaining = order.counterAmount
+                }
+            };
         }
 
         public Task<OrderMarketResponse> GetMarketFromOrderAsync(RemoteIdContext context) => Task.FromResult<OrderMarketResponse>(null);
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
-            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
 
-            //var api = ApiProvider.GetApi(context);
+            var body = new Dictionary<string, object>
+            {
+                {"currency",context.Amount.Asset.ShortCode },
+                {"amount",context.Amount.ToDecimalValue() },
+                { "address", context.Address.Address }
+            };
 
-            //var body = CreateBody();
-            //body.Add("method", "WithdrawCoinsToAddress");
-            //body.Add("coinName", context.Amount.Asset.ShortCode);
-            //body.Add("amount", context.Amount.ToDecimalValue());
-            //body.Add("address", context.Address.Address);
+            var rRaw = await api.SubmitWithdrawRequestAsync(body).ConfigureAwait(false);
 
-            //var rRaw = await api.SubmitWithdrawRequestAsync(body).ConfigureAwait(false);
+            CheckResponseErrors(rRaw);
 
-            //CheckResponseErrors(rRaw);
+            var r = rRaw.GetContent();
 
-            //// No id is returned from exchange.
-            //return new WithdrawalPlacementResult();
+            return r.result == false ? null : new WithdrawalPlacementResult();
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();

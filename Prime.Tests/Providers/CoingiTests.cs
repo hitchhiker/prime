@@ -50,5 +50,13 @@ namespace Prime.Tests.Providers
 
             base.PretestPlaceOrderLimit("BTC_USD".ToAssetPairRaw(), true, new Money(10, Asset.Usd), new Money(10m, Asset.Usd));
         }
+
+
+        [Fact]
+        public override void TestPlaceWithdrawal()
+        {
+            // TODO: SC: Not tested with real money
+            base.PretestPlaceWithdrawal(new WalletAddress("1234"), new Money(22, Asset.Btc));
+        }
     }
 }
