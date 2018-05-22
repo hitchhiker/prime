@@ -20,5 +20,11 @@ namespace Prime.Finance.Services.Services.Coingi
 
         [Post("/user/add-order")]
         Task<Response<CoingiSchema.NewOrderResponse>> NewOrderAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Post("/user/orders")]
+        Task<Response<CoingiSchema.ActiveOrdersResponse>> QueryActiveOrdersAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
+
+        [Post("/user/create-crypto-withdrawal")]
+        Task<Response<CoingiSchema.WithdrawalResponse>> SubmitWithdrawRequestAsync([Body(BodySerializationMethod.Serialized)] Dictionary<string, object> body);
     }
 }
