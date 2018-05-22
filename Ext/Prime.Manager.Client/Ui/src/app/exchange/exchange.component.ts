@@ -29,6 +29,7 @@ export class ExchangeComponent implements OnInit {
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.data = this.exchange;
+    dialogConfig.width = "535px";
 
     let dialog = this.dialog.open(ExchangeDialogComponent, dialogConfig);
     dialog.beforeClose().subscribe(r => {

@@ -3,16 +3,25 @@
 
   <mat-form-field class="full-width">
     <input matInput [(ngModel)]="exchangeDetails.privateApiContext.key" placeholder="Public Key">
+    <button mat-button *ngIf="exchangeDetails.privateApiContext.key" matSuffix mat-icon-button aria-label="Clear" (click)="exchangeDetails.privateApiContext.key=''">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 
   <mat-form-field class="full-width">
     <input matInput type="password" [(ngModel)]="exchangeDetails.privateApiContext.secret" placeholder="Secret Key">
+    <button mat-button *ngIf="exchangeDetails.privateApiContext.secret" matSuffix mat-icon-button aria-label="Clear" (click)="exchangeDetails.privateApiContext.secret=''">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 
-  <mat-slide-toggle (change)="extraChanged($event)" [(ngModel)]="extraEnabled" >Has Extra data</mat-slide-toggle>
+  <mat-slide-toggle (change)="extraChanged($event)" [(ngModel)]="extraEnabled">Has Extra data</mat-slide-toggle>
 
   <mat-form-field class="full-width">
     <input matInput [disabled]="!extraEnabled" [(ngModel)]="exchangeDetails.privateApiContext.extra" placeholder="Extra">
+    <button mat-button *ngIf="exchangeDetails.privateApiContext.extra" matSuffix mat-icon-button aria-label="Clear" (click)="exchangeDetails.privateApiContext.extra=''">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 
 </mat-dialog-content>

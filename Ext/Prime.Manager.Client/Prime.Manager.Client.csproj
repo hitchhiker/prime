@@ -6,26 +6,16 @@
   <ItemGroup>
     <Compile Remove="ElectronAngular\**" />
     <Compile Remove="ElectronUI\**" />
+    <Compile Remove="Electron\**" />
     <Compile Remove="Ui\node_modules\**" />
     <EmbeddedResource Remove="ElectronAngular\**" />
     <EmbeddedResource Remove="ElectronUI\**" />
+    <EmbeddedResource Remove="Electron\**" />
     <EmbeddedResource Remove="Ui\node_modules\**" />
     <None Remove="ElectronAngular\**" />
     <None Remove="ElectronUI\**" />
+    <None Remove="Electron\**" />
     <None Remove="Ui\node_modules\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Electron\src\core\ActionThrottler.js" />
-    <None Remove="Electron\src\core\ActionThrottler.js.map" />
-    <None Remove="Electron\src\core\IpcManager.js" />
-    <None Remove="Electron\src\core\IpcManager.js.map" />
-    <None Remove="Electron\src\core\KeysManager.js" />
-    <None Remove="Electron\src\core\KeysManager.js.map" />
-    <None Remove="Electron\src\core\PrimeTcpClient.js" />
-    <None Remove="Electron\src\core\PrimeTcpClient.js.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Electron\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
