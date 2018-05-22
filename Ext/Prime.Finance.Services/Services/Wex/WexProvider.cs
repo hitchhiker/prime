@@ -44,8 +44,8 @@ namespace Prime.Finance.Services.Services.Wex
 
         protected override void CheckResponse<T>(CommonSchemaTiLiWe.BaseResponse<T> r)
         {
-            if (r.error.IndexOf("no trades", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                r.error.IndexOf("no orders", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (r.error?.IndexOf("no trades", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                r.error?.IndexOf("no orders", StringComparison.OrdinalIgnoreCase) >= 0)
                 return;
             base.CheckResponse(r);
         }

@@ -86,6 +86,9 @@ namespace Prime.Manager.Core
 
         public void DeleteKeys(string networkId)
         {
+            if(string.IsNullOrEmpty(networkId))
+                throw new ArgumentException("Incorrect Id of network.");
+
             var keys = UserContext.Testing.ApiKeys;
             keys.RemoveNetwork(networkId.ToObjectId());
             keys.Save();
@@ -93,6 +96,9 @@ namespace Prime.Manager.Core
 
         public bool TestPrivateApi(string networkId, string key, string secret, string extra)
         {
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
+                throw new NullReferenceException("Key and secret should not be empty.");
+
             var networkProvider = GetProviderByNetworkId(networkId) as INetworkProviderPrivate;
 
             var testApiKey = new ApiKey(networkProvider.Network, "Testing", key, secret, string.IsNullOrEmpty(extra) ? null : extra);

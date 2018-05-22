@@ -12,7 +12,6 @@ import { PrimeSocketService } from '../services/prime-socket.service';
   styleUrls: ['./exchange.component.css']
 })
 export class ExchangeComponent implements OnInit {
-
   constructor(
     private dialog: MatDialog,
     private primeSocket: PrimeSocketService
@@ -25,20 +24,24 @@ export class ExchangeComponent implements OnInit {
   openDialog(idHash: string) {
     LoggerService.log("Opening dialog (" + this.exchange.id + ")...");
 
-    this.primeSocket.getProviderDetails(idHash, (data) => {
-      console.log(data);
-    });
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.data = this.exchange;
 
-    this.dialog.open(ExchangeDialogComponent, dialogConfig);
+    let dialog = this.dialog.open(ExchangeDialogComponent, dialogConfig);
+    dialog.beforeClose().subscribe(r => {
+      this.primeSocket.checkProvidersKeys(idHash, (data) => {
+        this.exchange.hasKeys = data.success;
+      });
+    });
   }
 
   ngOnInit() {
+    this.primeSocket.onClientConnected = () => {
+      console.log("Overried connection");
+    }
   }
 
 }

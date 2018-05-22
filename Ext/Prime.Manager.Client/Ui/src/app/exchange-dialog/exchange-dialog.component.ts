@@ -17,7 +17,7 @@ export class ExchangeDialogComponent implements OnInit {
   extraEnabled: boolean = false;
 
   @Input() exchangeDetails: ExchangeDetails = new ExchangeDetails("Provider", new PrivateApiContext("", "", ""));
-  
+
   constructor(
     public snackBar: MatSnackBar,
     private primeSocket: PrimeSocketService,
@@ -27,21 +27,57 @@ export class ExchangeDialogComponent implements OnInit {
     //LoggerService.logObj(data);
   }
 
+  private resetExchangeDetails() {
+    if (this.exchangeDetails.privateApiContext === null) {
+      this.exchangeDetails.privateApiContext = new PrivateApiContext("", "", "");
+    }
+    else {
+      this.exchangeDetails.privateApiContext.key = "";
+      this.exchangeDetails.privateApiContext.secret = "";
+      this.exchangeDetails.privateApiContext.extra = "";
+    }
+  }
+
   testPrivateApi() {
-    if(!this.extraEnabled)
+    if (!this.extraEnabled)
       this.exchangeDetails.privateApiContext.extra = null;
 
     this.primeSocket.testPrivateApi(
-      this.exchangeDetails.privateApiContext
+      this.exchangeDetails.privateApiContext,
+      (data) => {
+        this.snackBar.open((data.success ? "API test succeeded" : (data.message != "" && data.message != null ? "API test error: " + data.message : "API test error occurred")), "Info", {
+          duration: 3000
+        });
+      }
     );
 
-    this.snackBar.open("Private API test!", "Info", {
-      duration: 3000
-    });
+
+  }
+
+  extraChanged(event) {
+    if (this.extraEnabled === false) {
+      this.exchangeDetails.privateApiContext.extra = null;
+    }
   }
 
   saveApiKeys() {
-    this.primeSocket.saveApiKeys();
+    if (this.extraEnabled === false) {
+      this.exchangeDetails.privateApiContext.extra = null;
+    }
+    this.primeSocket.saveApiKeys(this.exchangeDetails, (data) => {
+      this.snackBar.open((data.success ? "Keys saved" : "Error during saving: " + data.message), "Info", {
+        duration: 3000
+      });
+    });
+  }
+
+  deleteKeys() {
+    this.primeSocket.deleteKeys(this.exchangeDetails.id, (data) => {
+      this.resetExchangeDetails();
+      this.snackBar.open((data.success ? "Keys deleted" : "Error during saving: " + data.message), "Info", {
+        duration: 3000
+      });
+    });
   }
 
   ngOnInit() {
@@ -52,9 +88,13 @@ export class ExchangeDialogComponent implements OnInit {
           data.response.id,
           data.response.key,
           data.response.secret,
-          data.response.secret
+          data.response.extra
         )
       );
+
+      if (data.response.extra !== null && data.response.extra !== "") {
+        this.extraEnabled = true;
+      }
     });
   }
 }

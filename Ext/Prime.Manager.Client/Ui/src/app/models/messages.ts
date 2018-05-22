@@ -5,13 +5,18 @@ export abstract class BaseMessage {
 
     serialize(): string {
         return JSON.stringify(this, (key, value) => {
-            if(value !== null) return value;
+            if (value !== null) return value;
         });
     }
 }
 
 export abstract class BaseResponseMessage extends BaseMessage {
     sessionId: string;
+}
+
+export abstract class BooleanResponseMessage extends BaseResponseMessage {
+    success: boolean;
+    message: string;
 }
 
 export class UserMessageRequest extends BaseMessage {
@@ -30,11 +35,30 @@ export class ProvidersListResponseMessage extends BaseResponseMessage {
     response: Exchange[];
 }
 
+export class PrivateProvidersListRequestMessage extends BaseMessage {
+    $type: string = "prime.manager.privateproviderslistrequestmessage";
+}
+export class PrivateProvidersListResponseMessage extends BaseResponseMessage {
+    $type: string = "prime.manager.privateproviderslistresponsemessage";
+
+    response: Exchange[];
+}
+
+export class DeleteProviderKeysRequestMessage extends BaseMessage {
+    $type: string = "prime.manager.deleteproviderkeysrequestmessage";
+    id: string;
+}
+export class DeleteProviderKeysResponseMessage extends BooleanResponseMessage {
+    $type: string = "prime.manager.deleteproviderkeysresponsemessage";
+}
+
 export class ProviderDetailsRequestMessage extends BaseMessage {
     $type: string = "prime.manager.providerdetailsrequestmessage";
     id: string;
 
-    constructor(id: string) {
+    constructor(
+        id: string
+    ) {
         super();
 
         this.id = id;
@@ -52,20 +76,35 @@ export class ProviderDetailsResponseMessage extends BaseResponseMessage {
     }
 }
 
-export class TestPrivateApiMessageRequest extends BaseMessage {
-    $type: string = TestPrivateApiMessageRequest.name;
-
-    constructor(
-        public ExchangeId: string,
-        public Key: string,
-        public Secret: string,
-        public Extra?: string
-    ) {
-        super();
-    }
+export class ProviderSaveKeysRequestMessage extends BaseMessage {
+    $type: string = "prime.manager.providersavekeysrequestmessage";
+    id: string;
+    key: string;
+    secret: string;
+    extra: string
 }
-export class TestPrivateApiMessageResponse {
+export class ProviderSaveKeysResponseMessage extends BooleanResponseMessage {
+    $type: string = "prime.manager.providersavekeysresponsemessage";
+}
 
+export class TestPrivateApiRequestMessage extends BaseMessage {
+    $type: string = "prime.manager.testprivateapirequestmessage";
+
+    id: string;
+    key: string;
+    secret: string;
+    extra: string;
+}
+export class TestPrivateApiResponseMessage extends BooleanResponseMessage {
+    $type: string = "prime.manager.testprivateapiresponsemessage";
+}
+
+export class ProviderHasKeysRequestMessage extends BaseMessage {
+    $type: string = "prime.manager.providerhaskeysrequestmessage";
+    id: string;
+}
+export class ProviderHasKeysResponseMessage extends BooleanResponseMessage {
+    $type: string = "prime.manager.providerhaskeysresponsemessage";
 }
 
 export class ProviderKeysMessageRequest extends BaseMessage {

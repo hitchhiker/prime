@@ -6,10 +6,10 @@
   </mat-form-field>
 
   <mat-form-field class="full-width">
-    <input matInput [(ngModel)]="exchangeDetails.privateApiContext.secret" placeholder="Secret Key">
+    <input matInput type="password" [(ngModel)]="exchangeDetails.privateApiContext.secret" placeholder="Secret Key">
   </mat-form-field>
 
-  <mat-slide-toggle [(ngModel)]="extraEnabled" >Has Extra data</mat-slide-toggle>
+  <mat-slide-toggle (change)="extraChanged($event)" [(ngModel)]="extraEnabled" >Has Extra data</mat-slide-toggle>
 
   <mat-form-field class="full-width">
     <input matInput [disabled]="!extraEnabled" [(ngModel)]="exchangeDetails.privateApiContext.extra" placeholder="Extra">
@@ -21,6 +21,6 @@
   <span class="fill-space"></span>
 
   <button mat-button (click)="testPrivateApi()">Test Private API</button>
-  <button mat-button color="warn">Delete</button>
-  <button mat-raised-button color="primary" (click)="saveApiKeys()">Save</button>
+  <button mat-button (click)="deleteKeys()" color="warn">Delete</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="saveApiKeys()">Save</button>
 </mat-dialog-actions>

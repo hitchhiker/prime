@@ -6,4 +6,5 @@ export interface ISocketClient {
     onClientConnected: () => void;
     onDataReceived: (data: any) => void;
     onConnectionClosed: () => void;
+    onErrorOccurred: () => void;
 }

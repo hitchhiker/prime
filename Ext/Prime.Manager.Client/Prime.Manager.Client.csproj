@@ -6,10 +6,13 @@
   <ItemGroup>
     <Compile Remove="ElectronAngular\**" />
     <Compile Remove="ElectronUI\**" />
+    <Compile Remove="Ui\node_modules\**" />
     <EmbeddedResource Remove="ElectronAngular\**" />
     <EmbeddedResource Remove="ElectronUI\**" />
+    <EmbeddedResource Remove="Ui\node_modules\**" />
     <None Remove="ElectronAngular\**" />
     <None Remove="ElectronUI\**" />
+    <None Remove="Ui\node_modules\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Electron\src\core\ActionThrottler.js" />

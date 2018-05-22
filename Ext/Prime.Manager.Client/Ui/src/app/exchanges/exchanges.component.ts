@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Exchange } from '../models/Exchange';
 import { PrimeSocketService } from '../services/prime-socket.service';
-import { ProvidersListResponseMessage } from '../models/messages';
+import { PrivateProvidersListResponseMessage } from '../models/messages';
 import { LoggerService } from '../services/logger.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-exchanges',
@@ -13,16 +14,29 @@ export class ExchangesComponent implements OnInit {
 
   exchanges: Exchange[];
 
-  constructor(private primeTcpClient: PrimeSocketService) { }
+  constructor(
+    private primeService: PrimeSocketService,
+    public snackBar: MatSnackBar,
+  ) { 
+    primeService.onClientConnected = () => {
+      this.snackBar.open("Connected to server", "Info", {
+        duration: 3000
+      });
 
-  ngOnInit() {
-    this.primeTcpClient.connect(() => {
-
-      this.primeTcpClient.getProviderProvidersList((data: ProvidersListResponseMessage) => {
+      this.primeService.getPrivateProvidersList((data: PrivateProvidersListResponseMessage) => {
         LoggerService.logObj(data);
         this.exchanges = data.response;
       });
-    });
+    }
+
+    primeService.onErrorOccurred = () => {
+      this.snackBar.open("Connection error occurred", "Error", {
+        duration: 3000
+      });
+    };
   }
 
+  ngOnInit() {
+    this.primeService.connect();
+  }
 }

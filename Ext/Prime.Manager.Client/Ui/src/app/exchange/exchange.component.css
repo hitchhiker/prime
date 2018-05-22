@@ -15,3 +15,8 @@
 .mat-card-actions {
     margin-top: 10px;
 }
+
+.icon-has-keys {
+    float: right;
+    color: gray;
+}

@@ -2,6 +2,7 @@
   <mat-card-content class="header">
     <mat-card-title class="title">
         {{ exchange.name }}
+        <mat-icon *ngIf="exchange.hasKeys" class="icon-has-keys">vpn_key</mat-icon>
     </mat-card-title>
     <mat-card-subtitle class="description">{{ exchange.id }}</mat-card-subtitle>
   </mat-card-content>

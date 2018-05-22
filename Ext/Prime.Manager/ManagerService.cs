@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
+using Prime.Base.Messaging.Manager;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.Manager.Core;
@@ -34,10 +35,20 @@ namespace Prime.Manager
             M.RegisterAsync<ProvidersListRequestMessage>(this, ProvidersListHandler);
             M.RegisterAsync<PrivateProvidersListRequestMessage>(this, PrivateProvidersListHandler);
             M.RegisterAsync<ProviderDetailsRequestMessage>(this, ProviderDetailsHandler);
-            M.RegisterAsync<ProviderKeysRequestMessage>(this, ProviderKeysHandler);
+            M.RegisterAsync<ProviderSaveKeysRequestMessage>(this, ProviderKeysHandler);
             M.RegisterAsync<DeleteProviderKeysRequestMessage>(this, DeleteProviderKeysHandler);
             M.RegisterAsync<TestPrivateApiRequestMessage>(this, TestPrivateApiHandler);
             M.RegisterAsync<GenerateGuidRequestMessage>(this, FakeClientGuidHandler);
+            M.RegisterAsync<ProviderHasKeysRequestMessage>(this, ProviderHasKeysHandler);
+        }
+
+        private void ProviderHasKeysHandler(ProviderHasKeysRequestMessage request)
+        {
+            Log("Checking if provider has keys...");
+            var details = _apiKeyService.GetNetworkDetails(request.Id);
+            var hasKeys = !string.IsNullOrWhiteSpace(details.Key) && !string.IsNullOrWhiteSpace(details.Secret);
+
+            M.SendAsync(new ProviderHasKeysResponsetMessage(request, hasKeys));
         }
 
         private void FakeClientGuidHandler(GenerateGuidRequestMessage request)
@@ -51,55 +62,62 @@ namespace Prime.Manager
         private void TestPrivateApiHandler(TestPrivateApiRequestMessage request)
         {
             Log("Testing private API...");
-            var success = true;
+            TestPrivateApiResponseMessage msg;
 
             try
             {
-                success = _apiKeyService.TestPrivateApi(request.Id, request.Key, request.Secret, request.Extra);
+                var success = _apiKeyService.TestPrivateApi(request.Id, request.Key, request.Secret, request.Extra);
+                msg = new TestPrivateApiResponseMessage(request, success);
             }
             catch (Exception e)
             {
-                success = false;
                 Log($"Error while testing private API: {e.Message}");
+                msg = new TestPrivateApiResponseMessage(request, false, e.Message);
             }
 
-            M.SendAsync(new TestPrivateApiResponseMessage(request, success));
+            M.SendAsync(msg);
         }
 
         private void DeleteProviderKeysHandler(DeleteProviderKeysRequestMessage request)
         {
             Log("Deleting keys...");
-            var success = true;
+            DeleteProviderKeysResponseMessage msg;
 
             try
             {
                 _apiKeyService.DeleteKeys(request.Id);
+
+                msg = new DeleteProviderKeysResponseMessage(request, true);
             }
             catch (Exception e)
             {
-                success = false;
                 Log($"Error while deleting keys: {e.Message}");
+
+                msg = new DeleteProviderKeysResponseMessage(request, false, e.Message);
             }
 
-            M.SendAsync(new DeleteProviderKeysResponseMessage(request, success));
+            M.SendAsync(msg);
         }
 
-        private void ProviderKeysHandler(ProviderKeysRequestMessage request)
+        private void ProviderKeysHandler(ProviderSaveKeysRequestMessage request)
         {
             Log("Saving keys...");
-            var success = true;
+            ProviderSaveKeysResponseMessage msg;
             
             try
             {
                 _apiKeyService.SaveKeys(request.Id, request.Key, request.Secret, request.Extra);
+
+                msg = new ProviderSaveKeysResponseMessage(request, true);
             }
             catch (Exception e)
             {
-                success = false;
                 Log($"Error while saving keys: {e.Message}");
+
+                msg = new ProviderSaveKeysResponseMessage(request, false, e.Message);
             }
 
-            M.SendAsync(new ProviderKeysResponseMessage(request, success));
+            M.SendAsync(msg);
         }
 
         private void ProviderDetailsHandler(ProviderDetailsRequestMessage request)
