@@ -5467,7 +5467,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! P:\Projects\Git\prime\Ext\Prime.Manager.Client\Ui\src\polyfills.ts */"./src/polyfills.ts");
+module.exports = __webpack_require__(/*! /Users/alexander/Projects/prime/Ext/Prime.Manager.Client/Ui/src/polyfills.ts */"./src/polyfills.ts");
 
 
 /***/ })

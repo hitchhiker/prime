@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { LoggerService } from './services/logger.service';
 import { WsClientService } from './services/ws-client.service';
 import { PrimeSocketService } from './services/prime-socket.service';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { PrimeSocketService } from './services/prime-socket.service';
     ToolbarComponent,
     ExchangeComponent,
     ExchangeDialogComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,

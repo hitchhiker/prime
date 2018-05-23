@@ -4,6 +4,7 @@ import { PrimeSocketService } from '../services/prime-socket.service';
 import { PrivateProvidersListResponseMessage } from '../models/messages';
 import { LoggerService } from '../services/logger.service';
 import { MatSnackBar } from '@angular/material';
+import { ActionThrottlerService } from '../services/action-throttler.service';
 
 @Component({
   selector: 'app-exchanges',
@@ -13,9 +14,11 @@ import { MatSnackBar } from '@angular/material';
 export class ExchangesComponent implements OnInit {
 
   exchanges: Exchange[];
+  exchangeFilter: string;
 
   constructor(
     private primeService: PrimeSocketService,
+    private actionThrottler: ActionThrottlerService,
     public snackBar: MatSnackBar,
   ) { 
     primeService.onClientConnected = () => {
