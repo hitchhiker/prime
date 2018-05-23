@@ -338,6 +338,6 @@ lib/prime/
 .DS_Store
 
 /instance/
-/dist/prime-manager/
+Ext/Prime.Manager.Client/Ui/dist/prime-manager/
 
 

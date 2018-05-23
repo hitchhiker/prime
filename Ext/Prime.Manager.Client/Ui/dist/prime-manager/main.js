@@ -430,7 +430,7 @@ module.exports = "\n.exchange-search {\n    margin: 10px;\n}\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-form-field class=\"full-width exchange-search\">\n    <input matInput (keyup)=\"searchExchange($event)\" type=\"text\" placeholder=\"Search exchange\" [(ngModel)]=\"exchangeFilter\" />\n    <button mat-button *ngIf=\"exchangeFilter\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeFilter=''\">\n        <mat-icon>close</mat-icon>\n    </button>\n</mat-form-field>\n\n<app-exchange *ngFor=\"let exchange of (exchanges | filter: exchangeFilter)\" [exchange]=\"exchange\"></app-exchange>"
+module.exports = "<mat-form-field class=\"full-width exchange-search\">\n    <input matInput type=\"text\" placeholder=\"Search exchange\" [(ngModel)]=\"exchangeFilter\" />\n    <button mat-button *ngIf=\"exchangeFilter\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeFilter=''\">\n        <mat-icon>close</mat-icon>\n    </button>\n</mat-form-field>\n\n<app-exchange *ngFor=\"let exchange of (exchanges | filter: exchangeFilter)\" [exchange]=\"exchange\"></app-exchange>"
 
 /***/ }),
 
@@ -486,13 +486,6 @@ var ExchangesComponent = /** @class */ (function () {
     }
     ExchangesComponent.prototype.ngOnInit = function () {
         this.primeService.connect();
-    };
-    ExchangesComponent.prototype.searchExchange = function (event) {
-        var _this = this;
-        this.actionThrottler.throttle(1000, function () {
-            _this.exchanges.filter(function (exchange) { return exchange.name.indexOf(_this.exchangeFilter) !== -1; });
-            console.log(_this.exchangeFilter);
-        });
     };
     ExchangesComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
