@@ -27,7 +27,6 @@ export class ExchangesComponent implements OnInit {
       });
 
       this.primeService.getPrivateProvidersList((data: PrivateProvidersListResponseMessage) => {
-        LoggerService.logObj(data);
         this.exchanges = data.response;
       });
     }

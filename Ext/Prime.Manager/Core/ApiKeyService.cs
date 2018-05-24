@@ -65,6 +65,9 @@ namespace Prime.Manager.Core
 
         public void SaveKeys(string networkId, string key, string secret, string extra)
         {
+            if(string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
+                throw new NullReferenceException("Key and secret should not be empty.");
+            
             var networkProvider = Networks.I.Providers.FilterType<INetworkProvider, INetworkProviderPrivate>()
                 .FirstOrDefault(x => x.Network.Id.ToString().Equals(networkId));
 
@@ -74,9 +77,6 @@ namespace Prime.Manager.Core
             var keys = UserContext.Testing.ApiKeys;
 
             keys.RemoveNetwork(networkId.ToObjectId());
-
-            if(string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
-                throw new NullReferenceException("Key and secret should not be empty.");
 
             var newKey = new ApiKey(networkProvider.Network, networkProvider.Title, key, secret, string.IsNullOrEmpty(extra) ? null : extra);
 

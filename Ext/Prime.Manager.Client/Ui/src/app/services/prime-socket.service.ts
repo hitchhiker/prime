@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { ISocketClient } from '../models/interfaces/ISocketClient';
 import { LoggerService } from './logger.service';
 import { SocketState } from '../models/socket-state';
-import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage } from '../models/messages';
+import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage, BaseRequestMessage, BaseResponseMessage } from '../models/messages';
 import { PrivateApiContext } from '../models/private-api-context';
 import { GetProviderDetailsMessage } from 'models/core/msgs/Messages';
 import { ExchangeDetails } from '../models/ExchangeDetails';
@@ -17,7 +17,7 @@ export class PrimeSocketService {
     private responseBuffer: any[];
     private dataHandlerChannel: string;
 
-    private lastCallback: (data) => void = null;
+    private callbacks: ((data) => void)[] = [];
 
     // TODO: implement multiple subscriptions.
     onClientConnected: () => void = null;
@@ -25,6 +25,8 @@ export class PrimeSocketService {
     onErrorOccurred: () => void = null;
 
     socketState: SocketState = SocketState.Disconnected;
+
+    // Connection.
 
     connect() {
         LoggerService.log("Starting TCP client...");
@@ -39,10 +41,13 @@ export class PrimeSocketService {
         };
 
         this.socketClient.onDataReceived = (data: any) => {
-            var objectData = JSON.parse(data.data);
+            var response: BaseResponseMessage = JSON.parse(data.data);
 
-            if (this.lastCallback !== null) {
-                this.lastCallback(objectData);
+            if (this.callbacks[response.$type] != undefined) {
+                this.callbacks[response.$type](response);
+                delete this.callbacks[response.$type];
+            } else {
+                throw "Callback method is not found for " + response.$type;
             }
         };
 
@@ -64,23 +69,27 @@ export class PrimeSocketService {
         this.socketClient.connect('ws://127.0.0.1:9991/');
     }
 
-    private writeSocket(data: string, callback?: (data) => void) {
-        if (callback !== null) {
-            this.lastCallback = callback;
-        }
+    // Socket messaging.
 
+    private writeSocket(data: string, callback?: (data) => void) {
         this.socketClient.write(data);
     }
 
-    private writeSocketMessage(data: BaseMessage, callback?: (data) => void) {
+    private writeSocketMessage(data: BaseRequestMessage, callback?: (data) => void) {
+        this.callbacks[data.expectedEmptyResponse.$type] = callback;
+        
         this.writeSocket(data.serialize(), callback);
     }
+
+    // Core logic methods.
 
     test() {
         this.writeSocket("Hello");
     }
 
     getPrivateProvidersList(callback: (data: PrivateProvidersListResponseMessage) => void) {
+        let x = new PrivateProvidersListRequestMessage();
+
         this.writeSocketMessage(new PrivateProvidersListRequestMessage(), callback);
     }
 
@@ -91,16 +100,16 @@ export class PrimeSocketService {
     checkProvidersKeys(idHash: string, callback: (data: ProviderHasKeysResponseMessage) => void) {
         let msg = new ProviderHasKeysRequestMessage();
         msg.id = idHash;
-        
+
         this.writeSocketMessage(msg, callback);
     }
 
     saveApiKeys(exchangeDetails: ExchangeDetails, callback: (data: ProviderSaveKeysResponseMessage) => void) {
         let msg = new ProviderSaveKeysRequestMessage();
-        msg.id = exchangeDetails.privateApiContext.exchangeId,
-            msg.key = exchangeDetails.privateApiContext.key,
-            msg.secret = exchangeDetails.privateApiContext.secret,
-            msg.extra = exchangeDetails.privateApiContext.extra
+        msg.id = exchangeDetails.privateApiContext.exchangeId;
+        msg.key = exchangeDetails.privateApiContext.key;
+        msg.secret = exchangeDetails.privateApiContext.secret;
+        msg.extra = exchangeDetails.privateApiContext.extra;
 
         this.writeSocketMessage(msg, callback);
     }

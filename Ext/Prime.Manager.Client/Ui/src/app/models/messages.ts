@@ -5,9 +5,20 @@ export abstract class BaseMessage {
 
     serialize(): string {
         return JSON.stringify(this, (key, value) => {
-            if (value !== null) return value;
+            if (value !== null && key !==  "expectedEmptyResponse") return value;
         });
     }
+}
+
+export abstract class BaseRequestMessage extends BaseMessage {
+    constructor() {
+        super();
+
+        this.expectedEmptyResponse = this.createExpectedEmptyResponse();
+    }
+
+    abstract createExpectedEmptyResponse(): BaseMessage;
+    expectedEmptyResponse: BaseMessage;
 }
 
 export abstract class BaseResponseMessage extends BaseMessage {
@@ -35,7 +46,11 @@ export class ProvidersListResponseMessage extends BaseResponseMessage {
     response: Exchange[];
 }
 
-export class PrivateProvidersListRequestMessage extends BaseMessage {
+export class PrivateProvidersListRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new PrivateProvidersListResponseMessage();
+    }
+
     $type: string = "prime.manager.privateproviderslistrequestmessage";
 }
 export class PrivateProvidersListResponseMessage extends BaseResponseMessage {
@@ -44,7 +59,11 @@ export class PrivateProvidersListResponseMessage extends BaseResponseMessage {
     response: Exchange[];
 }
 
-export class DeleteProviderKeysRequestMessage extends BaseMessage {
+export class DeleteProviderKeysRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new DeleteProviderKeysResponseMessage();
+    }
+
     $type: string = "prime.manager.deleteproviderkeysrequestmessage";
     id: string;
 }
@@ -52,7 +71,11 @@ export class DeleteProviderKeysResponseMessage extends BooleanResponseMessage {
     $type: string = "prime.manager.deleteproviderkeysresponsemessage";
 }
 
-export class ProviderDetailsRequestMessage extends BaseMessage {
+export class ProviderDetailsRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new ProviderDetailsResponseMessage();
+    }
+
     $type: string = "prime.manager.providerdetailsrequestmessage";
     id: string;
 
@@ -76,7 +99,11 @@ export class ProviderDetailsResponseMessage extends BaseResponseMessage {
     }
 }
 
-export class ProviderSaveKeysRequestMessage extends BaseMessage {
+export class ProviderSaveKeysRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new ProviderSaveKeysResponseMessage();
+    }
+
     $type: string = "prime.manager.providersavekeysrequestmessage";
     id: string;
     key: string;
@@ -87,7 +114,11 @@ export class ProviderSaveKeysResponseMessage extends BooleanResponseMessage {
     $type: string = "prime.manager.providersavekeysresponsemessage";
 }
 
-export class TestPrivateApiRequestMessage extends BaseMessage {
+export class TestPrivateApiRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new TestPrivateApiResponseMessage();
+    }
+
     $type: string = "prime.manager.testprivateapirequestmessage";
 
     id: string;
@@ -99,7 +130,11 @@ export class TestPrivateApiResponseMessage extends BooleanResponseMessage {
     $type: string = "prime.manager.testprivateapiresponsemessage";
 }
 
-export class ProviderHasKeysRequestMessage extends BaseMessage {
+export class ProviderHasKeysRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new ProviderHasKeysResponseMessage();
+    }
+
     $type: string = "prime.manager.providerhaskeysrequestmessage";
     id: string;
 }

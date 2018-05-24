@@ -48,7 +48,7 @@ namespace Prime.Manager
             var details = _apiKeyService.GetNetworkDetails(request.Id);
             var hasKeys = !string.IsNullOrWhiteSpace(details.Key) && !string.IsNullOrWhiteSpace(details.Secret);
 
-            M.SendAsync(new ProviderHasKeysResponsetMessage(request, hasKeys));
+            M.SendAsync(new ProviderHasKeysResponseMessage(request, hasKeys));
         }
 
         private void FakeClientGuidHandler(GenerateGuidRequestMessage request)
