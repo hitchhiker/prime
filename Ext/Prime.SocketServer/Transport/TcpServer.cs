@@ -54,6 +54,7 @@ namespace Prime.SocketServer
             _stoppedRequested = true;
 
             _listener.Stop();
+            _listener = null;
 
             foreach (var connectedClient in _connectedClients)
                 connectedClient.Dispose();
@@ -87,14 +88,20 @@ namespace Prime.SocketServer
             {
                 try
                 {
-                    using (var connectedClient = new IdentifiedClient(_listener.EndAcceptTcpClient(ar)))
+                    using (var connectedClient = _stoppedRequested ? new IdentifiedClient(null) : new IdentifiedClient(_listener?.EndAcceptTcpClient(ar)))
                     {
+                        if (_listener == null || connectedClient.Id.IsNullOrEmpty())
+                            return;
+
                         _connectedClients.Add(connectedClient);
 
                         using (var stream = connectedClient.TcpClient.GetStream())
                         {
                             while (connectedClient.TcpClient.Connected)
                             {
+                                if (_stoppedRequested)
+                                    return;
+
                                 var data = ReceiveData(stream);
 
                                 try

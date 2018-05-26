@@ -15,12 +15,21 @@ namespace Prime.Core
     {
         protected TypeIndexDictionariesBase(IEnumerable<Type> types, Func<Type, T> hashFunction)
         {
+            Refresh(types, hashFunction);
+        }
+
+        private Dictionary<Type, T> _hashLookup = new Dictionary<Type, T>();
+        private Dictionary<T, Type> _typeLookup = new Dictionary<T, Type>();
+        protected List<Type> Types;
+
+        protected void Refresh(IEnumerable<Type> types, Func<Type, T> hashFunction)
+        {
             Types = types.ToList();
             try
             {
                 _typeLookup = Types.ToDictionary(hashFunction, t => t);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var table = Types.ToDictionary(t => t, hashFunction);
                 var dupes = new UniqueList<string>();
@@ -36,10 +45,6 @@ namespace Prime.Core
             _hashLookup = _typeLookup.ToDictionary(k => k.Value, v => v.Key);
         }
 
-
-        private readonly Dictionary<Type, T> _hashLookup = new Dictionary<Type, T>();
-        private readonly Dictionary<T, Type> _typeLookup = new Dictionary<T, Type>();
-        protected readonly List<Type> Types;
 
         public List<T> Get(IEnumerable<Type> type)
         {

@@ -23,8 +23,8 @@ namespace TestConsole
         {
             // DLL loading hack.
 
-            var binance = new BinanceProvider();
-            var t = binance.GetType();
+           // var binance = new BinanceProvider();
+            //var t = binance.GetType();
             
             // End hack.
             
@@ -35,6 +35,10 @@ namespace TestConsole
 
             var prime = new Prime.Core.Prime(serverCtx);
             prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            prime.Extensions.LoadInstalled();
+
+            serverCtx.Assemblies.Refresh();
+            serverCtx.Types.Refresh();
 
             // if this is removed DEBUG wont work across projects!??
             var i = ClassTestBase.Test();
