@@ -28,8 +28,10 @@ namespace TestConsole
             
             // End hack.
             
-            var serverCtx = ServerContext.Testing;
-            var clientCtx = ClientContext.Testing;
+            var serverCtx = new ServerContext();
+            var clientCtx = new ClientContext();
+
+            serverCtx.L = clientCtx.L = new ConsoleLogger();
 
             var prime = new Prime.Core.Prime(serverCtx);
             prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
