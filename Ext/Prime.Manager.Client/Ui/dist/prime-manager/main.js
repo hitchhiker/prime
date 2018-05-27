@@ -41,7 +41,7 @@ module.exports = "\r\n.tab-content {\r\n    overflow-y: auto;\r\n}\r\n\r\n.tab-c
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n\n<app-toolbar></app-toolbar>\n\n<mat-tab-group>\n    <mat-tab label=\"Exchanges\">\n        <div class=\"tab-content tab-exchanges\">\n            <app-exchanges></app-exchanges>\n        </div>\n\n    </mat-tab>\n    <mat-tab label=\"Chart\">\n        <div class=\"tab-content tab-chart\">\n            Hello\n        </div>\n    </mat-tab>\n</mat-tab-group>"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n\r\n<app-toolbar></app-toolbar>\r\n\r\n<mat-tab-group>\r\n    <mat-tab label=\"Exchanges\">\r\n        <div class=\"tab-content tab-exchanges\">\r\n            <app-exchanges></app-exchanges>\r\n        </div>\r\n\r\n    </mat-tab>\r\n    <mat-tab label=\"Chart\">\r\n        <div class=\"tab-content tab-chart\">\r\n            Hello\r\n        </div>\r\n    </mat-tab>\r\n</mat-tab-group>"
 
 /***/ }),
 
@@ -190,7 +190,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2 mat-dialog-title>{{ exchangeDetails.name }} details</h2>\n<mat-dialog-content>\n\n  <mat-form-field class=\"full-width\">\n    <input matInput [(ngModel)]=\"exchangeDetails.privateApiContext.key\" placeholder=\"Public Key\">\n    <button mat-button *ngIf=\"exchangeDetails.privateApiContext.key\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeDetails.privateApiContext.key=''\">\n      <mat-icon>close</mat-icon>\n    </button>\n  </mat-form-field>\n\n  <mat-form-field class=\"full-width\">\n    <input matInput type=\"password\" [(ngModel)]=\"exchangeDetails.privateApiContext.secret\" placeholder=\"Secret Key\">\n    <button mat-button *ngIf=\"exchangeDetails.privateApiContext.secret\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeDetails.privateApiContext.secret=''\">\n      <mat-icon>close</mat-icon>\n    </button>\n  </mat-form-field>\n\n  <mat-slide-toggle (change)=\"extraChanged($event)\" [(ngModel)]=\"extraEnabled\">Has Extra data</mat-slide-toggle>\n\n  <mat-form-field class=\"full-width\">\n    <input matInput [disabled]=\"!extraEnabled\" [(ngModel)]=\"exchangeDetails.privateApiContext.extra\" placeholder=\"Extra\">\n    <button mat-button *ngIf=\"exchangeDetails.privateApiContext.extra\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeDetails.privateApiContext.extra=''\">\n      <mat-icon>close</mat-icon>\n    </button>\n  </mat-form-field>\n\n</mat-dialog-content>\n<mat-dialog-actions>\n  <button mat-button [mat-dialog-close]=\"true\">Close</button>\n  <span class=\"fill-space\"></span>\n\n  <button mat-button (click)=\"testPrivateApi()\">Test Private API</button>\n  <button mat-button (click)=\"deleteKeys()\" color=\"warn\">Delete</button>\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"true\" (click)=\"saveApiKeys()\">Save</button>\n</mat-dialog-actions>"
+module.exports = "<h2 mat-dialog-title>{{ exchangeDetails.name }} details</h2>\r\n<mat-dialog-content>\r\n\r\n  <mat-form-field class=\"full-width\">\r\n    <input matInput [(ngModel)]=\"exchangeDetails.privateApiContext.key\" placeholder=\"Public Key\">\r\n    <button mat-button *ngIf=\"exchangeDetails.privateApiContext.key\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeDetails.privateApiContext.key=''\">\r\n      <mat-icon>close</mat-icon>\r\n    </button>\r\n  </mat-form-field>\r\n\r\n  <mat-form-field class=\"full-width\">\r\n    <input matInput type=\"password\" [(ngModel)]=\"exchangeDetails.privateApiContext.secret\" placeholder=\"Secret Key\">\r\n    <button mat-button *ngIf=\"exchangeDetails.privateApiContext.secret\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeDetails.privateApiContext.secret=''\">\r\n      <mat-icon>close</mat-icon>\r\n    </button>\r\n  </mat-form-field>\r\n\r\n  <mat-slide-toggle (change)=\"extraChanged($event)\" [(ngModel)]=\"extraEnabled\">Has Extra data</mat-slide-toggle>\r\n\r\n  <mat-form-field class=\"full-width\">\r\n    <input matInput [disabled]=\"!extraEnabled\" [(ngModel)]=\"exchangeDetails.privateApiContext.extra\" placeholder=\"Extra\">\r\n    <button mat-button *ngIf=\"exchangeDetails.privateApiContext.extra\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeDetails.privateApiContext.extra=''\">\r\n      <mat-icon>close</mat-icon>\r\n    </button>\r\n  </mat-form-field>\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n  <button mat-button [mat-dialog-close]=\"true\">Close</button>\r\n  <span class=\"fill-space\"></span>\r\n\r\n  <button mat-button (click)=\"testPrivateApi()\">Test Private API</button>\r\n  <button mat-button (click)=\"deleteKeys()\" color=\"warn\">Delete</button>\r\n  <button mat-raised-button color=\"primary\" [mat-dialog-close]=\"true\" (click)=\"saveApiKeys()\">Save</button>\r\n</mat-dialog-actions>"
 
 /***/ }),
 
@@ -321,7 +321,7 @@ var ExchangeDialogComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n.exchange-card {\n    margin: 10px;\n}\n\n.header .title {\n    font-size: 25px;\n    margin-bottom: 10px;\n}\n\n.header .description {\n    color: rgba(0, 0, 0, 0.6)\n}\n\n.mat-card-actions {\n    margin-top: 10px;\n}\n\n.icon-has-keys {\n    float: right;\n    color: gray;\n}\n"
+module.exports = "\r\n.exchange-card {\r\n    margin: 10px 0;\r\n}\r\n\r\n.header .title {\r\n    font-size: 25px;\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.header .description {\r\n    color: rgba(0, 0, 0, 0.6)\r\n}\r\n\r\n.mat-card-actions {\r\n    margin-top: 10px;\r\n}\r\n\r\n.icon-has-keys {\r\n    float: right;\r\n    color: gray;\r\n}\r\n"
 
 /***/ }),
 
@@ -332,7 +332,7 @@ module.exports = "\n.exchange-card {\n    margin: 10px;\n}\n\n.header .title {\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-card class=\"exchange-card\">\n  <mat-card-content class=\"header\">\n    <mat-card-title class=\"title\">\n        {{ exchange.name }}\n        <mat-icon *ngIf=\"exchange.hasKeys\" class=\"icon-has-keys\">vpn_key</mat-icon>\n    </mat-card-title>\n    <mat-card-subtitle class=\"description\">{{ exchange.id }}</mat-card-subtitle>\n  </mat-card-content>\n  <mat-card-actions>\n    <button mat-button color=\"primary\" (click)=\"openDialog(exchange.id)\">MANAGE</button>\n  </mat-card-actions>\n</mat-card>"
+module.exports = "<mat-card class=\"exchange-card\">\r\n  <mat-card-content class=\"header\">\r\n    <mat-card-title class=\"title\">\r\n        {{ exchange.name }}\r\n        <mat-icon *ngIf=\"exchange.hasKeys\" class=\"icon-has-keys\">vpn_key</mat-icon>\r\n    </mat-card-title>\r\n    <mat-card-subtitle class=\"description\">{{ exchange.id }}</mat-card-subtitle>\r\n  </mat-card-content>\r\n  <mat-card-actions>\r\n    <button mat-button color=\"primary\" (click)=\"openDialog(exchange.id)\">MANAGE</button>\r\n  </mat-card-actions>\r\n</mat-card>"
 
 /***/ }),
 
@@ -419,7 +419,7 @@ var ExchangeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n.exchange-search {\n    margin: 10px;\n}\n"
+module.exports = ""
 
 /***/ }),
 
@@ -430,7 +430,7 @@ module.exports = "\n.exchange-search {\n    margin: 10px;\n}\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-form-field class=\"full-width exchange-search\">\n    <input matInput type=\"text\" placeholder=\"Search exchange\" [(ngModel)]=\"exchangeFilter\" />\n    <button mat-button *ngIf=\"exchangeFilter\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeFilter=''\">\n        <mat-icon>close</mat-icon>\n    </button>\n</mat-form-field>\n\n<app-exchange *ngFor=\"let exchange of (exchanges | filter: exchangeFilter)\" [exchange]=\"exchange\"></app-exchange>"
+module.exports = "<mat-form-field class=\"full-width exchange-search\">\r\n    <input matInput type=\"text\" placeholder=\"Search exchange\" [(ngModel)]=\"exchangeFilter\" />\r\n    <button mat-button *ngIf=\"exchangeFilter\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"exchangeFilter=''\">\r\n        <mat-icon>close</mat-icon>\r\n    </button>\r\n</mat-form-field>\r\n\r\n<app-exchange *ngFor=\"let exchange of (exchanges | filter: exchangeFilter)\" [exchange]=\"exchange\"></app-exchange>"
 
 /***/ }),
 
@@ -446,9 +446,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExchangesComponent", function() { return ExchangesComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _services_prime_socket_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/prime-socket.service */ "./src/app/services/prime-socket.service.ts");
-/* harmony import */ var _services_logger_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/logger.service */ "./src/app/services/logger.service.ts");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var _services_action_throttler_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/action-throttler.service */ "./src/app/services/action-throttler.service.ts");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var _services_action_throttler_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/action-throttler.service */ "./src/app/services/action-throttler.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -458,7 +457,6 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -474,7 +472,6 @@ var ExchangesComponent = /** @class */ (function () {
                 duration: 3000
             });
             _this.primeService.getPrivateProvidersList(function (data) {
-                _services_logger_service__WEBPACK_IMPORTED_MODULE_2__["LoggerService"].logObj(data);
                 _this.exchanges = data.response;
             });
         };
@@ -494,8 +491,8 @@ var ExchangesComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./exchanges.component.css */ "./src/app/exchanges/exchanges.component.css")]
         }),
         __metadata("design:paramtypes", [_services_prime_socket_service__WEBPACK_IMPORTED_MODULE_1__["PrimeSocketService"],
-            _services_action_throttler_service__WEBPACK_IMPORTED_MODULE_4__["ActionThrottlerService"],
-            _angular_material__WEBPACK_IMPORTED_MODULE_3__["MatSnackBar"]])
+            _services_action_throttler_service__WEBPACK_IMPORTED_MODULE_3__["ActionThrottlerService"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_2__["MatSnackBar"]])
     ], ExchangesComponent);
     return ExchangesComponent;
 }());
@@ -641,12 +638,13 @@ var ExchangeDetails = /** @class */ (function (_super) {
 /*!************************************!*\
   !*** ./src/app/models/messages.ts ***!
   \************************************/
-/*! exports provided: BaseMessage, BaseResponseMessage, BooleanResponseMessage, UserMessageRequest, ProvidersListRequestMessage, ProvidersListResponseMessage, PrivateProvidersListRequestMessage, PrivateProvidersListResponseMessage, DeleteProviderKeysRequestMessage, DeleteProviderKeysResponseMessage, ProviderDetailsRequestMessage, ProviderDetailsResponseMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, TestPrivateApiRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysRequestMessage, ProviderHasKeysResponseMessage, ProviderKeysMessageRequest, ProviderKeysMessageResponse */
+/*! exports provided: BaseMessage, BaseRequestMessage, BaseResponseMessage, BooleanResponseMessage, UserMessageRequest, ProvidersListRequestMessage, ProvidersListResponseMessage, PrivateProvidersListRequestMessage, PrivateProvidersListResponseMessage, DeleteProviderKeysRequestMessage, DeleteProviderKeysResponseMessage, ProviderDetailsRequestMessage, ProviderDetailsResponseMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, TestPrivateApiRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysRequestMessage, ProviderHasKeysResponseMessage, ProviderKeysMessageRequest, ProviderKeysMessageResponse */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseMessage", function() { return BaseMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseRequestMessage", function() { return BaseRequestMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseResponseMessage", function() { return BaseResponseMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BooleanResponseMessage", function() { return BooleanResponseMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserMessageRequest", function() { return UserMessageRequest; });
@@ -681,12 +679,22 @@ var BaseMessage = /** @class */ (function () {
     }
     BaseMessage.prototype.serialize = function () {
         return JSON.stringify(this, function (key, value) {
-            if (value !== null)
+            if (value !== null && key !== "expectedEmptyResponse")
                 return value;
         });
     };
     return BaseMessage;
 }());
+
+var BaseRequestMessage = /** @class */ (function (_super) {
+    __extends(BaseRequestMessage, _super);
+    function BaseRequestMessage() {
+        var _this = _super.call(this) || this;
+        _this.expectedEmptyResponse = _this.createExpectedEmptyResponse();
+        return _this;
+    }
+    return BaseRequestMessage;
+}(BaseMessage));
 
 var BaseResponseMessage = /** @class */ (function (_super) {
     __extends(BaseResponseMessage, _super);
@@ -741,8 +749,11 @@ var PrivateProvidersListRequestMessage = /** @class */ (function (_super) {
         _this.$type = "prime.manager.privateproviderslistrequestmessage";
         return _this;
     }
+    PrivateProvidersListRequestMessage.prototype.createExpectedEmptyResponse = function () {
+        return new PrivateProvidersListResponseMessage();
+    };
     return PrivateProvidersListRequestMessage;
-}(BaseMessage));
+}(BaseRequestMessage));
 
 var PrivateProvidersListResponseMessage = /** @class */ (function (_super) {
     __extends(PrivateProvidersListResponseMessage, _super);
@@ -761,8 +772,11 @@ var DeleteProviderKeysRequestMessage = /** @class */ (function (_super) {
         _this.$type = "prime.manager.deleteproviderkeysrequestmessage";
         return _this;
     }
+    DeleteProviderKeysRequestMessage.prototype.createExpectedEmptyResponse = function () {
+        return new DeleteProviderKeysResponseMessage();
+    };
     return DeleteProviderKeysRequestMessage;
-}(BaseMessage));
+}(BaseRequestMessage));
 
 var DeleteProviderKeysResponseMessage = /** @class */ (function (_super) {
     __extends(DeleteProviderKeysResponseMessage, _super);
@@ -782,8 +796,11 @@ var ProviderDetailsRequestMessage = /** @class */ (function (_super) {
         _this.id = id;
         return _this;
     }
+    ProviderDetailsRequestMessage.prototype.createExpectedEmptyResponse = function () {
+        return new ProviderDetailsResponseMessage();
+    };
     return ProviderDetailsRequestMessage;
-}(BaseMessage));
+}(BaseRequestMessage));
 
 var ProviderDetailsResponseMessage = /** @class */ (function (_super) {
     __extends(ProviderDetailsResponseMessage, _super);
@@ -802,8 +819,11 @@ var ProviderSaveKeysRequestMessage = /** @class */ (function (_super) {
         _this.$type = "prime.manager.providersavekeysrequestmessage";
         return _this;
     }
+    ProviderSaveKeysRequestMessage.prototype.createExpectedEmptyResponse = function () {
+        return new ProviderSaveKeysResponseMessage();
+    };
     return ProviderSaveKeysRequestMessage;
-}(BaseMessage));
+}(BaseRequestMessage));
 
 var ProviderSaveKeysResponseMessage = /** @class */ (function (_super) {
     __extends(ProviderSaveKeysResponseMessage, _super);
@@ -822,8 +842,11 @@ var TestPrivateApiRequestMessage = /** @class */ (function (_super) {
         _this.$type = "prime.manager.testprivateapirequestmessage";
         return _this;
     }
+    TestPrivateApiRequestMessage.prototype.createExpectedEmptyResponse = function () {
+        return new TestPrivateApiResponseMessage();
+    };
     return TestPrivateApiRequestMessage;
-}(BaseMessage));
+}(BaseRequestMessage));
 
 var TestPrivateApiResponseMessage = /** @class */ (function (_super) {
     __extends(TestPrivateApiResponseMessage, _super);
@@ -842,8 +865,11 @@ var ProviderHasKeysRequestMessage = /** @class */ (function (_super) {
         _this.$type = "prime.manager.providerhaskeysrequestmessage";
         return _this;
     }
+    ProviderHasKeysRequestMessage.prototype.createExpectedEmptyResponse = function () {
+        return new ProviderHasKeysResponseMessage();
+    };
     return ProviderHasKeysRequestMessage;
-}(BaseMessage));
+}(BaseRequestMessage));
 
 var ProviderHasKeysResponseMessage = /** @class */ (function (_super) {
     __extends(ProviderHasKeysResponseMessage, _super);
@@ -1076,13 +1102,14 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 var PrimeSocketService = /** @class */ (function () {
     function PrimeSocketService(socketClient) {
         this.socketClient = socketClient;
-        this.lastCallback = null;
+        this.callbacks = [];
         // TODO: implement multiple subscriptions.
         this.onClientConnected = null;
         this.onConnectionClosed = null;
         this.onErrorOccurred = null;
         this.socketState = _models_socket_state__WEBPACK_IMPORTED_MODULE_2__["SocketState"].Disconnected;
     }
+    // Connection.
     PrimeSocketService.prototype.connect = function () {
         var _this = this;
         _logger_service__WEBPACK_IMPORTED_MODULE_1__["LoggerService"].log("Starting TCP client...");
@@ -1094,9 +1121,13 @@ var PrimeSocketService = /** @class */ (function () {
             }
         };
         this.socketClient.onDataReceived = function (data) {
-            var objectData = JSON.parse(data.data);
-            if (_this.lastCallback !== null) {
-                _this.lastCallback(objectData);
+            var response = JSON.parse(data.data);
+            if (_this.callbacks[response.$type] != undefined) {
+                _this.callbacks[response.$type](response);
+                delete _this.callbacks[response.$type];
+            }
+            else {
+                throw "Callback method is not found for " + response.$type;
             }
         };
         this.socketClient.onConnectionClosed = function () {
@@ -1113,19 +1144,20 @@ var PrimeSocketService = /** @class */ (function () {
         };
         this.socketClient.connect('ws://127.0.0.1:9991/');
     };
+    // Socket messaging.
     PrimeSocketService.prototype.writeSocket = function (data, callback) {
-        if (callback !== null) {
-            this.lastCallback = callback;
-        }
         this.socketClient.write(data);
     };
     PrimeSocketService.prototype.writeSocketMessage = function (data, callback) {
+        this.callbacks[data.expectedEmptyResponse.$type] = callback;
         this.writeSocket(data.serialize(), callback);
     };
+    // Core logic methods.
     PrimeSocketService.prototype.test = function () {
         this.writeSocket("Hello");
     };
     PrimeSocketService.prototype.getPrivateProvidersList = function (callback) {
+        var x = new _models_messages__WEBPACK_IMPORTED_MODULE_3__["PrivateProvidersListRequestMessage"]();
         this.writeSocketMessage(new _models_messages__WEBPACK_IMPORTED_MODULE_3__["PrivateProvidersListRequestMessage"](), callback);
     };
     PrimeSocketService.prototype.getProviderDetails = function (idHash, callback) {
@@ -1138,10 +1170,10 @@ var PrimeSocketService = /** @class */ (function () {
     };
     PrimeSocketService.prototype.saveApiKeys = function (exchangeDetails, callback) {
         var msg = new _models_messages__WEBPACK_IMPORTED_MODULE_3__["ProviderSaveKeysRequestMessage"]();
-        msg.id = exchangeDetails.privateApiContext.exchangeId,
-            msg.key = exchangeDetails.privateApiContext.key,
-            msg.secret = exchangeDetails.privateApiContext.secret,
-            msg.extra = exchangeDetails.privateApiContext.extra;
+        msg.id = exchangeDetails.privateApiContext.exchangeId;
+        msg.key = exchangeDetails.privateApiContext.key;
+        msg.secret = exchangeDetails.privateApiContext.secret;
+        msg.extra = exchangeDetails.privateApiContext.extra;
         this.writeSocketMessage(msg, callback);
     };
     PrimeSocketService.prototype.deleteKeys = function (exchangeId, callback) {
@@ -1236,7 +1268,7 @@ module.exports = "\r\n.mat-toolbar {\r\n    position: fixed;\r\n    z-index: 2;\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n<mat-toolbar color=\"primary\">\n  <span>{{title}}</span>\n</mat-toolbar>\n\n"
+module.exports = "\r\n<mat-toolbar color=\"primary\">\r\n  <span>{{title}}</span>\r\n</mat-toolbar>\r\n\r\n"
 
 /***/ }),
 
@@ -1345,7 +1377,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/alexander/Projects/prime/Ext/Prime.Manager.Client/Ui/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! P:\Projects\Git\prime\Ext\Prime.Manager.Client\Ui\src\main.ts */"./src/main.ts");
 
 
 /***/ })
