@@ -10,6 +10,7 @@ namespace Prime.Finance.Services.Services.OkCoin
 {
     public class OkCoinAuthenticator : BaseAuthenticator
     {
+        //TODO - SC - Swap keys once key manager is working again
         private string publicKey = "7a7bd50a-2f57-4c60-940b-db6fc40b26dd";
         private string secret = "00D4A2A4A1DC49F664B9B2DBDE4C10D8";
 

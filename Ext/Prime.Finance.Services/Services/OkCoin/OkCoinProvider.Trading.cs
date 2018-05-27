@@ -107,34 +107,8 @@ namespace Prime.Finance.Services.Services.OkCoin
 
         public async Task<WithdrawalPlacementResult> PlaceWithdrawalAsync(WithdrawalPlacementContext context)
         {
+            //TODO - SC - Implement withdrawal - not done yet due to endpoint requiring certain parameters such as withdrawal fee
             throw new NotImplementedException();
-            //var api = ApiProviderPrivate.GetApi(context);
-
-            //var body = CreateBody();
-            //body.Add("currency", context.Amount.Asset.ShortCode);
-            //body.Add("amount", context.Amount.ToDecimalValue());
-            //body.Add("address", context.Address.Address);
-
-            //var rRaw = await api.PrepareWithdrawRequestAsync(body).ConfigureAwait(false);
-
-            //CheckResponseErrors(rRaw);
-
-            //var r = rRaw.GetContent();
-
-            //var transactionId = r.returnObj.transactionId;
-
-            //var bodySubmit = CreateBody();
-            //bodySubmit.Add("transactionId", transactionId);
-            //var rSubmitRaw = await api.SubmitWithdrawRequestAsync(bodySubmit).ConfigureAwait(false);
-
-            //CheckResponseErrors(rSubmitRaw);
-
-            //var rSubmit = rSubmitRaw.GetContent();
-
-            //return new WithdrawalPlacementResult()
-            //{
-            //    WithdrawalRemoteId = rSubmit.returnObj.id
-            //};
         }
 
         public MinimumTradeVolume[] MinimumTradeVolume => throw new NotImplementedException();
