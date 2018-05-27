@@ -340,7 +340,7 @@ lib/prime/
 /instance/
 
 # Prime.Manager.Client
-**/Prime.Manager.Client/Ui/dist/prime-manager/*
+**/Prime.Manager.Client/Ui/dist/*
 **/Prime.Manager.Client/Ui/runtime/*
 !**/Prime.Manager.Client/Ui/runtime/*.xz
 !**/Prime.Manager.Client/Ui/runtime/*.gz
