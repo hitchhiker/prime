@@ -338,7 +338,13 @@ lib/prime/
 .DS_Store
 
 /instance/
-Ext/Prime.Manager.Client/Ui/dist/prime-manager/
-/node-v8.11.2-darwin-x64
+
+# Prime.Manager.Client
+**/Prime.Manager.Client/Ui/dist/prime-manager/
+**/Prime.Manager.Client/Ui/runtime/*
+!**/Prime.Manager.Client/Ui/runtime/*.xz
+!**/Prime.Manager.Client/Ui/runtime/*.gz
+!**/Prime.Manager.Client/Ui/runtime/*.zip
+
 
 
