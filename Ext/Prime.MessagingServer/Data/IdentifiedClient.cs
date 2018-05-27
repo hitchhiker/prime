@@ -11,6 +11,9 @@ namespace Prime.MessagingServer.Data
 
         public IdentifiedClient(TcpClient tcpClient)
         {
+            if (tcpClient == null)
+                return;
+
             Id = ObjectId.NewObjectId();
             TcpClient = tcpClient;
         }

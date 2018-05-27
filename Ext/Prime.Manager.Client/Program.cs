@@ -53,6 +53,7 @@ namespace Prime.KeysManager
             logger.Log(": Waiting for all UI processes exit...");
 
             uiTask.Wait();
+            Console.ReadLine();
         }
 
         private static Process RunUi()

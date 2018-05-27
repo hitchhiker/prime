@@ -12,7 +12,7 @@ namespace Prime.Core
         public readonly IMessenger M;
         public readonly PrimeClientConfig Config;
 
-        public ClientContext() : this("../instance/prime-client.config") { } //used for testing / debug
+        public ClientContext() : this("[src]/instance/prime-client.config") { } //used for testing / debug
 
         public ClientContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultClient) { }
 
@@ -20,18 +20,17 @@ namespace Prime.Core
         {
             configPath = configPath.ResolveSpecial();
 
-            if (Testing != null)
-                throw new Exception(nameof(ClientContext) + " is already initialised in this app domain.");
+            _testing = this; //todo: hack for now.
 
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
 
             Config = PrimeClientConfig.Get(Path.GetFullPath(configPath));
             M = m;
-            Testing = this;
         }
 
-        public static ClientContext Testing { get; private set; } = new ClientContext("../instance/prime-client.config");
+        private static ClientContext _testing = new ClientContext();
+        public static ClientContext Testing => _testing ?? new ClientContext();
 
         private DirectoryInfo _appDataDirectoryInfo;
         public DirectoryInfo AppDataDirectoryInfo => _appDataDirectoryInfo ?? (_appDataDirectoryInfo = GetAppBase());

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Prime.Core
 {
@@ -26,8 +27,8 @@ namespace Prime.Core
 
         public static string ResolveSpecial(this string path)
         {
-            var s = FindParent(path, "SRC");
-            s = DoSpecial(s, "USER", ()=> System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+            var s = FindParent(path, "src");
+            s = DoSpecial(s, "USER", ()=> Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             return s;
         }
 
@@ -48,10 +49,20 @@ namespace Prime.Core
 
             var current = Path.GetFullPath("./");
             var io = current.IndexOf(Path.DirectorySeparatorChar + special + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-            if (io == 1)
-                throw new Exception("Could not find '[" + special + "]' special folder in " + current);
+            if (io != -1)
+                return current.Substring(0, io + special.Length + 1) + path.Substring(special.Length + 2);
 
-            return current.Substring(0, io + special.Length + 1) + path.Substring(special.Length + 2);
+            var p = FindParent(new DirectoryInfo("./"), special);
+            if (p != null)
+                return p + path.Substring(special.Length + 2);
+            throw new Exception("Could not find '[" + special + "]' special folder in " + current);
+        }
+
+        private static string FindParent(DirectoryInfo child, string special)
+        {
+            if (child == null || !child.Exists)
+                return null;
+            return child.GetFiles("." + special).Any() ? child.FullName : FindParent(child.Parent, special);
         }
     }
 }

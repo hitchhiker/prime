@@ -17,12 +17,17 @@ namespace Prime.Core
         public static object Lock = new object();
         public static bool FilterTypeCatalogueAttribute = false;
 
-        public TypeCatalogue(AssemblyCatalogue assemblyCatalogue) : base(Results(assemblyCatalogue), t => t.GetStrongHash())
+        public TypeCatalogue(AssemblyCatalogue assemblyCatalogue) : base(GetTypes(assemblyCatalogue), t => t.GetStrongHash())
         {
             _assemblies = assemblyCatalogue;
         }
 
-        private static IEnumerable<Type> Results(AssemblyCatalogue assemblyCatalogue)
+        public void Refresh()
+        {
+            Refresh(GetTypes(_assemblies), t => t.GetStrongHash());
+        }
+
+        private static IEnumerable<Type> GetTypes(AssemblyCatalogue assemblyCatalogue)
         {
             var result = new List<Type>();
             var t = typeof(IncludeInTypeCatalogueAttribute);

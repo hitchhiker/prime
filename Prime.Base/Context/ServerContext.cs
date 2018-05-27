@@ -18,7 +18,7 @@ namespace Prime.Core
         public readonly AssemblyCatalogue Assemblies;
         public readonly TypeCatalogue Types;
 
-        public ServerContext() : this("../instance/prime-server.config") { } //used for testing / debug
+        public ServerContext() : this("[src]/instance/prime-server.config") { } //used for testing / debug
 
         public ServerContext(string configPath) : this(configPath, DefaultMessenger.I.DefaultServer) { }
 
@@ -28,8 +28,7 @@ namespace Prime.Core
 
             PlatformCurrent = OsInformation.GetPlatform();
 
-            if (Testing != null)
-                throw new Exception(nameof(ServerContext) + " is already initialized in this app domain.");
+            _testing = this; //todo: hack for now.
 
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentException($"\'{nameof(configPath)}\' cannot be empty.");
@@ -42,10 +41,10 @@ namespace Prime.Core
             M = m;
             Users = new Users(this);
             Public = new PublicContext(this);
-            Testing = this;
         }
 
-        public static ServerContext Testing { get; private set; } = new ServerContext(@"D:\Dropbox\Documents\Freelance Work\Projects\Current Projects\Prime\Code\instance\prime-server.config.default");
+        private static ServerContext _testing = new ServerContext();
+        public static ServerContext Testing => _testing ?? new ServerContext();
 
         public static PublicContext Public;
 

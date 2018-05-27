@@ -24,6 +24,12 @@ namespace Prime.Core
             Types = context.Types;
         }
 
+        public void LoadInstalled()
+        {
+            foreach (var i in Config.InstallConfig.Installs)
+                Load<IExtension>(i.Id);
+        }
+
         public T Load<T>(ObjectId id) where T : class, IExtension
         {
             var ext = ExtensionList.PreCheck<T>(id);

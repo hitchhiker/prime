@@ -14,12 +14,17 @@ namespace Prime.Core
     {
         public static object Lock = new object();
 
-        private readonly Dictionary<Assembly, int> _hashLookup;
-        private readonly Dictionary<int, Assembly> _typeLookup;
-        private readonly List<Assembly> _assemblies;
+        private Dictionary<Assembly, int> _hashLookup;
+        private Dictionary<int, Assembly> _typeLookup;
+        private List<Assembly> _assemblies;
         public IReadOnlyList<Assembly> Assemblies => _assemblies;
 
         public AssemblyCatalogue()
+        {
+            Refresh();
+        }
+
+        public void Refresh()
         {
             _assemblies = Results();
             _hashLookup = _assemblies.ToDictionary(x => x, y => y.GetHashCode());

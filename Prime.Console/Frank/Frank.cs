@@ -1,4 +1,6 @@
-﻿using Prime.Console.Windows.Alyasko.WebSocket;
+﻿using Prime.Console.Frank.Ipfs;
+using Prime.Console.Frank.Socket;
+using Prime.Console.Windows.Alyasko.WebSocket;
 using Prime.Core;
 
 namespace Prime.Console.Frank
@@ -11,9 +13,9 @@ namespace Prime.Console.Frank
 
             //new IpfsMessageTest(s).Go();
 
-            new WebSocketServerTest(s, c).Go();
+            //new WebSocketServerTest(s, c).Go();
 
-            //new SocketServerTest(s, c).Go();
+            new SocketServerTest(s, c).Go();
 
             //AuthManagerTest.EcdsaKeySign(s);
 
