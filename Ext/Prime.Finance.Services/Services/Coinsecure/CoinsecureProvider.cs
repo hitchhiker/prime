@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
 using Prime.Core;
@@ -9,6 +10,7 @@ namespace Prime.Finance.Services.Services.Coinsecure
     // https://api.coinsecure.in/v1/slateUI
     public class CoinsecureProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinsecureApiVersion = "v1";
         private const string CoinsecureApiUrl = "https://api.coinsecure.in/" + CoinsecureApiVersion;
 

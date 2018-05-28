@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.BitFlyer
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitFlyerProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         public const string BitFlyerApiUrl = "https://api.bitflyer.com/" + BitFlyerApiVersion;
         public const string BitFlyerApiVersion = "v1";
 

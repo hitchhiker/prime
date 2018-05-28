@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Allcoin
     // https://www.allcoin.com/About/APIReference/#SpotPriceAPI
     public partial class AllcoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string AllcoinApiVersion = "v1";
         private const string AllcoinApiUrl = "https://api.allcoin.com/api/" + AllcoinApiVersion;
 

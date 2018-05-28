@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.CryptoCompare
 {
     public abstract class CryptoCompareBase : ICoinInformationProvider, IOhlcProvider, IDisposable, IPublicPricingProvider, IProxyProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         public static string EndpointLegacy = "https://www.cryptocompare.com/api/data/";
         public static string EndpointMinApi = "https://min-api.cryptocompare.com/data";
 

@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.OkCoin
     // https://www.okcoin.com/rest_api.html
     public class OkCoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string OkCoinApiVersion = "v1";
         private const string OkCoinApiUrl = "https://www.okcoin.com/api/" + OkCoinApiVersion;
 

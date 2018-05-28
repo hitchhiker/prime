@@ -121,7 +121,8 @@ namespace Prime.SocketServer
                 }
                 catch (Exception e)
                 {
-                    ExceptionOccurred?.Invoke(this, e);
+                    if (!_stoppedRequested)
+                        ExceptionOccurred?.Invoke(this, e);
                 }
             });
 

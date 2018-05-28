@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Acx
     // https://acx.io/documents/api_v2
     public partial class AcxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string AcxApiVersion = "v2";
         private const string AcxApiUrl = "https://acx.io//api/" + AcxApiVersion;
 

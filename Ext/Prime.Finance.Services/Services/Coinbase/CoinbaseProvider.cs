@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Coinbase
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class CoinbaseProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private static readonly ObjectId IdHash = "prime:coinbase".GetObjectIdHashCode();
 
         private const string CoinbaseApiVersion = "v2";

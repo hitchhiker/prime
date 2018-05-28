@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Cex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class CexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CexApiUrl = "https://cex.io/api";
 
         private static readonly ObjectId IdHash = "prime:cex".GetObjectIdHashCode();

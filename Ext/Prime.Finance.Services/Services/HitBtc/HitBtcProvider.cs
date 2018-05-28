@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.HitBtc
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class HitBtcProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string ApiVersion = "2";
         private const string HitBtcApiUrl = "https://api.hitbtc.com/api/" + ApiVersion;
 

@@ -33,8 +33,8 @@
     <ItemGroup>
       <AllFiles Include="$(TargetDir)*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" />
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" ContinueOnError="ErrorAndContinue"/>
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" ContinueOnError="ErrorAndContinue" />
   </Target>
 
 </Project>

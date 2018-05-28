@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.TuxExchange
     // https://tuxexchange.com/docs#
     public class TuxExchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string TuxExchangeApiUrl = "https://tuxexchange.com/";
 
         private static readonly ObjectId IdHash = "prime:tuxexchange".GetObjectIdHashCode();

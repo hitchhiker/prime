@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.MercadoBitcoin
     // https://www.mercadobitcoin.com.br/api-doc/
     public class MercadoBitcoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string MercadoBitcoinApiUrl = "https://www.mercadobitcoin.net/api/";
 
         private static readonly ObjectId IdHash = "prime:mercadobitcoin".GetObjectIdHashCode();

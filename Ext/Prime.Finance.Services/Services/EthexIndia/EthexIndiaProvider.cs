@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.EthexIndia
     // https://api.ethexindia.com/
     public class EthexIndiaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string EthexIndiaApiUrl = "https://api.ethexindia.com";
 
         private static readonly ObjectId IdHash = "prime:ethexindia".GetObjectIdHashCode();

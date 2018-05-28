@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.BrightonPeak
     // https://www.brightonpeak.com/publicApi
     public class BrightonPeakProvider : /*IPublicPricingProvider,*/ IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BrightonPeakApiVersion = "v1";
         private const string BrightonPeakApiUrl = "https://api.brightonpeak.com:8400/ajax/" + BrightonPeakApiVersion;
 

@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Braziliex
     // https://braziliex.com/exchange/api.php
     public partial class BraziliexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BraziliexApiVersion = "v1";
         private const string BraziliexApiUrl = "https://braziliex.com/api/" + BraziliexApiVersion;
 

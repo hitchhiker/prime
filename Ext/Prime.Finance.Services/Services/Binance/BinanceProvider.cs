@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Binance
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BinanceProvider : IOrderBookProvider, IOhlcProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         // public const string BinanceApiVersion = "v1";
         public const string BinanceApiUrl = "https://www.binance.com";
 

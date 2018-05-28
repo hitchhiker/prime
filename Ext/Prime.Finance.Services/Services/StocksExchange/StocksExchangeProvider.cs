@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
@@ -10,6 +11,7 @@ namespace Prime.Finance.Services.Services.StocksExchange
     // https://docs.google.com/document/d/1mU8ecTlzfDtT1hmZJ-dXezMudLnfD4ZeNBr_oxFwdGI/edit#
     public class StocksExchangeProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string StocksExchangeApiVersion = "api2";
         private const string StocksExchangeApiUrl = "https://stocks.exchange/" + StocksExchangeApiVersion;
 

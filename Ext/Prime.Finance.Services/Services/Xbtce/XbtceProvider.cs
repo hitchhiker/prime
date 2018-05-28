@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using LiteDB;
@@ -11,6 +12,7 @@ namespace Prime.Finance.Services.Services.Xbtce
     // https://www.xbtce.com/tradeapi
     public partial class XbtceProvider : IPublicPricingProvider, IAssetPairsProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string XbtceApiVersion = "v1";
         private const string XbtceApiUrl = "https://cryptottlivewebapi.xbtce.net:8443/api/" + XbtceApiVersion;
 

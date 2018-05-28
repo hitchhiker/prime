@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Btcc
     // https://www.btcc.com/apidocs/usd-spot-exchange-market-data-rest-api
     public class BtccProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BtccApiUrl = "https://spotusd-data.btcc.com/data/pro/";
 
         private static readonly ObjectId IdHash = "prime:btcc".GetObjectIdHashCode();

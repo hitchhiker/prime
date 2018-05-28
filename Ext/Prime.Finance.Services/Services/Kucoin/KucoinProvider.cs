@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Kucoin
     // https://kucoinapidocs.docs.apiary.io
     public partial class KucoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string KucoinApiVersion = "v1";
         private const string KucoinApiUrl = "https://api.kucoin.com/" + KucoinApiVersion;
 

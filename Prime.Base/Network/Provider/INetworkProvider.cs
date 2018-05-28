@@ -5,7 +5,7 @@ using Prime.Core;
 
 namespace Prime.Core
 {
-    public interface INetworkProvider : IUniqueIdentifier<ObjectId>
+    public interface INetworkProvider : IExtension
     {
         Network Network { get; }
 
@@ -14,8 +14,6 @@ namespace Prime.Core
         int Priority { get; }
 
         string AggregatorName { get; }
-
-        string Title { get; }
 
         IRateLimiter RateLimiter { get; }
 

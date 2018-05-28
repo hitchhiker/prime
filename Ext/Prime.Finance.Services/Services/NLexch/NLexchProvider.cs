@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.NLexch
     // https://www.nlexch.com/documents/api_v2
     public partial class NLexchProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string NLexchApiVersion = "v2";
         private const string NLexchApiUrl = "https://www.nlexch.com:443//api/" + NLexchApiVersion;
 

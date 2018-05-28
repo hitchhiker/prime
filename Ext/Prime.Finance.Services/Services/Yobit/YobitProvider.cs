@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Yobit
     // https://www.yobit.net/en/api/
     public partial class YobitProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string YobitApiVersion = "3";
         private const string YobitApiUrl = "https://yobit.net/api/" + YobitApiVersion;
         private const string YobitApiPrivateUrl = "https://yobit.net/tapi/";

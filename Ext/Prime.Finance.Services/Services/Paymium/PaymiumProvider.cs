@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Paymium
     // https://github.com/Paymium/api-documentation
     public class PaymiumProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string PaymiumApiVersion = "v1";
         private const string PaymiumApiUrl = "https://paymium.com/api/" + PaymiumApiVersion;
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
 using Prime.Core;
@@ -8,6 +9,7 @@ namespace Prime.Finance.Services.Services.Okex
     // https://www.okex.com/rest_api.html
     public class OkexProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string OkexApiVersion = "v1";
         private const string OkexApiUrl = "https://www.okex.com/api/" + OkexApiVersion;
 

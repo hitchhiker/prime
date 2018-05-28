@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Coinmate
     // https://coinmate.docs.apiary.io/
     public partial class CoinmateProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinmateApiUrl = "https://coinmate.io/api/";
 
         private static readonly ObjectId IdHash = "prime:coinmate".GetObjectIdHashCode();

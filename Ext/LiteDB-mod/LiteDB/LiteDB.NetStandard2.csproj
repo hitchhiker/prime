@@ -39,16 +39,15 @@
     <ItemGroup>
       <AllFiles Include="$(TargetDir)*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" />
+    <!--<Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" />
     <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)..\..\lib\litedb-net-standard" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)..\..\lib\litedb-net-standard" />-->
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <ItemGroup>
       <AllFiles Include="$(TargetDir)$(TargetName)*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)xC.Web\Bin" />
   </Target>
 
 </Project>

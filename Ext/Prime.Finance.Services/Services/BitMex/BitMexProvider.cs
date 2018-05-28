@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.BitMex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BitMexProvider : IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private static readonly ObjectId IdHash = "prime:bitmex".GetObjectIdHashCode();
 
         private const String BitMexApiUrl = "https://www.bitmex.com/api/v1";

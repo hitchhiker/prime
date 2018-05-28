@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Korbit
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class KorbitProvider : IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private static readonly ObjectId IdHash = "prime:korbit".GetObjectIdHashCode();
         private static readonly string _pairs = "btckrw,etckrw,ethkrw,xrpkrw";
         

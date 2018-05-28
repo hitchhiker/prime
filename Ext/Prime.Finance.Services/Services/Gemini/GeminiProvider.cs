@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
@@ -10,6 +11,7 @@ namespace Prime.Finance.Services.Services.Gemini
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class GeminiProvider : IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string GemeniApiVerstion = "v1";
         private const string GeminiApiUrl = "https://api.gemini.com/" + GemeniApiVerstion;
         private RestApiClientProvider<IGeminiApi> ApiProvider { get; }

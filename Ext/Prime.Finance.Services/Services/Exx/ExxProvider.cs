@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Exx
     // https://www.exx.com/help/restApi
     public class ExxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string ExxApiVersion = "v1";
         private const string ExxApiUrl = "https://api.exx.com/data/" + ExxApiVersion;
 

@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Dsx
     // https://dsx.docs.apiary.io/#
     public partial class DsxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string ApiVersion = "v2";
         private const string DsxApiPublicUrl = "https://dsx.uk/mapi/";
         private const string DsxApiPrivateUrl = "https://dsx.uk/tapi/" + ApiVersion + "/";

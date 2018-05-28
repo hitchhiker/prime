@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.BlinkTrade
     // https://blinktrade.com/docs/
     public partial class BlinkTradeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BlinkTradeApiVersion = "v1";
         private const string BlinkPublicApiUrl = "https://api.blinktrade.com/api/" + BlinkTradeApiVersion;
         private const string BlinkTradePrivateApiUrl = "https://api_testnet.blinktrade.com/tapi/" + BlinkTradeApiVersion + "/message";

@@ -9,9 +9,9 @@ namespace Prime.PackageManager
 {
     public class CatalogueBuilder
     {
-        private readonly ServerContext _context;
+        private readonly ClientContext _context;
 
-        public CatalogueBuilder(ServerContext context)
+        public CatalogueBuilder(ClientContext context)
         {
             _context = context;
         }

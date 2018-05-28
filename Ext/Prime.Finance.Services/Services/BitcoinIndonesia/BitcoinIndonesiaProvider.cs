@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
@@ -11,6 +12,7 @@ namespace Prime.Finance.Services.Services.BitcoinIndonesia
     // https://vip.bitcoin.co.id/downloads/BITCOINCOID-API-DOCUMENTATION.pdf
     public class BitcoinIndonesiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitcoinIndonesiaApiUrl = "https://vip.bitcoin.co.id/api/";
 
         private static readonly ObjectId IdHash = "prime:bitcoinindonesia".GetObjectIdHashCode();

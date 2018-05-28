@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.SouthXchange
     // https://www.southxchange.com/Home/Api
     public partial class SouthXchangeProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string SouthXchangeApiUrl = "https://www.southxchange.com/api/" ;
 
         private static readonly ObjectId IdHash = "prime:southxchange".GetObjectIdHashCode();

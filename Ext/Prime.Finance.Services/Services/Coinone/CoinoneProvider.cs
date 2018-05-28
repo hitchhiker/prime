@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Coinone
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class CoinoneProvider : IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinoneApiUrl = "https://api.coinone.co.kr";
 
         private static readonly ObjectId IdHash = "prime:coinone".GetObjectIdHashCode();

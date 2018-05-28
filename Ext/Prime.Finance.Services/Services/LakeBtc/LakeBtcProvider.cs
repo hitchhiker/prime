@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.LakeBtc
     // https://www.lakebtc.com/s/api_v2
     public partial class LakeBtcProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string LakeBtcApiVersion = "v2";
         private const string LakeBtcApiUrl = "https://api.LakeBTC.com/api_" + LakeBtcApiVersion;
 

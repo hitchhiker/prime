@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
 using Prime.Core;
@@ -9,6 +10,7 @@ namespace Prime.Finance.Services.Services.BxInTh
     // https://bx.in.th/info/api/
     public class BxInThProvider : /*IPublicPricingProvider,*/ IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BxInThApiUrl = "https://bx.in.th/api/";
 
         private static readonly ObjectId IdHash = "prime:bxinth".GetObjectIdHashCode();

@@ -14,6 +14,7 @@ namespace Prime.Finance.Services.Services.Common
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public abstract partial class CommonProviderTiLiWe<TApi> : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider where TApi : class, ICommonApiTiLiWe
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         //From doc: All information is cached every 2 seconds, so there's no point in making more frequent requests.
         //https://tidex.com/public-api
 

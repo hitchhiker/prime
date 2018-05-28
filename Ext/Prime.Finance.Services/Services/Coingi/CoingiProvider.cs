@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Coingi
     // https://coingi.docs.apiary.io/#reference
     public partial class CoingiProvider : IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoingiApiUrl = "https://api.coingi.com/";
 
         private static readonly ObjectId IdHash = "prime:Coingi".GetObjectIdHashCode();

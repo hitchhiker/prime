@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Bitsane
     // https://bitsane.com/info-api
     public partial class BitsaneProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitsaneApiUrl = "https://bitsane.com/api/";
 
         private static readonly ObjectId IdHash = "prime:bitsane".GetObjectIdHashCode();

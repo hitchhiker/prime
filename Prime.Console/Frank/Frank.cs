@@ -15,7 +15,7 @@ namespace Prime.Console.Frank
 
             //new WebSocketServerTest(s, c).Go();
 
-            new SocketServerTest(s, c).Go();
+            //new SocketServerTest(s, c).Go();
 
             //AuthManagerTest.EcdsaKeySign(s);
 
@@ -23,7 +23,7 @@ namespace Prime.Console.Frank
 
             //PackageTests.PackageCoordinator(s);
 
-            //PackageTests.PackageCatalogue(s);
+            PackageTests.PackageCatalogue(c);
         }
     }
 }

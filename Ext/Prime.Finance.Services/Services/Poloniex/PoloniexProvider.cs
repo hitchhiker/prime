@@ -15,6 +15,7 @@ namespace Prime.Finance.Services.Services.Poloniex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class PoloniexProvider : IBalanceProvider, IOhlcProvider, IOrderBookProvider, IDepositProvider, IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const String PoloniexApiUrl = "https://poloniex.com";
 
         private RestApiClientProvider<IPoloniexApi> ApiProvider { get; }

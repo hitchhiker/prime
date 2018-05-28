@@ -14,6 +14,7 @@ namespace Prime.Finance.Services.Services.Bitfinex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BitfinexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitfinexApiVersion = "v1";
         private const string BitfinexApiUrl = "https://api.bitfinex.com/" + BitfinexApiVersion;
 

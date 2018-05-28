@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.MixCoins
     // https://mixcoins.com/help/api
     public class MixCoinsProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string MixcoinsApiVersion = "v1";
         private const string MixcoinsApiUrl = "https://mixcoins.com/api/" + MixcoinsApiVersion;
 

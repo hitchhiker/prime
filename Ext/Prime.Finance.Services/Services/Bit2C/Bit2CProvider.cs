@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Bit2C
     // https://www.bit2c.co.il/home/api
     public class Bit2CProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string Bit2CApiUrl = "https://www.bit2c.co.il/";
 
         private static readonly ObjectId IdHash = "prime:bit2c".GetObjectIdHashCode();

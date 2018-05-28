@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.BtcMarkets
     // https://github.com/BTCMarkets/API/wiki/Market-data-API
     public class BtcMarketsProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BtcMarketsApiUrl = "https://api.btcmarkets.net/";
 
         private static readonly ObjectId IdHash = "prime:btcmarkets".GetObjectIdHashCode();

@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Abucoins
     // https://docs.abucoins.com
     public class AbucoinsProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string AbucoinsApiUrl = "https://api.abucoins.com/";
 
         private static readonly ObjectId IdHash = "prime:abucoins".GetObjectIdHashCode();

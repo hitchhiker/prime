@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Bitso
     // https://bitso.com/api_info
     public partial class BitsoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitsoApiVersion = "v3";
         private const string BitsoApiUrl = "https://api.bitso.com/" + BitsoApiVersion + "/";
 

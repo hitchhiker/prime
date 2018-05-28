@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using LiteDB;
@@ -12,6 +13,7 @@ namespace Prime.Finance.Services.Services.BitMarket
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitMarketProvider : IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitMarketApiUrl = "https://www.bitmarket.net/";
 
         private RestApiClientProvider<IBitMarketApi> ApiProvider { get; }

@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Luno
     //https://www.luno.com/en/api
     public partial class LunoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string LunoApiVersion = "1";
         private const string LunoApiUrl = "https://api.mybitx.com/api/" + LunoApiVersion;
 

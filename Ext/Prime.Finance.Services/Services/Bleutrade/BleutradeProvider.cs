@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Bleutrade
     // https://bleutrade.com/help/API
     public class BleutradeProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BleutradeApiVersion = "v2";
         private const string BleutradeApiUrl = "https://bleutrade.com/api/" + BleutradeApiVersion;
 

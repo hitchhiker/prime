@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Gate
     // https://gate.io/api2
     public class GateProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string GateApiVersion = "api2";
         private const string GateApiUrl = "http://data.gate.io/" + GateApiVersion;
 

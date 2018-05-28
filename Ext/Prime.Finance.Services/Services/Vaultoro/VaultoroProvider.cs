@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Vaultoro
     // https://api.vaultoro.com/#api-Basic_API
     public partial class VaultoroProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string VaultoroApiUrl = "https://api.vaultoro.com/";
         private const string VaultoroApiUrlPrivate = "https://api.vaultoro.com/" + privateUrlVersion;
 

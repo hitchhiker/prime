@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Ccex
     // https://c-cex.com/?id=api
     public partial class CcexProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CcexApiUrl = "https://c-cex.com/";
 
         private static readonly ObjectId IdHash = "prime:ccex".GetObjectIdHashCode();

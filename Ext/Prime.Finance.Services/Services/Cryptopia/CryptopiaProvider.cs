@@ -14,6 +14,7 @@ namespace Prime.Finance.Services.Services.Cryptopia
     // https://www.cryptopia.co.nz/Forum/Category/45
     public partial class CryptopiaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CryptopiaApiUrl = "https://www.cryptopia.co.nz/api/";
 
         private static readonly ObjectId IdHash = "prime:cryptopia".GetObjectIdHashCode();

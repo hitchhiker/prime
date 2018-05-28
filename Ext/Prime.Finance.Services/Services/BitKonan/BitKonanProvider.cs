@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.BitKonan
     // https://bitkonan.com/info/api
     public partial class BitKonanProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitKonanApiUrl = "https://bitkonan.com/api/";
 
         private static readonly ObjectId IdHash = "prime:bitkonan".GetObjectIdHashCode();

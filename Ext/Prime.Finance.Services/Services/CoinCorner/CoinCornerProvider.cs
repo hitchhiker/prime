@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.CoinCorner
     // https://api.coincorner.com/
     public partial class CoinCornerProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinCornerApiUrl = "https://api.coincorner.com/api";
 
         private static readonly ObjectId IdHash = "prime:coincorner".GetObjectIdHashCode();

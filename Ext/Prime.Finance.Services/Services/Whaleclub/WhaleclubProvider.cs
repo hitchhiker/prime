@@ -10,6 +10,7 @@ namespace Prime.Finance.Services.Services.Whaleclub
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class WhaleclubProvider : IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string WhaleclubApiVersion = "v1";
         private const string WhaleclubApiUrl = "https://api.whaleclub.co/" + WhaleclubApiVersion;
 

@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.IndependentReserve
     // https://www.independentreserve.com/API
     public class IndependentReserveProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string IndependentReserveApiUrl = "https://api.independentreserve.com/Public/";
 
         private static readonly ObjectId IdHash = "prime:independentreserve".GetObjectIdHashCode();

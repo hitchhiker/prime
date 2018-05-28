@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Bittrex
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class BittrexProvider : IBalanceProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider, IDepositProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BittrexApiVersion = "v1.1";
         private const string BittrexApiUrl = "https://bittrex.com/api/" + BittrexApiVersion;
 

@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.LiveCoin
     // https://www.livecoin.net/api/public
     public class LiveCoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string LiveCoinApiUrl = "https://api.livecoin.net/exchange/";
 
         private static readonly ObjectId IdHash = "prime:livecoin".GetObjectIdHashCode();

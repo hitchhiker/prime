@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
 using Prime.Core;
@@ -9,6 +10,7 @@ namespace Prime.Finance.Services.Services.Gdax
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class GdaxProvider : IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string GdaxApiUrl = "https://api.gdax.com";
 
         private static readonly ObjectId IdHash = "prime:gdax".GetObjectIdHashCode();

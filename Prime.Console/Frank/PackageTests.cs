@@ -5,18 +5,16 @@ namespace Prime.Console.Frank
 {
     public static class PackageTests
     {
-        public static void PackageCoordinator(ServerContext context)
+        public static void PackageCoordinator(ClientContext context)
         {
-            // BUG: AY: PackageCoordinator is not found.
+            var pm = new PackageCoordinator(context);
 
-            //var pm = new PackageCoordinator(context);
+            pm.EnsureInstalled();
 
-            //pm.EnsureInstalled();
-
-            //context.L.Info(pm.Distribution.Count);
+            context.L.Info(pm.Distribution.Count);
         }
 
-        public static void PackageCatalogue(ServerContext context)
+        public static void PackageCatalogue(ClientContext context)
         {
             var cbuild = new CatalogueBuilder(context);
             cbuild.Build();

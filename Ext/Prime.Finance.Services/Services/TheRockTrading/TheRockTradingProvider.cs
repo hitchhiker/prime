@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.TheRockTrading
     // https://api.therocktrading.com/doc/v1/
     public class TheRockTradingProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string TheRockTradingApiVersion = "v1";
         private const string TheRockTradingApiUrl = "https://api.therocktrading.com/" + TheRockTradingApiVersion;
 

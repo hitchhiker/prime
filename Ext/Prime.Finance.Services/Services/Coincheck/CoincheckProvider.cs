@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Coincheck
     // https://coincheck.com/documents/exchange/api#public
     public class CoincheckProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoincheckApiUrl = "https://coincheck.com/api/";
 
         private static readonly ObjectId IdHash = "prime:coincheck".GetObjectIdHashCode();

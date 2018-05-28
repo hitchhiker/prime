@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Kuna
     // https://kuna.io/documents/api
     public partial class KunaProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string KunaApiVersion = "v2";
         private const string KunaApiUrl = "https://kuna.io/api/" + KunaApiVersion;
 

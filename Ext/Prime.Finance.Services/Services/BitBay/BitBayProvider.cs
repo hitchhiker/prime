@@ -14,6 +14,7 @@ namespace Prime.Finance.Services.Services.BitBay
     // https://bitbay.net/en/api-private#details
     public partial class BitBayProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitBayApiUrl = "https://bitbay.net/API";
 
         private static readonly ObjectId IdHash = "prime:bitbay".GetObjectIdHashCode();

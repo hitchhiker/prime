@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Fiat
 {
     public class EcbProvider : IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private static readonly ObjectId IdHash = "prime:ECB:PROVIDER".GetObjectIdHashCode();
         private static readonly Network NetworkStatic = Networks.I.Get("ECB (Fiat)");
         private static readonly IRateLimiter Limiter = new NoRateLimits();

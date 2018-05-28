@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Bitlish
     // https://bitlish.com/api
     public partial class BitlishProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitlishApiVersion = "v1";
         private const string BitlishApiUrl = "https://bitlish.com/api/" + BitlishApiVersion;
 

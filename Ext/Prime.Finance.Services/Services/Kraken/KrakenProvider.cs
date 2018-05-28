@@ -16,6 +16,7 @@ namespace Prime.Finance.Services.Services.Kraken
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public partial class KrakenProvider : IOhlcProvider, IOrderBookProvider, IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const String KrakenApiUrl = "https://api.kraken.com/0";
 
         private RestApiClientProvider<IKrakenApi> ApiProvider { get; }

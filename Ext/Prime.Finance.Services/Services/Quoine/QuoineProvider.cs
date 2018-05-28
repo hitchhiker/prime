@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Quoine
     // https://developers.quoine.com/#introduction
     public partial class QuoineProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string QuoineApiUrl = "https://api.quoine.com/";
 
         private static readonly ObjectId IdHash = "prime:quoine".GetObjectIdHashCode();

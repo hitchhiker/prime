@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Exmo
     // https://exmo.com/en/api#/public_api
     public partial class ExmoProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string ExmoApiVersion = "v1";
         private const string ExmoApiUrl = "https://api.exmo.com/" + ExmoApiVersion;
 

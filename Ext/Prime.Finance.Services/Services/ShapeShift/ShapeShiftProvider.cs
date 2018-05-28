@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
@@ -8,6 +9,7 @@ namespace Prime.Finance.Services.Services.ShapeShift
 {
     public class ShapeShiftProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string ShapeShiftApiUrl = "https://shapeshift.io";
 
         private static readonly ObjectId IdHash = "prime:shapeshift".GetObjectIdHashCode();

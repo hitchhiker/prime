@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.QuadrigaCx
     // https://www.quadrigacx.com/api_info
     public class QuadrigaCxProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string QuadrigaCxApiVersion = "v2";
         private const string QuadrigaCxApiUrl = "https://api.quadrigacx.com/" + QuadrigaCxApiVersion;
 

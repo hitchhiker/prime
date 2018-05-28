@@ -11,6 +11,7 @@ namespace Prime.Finance.Services.Services.Coinfloor
     // https://github.com/coinfloor/API/blob/master/BIST.md
     public partial class CoinfloorProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinfloorApiUrl = "https://webapi.coinfloor.co.uk:8090/bist/";
 
         private static readonly ObjectId IdHash = "prime:coinfloor".GetObjectIdHashCode();

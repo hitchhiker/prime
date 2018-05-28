@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Bisq
     //Revisit this later as per Frank's Slack message, since this is a decentralised exchange.
     public class BisqProvider : /*IPublicPricingProvider,*/ IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BisqApiUrl = "https://markets.bisq.network/api/";
 
         private static readonly ObjectId IdHash = "prime:bisq".GetObjectIdHashCode();

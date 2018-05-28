@@ -13,6 +13,7 @@ namespace Prime.Finance.Services.Services.Bithumb
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BithumbProvider : IAssetPairsProvider, IPublicPricingProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BithumbApiUrl = "https://api.bithumb.com/";
         private RestApiClientProvider<IBithumbApi> ApiProvider { get; }
 

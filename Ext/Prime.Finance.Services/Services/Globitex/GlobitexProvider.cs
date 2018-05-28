@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Globitex
     // https://globitex.com/api/
     public partial class GlobitexProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string GlobitexApiVersion = "1";
         private const string GlobitexApiUrl = "https://api.globitex.com/api/" + GlobitexApiVersion;
 

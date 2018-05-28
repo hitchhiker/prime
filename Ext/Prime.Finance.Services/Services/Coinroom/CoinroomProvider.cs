@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.Coinroom
     // https://coinroom.com/public-api
     public class CoinroomProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinroomApiUrl = "https://coinroom.com/api/";
 
         private static readonly ObjectId IdHash = "prime:coinroom".GetObjectIdHashCode();

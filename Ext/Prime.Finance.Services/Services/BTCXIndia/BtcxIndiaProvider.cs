@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
 using Prime.Core;
@@ -9,6 +10,7 @@ namespace Prime.Finance.Services.Services.BTCXIndia
     // https://m.btcxindia.com/api/
     public class BtcxIndiaProvider : IPublicPricingProvider, IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BtcxIndiaApiUrl = "https://m.btcxindia.com/api/";
 
         private static readonly ObjectId IdHash = "prime:btcxindia".GetObjectIdHashCode();

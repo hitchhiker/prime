@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
 using Prime.Core;
@@ -9,6 +10,7 @@ namespace Prime.Finance.Services.Services.ItBit
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class ItBitProvider : IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private readonly string _pairs = "xbtusd,xbtsgd,xbteur";
         private readonly string ItBitApiUrl = "https://api.itbit.com/v1/";
 

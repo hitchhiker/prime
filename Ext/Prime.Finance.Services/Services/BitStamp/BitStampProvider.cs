@@ -12,6 +12,7 @@ namespace Prime.Finance.Services.Services.BitStamp
     /// <author email="yasko.alexander@gmail.com">Alexander Yasko</author>
     public class BitStampProvider : IBalanceProvider, IDepositProvider, IOrderBookProvider, IAssetPairsProvider, IPublicPricingProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string BitStampApiUrl = "https://www.bitstamp.net/api/";
         public const string BitStampApiVersion = "v2";
 

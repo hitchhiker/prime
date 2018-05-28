@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using LiteDB;
 using Prime.Base;
@@ -10,6 +11,7 @@ namespace Prime.Finance.Services.Services.Alphapoint
     // https://alphapoint.com/api/docs/public/
     public class AlphapointProvider : /*PricingProvider,*/ IAssetPairsProvider
     {
+        public Version Version { get; } = new Version(1, 0, 0);
         private const string AlphapointApiVersion = "v1";
         private const string AlphapointApiUrl = "https://sim3.alphapoint.com:8400/ajax/" + AlphapointApiVersion;
 
