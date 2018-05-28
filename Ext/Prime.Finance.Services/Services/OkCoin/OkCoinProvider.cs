@@ -9,7 +9,7 @@ namespace Prime.Finance.Services.Services.OkCoin
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://www.okcoin.com/rest_api.html
-    public class OkCoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class OkCoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         public Version Version { get; } = new Version(1, 0, 0);
         private const string OkCoinApiVersion = "v1";
@@ -42,7 +42,7 @@ namespace Prime.Finance.Services.Services.OkCoin
 
         public OkCoinProvider()
         {
-            ApiProvider = new RestApiClientProvider<IOkCoinApi>(OkCoinApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<IOkCoinApi>(OkCoinApiUrl, this, (k) => new OkCoinAuthenticator(k).GetRequestModifierAsync);
         }
 
         private AssetPairs _pairs;
@@ -54,6 +54,18 @@ namespace Prime.Finance.Services.Services.OkCoin
             var r = await api.GetTickerAsync("btc_usd").ConfigureAwait(false);
 
             return r?.ticker.last > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+            var rRaw = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return rRaw != null && r.result;
         }
 
         public Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
@@ -95,7 +107,7 @@ namespace Prime.Finance.Services.Services.OkCoin
             var orderBook = new OrderBook(Network, context.Pair);
 
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
-            
+
             var asks = r.asks.Take(maxCount);
             var bids = r.bids.Take(maxCount);
 
