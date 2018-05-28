@@ -21,7 +21,7 @@ namespace Prime.Console.Frank.Socket
             var mr = false;
 
             var server = new Server(S);
-            server.Inject(new ServerExtension());
+            //server.Inject(new ServerExtension());
 
             S.M.RegisterAsync<HelloRequest>(this, x =>
             {

@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using Prime.Core;
-using Prime.Manager;
 using Prime.Manager.Utils;
 using Prime.MessagingServer;
 
-namespace Prime.KeysManager
+namespace Prime.Manager.Client
 {
     class Program
     {
@@ -75,7 +69,7 @@ namespace Prime.KeysManager
                 uiProcess.StartInfo.RedirectStandardOutput = true;
                 uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory);
             }
-            
+
             uiProcess.Start();
             return uiProcess;
         }

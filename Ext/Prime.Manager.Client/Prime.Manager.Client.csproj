@@ -1,40 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
-    <Compile Remove="ElectronAngular\**" />
-    <Compile Remove="ElectronUI\**" />
     <Compile Remove="Electron\**" />
-    <Compile Remove="Ui\node_modules\**" />
-    <EmbeddedResource Remove="ElectronAngular\**" />
-    <EmbeddedResource Remove="ElectronUI\**" />
     <EmbeddedResource Remove="Electron\**" />
-    <EmbeddedResource Remove="Ui\node_modules\**" />
-    <None Remove="ElectronAngular\**" />
-    <None Remove="ElectronUI\**" />
     <None Remove="Electron\**" />
-    <None Remove="Ui\node_modules\**" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\Prime.Manager\Prime.Manager.csproj" />
     <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
     <ProjectReference Include="..\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <ItemGroup>
-      <AllFiles Include="$(SourceDir)/Electron/*" />
-    </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(TargetDir)\Electron" />
-  </Target>
+
 </Project>

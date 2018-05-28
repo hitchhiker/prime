@@ -7,11 +7,11 @@ namespace Prime.Console.Frank
     {
         public static void PackageCoordinator(ClientContext context)
         {
-            var pm = new PackageCoordinator(context);
+            //var pm = new PackageCoordinator(context);
 
-            pm.EnsureInstalled();
+            //pm.EnsureInstalled();
 
-            context.L.Info(pm.Distribution.Count);
+            //context.L.Info(pm.Distribution.Count);
         }
 
         public static void PackageCatalogue(ClientContext context)

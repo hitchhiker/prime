@@ -2,7 +2,7 @@
 using Prime.Base;
 using Prime.Core;
 
-namespace Prime.KeysManager
+namespace Prime.Manager.Client
 {
     public class ExtensionInfo : IExtension
     {
