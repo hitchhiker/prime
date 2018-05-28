@@ -25,6 +25,9 @@ namespace Prime.ExtensionPackager
             [Option("id", HelpText = "Used to force inspection of only the extension matching this id.")]
             public ObjectId ExtensionId { get; set; }
 
+            [Option("nuget", HelpText = "Used to force collection of missing nuget libraries [experimental].")]
+            public bool Nuget { get; set; }
+
             // Omitting long name, defaults to name of property, ie "--verbose"
             [Option(Default = false, HelpText = "Prints all messages to standard output.")]
             public bool Verbose { get; set; }
@@ -55,9 +58,6 @@ namespace Prime.ExtensionPackager
 
             var logger = new ConsoleLogger() {IncludePreamble = false};
 
-            logger.Info("config: " + opts.ConfigPath);
-            logger.Info("extension: " + opts.ExtPath);
-
             configPath = Path.GetFullPath(opts.ConfigPath);
             extPath = Path.GetFullPath(opts.ExtPath);
 
@@ -70,8 +70,9 @@ namespace Prime.ExtensionPackager
 
             var pc = new ClientContext(configPath);
 
-            logger.Info("config: " + configPath);
-            logger.Info("extension: " + extPath);
+            logger.Info("");
+            logger.Info(" Extension: " + extPath);
+            logger.Info(" Config: " + configPath);
 
             var ctx = new ProgramContext(pc)
             {
@@ -86,10 +87,11 @@ namespace Prime.ExtensionPackager
             if (opts.ExtensionId != null)
                 ctx.ExtId = opts.ExtensionId;
 
+            ctx.ExtractNuget = opts.Nuget;
+
             Process.Go(ctx);
 
             logger.Info("");
-
         }
     }
 }

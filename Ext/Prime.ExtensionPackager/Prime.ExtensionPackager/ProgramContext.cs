@@ -24,5 +24,7 @@ namespace Prime.ExtensionPackager
         public ObjectId ExtId { get; set; }
 
         public ILogger Logger { get; set; }
+
+        public bool ExtractNuget { get; set; }
     }
 }

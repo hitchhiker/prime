@@ -1,10 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>MSB3021</NoWarn>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>DEBUG;;RELEASE;NETCOREAPP2_0</DefineConstants>
   </PropertyGroup>
@@ -29,12 +33,12 @@
     </ProjectReference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <ItemGroup>
       <AllFiles Include="$(TargetDir)*" />
     </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" ContinueOnError="ErrorAndContinue"/>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" ContinueOnError="ErrorAndContinue" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" ContinueOnError="WarnAndContinue" />
+    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" ContinueOnError="WarnAndContinue" />
   </Target>
 
 </Project>

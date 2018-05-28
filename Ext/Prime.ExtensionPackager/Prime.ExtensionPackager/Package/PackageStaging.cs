@@ -58,8 +58,11 @@ namespace Prime.ExtensionPackager
             Context.Logger.Info("");
             Context.Logger.Info($"{package.Count() + 1} file(s) copied to " + stageDir.FullName);
 
-            var nuget = new NugetExtractor(Context, package);
-            nuget.Extract(stageDir);
+            if (Context.ExtractNuget)
+            {
+                var nuget = new NugetExtractor(Context, package);
+                nuget.Extract(stageDir);
+            }
         }
     }
 }
