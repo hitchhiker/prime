@@ -43,19 +43,24 @@ namespace Prime.Manager.Client
             logger.Log("Server started");
             
             // Start UI.
-            var uiTask = Task.Run(() =>
+            
+            logger.Log("UI started");
+            logger.Log("Waiting for  all UI processes exit...");
+
+            RunUiAsync(logger).Wait();
+            
+            Console.ReadLine();
+        }
+
+        private static Task RunUiAsync(ILogger logger)
+        {
+            return Task.Run(() =>
             {
                 var process = RunUi();
 
                 logger.Log($": Electron UI started ({process.Id}).");
                 process.WaitForExit();
             });
-
-            logger.Log("UI started");
-            logger.Log("Waiting for  all UI processes exit...");
-
-            uiTask.Wait();
-            Console.ReadLine();
         }
 
         private static Process RunUi()
