@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Prime.Core;
+using Prime.KeysManager;
 using Prime.Manager.Utils;
 using Prime.MessagingServer;
 
@@ -11,29 +12,36 @@ namespace Prime.Manager.Client
     {
         static void Main(string[] args)
         {
-            var sCtx = new ServerContext();
-
             var logger = new ConsoleLogger() { IncludePreamble = true };
+            
+            logger.Log("Operating system: " + Environment.OSVersion.Platform);
+            logger.Log("Current directory: " + Environment.CurrentDirectory);
+            
+            var sCtx = new ServerContext()
+            {
+                L = logger
+            };
+            
+            // Run Prime.
+            
+            var prime = new Prime.Core.Prime(sCtx);
+            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            prime.Extensions.LoadInstalled();
 
-            sCtx.L = logger;
-
-            logger.Log(": Operating system: " + Environment.OSVersion.Platform);
-            logger.Log(": Current directory: " + Environment.CurrentDirectory);
-
-            var server = new Server(sCtx);
-            server.Inject(new WebSocketServer.ServerExtension());
+            sCtx.Assemblies.Refresh();
+            sCtx.Types.Refresh();
+            
+            // Create MessagingServer and run ManagerExtension.
+            
+            var server = new MessagingServer.Server(sCtx);
+            
+            var managerExt = new ManagerServiceExtension();
+            managerExt.Main(sCtx);
 
             server.Start();
 
-            foreach (var i in server.TypeBinder.TypeCatalogue)
-                logger.Log(server.TypeBinder.TypeCatalogue.Get(i));
-
-            // Start message listener.
-            var keysManager = new ManagerService(sCtx);
-
-            Task.Run(() => { keysManager.Init(); });
-            logger.Log(": Server started");
-
+            logger.Log("Server started");
+            
             // Start UI.
             var uiTask = Task.Run(() =>
             {
@@ -43,8 +51,8 @@ namespace Prime.Manager.Client
                 process.WaitForExit();
             });
 
-            logger.Log(": UI started");
-            logger.Log(": Waiting for all UI processes exit...");
+            logger.Log("UI started");
+            logger.Log("Waiting for  all UI processes exit...");
 
             uiTask.Wait();
             Console.ReadLine();
@@ -57,17 +65,17 @@ namespace Prime.Manager.Client
             if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix)
             {
                 uiProcess.StartInfo.FileName = "/bin/bash";
-                uiProcess.StartInfo.Arguments = "-c \"npm start\"";
-                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory);
+                uiProcess.StartInfo.Arguments = "-c \"npm run electron\"";
+                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory("Electron", Environment.CurrentDirectory);
                 uiProcess.StartInfo.RedirectStandardOutput = true;
                 uiProcess.StartInfo.UseShellExecute = false;
             }
             else
             {
                 uiProcess.StartInfo.FileName = "cmd";
-                uiProcess.StartInfo.Arguments = "/C npm start";
+                uiProcess.StartInfo.Arguments = "/C npm run electron";
                 uiProcess.StartInfo.RedirectStandardOutput = true;
-                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory(ConfigManager.AppConfig.ElectronFolderName, Environment.CurrentDirectory);
+                uiProcess.StartInfo.WorkingDirectory = ElectronUtils.FindElectronUiDirectory("Electron", Environment.CurrentDirectory);
             }
 
             uiProcess.Start();
