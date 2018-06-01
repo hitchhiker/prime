@@ -12,7 +12,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
     public partial class GatecoinProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         public Version Version { get; } = new Version(1, 0, 0);
-        private const string GatecoinApiUrl = "https://api.gatecoin.com/";
+        private const string GatecoinApiUrl = "https://api.gatecoin.com";
 
         private static readonly ObjectId IdHash = "prime:gatecoin".GetObjectIdHashCode();
 

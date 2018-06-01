@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,16 +21,28 @@ namespace Prime.Core
 
         #region Nonce
 
-        private static readonly long ArbTickEpoch = new DateTime(1990, 1, 1).Ticks;
+        private static readonly long ArbTickEpoch = new DateTime(1970, 1, 1).Ticks;
 
         public static long GetLongNonce()
         {
             return DateTime.UtcNow.Ticks;
         }
 
+        /// <summary>
+        /// Returns Ticks count since 1970/01/01.
+        /// 1 Tick = 100 ns.
+        /// 1 ms = 10_000 Ticks.
+        /// 1 s = 10_000_000 Ticks.
+        /// </summary>
+        /// <returns></returns>
         public static long GetUnixEpochNonce()
         {
             return DateTime.UtcNow.Ticks - ArbTickEpoch;
+        }
+
+        public static long GetUnixEpochNonceSeconds()
+        {
+            return GetUnixEpochNonce() / 10_000_000;
         }
 
         protected virtual long GetNonce()
