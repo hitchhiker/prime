@@ -32,10 +32,12 @@ export class ExchangeComponent implements OnInit {
     dialogConfig.width = "535px";
 
     let dialog = this.dialog.open(ExchangeDialogComponent, dialogConfig);
-    dialog.beforeClose().subscribe(r => {
-      this.primeSocket.checkProvidersKeys(idHash, (data) => {
-        this.exchange.hasKeys = data.success;
-      });
+    dialog.afterClosed().subscribe(r => {
+      setTimeout(() => {
+        this.primeSocket.checkProvidersKeys(idHash, (data) => {
+          this.exchange.hasKeys = data.success;
+        });
+      }, 500);
     });
   }
 

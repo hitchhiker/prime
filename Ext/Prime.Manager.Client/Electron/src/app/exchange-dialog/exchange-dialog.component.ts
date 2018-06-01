@@ -63,8 +63,6 @@ export class ExchangeDialogComponent implements OnInit {
       this.exchangeDetails.privateApiContext.extra = null;
     }
 
-    
-
     this.primeSocket.saveApiKeys(this.exchangeDetails, (data) => {
       this.snackBar.open((data.success ? "Keys saved" : "Error during saving: " + data.message), "Info", {
         duration: 3000

@@ -25,7 +25,12 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "js/d3.v4.min.js",
+              "js/alyasko.js",
+              "js/techan.js",
+              "js/chart.js"
+            ]
           },
           "configurations": {
             "production": {

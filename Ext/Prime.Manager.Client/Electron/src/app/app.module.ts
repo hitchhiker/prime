@@ -14,6 +14,7 @@ import { LoggerService } from './services/logger.service';
 import { WsClientService } from './services/ws-client.service';
 import { PrimeSocketService } from './services/prime-socket.service';
 import { FilterPipe } from './pipes/filter.pipe';
+import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { FilterPipe } from './pipes/filter.pipe';
     ToolbarComponent,
     ExchangeComponent,
     ExchangeDialogComponent,
-    FilterPipe
+    FilterPipe,
+    ChartComponent
   ],
   imports: [
     BrowserModule,
