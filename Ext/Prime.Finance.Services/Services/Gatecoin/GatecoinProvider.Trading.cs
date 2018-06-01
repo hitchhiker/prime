@@ -10,7 +10,6 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     public partial class GatecoinProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        //TODO - SC: Still a work-in-progress
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
         {
             if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
@@ -19,7 +18,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 
                 if (rawResponse.TryGetContent(out GatecoinSchema.BaseResponse baseResponse))
                 {
-                    //throw new ApiResponseException($"Error Code: {baseResponse.error.code} - {baseResponse.error.message.TrimEnd('.')}", this, method);
+                    throw new ApiResponseException($"Error Code: {baseResponse.responseStatus.message.TrimEnd('.')}", this, method);
 
                 }
 
