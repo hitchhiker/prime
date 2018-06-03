@@ -12,7 +12,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     public class GatecoinAuthenticator : BaseAuthenticator
     {
-        public string publicKey = "HjXdYxHwMl0gPhO6YB6t3xL6Vyr45gX";
+        public string publicKey = "HjXdYxPHwMl0gPhO6YB6t3xL6Vyr45gX";
         public string secret = "410585562AE51057E6F0FA8B56AAC7E9";
 
         public GatecoinAuthenticator(ApiKey apiKey) : base(apiKey)
