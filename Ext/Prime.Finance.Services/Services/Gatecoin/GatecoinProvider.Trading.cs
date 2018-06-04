@@ -10,19 +10,18 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     public partial class GatecoinProvider : IOrderLimitProvider, IWithdrawalPlacementProvider
     {
-        //TODO - SC: Still a work-in-progress
         private void CheckResponseErrors<T>(Response<T> rawResponse, [CallerMemberName] string method = "Unknown")
         {
+            var reason = rawResponse.ResponseMessage.ReasonPhrase;
+
+            if (rawResponse.TryGetContent(out GatecoinSchema.BaseResponse baseResponse))
+            {
+                if (!baseResponse.responseStatus.message.Equals("OK", StringComparison.OrdinalIgnoreCase))
+                    throw new ApiResponseException($"Error Code: {baseResponse.responseStatus.message.TrimEnd('.')}", this, method);
+            }
+
             if (!rawResponse.ResponseMessage.IsSuccessStatusCode)
             {
-                var reason = rawResponse.ResponseMessage.ReasonPhrase;
-
-                if (rawResponse.TryGetContent(out GatecoinSchema.BaseResponse baseResponse))
-                {
-                    //throw new ApiResponseException($"Error Code: {baseResponse.error.code} - {baseResponse.error.message.TrimEnd('.')}", this, method);
-
-                }
-
                 throw new ApiResponseException($"HTTP error {rawResponse.ResponseMessage.StatusCode} {(string.IsNullOrWhiteSpace(reason) ? "" : $" ({reason})")}", this, method);
             }
         }
@@ -46,7 +45,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 
             var rRaw = await api.NewOrderAsync(body).ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
@@ -69,7 +68,7 @@ namespace Prime.Finance.Services.Services.Gatecoin
 
             var rRaw = await api.QueryOrderAsync(context.RemoteGroupId).ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 
@@ -103,13 +102,13 @@ namespace Prime.Finance.Services.Services.Gatecoin
             {
                 {"Amount", context.Amount.ToDecimalValue()},
                 {"DigiCurrency", context.Amount.Asset.ShortCode},
-                {"Address Name", context.Address.Address},
+                {"AddressName", context.Address.Address},
                 {"Comment","Comment" }
             };
 
             var rRaw = await api.PlaceWithdrawalAsync(body, context.Amount.ToDecimalValue().ToString()).ConfigureAwait(false);
 
-            //CheckResponseErrors(rRaw);
+            CheckResponseErrors(rRaw);
 
             var r = rRaw.GetContent();
 

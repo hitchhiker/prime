@@ -12,6 +12,9 @@ namespace Prime.Finance.Services.Services.Gatecoin
 {
     public class GatecoinAuthenticator : BaseAuthenticator
     {
+        public string publicKey = "HjXdYxPHwMl0gPhO6YB6t3xL6Vyr45gX";
+        public string secret = "410585562AE51057E6F0FA8B56AAC7E9";
+
         public GatecoinAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
@@ -23,9 +26,9 @@ namespace Prime.Finance.Services.Services.Gatecoin
             var headers = request.Headers;
 
             var strToSign = $"{request.Method}{request.RequestUri}{(request.Method == HttpMethod.Get ? "" : "application/json")}{nonce}";
-            var signature = HashHMACSHA256(strToSign.ToLower(), ApiKey.Secret);
+            var signature = HashHMACSHA256(strToSign.ToLower(), /*ApiKey.Secret*/secret);
 
-            headers.Add("API_PUBLIC_KEY", ApiKey.Key);
+            headers.Add("API_PUBLIC_KEY", /*ApiKey.Key*/publicKey);
             headers.Add("API_REQUEST_SIGNATURE", signature);
             headers.Add("API_REQUEST_DATE", nonce.ToString());
         }
