@@ -12,12 +12,8 @@ declare var loadSvg: any;
 })
 export class AppComponent implements OnInit {
 
-  
-
   ngOnInit(): void {
-    setTimeout(function() {
-      loadSvg()
-    }, 1000);
+
   }
   
   private url = 'http://localhost:3001';

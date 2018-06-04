@@ -1,6 +1,7 @@
 
-function loadSvg() {
-console.log("Load SVG");
+window.onload = null;
+function test() {
+    console.log("Window loaded");
 
     var dim = {
         width: 960, height: 500,
@@ -185,13 +186,15 @@ console.log("Load SVG");
         .yAnnotation([rsiAnnotation, rsiAnnotationLeft])
         .verticalWireRange([0, dim.plot.height]);
 
-    var all = d3.selectAll("body app-chart");
+    var elem = document.querySelectorAll("mat-tab-group");
+    console.log(elem);
+    var all = d3.selectAll("body app-toolbar");
 
     var svg = all.append("svg")
         .attr("width", dim.width)
         .attr("height", dim.height);
 
-        console.log(all);
+    console.log(all);
 
     var defs = svg.append("defs");
 
