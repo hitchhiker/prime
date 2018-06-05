@@ -1,4 +1,5 @@
 import { Exchange } from "./Exchange";
+import { Market } from "./market";
 
 export abstract class BaseMessage {
     abstract $type: string;
@@ -140,6 +141,18 @@ export class ProviderHasKeysRequestMessage extends BaseRequestMessage {
 }
 export class ProviderHasKeysResponseMessage extends BooleanResponseMessage {
     $type: string = "prime.manager.providerhaskeysresponsemessage";
+}
+
+export class GetSupportedMarketsRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new GetSupportedMarketsResponseMessage();
+    }
+    $type: string = "prime.manager.getsupportedmarketsrequestmessage";
+}
+export class GetSupportedMarketsResponseMessage extends BaseResponseMessage {
+    $type: string = "prime.manager.getsupportedmarketsresponsemessage";
+
+    markets: Market[];
 }
 
 export class ProviderKeysMessageRequest extends BaseMessage {

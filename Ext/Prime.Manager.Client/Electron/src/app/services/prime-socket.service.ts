@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { ISocketClient } from '../models/interfaces/ISocketClient';
 import { LoggerService } from './logger.service';
 import { SocketState } from '../models/socket-state';
-import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage, BaseRequestMessage, BaseResponseMessage } from '../models/messages';
+import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage, BaseRequestMessage, BaseResponseMessage, GetSupportedMarketsRequestMessage, GetSupportedMarketsResponseMessage } from '../models/messages';
 import { PrivateApiContext } from '../models/private-api-context';
 import { GetProviderDetailsMessage } from 'models/core/msgs/Messages';
 import { ExchangeDetails } from '../models/ExchangeDetails';
@@ -127,6 +127,12 @@ export class PrimeSocketService {
         msg.key = privateApiContext.key;
         msg.secret = privateApiContext.secret;
         msg.extra = privateApiContext.extra;
+
+        this.writeSocketMessage(msg, callback);
+    }
+
+    getSupportedMarkets(callback: (data: GetSupportedMarketsResponseMessage) => void) {
+        var msg = new GetSupportedMarketsRequestMessage();
 
         this.writeSocketMessage(msg, callback);
     }

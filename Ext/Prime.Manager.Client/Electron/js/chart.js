@@ -1,10 +1,13 @@
 
-window.onload = null;
-function test() {
-    console.log("Window loaded");
+function drawChart() {
+    var svg = d3.select("#ohlcChart");
+    var svgDim = {
+        width: parseInt(svg.style("width")),
+        height: parseInt(svg.style("height"))
+    }
 
     var dim = {
-        width: 960, height: 500,
+        width: svgDim.width, height: svgDim.height,
         margin: { top: 20, right: 50, bottom: 30, left: 50 },
         ohlc: { height: 305 },
         indicator: { height: 65, padding: 5 }
@@ -186,15 +189,7 @@ function test() {
         .yAnnotation([rsiAnnotation, rsiAnnotationLeft])
         .verticalWireRange([0, dim.plot.height]);
 
-    var elem = document.querySelectorAll("mat-tab-group");
-    console.log(elem);
-    var all = d3.selectAll("body app-toolbar");
-
-    var svg = all.append("svg")
-        .attr("width", dim.width)
-        .attr("height", dim.height);
-
-    console.log(all);
+    
 
     var defs = svg.append("defs");
 
