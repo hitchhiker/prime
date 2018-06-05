@@ -1,14 +1,19 @@
 <app-toolbar></app-toolbar>
 
 <mat-tab-group (selectedTabChange)="selectionChanged()" [(selectedIndex)]="selectedIndex">
-    <mat-tab label="Exchanges">
+    <mat-tab label="Exchanges Settings">
         <div class="tab-content tab-exchanges">
             <app-exchanges></app-exchanges>
         </div>
     </mat-tab>
     <mat-tab label="Chart">
-        <div class="tab-content tab-chart" id="alyasko-chart">
+        <div class="tab-content tab-chart">
             <app-chart></app-chart>
+        </div>
+    </mat-tab>
+    <mat-tab label="Pricing">
+        <div class="tab-content">
+
         </div>
     </mat-tab>
 </mat-tab-group>
