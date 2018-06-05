@@ -8,7 +8,7 @@ import { ExchangesComponent } from './exchanges/exchanges.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ExchangeComponent } from './exchange/exchange.component';
 import { ExchangeDialogComponent } from './exchange-dialog/exchange-dialog.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LoggerService } from './services/logger.service';
 import { WsClientService } from './services/ws-client.service';
@@ -16,6 +16,7 @@ import { PrimeSocketService } from './services/prime-socket.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { ChartComponent } from './chart/chart.component';
 import { ChartService } from './services/chart.service';
+import { PricingComponent } from './pricing/pricing.component';
 
 @NgModule({
   declarations: [
@@ -25,12 +26,14 @@ import { ChartService } from './services/chart.service';
     ExchangeComponent,
     ExchangeDialogComponent,
     FilterPipe,
-    ChartComponent
+    ChartComponent,
+    PricingComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     MaterialModule,
   ],
   providers: [
