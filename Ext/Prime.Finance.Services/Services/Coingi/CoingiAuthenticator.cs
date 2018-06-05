@@ -9,10 +9,6 @@ namespace Prime.Finance.Services.Services.Coingi
 {
     public class CoingiAuthenticator : BaseAuthenticator
     {
-        //TODO - SC - Replace public and private keys
-        private const string publicKey = "tzwUJmMBAACrPMIWDPf3d/1qUTN0fVn/fqTTWzSn332LW3hQuFZsI/oCPkQ83rU+";
-        private const string secret = "UJ8ZfuuHFdpydXnyKSaAudwfo00TdQD22K28XmRK";
-
         public CoingiAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
@@ -23,18 +19,18 @@ namespace Prime.Finance.Services.Services.Coingi
 
             var nonce = (long)(DateTime.UtcNow.ToUnixTimeStamp() * 1000); // Milliseconds.
 
-            var signature = HashHMACSHA256Hex($"{nonce}${ /*ApiKey.Key*/publicKey}", /*ApiKey.Secret*/secret).ToLower();
+            var signature = HashHMACSHA256Hex($"{nonce}${ ApiKey.Key}", ApiKey.Secret).ToLower();
 
             string strPostParams;
 
             if (string.IsNullOrWhiteSpace(content))
             {
-                strPostParams = "{\"token\":\"" + /*ApiKey.Key*/publicKey + "\",\"signature\":\"" + signature + "\", \"nonce\":\"" + nonce + "\"}";
+                strPostParams = "{\"token\":\"" + ApiKey.Key + "\",\"signature\":\"" + signature + "\", \"nonce\":\"" + nonce + "\"}";
             }
             else
             {
                 content = content?.Replace("}", "").Replace("{", "");
-                strPostParams = "{\"token\":\"" + /*ApiKey.Key*/publicKey + "\",\"signature\":\"" + signature + "\", \"nonce\":\"" + nonce + "\", " + content + "}";
+                strPostParams = "{\"token\":\"" + ApiKey.Key + "\",\"signature\":\"" + signature + "\", \"nonce\":\"" + nonce + "\", " + content + "}";
             }
 
             var contentBuilder = new StringBuilder(strPostParams);

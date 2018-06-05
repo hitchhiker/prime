@@ -9,10 +9,6 @@ namespace Prime.Finance.Services.Services.LakeBtc
 {
     public class LakeBtcAuthenticator : BaseAuthenticator
     {
-        //TODO - SC - Replace keys
-        private string publicKey = "6DKpux1fbGx1uXbP3sXqCujn5goSOHvoQyJKPzGUOz0pxQ";
-        private string secret = "avDIVHbrb0IRRRlfotcAvy9ktRHrZLv8itiVECwD63Gxag";
-
         public LakeBtcAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
@@ -26,10 +22,10 @@ namespace Prime.Finance.Services.Services.LakeBtc
 
             var strParams = content?.Replace(":", "=").Replace("\",", "&").Replace("{", "").Replace("}", "").Replace("\"", "");
             
-            string strForSign = $"tonce={tonce}&accesskey={/*ApiKey.Key*/publicKey}&requestmethod=post&{strParams}";
+            string strForSign = $"tonce={tonce}&accesskey={ApiKey.Key}&requestmethod=post&{strParams}";
 
-            var hash = HashHMACSHA1WithoutBase64(strForSign, /*ApiKey.Secret*/secret);
-            var base64Signature = ToBase64($"{/*ApiKey.Key*/publicKey}:{hash}");
+            var hash = HashHMACSHA1WithoutBase64(strForSign, ApiKey.Secret);
+            var base64Signature = ToBase64($"{ApiKey.Key}:{hash}");
 
             headers.Add("Json-Rpc-Tonce", tonce.ToString());
             headers.Add("Authorization", $"Basic {base64Signature}");

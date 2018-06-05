@@ -10,10 +10,6 @@ namespace Prime.Finance.Services.Services.OkCoin
 {
     public class OkCoinAuthenticator : BaseAuthenticator
     {
-        //TODO - SC - Swap keys once key manager is working again
-        private string publicKey = "7a7bd50a-2f57-4c60-940b-db6fc40b26dd";
-        private string secret = "00D4A2A4A1DC49F664B9B2DBDE4C10D8";
-
         public OkCoinAuthenticator(ApiKey apiKey) : base(apiKey)
         {
         }
@@ -31,17 +27,17 @@ namespace Prime.Finance.Services.Services.OkCoin
 
             if (string.IsNullOrWhiteSpace(parameters))
             {
-                arrParameters = $"api_key={/*ApiKey.Key*/publicKey}".Split('&');
+                arrParameters = $"api_key={ApiKey.Key}".Split('&');
             }
             else
             {
-                arrParameters = $"{parameters}&api_key={/*ApiKey.Key*/publicKey}".Split('&');
+                arrParameters = $"{parameters}&api_key={ApiKey.Key}".Split('&');
             }
 
             Array.Sort(arrParameters); //Sorts array alphabetically.
 
             string strToHash = string.Join("&", arrParameters);
-            strToHash = $"{strToHash}&secret_key={/*ApiKey.Secret*/secret}";
+            strToHash = $"{strToHash}&secret_key={ApiKey.Secret}";
 
             var signature = HashMD5Hex(strToHash).ToUpper();
 

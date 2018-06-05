@@ -10,7 +10,7 @@ namespace Prime.Finance.Services.Services.Coinroom
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://coinroom.com/public-api
-    public class CoinroomProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider
+    public partial class CoinroomProvider : IPublicPricingProvider, IAssetPairsProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         public Version Version { get; } = new Version(1, 0, 0);
         private const string CoinroomApiUrl = "https://coinroom.com/api/";
@@ -36,7 +36,7 @@ namespace Prime.Finance.Services.Services.Coinroom
 
         public CoinroomProvider()
         {
-            ApiProvider = new RestApiClientProvider<ICoinroomApi>(CoinroomApiUrl, this, (k) => null);
+            ApiProvider = new RestApiClientProvider<ICoinroomApi>(CoinroomApiUrl, this, (k) => new CoinroomAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -45,6 +45,19 @@ namespace Prime.Finance.Services.Services.Coinroom
             var r = await api.GetCurrenciesAsync().ConfigureAwait(false);
 
             return r?.crypto?.Length > 0 && r.real?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiProvider.GetApi(context);
+
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+             CheckResponseErrors(rRaw);
+
+             var r = rRaw.GetContent();
+
+            return r.result;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
