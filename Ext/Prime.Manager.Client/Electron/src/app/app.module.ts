@@ -15,6 +15,7 @@ import { WsClientService } from './services/ws-client.service';
 import { PrimeSocketService } from './services/prime-socket.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { ChartComponent } from './chart/chart.component';
+import { ChartService } from './services/chart.service';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { ChartComponent } from './chart/chart.component';
     LoggerService,
     {provide: "ISocketClient", useClass: WsClientService},
     PrimeSocketService,
+    ChartService
   ],
   entryComponents: [
     ExchangeDialogComponent
