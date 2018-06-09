@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Prime.Core;
+using Prime.Finance;
 using Prime.KeysManager;
 using Prime.Manager.Utils;
 using Prime.MessagingServer;
@@ -47,7 +48,7 @@ namespace Prime.Manager.Client
             logger.Log("UI started");
             logger.Log("Waiting for  all UI processes exit...");
 
-            //RunUiAsync(logger).Wait();
+            RunUiAsync(logger).Wait();
             
             Console.ReadLine();
         }

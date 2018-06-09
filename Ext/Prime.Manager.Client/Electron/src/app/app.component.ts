@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   private url = 'http://localhost:3001';
   private socket;
 
-  private selectedIndex;
+  public selectedIndex;
 
   constructor(
     private primeTcpClient: PrimeSocketService,

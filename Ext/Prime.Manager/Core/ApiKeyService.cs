@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Prime.Base.Messaging.Manager.Models;
 using Prime.Core;
+using Prime.Finance;
 
 namespace Prime.Manager.Core
 {
@@ -109,7 +110,7 @@ namespace Prime.Manager.Core
 
         public IEnumerable<MarketModel> GetMarkets()
         {
-            // TODO: query real data.
+            // TODO: query real data. Remove Prime.Finance.*
             return new List<MarketModel>()
             {
                 new MarketModel("awd12", "BTC-USD"),
