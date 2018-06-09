@@ -42,10 +42,10 @@ export class ExchangeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.primeSocket.onClientConnected = () => {
+    // TODO: what is that?
+    this.primeSocket.onClientConnected.subscribe(() => {
       console.log("Overried connection");
-    }
+    });
   }
-
 }
 

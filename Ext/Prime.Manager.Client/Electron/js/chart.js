@@ -303,8 +303,6 @@ function drawChart() {
         .attr("class", "supstances analysis")
         .attr("clip-path", "url(#ohlcClip)");
 
-    d3.select("button").on("click", reset);
-
     d3.csv("assets/data.csv", function (error, data) {
         var accessor = candlestick.accessor(),
             indicatorPreRoll = 33;  // Don't show where indicators don't have data

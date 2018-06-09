@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Base.Messaging.Manager;
+using Prime.Base.Messaging.Manager.Models;
 using Prime.Core;
 using Prime.Core.Testing;
 using Prime.Manager.Core;
@@ -40,6 +42,19 @@ namespace Prime.Manager
             M.RegisterAsync<TestPrivateApiRequestMessage>(this, TestPrivateApiHandler);
             M.RegisterAsync<GenerateGuidRequestMessage>(this, FakeClientGuidHandler);
             M.RegisterAsync<ProviderHasKeysRequestMessage>(this, ProviderHasKeysHandler);
+            M.RegisterAsync<GetSupportedMarketsRequestMessage>(this, GetSupportedMarketsHandler);
+        }
+
+        private void GetSupportedMarketsHandler(GetSupportedMarketsRequestMessage request)
+        {
+            Log("Getting supported markets...");
+
+            var markets = _apiKeyService.GetMarkets();
+            
+            M.SendAsync(new GetSupportedMarketsResponseMessage(request)
+            {
+                Markets = markets
+            });
         }
 
         private void ProviderHasKeysHandler(ProviderHasKeysRequestMessage request)

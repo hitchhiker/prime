@@ -13,5 +13,6 @@ namespace Prime.Manager.Core
         void DeleteKeys(string networkId);
 
         bool TestPrivateApi(string networkId, string key, string secret, string extra);
+        IEnumerable<MarketModel> GetMarkets();
     }
 }

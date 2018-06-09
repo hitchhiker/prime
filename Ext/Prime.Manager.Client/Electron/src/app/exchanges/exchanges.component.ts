@@ -20,8 +20,9 @@ export class ExchangesComponent implements OnInit {
     private primeService: PrimeSocketService,
     private actionThrottler: ActionThrottlerService,
     public snackBar: MatSnackBar,
-  ) { 
-    primeService.onClientConnected = () => {
+  ) {    
+    primeService.onClientConnected.subscribe(() => {
+      console.log("ExchangesComponent client connected.");
       this.snackBar.open("Connected to server", "Info", {
         duration: 3000
       });
@@ -29,13 +30,13 @@ export class ExchangesComponent implements OnInit {
       this.primeService.getPrivateProvidersList((data: PrivateProvidersListResponseMessage) => {
         this.exchanges = data.response;
       });
-    }
+    });
 
-    primeService.onErrorOccurred = () => {
+    primeService.onErrorOccurred.subscribe(() => {
       this.snackBar.open("Connection error occurred", "Error", {
         duration: 3000
       });
-    };
+    });
   }
 
   ngOnInit() {

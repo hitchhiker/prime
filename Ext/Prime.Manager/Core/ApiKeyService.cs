@@ -107,6 +107,18 @@ namespace Prime.Manager.Core
             return result;
         }
 
+        public IEnumerable<MarketModel> GetMarkets()
+        {
+            // TODO: query real data.
+            return new List<MarketModel>()
+            {
+                new MarketModel("awd12", "BTC-USD"),
+                new MarketModel("12kj3j", "XRP-USD"),
+                new MarketModel("awd21", "ETH-USD"),
+                new MarketModel("awd21", "BCH-USD")
+            };
+        }
+
         public IEnumerable<NetworkModel> GetPrivateNetworks(bool direct = true)
         {
             var userContext = UserContext.Testing;

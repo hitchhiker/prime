@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Market } from '../models/market';
 import { PrimeSocketService } from '../services/prime-socket.service';
+import { MatTableDataSource } from '@angular/material';
+import { LatestPriceView } from '../models/latest-price';
 
 @Component({
   selector: 'app-pricing',
@@ -22,13 +24,36 @@ export class PricingComponent implements OnInit {
   options: string[] = [];
   filteredOptions: Observable<string[]>;
 
+  latestPrices: LatestPriceView[] = [
+    { position: 1, exchangeName: "Binance", latestPrice: 1423 }
+  ];
+
+  displayedColumns = ['position', 'exchangeName', 'latestPrice'];
+  dataSource = new MatTableDataSource(this.latestPrices);
+
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
   ngOnInit() {
-    this.filteredOptions = this.marketControl.valueChanges.pipe(
-      startWith(''),
-      map(val => this.filter(val))
-    );
-    this.prime.getSupportedMarkets((data) => {
-      this.options = data.markets.map((v) => v.code);
+    this.prime.onClientConnected.subscribe(() => {
+      console.log("PricingComponent client connected.");
+
+      this.prime.getSupportedMarkets((data) => {
+        console.log("Markets received.");
+        console.log(data.markets.map((v) => v.code));
+
+        for(let i = 0; i < data.markets.length; i++) {
+          this.options.push(data.markets[i].code);
+        }
+
+        this.filteredOptions = this.marketControl.valueChanges.pipe(
+          startWith(''),
+          map(val => this.filter(val))
+        );
+      });
     });
   }
 

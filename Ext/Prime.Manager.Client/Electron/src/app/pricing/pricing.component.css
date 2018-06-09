@@ -8,3 +8,16 @@
     margin-left: 10px;
     width: 65%;
 }
+
+#market-prices-table {
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+.cell-small {
+    width: 40px;
+}
+
+.cell-medium {
+    width: 100px;
+}

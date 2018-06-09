@@ -6,6 +6,7 @@ import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage,
 import { PrivateApiContext } from '../models/private-api-context';
 import { GetProviderDetailsMessage } from 'models/core/msgs/Messages';
 import { ExchangeDetails } from '../models/ExchangeDetails';
+import { Subscription, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -20,9 +21,9 @@ export class PrimeSocketService {
     private callbacks: ((data) => void)[] = [];
 
     // TODO: implement multiple subscriptions.
-    onClientConnected: () => void = null;
-    onConnectionClosed: () => void = null;
-    onErrorOccurred: () => void = null;
+    onClientConnected: Subject<any> = new Subject<any>();
+    onConnectionClosed: Subject<any> = new Subject<any>();
+    onErrorOccurred: Subject<any> = new Subject<any>();
 
     socketState: SocketState = SocketState.Disconnected;
 
@@ -35,17 +36,19 @@ export class PrimeSocketService {
             LoggerService.log("Connected to Prime API server.");
             this.socketState = SocketState.Connected;
 
-            if (this.onClientConnected !== null) {
-                this.onClientConnected();
-            }
+            this.onClientConnected.next();
         };
 
         this.socketClient.onDataReceived = (data: any) => {
             var response: BaseResponseMessage = JSON.parse(data.data);
+            // console.log("* Current handlers: ");
+            // console.log(this.callbacks);
+            // console.log("* Response: " + response.$type);
 
             if (this.callbacks[response.$type] != undefined) {
                 this.callbacks[response.$type](response);
                 delete this.callbacks[response.$type];
+                // console.log("* Deleted: " + response.$type);
             } else {
                 throw "Callback method is not found for " + response.$type;
             }
@@ -55,15 +58,11 @@ export class PrimeSocketService {
             LoggerService.log("Connection closed.");
             this.socketState = SocketState.Disconnected;
 
-            if (this.onConnectionClosed !== null) {
-                this.onConnectionClosed();
-            }
+            this.onConnectionClosed.next();
         };
 
         this.socketClient.onErrorOccurred = () => {
-            if (this.onErrorOccurred !== null) {
-                this.onErrorOccurred();
-            }
+            this.onErrorOccurred.next();
         };
 
         this.socketClient.connect('ws://127.0.0.1:9991/');
