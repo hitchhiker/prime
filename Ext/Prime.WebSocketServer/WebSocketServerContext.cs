@@ -13,7 +13,7 @@ namespace Prime.WebSocketServer
         public readonly IPAddress IpAddress;
         public readonly short Port;
 
-        public WebSocketServerContext(MessagingServer.Server server) : this(server, IPAddress.Any, 9991)
+        public WebSocketServerContext(MessagingServer.Server server) : this(server, IPAddress.Parse("0.0.0.0"), 9991)
         {
             MessageServer = server;
         }

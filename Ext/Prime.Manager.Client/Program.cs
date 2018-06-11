@@ -46,9 +46,9 @@ namespace Prime.Manager.Client
             // Start UI.
             
             logger.Log("UI started");
-            logger.Log("Waiting for  all UI processes exit...");
+            logger.Log("Waiting for all UI processes exit...");
 
-            RunUiAsync(logger).Wait();
+            //RunUiAsync(logger).Wait();
             
             Console.ReadLine();
         }

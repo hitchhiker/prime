@@ -48,8 +48,6 @@ namespace Prime.WebSocketServer
                     if (!_clientsHandlers.TryAdd(x.SessionId, x))
                         throw new InvalidOperationException($"Client {x.SessionId} has already been connected to WebSocket server.");
                 };
-
-                
             });
             _webSocketServer.AddWebSocketService<WsEchoHandler>(WsEchoHandler.ServicePath, (x) =>
                 {
