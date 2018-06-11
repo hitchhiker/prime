@@ -6,7 +6,7 @@ Write-Host "This script will setup Firewall rule for 'dotnet' process to be avai
 
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent());
 if (-Not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Throw "Please run script with administrative privilages.";
+    Throw "Please run script with administrative privileges.";
 }
 
 $primaryIpAddresses = Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled} | Select-Object -ExpandProperty IPAddress;
