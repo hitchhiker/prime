@@ -18,4 +18,4 @@ if(-Not (Get-Command electron-packager -ErrorAction SilentlyContinue)) {
     Throw "Command 'electron-packager' does not exist. Please run 'npm install electron-packager -g'.";
 }
 
-electron-packager ./dist/prime-manager/ --out ./dist/prime-manager/packed/ --all --asar
+electron-packager ./dist/prime-manager/ --asar --out ./dist/prime-manager/packed/
