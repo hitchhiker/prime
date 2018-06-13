@@ -1,55 +1,71 @@
-const { app, BrowserWindow, Tray, Menu } = require('electron')
-const path = require('path')
-const url = require('url')
+const { app, BrowserWindow, Tray, Menu } = require('electron');
+const path = require('path');
+const url = require('url');
 const fs = require('fs');
 
-let win
+let win = null;
+let isDevFolder = checkIfDevFolder();
 
-function createWindow() {
-  win = new BrowserWindow({ width: 800, height: 600 })
+run();
 
-  let pathIndex = 'dist/prime-manager/index.html';
-  let pathIcon = 'dist/prime-manager/assets/img/prime-17.ico';
+// --- Functions --- //
 
-  if(fs.existsSync(path.join(__dirname, "index.html"))) {
-    pathIndex = 'index.html';
-    pathIcon = 'assets/img/prime-17.ico';
+function run() {
+  app.dock.hide();
+
+  app.on('ready', appReady);
+
+  /*app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  app.on('activate', () => {
+    if (win === null) {
+      createWindow();
+    }
+  });*/
+}
+
+function appReady() {
+  createTray();
+
+  createWindow();
+}
+
+function createTray() {
+  let iconFilename = "";
+  switch (process.platform) {
+    case "darwin":
+      iconFilename = "prime-tray-unix.png";
+      break;
+    case "win32":
+      iconFilename = "prime-tray-win.ico";
+      break;
   }
 
-  console.log(fs.existsSync("index.html"));
+  let iconPath;
 
-  // load the dist folder from Angular
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, pathIndex),
-    protocol: 'file:',
-    slashes: true
-  }))
+  if (isDevFolder) {
+    iconPath = path.join('assets/img', iconFilename);
+  } else {
+    iconPath = path.join('dist/prime-manager/assets/img', iconFilename);
+  }
 
-  // Open the DevTools optionally:
-  // win.webContents.openDevTools()
+  let iconFullPath = path.join(__dirname, iconPath);
 
-  win.on("minimize", function (event) {
-    event.preventDefault();
-    win.hide();
-  });
+  let trayIcon = new Tray(iconFullPath);
+  trayIcon.setToolTip("Prime.Manager");
 
-  win.on('close', function (event) {
-    if (!app.isQuiting) {
-      event.preventDefault();
-      win.hide();
-    }
+  let trayMenuTemplate = createTrayMenuTemplate();
+  let trayMenu = Menu.buildFromTemplate(trayMenuTemplate);
 
-    return false;
-  });
+  trayIcon.setContextMenu(trayMenu);
+}
 
-  win.on('closed', () => {
-    win = null
-  })
-
-  let imgPath = path.join(__dirname,pathIcon);
-  let trayIcon = new Tray(imgPath);
-
-  const trayMenuTemplate = [
+function createTrayMenuTemplate() {
+  return [
     {
       label: 'Prime.Manager',
       enabled: false
@@ -68,23 +84,44 @@ function createWindow() {
       }
     }
   ];
-
-  let trayMenu = Menu.buildFromTemplate(trayMenuTemplate);
-  trayIcon.setContextMenu(trayMenu);
-
-  console.log(__dirname);
 }
 
-app.on('ready', createWindow)
+function createWindow() {
+  win = new BrowserWindow({ width: 800, height: 600, maximizable: false })
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+  let pathIndex = 'dist/prime-manager/index.html';
 
-app.on('activate', () => {
-  if (win === null) {
-    createWindow();
+  if (isDevFolder) {
+    pathIndex = 'index.html';
   }
-})
+
+  // load the dist folder from Angular
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, pathIndex),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+  win.on("minimize", function (event) {
+    event.preventDefault();
+    win.hide();
+  });
+
+  win.on('close', function (event) {
+    if (!app.isQuiting) {
+      event.preventDefault();
+      win.hide();
+    }
+
+    return false;
+  });
+
+  win.on('closed', () => {
+    win = null;
+  });
+}
+
+function checkIfDevFolder() {
+  return fs.existsSync(path.join(__dirname, "index.html"));
+}
+

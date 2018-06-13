@@ -1,12 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Remove="ui\**" />
   </ItemGroup>
-
+  <ItemGroup>
+    <EmbeddedResource Remove="ui\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="ui\**" />
+  </ItemGroup>
 </Project>
