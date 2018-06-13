@@ -3,6 +3,9 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
+const platformWin32 = "win32";
+const platformDarwin = "darwin";
+
 let win = null;
 let isDevFolder = checkIfDevFolder();
 
@@ -11,8 +14,10 @@ run();
 // --- Functions --- //
 
 function run() {
-  app.dock.hide();
-
+  runDarwin(() => {
+    app.dock.hide();
+  });
+  
   app.on('ready', appReady);
 
   /*app.on('window-all-closed', () => {
@@ -37,10 +42,10 @@ function appReady() {
 function createTray() {
   let iconFilename = "";
   switch (process.platform) {
-    case "darwin":
+    case platformDarwin:
       iconFilename = "prime-tray-unix.png";
       break;
-    case "win32":
+    case platformWin32:
       iconFilename = "prime-tray-win.ico";
       break;
   }
@@ -119,6 +124,18 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   });
+}
+
+function runWin(func) {
+  if(process.platform === platformWin32) {
+    func();
+  }
+}
+
+function runDarwin(func) {
+  if(process.platform === platformDarwin) {
+    func();
+  }
 }
 
 function checkIfDevFolder() {
