@@ -7,7 +7,7 @@ using Prime.KeysManager;
 using Prime.Manager.Utils;
 using Prime.MessagingServer;
 
-namespace Prime.Manager.Client
+namespace Prime.Manager.App
 {
     class Program
     {
