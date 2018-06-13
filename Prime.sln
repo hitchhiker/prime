@@ -81,7 +81,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{1145
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Linux", "Linux", "{5E8009B9-2F79-4D18-9B81-8991237E382A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Finance.Client", "Ext\Prime.Finance.Client\Prime.Finance.Client.csproj", "{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Finance.App", "Ext\Prime.Finance.App\Prime.Finance.App.csproj", "{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

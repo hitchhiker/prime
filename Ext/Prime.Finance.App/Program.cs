@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Prime.Finance.Client
+namespace Prime.Finance.App
 {
     class Program
     {
