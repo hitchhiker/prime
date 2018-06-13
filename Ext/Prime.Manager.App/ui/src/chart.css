@@ -1,0 +1,190 @@
+
+
+svg {
+    background-color: white;
+}
+
+svg text {
+    fill: #000;
+}
+
+svg text.symbol {
+    fill: #BBBBBB;
+}
+
+svg path {
+    fill: none;
+    stroke-width: 1;
+}
+
+svg path.candle {
+    stroke: #000000;
+}
+
+svg path.candle.body {
+    stroke-width: 0;
+}
+
+svg path.candle.up {
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+
+svg path.candle.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+
+svg .close.annotation.up path {
+    fill: #00AA00;
+}
+
+svg path.volume {
+    fill: #DDDDDD;
+}
+
+svg .indicator-plot path.line {
+    fill: none;
+    stroke-width: 1;
+}
+
+svg .ma-0 path.line {
+    stroke: #1f77b4;
+}
+
+svg .ma-1 path.line {
+    stroke: #aec7e8;
+}
+
+svg .ma-2 path.line {
+    stroke: #ff7f0e;
+}
+
+svg button {
+    position: absolute;
+    right: 110px;
+    top: 25px;
+}
+
+svg path.macd {
+    stroke: #0000AA;
+}
+
+svg path.signal {
+    stroke: #FF9999;
+}
+
+svg path.zero {
+    stroke: #BBBBBB;
+    stroke-dasharray: 0;
+    stroke-opacity: 0.5;
+}
+
+svg path.difference {
+    fill: #BBBBBB;
+    opacity: 0.5;
+}
+
+svg path.rsi {
+    stroke: #000000;
+}
+
+svg path.overbought, path.oversold {
+    stroke: #FF9999;
+    stroke-dasharray: 5, 5;
+}
+
+svg path.middle, path.zero {
+    stroke: #BBBBBB;
+    stroke-dasharray: 5, 5;
+}
+
+svg .analysis path, .analysis circle {
+    stroke: blue;
+    stroke-width: 0.8;
+}
+
+svg .trendline circle {
+    stroke-width: 0;
+    display: none;
+}
+
+svg .mouseover .trendline path {
+    stroke-width: 1.2;
+}
+
+svg .mouseover .trendline circle {
+    stroke-width: 1;
+    display: inline;
+}
+
+svg .dragging .trendline path, .dragging .trendline circle {
+    stroke: darkblue;
+}
+
+svg .interaction path, .interaction circle {
+    pointer-events: all;
+}
+
+svg .interaction .body {
+    cursor: move;
+}
+
+svg .trendlines .interaction .start, .trendlines .interaction .end {
+    cursor: nwse-resize;
+}
+
+svg .supstance path {
+    stroke-dasharray: 2, 2;
+}
+
+svg .supstances .interaction path {
+    pointer-events: all;
+    cursor: ns-resize;
+}
+
+svg .mouseover .supstance path {
+    stroke-width: 1.5;
+}
+
+svg .dragging .supstance path {
+    stroke: darkblue;
+}
+
+svg .crosshair {
+    cursor: crosshair;
+}
+
+svg .crosshair path.wire {
+    stroke: #DDDDDD;
+    stroke-dasharray: 1, 1;
+}
+
+svg .crosshair .axisannotation path {
+    fill: #DDDDDD;
+}
+
+svg .tradearrow path.tradearrow {
+    stroke: none;
+}
+
+svg .tradearrow path.buy {
+    fill: #0000FF;
+}
+
+svg .tradearrow path.sell {
+    fill: #9900FF;
+}
+
+svg .tradearrow path.highlight {
+    fill: none;
+    stroke-width: 2;
+}
+
+svg .tradearrow path.highlight.buy {
+    stroke: #0000FF;
+}
+
+svg .tradearrow path.highlight.sell {
+    stroke: #9900FF;
+}
