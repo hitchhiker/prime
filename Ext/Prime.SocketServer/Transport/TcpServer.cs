@@ -143,7 +143,7 @@ namespace Prime.SocketServer
         {
             if (!identifiedClient.TcpClient.Connected)
             {
-                L.Warn("Attemped to write to closed TcpClient.");
+                L.Warn("Attempted to write to closed TcpClient.");
                 return;
             }
 

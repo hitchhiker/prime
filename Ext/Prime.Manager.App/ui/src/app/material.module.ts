@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { MatButtonModule, MatDialogContent, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatTableModule } from "@angular/material";
+import { MatButtonModule, MatDialogContent, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatTableModule, MatListModule } from "@angular/material";
 import { MatToolbarModule } from "@angular/material";
 import { MatTabsModule } from "@angular/material";
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +25,8 @@ import { MatIconModule } from '@angular/material/icon';
             MatSnackBarModule,
             MatIconModule,
             MatAutocompleteModule,
-            MatTableModule
+            MatTableModule,
+            MatListModule
         ],
     exports:
         [
@@ -41,7 +42,8 @@ import { MatIconModule } from '@angular/material/icon';
             MatSnackBarModule,
             MatIconModule,
             MatAutocompleteModule,
-            MatTableModule
+            MatTableModule,
+            MatListModule
         ],
 })
 export class MaterialModule { }

@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit {
-  title: string = "Prime.Manager";
+  title: string = "Prime Manager";
   constructor() { }
 
   ngOnInit() {

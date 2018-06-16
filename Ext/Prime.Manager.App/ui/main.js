@@ -69,12 +69,35 @@ function createTray() {
   trayIcon.setContextMenu(trayMenu);
 }
 
+const sep = {type: 'separator'};
+
 function createTrayMenuTemplate() {
+  
+
   return [
     {
-      label: 'Prime.Manager',
+      label: 'Prime Manager',
       enabled: false
     },
+    sep,
+    {
+      label: "Run Extension",
+      submenu: [
+        {
+          label: "Finance",
+          click: function() {
+
+          }
+        },
+        {
+          label: "IPFS",
+          click: function() {
+
+          }
+        }
+      ],
+    },
+    sep,
     {
       label: 'Show',
       click: function () {
@@ -87,7 +110,7 @@ function createTrayMenuTemplate() {
         app.isQuiting = true;
         app.quit();
       }
-    }
+    },
   ];
 }
 

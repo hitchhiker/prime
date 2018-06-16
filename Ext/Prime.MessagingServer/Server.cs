@@ -59,7 +59,7 @@ namespace Prime.MessagingServer
 
         private void ReceiveMessage(ExternalMessage m)
         {
-            Task.Run(delegate
+            Task.Run(() => 
             {
                 _helper.UnPackSendReceivedMessage(m);
             });

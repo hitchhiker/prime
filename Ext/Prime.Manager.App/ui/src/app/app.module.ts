@@ -10,14 +10,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoggerService } from './services/logger.service';
 import { WsClientService } from './services/ws-client.service';
 import { PrimeSocketService } from './services/prime-socket.service';
-import { FilterPipe } from './pipes/filter.pipe';
 import { ChartService } from './services/chart.service';
+import { ExtListComponent } from './extensions/ext-list/ext-list.component';
+import { ExtComponent } from './extensions/ext/ext.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ToolbarComponent,
-    FilterPipe,
+    ExtListComponent,
+    ExtComponent,
   ],
   imports: [
     BrowserModule,

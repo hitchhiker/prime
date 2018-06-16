@@ -54,7 +54,7 @@ namespace Prime.SocketServer
 
         private void TcpServerOnExceptionOccurred(object sender, Exception exception)
         {
-            Log($"Server error occurred: {exception.Message}");
+            Log($"Socket server error occurred: {exception.Message}");
         }
 
         private void Log(string text)
