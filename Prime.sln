@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core", "Prime.Core\Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance.Services", "Ext\Prime.Finance.Services\Prime.Finance.Services.csproj", "{CD1E8436-65E0-4E8D-9977-6C94CE631A21}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Manager.Client", "Ext\Prime.Manager.Client\Prime.Manager.Client.csproj", "{EBAE560E-4432-4343-B781-560FCF4A96A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Manager.App", "Ext\Prime.Manager.App\Prime.Manager.App.csproj", "{EBAE560E-4432-4343-B781-560FCF4A96A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance", "Ext\Prime.Finance\Prime.Finance.csproj", "{BB9FAB25-C19C-4013-B88C-FBAC06F58715}"
 EndProject
@@ -80,6 +80,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{1145333F-FF8A-45D0-92CE-67CFF7E2B3E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Linux", "Linux", "{5E8009B9-2F79-4D18-9B81-8991237E382A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.Finance.App", "Ext\Prime.Finance.App\Prime.Finance.App.csproj", "{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -226,6 +228,12 @@ Global
 		{11D0CD9C-73F5-4857-B6CD-3D8DF6077656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D0CD9C-73F5-4857-B6CD-3D8DF6077656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D0CD9C-73F5-4857-B6CD-3D8DF6077656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -264,6 +272,7 @@ Global
 		{11D0CD9C-73F5-4857-B6CD-3D8DF6077656} = {BFEFEECE-EC7F-47C9-8E16-931DFC08943A}
 		{1145333F-FF8A-45D0-92CE-67CFF7E2B3E5} = {F9F7DD6A-4A08-4569-8CBD-1028BA95A228}
 		{5E8009B9-2F79-4D18-9B81-8991237E382A} = {F9F7DD6A-4A08-4569-8CBD-1028BA95A228}
+		{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A} = {F0CE665D-85E4-4355-A660-0FCEF82423C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71EB1177-FFB8-48AA-BE39-14BBC3A402C8}

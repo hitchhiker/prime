@@ -28,7 +28,7 @@ namespace Prime.WebSocketServer.Transport
         public void SendTo(string data, ObjectId objectId)
         {
             if(!SessionsLookup.TryGetValue(objectId, out var remoteId)) 
-                throw new InvalidOperationException("Client with specifiec objec");
+                throw new InvalidOperationException("Client with specific Id not found.");
             
             Sessions.SendTo(data, remoteId);
         }
@@ -59,7 +59,7 @@ namespace Prime.WebSocketServer.Transport
 
         protected override void OnOpen()
         {
-            L?.Log($"Client {SessionId} connected to WebSocket server.");
+            L?.Log($"Client {SessionId} [{Context.UserEndPoint}] connected to WebSocket server.");
             OnClientConnected?.Invoke(this, new EventArgs());
         }
 

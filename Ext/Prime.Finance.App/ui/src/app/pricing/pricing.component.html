@@ -1,0 +1,44 @@
+<form class="market-form">
+  <mat-form-field id="market-input">
+    <input type="text" placeholder="Select market" aria-label="Number" matInput [formControl]="marketControl" [matAutocomplete]="auto">
+    <button mat-button *ngIf="marketControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="marketControl.reset('')">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="marketSelected($event)">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  
+  <mat-form-field id="filter-input">
+    <input matInput type="text" placeholder="Filter" (keyup)="applyFilter($event.target.value)" [formControl]="filterControl" />
+    <button mat-button *ngIf="filterControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="filterControl.reset('')">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</form>
+
+<table id="market-prices-table" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="position">
+    <th mat-header-cell *matHeaderCellDef class="cell-small"> No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="exchangeName">
+    <th mat-header-cell *matHeaderCellDef> Exchange </th>
+    <td mat-cell *matCellDef="let element"> {{element.exchangeName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="latestPrice">
+    <th mat-header-cell *matHeaderCellDef class="cell-medium"> Latest Price </th>
+    <td mat-cell *matCellDef="let element"> {{element.latestPrice}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+

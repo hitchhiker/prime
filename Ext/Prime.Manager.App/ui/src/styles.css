@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "theme.css";
+@import "chart.css";
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tab-content {
+    padding: 10px;
+}
+
+.fill-space {
+    flex: 1 1 auto;
+}
+
+.full-width {
+    width: 100%;
+}

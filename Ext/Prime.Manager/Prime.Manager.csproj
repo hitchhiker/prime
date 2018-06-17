@@ -8,5 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
+    <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
   </ItemGroup>
 </Project>

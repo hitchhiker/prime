@@ -22,15 +22,21 @@ namespace Prime.WebSocketServer
 
         public readonly ILogger L;
 
-        private ConcurrentDictionary<ObjectId, WsRootHandler> _clientsHandlers = new ConcurrentDictionary<ObjectId, WsRootHandler>();
+        private readonly ConcurrentDictionary<ObjectId, WsRootHandler> _clientsHandlers = new ConcurrentDictionary<ObjectId, WsRootHandler>();
 
         public Server(WebSocketServerContext context)
         {
             _context = context;
             _commonJsonDataProvider = new CommonJsonDataProvider(_context.MessageServer);
+            L = context.MessageServer.L;
 
-            _webSocketServer = new WebSocketSharp.Server.WebSocketServer(context.IpAddress, context.Port, false);
-            _webSocketServer.AddWebSocketService<WsRootHandler>(WsRootHandler.ServicePath, (x) =>
+            _webSocketServer = CreateWebSocketServer(context);
+        }
+
+        private WebSocketSharp.Server.WebSocketServer CreateWebSocketServer(WebSocketServerContext context)
+        {
+            var wsServer = new WebSocketSharp.Server.WebSocketServer(context.IpAddress, context.Port, false);
+            wsServer.AddWebSocketService<WsRootHandler>(WsRootHandler.ServicePath, (x) =>
             {
                 x.M = context.MessageServer.M;
                 x.L = context.MessageServer.L;
@@ -39,7 +45,7 @@ namespace Prime.WebSocketServer
 
                 x.OnClientDisconnected = (sender, args) =>
                 {
-                    if(!_clientsHandlers.TryRemove(x.SessionId, out x))
+                    if (!_clientsHandlers.TryRemove(x.SessionId, out x))
                         throw new InvalidOperationException($"Client {x.SessionId} is not registered and cannot be deleted.");
                 };
 
@@ -48,15 +54,13 @@ namespace Prime.WebSocketServer
                     if (!_clientsHandlers.TryAdd(x.SessionId, x))
                         throw new InvalidOperationException($"Client {x.SessionId} has already been connected to WebSocket server.");
                 };
-
-                
             });
-            _webSocketServer.AddWebSocketService<WsEchoHandler>(WsEchoHandler.ServicePath, (x) =>
-                {
-                    x.L = context.MessageServer.L;
-                });
+            wsServer.AddWebSocketService<WsEchoHandler>(WsEchoHandler.ServicePath, (x) =>
+            {
+                x.L = context.MessageServer.L;
+            });
 
-            L = context.MessageServer.L;
+            return wsServer;
         }
 
         public void Start()
@@ -74,6 +78,9 @@ namespace Prime.WebSocketServer
 
         public void Send<T>(T message) where T : BaseTransportMessage
         {
+            if(message.IsRemote)
+                return;
+
             L.Log($"WsServer sending message...");
 
             var data = _commonJsonDataProvider.Serialize(message);
@@ -81,6 +88,7 @@ namespace Prime.WebSocketServer
             if (!_clientsHandlers.TryGetValue(message.SessionId, out var client))
                 throw new InvalidOperationException($"Unable to send data to client {message.SessionId} because it's not registered on WebSocket server.");
 
+            // Sends message to client with specified SessionId.
             client.SendToCurrentClient(data.ToString());
         }
     }
