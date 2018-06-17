@@ -10,17 +10,19 @@ namespace Prime.Finance.Services.Services.Gate
 {
     /// <author email="scaruana_prime@outlook.com">Sean Caruana</author>
     // https://gate.io/api2
-    public class GateProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider
+    public partial class GateProvider : IPublicPricingProvider, IAssetPairsProvider, IPublicVolumeProvider, IOrderBookProvider, INetworkProviderPrivate
     {
         public Version Version { get; } = new Version(1, 0, 0);
         private const string GateApiVersion = "api2";
         private const string GateApiUrl = "http://data.gate.io/" + GateApiVersion;
+        private const string GateApiUrlPrivate = "https://api.gate.io/" + GateApiVersion;
 
         private static readonly ObjectId IdHash = "prime:gate".GetObjectIdHashCode();
 
         private static readonly IRateLimiter Limiter = new NoRateLimits();
 
         private RestApiClientProvider<IGateApi> ApiProvider { get; }
+        private RestApiClientProvider<IGateApi> ApiPrivateProvider { get; }
 
         public Network Network { get; } = Networks.I.Get("Gate");
 
@@ -37,7 +39,8 @@ namespace Prime.Finance.Services.Services.Gate
 
         public GateProvider()
         {
-            ApiProvider = new RestApiClientProvider<IGateApi>(GateApiUrl, this, (k) => null);
+            ApiPrivateProvider = new RestApiClientProvider<IGateApi>(GateApiUrl, this, (k) => null);
+            ApiPrivateProvider = new RestApiClientProvider<IGateApi>(GateApiUrlPrivate, this, (k) => new GateAuthenticator(k).GetRequestModifierAsync);
         }
 
         public async Task<bool> TestPublicApiAsync(NetworkProviderContext context)
@@ -46,6 +49,19 @@ namespace Prime.Finance.Services.Services.Gate
             var r = await api.GetAssetPairsAsync().ConfigureAwait(false);
 
             return r?.Length > 0;
+        }
+
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            var api = ApiPrivateProvider.GetApi(context);
+
+            var rRaw = await api.GetBalancesAsync().ConfigureAwait(false);
+
+            CheckResponseErrors(rRaw);
+
+            var r = rRaw.GetContent();
+
+            return r.result;
         }
 
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)

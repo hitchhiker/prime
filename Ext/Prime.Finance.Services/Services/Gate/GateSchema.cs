@@ -1,7 +1,11 @@
-﻿namespace Prime.Finance.Services.Services.Gate
+﻿using System.Collections.Generic;
+
+namespace Prime.Finance.Services.Services.Gate
 {
     internal class GateSchema
     {
+        #region Public
+
         internal class VolumeResponse
         {
             public bool result;
@@ -48,5 +52,60 @@
             public decimal[][] bids;
             public decimal[][] asks;
         }
+
+        #endregion
+
+        #region Private
+
+        internal class ErrorResponse
+        {
+            public bool result;
+            public string code;
+            public string message;
+        }
+
+        internal class BalancesResponse
+        {
+            public bool result;
+            public object[] available;
+        }
+
+        internal class NewOrderResponse
+        {
+            public bool result;
+            public string orderNumber;
+            public decimal rate;
+            public decimal leftAmount;
+            public decimal filledAmount;
+            public decimal filledRate;
+            public string msg;
+        }
+
+        internal class OrderResponse
+        {
+            public bool result;
+            public string msg;
+            public OrderEntryResponse order;
+        }
+
+        internal class OrderEntryResponse
+        {
+            public string id;
+            public string status;
+            public string pair;
+            public string type;
+            public decimal rate;
+            public decimal amount;
+            public decimal initial_rate;
+            public decimal initial_amount;
+        }
+
+        internal class WithdrawalResponse
+        {
+            public bool success;
+            public string messa;
+        }
+
+        #endregion
     }
 }
