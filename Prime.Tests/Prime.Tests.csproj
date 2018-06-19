@@ -18,7 +18,6 @@
     <ProjectReference Include="..\Ext\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance\Prime.Finance.csproj" />
-    <ProjectReference Include="..\Ext\Prime.Manager.Client\Prime.Manager.Client.csproj" />
     <ProjectReference Include="..\Ext\Prime.Manager\Prime.Manager.csproj" />
   </ItemGroup>
 </Project>

@@ -23,7 +23,6 @@
     <ProjectReference Include="..\Ext\Prime.IPFS\Prime.IPFS.Win64\Prime.IPFS.Win64.csproj" />
     <ProjectReference Include="..\Ext\Prime.IPFS\Prime.IPFS.Win\Prime.IPFS.Win.csproj" />
     <ProjectReference Include="..\Ext\Prime.IPFS\Prime.IPFS\Prime.IPFS.csproj" />
-    <ProjectReference Include="..\Ext\Prime.Manager.Client\Prime.Manager.Client.csproj" />
     <ProjectReference Include="..\Ext\Prime.Manager\Prime.Manager.csproj" />
     <ProjectReference Include="..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />
     <ProjectReference Include="..\Ext\Prime.PackageManager\Prime.PackageManager\Prime.PackageManager.csproj" />

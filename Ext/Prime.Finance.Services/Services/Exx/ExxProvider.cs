@@ -49,6 +49,15 @@ namespace Prime.Finance.Services.Services.Exx
             return r?.Count > 0;
         }
 
+        public async Task<bool> TestPrivateApiAsync(ApiPrivateTestContext context)
+        {
+            throw new NotImplementedException();
+            var api = ApiProvider.GetApi(context);
+            //    var r = await api.GetUserInfoAsync().ConfigureAwait(false);
+
+            //  return r?.data != null;
+        }
+
         public async Task<AssetPairs> GetAssetPairsAsync(NetworkProviderContext context)
         {
             var api = ApiProvider.GetApi(context);
@@ -147,7 +156,7 @@ namespace Prime.Finance.Services.Services.Exx
 
         private bool CheckTickerResponse(ExxSchema.TickerEntryResponse ticker)
         {
-            return (decimal) ticker.vol + ticker.last + ticker.sell + ticker.buy + ticker.weekRiseRate +
+            return (decimal)ticker.vol + ticker.last + ticker.sell + ticker.buy + ticker.weekRiseRate +
                    ticker.riseRate + ticker.high + ticker.low +
                    ticker.monthRiseRate != 0m;
         }
@@ -159,7 +168,7 @@ namespace Prime.Finance.Services.Services.Exx
 
             var r = await api.GetOrderBookAsync(pairCode).ConfigureAwait(false);
             var orderBook = new OrderBook(Network, context.Pair);
-            
+
             var maxCount = Math.Min(1000, context.MaxRecordsCount);
 
             var asks = r.asks.Take(maxCount);
