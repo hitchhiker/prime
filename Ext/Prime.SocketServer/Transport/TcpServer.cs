@@ -143,7 +143,7 @@ namespace Prime.SocketServer
         {
             if (!identifiedClient.TcpClient.Connected)
             {
-                L.Warn("Attempted to write to closed TcpClient.");
+                Warn("Attempted to write to closed TcpClient.");
                 return;
             }
 
@@ -160,9 +160,14 @@ namespace Prime.SocketServer
 
         public event EventHandler<Exception> ExceptionOccurred;
 
-        private void Log(string text)
+        private void Log(string text, LoggingLevel loggingLevel = LoggingLevel.Status)
         {
-            L.Log($"({typeof(TcpServer).Name}) : {text}");
+            L.Log($"{typeof(TcpServer).Name}: {text}", loggingLevel);
+        }
+
+        private void Warn(string text)
+        {
+            Log(text, LoggingLevel.Warning);
         }
     }
 }
