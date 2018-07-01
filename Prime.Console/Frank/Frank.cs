@@ -9,7 +9,9 @@ namespace Prime.Console.Frank
     {
         public static void Go(ServerContext s, ClientContext c)
         {
-            //new ReflectionTests(s).Go();
+            new ReflectionTests2(s).Go();
+
+            //new ReflectionTests1(s).Go();
 
             //new IpfsMessageTest(s).Go();
 
@@ -23,7 +25,7 @@ namespace Prime.Console.Frank
 
             //PackageTests.PackageCoordinator(s);
 
-            PackageTests.PackageCatalogue(c);
+            //PackageTests.PackageCatalogue(c);
         }
     }
 }

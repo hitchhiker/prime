@@ -35,7 +35,7 @@
     <ProjectReference Include="..\Platform\Prime.Windows\Prime.Core.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.2" />

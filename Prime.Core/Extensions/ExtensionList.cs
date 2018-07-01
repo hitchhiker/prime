@@ -43,12 +43,22 @@ namespace Prime.Core
             if (config.InstallConfig.Installs.All(x => x.Id != extensionId))
                 return null;
 
-            var redirectPath = config.RedirectConfig.Redirects.FirstOrDefault(x => x.Id == extensionId)?.Path;
+            var redirectPath = GetPackageRedirection(extensionId);
             if (redirectPath != null)
-                return new DirectoryInfo(redirectPath.GetFullPath(_manager.Context.ConfigDirectoryInfo));
+                return redirectPath;
 
-            return null;
+            var iDir = _manager.Context.FileSystem.InstallDirectory;
+            var dirs = iDir.GetDirectories("*-" + extensionId, SearchOption.TopDirectoryOnly).ToList();
+            if (dirs.Count != 1)
+                return null;
+
+            return dirs.First();
         }
 
+        public DirectoryInfo GetPackageRedirection(ObjectId extensionId)
+        {
+            var redirectPath = _manager.Config.RedirectConfig.Redirects.FirstOrDefault(x => x.Id == extensionId)?.Path;
+            return redirectPath != null ? new DirectoryInfo(redirectPath.GetFullPath(_manager.Context.ConfigDirectoryInfo)) : null;
+        }
     }
 }

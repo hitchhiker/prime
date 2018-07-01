@@ -38,7 +38,7 @@ namespace Prime.Core
 
             var dir = ExtensionList.GetPackageDirectory(id);
             if (dir == null)
-                return default; //TODO: Include real catalogue
+                return default;
             
             ext = (T)Loader.LoadExtension<T>(dir);
             if (ext != null)

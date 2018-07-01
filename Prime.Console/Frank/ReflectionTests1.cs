@@ -2,9 +2,9 @@
 
 namespace Prime.Console.Frank
 {
-    public class ReflectionTests : TestServerBase
+    public class ReflectionTests1 : TestServerBase
     {
-        public ReflectionTests(ServerContext server) : base(server)
+        public ReflectionTests1(ServerContext server) : base(server)
         {
         }
 
