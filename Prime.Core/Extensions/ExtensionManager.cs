@@ -1,30 +1,30 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Prime.Base;
+using Prime.Extensions;
 
 namespace Prime.Core
 {
-    public class ExtensionManager : UniqueList<ExtensionInstance>
+    public class ExtensionManager
     {
         public readonly ServerContext Context;
         public readonly PackageConfig Config;
         public readonly TypeCatalogue Types;
         public readonly AssemblyCatalogue Assemblies;
-        public readonly ExtensionLoader Loader;
-        public readonly ExtensionList ExtensionList;
+        public readonly ExtensionList Instances;
 
         public ExtensionManager(ServerContext context)
         {
             Context = context;
             Config = Context.Config.PackageConfig;
-            Loader = new ExtensionLoader(this);
-            ExtensionList = new ExtensionList(this);
+            Instances = new ExtensionList(this);
             Assemblies = context.Assemblies;
             Types = context.Types;
         }
 
-        public void LoadInstalled()
+        public void LoadInstallConfig()
         {
             foreach (var i in Config.InstallConfig.Installs)
                 Load<IExtension>(i.Id);
@@ -32,19 +32,40 @@ namespace Prime.Core
 
         public T Load<T>(ObjectId id) where T : class, IExtension
         {
-            var ext = ExtensionList.PreCheck<T>(id);
+            var ext = Instances.PreCheck<T>(id);
             if (ext != null)
                 return ext;
 
-            var dir = ExtensionList.GetPackageDirectory(id);
+            var dir = Instances.GetPackageDirectory(id);
             if (dir == null)
                 return default;
-            
-            ext = (T)Loader.LoadExtension<T>(dir);
-            if (ext != null)
-                ExtensionList.Init(ext);
 
-            return ext;
+            var loaded = LoadExtension<T>(id, dir);
+            if (loaded == null)
+                return default;
+
+            Instances.Init(loaded);
+            Context.AddInitialisedExtension(loaded);
+            return loaded;
+        }
+
+        private T LoadExtension<T>(ObjectId id, DirectoryInfo dir) where T : class, IExtension
+        {
+            var loader = new ExtensionLoaderComposition();
+            loader.LoadExtensions(dir);
+
+            var exts = loader.ExtensionsAll.Where(x => x.Id == id).ToList();
+
+            if (exts.Count == 0)
+                return default;
+
+            if (exts.Count == 1 && exts[0] is IExtensionPlatform p && p.Platform == Platform.NotSpecified)
+                return exts[0] as T;
+
+            if (exts.Count == 1 && !(exts[0] is IExtensionPlatform))
+                return exts[0] as T;
+
+            return exts.OfType<IExtensionPlatform>().FirstOrDefault(x => x.Platform == Context.PlatformCurrent) as T;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Prime.IPFS
 
             var ctx = new IpfsInstanceContext(pc, new IpfsPlatformWin64(new IpfsWin64Extension()))
             {
-                Logger = logger
+                L = logger
             };
 
             var ipfs = new IpfsInstance(ctx);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Text;
 using LiteDB;
 using Prime.Base;
@@ -7,6 +8,7 @@ using Prime.Core;
 
 namespace Prime.Finance.Services
 {
+    [Export(typeof(IExtension))]
     public class ExtensionInfo : IExtension
     {
         private static readonly ObjectId _id = "prime:finance-services".GetObjectIdHashCode();

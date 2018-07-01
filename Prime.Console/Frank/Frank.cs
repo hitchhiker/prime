@@ -7,13 +7,15 @@ namespace Prime.Console.Frank
 {
     public class Frank
     {
-        public static void Go(ServerContext s, ClientContext c)
+        public static void Go(Core.PrimeInstance primeInstance, ClientContext c)
         {
-            new ReflectionTests2(s).Go();
+            var s = primeInstance.Context;
+
+            new IpfsMessageTest(primeInstance).Go();
+
+            //new ReflectionTests2(primeInstance).Go();
 
             //new ReflectionTests1(s).Go();
-
-            //new IpfsMessageTest(s).Go();
 
             //new WebSocketServerTest(s, c).Go();
 

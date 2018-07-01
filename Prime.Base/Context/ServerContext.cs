@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using GalaSoft.MvvmLight.Messaging;
@@ -17,6 +18,8 @@ namespace Prime.Core
         public readonly Platform PlatformCurrent;
         public readonly AssemblyCatalogue Assemblies;
         public readonly TypeCatalogue Types;
+        public IReadOnlyList<IExtension> Extensions => _extensions;
+        private readonly List<IExtension> _extensions = new List<IExtension>();
 
         public ServerContext() : this("[src]/instance/prime-server.config") { } //used for testing / debug
 
@@ -41,6 +44,12 @@ namespace Prime.Core
             M = m;
             Users = new Users(this);
             Public = new PublicContext(this);
+        }
+
+        public void AddInitialisedExtension(IExtension extension)
+        {
+            _extensions.RemoveAll(x => x.Id == extension.Id);
+            _extensions.Add(extension);
         }
 
         private static ServerContext _testing = new ServerContext();

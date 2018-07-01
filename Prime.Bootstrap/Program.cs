@@ -13,8 +13,8 @@ namespace Prime.Bootstrap
     {
         static void Main(string[] args)
         {
-            var host = new WebHostBuilder().UseUrls("http://localhost").UseKestrel().UseStartup<Startup>().Build();
-            host.Run();
+            //var host = new WebHostBuilder().UseUrls("http://localhost").UseKestrel().UseStartup<Startup>().Build();
+           // host.Run();
         }
 
         public class Startup

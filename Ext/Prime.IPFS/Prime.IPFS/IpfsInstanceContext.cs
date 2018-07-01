@@ -12,12 +12,13 @@ namespace Prime.IPFS
             ServerContext = context;
             WorkspaceDirectory = context.FileSystem.GetExtWorkspace(platform.Instance);
             Platform = platform;
+            L = context.L ?? new NullLogger();
         }
 
         public DirectoryInfo WorkspaceDirectory { get; private set; }
 
         public IpfsPlatformBase Platform { get; private set; }
 
-        public ILogger Logger { get; set; }
+        public ILogger L { get; set; }
     }
 }

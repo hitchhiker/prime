@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="System.Composition" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />

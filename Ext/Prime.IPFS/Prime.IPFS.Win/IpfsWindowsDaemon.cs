@@ -15,13 +15,10 @@ namespace Prime.IPFS
     {
         private readonly IpfsInstance _instance;
 
-        public event EventHandler OnStateChanged;
-
         private Process _process;
         private bool _requiresInit;
         private bool _lockWait;
         private Timer _externalPollTimer;
-        private DaemonState _currentState;
         private ExecuteDos.DosContext _dosContext;
 
         public bool RedirectRepository { get; set; } = true;
@@ -35,16 +32,6 @@ namespace Prime.IPFS
         }
 
         public ILogger L => _instance.L;
-
-        private DaemonState CurrentState
-        {
-            get => _currentState;
-            set
-            {
-                _currentState = value;
-                OnStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
 
         private volatile bool _isStarted;
 
@@ -88,7 +75,6 @@ namespace Prime.IPFS
             CurrentState = DaemonState.Stopping;
         }
 
-
         private void InitForExternal()
         {
             L.Info("IPFS is already running on this machine, we're using that instance.");
@@ -123,7 +109,7 @@ namespace Prime.IPFS
 
             CurrentState = DaemonState.Starting;
 
-            var processContext = new DosProcessContext("daemon --init",
+            var processContext = new DosProcessContext("daemon --init --enable-pubsub-experiment",
                 message =>
                 {
                     if (message.Contains("Daemon is ready", StringComparison.OrdinalIgnoreCase))
@@ -269,13 +255,13 @@ namespace Prime.IPFS
                         dosContext.Cancelled = true;
                     if (c == DosCancellation.StopLogging || c == DosCancellation.Terminate)
                         stoplogging = true;
-                }
-                
-                if (error.Contains("prometheus collector", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
-                    return;
+               
+                    if (error.Contains("prometheus collector", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
+                        return;
 
-                if (error.Contains("mbinding.go:", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
-                    return;
+                    if (error.Contains("mbinding.go:", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
+                        return;
+                }
 
                 if (!stoplogging && !string.IsNullOrEmpty(error))
                     L.Error(error);

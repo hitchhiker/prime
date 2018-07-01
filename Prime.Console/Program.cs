@@ -33,9 +33,9 @@ namespace TestConsole
 
             serverCtx.L = clientCtx.L = new ConsoleLogger();
 
-            var prime = new Prime.Core.Prime(serverCtx);
-            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
-            prime.Extensions.LoadInstalled();
+            var prime = new Prime.Core.PrimeInstance(serverCtx);
+            //prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            prime.ExtensionManager.LoadInstallConfig();
 
             serverCtx.Assemblies.Refresh();
             serverCtx.Types.Refresh();
@@ -44,11 +44,6 @@ namespace TestConsole
             var i = ClassTestBase.Test();
             i=i+ ClassTestCore.Test();
             // end HACK
-
-            if (args != null && args.Length == 2 && args[0] == "-ext")
-            {
-               // var asm = Assembly.LoadFrom(args[1]);
-            }
 
             var userName = Environment.UserName.ToLower();
             
@@ -66,7 +61,7 @@ namespace TestConsole
             }
             else if (userName.Equals("hitchhiker"))
             {
-                Frank.Go(serverCtx, clientCtx);
+                Frank.Go(prime, clientCtx);
                 /*
                 var ft = TypeCatalogue.I.ImplementInstances<IFrankTest>().FirstOrDefault();
                 if (ft == null)

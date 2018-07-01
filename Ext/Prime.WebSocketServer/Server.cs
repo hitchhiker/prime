@@ -72,7 +72,7 @@ namespace Prime.WebSocketServer
 
         public void Send<T>(T message) where T : BaseTransportMessage
         {
-            L.Log($"WsServer sending message...");
+            L.Log($"WsServer sending " + message.GetType().Name);
 
             var data = _commonJsonDataProvider.Serialize(message);
 

@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Nito.AsyncEx;
 using Prime.Core;
 
 namespace Prime.IPFS.Messaging {
@@ -36,7 +37,14 @@ namespace Prime.IPFS.Messaging {
 
         private void SendIpfsVersion()
         {
-            M.SendAsync(new IpfsVersionResponse() {Version = "Hello IPFS world!"});
+            if (_ipfs.Daemon.CurrentState == DaemonState.Running)
+            {
+                AsyncContext.Run(async () =>
+                {
+                    var v = await _ipfs.Client.VersionAsync();
+                    M.SendAsync(new IpfsVersionResponse() { Version = v.Get("Version"), Items = v });
+                });
+            }
         }
 
         public void SendIpfsStatus()

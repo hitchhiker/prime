@@ -25,9 +25,9 @@ namespace Prime.Manager.Client
             
             // Run Prime.
             
-            var prime = new Prime.Core.Prime(sCtx);
-            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
-            prime.Extensions.LoadInstalled();
+            var prime = new Prime.Core.PrimeInstance(sCtx);
+            //prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            prime.ExtensionManager.LoadInstallConfig();
 
             sCtx.Assemblies.Refresh();
             sCtx.Types.Refresh();

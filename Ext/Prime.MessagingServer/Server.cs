@@ -37,7 +37,8 @@ namespace Prime.MessagingServer
 
         public void Start()
         {
-            L.Log("Starting message servers");
+            LoadExtensions();
+            L.Log($"Starting message server with {_extensions.Count} extensions.");
             M.RegisterAsync<BaseTransportMessage>(this, PossibleSendMessage, true);
             M.RegisterAsync<ExternalMessage>(this, ReceiveMessage);
             _extensions.ForEach(x => x.Start(this));
@@ -54,7 +55,7 @@ namespace Prime.MessagingServer
         public void LoadExtensions()
         {
             _extensions.Clear();
-            _extensions.AddRange(ServerContext.Types.ImplementInstances<IMessageServerExtension>());
+            _extensions.AddRange(ServerContext.Extensions.OfType<IMessageServerExtension>());
         }
 
         private void ReceiveMessage(ExternalMessage m)
