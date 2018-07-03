@@ -1,18 +1,16 @@
-﻿using Prime.Base;
-using Prime.Core;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Base;
+using Prime.Core;
 using Prime.MessagingServer.Data;
 
-namespace Prime.SocketServer
+namespace Prime.SocketServer.Transport
 {
     public class TcpServer
     {
@@ -45,7 +43,7 @@ namespace Prime.SocketServer
             _listener = new TcpListener(address, port);
             _listener.Start();
 
-            Log("TCP socket server started.");
+            Log($"started on {_listener.LocalEndpoint}.");
             WaitForClient();
         }
 
@@ -59,7 +57,7 @@ namespace Prime.SocketServer
             foreach (var connectedClient in _connectedClients)
                 connectedClient.Dispose();
 
-            Log("TCP socket server stopped.");
+            Log("stopped.");
         }
 
         private ExternalMessage UnpackResponse(string response, IdentifiedClient sender)
@@ -113,7 +111,7 @@ namespace Prime.SocketServer
                                 }
                                 catch (Exception e)
                                 {
-                                    L.Error("Exception in TcpServer: " + e.Message);
+                                    Error(e.Message);
                                 }
                             }
                         }
@@ -126,7 +124,7 @@ namespace Prime.SocketServer
                 }
             });
 
-            Log("Client connected");
+            Log("client connected");
             WaitForClient();
         }
 
@@ -162,7 +160,12 @@ namespace Prime.SocketServer
 
         private void Log(string text, LoggingLevel loggingLevel = LoggingLevel.Status)
         {
-            L.Log($"{typeof(TcpServer).Name}: {text}", loggingLevel);
+            L.Log($"{SocketServerContext.LogServerName}: {text}", loggingLevel);
+        }
+
+        private void Error(string text)
+        {
+            Log(text, LoggingLevel.Error);
         }
 
         private void Warn(string text)

@@ -59,7 +59,7 @@ namespace Prime.Console.Frank.Socket
             var settings = new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.Objects,
-                SerializationBinder = server.TypeBinder
+                SerializationBinder = new MessageTypeNameSerializationBinder(ServerContext.Testing)
             };
 
             var dataString = JsonConvert.SerializeObject(msg, settings);

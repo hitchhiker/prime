@@ -1,5 +1,6 @@
 ﻿using Prime.Core;
 using System;
+using Prime.Core.Testing;
 
 namespace Prime
 {
@@ -11,11 +12,16 @@ namespace Prime
     {
         static void Main(string[] args)
         {
+            new Program().Run();
+        }
+
+        private void Run()
+        {
             var logger = new ConsoleLogger() { IncludePreamble = true };
 
             logger.Log("OS: " + Environment.OSVersion.Platform);
             logger.Log("Current directory: " + Environment.CurrentDirectory);
-            
+
             var sCtx = new ServerContext()
             {
                 L = logger
@@ -32,6 +38,11 @@ namespace Prime
             // Run Messaging Server.
             var server = new MessagingServer.Server(sCtx);
             server.Start();
+
+            server.M.Register<HelloRequest>(this, (request) =>
+            {
+                logger.Log($"{request.GetType()} received.");
+            });
 
             logger.Log("Prime started");
 

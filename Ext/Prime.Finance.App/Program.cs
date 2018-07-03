@@ -1,4 +1,5 @@
 ﻿using System;
+using Prime.Core;
 
 namespace Prime.Finance.App
 {
@@ -6,7 +7,12 @@ namespace Prime.Finance.App
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var logger = new ConsoleLogger() { IncludePreamble = true };
+
+            logger.Log("Operating system: " + Environment.OSVersion.Platform);
+            logger.Log("Current directory: " + Environment.CurrentDirectory);
+
+            logger.Log("Prime.Finance started");
         }
     }
 }

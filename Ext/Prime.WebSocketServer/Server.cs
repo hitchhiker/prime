@@ -66,14 +66,14 @@ namespace Prime.WebSocketServer
         public void Start()
         {
             _webSocketServer.Start();
-            L.Log($"WebSocket: server started.");
+            L.Log($"{WebSocketServerContext.LogServerName}: started on {_webSocketServer.Address}:{_webSocketServer.Port}.");
         }
 
         public void Stop()
         {
             _webSocketServer.RemoveWebSocketService("/");
             _webSocketServer.Stop();
-            L.Log($"WebSocket: server stopped.");
+            L.Log($"{WebSocketServerContext.LogServerName}: stopped.");
         }
 
         public void Send<T>(T message) where T : BaseTransportMessage
@@ -81,7 +81,7 @@ namespace Prime.WebSocketServer
             if(message.IsRemote)
                 return;
 
-            L.Log($"WebSocket: sending message...");
+            L.Log($"{WebSocketServerContext.LogServerName}: sending message...");
 
             var data = _commonJsonDataProvider.Serialize(message);
 

@@ -9,7 +9,9 @@ namespace Prime.SocketServer
         public readonly ServerContext ServerContext;
         public readonly MessagingServer.Server MessagingServer;
         public readonly IPAddress IpAddress = IPAddress.Any;
-        public readonly short PortNumber = 19991;
+        public readonly short PortNumber = 9991;
+
+        public const string LogServerName = "Socket server";
 
         public SocketServerContext(MessagingServer.Server server, IPAddress ipAddress, short portNumber) : this(server)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Prime.Core;
+using Prime.SocketServer.Transport;
 
 namespace Prime.SocketServer
 {
@@ -46,7 +47,7 @@ namespace Prime.SocketServer
             {
                 var client = TcpServer.GetClient(message.SessionId);
                 if (client == null)
-                    _serverContext.L.Error("Socket server: ClientID " + message.SessionId + " is not a registered client.");
+                    L.Error($"{SocketServerContext.LogServerName}: ClientID " + message.SessionId + " is not a registered client.");
                 else
                     TcpServer.Send(client, message);
             }
@@ -54,12 +55,7 @@ namespace Prime.SocketServer
 
         private void TcpServerOnExceptionOccurred(object sender, Exception exception)
         {
-            Log($"Socket server error occurred: {exception.Message}");
-        }
-
-        private void Log(string text)
-        {
-            L.Log($"({typeof(Server).Name}) : {text}");
+            L.Error($"{SocketServerContext.LogServerName} error: {exception.Message}");
         }
     }
 }
