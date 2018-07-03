@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Composition;
 using Prime.Base;
 using Prime.Core;
 
 namespace Prime.MessagingServer
 {
-    public class ServerExtension : IExtensionExecute
+    [Export(typeof(IExtension))]
+    public class ServerExtension : IExtensionExecute, IExtensionStartup
     {
         private static readonly ObjectId _id = "prime:messageserver".GetObjectIdHashCode();
         public ObjectId Id => _id;
@@ -18,6 +20,11 @@ namespace Prime.MessagingServer
         public void Main(ServerContext context)
         {
             MessageServerInstance = new Server(context);
+        }
+
+        public void PrimeStarted()
+        {
+            MessageServerInstance.Start();
         }
     }
 }

@@ -8,10 +8,12 @@ namespace Prime.Console.Frank
         protected readonly ServerContext S;
         protected readonly IMessenger M;
         protected readonly ILogger L;
+        protected readonly Core.PrimeInstance P;
 
-        protected TestServerBase(ServerContext server)
+        protected TestServerBase(Core.PrimeInstance server)
         {
-            S = server;
+            P = server;
+            S = server.Context;
             M = S.M;
             L = S.L;
         }

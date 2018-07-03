@@ -44,6 +44,8 @@ namespace Prime.PackageManager
 
             File.WriteAllText(catJson.FullName, JsonConvert.SerializeObject(jsonObject, Formatting.Indented));
 
+            _context.L.Info($"{catJson.FullName} catalogue written.");
+
             return jsonObject;
         }
 

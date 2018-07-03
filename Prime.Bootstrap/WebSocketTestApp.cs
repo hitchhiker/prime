@@ -36,8 +36,8 @@ namespace Prime.Bootstrap
                 L = new ConsoleLogger()
             };
             
-            var prime = new Prime.Core.Prime(S);
-            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            var prime = new Prime.Core.PrimeInstance(S);
+            //prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
             
             StartServer();
         }

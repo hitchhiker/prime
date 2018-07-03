@@ -28,9 +28,9 @@ namespace Prime
             };
 
             // Run Prime.
-            var prime = new Prime.Core.Prime(sCtx);
-            prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
-            prime.Extensions.LoadInstalled();
+            var prime = new PrimeInstance(sCtx);
+            //prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
+            //prime.Extensions.LoadInstalled();
 
             sCtx.Assemblies.Refresh();
             sCtx.Types.Refresh();

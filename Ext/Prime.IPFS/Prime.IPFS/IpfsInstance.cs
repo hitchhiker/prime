@@ -19,7 +19,6 @@ namespace Prime.IPFS
         public IpfsInstance(IpfsInstanceContext context)
         {
             Context = context;
-            Context.Logger = Context.Logger ?? new NullLogger();
 
             ExecutingDirectory = new FileInfo(GetType().Assembly.Location).Directory;
 
@@ -33,9 +32,14 @@ namespace Prime.IPFS
                 context.Platform.Install(this);
 
             Messenger = new IpfsMessenger(this);
+
+            Daemon.StateChangedAction = m =>
+            {
+                Messenger.SendIpfsStatus();
+            };
         }
 
-        public ILogger L => Context.Logger;
+        public ILogger L => Context.L;
 
         private DirectoryInfo _repoDirectory;
         public DirectoryInfo RepoDirectory => _repoDirectory ?? (_repoDirectory = WorkspaceDirectory.EnsureSubDirectory("repo"));
@@ -57,23 +61,22 @@ namespace Prime.IPFS
 
         public void Start()
         {
-            Daemon.Start();
+            Messenger.Stop();
             Messenger.Start();
-            Messenger.SendIpfsStatus();
+            Daemon.Start();
         }
 
         public void Stop()
         {
-            Messenger.Stop();
             Daemon.Stop();
-            Messenger.SendIpfsStatus();
+            Messenger.Stop();
         }
 
         private bool IsInstalled()
         {
             return NativeExecutable.Exists;
         }
-
+        
         public bool IsIpfsExternalRunning()
         {
             var client = new IpfsClient();

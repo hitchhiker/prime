@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Text;
 using Prime.Base;
 using Prime.Core;
@@ -7,6 +8,7 @@ using Prime.MessagingServer;
 
 namespace Prime.WebSocketServer
 {
+    [Export(typeof(IExtension))]
     public class ServerExtension : IMessageServerExtension
     {
         private static readonly ObjectId _id = "prime:websocketserver".GetObjectIdHashCode();

@@ -7,11 +7,15 @@ namespace Prime.Console.Frank
 {
     public class Frank
     {
-        public static void Go(ServerContext s, ClientContext c)
+        public static void Go(Core.PrimeInstance primeInstance, ClientContext c)
         {
-            //new ReflectionTests(s).Go();
+            var s = primeInstance.Context;
 
-            //new IpfsMessageTest(s).Go();
+            new IpfsMessageTest(primeInstance).Go();
+
+            //new ReflectionTests2(primeInstance).Go();
+
+            //new ReflectionTests1(s).Go();
 
             //new WebSocketServerTest(s, c).Go();
 
@@ -23,7 +27,7 @@ namespace Prime.Console.Frank
 
             //PackageTests.PackageCoordinator(s);
 
-            PackageTests.PackageCatalogue(c);
+            //PackageTests.PackageCatalogue(c);
         }
     }
 }

@@ -11,11 +11,14 @@ namespace Prime.Core
 
         public IExtension Extension { get; }
 
+        public bool IsLoaded { get; }
+
         public ExtensionInstance(IExtension ext)
         {
             Id = ext.Id;
             Version = ext.Version;
             Extension = ext;
+            IsLoaded = true;
         }
 
         public ExtensionInstance(ObjectId id)
