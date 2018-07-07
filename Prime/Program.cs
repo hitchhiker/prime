@@ -27,13 +27,13 @@ namespace Prime
                 L = logger
             };
 
-            // Run Prime.
-            var prime = new PrimeInstance(sCtx);
-            //prime.Extensions.Loader.LoadAllBinDirectoryAssemblies();
-            //prime.Extensions.LoadInstalled();
-
             sCtx.Assemblies.Refresh();
             sCtx.Types.Refresh();
+
+            // Run Prime.
+            var prime = new PrimeInstance(sCtx);
+            prime.ExtensionManager.LoadInstallConfig();
+            prime.Start();
 
             // Run Messaging Server.
             var server = new MessagingServer.Server(sCtx);

@@ -19,7 +19,7 @@ namespace Prime.Core
 
         public void Start()
         {
-            ExtensionManager.Instances.Select(s=> s.Extension).OfType<IExtensionStartup>().ForEach(x => x.PrimeStarted());
+            ExtensionManager.Instances.Select(s => s.Extension).OfType<IExtensionStartup>().ForEach(x => x.PrimeStarted());
         }
     }
 }

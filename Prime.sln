@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Core", "Prime.Core\Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance.Services", "Ext\Prime.Finance.Services\Prime.Finance.Services.csproj", "{CD1E8436-65E0-4E8D-9977-6C94CE631A21}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Manager.App", "Ext\Prime.Manager.App\Prime.Manager.App.csproj", "{EBAE560E-4432-4343-B781-560FCF4A96A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Manager.Client", "Ext\Prime.Manager.Client\Prime.Manager.Client.csproj", "{EBAE560E-4432-4343-B781-560FCF4A96A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance", "Ext\Prime.Finance\Prime.Finance.csproj", "{BB9FAB25-C19C-4013-B88C-FBAC06F58715}"
 EndProject
@@ -83,7 +83,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Linux", "Linux", "{5E8009B9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Console.Win", "Prime.Console.Win\Prime.Console.Win.csproj", "{AB908E2B-86D0-474A-B0BD-2573C9108E07}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance.App", "Ext\Prime.Finance.App\Prime.Finance.App.csproj", "{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.Finance.Client", "Ext\Prime.Finance.Client\Prime.Finance.Client.csproj", "{4127DBAD-4AA0-441E-8FE1-3AB7350DC04A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime", "Prime\Prime.csproj", "{A8323234-507A-49EF-ACB6-5F95A2C09039}"
 EndProject
