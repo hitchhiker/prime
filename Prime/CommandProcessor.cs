@@ -34,12 +34,19 @@ namespace Prime
 
             command = GetCommandByShort(command);
 
-            if (!_commandBindings.TryGetValue(command, out var action))
+            var key = FindKeyByCommand(command);
+            
+            if (!_commandBindings.TryGetValue(key, out var action))
             {
                 Console.WriteLine("Command not found. Print '?' to list all commands.");
             }
 
             action?.Invoke(command);
+        }
+
+        private string FindKeyByCommand(string command)
+        {
+            return _commandBindings.Keys.FirstOrDefault(x => command.StartsWith(x, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Start()
@@ -66,7 +73,8 @@ namespace Prime
             var abbr = allCommands.ToDictionary((s) =>
                 {
                     var parts = s.Split('-');
-                    return parts.Length == 0 ? s : parts.Aggregate("", (s1, s2) => s1 + s2.First());
+                    var key = parts.Length > 1 ? parts.Aggregate("", (s1, s2) => s1 + s2.First()) : s;
+                    return key;
                 },
                 s => s);
 
