@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { ISocketClient } from '../models/interfaces/ISocketClient';
 import { LoggerService } from './logger.service';
 import { SocketState } from '../models/socket-state';
-import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage, BaseRequestMessage, BaseResponseMessage, GetSupportedMarketsRequestMessage, GetSupportedMarketsResponseMessage } from '../models/messages';
+import { ProvidersListRequestMessage, BaseMessage, TestPrivateApiRequestMessage, ProvidersListResponseMessage, ProviderDetailsResponseMessage, ProviderDetailsRequestMessage, ProviderSaveKeysRequestMessage, ProviderSaveKeysResponseMessage, PrivateProvidersListResponseMessage, PrivateProvidersListRequestMessage, DeleteProviderKeysResponseMessage, DeleteProviderKeysRequestMessage, TestPrivateApiResponseMessage, ProviderHasKeysResponseMessage, ProviderHasKeysRequestMessage, BaseRequestMessage, BaseResponseMessage, GetSupportedMarketsRequestMessage, GetSupportedMarketsResponseMessage, DownloadFileResponseMessage, DownloadFileRequestMessage } from '../models/messages';
 import { PrivateApiContext } from '../models/private-api-context';
 import { GetProviderDetailsMessage } from 'models/core/msgs/Messages';
 import { ExchangeDetails } from '../models/ExchangeDetails';
@@ -65,7 +65,7 @@ export class PrimeSocketService {
             this.onErrorOccurred.next();
         };
 
-        this.socketClient.connect('ws://127.0.0.1:9991/');
+        this.socketClient.connect('ws://127.0.0.1:9992/');
     }
 
     // Socket messaging.
@@ -84,6 +84,10 @@ export class PrimeSocketService {
 
     test() {
         this.writeSocket("Hello");
+    }
+
+    downloadFile(callback: (data: DownloadFileResponseMessage) => void) {
+        this.writeSocketMessage(new DownloadFileRequestMessage(), callback);
     }
 
     getPrivateProvidersList(callback: (data: PrivateProvidersListResponseMessage) => void) {

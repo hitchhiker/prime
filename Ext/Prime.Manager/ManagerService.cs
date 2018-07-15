@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using Prime.Base.Messaging.Manager;
@@ -43,6 +44,17 @@ namespace Prime.Manager
             M.RegisterAsync<GenerateGuidRequestMessage>(this, FakeClientGuidHandler);
             M.RegisterAsync<ProviderHasKeysRequestMessage>(this, ProviderHasKeysHandler);
             M.RegisterAsync<GetSupportedMarketsRequestMessage>(this, GetSupportedMarketsHandler);
+            M.RegisterAsync<DownloadFileRequestMessage>(this, DownloadFileHandler);
+        }
+
+        private void DownloadFileHandler(DownloadFileRequestMessage request)
+        {
+            Log("Sending base64 file...");
+
+            M.SendAsync(new DownloadFileResponseMessage(request)
+            {
+                FileBase64 = Convert.ToBase64String(Encoding.Default.GetBytes("Hello world"))
+            });
         }
 
         private void GetSupportedMarketsHandler(GetSupportedMarketsRequestMessage request)

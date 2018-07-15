@@ -17,6 +17,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { ChartComponent } from './chart/chart.component';
 import { ChartService } from './services/chart.service';
 import { PricingComponent } from './pricing/pricing.component';
+import { FileTransferComponent } from './file-transfer/file-transfer.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PricingComponent } from './pricing/pricing.component';
     ExchangeDialogComponent,
     FilterPipe,
     ChartComponent,
-    PricingComponent
+    PricingComponent,
+    FileTransferComponent
   ],
   imports: [
     BrowserModule,

@@ -164,4 +164,16 @@ export class ProviderKeysMessageResponse {
     Extra: string;
 }
 
+export class DownloadFileRequestMessage extends BaseRequestMessage {
+    createExpectedEmptyResponse(): BaseMessage {
+        return new DownloadFileResponseMessage();
+    }
+    $type: string = "prime.manager.downloadfilerequestmessage";
+}
+export class DownloadFileResponseMessage extends BaseResponseMessage {
+    $type: string = "prime.manager.downloadfileresponsemessage";;
+
+    fileBase64: string;
+}
+
 

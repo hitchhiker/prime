@@ -1,6 +1,7 @@
 ﻿using Prime.Core;
 using System;
 using Prime.Core.Testing;
+using Prime.KeysManager;
 
 namespace Prime
 {
@@ -37,7 +38,6 @@ namespace Prime
 
             // Run Messaging Server.
             var server = new MessagingServer.Server(sCtx);
-            server.Start();
 
             server.M.Register<HelloRequest>(this, (request) =>
             {
@@ -46,6 +46,12 @@ namespace Prime
 
             logger.Log("Prime started");
 
+            server.Start();
+
+            // HACK. Run WS server. Unable to load it using extension manager.
+            RunWs(server, sCtx);
+            // END HACK.
+
             // Run command processor.
             var commandProcessor = new CommandProcessor();
             commandProcessor.Bind("exit", (cmd) =>
@@ -53,7 +59,20 @@ namespace Prime
                 Environment.Exit(0);
             });
 
-            commandProcessor.Start();
+
+            Console.ReadKey();
+            //commandProcessor.Start();
+        }
+
+        [Obsolete("Remove this test code!!!")]
+        private void RunWs(MessagingServer.Server server, ServerContext sctx)
+        {
+            var manager = new ManagerServiceExtension();
+            manager.Main(sctx);
+
+            var wsServerExt = new Prime.WebSocketServer.ServerExtension();
+            server.Inject(wsServerExt);
+            wsServerExt.Start(server);
         }
     }
 }
