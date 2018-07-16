@@ -12,8 +12,9 @@
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="NetCrossRun.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="NetCrossRun.Core">
       <HintPath>..\lib\net-cross-run\NetCrossRun.Core.dll</HintPath>
+      <Private></Private>
     </Reference>
   </ItemGroup>
 </Project>

@@ -13,7 +13,6 @@ namespace Prime
         {
             L.Log("Starting Prime Web Console server...");
 
-
             var primeWebFi = GetExecutable();
             L.Log("Executable found. Starting...");
 
@@ -22,15 +21,13 @@ namespace Prime
 
         private void RunPrimeWebConsole(FileInfo fi)
         {
-            L.Log(fi);
-
             $"dotnet {fi.FullName}".ExecuteCommand(false, fi.DirectoryName).WaitForExit();
         }
 
         private FileInfo GetExecutable()
         {
             // TODO: change method of path getting.
-            var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../Prime.Web/bin/release/netcoreapp2.0/osx.10.12-x64/publish");
+            var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../Prime.Web/bin/Release/netcoreapp2.0/publish");
             var executableName = "Prime.Web.dll";
             var fullName = Path.Combine(pathToFolder, executableName);
             
