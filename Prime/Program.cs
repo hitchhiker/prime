@@ -13,9 +13,19 @@ namespace Prime
     {
         static void Main(string[] args)
         {
-            new Program().Run();
+            Console.WriteLine("--- Prime core ---");
+            var logger = new ConsoleLogger() { IncludePreamble = true};
+            
+            var primeWeb = new PrimeWeb()
+            {
+                L = logger
+            };
+            primeWeb.StartWebConsole();
+
+            Console.ReadKey();
         }
 
+        [Obsolete("Not used for the moment. Will be considered later.")]
         private void Run()
         {
             var logger = new ConsoleLogger() { IncludePreamble = true };

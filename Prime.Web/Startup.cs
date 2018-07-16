@@ -32,10 +32,12 @@ namespace Prime.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+#if DEBUG
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
                     HotModuleReplacement = true
                 });
+#endif
             }
             else
             {
@@ -52,7 +54,7 @@ namespace Prime.Web
 
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback",
-                    defaults: new { controller = "Home", action = "Index" });
+                    defaults: new {controller = "Home", action = "Index"});
             });
         }
 
@@ -61,7 +63,7 @@ namespace Prime.Web
             var provider = new FileExtensionContentTypeProvider();
             provider.Mappings[".exe"] = "application/octect-stream";
             provider.Mappings[".dll"] = "application/octect-stream";
-            return new StaticFileOptions { ContentTypeProvider = provider };
+            return new StaticFileOptions {ContentTypeProvider = provider};
         }
     }
 }
