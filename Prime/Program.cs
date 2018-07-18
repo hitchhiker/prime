@@ -1,5 +1,6 @@
 ﻿using Prime.Core;
 using System;
+using System.Threading.Tasks;
 using NetCrossRun.Core;
 using Prime.Core.Testing;
 using Prime.KeysManager;
@@ -15,12 +16,13 @@ namespace Prime
         static void Main(string[] args)
         {
             Console.WriteLine("--- Prime core ---");
-            var logger = new ConsoleLogger() { IncludePreamble = true};
-            
+            var logger = new ConsoleLogger() {IncludePreamble = true};
+
             var primeWeb = new PrimeWeb()
             {
                 L = logger
             };
+
             primeWeb.StartWebConsole();
 
             Console.ReadKey();
@@ -29,7 +31,7 @@ namespace Prime
         [Obsolete("Not used for the moment. Will be considered later.")]
         private void Run()
         {
-            var logger = new ConsoleLogger() { IncludePreamble = true };
+            var logger = new ConsoleLogger() {IncludePreamble = true};
 
             logger.Log("OS: " + Environment.OSVersion.Platform);
             logger.Log("Current directory: " + Environment.CurrentDirectory);
@@ -50,10 +52,7 @@ namespace Prime
             // Run Messaging Server.
             var server = new MessagingServer.Server(sCtx);
 
-            server.M.Register<HelloRequest>(this, (request) =>
-            {
-                logger.Log($"{request.GetType()} received.");
-            });
+            server.M.Register<HelloRequest>(this, (request) => { logger.Log($"{request.GetType()} received."); });
 
             logger.Log("Prime started");
 
@@ -65,10 +64,7 @@ namespace Prime
 
             // Run command processor.
             var commandProcessor = new CommandProcessor();
-            commandProcessor.Bind("exit", (cmd) =>
-            {
-                Environment.Exit(0);
-            });
+            commandProcessor.Bind("exit", (cmd) => { Environment.Exit(0); });
 
 
             Console.ReadKey();

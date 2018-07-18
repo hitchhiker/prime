@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Mime;
 using NetCrossRun.Core;
 using Prime.Core;
 
@@ -17,18 +15,25 @@ namespace Prime
             L.Log("Executable found. Starting...");
 
             RunPrimeWebConsole(primeWebFi);
+            
+            L.Log("Prime Web Console started.");
         }
 
         private void RunPrimeWebConsole(FileInfo fi)
         {
-            $"dotnet {fi.FullName}".ExecuteCommand(false, fi.DirectoryName).WaitForExit();
+            var webProcess = $"dotnet {fi.FullName}".ExecuteCommand(false, fi.DirectoryName);
         }
 
         private FileInfo GetExecutable()
         {
+            const string executableName = "Prime.Web.dll";
+            
             // TODO: change method of path getting.
-            var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../Prime.Web/bin/Release/netcoreapp2.0/publish");
-            var executableName = "Prime.Web.dll";
+            var relativePathPart = ExecuteOn.Os(
+                () => "../../../../Prime.Web/bin/Release/netcoreapp2.0/publish", 
+                () => "../../../../Prime.Web/bin/release/netcoreapp2.0/osx.10.12-x64/publish");
+            
+            var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePathPart);
             var fullName = Path.Combine(pathToFolder, executableName);
             
             var fi = new FileInfo(fullName);
