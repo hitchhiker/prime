@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -17,9 +16,10 @@ namespace Prime.SocketServer.Transport
         private readonly Server _server;
         private TcpListener _listener;
         private readonly CommonJsonDataProvider _dataProvider;
-        
-        private readonly ConcurrentBag<IdentifiedClient> _connectedClients = new ConcurrentBag<IdentifiedClient>();
-        
+
+        private readonly ConcurrentDictionary<ObjectId, IdentifiedClient> _connectedClients =
+            new ConcurrentDictionary<ObjectId, IdentifiedClient>();
+
         public readonly ILogger L;
         public readonly IMessenger M;
 
@@ -28,19 +28,20 @@ namespace Prime.SocketServer.Transport
         public TcpServer(Server server, IMessenger messenger = null)
         {
             _server = server;
-            
+
             L = _server?.Context?.MessagingServer?.L ?? new NullLogger();
             M = messenger ?? _server?.Context?.MessagingServer?.M;
-            
+
             _dataProvider = new CommonJsonDataProvider(server.Context.MessagingServer);
         }
-        
+
         public void Start(IPAddress address, short port)
         {
             _stoppedRequested = false;
 
             _connectedClients.Clear();
             _listener = new TcpListener(address, port);
+            _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
             _listener.Start();
 
             Log($"started on {_listener.LocalEndpoint}.");
@@ -55,26 +56,32 @@ namespace Prime.SocketServer.Transport
             _listener = null;
 
             foreach (var connectedClient in _connectedClients)
-                connectedClient.Dispose();
+                connectedClient.Value.Dispose();
+
+            _connectedClients.Clear();
 
             Log("stopped.");
         }
 
         private ExternalMessage UnpackResponse(string response, IdentifiedClient sender)
         {
-            return !(_dataProvider.Deserialize(response) is BaseTransportMessage message) ? null : new ExternalMessage(sender?.Id, message);
+            return !(_dataProvider.Deserialize(response) is BaseTransportMessage message)
+                ? null
+                : new ExternalMessage(sender?.Id, message);
         }
 
         private void WaitForClient()
         {
-            if(!_stoppedRequested)
+            if (!_stoppedRequested)
                 _listener.BeginAcceptTcpClient(ClientAcceptedCallback, null);
         }
-        
-        private string ReceiveData(Stream stream, int receiveBufferSize = 1024)
+
+        private string ReceiveData(NetworkStream stream, int receiveBufferSize = 1024)
         {
             var buffer = new byte[receiveBufferSize];
-            if (stream.CanRead)
+            Console.WriteLine($"Mem: {Process.GetCurrentProcess().WorkingSet64}");
+
+            if (stream.CanRead && stream.DataAvailable)
                 stream.Read(buffer, 0, buffer.Length);
 
             return buffer.GetString();
@@ -82,25 +89,40 @@ namespace Prime.SocketServer.Transport
 
         private void ClientAcceptedCallback(IAsyncResult ar)
         {
+            // TODO: test with normal clients. 'nc' client doesn't seem to call disconnect code, so clients are always collected in dictionary without deleting.
             Task.Run(() =>
             {
                 try
                 {
-                    using (var connectedClient = _stoppedRequested ? new IdentifiedClient(null) : new IdentifiedClient(_listener?.EndAcceptTcpClient(ar)))
+                    using (var connectedClient = _stoppedRequested
+                        ? new IdentifiedClient(null)
+                        : new IdentifiedClient(_listener?.EndAcceptTcpClient(ar)))
                     {
                         if (_listener == null || connectedClient.Id.IsNullOrEmpty())
                             return;
 
-                        _connectedClients.Add(connectedClient);
+                        if (!_connectedClients.TryAdd(connectedClient.Id, connectedClient))
+                            Error($"unable to add new socket client '{connectedClient.Id}' to concurrent dictionary.");
+
+                        Log($"client '{connectedClient.Id}' connected.");
 
                         using (var stream = connectedClient.TcpClient.GetStream())
                         {
-                            while (connectedClient.TcpClient.Connected)
+                            var buffer = new byte[1024];
+                            while (connectedClient.TcpClient.Client.Connected && connectedClient.TcpClient.GetStream().CanWrite)
                             {
                                 if (_stoppedRequested)
                                     return;
 
-                                var data = ReceiveData(stream);
+                                string data = null;
+                                if (stream.CanRead && stream.DataAvailable)
+                                {
+                                    stream.Read(buffer, 0, buffer.Length);
+                                    data = buffer.GetString();
+                                }
+
+                                if (string.IsNullOrEmpty(data))
+                                    continue;
 
                                 try
                                 {
@@ -115,6 +137,11 @@ namespace Prime.SocketServer.Transport
                                 }
                             }
                         }
+
+                        if (_connectedClients.TryRemove(connectedClient.Id, out var deletedClient))
+                            Log($"client {connectedClient.Id} disconnected.");
+                        else 
+                            Error($"unable to delete connected client '{connectedClient.Id}'.");
                     }
                 }
                 catch (Exception e)
@@ -124,15 +151,21 @@ namespace Prime.SocketServer.Transport
                 }
             });
 
-            Log("client connected");
             WaitForClient();
         }
 
+        /// <summary>
+        /// Sends message to connected client.
+        /// If  <paramref name="identifiedClient"/> is null sends to all connected clients.
+        /// </summary>
+        /// <param name="identifiedClient"></param>
+        /// <param name="data"></param>
+        /// <typeparam name="T"></typeparam>
         public void Send<T>(IdentifiedClient identifiedClient, T data)
         {
             if (identifiedClient == null)
                 foreach (var c in _connectedClients)
-                    TcpSendInternal(c, data);
+                    TcpSendInternal(c.Value, data);
             else
                 TcpSendInternal(identifiedClient, data);
         }
@@ -147,13 +180,23 @@ namespace Prime.SocketServer.Transport
 
             var dataString = _dataProvider.Serialize(data).ToString();
             var dataBytes = dataString.GetBytes();
-            
+
             identifiedClient.TcpClient.GetStream().Write(dataBytes, 0, dataBytes.Length);
         }
 
+        /// <summary>
+        /// Returns connected client by specified <paramref name="clientId"/> or null if it's not connected or doesn't exist.
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
         public IdentifiedClient GetClient(ObjectId clientId)
         {
-            return _connectedClients.FirstOrDefault(x => x.Id == clientId);
+            if (!_connectedClients.TryGetValue(clientId, out var client))
+            {
+                Warn($"unable to get client '{clientId}'");
+            }
+
+            return client;
         }
 
         public event EventHandler<Exception> ExceptionOccurred;
@@ -174,4 +217,3 @@ namespace Prime.SocketServer.Transport
         }
     }
 }
-

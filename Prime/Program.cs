@@ -15,19 +15,26 @@ namespace Prime
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("--- Prime core ---");
+            Console.WriteLine("--- Prime Core ---");
             var logger = new ConsoleLogger() {IncludePreamble = true};
 
+            // Run Prime Web.
             var primeWeb = new PrimeWeb()
             {
                 L = logger
             };
-
-            primeWeb.StartWebConsole();
+            //primeWeb.Run();
+            
+            // Run TCP server for interproc communication with extensions.
+            var primeTcp = new PrimeSocketServer()
+            {
+                L = logger
+            };
+            primeTcp.Start();
 
             Console.ReadKey();
         }
-
+        
         [Obsolete("Not used for the moment. Will be considered later.")]
         private void Run()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using NetCrossRun.Core;
 using Prime.Core;
@@ -7,40 +8,77 @@ namespace Prime
 {
     public class PrimeWeb
     {
-        public void StartWebConsole()
+        public void Run()
         {
-            L.Log("Starting Prime Web Console server...");
+            L.Log("Starting Prime Web server...");
 
             var primeWebFi = GetExecutable();
             L.Log("Executable found. Starting...");
 
-            RunPrimeWebConsole(primeWebFi);
+            RunLocal(primeWebFi);
             
-            L.Log("Prime Web Console started.");
+            L.Log("Prime Web started.");
         }
 
-        private void RunPrimeWebConsole(FileInfo fi)
+        private void RunLocal(FileInfo fi)
         {
-            var webProcess = $"dotnet {fi.FullName}".ExecuteCommand(false, fi.DirectoryName);
+            var webProcess = $"dotnet {fi.FullName}".ExecuteCommand(true, fi.DirectoryName);
+            
+            webProcess.OutputDataReceived += WebProcessOnOutputDataReceived;
+            webProcess.ErrorDataReceived += WebProcessOnErrorDataReceived;
+            
+            webProcess.BeginOutputReadLine();
+            webProcess.BeginOutputReadLine();
+        }
+
+        private void WebProcessOnErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            var data = e.Data;
+            if (string.IsNullOrWhiteSpace(data))
+                return;
+            
+            L.Error(data);
+        }
+
+        private void WebProcessOnOutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            var data = e.Data;
+            
+            if(data == null)
+                return;
+            
+            if (data.IndexOf("Now listening on:", StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                var url = GetUrlFromData(data);
+                L.Log($"Prime Web is running at {url}.");
+            }
+
+            string GetUrlFromData(string outputData)
+            {
+                var startIndex = outputData.IndexOf("http", StringComparison.OrdinalIgnoreCase);
+                var url = outputData.Substring(startIndex);
+
+                return url;
+            }
         }
 
         private FileInfo GetExecutable()
         {
-            const string executableName = "Prime.Web.dll";
+            const string execName = "Prime.Web.dll";
             
             // TODO: change method of path getting.
             var relativePathPart = ExecuteOn.Os(
                 () => "../../../../Prime.Web/bin/Release/netcoreapp2.0/publish", 
                 () => "../../../../Prime.Web/bin/release/netcoreapp2.0/osx.10.12-x64/publish");
             
-            var pathToFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePathPart);
-            var fullName = Path.Combine(pathToFolder, executableName);
+            var execFolderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePathPart);
+            var execFullPath = Path.Combine(execFolderName, execName);
             
-            var fi = new FileInfo(fullName);
+            var fi = new FileInfo(execFullPath);
             if(!fi.Exists)
                 throw new FileNotFoundException("Prime.Web.dll not found.");
             
-            return new FileInfo(fullName);
+            return new FileInfo(execFullPath);
         }
         
         public ILogger L { get; set; }

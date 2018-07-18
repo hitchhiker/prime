@@ -9,7 +9,7 @@ using Prime.MessagingServer;
 namespace Prime.SocketServer
 {
     [Export(typeof(IExtension))]
-    public class ServerExtension //: IMessageServerExtension
+    public class ServerExtension : IMessageServerExtension
     {
         private static readonly ObjectId _id = "prime:socketserver".GetObjectIdHashCode();
         public ObjectId Id => _id;

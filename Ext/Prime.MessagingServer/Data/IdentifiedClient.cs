@@ -20,6 +20,7 @@ namespace Prime.MessagingServer.Data
 
         public void Dispose()
         {
+            TcpClient?.Close();
             TcpClient?.Dispose();
         }
     }
