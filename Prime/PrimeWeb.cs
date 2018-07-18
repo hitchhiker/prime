@@ -28,7 +28,7 @@ namespace Prime
             webProcess.ErrorDataReceived += WebProcessOnErrorDataReceived;
             
             webProcess.BeginOutputReadLine();
-            webProcess.BeginOutputReadLine();
+            webProcess.BeginErrorReadLine();
         }
 
         private void WebProcessOnErrorDataReceived(object sender, DataReceivedEventArgs e)
