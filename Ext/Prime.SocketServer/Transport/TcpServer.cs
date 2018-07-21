@@ -90,6 +90,8 @@ namespace Prime.SocketServer.Transport
         private void ClientAcceptedCallback(IAsyncResult ar)
         {
             // TODO: test with normal clients. 'nc' client doesn't seem to call disconnect code, so clients are always collected in dictionary without deleting.
+            // TODO: maybe we need to implement periodical clients cleanup when they are not responding to messeges.
+            // TODO: or limiting number of connections?
             Task.Run(() =>
             {
                 try
