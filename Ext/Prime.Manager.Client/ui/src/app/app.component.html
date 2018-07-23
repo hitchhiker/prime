@@ -1,6 +1,11 @@
 <app-toolbar></app-toolbar>
 
-<mat-tab-group (selectedTabChange)="selectionChanged()" [(selectedIndex)]="selectedIndex">
+<mat-tab-group>
+    <mat-tab label="Settings">
+        <div class="tab-content">
+            <app-settings></app-settings>
+        </div>
+    </mat-tab>
     <mat-tab label="Extensions">
         <div class="tab-content">
             <app-ext-list></app-ext-list>

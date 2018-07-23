@@ -11,28 +11,13 @@ import { ChartService } from './services/chart.service';
 })
 export class AppComponent implements OnInit {
 
-  ngOnInit(): void {
-
-  }
-  
-  private url = 'http://localhost:3001';
-  private socket;
-
-  public selectedIndex;
-
   constructor(
-    private primeTcpClient: PrimeSocketService,
-    private chartService: ChartService
+    private primeService: PrimeSocketService
   ) {
-    
+
   }
 
-  selectionChanged() {
-    const CHART_TAB_INDEX = 1;
-    if(this.selectedIndex === CHART_TAB_INDEX) {
-      this.chartService.loadChart();
-    }
+  ngOnInit(): void {
+    this.primeService.connect();
   }
-
-  title = 'Prime.KeysManager';
 }

@@ -111,7 +111,12 @@ namespace Prime.SocketServer.Transport
                         using (var stream = connectedClient.TcpClient.GetStream())
                         {
                             var buffer = new byte[1024];
-                            while (connectedClient.TcpClient.Client.Connected && connectedClient.TcpClient.GetStream().CanWrite)
+
+                            //stream.Read(buffer, 0, buffer.Length);
+
+                            var br = stream.BeginRead(buffer, 0, buffer.Length, ClientReadCallback, null);
+
+                            while (connectedClient.TcpClient.Client.Connected)
                             {
                                 if (_stoppedRequested)
                                     return;
@@ -154,6 +159,11 @@ namespace Prime.SocketServer.Transport
             });
 
             WaitForClient();
+        }
+
+        private void ClientReadCallback(IAsyncResult ar)
+        {
+            
         }
 
         /// <summary>

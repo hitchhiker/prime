@@ -13,6 +13,7 @@ import { PrimeSocketService } from './services/prime-socket.service';
 import { ChartService } from './services/chart.service';
 import { ExtListComponent } from './extensions/ext-list/ext-list.component';
 import { ExtComponent } from './extensions/ext/ext.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ExtComponent } from './extensions/ext/ext.component';
     ToolbarComponent,
     ExtListComponent,
     ExtComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

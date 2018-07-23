@@ -4,6 +4,7 @@ import { LoggerService } from './logger.service';
 import { SocketState } from '../models/socket-state';
 import { BaseMessage, BaseRequestMessage, BaseResponseMessage } from '../models/messages/BaseMessages';
 import { Subscription, Subject } from 'rxjs';
+import { UpdateTimeKindRequestMessage, UpdateTimeKindResponseMessage } from '../models/messages/UpdateTimeKindMesseges';
 
 @Injectable({
     providedIn: 'root'
@@ -62,7 +63,7 @@ export class PrimeSocketService {
             this.onErrorOccurred.next();
         };
 
-        this.socketClient.connect('ws://127.0.0.1:9991/');
+        this.socketClient.connect('ws://127.0.0.1:9992/');
     }
 
     // Socket messaging.
@@ -81,5 +82,12 @@ export class PrimeSocketService {
 
     test() {
         this.writeSocket("Hello");
+    }
+
+    updateTimeKind(isUtc: boolean, callback: (data: UpdateTimeKindResponseMessage) => void) {
+        var msg = new UpdateTimeKindRequestMessage();
+        msg.isUtc = isUtc; 
+
+        this.writeSocketMessage(msg, callback);
     }
 }

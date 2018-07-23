@@ -9,6 +9,7 @@ using Prime.Core;
 using Prime.Core.Testing;
 using Prime.Manager.Core;
 using Prime.Manager.Messages;
+using Prime.Settings;
 
 namespace Prime.Manager
 {
@@ -35,6 +36,9 @@ namespace Prime.Manager
         
         public void Init()
         {
+            M.RegisterAsync<UpdateTimeKindRequestMessage>(this, UpdateTimeKindRequestHandler);
+
+            /*
             M.RegisterAsync<ProvidersListRequestMessage>(this, ProvidersListHandler);
             M.RegisterAsync<PrivateProvidersListRequestMessage>(this, PrivateProvidersListHandler);
             M.RegisterAsync<ProviderDetailsRequestMessage>(this, ProviderDetailsHandler);
@@ -45,6 +49,12 @@ namespace Prime.Manager
             M.RegisterAsync<ProviderHasKeysRequestMessage>(this, ProviderHasKeysHandler);
             M.RegisterAsync<GetSupportedMarketsRequestMessage>(this, GetSupportedMarketsHandler);
             M.RegisterAsync<DownloadFileRequestMessage>(this, DownloadFileHandler);
+            */
+        }
+
+        private void UpdateTimeKindRequestHandler(UpdateTimeKindRequestMessage request)
+        {
+            Log($"Date time update to {(request.IsUtc ? "UTC" : "local.")}");
         }
 
         private void DownloadFileHandler(DownloadFileRequestMessage request)
