@@ -18,17 +18,14 @@ namespace Prime.SocketServer.Transport
     {
         private readonly Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        private TcpListener _listener;
-
-
         private readonly ConcurrentDictionary<ObjectId, IdentifiedClient> _connectedClients =
             new ConcurrentDictionary<ObjectId, IdentifiedClient>();
 
         private readonly SocketServiceProvider _serviceProvider;
-
-        private bool _stoppedRequested;
         private int _socketPendingQueueSize = 100;
         private readonly object _lock = new object();
+
+        private bool _stopRequested;
 
         public TcpSocketServer(SocketServiceProvider serviceProvider, IMessenger messenger = null)
         {
@@ -172,9 +169,9 @@ namespace Prime.SocketServer.Transport
             _serviceProvider.OnClientDisconnected(clientId);
         }
 
-        public void Stop()
+        public void ForceStop()
         {
-            _stoppedRequested = true;
+            _stopRequested = true;
 
             _socket.Disconnect(false);
             _socket.Dispose();
@@ -226,6 +223,11 @@ namespace Prime.SocketServer.Transport
             SendDirect(client, data);
         }
 
+        /// <summary>
+        /// Polls socket and checks if client is still connected.
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
         private bool IsSocketConnected(Socket socket)
         {
             bool part1 = socket.Poll(100, SelectMode.SelectRead);
