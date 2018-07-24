@@ -102,5 +102,18 @@ namespace Prime.Tests
             var item = new CacheItem<int>(TimeSpan.FromSeconds(3), 19);
             var fresh = item.IsFresh;
         }
+
+        [Fact]
+        public void TestAsyncCallback()
+        {
+            AsyncCallback callback1 = new AsyncCallback(CallbackMethod);
+            AsyncCallback callback2 = CallbackMethod;
+            AsyncCallback callback3 = CallbackMethod;
+
+            void CallbackMethod(IAsyncResult ar)
+            {
+                Console.WriteLine("Hello");
+            }
+        }
     }
 }

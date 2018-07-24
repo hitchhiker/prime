@@ -23,7 +23,7 @@ namespace Prime
             {
                 L = logger
             };
-            primeWeb.Run();
+            //primeWeb.Run();
             
             // Run TCP server for interproc communication with extensions.
             var primeTcp = new PrimeSocketServer()

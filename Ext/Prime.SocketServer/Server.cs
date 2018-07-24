@@ -11,7 +11,9 @@ namespace Prime.SocketServer
     {
         public readonly SocketServerContext Context;
         private readonly ServerContext _serverContext;
-        internal readonly TcpServer TcpServer;
+        private readonly TypedServiceProvider _serviceProvider;
+
+        internal readonly TcpSocketServer TcpSocketServer;
 
         public readonly ILogger L;
 
@@ -19,21 +21,22 @@ namespace Prime.SocketServer
         {
             Context = socketServerContext;
             _serverContext = Context.ServerContext;
-            TcpServer = new TcpServer(this);
+
+            _serviceProvider = new TypedServiceProvider(this);
+            TcpSocketServer = new TcpSocketServer(_serviceProvider);
 
             L = socketServerContext?.MessagingServer?.L ?? new NullLogger();
         }
         
         public void Start()
         {
-            TcpServer.ExceptionOccurred += TcpServerOnExceptionOccurred;
-            TcpServer.Start(Context.IpAddress, Context.PortNumber);
+            TcpSocketServer.Start(Context.IpAddress, Context.PortNumber);
         }
 
         public void Stop()
         {
             _serverContext.M.UnregisterAsync(this);
-            TcpServer.Stop();
+            TcpSocketServer.Stop();
         }
         
         public void Send<T>(T message) where T : BaseTransportMessage
@@ -42,20 +45,9 @@ namespace Prime.SocketServer
                 return;
 
             if (message.SessionId.IsNullOrEmpty())
-                TcpServer.Send(null, message);
+                _serviceProvider.Send(null, message);
             else
-            {
-                var client = TcpServer.GetClient(message.SessionId);
-                if (client == null)
-                    L.Error($"{SocketServerContext.LogServerName}: ClientID " + message.SessionId + " is not a registered client.");
-                else
-                    TcpServer.Send(client, message);
-            }
-        }
-
-        private void TcpServerOnExceptionOccurred(object sender, Exception exception)
-        {
-            L.Error($"{SocketServerContext.LogServerName} error: {exception.Message}");
+                _serviceProvider.Send(message.SessionId, message);
         }
     }
 }

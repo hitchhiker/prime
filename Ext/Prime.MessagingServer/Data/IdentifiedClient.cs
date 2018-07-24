@@ -6,22 +6,23 @@ namespace Prime.MessagingServer.Data
 {
     public class IdentifiedClient : IDisposable
     {
-        public readonly TcpClient TcpClient;
+        public readonly Socket ClientSocket;
         public readonly ObjectId Id;
 
-        public IdentifiedClient(TcpClient tcpClient)
+        public IdentifiedClient(Socket clientSocket)
         {
-            if (tcpClient == null)
+            if (clientSocket == null)
                 return;
 
             Id = ObjectId.NewObjectId();
-            TcpClient = tcpClient;
+            ClientSocket = clientSocket;
         }
 
         public void Dispose()
         {
-            TcpClient?.Close();
-            TcpClient?.Dispose();
+            ClientSocket?.Disconnect(true);
+            ClientSocket?.Close();
+            ClientSocket?.Dispose();
         }
     }
 }
