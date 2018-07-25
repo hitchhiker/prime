@@ -19,5 +19,6 @@
     <ProjectReference Include="..\Ext\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Ext\Prime.Finance\Prime.Finance.csproj" />
     <ProjectReference Include="..\Ext\Prime.Manager\Prime.Manager.csproj" />
+    <ProjectReference Include="..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
   </ItemGroup>
 </Project>

@@ -36,7 +36,7 @@ namespace Prime.SocketServer
         public void Stop()
         {
             _serverContext.M.UnregisterAsync(this);
-            TcpSocketServer.Stop();
+            TcpSocketServer.ForceStop();
         }
         
         public void Send<T>(T message) where T : BaseTransportMessage

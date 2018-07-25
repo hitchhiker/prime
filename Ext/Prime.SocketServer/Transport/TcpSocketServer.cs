@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Prime.Base;
 using Prime.Core;
 using Prime.MessagingServer.Data;
+using Prime.SocketServer.Transport.Cleaner;
 
 namespace Prime.SocketServer.Transport
 {
@@ -22,15 +23,35 @@ namespace Prime.SocketServer.Transport
             new ConcurrentDictionary<ObjectId, IdentifiedClient>();
 
         private readonly SocketServiceProvider _serviceProvider;
+
+        private readonly SocketPollingCleaner<ObjectId> _socketPollingCleaner;
         private int _socketPendingQueueSize = 100;
         private readonly object _lock = new object();
 
+        // TODO: AY: implement 'soft' stopping.
         private bool _stopRequested;
 
         public TcpSocketServer(SocketServiceProvider serviceProvider, IMessenger messenger = null)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _serviceProvider.TcpSocketServer = this; // TODO: AY: Frank is it okay to initialize property of object with 'this' inside constructor?
+
+            _socketPollingCleaner = new SocketPollingCleaner<ObjectId>(id =>
+            {
+                var client = GetClient(id);
+                return client != null && IsSocketConnected(client.ClientSocket);
+            });
+
+            _socketPollingCleaner.OnClientPollingFailed += (sender, args) =>
+            {
+                _socketPollingCleaner.DeleteClient(args.ClientId);
+                if (GetClient(args.ClientId) != null)
+                {
+                    DestroyClient(args.ClientId);
+                }
+            };
+
+            _socketPollingCleaner.StartPolling();
         }
 
         public void Start(IPAddress address, short port)
@@ -79,6 +100,7 @@ namespace Prime.SocketServer.Transport
                         CallOnException(new InvalidOperationException($"Unable to add new client '{identifiedClient.Id}' to list of connected clients."));
 
                     _serviceProvider.OnClientConnected(identifiedClient.Id);
+                    _socketPollingCleaner.UpdateActivity(identifiedClient.Id);
 
                     // Run receive thread.
                     Task.Run(() =>
@@ -164,7 +186,7 @@ namespace Prime.SocketServer.Transport
 
             // Remove client from list of connected clients.
             if (!_connectedClients.TryRemove(clientId, out var deletedClient))
-                _serviceProvider.OnErrorOccurred(new InvalidOperationException("Unable to destroy client."), clientId);
+                _serviceProvider.OnErrorOccurred(new InvalidOperationException("Unable to remove client from list of connected clients."), clientId);
 
             _serviceProvider.OnClientDisconnected(clientId);
         }
