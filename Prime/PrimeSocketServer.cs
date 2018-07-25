@@ -6,36 +6,36 @@ namespace Prime
 {
     public class PrimeSocketServer
     {
+        private readonly ServerContext _serverContext;
+        private readonly MessagingServer.Server _messagingServer;
+
+        public PrimeSocketServer(ServerContext serverContext, MessagingServer.Server messagingServer)
+        {
+            _serverContext = serverContext;
+            _messagingServer = messagingServer;
+        }
+
         public void Start()
         {
-            L.Log("Starting tcp server for interproc communication with extensions...");
+            L.Log("Starting TCP server for interproc communication with extensions...");
 
             StartLocal();
         }
 
         private void StartLocal()
         {
-            var sCtx = new ServerContext()
-            {
-                L = L
-            };
-            
-            sCtx.Assemblies.Refresh();
-            sCtx.Types.Refresh();
-            
-            var server = new MessagingServer.Server(sCtx);
-            server.Start();
-            
+           
             var socketServer = new SocketServer.ServerExtension();
-            server.Inject(socketServer);
-            
-            server.M.Register<HelloRequest>(this, (r) =>
+            _messagingServer.Inject(socketServer);
+
+            _messagingServer.M.Register<HelloRequest>(this, (r) =>
             {
                 Console.WriteLine("Hello request received.");
-                server.M.Send(new HelloResponse(r, "hello"));
+
+                _messagingServer.M.Send(new HelloResponse(r, "hello"));
             });
             
-            socketServer.Start(server);
+            socketServer.Start(_messagingServer);
         }
 
         public ILogger L { get; set; }

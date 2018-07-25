@@ -18,20 +18,40 @@ namespace Prime
             Console.WriteLine("--- Prime Core ---");
             var logger = new ConsoleLogger() {IncludePreamble = true};
 
+            // Initialization.
+            var serverContext = new ServerContext()
+            {
+                L = logger
+            };
+
+            serverContext.Assemblies.Refresh();
+            serverContext.Types.Refresh();
+
+            var messagingServer = new MessagingServer.Server(serverContext);
+            messagingServer.Start();
+
             // Run Prime Web.
             var primeWeb = new PrimeWeb()
             {
                 L = logger
             };
-            //primeWeb.Run();
+            primeWeb.Run();
             
             // Run TCP server for interproc communication with extensions.
-            var primeTcp = new PrimeSocketServer()
+            var primeTcp = new PrimeSocketServer(serverContext, messagingServer)
             {
                 L = logger
             };
             primeTcp.Start();
 
+            // Run WebSocket server.
+            var primeWs = new PrimeWsServer(serverContext, messagingServer)
+            {
+                L = logger
+            };
+            primeWs.Start();
+
+            // Wait for input.
             Console.ReadKey();
         }
         

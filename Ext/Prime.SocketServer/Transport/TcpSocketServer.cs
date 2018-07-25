@@ -51,7 +51,7 @@ namespace Prime.SocketServer.Transport
                 }
             };
 
-            _socketPollingCleaner.StartPolling();
+            //_socketPollingCleaner.StartPolling();
         }
 
         public void Start(IPAddress address, short port)

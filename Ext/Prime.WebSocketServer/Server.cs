@@ -78,18 +78,23 @@ namespace Prime.WebSocketServer
 
         public void Send<T>(T message) where T : BaseTransportMessage
         {
-            if(message.IsRemote)
+            if (message.IsRemote)
                 return;
 
             L.Log($"{WebSocketServerContext.LogServerName}: sending message...");
 
             var data = _commonJsonDataProvider.Serialize(message);
 
-            if (!_clientsHandlers.TryGetValue(message.SessionId, out var client))
-                throw new InvalidOperationException($"Unable to send data to client {message.SessionId} because it's not registered on WebSocket server.");
-
-            // Sends message to client with specified SessionId.
-            client.SendToCurrentClient(data.ToString());
+            if (_clientsHandlers.TryGetValue(message.SessionId, out var client))
+            {
+                // Sends message to client with specified SessionId.
+                client.SendToCurrentClient(data.ToString());
+            }
+            else
+            {
+                // If client is not found it means that target client is not connected vie WebSocket.
+                // throw new InvalidOperationException($"Unable to send data to client {message.SessionId} because it's not registered on WebSocket server.");
+            }
         }
     }
 }
