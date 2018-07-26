@@ -37,7 +37,7 @@ namespace Prime.MessagingServer
 
         public void Start()
         {
-            LoadExtensions();
+            // LoadExtensions(); // AY: Call of this clears extensions that are loaded in constructor and using Inject().
             L.Log($"Starting message server with {_extensions.Count} extensions.");
             M.RegisterAsync<BaseTransportMessage>(this, PossibleSendMessage, true);
             M.RegisterAsync<ExternalMessage>(this, ReceiveMessage);

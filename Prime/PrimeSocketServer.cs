@@ -35,7 +35,7 @@ namespace Prime
                 _messagingServer.M.Send(new HelloResponse(r, "hello"));
             });
             
-            socketServer.Start(_messagingServer);
+            //socketServer.Start(_messagingServer);
         }
 
         public ILogger L { get; set; }

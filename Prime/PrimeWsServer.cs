@@ -27,7 +27,7 @@ namespace Prime
 
             _messagingServer.Inject(wsServerExtension);
 
-            wsServerExtension.Start(_messagingServer);
+            //wsServerExtension.Start(_messagingServer);
             L.Log("Ws server started");
         }
 

@@ -28,8 +28,7 @@ namespace Prime
             serverContext.Types.Refresh();
 
             var messagingServer = new MessagingServer.Server(serverContext);
-            messagingServer.Start();
-
+            
             // Run Prime Web.
             var primeWeb = new PrimeWeb()
             {
@@ -50,6 +49,8 @@ namespace Prime
                 L = logger
             };
             primeWs.Start();
+
+            messagingServer.Start();
 
             // Wait for input.
             Console.ReadKey();
