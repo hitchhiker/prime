@@ -68,8 +68,9 @@ namespace Prime.MessagingServer
 
         private void PossibleSendMessage(BaseTransportMessage m)
         {
-            if (m.IsRemote)
-                return;
+            // BUG: return if message is remote!
+            //if (m.IsRemote)
+            //    return;
 
             _extensions.ForEach(x => Task.Run(() => x.Send(m)));
         }

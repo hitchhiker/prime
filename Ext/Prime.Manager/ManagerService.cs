@@ -20,6 +20,11 @@ namespace Prime.Manager
 
         public readonly ILogger L;
         public readonly IMessenger M;
+
+        /// <summary>
+        /// Property that indicates whether the server time displayed on Prime Web is in UTC format.
+        /// </summary>
+        public bool IsUtcServerTime { get; set; }
         
         public ManagerService(ServerContext context)
         {
@@ -54,7 +59,14 @@ namespace Prime.Manager
 
         private void UpdateTimeKindRequestHandler(UpdateTimeKindRequestMessage request)
         {
-            Log($"Date time update to {(request.IsUtc ? "UTC" : "local.")}");
+            IsUtcServerTime = request.IsUtc;
+
+            Log($"Date time update to {(IsUtcServerTime ? "UTC" : "local.")}");
+
+            M.SendAsync(new TimeKindUpdatedRequestMessage()
+            {
+                IsUtcTime = request.IsUtc
+            });
         }
 
         private void DownloadFileHandler(DownloadFileRequestMessage request)

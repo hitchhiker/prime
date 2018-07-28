@@ -21,10 +21,6 @@ namespace Prime
         public void Start()
         {
             var wsServerExtension = new WebSocketServer.ServerExtension();
-            var managerExtension = new ManagerServiceExtension();
-
-            managerExtension.Main(_serverContext);
-
             _messagingServer.Inject(wsServerExtension);
 
             //wsServerExtension.Start(_messagingServer);

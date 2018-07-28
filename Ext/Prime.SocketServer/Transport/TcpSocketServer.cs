@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Base;
 using Prime.Core;
 using Prime.MessagingServer.Data;
 using Prime.SocketServer.Transport.Cleaner;
+using Timer = System.Timers.Timer;
 
 namespace Prime.SocketServer.Transport
 {
@@ -23,35 +28,21 @@ namespace Prime.SocketServer.Transport
             new ConcurrentDictionary<ObjectId, IdentifiedClient>();
 
         private readonly SocketServiceProvider _serviceProvider;
+        private readonly Timer _pollingTimer = new Timer();
 
-        private readonly SocketPollingCleaner<ObjectId> _socketPollingCleaner;
         private int _socketPendingQueueSize = 100;
         private readonly object _lock = new object();
 
         // TODO: AY: implement 'soft' stopping.
         private bool _stopRequested;
 
+        public TimeSpan PollingInterval { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan DontPollPeriod { get; set; } = TimeSpan.FromSeconds(5);
+
         public TcpSocketServer(SocketServiceProvider serviceProvider, IMessenger messenger = null)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _serviceProvider.TcpSocketServer = this; // TODO: AY: Frank is it okay to initialize property of object with 'this' inside constructor?
-
-            _socketPollingCleaner = new SocketPollingCleaner<ObjectId>(id =>
-            {
-                var client = GetClient(id);
-                return client != null && IsSocketConnected(client.ClientSocket);
-            });
-
-            _socketPollingCleaner.OnClientPollingFailed += (sender, args) =>
-            {
-                _socketPollingCleaner.DeleteClient(args.ClientId);
-                if (GetClient(args.ClientId) != null)
-                {
-                    DestroyClient(args.ClientId);
-                }
-            };
-
-            _socketPollingCleaner.StartPolling();
         }
 
         public void Start(IPAddress address, short port)
@@ -66,11 +57,45 @@ namespace Prime.SocketServer.Transport
                 _socket.Listen(_socketPendingQueueSize);
                 _socket.BeginAccept(ClientConnectedHandler, null);
 
+                StartPolling();
+
                 _serviceProvider.OnServerStarted(endpoint);
             }
             catch (SocketException e)
             {
                 CallOnException(e);
+            }
+        }
+
+        public void StartPolling()
+        {
+            _pollingTimer.Stop();
+            _pollingTimer.Interval = PollingInterval.TotalMilliseconds;
+            _pollingTimer.Elapsed += PollingTimerOnElapsed;
+            _pollingTimer.Start();
+        }
+
+        private void PollingTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            Parallel.ForEach(_connectedClients.Where(Predicate), pair =>
+            {
+                var isAlive = IsSocketConnected(pair.Value.ClientSocket);
+                Console.WriteLine(
+                    $"{Thread.CurrentThread.ManagedThreadId}: '{pair.Key}' is {(isAlive ? "alive" : "dead")}.");
+                if (isAlive)
+                    pair.Value.UpdateLastRead();
+                else
+                {
+                    DestroyClient(pair.Key);
+                }
+            });
+
+            bool Predicate(KeyValuePair<ObjectId, IdentifiedClient> pair)
+            {
+                if (!pair.Value.LastActivityUtc.HasValue)
+                    return false;
+
+                return (DateTime.UtcNow - pair.Value.LastActivityUtc.Value) > DontPollPeriod;
             }
         }
 
@@ -100,7 +125,6 @@ namespace Prime.SocketServer.Transport
                         CallOnException(new InvalidOperationException($"Unable to add new client '{identifiedClient.Id}' to list of connected clients."));
 
                     _serviceProvider.OnClientConnected(identifiedClient.Id);
-                    _socketPollingCleaner.UpdateActivity(identifiedClient.Id);
 
                     // Run receive thread.
                     Task.Run(() =>
@@ -135,6 +159,7 @@ namespace Prime.SocketServer.Transport
                 var clonedData = new byte[state.Buffer.Length];
                 Buffer.BlockCopy(state.Buffer, 0, clonedData, 0, clonedData.Length * sizeof(byte));
 
+                state.IdentifiedClient.UpdateLastRead();
                 state.ServiceProvider.OnDataReceived(state.IdentifiedClient.Id, clonedData);
 
                 clientSocket.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None,
@@ -176,34 +201,45 @@ namespace Prime.SocketServer.Transport
         /// <param name="clientId"></param>
         private void DestroyClient(ObjectId clientId)
         {
-            // Get client and check if is in connected clients list.
-            var connectedClient = GetClient(clientId);
-            if (connectedClient == null)
-                _serviceProvider.OnErrorOccurred(new InvalidOperationException("Unable to destroy client because it is not present in list of connected clients."), clientId);
+            lock (_lock)
+            {
+                // Get client and check if is in connected clients list.
+                var connectedClient = GetClient(clientId);
+                if (connectedClient == null)
+                    _serviceProvider.OnErrorOccurred(
+                        new InvalidOperationException(
+                            "Unable to destroy client because it is not present in list of connected clients."),
+                        clientId);
 
-            // Disconnect client.
-            connectedClient?.Dispose();
+                // Disconnect client.
+                connectedClient?.Dispose();
 
-            // Remove client from list of connected clients.
-            if (!_connectedClients.TryRemove(clientId, out var deletedClient))
-                _serviceProvider.OnErrorOccurred(new InvalidOperationException("Unable to remove client from list of connected clients."), clientId);
+                // Remove client from list of connected clients.
+                if (!_connectedClients.TryRemove(clientId, out var deletedClient))
+                    _serviceProvider.OnErrorOccurred(
+                        new InvalidOperationException("Unable to remove client from list of connected clients."),
+                        clientId);
 
-            _serviceProvider.OnClientDisconnected(clientId);
+                _serviceProvider.OnClientDisconnected(clientId);
+            }
         }
 
         public void ForceStop()
         {
-            _stopRequested = true;
+            lock (_lock)
+            {
+                _stopRequested = true;
 
-            _socket.Disconnect(false);
-            _socket.Dispose();
+                _socket.Disconnect(false);
+                _socket.Dispose();
 
-            foreach (var connectedClient in _connectedClients)
-                connectedClient.Value.Dispose();
+                foreach (var connectedClient in _connectedClients)
+                    connectedClient.Value.Dispose();
 
-            _connectedClients.Clear();
+                _connectedClients.Clear();
 
-            _serviceProvider.OnServerStopped();
+                _serviceProvider.OnServerStopped();
+            }
         }
 
         /// <summary>
@@ -231,7 +267,18 @@ namespace Prime.SocketServer.Transport
 
             try
             {
-                client.ClientSocket.Send(data);
+                lock (_lock)
+                {
+                    var dataLength = (UInt32)data.Length;
+                    var buffer = new byte[sizeof(UInt32) + dataLength];
+                    var dataLengthBytes = BitConverter.GetBytes(dataLength);
+
+                    Buffer.BlockCopy(dataLengthBytes, 0, buffer, 0, sizeof(UInt32));
+                    Buffer.BlockCopy(data, 0, buffer, sizeof(UInt32), data.Length);
+                    
+                    client.ClientSocket.Send(data);
+                    client.UpdateLastWrite();
+                }
             }
             catch (SocketException e)
             {

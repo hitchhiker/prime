@@ -7,6 +7,9 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Prime.Core;
+using Prime.MessagingServer;
+using Prime.SocketServer.Transport;
 
 namespace Prime.Web
 {
@@ -14,6 +17,7 @@ namespace Prime.Web
     {
         public static void Main(string[] args)
         {
+            TcpBridge.RunClient();
             BuildWebHost(args).Run();
         }
 

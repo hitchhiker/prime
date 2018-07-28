@@ -6,7 +6,9 @@ using Newtonsoft.Json;
 using Prime.Core;
 using Prime.KeysManager;
 using Prime.Manager.Utils;
+using Prime.MessagingServer.Data;
 using Prime.MessagingServer.Types;
+using Prime.SocketServer.Transport;
 
 namespace Prime.Manager.Client
 {
@@ -26,26 +28,14 @@ namespace Prime.Manager.Client
                 L = logger
             };
 
-            var server = new MessagingServer.Server(serverContext);
-            server.Start();
+            var messagingServer = new MessagingServer.Server(serverContext);
+            var clientExcension = new SocketClient.ServerExtension();
+            messagingServer.Inject(clientExcension);
 
-            var wsServerExtension = new WebSocketServer.ServerExtension();
+            messagingServer.Start();
+
             var managerExtension = new ManagerServiceExtension();
             managerExtension.Main(serverContext);
-
-            server.Inject(wsServerExtension);
-
-            wsServerExtension.Start(server);
-
-            logger.Log("Ws server started");
-
-            // Starting TCP client.
-            logger.Log("Starting TCP client...");
-
-            var client = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            logger.Log("Establishing connection to local socket server.");
-            client.Connect("127.0.0.1", 9991);
 
             Console.ReadLine();
 

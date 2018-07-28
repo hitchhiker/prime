@@ -1,4 +1,5 @@
 ﻿using System;
+using Prime.Base.Messaging.Manager;
 using Prime.Core;
 using Prime.Core.Testing;
 
@@ -32,7 +33,14 @@ namespace Prime
             {
                 Console.WriteLine("Hello request received.");
 
-                _messagingServer.M.Send(new HelloResponse(r, "hello"));
+                var response = new HelloResponse(r, "hello");
+
+                _messagingServer.M.Send(response);
+            });
+
+            _messagingServer.M.Register<TimeKindUpdatedRequestMessage>(this, (r) =>
+            {
+                Console.WriteLine("TimeKindUpdatedRequestMessage request received.");
             });
             
             //socketServer.Start(_messagingServer);

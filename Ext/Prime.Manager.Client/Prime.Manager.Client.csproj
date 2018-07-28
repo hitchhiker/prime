@@ -19,6 +19,8 @@
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
     <ProjectReference Include="..\Prime.Manager\Prime.Manager.csproj" />
     <ProjectReference Include="..\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\Prime.SocketClient\Prime.SocketClient.csproj" />
+    <ProjectReference Include="..\Prime.SocketServer\Prime.SocketServer.csproj" />
     <ProjectReference Include="..\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
   </ItemGroup>
 </Project>
