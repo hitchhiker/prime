@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using Prime.Base.Misc.Utils;
 using Prime.Core;
 using Prime.MessagingServer.Data;
 
@@ -28,24 +29,52 @@ namespace Prime.SocketClient.Transport
             _clientSocket.Connect(ipEndPoint);
             L.Log($"Connected to socket server {ipEndPoint}.");
 
-            var buffer = new byte[1024];
-            _clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, buffer);
+            var state = new ReceiveState();
+            _clientSocket.BeginReceive(state.Buffer, 0, sizeof(UInt32), SocketFlags.None, ReceivedCallback, state);
         }
 
         private void ReceivedCallback(IAsyncResult ar)
         {
-            var bytesRead = _clientSocket.EndReceive(ar);
-            var buffer = (byte[]) ar.AsyncState;
+            var state = (ReceiveState)ar.AsyncState;
 
-            if (bytesRead <= 0) return;
+            lock (state)
+            {
+                var bytesRead = _clientSocket.EndReceive(ar);
+                if (bytesRead <= 0) return;
 
-            var receivedBytes = new byte[buffer.Length];
-            Buffer.BlockCopy(buffer, 0, receivedBytes, 0, receivedBytes.Length);
+                // BUG: duplicated code (TcpSocketServer.DataReceivedCallback).
+                if (!state.ExpectedMessageSize.HasValue)
+                {
+                    // Size is not received.
+                    if (bytesRead != sizeof(UInt32))
+                        throw new InvalidOperationException(
+                            $"The length of buffer size byte array is not equal to {sizeof(UInt32)}.");
 
-            ProcessReceivedData(receivedBytes);
-            
-            Array.Clear(buffer, 0, buffer.Length);
-            _clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, buffer);
+                    var buffer = state.Buffer;
+
+                    var messageSize = ByteUtils.ExtractDataSize(buffer);
+                    if (messageSize == 0)
+                        throw new InvalidOperationException("Size of message equals to 0.");
+
+                    Array.Clear(buffer, 0, buffer.Length);
+
+                    state.ExpectedMessageSize = messageSize;
+                    _clientSocket.BeginReceive(buffer, 0, (int)messageSize, SocketFlags.None,
+                        ReceivedCallback, state);
+                }
+                else
+                {
+                    var buffer = state.Buffer;
+                    var receivedBytes = new byte[buffer.Length];
+                    Buffer.BlockCopy(buffer, 0, receivedBytes, 0, receivedBytes.Length);
+
+                    ProcessReceivedData(receivedBytes);
+
+                    state.ExpectedMessageSize = null;
+                    Array.Clear(buffer, 0, buffer.Length);
+                    _clientSocket.BeginReceive(buffer, 0, sizeof(UInt32), SocketFlags.None, ReceivedCallback, state);
+                }
+            }
         }
 
         private void ProcessReceivedData(byte[] receivedBytes)
@@ -77,7 +106,11 @@ namespace Prime.SocketClient.Transport
         public void Send(BaseTransportMessage message)
         {
             var data = _dataProvider.Serialize(message).ToString();
-            _clientSocket.SendAsync(new ArraySegment<byte>(data.GetBytes()), SocketFlags.None);
+            var dataBytes = data.GetBytes();
+
+            var prefixedDataBytes = ByteUtils.PrefixBufferSize(dataBytes);
+            
+            _clientSocket.SendAsync(new ArraySegment<byte>(prefixedDataBytes), SocketFlags.None);
         }
 
         public ILogger L { get; set; }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NetCrossRun.Core;
 using Prime.Core.Testing;
 using Prime.KeysManager;
+using Prime.Settings;
 
 namespace Prime
 {
@@ -34,7 +35,7 @@ namespace Prime
             {
                 L = logger
             };
-            primeWeb.Run();
+            //primeWeb.Run();
             
             // Run TCP server for interproc communication with extensions.
             var primeTcp = new PrimeSocketServer(serverContext, messagingServer)
@@ -49,6 +50,24 @@ namespace Prime
                 L = logger
             };
             primeWs.Start();
+            
+            // Demo messages handling.
+            messagingServer.M.Register<UpdateTimeKindRequestMessage>(logger, (r) =>
+            {
+                messagingServer.M.Send(new UpdateTimeKindInternalRequestMessage()
+                {
+                    IsUtc = r.IsUtc
+                });
+            });
+            
+            messagingServer.M.Register<TimeKindUpdatedRequestMessage>(logger, (r) =>
+            {
+                messagingServer.M.SendAsync(new UpdateWebUiTimeKindRequestMessage()
+                {
+                    IsUtc = r.IsUtcTime
+                });
+            });
+            //
 
             messagingServer.Start();
 

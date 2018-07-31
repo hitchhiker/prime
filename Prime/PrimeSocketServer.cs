@@ -24,24 +24,9 @@ namespace Prime
         }
 
         private void StartLocal()
-        {
-           
+        {           
             var socketServer = new SocketServer.ServerExtension();
             _messagingServer.Inject(socketServer);
-
-            _messagingServer.M.Register<HelloRequest>(this, (r) =>
-            {
-                Console.WriteLine("Hello request received.");
-
-                var response = new HelloResponse(r, "hello");
-
-                _messagingServer.M.Send(response);
-            });
-
-            _messagingServer.M.Register<TimeKindUpdatedRequestMessage>(this, (r) =>
-            {
-                Console.WriteLine("TimeKindUpdatedRequestMessage request received.");
-            });
             
             //socketServer.Start(_messagingServer);
         }

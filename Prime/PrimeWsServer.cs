@@ -4,6 +4,7 @@ using System.Text;
 using Prime.Core;
 using Prime.KeysManager;
 using Prime.MessagingServer;
+using Prime.Settings;
 
 namespace Prime
 {
@@ -22,7 +23,7 @@ namespace Prime
         {
             var wsServerExtension = new WebSocketServer.ServerExtension();
             _messagingServer.Inject(wsServerExtension);
-
+           
             //wsServerExtension.Start(_messagingServer);
             L.Log("Ws server started");
         }

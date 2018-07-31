@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using LiteDB;
 using Prime.Base;
+using Prime.Base.Misc.Utils;
 using Prime.Core;
 using Prime.Finance;
 using Xunit;
@@ -114,6 +115,13 @@ namespace Prime.Tests
             {
                 Console.WriteLine("Hello");
             }
+        }
+
+        [Fact]
+        public void TestByteUtils()
+        {
+            var buffer = "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello1".GetBytes();
+            var newBuffer = ByteUtils.PrefixBufferSize(buffer);
         }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Prime.Base.Messaging.Manager;
 using Prime.Core;
 using Prime.MessagingServer;
-using Prime.SocketServer.Transport;
+using Prime.Settings;
 
 namespace Prime.Web
 {
@@ -26,18 +24,17 @@ namespace Prime.Web
             };
             var messagingServer = new Server(serverContext);
 
-            messagingServer.M.Register<TimeKindUpdatedRequestMessage>(messagingServer, (request) =>
+            messagingServer.M.Register<UpdateWebUiTimeKindRequestMessage>(messagingServer, (request) =>
             {
                 TimeKindUpdated?.Invoke(request);
             });
 
-            var tcpClient = new TcpSocketClient(messagingServer)
-            {
-                L = logger
-            };
-            tcpClient.Connect("127.0.0.1", 9991);
+            var clientExtension = new SocketClient.ServerExtension();
+            messagingServer.Inject(clientExtension);
+            
+            messagingServer.Start();
         }
 
-        public static event Action<TimeKindUpdatedRequestMessage> TimeKindUpdated;
+        public static event Action<UpdateWebUiTimeKindRequestMessage> TimeKindUpdated;
     }
 }

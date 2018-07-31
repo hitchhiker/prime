@@ -18,6 +18,7 @@
     <Content Remove="ClientApp\**" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Ext\Prime.SocketClient\Prime.SocketClient.csproj" />
     <ProjectReference Include="..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
   </ItemGroup>
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Prime.Core;
 
-namespace Prime.Base.Messaging.Manager
+namespace Prime.Settings
 {
     public class TimeKindUpdatedRequestMessage : BaseTransportRequestMessage
     {

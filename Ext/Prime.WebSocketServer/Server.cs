@@ -36,6 +36,7 @@ namespace Prime.WebSocketServer
         private WebSocketSharp.Server.WebSocketServer CreateWebSocketServer(WebSocketServerContext context)
         {
             var wsServer = new WebSocketSharp.Server.WebSocketServer(context.IpAddress, context.Port, false);
+            wsServer.ReuseAddress = true;
             wsServer.AddWebSocketService<WsRootHandler>(WsRootHandler.ServicePath, (x) =>
             {
                 x.M = context.MessageServer.M;

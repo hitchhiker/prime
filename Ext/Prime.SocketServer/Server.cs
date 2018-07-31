@@ -43,11 +43,11 @@ namespace Prime.SocketServer
         {
             // BUG: return if message is remote!
             // Spread message to all connected TCP socket clients.
-            if (message.IsRemote)
-            {
-                _serviceProvider.Send(null, message);
-                return;
-            }
+//            if (message.IsRemote)
+//            {
+//                _serviceProvider.Send(null, message);
+//                return;
+//            }
 
             if (message.SessionId.IsNullOrEmpty())
                 _serviceProvider.Send(null, message);

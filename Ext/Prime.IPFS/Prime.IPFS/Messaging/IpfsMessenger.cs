@@ -42,7 +42,7 @@ namespace Prime.IPFS.Messaging {
                 AsyncContext.Run(async () =>
                 {
                     var v = await _ipfs.Client.VersionAsync();
-                    M.SendAsync(new IpfsVersionResponse() { Version = v.Get("Version"), Items = v });
+                    M.SendAsync(new IpfsVersionResponse() { Version = v.Get("Version")/*, Item = v*/ });
                 });
             }
         }

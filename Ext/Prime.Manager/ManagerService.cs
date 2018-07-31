@@ -41,7 +41,7 @@ namespace Prime.Manager
         
         public void Init()
         {
-            M.RegisterAsync<UpdateTimeKindRequestMessage>(this, UpdateTimeKindRequestHandler);
+            M.RegisterAsync<UpdateTimeKindInternalRequestMessage>(this, UpdateTimeKindRequestHandler);
 
             /*
             M.RegisterAsync<ProvidersListRequestMessage>(this, ProvidersListHandler);
@@ -57,7 +57,7 @@ namespace Prime.Manager
             */
         }
 
-        private void UpdateTimeKindRequestHandler(UpdateTimeKindRequestMessage request)
+        private void UpdateTimeKindRequestHandler(UpdateTimeKindInternalRequestMessage request)
         {
             IsUtcServerTime = request.IsUtc;
 
@@ -65,7 +65,7 @@ namespace Prime.Manager
 
             M.SendAsync(new TimeKindUpdatedRequestMessage()
             {
-                IsUtcTime = request.IsUtc
+                IsUtcTime = IsUtcServerTime
             });
         }
 

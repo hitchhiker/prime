@@ -15,9 +15,8 @@ namespace Prime.SocketServer.Transport
         /// </summary>
         /// <param name="client"></param>
         /// <param name="provider"></param>
-        public ReceiveState(IdentifiedClient client, SocketServiceProvider provider) : this(client, provider, DefaultBufferSize) { }
-
-        public ReceiveState(IdentifiedClient client, SocketServiceProvider provider, int bufferSize)
+        /// <param name="bufferSize"></param>
+        public ReceiveState(IdentifiedClient client, SocketServiceProvider provider, int bufferSize = DefaultBufferSize)
         {
             IdentifiedClient = client;
             Buffer = new byte[bufferSize];
@@ -27,5 +26,6 @@ namespace Prime.SocketServer.Transport
         public IdentifiedClient IdentifiedClient { get; }
         public byte[] Buffer { get; }
         public SocketServiceProvider ServiceProvider { get; }
+        public UInt32? ExpectedMessageSize { get; set; }
     }
 }

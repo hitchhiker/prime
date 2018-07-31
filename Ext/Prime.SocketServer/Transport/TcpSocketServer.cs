@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Base;
+using Prime.Base.Misc.Utils;
 using Prime.Core;
 using Prime.MessagingServer.Data;
 using Prime.SocketServer.Transport.Cleaner;
@@ -42,7 +43,8 @@ namespace Prime.SocketServer.Transport
         public TcpSocketServer(SocketServiceProvider serviceProvider, IMessenger messenger = null)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            _serviceProvider.TcpSocketServer = this; // TODO: AY: Frank is it okay to initialize property of object with 'this' inside constructor?
+            _serviceProvider.TcpSocketServer =
+                this; // TODO: AY: Frank is it okay to initialize property of object with 'this' inside constructor?
         }
 
         public void Start(IPAddress address, short port)
@@ -111,7 +113,7 @@ namespace Prime.SocketServer.Transport
                 // Check number of clients.
                 if (_connectedClients.Count + 1 >= _socketPendingQueueSize)
                 {
-                    CallOnException(new InvalidOperationException("Maximum connected clients count is reached"));
+                    CallOnException(new InvalidOperationException("Maximum connected clients count is reached."));
                     return;
                 }
 
@@ -122,15 +124,18 @@ namespace Prime.SocketServer.Transport
 
                     // Add client.
                     if (!_connectedClients.TryAdd(identifiedClient.Id, identifiedClient))
-                        CallOnException(new InvalidOperationException($"Unable to add new client '{identifiedClient.Id}' to list of connected clients."));
+                        CallOnException(new InvalidOperationException(
+                            $"Unable to add new client '{identifiedClient.Id}' to list of connected clients."));
 
                     _serviceProvider.OnClientConnected(identifiedClient.Id);
 
                     // Run receive thread.
                     Task.Run(() =>
                     {
-                        var state = new ReceiveState(identifiedClient, (SocketServiceProvider)_serviceProvider.Clone());
-                        clientSocket.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None, DataReceivedCallback, state);
+                        var state = new ReceiveState(identifiedClient,
+                            (SocketServiceProvider) _serviceProvider.Clone());
+                        clientSocket.BeginReceive(state.Buffer, 0, sizeof(UInt32), SocketFlags.None,
+                            DataReceivedCallback, state);
                     });
 
                     // Wait for next client to connect.
@@ -148,27 +153,50 @@ namespace Prime.SocketServer.Transport
 
         private void DataReceivedCallback(IAsyncResult ar)
         {
-            var state = (ReceiveState)ar.AsyncState;
+            var state = (ReceiveState) ar.AsyncState;
             var clientSocket = state.IdentifiedClient.ClientSocket;
 
-            try
+            lock (state)
             {
-                var bytesCount = clientSocket.EndReceive(ar);
-                if (bytesCount <= 0) return;
+                try
+                {
+                    var bytesCount = clientSocket.EndReceive(ar);
+                    if (bytesCount <= 0) return;
 
-                var clonedData = new byte[state.Buffer.Length];
-                Buffer.BlockCopy(state.Buffer, 0, clonedData, 0, clonedData.Length * sizeof(byte));
+                    if (!state.ExpectedMessageSize.HasValue)
+                    {
+                        // Size is not received.
+                        if (bytesCount != sizeof(UInt32))
+                            throw new InvalidOperationException(
+                                $"The length of buffer size byte array is not equal to {sizeof(UInt32)}.");
 
-                state.IdentifiedClient.UpdateLastRead();
-                state.ServiceProvider.OnDataReceived(state.IdentifiedClient.Id, clonedData);
+                        var messageSize = ByteUtils.ExtractDataSize(state.Buffer);
+                        state.ExpectedMessageSize = messageSize;
 
-                clientSocket.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None,
-                    DataReceivedCallback, state);
-            }
-            catch (SocketException e)
-            {
-                CallOnException(e);
-                DestroyClient(state.IdentifiedClient.Id);
+                        Array.Clear(state.Buffer, 0, state.Buffer.Length);
+                        clientSocket.BeginReceive(state.Buffer, 0, (int)messageSize, SocketFlags.None,
+                            DataReceivedCallback, state);
+                    }
+                    else
+                    {
+                        var clonedData = new byte[state.Buffer.Length];
+                        Buffer.BlockCopy(state.Buffer, 0, clonedData, 0, clonedData.Length);
+
+                        state.IdentifiedClient.UpdateLastRead();
+                        state.ServiceProvider.OnDataReceived(state.IdentifiedClient.Id, clonedData);
+
+                        Array.Clear(state.Buffer, 0, state.Buffer.Length);
+
+                        state.ExpectedMessageSize = null;
+                        clientSocket.BeginReceive(state.Buffer, 0, sizeof(UInt32), SocketFlags.None,
+                            DataReceivedCallback, state);
+                    }
+                }
+                catch (SocketException e)
+                {
+                    CallOnException(e);
+                    DestroyClient(state.IdentifiedClient.Id);
+                }
             }
         }
 
@@ -269,14 +297,9 @@ namespace Prime.SocketServer.Transport
             {
                 lock (_lock)
                 {
-                    var dataLength = (UInt32)data.Length;
-                    var buffer = new byte[sizeof(UInt32) + dataLength];
-                    var dataLengthBytes = BitConverter.GetBytes(dataLength);
+                    var prefixedData = ByteUtils.PrefixBufferSize(data);
 
-                    Buffer.BlockCopy(dataLengthBytes, 0, buffer, 0, sizeof(UInt32));
-                    Buffer.BlockCopy(data, 0, buffer, sizeof(UInt32), data.Length);
-                    
-                    client.ClientSocket.Send(data);
+                    client.ClientSocket.Send(prefixedData);
                     client.UpdateLastWrite();
                 }
             }
