@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,9 +10,7 @@ using System.Timers;
 using GalaSoft.MvvmLight.Messaging;
 using Prime.Base;
 using Prime.Base.Misc.Utils;
-using Prime.Core;
 using Prime.MessagingServer.Data;
-using Prime.SocketServer.Transport.Cleaner;
 using Timer = System.Timers.Timer;
 
 namespace Prime.SocketServer.Transport

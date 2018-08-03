@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Prime.Core;
-using Prime.KeysManager;
+﻿using Prime.Core;
 using Prime.MessagingServer;
-using Prime.Settings;
 
 namespace Prime
 {
