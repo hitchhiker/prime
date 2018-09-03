@@ -30,13 +30,6 @@ namespace Prime
 
             var messagingServer = new MessagingServer.Server(serverContext);
             
-            // Run Prime Web.
-            var primeWeb = new PrimeWeb()
-            {
-                L = logger
-            };
-            //primeWeb.Run();
-            
             // Run TCP server for interproc communication with extensions.
             var primeTcp = new PrimeSocketServer(serverContext, messagingServer)
             {
@@ -50,7 +43,14 @@ namespace Prime
                 L = logger
             };
             primeWs.Start();
-            
+
+            // Run Prime Web.
+            var primeWeb = new PrimeWeb()
+            {
+                L = logger
+            };
+            primeWeb.Run();
+
             // Demo messages handling.
             messagingServer.M.Register<UpdateTimeKindRequestMessage>(logger, (r) =>
             {
