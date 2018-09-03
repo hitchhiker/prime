@@ -5,7 +5,7 @@ using Prime.Core;
 
 namespace Prime.Settings
 {
-    public class TimeKindUpdatedRequestMessage : BaseTransportRequestMessage
+    public class TimeKindUpdatedMessage : BaseTransportRequestMessage
     {
         public bool IsUtcTime { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace Prime.Settings
 {
-    public class UpdateWebUiTimeKindRequestMessage : BaseTransportRequestMessage
+    public class TimeKindUiUpdatedMessage : BaseTransportRequestMessage
     {
         public bool IsUtc { get; set; }
     }

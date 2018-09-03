@@ -52,21 +52,21 @@ namespace Prime
             primeWeb.Run();
 
             // Demo messages handling.
-            messagingServer.M.Register<UpdateTimeKindRequestMessage>(logger, (r) =>
-            {
-                messagingServer.M.Send(new UpdateTimeKindInternalRequestMessage()
-                {
-                    IsUtc = r.IsUtc
-                });
-            });
+            //messagingServer.M.Register<TimeKindUiUpdatedMessage>(logger, (r) =>
+            //{
+            //    messagingServer.M.Send(new UpdateTimeKindInternalRequestMessage()
+            //    {
+            //        IsUtc = r.IsUtc
+            //    });
+            //});
             
-            messagingServer.M.Register<TimeKindUpdatedRequestMessage>(logger, (r) =>
-            {
-                messagingServer.M.SendAsync(new UpdateWebUiTimeKindRequestMessage()
-                {
-                    IsUtc = r.IsUtcTime
-                });
-            });
+            //messagingServer.M.Register<TimeKindUpdatedMessage>(logger, (r) =>
+            //{
+            //    messagingServer.M.SendAsync(new TimeKindUiUpdatedMessage()
+            //    {
+            //        IsUtc = r.IsUtcTime
+            //    });
+            //});
             //
 
             messagingServer.Start();
