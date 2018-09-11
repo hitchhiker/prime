@@ -10,8 +10,9 @@ namespace Prime.Console.Frank
         public static void Go(Core.PrimeInstance primeInstance, ClientContext c)
         {
             var s = primeInstance.Context;
-
-            new IpfsMessageTest(primeInstance).Go();
+            //AuthManagerTest.EcdsaKeySign(s);
+            AuthManagerTest.Key1(s);
+            //new IpfsMessageTest(primeInstance).Go();
 
             //new ReflectionTests2(primeInstance).Go();
 
@@ -21,7 +22,7 @@ namespace Prime.Console.Frank
 
             //new SocketServerTest(s, c).Go();
 
-            //AuthManagerTest.EcdsaKeySign(s);
+            //
 
             //new ExtensionLoader().Compose();
 
