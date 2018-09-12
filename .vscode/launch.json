@@ -1,58 +1,88 @@
 {
-   // Use IntelliSense to find out which attributes exist for C# debugging
-   // Use hover for the description of the existing attributes
-   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-   "version": "0.2.0",
-   "configurations": [
-       {
-           "name": ".NET Core Launch (web)",
-           "type": "coreclr",
-           "request": "launch",
-           "preLaunchTask": "build",
-           "program": "${workspaceFolder}/Prime.Web/bin/Debug/netcoreapp2.1/Prime.Web.dll",
-           "args": [],
-           "cwd": "${workspaceFolder}/Prime.Web",
-           "stopAtEntry": false,
-           "launchBrowser": {
-               "enabled": true,
-               "args": "${auto-detect-url}",
-               "windows": {
-                   "command": "cmd.exe",
-                   "args": "/C start ${auto-detect-url}"
-               },
-               "osx": {
-                   "command": "open"
-               },
-               "linux": {
-                   "command": "xdg-open"
-               }
-           },
-           "env": {
-               "ASPNETCORE_ENVIRONMENT": "Development"
-           },
-           "sourceFileMap": {
-               "/Views": "${workspaceFolder}/Views"
-           }
-       },
+    // Use IntelliSense to find out which attributes exist for C# debugging
+    // Use hover for the description of the existing attributes
+    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+    "version": "0.2.0",
+    "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Prime.Console",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Prime.Bootstrap/bin/Debug/netcoreapp2.0/Prime.Bootstrap.dll",
+            "program": "${workspaceFolder}/Prime.Console/bin/Debug/netcoreapp2.1/Prime.Console.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Prime.Bootstrap",
-            // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
-            "console": "internalConsole",
+            "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Prime.Manager.Client",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Ext/Prime.Manager.Client/bin/Debug/netcoreapp2.1/Prime.Manager.Client.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Prime.Finance.Client",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Ext/Prime.Finance.Client/bin/Debug/netcoreapp2.1/Prime.Finance.Client.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Prime",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Prime/bin/Debug/netcoreapp2.1/Prime.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Prime.Web",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Prime.Web/bin/Debug/netcoreapp2.1/Prime.Web.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Prime.Web",
+            "stopAtEntry": false,
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
-        }
-    ,]
+        },
+    ]
 }
