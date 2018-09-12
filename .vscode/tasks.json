@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Prime.Bootstrap/Prime.Bootstrap.csproj"
+                "${workspaceFolder}/Prime.sln"
             ],
             "problemMatcher": "$msCompile"
         }
