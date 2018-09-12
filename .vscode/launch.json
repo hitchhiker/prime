@@ -9,9 +9,9 @@
            "type": "coreclr",
            "request": "launch",
            "preLaunchTask": "build",
-           "program": "${workspaceFolder}/Prime.Web/bin/Debug/netcoreapp2.0/Prime.Web.dll",
+           "program": "${workspaceFolder}/Prime.Web/bin/Debug/netcoreapp2.1/Prime.Web.dll",
            "args": [],
-           "cwd": "${workspaceFolder}",
+           "cwd": "${workspaceFolder}/Prime.Web",
            "stopAtEntry": false,
            "launchBrowser": {
                "enabled": true,
