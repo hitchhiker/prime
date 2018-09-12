@@ -1,7 +1,7 @@
 import { BaseRequestMessage, BaseMessage, BaseResponseMessage } from "./BaseMessages";
 
 export class UpdateTimeKindRequestMessage extends BaseRequestMessage {
-    $type: string = "prime.settings.updatetimekindrequestmessage";
+    $type: string = "prime.settings.timekinduiupdatedmessage";
 
     isUtc: boolean;
 

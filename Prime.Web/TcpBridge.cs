@@ -23,7 +23,7 @@ namespace Prime.Web
             };
             var messagingServer = new Server(serverContext);
 
-            messagingServer.M.Register<UpdateWebUiTimeKindRequestMessage>(messagingServer, (request) =>
+            messagingServer.M.Register<TimeKindUiUpdatedMessage>(messagingServer, (request) =>
             {
                 TimeKindUpdated?.Invoke(request);
             });
@@ -34,6 +34,6 @@ namespace Prime.Web
             messagingServer.Start();
         }
 
-        public static event Action<UpdateWebUiTimeKindRequestMessage> TimeKindUpdated;
+        public static event Action<TimeKindUiUpdatedMessage> TimeKindUpdated;
     }
 }

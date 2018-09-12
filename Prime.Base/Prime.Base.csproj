@@ -20,6 +20,11 @@
     <!--<Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />-->
   </Target>
   <ItemGroup>
+    <Compile Remove="Messaging\Manager\Demo\UpdateTimeKindInternalRequestMessage.cs" />
+    <Compile Remove="Messaging\Manager\Demo\UpdateTimeKindRequestMessage.cs" />
+    <Compile Remove="Messaging\Manager\Demo\UpdateTimeKindResponseMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Prime.Base.csproj.DotSettings" />
   </ItemGroup>
   <ItemGroup>
