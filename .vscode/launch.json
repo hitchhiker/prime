@@ -4,6 +4,14 @@
     // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
     "version": "0.2.0",
     "configurations": [
+        // TODO.
+        // {
+        //     "type": "chrome",
+        //     "request": "launch",
+        //     "name": "Debug Prime.Manager.Client angular app",
+        //     "url": "http://localhost:4200/",
+        //     "webRoot": "${workspaceFolder}/Ext/Prime.Manager.Client/ui"
+        // },
         {
             "name": "Prime.Console",
             "type": "coreclr",
