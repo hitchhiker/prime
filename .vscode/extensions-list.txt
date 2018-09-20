@@ -1,7 +1,0 @@
-emmanuelbeziat.vscode-great-icons
-formulahendry.code-runner
-formulahendry.dotnet-test-explorer
-jchannon.csharpextensions
-ms-vscode.cpptools
-ms-vscode.csharp
-msjsdiag.debugger-for-chrome
