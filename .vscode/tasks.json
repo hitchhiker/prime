@@ -34,6 +34,30 @@
                 "install"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "Prime.Finance.Client npm run",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/Ext/Prime.Finance.Client/ui"
+            },
+            "command": "ng",
+            "args": [
+                "serve"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Prime.Finance.Client npm install",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/Ext/Prime.Finance.Client/ui"
+            },
+            "command": "npm",
+            "args": [
+                "install"
+            ],
+            "problemMatcher": []
         }
     ]
 }
