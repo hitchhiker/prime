@@ -9,11 +9,11 @@ namespace Prime.MessagingServer.Types
     /// </summary>
     public sealed class MessageTypeCatalogue : TypeIndexDictionariesBase<string>
     {
-        private readonly ServerContext _context;
+        private readonly PrimeContext _context;
         public static object Lock = new object();
         public static bool FilterTypeCatalogueAttribute = false;
 
-        public MessageTypeCatalogue(ServerContext context) : base(Results(context.Types), GetHash)
+        public MessageTypeCatalogue(PrimeContext context) : base(Results(context.Types), GetHash)
         {
             _context = context;
         }

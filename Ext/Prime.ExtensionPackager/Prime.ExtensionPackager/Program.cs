@@ -68,7 +68,7 @@ namespace Prime.ExtensionPackager
                 return;
             }
 
-            var pc = new ClientContext(configPath);
+            var pc = new PrimeContext(configPath);
 
             logger.Info("");
             logger.Info(" Extension: " + extPath);

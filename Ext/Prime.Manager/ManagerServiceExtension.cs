@@ -16,7 +16,7 @@ namespace Prime.KeysManager
 
         internal ManagerService ManagerServiceInstance;
 
-        public void Main(ServerContext context)
+        public void Main(PrimeContext context)
         {
             ManagerServiceInstance = new ManagerService(context);
             ManagerServiceInstance.Init();

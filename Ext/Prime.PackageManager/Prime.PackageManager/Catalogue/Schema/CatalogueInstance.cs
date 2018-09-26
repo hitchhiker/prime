@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Prime.Base.DStore;
 using Prime.Core;
 
 namespace Prime.PackageManager
@@ -21,8 +22,8 @@ namespace Prime.PackageManager
 
         [JsonProperty("version"), JsonConverter(typeof(VersionJsonConverter))]
         public Version Version { get; set; }
-
-        [JsonProperty("address", NullValueHandling = NullValueHandling.Ignore)]
-        public string Address { get; set; }
+        
+        [JsonProperty("curi", NullValueHandling = NullValueHandling.Ignore)]
+        public ContentUri ContentUri { get; set; }
     }
 }

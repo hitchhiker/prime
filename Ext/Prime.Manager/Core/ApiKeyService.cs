@@ -8,9 +8,9 @@ namespace Prime.Manager.Core
 {
     public class ApiKeyService : IApiKeyService
     {
-        private readonly ServerContext _context;
+        private readonly PrimeContext _context;
 
-        public ApiKeyService(ServerContext context)
+        public ApiKeyService(PrimeContext context)
         {
             _context = context;
         }

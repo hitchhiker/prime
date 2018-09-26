@@ -14,7 +14,7 @@ namespace Prime.Finance.Prices.Latest
     {
         public Aggregator Aggregator;
 
-        public void Start(ServerContext context)
+        public void Start(PrimeContext context)
         {
             Aggregator = new Aggregator(this, context);
             M = context.M;

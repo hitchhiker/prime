@@ -23,10 +23,8 @@ namespace Prime.Manager.Client
 
             logger.Log("Prime.Manager started");
 
-            var serverContext = new ServerContext()
-            {
-                L = logger
-            };
+            var serverContext = PrimeContext.ForDevelopmentServer();
+            serverContext.L = logger;
 
             var messagingServer = new MessagingServer.Server(serverContext);
             var clientExcension = new SocketClient.ServerExtension();

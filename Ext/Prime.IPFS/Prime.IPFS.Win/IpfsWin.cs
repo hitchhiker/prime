@@ -42,7 +42,14 @@ namespace Prime.IPFS
 
             tmp.Delete(true);
 
-            FirewallHelper.Instance.GrantAuthorization(instance.NativeExecutable.FullName, "prime-ipfs");
+            try
+            {
+                FirewallHelper.Instance.GrantAuthorization(instance.NativeExecutable.FullName, "prime-ipfs");
+            }
+            catch
+            {
+                instance.L.Warn("Unable to modify the Windows Firewall for IPFS. Please do this manually.");
+            }
         }
     }
 }

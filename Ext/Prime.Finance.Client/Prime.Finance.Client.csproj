@@ -13,6 +13,6 @@
     <None Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\Prime\Prime.Base\Prime.Base.csproj" />
   </ItemGroup>
 </Project>

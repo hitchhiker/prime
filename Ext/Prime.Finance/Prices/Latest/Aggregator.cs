@@ -11,7 +11,7 @@ namespace Prime.Finance.Prices.Latest
     internal class Aggregator : IDisposable
     {
         private readonly Messenger _lpm;
-        private readonly ServerContext _context;
+        private readonly PrimeContext _context;
         private readonly List<LatestPriceProvider> _providers = new List<LatestPriceProvider>();
         private readonly List<LatestPriceResultMessage> _results = new List<LatestPriceResultMessage>();
         private readonly object _resultsLock = new object();
@@ -19,7 +19,7 @@ namespace Prime.Finance.Prices.Latest
         private readonly int _timerInterval = 5000;
         public IMessenger M => _context.M;
 
-        internal Aggregator(Messenger lpm, ServerContext context)
+        internal Aggregator(Messenger lpm, PrimeContext context)
         {
             _lpm = lpm;
             _context = context;

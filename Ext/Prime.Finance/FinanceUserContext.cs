@@ -21,7 +21,7 @@ namespace Prime.Finance
                 var change = !Equals(_quoteAsset, value);
                 _quoteAsset = value;
                 if (change)
-                    DefaultMessenger.I.DefaultServer.Send(new QuoteAssetChangedMessage(value));
+                    DefaultMessenger.I.Instance.Send(new QuoteAssetChangedMessage(value));
             }
         }
 

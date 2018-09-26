@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Prime.Base.DStore;
 using Prime.Core;
 
 namespace Prime.PackageManager
 {
     public class CatalogueBuilder
     {
-        private readonly ClientContext _context;
+        private readonly PrimeContext _context;
 
-        public CatalogueBuilder(ClientContext context)
+        public CatalogueBuilder(PrimeInstance prime)
         {
-            _context = context;
+            _context = prime.C;
         }
 
         public Catalogue Build()
@@ -35,7 +36,7 @@ namespace Prime.PackageManager
 
             _context.L.Info($"{cat.Count} entries found.");
 
-            var jsonObject = CreateJsonObject(cat);
+            var jsonObject = CompileCatalogue(cat);
 
             var catJson = new FileInfo(Path.Combine(cDir.FullName, "cat.json"));
 
@@ -72,7 +73,7 @@ namespace Prime.PackageManager
             return cat;
         }
 
-        private Catalogue CreateJsonObject(CatalogueBuild catalogueBuild)
+        private Catalogue CompileCatalogue(CatalogueBuild catalogueBuild)
         {
             var cs = new Catalogue {Owner = "prime"};
 
@@ -82,10 +83,19 @@ namespace Prime.PackageManager
                 cs.Entries.Add(ces);
 
                 foreach (var i in group)
-                    ces.Instances.Add(new CatalogueInstance(i.MetaData));
+                    ces.Instances.Add(CreateInstance(i));
             }
 
             return cs;
+        }
+
+        private CatalogueInstance CreateInstance(CataloguePackageBuilder builder)
+        {
+            var instance = new CatalogueInstance(builder.MetaData)
+            {
+                ContentUri = ContentUri.AddFromLocalDirectory(_context.M, builder.Source)
+            };
+            return instance;
         }
     }
 }

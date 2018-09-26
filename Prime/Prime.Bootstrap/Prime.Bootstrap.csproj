@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.3" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="System.Composition" Version="1.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
+    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+</Project>

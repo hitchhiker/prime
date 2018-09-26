@@ -20,8 +20,8 @@
     <PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
-    <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\..\Prime\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\Prime\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj">
       <Private>false</Private>

@@ -4,6 +4,6 @@ namespace Prime.Manager
 {
     public class ManagerServiceContext
     {
-        public ServerContext ServerContext { get; set; }
+        public PrimeContext PrimeContext { get; set; }
     }
 }

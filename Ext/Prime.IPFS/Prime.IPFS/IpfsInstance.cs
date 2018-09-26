@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Ipfs.Api;
 using Nito.AsyncEx;
 using Prime.Core;
@@ -37,6 +39,8 @@ namespace Prime.IPFS
             {
                 Messenger.SendIpfsStatus();
             };
+            
+            Messenger.Start();
         }
 
         public ILogger L => Context.L;
@@ -59,17 +63,14 @@ namespace Prime.IPFS
         private IpfsClient _client;
         public IpfsClient Client => _client ?? (_client = new IpfsClient());
 
-        public void Start()
+        public void StartDaemon()
         {
-            Messenger.Stop();
-            Messenger.Start();
             Daemon.Start();
         }
 
-        public void Stop()
+        public void StopDaemon()
         {
             Daemon.Stop();
-            Messenger.Stop();
         }
 
         private bool IsInstalled()
@@ -85,6 +86,20 @@ namespace Prime.IPFS
             catch { return false; }
 
             return true;
+        }
+
+        public bool Do(Action action)
+        {
+            Daemon.WaitTillRunning(action);
+            return true;
+        }
+
+        public bool StartAndDo(Action action)
+        {
+            if (!Daemon.IsRunning())
+                Messenger.M.SendAsync(new IpfsStartRequest());
+
+            return Do(action);
         }
     }
 }

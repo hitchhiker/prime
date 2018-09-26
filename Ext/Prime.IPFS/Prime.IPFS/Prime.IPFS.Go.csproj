@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ipfs.Api" Version="0.22.1" />
+    <PackageReference Include="Ipfs.Core" Version="0.31.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="System.Composition" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Prime\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+
+</Project>

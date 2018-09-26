@@ -17,7 +17,7 @@ namespace Prime.MessagingServer
 
         internal Server MessageServerInstance;
 
-        public void Main(ServerContext context)
+        public void Main(PrimeContext context)
         {
             MessageServerInstance = new Server(context);
         }

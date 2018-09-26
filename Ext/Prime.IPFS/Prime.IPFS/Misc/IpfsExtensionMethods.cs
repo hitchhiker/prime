@@ -5,6 +5,11 @@ namespace Prime.IPFS
 {
     public static class IpfsExtensionMethods
     {
+        public static bool IsRunning(this IpfsDaemonBase daemon)
+        {
+            return daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System;
+        }
+
         public static void WaitTillRunning(this IpfsInstance instance, Action onRunning)
         {
             instance.Daemon.WaitTillRunning(onRunning);
@@ -21,7 +26,7 @@ namespace Prime.IPFS
 
             enjoyGotoPurists:
 
-            if (daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System)
+            if (daemon.IsRunning())
             {
                 onRunning.Invoke();
                 return;
@@ -38,7 +43,7 @@ namespace Prime.IPFS
 
             enjoyGotoPurists:
 
-            if (daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System)
+            if (daemon.IsRunning())
                 return onRunning.Invoke();
             
             Thread.Sleep(1);

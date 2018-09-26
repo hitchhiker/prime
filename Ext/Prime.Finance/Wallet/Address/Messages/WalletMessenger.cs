@@ -7,7 +7,7 @@ namespace Prime.Finance.Wallet.Addresses
 {
     public class WalletMessenger : IUserContextMessenger
     {
-        private readonly IMessenger _messenger = DefaultMessenger.I.DefaultServer;
+        private readonly IMessenger _messenger = DefaultMessenger.I.Instance;
         private readonly UserContext _userContext;
         private readonly string _token;
         private readonly WalletProvider _walletProvider;

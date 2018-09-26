@@ -15,11 +15,10 @@ namespace Prime.IPFS
 
         internal IpfsInstance IpfsInstance { get; private set; }
 
-        public void Main(ServerContext context)
+        public void Main(PrimeContext context)
         {
             var ctx = new IpfsInstanceContext(context, GetPlatformBase());
             IpfsInstance = new IpfsInstance(ctx);
-            IpfsInstance.Start();
         }
 
         public string Title => "Prime Ipfs Go";

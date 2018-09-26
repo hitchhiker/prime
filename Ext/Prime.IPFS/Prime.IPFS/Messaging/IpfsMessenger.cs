@@ -3,18 +3,19 @@ using Nito.AsyncEx;
 using Prime.Core;
 
 namespace Prime.IPFS.Messaging {
-
     public class IpfsMessenger
     {
-        private readonly ServerContext _context;
-        private readonly IpfsInstance _ipfs;
+        internal readonly PrimeContext S;
+        internal readonly IpfsInstance IpfsInstance;
         public readonly IMessenger M;
+        internal readonly ContentUriHelper ContentUriHelper;
 
-        public IpfsMessenger(IpfsInstance ipfs)
+        public IpfsMessenger(IpfsInstance ipfsInstance)
         {
-            _context = ipfs.Context.ServerContext;
-            _ipfs = ipfs;
-            M = _context.M;
+            S = ipfsInstance.Context.PrimeContext;
+            IpfsInstance = ipfsInstance;
+            M = S.M;
+            ContentUriHelper = new ContentUriHelper(this);
         }
 
         public void Start()
@@ -23,25 +24,26 @@ namespace Prime.IPFS.Messaging {
             M.RegisterAsync<IpfsStopRequest>(this, IpfsStopRequest);
             M.RegisterAsync<IpfsStatusRequest>(this, m=> SendIpfsStatus());
             M.RegisterAsync<IpfsVersionRequest>(this, m=> SendIpfsVersion());
+            M.RegisterAsync<GetContentUriRequest>(this, ContentUriHelper.GetContentUriRequest);
         }
 
         private void IpfsStartRequest(IpfsStartRequest m)
         {
-            _ipfs.Start();
+            IpfsInstance.StartDaemon();
         }
 
         private void IpfsStopRequest(IpfsStopRequest m)
         {
-            _ipfs.Stop();
+            IpfsInstance.StopDaemon();
         }
 
         private void SendIpfsVersion()
         {
-            if (_ipfs.Daemon.CurrentState == DaemonState.Running)
+            if (IpfsInstance.Daemon.CurrentState == DaemonState.Running)
             {
                 AsyncContext.Run(async () =>
                 {
-                    var v = await _ipfs.Client.VersionAsync();
+                    var v = await IpfsInstance.Client.VersionAsync();
                     M.SendAsync(new IpfsVersionResponse() { Version = v.Get("Version")/*, Item = v*/ });
                 });
             }
@@ -49,7 +51,7 @@ namespace Prime.IPFS.Messaging {
 
         public void SendIpfsStatus()
         {
-            M.SendAsync(new IpfsStatusMessage(_ipfs.Daemon.State().GetServiceStatus()));
+            M.SendAsync(new IpfsStatusMessage(IpfsInstance.Daemon.State().GetServiceStatus()));
         }
 
         public void Stop()

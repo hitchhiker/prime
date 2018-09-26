@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\..\Prime\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\Prime.IPFS.Win\Prime.IPFS.Win.csproj" />
-    <ProjectReference Include="..\Prime.IPFS\Prime.IPFS.csproj" />
+    <ProjectReference Include="..\Prime.IPFS\Prime.IPFS.Go.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,7 +8,7 @@ namespace Prime.Finance.AssetMessages
     {
         public IMessenger M { get; private set; }
 
-        public void Start(ServerContext context)
+        public void Start(PrimeContext context)
         {
             M = context.M;
             M.RegisterAsync<AssetAllRequestMessage>(this, AllRequestMessage);
