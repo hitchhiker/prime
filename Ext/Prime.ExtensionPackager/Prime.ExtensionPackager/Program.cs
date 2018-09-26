@@ -13,7 +13,7 @@ namespace Prime.ExtensionPackager
     {
         class Options
         {
-            [Option('c', "config", Required = true, HelpText = "Path to the 'prime-client.config' file.")]
+            [Option('c', "config", Required = true, HelpText = "Path to the prime config file.")]
             public string ConfigPath { get; set; }
 
             [Option('e', "ext", Required = true, HelpText = "Path to the extension directory for inspection.")]
@@ -47,7 +47,7 @@ namespace Prime.ExtensionPackager
                 });
                 Console.ReadLine();
             } else
-                CommandLine.Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(Run);        }
+                Parser.Default.ParseArguments<Options>(args).WithParsed(Run);        }
 
         static void Run(Options opts)
         {

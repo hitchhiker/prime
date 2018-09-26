@@ -18,7 +18,14 @@ namespace Prime.Console.Frank
         {
             prime.Start();
             var cbuild = new CatalogueBuilder(prime);
-            cbuild.Build();
+
+            var pubConfig = new CataloguePublisherConfig()
+            {
+                CatalogueId = "hitchhiker-cat".GetObjectIdHashCode(),
+                IPNSKey = "QmQW7UYeDSPbc9xWXG2E7NQEL9EG2et8vYdBwJPBKPunsY"
+            };
+
+            cbuild.Build(pubConfig);
         }
     }
 }

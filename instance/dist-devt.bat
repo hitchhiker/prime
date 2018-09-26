@@ -8,11 +8,11 @@
 @dotnet %packer% -c %config% -e %tmp%\Prime.ExtensionPackager
 @echo -------------------------------------
 
-@dotnet publish  ..\Prime.Base -c Release -o %tmp%\Prime.Base
+@dotnet publish  ..\Prime\Prime.Base -c Release -o %tmp%\Prime.Base
 @dotnet %packer% -c %config% -e %tmp%\Prime.Base --key prime:base
 @echo -------------------------------------
 
-@dotnet publish  ..\Prime.Core -c Release -o %tmp%\Prime.Core
+@dotnet publish  ..\Prime\Prime.Core -c Release -o %tmp%\Prime.Core
 @dotnet %packer% -c %config% -e %tmp%\Prime.Core --key prime:core
 @echo -------------------------------------
 

@@ -1,51 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Prime.Base;
 using Prime.Base.DStore;
 using Prime.Core;
 
 namespace Prime.PackageManager
 {
-    public class CatalogueBuilder
+    public class CatalogueBuilder : CommonBase
     {
-        private readonly PrimeContext _context;
-
-        public CatalogueBuilder(PrimeInstance prime)
+        public CatalogueBuilder(PrimeInstance prime) : base(prime.C)
         {
-            _context = prime.C;
         }
 
-        public Catalogue Build()
+        public Catalogue Build(CataloguePublisherConfig config)
         {
-            var dDir = _context.FileSystem.DistributionDirectory;
-            var cDir = _context.FileSystem.CatalogueDirectory;
+            var dDir = C.FileSystem.DistributionDirectory;
+            var cDir = C.FileSystem.CatalogueDirectory;
 
             var dirs = dDir.EnumerateDirectories().ToList();
 
-            _context.L.Info("Scanning distribution directory: " + dDir.FullName);
+            L.Info("Scanning distribution directory: " + dDir.FullName);
 
             if (dirs.Count == 0)
             {
-                _context.L.Warn("Distribution directory is empty.");
+                L.Warn("Distribution directory is empty.");
                 return null;
             }
 
             var cat = Discover(dirs);
 
-            _context.L.Info($"{cat.Count} entries found.");
+            L.Info($"{cat.Count} entries found, compiling catalogue..");
 
             var jsonObject = CompileCatalogue(cat);
 
-            var catJson = new FileInfo(Path.Combine(cDir.FullName, "cat.json"));
+            var catJsonTmp = new FileInfo(Path.Combine(cDir.FullName, $"cat-{config.CatalogueId}-{ObjectId.NewObjectId()}.json"));
 
-            if (catJson.Exists)
-                catJson.Delete();
+            File.WriteAllText(catJsonTmp.FullName, JsonConvert.SerializeObject(jsonObject, Formatting.Indented));
 
-            File.WriteAllText(catJson.FullName, JsonConvert.SerializeObject(jsonObject, Formatting.Indented));
+            L.Info($"{catJsonTmp.FullName} catalogue written.");
 
-            _context.L.Info($"{catJson.FullName} catalogue written.");
+            var response = M.SendAndWait<GetContentUriRequest,GetContentUriResponse>(new GetContentUriRequest(catJsonTmp.FullName));
+            if (response == null)
+            {
+                L.Fatal("Unable to add the catalogue file to IPFS. Aborting");
+                return null;
+            }
+
+            var catJsonFinal = new FileInfo(Path.Combine(cDir.FullName, $"cat-{config.CatalogueId}-{response.ContentUri.Path}.json"));
+
+            if (catJsonFinal.Exists)
+                catJsonFinal.Delete();
+
+            File.Move(catJsonTmp.FullName, catJsonFinal.FullName);
+
+            L.Log("Catalogue IPFS HASH: " + response.ContentUri.Path);
+            L.Log("Catalogue: " + catJsonFinal.FullName);
 
             return jsonObject;
         }
@@ -65,7 +78,7 @@ namespace Prime.PackageManager
                     }
                     catch (Exception e)
                     {
-                        _context.L.Error(e.Message + " in " + sd.FullName);
+                        L.Error(e.Message + " in " + sd.FullName);
                     }
                 }
             }
@@ -93,7 +106,7 @@ namespace Prime.PackageManager
         {
             var instance = new CatalogueInstance(builder.MetaData)
             {
-                ContentUri = ContentUri.AddFromLocalDirectory(_context.M, builder.Source)
+                ContentUri = ContentUri.AddFromLocalDirectory(C.M, builder.Source)
             };
             return instance;
         }

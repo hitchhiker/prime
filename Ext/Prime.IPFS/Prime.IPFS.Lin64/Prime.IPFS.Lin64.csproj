@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="go-ipfs_v0.4.14_linux-amd64.tar.gz">
+    <None Update="go-ipfs_v0.4.17_linux-amd64.tar.gz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

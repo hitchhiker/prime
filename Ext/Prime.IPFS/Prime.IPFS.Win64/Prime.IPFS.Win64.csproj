@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="go-ipfs_v0.4.14_windows-amd64.zip">
+    <None Update="go-ipfs_v0.4.17_windows-amd64.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
