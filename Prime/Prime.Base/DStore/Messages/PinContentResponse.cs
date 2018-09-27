@@ -8,11 +8,11 @@ namespace Prime.Core
 
         public PinContentResponse(PinContentRequest request, string protocol) : base(request)
         {
-            LocalHash = request.LocalHash;
+            LocalPath = request.LocalPath;
             Protocol = protocol;
         }
 
-        public string LocalHash { get; set; }
+        public string LocalPath { get; set; }
 
         public string Protocol { get; set; }
 

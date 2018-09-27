@@ -11,6 +11,7 @@ namespace Prime.Radiant
     {
         private readonly ICatalogueBuilder _builder;
         private readonly CataloguePublisherConfig _config;
+        public ContentUri LastIndexUri { get; private set; }
 
         public CatalogueBuilder(PrimeInstance prime, ICatalogueBuilder builder, CataloguePublisherConfig config) : base(prime.C)
         {
@@ -18,26 +19,26 @@ namespace Prime.Radiant
             _config = config;
         }
 
-        public ICatalogue Build()
+        public ContentUri Build()
         {
             var cDir = C.FileSystem.CatalogueDirectory;
 
             var catalogue = _builder.CompileCatalogue();
 
             if (catalogue == null)
-                return null;
+                return new ContentUri();
 
             catalogue.Name = _config.CatalogueName;
 
-            if (!WriteOut(cDir, catalogue))
-                return null;
+            if (!WriteOut(catalogue))
+                return new ContentUri();
 
-            return catalogue;
+            return LastIndexUri;
         }
 
-        private bool WriteOut(DirectoryInfo rootDir, ICatalogue catalogue)
+        private bool WriteOut(ICatalogue catalogue)
         {
-            var catDir = rootDir.CreateSubdirectory($"cat-{_config.CatalogueId}-{_config.CatalogueName}");
+            var catDir = _config.GetCatalogueDirectory(C);
 
             var tmpFi = new FileInfo(Path.Combine(C.FileSystem.GetTmpSubDirectory("cat-build").FullName, $"cat-{ObjectId.NewObjectId()}.json"));
 
@@ -87,7 +88,7 @@ namespace Prime.Radiant
 
         private ContentUri CreateIndex(DirectoryInfo catDir, ContentUri latestUri)
         {
-            var indexFi = new FileInfo(Path.Combine(catDir.FullName, "index.json"));
+            var indexFi = new FileInfo(Path.Combine(catDir.FullName, CataloguePublisherConfig.IndexName));
 
             var index = !indexFi.Exists ? 
                 new CatalogueIndex() {CurrentRevision = 0, UtcCreated = DateTime.UtcNow} : 
@@ -104,7 +105,7 @@ namespace Prime.Radiant
 
             var indexUri = M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(indexFi.FullName));
             if (indexUri?.Success == true)
-                return indexUri.ContentUri;
+                return LastIndexUri = indexUri.ContentUri;
 
             L.Fatal("Unable to add the catalogue index file to IPFS. Aborting.");
             return new ContentUri();

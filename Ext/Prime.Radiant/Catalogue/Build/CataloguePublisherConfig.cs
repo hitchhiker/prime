@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.IO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Prime.Base;
 using Prime.Core;
@@ -10,6 +11,7 @@ namespace Prime.Radiant
         [JsonProperty("name")]
         public string CatalogueName { get; set; }
 
+        [JsonIgnore]
         public ObjectId CatalogueId => $"prime-catalogue:{PubKey}".GetObjectIdHashCode(true, true);
 
         [JsonProperty("ipns_key_pub")]
@@ -23,5 +25,13 @@ namespace Prime.Radiant
 
         [JsonProperty("private_key")]
         public string PriKey { get; set; }
+
+        public DirectoryInfo GetCatalogueDirectory(PrimeContext context)
+        {
+            var cDir = context.FileSystem.CatalogueDirectory;
+            return cDir.CreateSubdirectory($"cat-{CatalogueId}-{CatalogueName}");
+        }
+
+        public static string IndexName = "index.json";
     }
 }

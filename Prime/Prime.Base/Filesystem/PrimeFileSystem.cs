@@ -63,6 +63,11 @@ namespace Prime.Core
             return TmpDirectory.EnsureSubDirectory(directoryName);
         }
 
+        public DirectoryInfo GetTmpSubDirectory(string directoryName, string secondarySubDirectory)
+        {
+            return GetTmpSubDirectory(directoryName).EnsureSubDirectory(secondarySubDirectory);
+        }
+
         public DirectoryInfo GetExtWorkspace(IExtension ext)
         {
             var ws = ext.Id.ToString();

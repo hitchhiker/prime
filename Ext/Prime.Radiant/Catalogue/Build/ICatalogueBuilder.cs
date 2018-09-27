@@ -1,8 +1,10 @@
-﻿namespace Prime.Radiant
+﻿using Prime.Base.DStore;
+
+namespace Prime.Radiant
 {
     public interface ICatalogueBuilder
     {
-        ICatalogue Build();
+        ContentUri Build();
 
         ICatalogue CompileCatalogue();
 

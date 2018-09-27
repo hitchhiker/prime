@@ -36,8 +36,8 @@
     <ProjectReference Include="..\..\Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
     <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\Prime.Bootstrap\Prime.Bootstrap.csproj" />
-    <ProjectReference Include="..\Prime.Console\Prime.Console.csproj" />
     <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Scratch\Prime.Scratch.csproj" />
     <ProjectReference Include="..\Prime.Windows\Prime.Core.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>

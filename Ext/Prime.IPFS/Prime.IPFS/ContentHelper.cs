@@ -22,6 +22,31 @@ namespace Prime.IPFS.Messaging
         {
             M.RegisterAsync<GetContentUriRequest>(_ipfsM, GetContentUriRequest);
             M.RegisterAsync<GetContentRequest>(_ipfsM, GetContentRequest);
+            M.RegisterAsync<PinContentRequest>(_ipfsM, PinContentRequest);
+        }
+
+        private void PinContentRequest(PinContentRequest m)
+        {
+            if (m.Protocol != "ipfs")
+                return;
+
+            _i.StartAndDo(async delegate
+            {
+                var ci = await PinContent(m);
+
+                var response = new PinContentResponse(m, "ipfs") { Success = ci };
+
+                M.Send(response);
+            });
+        }
+
+        private async Task<bool> PinContent(PinContentRequest m)
+        {
+            var c = _i.Client;
+
+            await c.Pin.AddAsync(m.LocalPath, true);
+
+            return true;
         }
 
         private void GetContentRequest(GetContentRequest m)

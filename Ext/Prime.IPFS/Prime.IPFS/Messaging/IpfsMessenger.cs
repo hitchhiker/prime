@@ -9,11 +9,13 @@ namespace Prime.IPFS.Messaging {
     {
         internal readonly IpfsInstance IpfsInstance;
         internal readonly ContentHelper ContentHelper;
+        internal readonly NsHelper NsHelper;
 
         public IpfsMessenger(IpfsInstance ipfsInstance) : base(ipfsInstance.Context.PrimeContext)
         {
             IpfsInstance = ipfsInstance;
             ContentHelper = new ContentHelper(this);
+            NsHelper = new NsHelper(this);
         }
 
         public void Start()
@@ -23,6 +25,7 @@ namespace Prime.IPFS.Messaging {
             M.RegisterAsync<IpfsStatusRequest>(this, m=> SendIpfsStatus());
             M.RegisterAsync<IpfsVersionRequest>(this, m=> SendIpfsVersion());
             ContentHelper.Register();
+            NsHelper.Register();
         }
 
         private void IpfsStartRequest(IpfsStartRequest m)

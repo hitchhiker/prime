@@ -1,4 +1,5 @@
 ﻿using Prime.Base;
+using Prime.Base.DStore;
 
 namespace Prime.Core
 {
@@ -6,14 +7,16 @@ namespace Prime.Core
     {
         private PinContentRequest() { }
 
-        public PinContentRequest(string localHash, string protocol = "ipfs")
+        public PinContentRequest(ContentUri uri) : this(uri.Path, uri.Protocol) { }
+
+        public PinContentRequest(string localPath, string protocol = "ipfs")
         {
             SessionId = ObjectId.NewObjectId();
-            LocalHash = localHash;
+            LocalPath = localPath;
             Protocol = protocol;
         }
 
-        public string LocalHash { get; set; }
+        public string LocalPath { get; set; }
 
         public string Protocol { get; set; }
     }

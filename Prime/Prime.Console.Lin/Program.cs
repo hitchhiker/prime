@@ -4,9 +4,9 @@ using Prime.Core;
 using Prime.Core.Messaging;
 using Prime.Scratch;
 
-namespace TestConsole
+namespace Prime.Console.Lin
 {
-    public class Program
+    class Program
     {
         static void Main(string[] args)
         {

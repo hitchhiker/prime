@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ext\Prime.IPFS\Prime.IPFS.Lin64\Prime.IPFS.Lin64.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.IPFS\Prime.IPFS\Prime.IPFS.Go.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.PackageManager\Prime.PackageManager\Prime.PackageManager.csproj" />
+    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\Prime.Scratch\Prime.Scratch.csproj" />
+  </ItemGroup>
+
+</Project>
