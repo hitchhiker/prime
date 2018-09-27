@@ -10,45 +10,45 @@ namespace Prime.IPFS
             return daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System;
         }
 
-        public static void WaitTillRunning(this IpfsInstance instance, Action onRunning)
+        public static void WaitTillRunning(this IpfsInstance instance, Action onRunning, TimeSpan? timeout = null)
         {
-            instance.Daemon.WaitTillRunning(onRunning);
+            instance.Daemon.WaitTillRunning(onRunning, timeout);
         }
 
-        public static T WaitTillRunning<T>(this IpfsInstance instance, Func<T> onRunning)
+        public static T WaitTillRunning<T>(this IpfsInstance instance, Func<T> onRunning, TimeSpan? timeout = null)
         {
-            return instance.Daemon.WaitTillRunning(onRunning);
+            return instance.Daemon.WaitTillRunning(onRunning, timeout);
         }
 
-        public static void WaitTillRunning(this IpfsDaemonBase daemon, Action onRunning)
+        public static void WaitTillRunning(this IpfsDaemonBase daemon, Action onRunning, TimeSpan? timeout = null)
         {
-            daemon.Start();
+            var expire = DateTime.UtcNow.Add(timeout ?? TimeSpan.FromSeconds(30));
 
-            enjoyGotoPurists:
-
-            if (daemon.IsRunning())
+            do
             {
-                onRunning.Invoke();
-                return;
+                if (daemon.IsRunning())
+                {
+                    onRunning.Invoke();
+                    return;
+                }
+                Thread.Sleep(1);
             }
-
-            Thread.Sleep(1);
-
-            goto enjoyGotoPurists;
+            while (DateTime.UtcNow < expire);
         }
 
-        public static T WaitTillRunning<T>(this IpfsDaemonBase daemon, Func<T> onRunning)
+        public static T WaitTillRunning<T>(this IpfsDaemonBase daemon, Func<T> onRunning, TimeSpan? timeout = null)
         {
-            daemon.Start();
+            var expire = DateTime.UtcNow.Add(timeout ?? TimeSpan.FromSeconds(30));
 
-            enjoyGotoPurists:
+            do
+            {
+                if (daemon.IsRunning())
+                    return onRunning.Invoke();
+                Thread.Sleep(1);
+            }
+            while (DateTime.UtcNow < expire);
 
-            if (daemon.IsRunning())
-                return onRunning.Invoke();
-            
-            Thread.Sleep(1);
-
-            goto enjoyGotoPurists;
+            return default(T);
         }
     }
 }

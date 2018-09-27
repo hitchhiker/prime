@@ -20,6 +20,7 @@ namespace TestConsole
             // if this is removed DEBUG wont work across projects!??
             var i = ClassTestBase.Test();
             i = i + ClassTestCore.Test();
+            i = i + ClassTestPm.Test();
             // end HACK
 
             //serverCtx.Assemblies.Refresh();

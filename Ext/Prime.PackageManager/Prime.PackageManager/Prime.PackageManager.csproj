@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Prime\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\..\..\Prime\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\..\Prime.Radiant\Prime.Radiant.csproj" />
   </ItemGroup>
 
 </Project>

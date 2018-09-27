@@ -37,7 +37,7 @@ namespace Prime.Console.Frank
             // Generate private key.
             var privateKey = EncryptionHelper.GetKeyString(skr);
 
-            File.WriteAllText(@"D:\hh\scratch\tmp\priv.key", "prv-" + privateKey);
+            File.WriteAllText(@"D:\hh\scratch\tmp\prv.key", "prv-" + privateKey);
 
             logger.Log("Pub: " + pubKey);
             logger.Log("Priv: " + privateKey);

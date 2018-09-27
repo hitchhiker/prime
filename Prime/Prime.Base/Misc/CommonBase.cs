@@ -16,5 +16,10 @@ namespace Prime.Base
         {
             C = context;
         }
+
+        protected CommonBase(CommonBase otherBase)
+        {
+            C = otherBase.C;
+        }
     }
 }
