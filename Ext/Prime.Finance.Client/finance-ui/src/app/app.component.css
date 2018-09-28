@@ -1,0 +1,36 @@
+.app-container {
+    width: 1100px;
+
+    background-color: #272f3d;
+}
+
+.columns-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.column-left {
+    width: 300px;
+    height: 600px;
+
+    flex-shrink: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: none;
+}
+
+.column-center {
+    flex-grow: 1;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.column-right {
+    display: none;
+    height: 300px;
+    width: 300px;
+
+    flex-shrink: 0;
+
+    background-color: burlywood;
+}

@@ -1,0 +1,68 @@
+/* Container
+/* =============================================== */
+
+#demobox {
+    margin: auto; 
+    min-height: 310px; 
+    min-width: 700px; 
+    max-width: 800px; 
+    padding-left: 30px; 
+    color: #333; }
+
+#csbox {
+    color: #fff; 
+    background: #292f3b;
+    margin: 10px auto; 
+    width: 670px;
+    height: 500px;
+    font-size: small;
+    text-align: center; }
+
+/* Candlestick Chart
+/* =============================================== */
+#chart1 .grid { stroke-opacity: .3; }
+#chart1 .axis line,
+#chart1 .axis.xaxis path { fill: none; stroke: darkgrey; shape-rendering: crispEdges; }
+#chart1 .tick text { font: 10px sans-serif; fill: darkgrey; stroke-opacity: .3; }
+#chart1 .axis.yaxis path { fill: none; stroke: #292f3b; }
+
+#chart1 .bands rect { fill: darkgrey; fill-opacity: 0; stroke-opacity: 0; pointer-events: all; shape-rendering: crispEdges; }
+#chart1 .bands .hoved { fill-opacity: .6; }
+#chart1 .sticks rect { pointer-events: none; shape-rendering: crispEdges; }
+#chart1 .sticks .rise, #chart1 .candles .rise { fill: lightgrey; } 
+#chart1 .sticks .fall, #chart1 .candles .fall { fill: turquoise; }
+#chart1 .sticks .hoved { stroke: white; }
+#chart1 .candles .hoved { stroke: white; }
+#chart1 .candles rect { pointer-events: none; shape-rendering: crispEdges; }
+
+#chart1 .bbmn { fill: none; stroke: cyan; stroke-width: 1.5px; pointer-events: none; }
+#chart1 .bbup { fill: none; stroke: green; stroke-width: 1.5px; pointer-events: none; }
+#chart1 .bbdn { fill: none; stroke: crimson; stroke-width: 1.5px; pointer-events: none; }
+
+#chart1 .volumebar { fill: darkgrey; } 
+#chart1 .volumebar rect { pointer-events: none; }
+#chart1 .volumebar .hoved { fill: white; }
+#chart1 .sigmabar { fill: darkgrey; } 
+#chart1 .sigmabar rect { pointer-events: none; }
+#chart1 .sigmabar .hoved { fill: white; }
+
+#option    { width: 230px; height: 25px; float: left; padding-top: 5px; }
+#option input { cursor: pointer; border-radius: 5px; color: #fff; background: #696d75; border: none; }
+#option input {
+                -webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
+                -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
+                box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
+              }
+#option .active { cursor: auto; background: #94979d; }
+#option .active {
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+              }
+#infobar   { width: 440px; height: 25px; float: left; padding-top: 5px; text-align: left; font-family: sans-serif; }
+.infohead  { width: 140px; height: 25px; margin: 0px 2px; float: left; }
+.infobox   { width: 70px; height: 30px; margin: 0px 2px; float: left; }
+
+#volchart .volbar .volfill { fill: crimson; } 
+#volchart .sigbar .sigfill { fill: crimson; } 
+#volchart input { cursor: pointer; }
