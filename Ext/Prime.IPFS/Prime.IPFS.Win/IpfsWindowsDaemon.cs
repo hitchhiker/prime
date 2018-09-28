@@ -67,12 +67,14 @@ namespace Prime.IPFS
 
             _externalPollTimer?.Close();
 
-            if (_dosContext != null)
-                _dosContext.Cancelled = true;
-            else
-                _process?.Kill();
-
             CurrentState = DaemonState.Stopping;
+
+            if (_process == null)
+                return;
+
+            _process.Kill();
+
+            CurrentState = DaemonState.Stopped;
         }
 
         private void InitForExternal()
@@ -154,9 +156,8 @@ namespace Prime.IPFS
             if (task == null)
                 CurrentState = DaemonState.Stopped;
 
-            task.ContinueWith(task1 => FinalStep(task1, allowInitialisation));
-
-            task.Start();
+            task?.ContinueWith(task1 => FinalStep(task1, allowInitialisation));
+            task?.Start();
         }
 
         private Task FinalStep(Task<ExecuteDos.ProcessResult> pr, bool allowInitialisation)

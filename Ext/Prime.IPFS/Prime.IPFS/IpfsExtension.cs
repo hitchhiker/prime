@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Prime.Base;
+using Prime.Base.Messaging.Common;
 using Prime.Core;
 using Prime.IPFS.Messaging;
 
 namespace Prime.IPFS
 {
-    public abstract class IpfsExtensionBase : IExtensionExecute, IExtensionPlatform
+    public abstract class IpfsExtensionBase : IExtensionExecute, IExtensionPlatform, IExtensionGracefullShutdown
     {
         private static readonly ObjectId _id = new ObjectId("3575ddcb0d8647d75fbf044c"); // "prime:ipfs";
 
@@ -19,6 +21,21 @@ namespace Prime.IPFS
         {
             var ctx = new IpfsInstanceContext(context, GetPlatformBase());
             IpfsInstance = new IpfsInstance(ctx);
+
+            void Shutdown(PrimeShutdownNow obj)
+            {
+                if (IpfsInstance.Daemon.CurrentState == DaemonState.System)
+                    return;
+
+                context.M.Send(new IpfsStopRequest());
+                do
+                {
+                    Thread.Sleep(1);
+                } while (IpfsInstance.Daemon.CurrentState == DaemonState.Stopped);
+                HasShutdown = true;
+            }
+
+            context.M.Register<PrimeShutdownNow>(this, Shutdown);
         }
 
         public string Title => "Prime Ipfs Go";
@@ -28,5 +45,7 @@ namespace Prime.IPFS
         public abstract IpfsPlatformBase GetPlatformBase();
 
         public abstract Platform Platform { get; }
+
+        public bool HasShutdown { get; private set; }
     }
 }

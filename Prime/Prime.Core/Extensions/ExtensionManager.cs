@@ -52,6 +52,7 @@ namespace Prime.Core
 
             Instances.Init(loaded);
             Context.AddInitialisedExtension(loaded);
+            Context.L.Info($"Extension \'{loaded.Title}\' loaded.");
             return loaded;
         }
 

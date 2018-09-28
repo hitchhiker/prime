@@ -1,0 +1,3 @@
+@dotnet restore
+
+@publish.bat

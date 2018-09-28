@@ -17,7 +17,10 @@ namespace Prime.Core.Windows
                 Exe = exe;
                 Args = args;
                 TimeOut = new TimeSpan(0, 0, 0, 20);
+                ProcessGuid = Guid.NewGuid();
             }
+
+            public Guid ProcessGuid { get; private set; } 
 
             public string Exe { get; private set; }
 
@@ -124,7 +127,11 @@ namespace Prime.Core.Windows
                             if (!c.RedirectStandardInput)
                                 process.Kill();
                             else
+                            {
                                 TryCtrlC(process);
+                                if (!process.WaitForExit(2000))
+                                    process.Kill();
+                            }
                         }
                         catch { }
                     }
@@ -142,7 +149,7 @@ namespace Prime.Core.Windows
         {
             try
             {
-                //ProcessExiter.Exit(process);
+                ProcessExiter.Exit(process);
                 if (!process.HasExited)
                     process.Kill();
             }

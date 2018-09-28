@@ -16,6 +16,18 @@ namespace Prime.Console.Lin
             var server = new PrimeInstance(serverCtx);
             var client = new PrimeInstance(clientCtx);
 
+            AppDomain.CurrentDomain.ProcessExit += delegate
+            {
+                server.Stop();
+                client.Stop();
+            };
+
+            System.Console.CancelKeyPress += (o, eventArgs) =>
+            {
+                server.Stop();
+                client.Stop();
+            };
+
             // if this is removed DEBUG wont work across projects!??
             var i = ClassTestBase.Test();
             i = i + ClassTestCore.Test();
