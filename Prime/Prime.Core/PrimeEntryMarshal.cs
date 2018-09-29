@@ -6,7 +6,7 @@ using Prime.Base;
 
 namespace Prime.Core
 {
-    public class PrimeBootstrapped
+    public class PrimeEntryMarshal
     {
         private readonly ObjectId _processId = ObjectId.NewObjectId();
 
@@ -14,23 +14,22 @@ namespace Prime.Core
 
         public bool IsShutdown { get; private set; }
 
-        public void Enter(string[] args)
+        public void Enter(PrimeBootOptions.Start options)
         {
-            Console.WriteLine("Prime Bootstrapper: Starting " + _processId);
+            Console.WriteLine("Prime: Starting " + _processId);
             var ctx = PrimeContext.ForDevelopmentClient();
             var prime = new PrimeInstance(ctx);
             prime.Start();
-            prime.C.M.Send(new IpfsStartRequest());
-            Console.WriteLine("Prime Bootstrapper: Started " + _processId);
+            Console.WriteLine("Prime: Started " + _processId);
             do
             {
                 Thread.Sleep(1);
             } while (!IsStopping);
 
-            Console.WriteLine("Prime Bootstrapper: Shutting down " + _processId);
+            Console.WriteLine("Prime: Shutting down " + _processId);
             prime.Stop();
             IsShutdown = true;
-            Console.WriteLine("Prime Bootstrapper: Stopped " + _processId);
+            Console.WriteLine("Prime: Stopped " + _processId);
         }
     }
 }

@@ -6,12 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.3.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Prime\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\..\Prime\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\..\lib\commandline\CommandLine.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

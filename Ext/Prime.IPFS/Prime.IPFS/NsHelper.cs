@@ -20,6 +20,7 @@ namespace Prime.IPFS.Messaging
         public void Register()
         {
             M.RegisterAsync<PublishNsRequest>(_ipfsM, PublishNsRequest);
+            M.RegisterAsync<GetNsResolveRequest>(_ipfsM, GetNsRequest);
         }
 
         private void PublishNsRequest(PublishNsRequest m)
@@ -44,6 +45,30 @@ namespace Prime.IPFS.Messaging
             var r = await c.Name.PublishAsync(m.LocalHash, m.Key, TimeSpan.FromDays(365 * 5));
 
             return r.NamePath;
+        }
+
+        private void GetNsRequest(GetNsResolveRequest m)
+        {
+            if (m.Protocol != "ipfs")
+                return;
+
+            _i.StartAndDo(async delegate
+            {
+                var ci = await GetNs(m);
+
+                var response = new GetNsResolveResponse(m, "ipfs") { Success = ci != null, ContentUri = new ContentUri() { Path = ci, Protocol = "ipfs" } };
+
+                M.Send(response);
+            });
+        }
+
+        private async Task<string> GetNs(GetNsResolveRequest m)
+        {
+            var c = _i.Client;
+
+            var r = await c.Name.ResolveAsync(m.RemotePath);
+
+            return r;
         }
     }
 }

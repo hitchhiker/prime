@@ -109,13 +109,12 @@ namespace Prime.Core
             catch { return null; }
         }
 
-        public Assembly LoadAssemblyLegacy(FileInfo dll)
+        public static Assembly LoadAssemblyLegacy(FileInfo dll)
         {
             try
             {
                 var a = Assembly.LoadFrom(dll.FullName);
 
-                
                 if (a.IsDynamic || a.GlobalAssemblyCache)
                     return null;
                 /*

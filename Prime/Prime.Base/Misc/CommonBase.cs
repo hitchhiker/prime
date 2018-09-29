@@ -8,7 +8,7 @@ namespace Prime.Base
 {
     public abstract class CommonBase
     {
-        protected readonly PrimeContext C;
+        public readonly PrimeContext C;
         public ILogger L => C.L;
         public IMessenger M => C.M;
 

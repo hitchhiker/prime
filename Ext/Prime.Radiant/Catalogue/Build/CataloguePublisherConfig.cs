@@ -14,16 +14,22 @@ namespace Prime.Radiant
         [JsonIgnore]
         public ObjectId CatalogueId => $"prime-catalogue:{PubKey}".GetObjectIdHashCode(true, true);
 
+        [JsonProperty("ipns_source")]
+        public string IpnsSource { get; set; }
+
+        [JsonProperty("hash_source")]
+        public string HashSource { get; set; }
+
         [JsonProperty("ipns_key_pub")]
         public string IpnsKeyPublic { get; set; }
 
         [JsonProperty("ipns_key_name")]
         public string IpnsKeyName { get; set; }
 
-        [JsonProperty("public_key")]
+        [JsonProperty("pub_key")]
         public string PubKey { get; set; }
 
-        [JsonProperty("private_key")]
+        [JsonProperty("prv_key")]
         public string PriKey { get; set; }
 
         public DirectoryInfo GetCatalogueDirectory(PrimeContext context)

@@ -11,7 +11,6 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-
             var serverCtx = PrimeContext.ForDevelopmentServer();
             var clientCtx = PrimeContext.ForDevelopmentClient();
 

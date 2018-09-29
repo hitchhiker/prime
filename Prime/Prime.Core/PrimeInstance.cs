@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Prime.Base;
 using Prime.Base.Messaging.Common;
 
 namespace Prime.Core
 {
-    public class PrimeInstance
+    public class PrimeInstance : CommonBase
     {
         public readonly ExtensionManager ExtensionManager;
-
-        public readonly PrimeContext C;
 
         private bool _isStarted;
         private readonly object _startLock = new object();
 
-        public PrimeInstance(PrimeContext c)
+        public PrimeInstance(PrimeContext c) : base(c)
         {
-            C = c;
             ExtensionManager = new ExtensionManager(c);
         }
 
@@ -33,6 +31,8 @@ namespace Prime.Core
 
             ExtensionManager.LoadInstallConfig();
             ExtensionManager.Instances.Select(s => s.Extension).OfType<IExtensionStartup>().ForEach(x => x.PrimeStarted());
+            L.Log($"Prime instance loaded {ExtensionManager.Instances.Count()} extensions.");
+            L.Log("Prime instance started.");
         }
 
         public void Stop()
@@ -42,7 +42,7 @@ namespace Prime.Core
                 if (!_isStarted)
                     return;
 
-                C.M.SendAsync(new PrimeShutdownNow());
+                M.SendAsync(new PrimeShutdownNow());
                 do
                 {
                     Thread.Sleep(1);

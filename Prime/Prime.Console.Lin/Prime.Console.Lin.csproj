@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Ext\Prime.IPFS\Prime.IPFS.Lin64\Prime.IPFS.Lin64.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.IPFS\Prime.IPFS\Prime.IPFS.Go.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.PackageManager\Prime.PackageManager\Prime.PackageManager.csproj" />

@@ -51,6 +51,9 @@ namespace Prime.Core
         [XmlElement("path")]
         public string BasePath { get; set; }
 
+        [XmlElement("entry")]
+        public string Entry { get; set; }
+
         [XmlElement("packages")]
         public PackageConfig PackageConfig { get; set; } = new PackageConfig();
 

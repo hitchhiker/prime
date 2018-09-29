@@ -75,6 +75,7 @@ namespace Prime.Core
             var p = FindParent(new DirectoryInfo("./"), special);
             if (p != null)
                 return p + path.Substring(special.Length + 2);
+
             throw new Exception("Could not find '[" + special + "]' special folder in " + current);
         }
 
