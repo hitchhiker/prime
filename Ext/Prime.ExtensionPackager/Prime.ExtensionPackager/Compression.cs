@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using SharpCompress.Archives;
 using SharpCompress.Common;
+using SharpCompress.Readers;
 using SharpCompress.Writers;
 
 namespace Prime.ExtensionPackager
@@ -25,6 +27,19 @@ namespace Prime.ExtensionPackager
                         vp = vp.Substring(1);
 
                     writer.Write(vp, f);
+                }
+            }
+        }
+
+        public static void ExctractArchive(FileInfo archiveInfo, string destinationPath)
+        {
+            using (var archive = ArchiveFactory.Open(archiveInfo.FullName, new ReaderOptions() { LeaveStreamOpen = false, LookForHeader = true }))
+            {
+                var reader = archive.ExtractAllEntries();
+                while (reader.MoveToNextEntry())
+                {
+                    if (!reader.Entry.IsDirectory)
+                        reader.WriteEntryToDirectory(destinationPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
                 }
             }
         }

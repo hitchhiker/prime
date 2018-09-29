@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
+using Prime.Base.Messaging.Common;
 
 namespace Prime.Core
 {
@@ -11,7 +12,7 @@ namespace Prime.Core
     /// </summary>
     public class BootstrapperEntry
     {
-        private static readonly List<PrimeEntryMarshal> Entries = new List<PrimeEntryMarshal>();
+        private static readonly List<PrimeEntry> Entries = new List<PrimeEntry>();
 
         public static void Enter(string[] args)
         {
@@ -20,12 +21,13 @@ namespace Prime.Core
             //Process.Start(filename, string.Join(" ", args));
             //return;
 
-#if DEBUG
-            args = @"publish -c [src]\instance\prime-client.config -p [src]\instance\prime_main_catalogue.config".Split(' ');
-#endif
-            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish>(args).MapResult(
+//#if DEBUG
+//            args = @"publish -c [src]\instance\prime-client.config -p [src]\instance\prime_main_catalogue.config".Split(' ');
+//#endif
+            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update>(args).MapResult(
                 (PrimeBootOptions.Start opts) => Run(opts),
                 (PrimeBootOptions.Publish pub) => Pub(pub),
+                (PrimeBootOptions.Update upd) => Update(upd),
                 errs => 1);
 
         }
@@ -39,9 +41,25 @@ namespace Prime.Core
             var c = new PrimeContext(options.ConfigPath) {L = new ConsoleLogger()};
             var prime = new PrimeInstance(c);
             prime.Start();
-            //CatalogueBootEntry.Publish(prime, options);
+
+            c.M.SendAndWait<PrimePublishRequest, PrimePublishResponse>(new PrimePublishRequest() { PublisherConfigPath = options.PubConfigPath});
+          
             prime.Stop();
-            return -1;
+            return 0;
+        }
+
+        private static int Update(PrimeBootOptions.Update options)
+        {
+            Console.WriteLine("Prime Update starting.");
+
+            var c = new PrimeContext(options.ConfigPath) { L = new ConsoleLogger() };
+            var prime = new PrimeInstance(c);
+            prime.Start();
+
+            c.M.SendAndWait<PrimeUpdateRequest, PrimeUpdateResponse>(new PrimeUpdateRequest() {  });
+
+            prime.Stop();
+            return 0;
         }
 
         private static int Run(PrimeBootOptions.Start options)
@@ -55,7 +73,7 @@ namespace Prime.Core
 
             Console.CancelKeyPress += Console_CancelKeyPress;
 
-            var entry = new PrimeEntryMarshal();
+            var entry = new PrimeEntry();
             Entries.Add(entry);
             var task = Task.Factory.StartNew(() => entry.Enter(options));
 

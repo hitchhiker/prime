@@ -30,6 +30,9 @@ namespace Prime.Core
 
         public void Init(IExtension ext)
         {
+            if (ext is IExtensionInitPrimeInstance exp)
+                exp.Init(_manager.Prime);
+
             if (ext is IExtensionExecute ex)
                 ex.Main(_manager.Context);
 
@@ -54,7 +57,14 @@ namespace Prime.Core
                 return null;
 
             var topdir = dirs.First();
-            return topdir.GetDirectories().OrderByDescending(x => x.Name).FirstOrDefault(); //TODO: Control of version
+            return GetPackageInstance(topdir);
+        }
+
+        public DirectoryInfo GetPackageInstance(DirectoryInfo packageDirectory)
+        {
+            var c = _manager.Context.PlatformCurrent.ToString().ToLower();
+            var dirs = packageDirectory.GetDirectories().OrderByDescending(x => x.Name).ToList();
+            return dirs.FirstOrDefault(x => x.Name.EndsWith(c)) ?? dirs.FirstOrDefault();
         }
 
         public DirectoryInfo GetPackageRedirection(ObjectId extensionId)

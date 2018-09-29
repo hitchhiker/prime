@@ -9,14 +9,16 @@ namespace Prime.Core
 {
     public class ExtensionManager
     {
+        public readonly PrimeInstance Prime;
         public readonly PrimeContext Context;
         public readonly PackageConfig Config;
         public readonly TypeCatalogue Types;
         public readonly AssemblyCatalogue Assemblies;
         public readonly ExtensionList Instances;
 
-        public ExtensionManager(PrimeContext context)
+        public ExtensionManager(PrimeInstance prime, PrimeContext context)
         {
+            Prime = prime;
             Context = context;
             Config = Context.Config.PackageConfig;
             Instances = new ExtensionList(this);
@@ -46,7 +48,7 @@ namespace Prime.Core
             var loaded = LoadExtension<T>(id, dir);
             if (loaded == null)
             {
-                Context.L.Fatal("Can't load extension " + id + " from directory: " + dir);
+                Context.L.Fatal("Can't load extension " + id + " for platform '" + Context.PlatformCurrent + "' from directory: " + dir);
                 return default;
             }
 

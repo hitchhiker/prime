@@ -44,6 +44,13 @@ namespace Prime.Core
             Assemblies = new AssemblyCatalogue();
             Types = new TypeCatalogue(Assemblies);
             var fullpath = Path.GetFullPath(configPath);
+
+            if (!File.Exists(fullpath))
+            {
+                Console.WriteLine($"{fullpath} does not exist. Aborting");
+                throw new Exception($"{fullpath} does not exist. Aborting");
+            }
+
             var configFi = new FileInfo(fullpath);
 
             ConfigDirectoryInfo = configFi.Directory;
@@ -60,7 +67,8 @@ namespace Prime.Core
             _extensions.Add(extension);
         }
 
-        private static PrimeContext _testing = ForDevelopmentServer();
+    
+        private static PrimeContext _testing;
         public static PrimeContext Testing => _testing;
 
         public static PublicContext Public;

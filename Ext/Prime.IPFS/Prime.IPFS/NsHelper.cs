@@ -49,7 +49,7 @@ namespace Prime.IPFS.Messaging
 
         private void GetNsRequest(GetNsResolveRequest m)
         {
-            if (m.Protocol != "ipfs")
+            if (m.Protocol != "ipns")
                 return;
 
             _i.StartAndDo(async delegate
@@ -68,7 +68,7 @@ namespace Prime.IPFS.Messaging
 
             var r = await c.Name.ResolveAsync(m.RemotePath);
 
-            return r;
+            return r.Replace(@"/ipfs/","");
         }
     }
 }

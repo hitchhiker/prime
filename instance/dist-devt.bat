@@ -16,12 +16,24 @@
 @dotnet %packer% -c %config% -e %tmp%\Prime.Core --key prime:core
 @echo -------------------------------------
 
+@dotnet publish  ..\Ext\Prime.Radiant -c Release -o %tmp%\Prime.Radiant
+@dotnet %packer% -c %config% -e %tmp%\Prime.Radiant --key prime:radiant
+@echo -------------------------------------
+
+@dotnet publish  ..\Ext\Prime.PackageManager\Prime.PackageManager -c Release -o %tmp%\Prime.PackageManager
+@dotnet %packer% -c %config% -e %tmp%\Prime.PackageManager --key prime:pm
+@echo -------------------------------------
+
 @dotnet publish  ..\Ext\Prime.Finance -c Release -o %tmp%\Prime.Finance
 @dotnet %packer% -c %config% -e %tmp%\Prime.Finance
 @echo -------------------------------------
 
 @dotnet publish  ..\Ext\Prime.Finance.Services -c Release -o %tmp%\Prime.Finance.Services
 @dotnet %packer% -c %config% -e %tmp%\Prime.Finance.Services
+@echo -------------------------------------
+
+@dotnet publish  ..\Ext\Prime.IPFS\Prime.IPFS.Lin64 -c Release -o %tmp%\Prime.IPFS.Lin64
+@dotnet %packer% -c %config% -e %tmp%\Prime.IPFS.Lin64
 @echo -------------------------------------
 
 @dotnet publish  ..\Ext\Prime.IPFS\Prime.IPFS.Win64 -c Release -o %tmp%\Prime.IPFS.Win64

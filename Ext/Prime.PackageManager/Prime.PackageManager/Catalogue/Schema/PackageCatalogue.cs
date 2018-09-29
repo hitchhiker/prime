@@ -2,6 +2,8 @@
 using System.Linq;
 using Newtonsoft.Json;
 using Prime.Base.DStore;
+using Prime.Core;
+using Prime.PackageManager.Catalogue;
 using Prime.Radiant;
 
 namespace Prime.PackageManager
@@ -26,6 +28,12 @@ namespace Prime.PackageManager
         public List<ContentUri> AllContentUri()
         {
             return Packages.SelectMany(x => x.PackageInstances.Select(i => i.ContentUri)).ToList();
+        }
+
+        public bool DoInstall(PrimeInstance instance)
+        {
+            var i = new Installer(instance, this);
+            return i.Install();
         }
     }
 }

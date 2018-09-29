@@ -3,25 +3,39 @@ using Newtonsoft.Json;
 using Prime.Base;
 using Prime.Base.DStore;
 using Prime.Core;
+using Prime.Radiant.Catalogue;
 
 namespace Prime.Radiant
 {
     public static class CatalogueBootEntry
     {
+        public static void Update(PrimeInstance prime)
+        {
+            var u = new Update(prime);
+            u.UpdateAll();
+        }
+
         public static void Publish(PrimeInstance prime, PrimeBootOptions.Publish options)
         {
-            if (!File.Exists(options.PubConfigPath))
+            Publish(prime, options.PubConfigPath);
+        }
+
+        public static void Publish(PrimeInstance prime, string pubConfigPath)
+        {
+            pubConfigPath = pubConfigPath.ResolveSpecial();
+
+            if (!File.Exists(pubConfigPath))
             {
-                prime.L.Error(options.PubConfigPath + " does not exist. Aborting.");
+                prime.L.Error(pubConfigPath + " does not exist. Aborting.");
                 return;
             }
 
-            var txt = File.ReadAllText(options.PubConfigPath);
+            var txt = File.ReadAllText(pubConfigPath);
             var config = JsonConvert.DeserializeObject<CataloguePublisherConfig>(txt);
 
             if (config == null)
             {
-                prime.L.Error(options.PubConfigPath + " isn't a valid configuration file. Aborting.");
+                prime.L.Error(pubConfigPath + " isn't a valid configuration file. Aborting.");
                 return;
             }
 

@@ -57,6 +57,9 @@ namespace Prime.Core
         [XmlElement("packages")]
         public PackageConfig PackageConfig { get; set; } = new PackageConfig();
 
+        [XmlElement("catalogue")]
+        public CatalogueConfig CatalogueConfig { get; set; } = new CatalogueConfig();
+
         [XmlElement("nugetPath")]
         public string NugetPath { get; set; } = "[USER]//.nuget";
     }

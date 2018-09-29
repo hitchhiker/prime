@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using Prime.Base;
 
 namespace Prime.Core
 {

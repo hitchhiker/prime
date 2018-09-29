@@ -6,7 +6,7 @@ using Prime.Base;
 
 namespace Prime.Core
 {
-    public class PrimeEntryMarshal
+    public class PrimeEntry
     {
         private readonly ObjectId _processId = ObjectId.NewObjectId();
 
@@ -17,7 +17,9 @@ namespace Prime.Core
         public void Enter(PrimeBootOptions.Start options)
         {
             Console.WriteLine("Prime: Starting " + _processId);
-            var ctx = PrimeContext.ForDevelopmentClient();
+            Console.WriteLine("Prime: Config location '" + options.ConfigPath + "'");
+
+            var ctx = new PrimeContext(options.ConfigPath);
             var prime = new PrimeInstance(ctx);
             prime.Start();
             Console.WriteLine("Prime: Started " + _processId);

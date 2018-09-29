@@ -15,4 +15,8 @@
     <ProjectReference Include="..\..\Prime\Prime.Core\Prime.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Catalogue\Upgrade\" />
+  </ItemGroup>
+
 </Project>

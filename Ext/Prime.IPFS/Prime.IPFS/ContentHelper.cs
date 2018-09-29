@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Ipfs.CoreApi;
+using Nito.AsyncEx;
 using Prime.Base;
 using Prime.Base.DStore;
 using Prime.Core;
@@ -54,6 +55,13 @@ namespace Prime.IPFS.Messaging
             if (m.Protocol != "ipfs")
                 return;
 
+            if (m.IsDirectory)
+            {
+                Directory.CreateDirectory(m.LocalPath);
+                M.Send(new GetContentResponse(m, "ipfs") { Success = GetDirectoryRequest(m) });
+                return;
+            }
+
             _i.StartAndDo(async delegate
             {
                 var ci = await GetContent(m);
@@ -61,6 +69,41 @@ namespace Prime.IPFS.Messaging
                 var response = new GetContentResponse(m, "ipfs") {Success = ci};
 
                 M.Send(response);
+            });
+        }
+
+        private bool GetDirectoryRequest(GetContentRequest m)
+        {
+            var rootNode = AsyncContext.Run(() => _i.Client.FileSystem.ListFileAsync(m.RemotePath));
+
+            if (rootNode.IsDirectory)
+            {
+                foreach (var node in rootNode.Links)
+                    GetFile(m, node.Id, node.Size, node.Name);
+            }
+            else
+                GetFile(m, rootNode.Id, rootNode.Size, rootNode.Id);
+
+            return true;
+        }
+
+        private void GetFile(GetContentRequest m, string hash, long size, string name)
+        {
+            L.Info("Requesting data stream from IPFS (" + size + " bytes)");
+
+            AsyncContext.Run(async () =>
+            {
+                var path = Path.Combine(m.LocalPath, name);
+                if (File.Exists(path))
+                    File.Delete(path);
+
+                using (var file = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true))
+                {
+                    using (var sourceStream = await _i.Client.FileSystem.ReadFileAsync(hash))
+                    {
+                        await sourceStream.CopyToAsync(file);
+                    }
+                }
             });
         }
 

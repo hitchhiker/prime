@@ -51,7 +51,7 @@ namespace Prime.Radiant
             PublishNs(config, indexUri);
         }
 
-        private CatalogueIndex DownloadIndex(DirectoryInfo tmpDir, ContentUri indexUri) {
+        public CatalogueIndex DownloadIndex(DirectoryInfo tmpDir, ContentUri indexUri) {
 
             var indexPath = Path.Combine(tmpDir.FullName, "index.json");
 
@@ -82,7 +82,7 @@ namespace Prime.Radiant
             return index;
         }
 
-        private ICatalogue DownloadCatalogue(DirectoryInfo tmpDir, CatalogueIndex index)
+        public ICatalogue DownloadCatalogue(DirectoryInfo tmpDir, CatalogueIndex index)
         {
             var type = Helper.GetCatalogueType(_prime, index.CatalogueType);
             if (type == null)

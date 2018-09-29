@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CommandLine;
+using Prime.Core;
 
 namespace Prime.Bootstrap
 {
@@ -12,35 +14,35 @@ namespace Prime.Bootstrap
     {
         public static void Boot(string[] args)
         {
-            if (args == null)
-                args = new string[0];
+            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update>(args).MapResult(
+                (PrimeBootOptions.Start opts) => Run(opts, args),
+                (PrimeBootOptions.Publish pub) => Run(pub, args),
+                (PrimeBootOptions.Update upd) => Run(upd, args),
+                errs => 1);
+        }
 
-            if (args.Length == 0)
-            {
-                Console.WriteLine("You must specify the path of the prime.config file.");
-                return;
-            }
-
-            var configp = ResolveSpecial(args[0]);
+        private static int Run(PrimeBootOptionsBase config, string[] args)
+        {
+            var configp = ResolveSpecial(config.ConfigPath);
 
             if (!File.Exists(configp))
             {
                 Console.WriteLine(configp + " does not exist.");
-                return;
+                return 1;
             }
 
             var entry = GetEntry(File.ReadAllText(configp));
             if (string.IsNullOrWhiteSpace(entry))
             {
                 Console.WriteLine("Entry point missing from .config file.");
-                return;
+                return 1;
             }
 
             var primeCore = Path.Combine(entry, "Prime.Core.dll");
             if (!File.Exists(primeCore))
             {
                 Console.WriteLine(primeCore + " not found.");
-                return;
+                return 1;
             }
 
             var asm = LoadAssemblyLegacy(primeCore);
@@ -49,17 +51,20 @@ namespace Prime.Bootstrap
             if (t == null)
             {
                 Console.WriteLine("Unable to find Prime's entry class in: " + primeCore);
-                return;
+                return 1;
             }
 
             var mi = t.GetMethod("Enter", BindingFlags.Static | BindingFlags.Public);
             if (mi == null)
             {
                 Console.WriteLine("Unable to find Prime's entry method in: " + primeCore);
-                return;
+                return 1;
             }
+            
+            Console.WriteLine("Args: " + string.Join(" ", args));
 
             mi.Invoke(null, new object[] {args});
+            return 0;
         }
 
         public static string GetEntry(string configText)

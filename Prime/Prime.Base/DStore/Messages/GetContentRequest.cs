@@ -16,6 +16,8 @@ namespace Prime.Core
 
         public string RemotePath { get; set; }
 
+        public bool IsDirectory { get; set; }
+
         public string LocalPath { get; set; }
 
         public string Protocol { get; set; }

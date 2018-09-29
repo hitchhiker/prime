@@ -17,7 +17,7 @@ namespace Prime.Core
 
         public PrimeInstance(PrimeContext c) : base(c)
         {
-            ExtensionManager = new ExtensionManager(c);
+            ExtensionManager = new ExtensionManager(this, c);
         }
 
         public void Start()

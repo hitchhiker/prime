@@ -33,8 +33,8 @@ namespace Prime.ExtensionPackager
 
             foreach (var fi in package)
             {
-                if (!Context.IsBase && fi.Name.StartsWith("prime.core.", StringComparison.OrdinalIgnoreCase))
-                    continue;
+                //if (!Context.IsBase && fi.Name.StartsWith("prime.core.", StringComparison.OrdinalIgnoreCase))
+                //    continue;
 
                 var vp = fi.FullName.Substring(vpOffset);
 

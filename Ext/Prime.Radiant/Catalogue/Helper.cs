@@ -10,11 +10,15 @@ namespace Prime.Radiant.Catalogue
     {
         public static Type GetCatalogueType(PrimeInstance instance, string catalogueName)
         {
-            var list = instance.ExtensionManager.Types
-                .Where(x => x.Name.Contains("package", StringComparison.OrdinalIgnoreCase)).ToList();
+            foreach (var ext in instance.ExtensionManager.Instances)
+            {
+                var list = ext.Extension.GetType().Assembly.GetTypes().Where(x => x.Name.Contains("package", StringComparison.OrdinalIgnoreCase)).ToList();
+                var inst = list.ImplementInstancesWith<ICatalogue>().FirstOrDefault(x => string.Equals(catalogueName, x.CatalogueTypeName, StringComparison.OrdinalIgnoreCase));
 
-            var inst = instance.ExtensionManager.Types.ImplementInstancesWith<ICatalogue>().FirstOrDefault(x=>string.Equals(catalogueName, x.CatalogueTypeName, StringComparison.OrdinalIgnoreCase));
-            return inst?.GetType();
+                if (inst!=null)
+                    return inst.GetType();
+            }
+            return null;
         }
     }
 }

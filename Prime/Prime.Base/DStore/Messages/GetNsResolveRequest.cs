@@ -6,7 +6,7 @@ namespace Prime.Core
     {
         private GetNsResolveRequest() { }
 
-        public GetNsResolveRequest(string remotePath, string protocol = "ipfs")
+        public GetNsResolveRequest(string remotePath, string protocol = "ipns")
         {
             SessionId = ObjectId.NewObjectId();
             RemotePath = remotePath;

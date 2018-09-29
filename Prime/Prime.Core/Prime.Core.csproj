@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ext\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
+    <ProjectReference Include="..\..\Platform\Prime.Bootstrap\Prime.Bootstrap.csproj" />
     <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
   </ItemGroup>
 
