@@ -34,6 +34,30 @@
                 "install"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "finance-ui npm install",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/Ext/Prime.Finance.Client/finance-ui"
+            },
+            "command": "npm",
+            "args": [
+                "install"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "finance-ui ng serve",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/Ext/Prime.Finance.Client/finance-ui"
+            },
+            "command": "ng",
+            "args": [
+                "serve"
+            ],
+            "problemMatcher": []
         }
     ]
 }

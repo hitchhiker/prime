@@ -1,0 +1,28 @@
+
+table {
+    width: 100%;
+
+    color: white;
+}
+
+table thead th {
+    padding: 3px 5px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.096)
+}
+
+table tbody td {
+    font-size: 12px;
+    padding: 3px 5px;
+    
+}
+
+table tbody tr {
+    cursor: pointer;
+}
+table tbody tr:hover {
+    background-color: #00e4d0;
+    color: #272f3d;
+}
+
