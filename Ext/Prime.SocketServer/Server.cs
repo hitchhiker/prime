@@ -10,7 +10,7 @@ namespace Prime.SocketServer
     public class Server
     {
         public readonly SocketServerContext Context;
-        private readonly ServerContext _serverContext;
+        private readonly PrimeContext _primeContext;
         private readonly TypedServiceProvider _serviceProvider;
 
         internal readonly TcpSocketServer TcpSocketServer;
@@ -20,7 +20,7 @@ namespace Prime.SocketServer
         public Server(SocketServerContext socketServerContext)
         {
             Context = socketServerContext;
-            _serverContext = Context.ServerContext;
+            _primeContext = Context.PrimeContext;
 
             _serviceProvider = new TypedServiceProvider(this);
             TcpSocketServer = new TcpSocketServer(_serviceProvider);
@@ -35,7 +35,7 @@ namespace Prime.SocketServer
 
         public void Stop()
         {
-            _serverContext.M.UnregisterAsync(this);
+            _primeContext.M.UnregisterAsync(this);
             TcpSocketServer.ForceStop();
         }
         

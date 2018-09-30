@@ -7,8 +7,8 @@
     <PackageReference Include="System.Composition" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
-    <ProjectReference Include="..\..\Prime.Core\Prime.Core.csproj" />
+    <ProjectReference Include="..\..\Prime\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\Prime\Prime.Core\Prime.Core.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
   </ItemGroup>

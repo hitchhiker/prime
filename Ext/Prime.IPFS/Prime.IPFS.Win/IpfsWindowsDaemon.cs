@@ -67,12 +67,14 @@ namespace Prime.IPFS
 
             _externalPollTimer?.Close();
 
-            if (_dosContext != null)
-                _dosContext.Cancelled = true;
-            else
-                _process?.Kill();
-
             CurrentState = DaemonState.Stopping;
+
+            if (_process == null)
+                return;
+
+            _process.Kill();
+
+            CurrentState = DaemonState.Stopped;
         }
 
         private void InitForExternal()
@@ -154,9 +156,8 @@ namespace Prime.IPFS
             if (task == null)
                 CurrentState = DaemonState.Stopped;
 
-            task.ContinueWith(task1 => FinalStep(task1, allowInitialisation));
-
-            task.Start();
+            task?.ContinueWith(task1 => FinalStep(task1, allowInitialisation));
+            task?.Start();
         }
 
         private Task FinalStep(Task<ExecuteDos.ProcessResult> pr, bool allowInitialisation)
@@ -257,6 +258,9 @@ namespace Prime.IPFS
                         stoplogging = true;
                
                     if (error.Contains("prometheus collector", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.
+                        return;
+
+                    if (error.Contains("malready"))
                         return;
 
                     if (error.Contains("mbinding.go:", StringComparison.OrdinalIgnoreCase)) //Hack: When a repo is being initialised via the --init parameter, it spits out these ignorable error messages.

@@ -19,7 +19,7 @@ namespace Prime.IPFS
 
             var dir = new DirectoryInfo("c://tmp//ipfs-ext");
 
-            var pc = new ServerContext();
+            var pc = PrimeContext.ForDevelopmentServer();
 
             var ctx = new IpfsInstanceContext(pc, new IpfsPlatformWin64(new IpfsWin64Extension()))
             {

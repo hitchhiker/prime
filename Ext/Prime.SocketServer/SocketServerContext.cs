@@ -6,7 +6,7 @@ namespace Prime.SocketServer
 {
     public class SocketServerContext
     {
-        public readonly ServerContext ServerContext;
+        public readonly PrimeContext PrimeContext;
         public readonly MessagingServer.Server MessagingServer;
         public readonly IPAddress IpAddress = IPAddress.Any;
         public readonly short PortNumber = 9991;
@@ -22,7 +22,7 @@ namespace Prime.SocketServer
         public SocketServerContext(MessagingServer.Server server)
         {
             MessagingServer = server;
-            ServerContext = server.ServerContext;
+            PrimeContext = server.PrimeContext;
         }
     }
 }

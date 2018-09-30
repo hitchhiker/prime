@@ -8,7 +8,7 @@ namespace Prime.MessagingServer.Types
     {
         public readonly MessageTypeCatalogue TypeCatalogue;
 
-        public MessageTypeNameSerializationBinder(ServerContext context)
+        public MessageTypeNameSerializationBinder(PrimeContext context)
         {
             TypeCatalogue = new MessageTypeCatalogue(context);
         }

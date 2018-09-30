@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;All_Debug</Configurations>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Messages\**" />
+    <Compile Remove="Public\**" />
+    <EmbeddedResource Remove="Messages\**" />
+    <EmbeddedResource Remove="Public\**" />
+    <None Remove="Messages\**" />
+    <None Remove="Public\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Data\Misc\PublicFast.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommandLine" Version="1.0.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.3" />
+    <PackageReference Include="System.Composition" Version="1.2.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ext\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
+    <ProjectReference Include="..\..\Platform\Prime.Bootstrap\Prime.Bootstrap.csproj" />
+    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <BinFiles Include="$(TargetDir)$(TargetName).*" />
+    </ItemGroup>
+    <!--<Microsoft.Build.Tasks.Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\lib\prime" />-->
+  </Target>
+  
+</Project>

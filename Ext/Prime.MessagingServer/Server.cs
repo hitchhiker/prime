@@ -9,7 +9,7 @@ namespace Prime.MessagingServer
 {
     public class Server
     {
-        public readonly ServerContext ServerContext;
+        public readonly PrimeContext PrimeContext;
         public readonly IMessenger M;
         public readonly ILogger L;
 
@@ -17,13 +17,13 @@ namespace Prime.MessagingServer
         private readonly MessageTypedSender _helper;
         public readonly MessageTypeNameSerializationBinder TypeBinder;
 
-        public Server(ServerContext serverContext)
+        public Server(PrimeContext primeContext)
         {
-            ServerContext = serverContext;
-            M = ServerContext.M;
-            L = ServerContext.L;
+            PrimeContext = primeContext;
+            M = PrimeContext.M;
+            L = PrimeContext.L;
             _helper =  new MessageTypedSender(M);
-            TypeBinder = new MessageTypeNameSerializationBinder(serverContext);
+            TypeBinder = new MessageTypeNameSerializationBinder(primeContext);
             LoadExtensions();
         }
 
@@ -55,7 +55,7 @@ namespace Prime.MessagingServer
         public void LoadExtensions()
         {
             _extensions.Clear();
-            _extensions.AddRange(ServerContext.Extensions.OfType<IMessageServerExtension>());
+            _extensions.AddRange(PrimeContext.Extensions.OfType<IMessageServerExtension>());
         }
 
         private void ReceiveMessage(ExternalMessage m)

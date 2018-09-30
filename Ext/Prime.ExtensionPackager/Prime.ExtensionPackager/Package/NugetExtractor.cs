@@ -63,7 +63,7 @@ namespace Prime.ExtensionPackager
 
         private void ExtractPaths(DirectoryInfo path, List<string> paths)
         {
-            var nuget = new DirectoryInfo(_context.ClientContext.Config.NugetPath.ResolveSpecial());
+            var nuget = new DirectoryInfo(_context.C.Config.NugetPath.ResolveSpecial());
             if (!nuget.Exists)
                 throw new Exception(".nuget folder not found at: " + nuget.FullName);
 

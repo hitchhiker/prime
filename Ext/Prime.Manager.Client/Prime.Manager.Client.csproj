@@ -20,7 +20,10 @@
     <None Remove="electron-old-ts.zip" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Prime.Base\Prime.Base.csproj" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Prime\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\Prime.Finance.Services\Prime.Finance.Services.csproj" />
     <ProjectReference Include="..\Prime.Finance\Prime.Finance.csproj" />
     <ProjectReference Include="..\Prime.Manager\Prime.Manager.csproj" />

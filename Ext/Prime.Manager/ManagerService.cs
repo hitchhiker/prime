@@ -15,7 +15,7 @@ namespace Prime.Manager
 {
     public class ManagerService
     {
-        private readonly ServerContext _context;
+        private readonly PrimeContext _context;
         private readonly IApiKeyService _apiKeyService;
 
         public readonly ILogger L;
@@ -26,7 +26,7 @@ namespace Prime.Manager
         /// </summary>
         public bool IsUtcServerTime { get; set; }
         
-        public ManagerService(ServerContext context)
+        public ManagerService(PrimeContext context)
         {
             _context = context;
             _apiKeyService = new ApiKeyService(context);

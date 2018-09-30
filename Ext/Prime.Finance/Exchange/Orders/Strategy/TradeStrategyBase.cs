@@ -10,7 +10,7 @@ namespace Prime.Finance.Exchange.Trading_temp
 {
     public abstract class TradeStrategyBase : ITradeStrategy
     {
-        protected readonly IMessenger M = DefaultMessenger.I.DefaultServer;
+        protected readonly IMessenger M = DefaultMessenger.I.Instance;
         protected readonly IOrderLimitProvider Provider;
         protected TradeStrategyStatus Status;
         public ObjectId Id { get; }

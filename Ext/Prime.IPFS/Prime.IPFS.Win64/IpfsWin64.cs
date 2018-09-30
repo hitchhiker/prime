@@ -11,6 +11,6 @@ namespace Prime.IPFS.Win64
     {
         public IpfsPlatformWin64(IExtension instance) : base(instance) {}
 
-        public override string PackageInstallName => "go-ipfs_v0.4.14_windows-amd64.zip";
+        public override string PackageInstallName => "go-ipfs_v0.4.17_windows-amd64.zip";
     }
 }

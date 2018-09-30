@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Alyasko\Manager\**" />
+    <Compile Remove="Frank\ECC\**" />
+    <EmbeddedResource Remove="Alyasko\Manager\**" />
+    <EmbeddedResource Remove="Frank\ECC\**" />
+    <None Remove="Alyasko\Manager\**" />
+    <None Remove="Frank\ECC\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.3" />
+    <PackageReference Include="SharpCompress" Version="0.22.0" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="System.Globalization" Version="4.3.0" />
+    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="4.5.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ext\LiteDB-mod\LiteDB\LiteDB.NetStandard2.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.Finance.Services\Prime.Finance.Services.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.Finance\Prime.Finance.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.IPFS\Prime.IPFS\Prime.IPFS.Go.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.PackageManager\Prime.PackageManager\Prime.PackageManager.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.Radiant\Prime.Radiant.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />
+    <ProjectReference Include="..\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\Prime.Core\Prime.Core.csproj" />
+  </ItemGroup>
+
+</Project>

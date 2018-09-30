@@ -26,7 +26,7 @@ namespace Prime.MessagingServer.Types
 
         private void Send<T>(ExternalMessage externalMessage) where T : BaseTransportMessage
         {
-            _m.SendAsync<T>(externalMessage.Message as T);
+            _m.SendAsync(externalMessage.Message as T);
         }
     }
 }

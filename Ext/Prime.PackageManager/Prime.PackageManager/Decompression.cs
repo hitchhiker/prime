@@ -7,17 +7,18 @@ namespace Prime.Core
 {
     public class Decompression
     {
-        public static void ExtractArchive(FileInfo file, string destinationPath)
+        public static void ExtractArchive(FileInfo archiveInfo, string destinationPath)
         {
-            var compressed = ArchiveFactory.Open(file, new ReaderOptions(){});
-            if (compressed.TotalSize == 0)
-                return;
-
-            foreach (var entry in compressed.Entries)
+            using (var archive = ArchiveFactory.Open(archiveInfo.FullName, new ReaderOptions() { LeaveStreamOpen = false, LookForHeader = true }))
             {
-                if (!entry.IsDirectory)
+                if (archive.TotalSize == 0)
+                    return;
+
+                var reader = archive.ExtractAllEntries();
+                while (reader.MoveToNextEntry())
                 {
-                    entry.WriteToDirectory(destinationPath, new ExtractionOptions(){ExtractFullPath = true, Overwrite = true, PreserveFileTime = true});
+                    if (!reader.Entry.IsDirectory)
+                        reader.WriteEntryToDirectory(destinationPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
                 }
             }
         }
