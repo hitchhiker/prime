@@ -14,10 +14,11 @@ namespace Prime.Bootstrap
     {
         public static void Boot(string[] args)
         {
-            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update>(args).MapResult(
-                (PrimeBootOptions.Start opts) => Run(opts, args),
-                (PrimeBootOptions.Publish pub) => Run(pub, args),
-                (PrimeBootOptions.Update upd) => Run(upd, args),
+            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update, PrimeBootOptions.Packages>(args).MapResult(
+                (PrimeBootOptions.Start o) => Run(o, args),
+                (PrimeBootOptions.Publish o) => Run(o, args),
+                (PrimeBootOptions.Update o) => Run(o, args),
+                (PrimeBootOptions.Packages o) => Run(o, args),
                 errs => 1);
         }
 

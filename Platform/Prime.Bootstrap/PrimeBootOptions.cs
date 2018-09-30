@@ -30,9 +30,18 @@ namespace Prime.Core
         [Verb("update", HelpText = "Update catalogue.")]
         public class Update : PrimeBootOptionsBase
         {
-            [Option("uri", Required = false, HelpText = "Content uri of the catalogue index file.")]
+            [Option('u', "uri", Required = false, HelpText = "Content uri of the catalogue index file.")]
             public string HashUri { get; set; }
         }
 
+        [Verb("package", HelpText = "Packages catalogue.")]
+        public class Packages : PrimeBootOptionsBase
+        {
+            [Option('b', "build", Required = false, HelpText = "Build the packages catalogue")]
+            public bool DoBuild { get; set; }
+
+            [Option('p', "pubconfig", Required = true, HelpText = "Path to the publisher config file.")]
+            public string PubConfigPath { get; set; }
+        }
     }
 }

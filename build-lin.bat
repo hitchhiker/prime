@@ -1,1 +1,0 @@
-@dotnet publish ./Platform/Linux/Prime.Lin64/Prime.Lin64.csproj -c Release --framework netcoreapp2.1 -r linux-x64 -o ../../../dist/prime/lin-x64/ --self-contained

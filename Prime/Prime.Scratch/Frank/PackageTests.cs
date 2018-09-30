@@ -9,6 +9,37 @@ namespace Prime.Scratch
 {
     public static class PackageTests
     {
+        public static void Tests()
+        {
+            //PackageTests.PackageCoordinator(s);
+
+            //var indexUri = PackageTests.PackageCatalogue(client);
+            //PackageTests.PublishCatalogue(client, indexUri);
+
+            //PackageTests.PublishCatalogue(client, new ContentUri {Path= "QmRsMdjfNDi763H3LjUPot522dncz7iBGmk5xevSjJDKh1", Protocol = "ipfs"});
+
+            //client.Start();
+            //CatalogueBootEntry.Publish(client, "[src]/instance/prime_main_catalogue.config");
+
+            //PackageTests.PublishCatalogue(client, PackageTests.GetCataloguePublisherConfig());
+
+            //client.Start();
+            //var u = new Update(client);
+            //u.UpdateCatalogue(ContentUri.Parse("ipns://QmdGeEiLVqo5nu9U9f5y6ckV3RX3hZ5fDMnMHZSKfm1NP7"));
+        }
+
+        public static void PackageUpdate(PrimeInstance prime)
+        {
+            prime.Start();
+
+            PackageCatalogueEntry.Request(prime,
+                new PrimeBootOptions.Packages()
+                {
+                    DoBuild = true,
+                    PubConfigPath = Path.Combine(prime.C.Config.ConfigLoadedFrom.Directory.FullName, "prime_transfer_packages.config")
+                });
+        }
+
         public static void PackageCoordinator(PrimeContext context)
         {
             //var pm = new PackageCoordinator(context);

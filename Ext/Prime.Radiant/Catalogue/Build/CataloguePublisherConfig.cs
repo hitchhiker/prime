@@ -20,6 +20,9 @@ namespace Prime.Radiant
         [JsonProperty("hash_source")]
         public string HashSource { get; set; }
 
+        [JsonProperty("local_source")]
+        public bool IsLocalSource { get; set; }
+
         [JsonProperty("ipns_key_pub")]
         public string IpnsKeyPublic { get; set; }
 

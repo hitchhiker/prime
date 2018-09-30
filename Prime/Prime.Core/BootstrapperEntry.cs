@@ -24,10 +24,11 @@ namespace Prime.Core
 //#if DEBUG
 //            args = @"publish -c [src]\instance\prime-client.config -p [src]\instance\prime_main_catalogue.config".Split(' ');
 //#endif
-            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update>(args).MapResult(
-                (PrimeBootOptions.Start opts) => Run(opts),
-                (PrimeBootOptions.Publish pub) => Pub(pub),
-                (PrimeBootOptions.Update upd) => Update(upd),
+            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update, PrimeBootOptions.Packages>(args).MapResult(
+                (PrimeBootOptions.Start o) => Run(o),
+                (PrimeBootOptions.Publish o) => Pub(o),
+                (PrimeBootOptions.Update o) => Update(o),
+                (PrimeBootOptions.Packages o) => Packages(o),
                 errs => 1);
 
         }
@@ -42,8 +43,11 @@ namespace Prime.Core
             var prime = new PrimeInstance(c);
             prime.Start();
 
+            Console.WriteLine("Publish being requested.");
+
             c.M.SendAndWait<PrimePublishRequest, PrimePublishResponse>(new PrimePublishRequest() { PublisherConfigPath = options.PubConfigPath});
-          
+
+            Console.WriteLine("Prime stopping.");
             prime.Stop();
             return 0;
         }
@@ -57,6 +61,20 @@ namespace Prime.Core
             prime.Start();
 
             c.M.SendAndWait<PrimeUpdateRequest, PrimeUpdateResponse>(new PrimeUpdateRequest() {  });
+
+            prime.Stop();
+            return 0;
+        }
+
+        private static int Packages(PrimeBootOptions.Packages options)
+        {
+            Console.WriteLine("Prime packages starting.");
+
+            var c = new PrimeContext(options.ConfigPath) { L = new ConsoleLogger() };
+            var prime = new PrimeInstance(c);
+            prime.Start();
+
+            c.M.SendAndWait<PrimePackagesRequest, PrimePackagesResponse>(new PrimePackagesRequest(options) { });
 
             prime.Stop();
             return 0;

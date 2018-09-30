@@ -15,7 +15,7 @@ namespace Prime.Radiant
         private static readonly ObjectId _id = "prime:radiant".GetObjectIdHashCode();
         public ObjectId Id => _id;
         public string Title => "Prime Radiant Catalogue Manager";
-        public Version Version => new Version("1.0.0");
+        public Version Version => new Version("1.0.2");
 
         public void Init(PrimeInstance instance)
         {
@@ -26,7 +26,7 @@ namespace Prime.Radiant
         private void PublishCatalogue(PrimePublishRequest m, PrimeInstance instance)
         {
             CatalogueBootEntry.Publish(instance, m.PublisherConfigPath);
-            instance.M.Send(new PrimePublishResponse(m){Success = true});
+            instance.M.Send(new PrimePublishResponse(m) {Success = true});
         }
 
         private void UpdateCatalogue(PrimeUpdateRequest m, PrimeInstance instance)

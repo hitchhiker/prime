@@ -22,12 +22,26 @@ namespace Prime.Radiant
 
         public static void Publish(PrimeInstance prime, string pubConfigPath)
         {
+            var config = GetPublisherConfig(prime, pubConfigPath);
+            if (config == null)
+                return;
+            
+            if (config.IsLocalSource)
+                PublishCatalogueLocal(prime, config);
+            else if (!string.IsNullOrWhiteSpace(config.HashSource))
+                PublishCatalogue(prime, config, new ContentUri() {Path = config.HashSource, Protocol = "ipfs"});
+            else if (!string.IsNullOrWhiteSpace(config.IpnsSource))
+                PublishCatalogueViaNs(prime, config);
+        }
+
+        public static CataloguePublisherConfig GetPublisherConfig(PrimeInstance prime, string pubConfigPath)
+        {
             pubConfigPath = pubConfigPath.ResolveSpecial();
 
             if (!File.Exists(pubConfigPath))
             {
-                prime.L.Error(pubConfigPath + " does not exist. Aborting.");
-                return;
+                prime.L.Error("'" + pubConfigPath + "' does not exist. Aborting.");
+                return null;
             }
 
             var txt = File.ReadAllText(pubConfigPath);
@@ -36,20 +50,30 @@ namespace Prime.Radiant
             if (config == null)
             {
                 prime.L.Error(pubConfigPath + " isn't a valid configuration file. Aborting.");
+                return null;
+            }
+            return config;
+        }
+
+        private static void PublishCatalogueLocal(PrimeInstance prime, CataloguePublisherConfig config)
+        {
+            var catDir = config.GetCatalogueDirectory(prime.C);
+
+            var fi = new FileInfo(Path.Combine(catDir.FullName, CataloguePublisherConfig.IndexName));
+            if (!fi.Exists)
+            {
+                prime.C.L.Fatal("No index file found for catalogue: " + config.CatalogueName);
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(config.HashSource))
+            var indexNode = prime.C.M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(fi.FullName));
+            if (indexNode == null || !indexNode.Success)
             {
-                PublishCatalogue(prime, config, new ContentUri() {Path = config.HashSource, Protocol = "ipfs"});
+                prime.C.L.Fatal("Index file could not be added to IPFS: " + config.CatalogueName);
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(config.IpnsSource))
-            {
-                PublishCatalogueViaNs(prime, config);
-                return;
-            }
+            PublishCatalogue(prime, config, indexNode.ContentUri);
         }
 
         private static void PublishCatalogueViaNs(PrimeInstance prime, CataloguePublisherConfig config)
