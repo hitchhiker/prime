@@ -30,11 +30,7 @@
               "src/scripts/d3-queue.v3.min.js",
               "src/scripts/topojson.v1.min.js",
               "src/scripts/plotly-latest.min.js",
-              "src/scripts/cschart.js",
-              "src/scripts/csbars.js",
-              "src/scripts/csheader.js",
-              "src/scripts/csdataprep.js",
-              "src/scripts/csmain.js"
+              "src/scripts/ohlc-chart.js"
             ]
           },
           "configurations": {
