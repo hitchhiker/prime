@@ -40,6 +40,9 @@ namespace Prime.Core
             [Option('b', "build", Required = false, HelpText = "Build the packages catalogue")]
             public bool DoBuild { get; set; }
 
+            [Option("publish", Required = false, HelpText = "Publish the packages catalogue")]
+            public bool DoPublish { get; set; }
+
             [Option('p', "pubconfig", Required = true, HelpText = "Path to the publisher config file.")]
             public string PubConfigPath { get; set; }
         }

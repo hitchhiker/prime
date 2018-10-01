@@ -17,7 +17,6 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.3" />
     <PackageReference Include="SharpCompress" Version="0.22.0" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />

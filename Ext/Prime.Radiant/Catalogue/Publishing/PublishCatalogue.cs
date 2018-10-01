@@ -42,6 +42,11 @@ namespace Prime.Radiant
             if (catalogue == null)
                 return;
 
+            Publish(config, catalogue, indexUri);
+        }
+
+        private void Publish(CataloguePublisherConfig config, ICatalogue catalogue, ContentUri indexUri)
+        {
             //pin all entries
 
             PinCatalogue(catalogue);
@@ -70,12 +75,7 @@ namespace Prime.Radiant
                 return null;
             }
 
-            var index = JsonConvert.DeserializeObject<CatalogueIndex>(File.ReadAllText(indexPath));
-            if (index == null)
-            {
-                L.Fatal("Apparently retreived the catalogue index file from IPFS, but nothing appeared locally. Aborting.");
-                return null;
-            }
+            var index = CatalogueHelper.ExtractIndex(C, new FileInfo(indexPath));
 
             L.Info($"Catalogue index downloaded. Revision #{index.CurrentRevision}");
 
@@ -93,28 +93,24 @@ namespace Prime.Radiant
 
             var latest = index.GetLatest();
           
-            var catPath = Path.Combine(tmpDir.FullName, "cat.json");
+            var catPath = Path.Combine(tmpDir.FullName, CatalogueHelper.CatArchiveName);
 
-            L.Info($"Attempting downloaded of catalogue from: {latest.Uri}..");
+            L.Info($"Attempting downloaded of catalogue from: {latest.ArchiveUri}..");
 
-            var response = M.SendAndWait<GetContentRequest, GetContentResponse>(new GetContentRequest(catPath, latest.Uri.Path));
+            var response = M.SendAndWait<GetContentRequest, GetContentResponse>(new GetContentRequest(catPath, latest.ArchiveUri.Path));
             if (response == null || !response.Success)
             {
-                L.Fatal("Unable to get the catalogue file from IPFS. Aborting.");
+                L.Fatal("Unable to get the catalogue archive from IPFS. Aborting.");
                 return null;
             }
 
             if (!File.Exists(catPath))
             {
-                L.Fatal("Apparently retreived the catalogue file from IPFS, but nothing appeared locally. Aborting.");
+                L.Fatal("Retreived the catalogue archive from IPFS, but nothing appeared locally. Aborting.");
                 return null;
             }
 
-            if (!(JsonConvert.DeserializeObject(File.ReadAllText(catPath), type) is ICatalogue catalogue))
-            {
-                L.Fatal("Retreived the catalogue file from IPFS, but was unable to deserialise it. Aborting.");
-                return null;
-            }
+            var catalogue = CatalogueHelper.ExtractCatalogue(C, new FileInfo(catPath), type);
 
             L.Info($"'{catalogue.CatalogueTypeName}' catalogue downloaded: '{catalogue.Name}'");
 

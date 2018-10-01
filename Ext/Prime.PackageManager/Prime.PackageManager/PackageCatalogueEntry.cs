@@ -12,19 +12,20 @@ namespace Prime.PackageManager
     {
         public static void Request(PrimeInstance prime, PrimeBootOptions.Packages options)
         {
-            Console.WriteLine("publisher config: " + options.PubConfigPath);
-
             if (options.DoBuild)
-                PackageCatalogue(prime, options);
+                BuildPackageCatalogue(prime, options.PubConfigPath);
+
+            if (options.DoPublish)
+                CatalogueBootEntry.Publish(prime, options.PubConfigPath);
         }
 
-        public static ContentUri PackageCatalogue(PrimeInstance prime, PrimeBootOptions.Packages options)
+        public static ContentUri BuildPackageCatalogue(PrimeInstance prime, string configPath)
         {
-            var pubConfig = CatalogueBootEntry.GetPublisherConfig(prime, options.PubConfigPath);
-            if (pubConfig == null)
+            var config = CatalogueBootEntry.GetPublisherConfig(prime, configPath);
+            if (config == null)
                 return new ContentUri();
 
-            var packageBuilder = new PackageCatalogueBuilder(prime, pubConfig);
+            var packageBuilder = new PackageCatalogueBuilder(prime, config);
             return packageBuilder.Build();
         }
     }

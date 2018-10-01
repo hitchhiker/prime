@@ -43,11 +43,8 @@ namespace Prime.Core
             var prime = new PrimeInstance(c);
             prime.Start();
 
-            Console.WriteLine("Publish being requested.");
-
             c.M.SendAndWait<PrimePublishRequest, PrimePublishResponse>(new PrimePublishRequest() { PublisherConfigPath = options.PubConfigPath});
 
-            Console.WriteLine("Prime stopping.");
             prime.Stop();
             return 0;
         }

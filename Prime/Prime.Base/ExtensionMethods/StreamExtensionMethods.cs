@@ -10,7 +10,7 @@ namespace Prime.Core
     {
         public static string ToX2String(this IEnumerable<byte> b)
         {
-            var o = String.Empty;
+            var o = string.Empty;
             foreach (byte b1 in b)
             {
                 o += b1.ToString("X2");

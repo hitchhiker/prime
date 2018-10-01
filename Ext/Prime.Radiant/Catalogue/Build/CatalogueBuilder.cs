@@ -30,43 +30,66 @@ namespace Prime.Radiant
 
             catalogue.Name = _config.CatalogueName;
 
-            if (!WriteOut(catalogue))
+            if (!WriteContent(catalogue))
                 return new ContentUri();
 
             return LastIndexUri;
         }
 
-        private bool WriteOut(ICatalogue catalogue)
+        private bool WriteContent(ICatalogue catalogue)
         {
             var catDir = _config.GetCatalogueDirectory(C);
+            var buildDir = C.FileSystem.GetTmpSubDirectory("cat-build");
 
-            var tmpFi = new FileInfo(Path.Combine(C.FileSystem.GetTmpSubDirectory("cat-build").FullName, $"cat-{ObjectId.NewObjectId()}.json"));
+            var tmpCatFi = buildDir.GetFile($"cat-{ObjectId.NewObjectId()}.json");
 
-            File.WriteAllText(tmpFi.FullName, JsonConvert.SerializeObject(catalogue, Formatting.Indented));
+            File.WriteAllText(tmpCatFi.FullName, JsonConvert.SerializeObject(catalogue, Formatting.Indented));
 
             L.Info("Catalogue compilation complete, now determining status...");
 
-            var response = M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(tmpFi.FullName));
+            var response = M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(tmpCatFi.FullName));
             if (response == null || !response.Success)
             {
                 L.Fatal("Unable to add the catalogue file to IPFS. Aborting.");
                 return false;
             }
 
-            var hash = response.ContentUri.Path;
+            var justCatHash = response.ContentUri.Path;
+            var archiveName = $"cat-{justCatHash}.arc";
 
-            var finalFi = new FileInfo(Path.Combine(catDir.FullName, $"cat-{hash}.json"));
+            var finalArcFi = catDir.GetFile(archiveName);
 
-            if (finalFi.Exists)
+            if (finalArcFi.Exists)
             {
-                tmpFi.Delete();
+                tmpCatFi.Delete();
+                L.Log("");
                 L.Info("No changes detected to catalogue, finished.");
+                L.Log("Catalogue HASH: " + justCatHash);
                 return false;
             }
 
-            File.Move(tmpFi.FullName, finalFi.FullName);
+            //sign and archive
 
-            var indexUri = CreateIndex(catDir, response.ContentUri);
+            var signatureFi = tmpCatFi.CreateSignedFile(_config.PriKey.ToPrivateKey());
+            var tmpCatArcFi = buildDir.CreateArchive(tmpCatFi, signatureFi, archiveName);
+
+            signatureFi.Delete();
+
+            var arcHashResponse = M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(tmpCatArcFi.FullName));
+
+            if (arcHashResponse == null || !arcHashResponse.Success)
+            {
+                L.Fatal("Unable to add the archive file to IPFS. Aborting.");
+                return false;
+            }
+
+            var arcHash = arcHashResponse.ContentUri;
+
+            File.Move(tmpCatArcFi.FullName, finalArcFi.FullName);
+            
+            //create and sign index
+
+            var indexUri = CreateIndexArchive(catDir, arcHash);
 
             if (indexUri.Path==null)
                 return false;
@@ -78,37 +101,46 @@ namespace Prime.Radiant
                 return false;
             }
 
-            L.Log("Catalogue IPFS HASH: " + indexUri.Path);
-            L.Log("Catalogue Location: " + catDir.FullName);
+            L.Log("");
+            L.Log("Catalogue Index HASH: " + indexUri.Path);
+            L.Log("Catalogue Archive HASH: " + arcHash);
+            L.Log("Catalogue HASH: " + justCatHash);
 
             catalogue.BuildInformation = new CatalogueBuildInformation() {IndexUri = indexUri};
 
             return true;
         }
 
-        private ContentUri CreateIndex(DirectoryInfo catDir, ContentUri latestUri)
+        private ContentUri CreateIndexArchive(DirectoryInfo catDir, ContentUri catArchiveUri)
         {
-            var indexFi = new FileInfo(Path.Combine(catDir.FullName, CataloguePublisherConfig.IndexName));
+            var indexFi = catDir.GetFile(CatalogueHelper.IndexName);
+            var index = CatalogueHelper.ExtractIndexFromCatalogueDirectory(C, catDir);
 
-            var index = !indexFi.Exists ? 
-                new CatalogueIndex() {CurrentRevision = 0, UtcCreated = DateTime.UtcNow} : 
-                JsonConvert.DeserializeObject<CatalogueIndex>(File.ReadAllText(indexFi.FullName));
+            L.Log($"Previous index was at revision #{index.CurrentRevision}.");
 
-            index.CatalogueType = _builder.TypeName;
+            index.CatalogueType = _builder.TypeName; 
             index.Name = _config.CatalogueName;
             index.CurrentRevision++;
-            index.Entries.Add(new CatalogueIndexEntry {Revision =  index.CurrentRevision, Uri = latestUri, UtcCreated = DateTime.UtcNow});
+            index.Entries.Add(new CatalogueIndexEntry {Revision =  index.CurrentRevision, ArchiveUri = catArchiveUri, UtcCreated = DateTime.UtcNow});
 
             var indexContent = JsonConvert.SerializeObject(index, Formatting.Indented);
 
             File.WriteAllText(indexFi.FullName, indexContent);
+            indexFi.Refresh();
+            var signatureFi = indexFi.CreateSignedFile(_config.PriKey);
+            var indexArcFi = catDir.CreateArchive(indexFi, signatureFi, "index.arc");
 
-            var indexUri = M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(indexFi.FullName));
-            if (indexUri?.Success == true)
-                return LastIndexUri = indexUri.ContentUri;
+            signatureFi.Delete();
+            indexFi.Delete();
 
-            L.Fatal("Unable to add the catalogue index file to IPFS. Aborting.");
-            return new ContentUri();
+            var indexArcUri = M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(indexArcFi.FullName));
+            if (indexArcUri?.Success != true)
+            {
+                L.Fatal("Unable to add the catalogue index file to IPFS. Aborting.");
+                return new ContentUri();
+            }
+
+            return LastIndexUri = indexArcUri.ContentUri;
         }
     }
 }

@@ -6,6 +6,11 @@ namespace Prime.Core
 {
     public static class FileSystemExtensionMethods
     {
+        public static FileInfo GetFile(this DirectoryInfo dir, string filename)
+        {
+            return new FileInfo(Path.Combine(dir.FullName, filename));
+        }
+
         public static DirectoryInfo EnsureSubDirectory(this DirectoryInfo dir, string directoryName)
         {
             var di = new DirectoryInfo(Path.Combine(dir.FullName, directoryName));

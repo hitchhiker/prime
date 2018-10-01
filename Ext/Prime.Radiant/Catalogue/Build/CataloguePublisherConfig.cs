@@ -41,6 +41,10 @@ namespace Prime.Radiant
             return cDir.CreateSubdirectory($"cat-{CatalogueId}-{CatalogueName}");
         }
 
-        public static string IndexName = "index.json";
+        public FileInfo GetIndexArchiveInfo(PrimeContext context)
+        {
+            var cDir = GetCatalogueDirectory(context);
+            return cDir.GetFile(CatalogueHelper.IndexArchiveName);
+        }
     }
 }

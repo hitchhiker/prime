@@ -15,36 +15,52 @@ using Org.BouncyCastle.Security;
 
 #endregion
 
-namespace Prime.Core.Encryption
+namespace Prime.Base.Encryption
 {
     public class EncryptionHelper
     {
-        public static AsymmetricCipherKeyPair GenerateKeys(AsymmetricKeySize keySize)
+        public static readonly string TmpPassword = "slkdflj4085#()Q**$";
+
+        public static (string publicKey, string privateKey) GenerateKeys(uint length = 2048)
+        {
+            var krgen = GenerateKeyRingGenerator(new KeyRingParams("prime", TmpPassword) { Length = length });
+
+            var pkr = krgen.GeneratePublicKeyRing();
+            var skr = krgen.GenerateSecretKeyRing();
+
+            var publicKey = pkr.ToPublicKey();
+            var privateKey = skr.ToPrivateKey(TmpPassword);
+
+            return (publicKey, privateKey);
+        }
+
+        public static (string publicKey, string privateKey, AsymmetricKeyParameter pub, AsymmetricKeyParameter prv) GenerateEcKeys(AsymmetricKeySize keySize = AsymmetricKeySize.S256)
         {
             var gen = new ECKeyPairGenerator();
             var secureRandom = new SecureRandom();
             var keyGenParam = new KeyGenerationParameters(secureRandom, (int)keySize);
             gen.Init(keyGenParam);
-            return gen.GenerateKeyPair();
+            var pair = gen.GenerateKeyPair();
+            return (pair.Public.ToPublicKey(), pair.Private.ToPrivateKey(), pair.Public, pair.Private);
         }
 
-        public static bool VerifySignature(AsymmetricCipherKeyPair key, string plainText, byte[] signature)
+        public static bool VerifySignature(AsymmetricKeyParameter publicKey, string plainText, byte[] signature)
         {
             var encoder = new ASCIIEncoding();
             var inputData = encoder.GetBytes(plainText);
             var signer = SignerUtilities.GetSigner("ECDSA");
-            signer.Init(false, key.Public);
+            signer.Init(false, publicKey);
             signer.BlockUpdate(inputData, 0, inputData.Length);
             return signer.VerifySignature(signature);
         }
 
-        public static byte[] GetSignature(string plainText, AsymmetricCipherKeyPair key)
+        public static byte[] GetSignature(string plainText, ICipherParameters privateKey)
         {
             var encoder = new ASCIIEncoding();
             var inputData = encoder.GetBytes(plainText);
 
             var signer = SignerUtilities.GetSigner("ECDSA");
-            signer.Init(true, key.Private);
+            signer.Init(true, privateKey);
             signer.BlockUpdate(inputData, 0, inputData.Length);
 
             return signer.GenerateSignature();

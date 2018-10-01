@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.ExtensionPackager
@@ -112,9 +113,9 @@ namespace Prime.ExtensionPackager
 
             if (asSingle)
                 foreach (var i in items)
-                    Compression.CreateArchive(_package.StagedRoot, new List<FileInfo> {i}, Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
+                    _package.StagedRoot.CreateArchive(new List<FileInfo> {i}, Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
             else
-                Compression.CreateArchive(_package.StagedRoot, items.OrderBy(x => x.Name), Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
+                _package.StagedRoot.CreateArchive(items.OrderBy(x => x.Name), Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
             
             Context.Logger.Info($"Compressed {items.Count} files(s).");
             remaining.RemoveAll(items.Contains);

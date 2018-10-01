@@ -11,7 +11,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="sharpcompress" Version="0.22.0" />
     <PackageReference Include="System.Composition" Version="1.2.0" />
   </ItemGroup>
 

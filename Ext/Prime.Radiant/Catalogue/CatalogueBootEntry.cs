@@ -57,19 +57,19 @@ namespace Prime.Radiant
 
         private static void PublishCatalogueLocal(PrimeInstance prime, CataloguePublisherConfig config)
         {
-            var catDir = config.GetCatalogueDirectory(prime.C);
+            var indexFi = config.GetIndexArchiveInfo(prime.C);
+            var index = CatalogueHelper.ExtractIndex(prime.C, indexFi);
 
-            var fi = new FileInfo(Path.Combine(catDir.FullName, CataloguePublisherConfig.IndexName));
-            if (!fi.Exists)
+            if (index == null)
             {
-                prime.C.L.Fatal("No index file found for catalogue: " + config.CatalogueName);
+                prime.C.L.Fatal("Unable to extract the index archive for catalogue: " + config.CatalogueName);
                 return;
             }
 
-            var indexNode = prime.C.M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(fi.FullName));
+            var indexNode = prime.C.M.SendAndWait<GetContentUriRequest, GetContentUriResponse>(new GetContentUriRequest(indexFi.FullName));
             if (indexNode == null || !indexNode.Success)
             {
-                prime.C.L.Fatal("Index file could not be added to IPFS: " + config.CatalogueName);
+                prime.C.L.Fatal("Index archive could not be added to IPFS: " + config.CatalogueName);
                 return;
             }
 

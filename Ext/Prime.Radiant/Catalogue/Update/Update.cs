@@ -20,7 +20,7 @@ namespace Prime.Radiant.Catalogue
         public bool UpdateAll()
         {
             foreach (var e in C.Config.CatalogueConfig.Subscribed.Entries)
-                UpdateCatalogue(ContentUri.Parse(e.UriString));
+                UpdateCatalogue(e.GetRandomNotSelf());
             
             return true;
         }

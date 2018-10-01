@@ -3,7 +3,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
-namespace Prime.Core.Encryption
+namespace Prime.Base.Encryption
 {
     public class KeyRingParams
     {

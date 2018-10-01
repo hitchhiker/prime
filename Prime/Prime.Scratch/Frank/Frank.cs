@@ -1,4 +1,5 @@
 ﻿using Prime.Base.DStore;
+using Prime.Base.Encryption;
 using Prime.Core;
 using Prime.Radiant;
 using Prime.Radiant.Catalogue;
@@ -29,7 +30,9 @@ namespace Prime.Scratch
 
             //new ExtensionLoader().Compose();
 
-            PackageTests.PackageUpdate(client);
+            //AuthManagerTest.Key1(c);
+
+            PackageTests.Go(client);
         }
     }
 }

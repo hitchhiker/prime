@@ -12,7 +12,7 @@ namespace Prime.Radiant
         [JsonProperty("revision")]
         public int Revision { get; set; }
 
-        [JsonProperty("curi")]
-        public ContentUri Uri { get; set; }
+        [JsonProperty("arc_uri")]
+        public ContentUri ArchiveUri { get; set; }
     }
 }

@@ -5,14 +5,14 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
 
-namespace Prime.ExtensionPackager
+namespace Prime.Base
 {
     public class Compression
     {
         public static CompressionType CompressionType = CompressionType.BZip2;
         public static ArchiveType ArchiveType = ArchiveType.Zip;
 
-        public static void CreateArchive(DirectoryInfo root, IEnumerable<FileInfo> files, string destinationPath)
+        public static FileInfo CreateArchive(DirectoryInfo root, IEnumerable<FileInfo> files, string destinationPath)
         {
             var vpOffset = root.FullName.Length;
 
@@ -23,12 +23,14 @@ namespace Prime.ExtensionPackager
                 {
                     var vp = f.FullName.Substring(vpOffset);
 
-                    if (vp.StartsWith(Path.DirectorySeparatorChar))
+                    if (vp[0]==Path.DirectorySeparatorChar)
                         vp = vp.Substring(1);
 
                     writer.Write(vp, f);
                 }
             }
+
+            return new FileInfo(destinationPath);
         }
 
         public static void ExctractArchive(FileInfo archiveInfo, string destinationPath)
