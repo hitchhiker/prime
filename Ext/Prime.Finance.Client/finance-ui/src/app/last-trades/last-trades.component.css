@@ -1,10 +1,10 @@
 
 .title {
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
     padding: 5px 10px;
-    background-color: rgba(0, 0, 0, 0.096);
-    font-weight: bold;
     background-color: #1B4267;
     color: white;
+    font-weight: bold;
 }
 
 table {
@@ -13,15 +13,16 @@ table {
 
 table thead th {
     padding: 3px 10px;
-    font-weight: normal;
     font-size: 14px;
+    font-weight: normal;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    background-color: rgba(0, 0, 0, 0.096);
+    background-color: rgba(0, 0, 0, 0.096)
 }
 
 table tbody td {
     font-size: 12px;
     padding: 3px 10px;
+    
 }
 
 table tbody tr {

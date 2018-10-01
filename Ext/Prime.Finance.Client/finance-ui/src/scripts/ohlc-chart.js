@@ -14,10 +14,10 @@ Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-
         open: unpack(rows, 'AAPL.Open'),
 
         // cutomise colors 
-        increasing: { line: { color: 'black' } },
-        decreasing: { line: { color: 'red' } },
+        increasing: { line: { color: '#38bf37' } },
+        decreasing: { line: { color: '#e82222' } },
 
-        type: 'ohlc',
+        type: 'candlestick',
         xaxis: 'x',
         yaxis: 'y'
     };
@@ -25,8 +25,9 @@ Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-
     var data = [trace];
 
     var layout = {
-        dragmode: 'zoom',
+        dragmode: 'pan',
         showlegend: false,
+        height: 600,
         xaxis: {
             autorange: true,
             title: 'Date',

@@ -6,3 +6,7 @@
 .flex-fill {
     flex: 1;    
 }
+
+body {
+    background-color: #1B4267;
+}
