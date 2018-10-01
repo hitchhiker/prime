@@ -5,13 +5,15 @@ import { AppComponent } from './app.component';
 import { ChartComponent } from './chart/chart.component';
 import { TickersComponent } from './tickers/tickers.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { LastTradesComponent } from './last-trades/last-trades.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChartComponent,
     TickersComponent,
-    NavbarComponent
+    NavbarComponent,
+    LastTradesComponent
   ],
   imports: [
     BrowserModule

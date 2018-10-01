@@ -1,6 +1,5 @@
 
 .title-bar {
-    color: white;
     display: flex;
 }
 
@@ -8,6 +7,8 @@ h2 {
     padding: 13px 20px 10px 20px;
     flex-shrink: 0;
     width: 300px;
+
+    color: #1B4267;
 }
 
 .title-bar button {
