@@ -7,6 +7,9 @@ namespace Prime.Radiant
 {
     public class CatalogueIndex
     {
+        [JsonProperty("pub_key")]
+        public string PublicKey { get; set; }
+
         [JsonProperty("catalogue_type")]
         public string CatalogueType { get; set; }
 

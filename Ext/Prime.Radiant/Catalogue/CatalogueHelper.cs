@@ -26,13 +26,20 @@ namespace Prime.Radiant
             if (!indexArcFi.Exists)
                 return new CatalogueIndex() { CurrentRevision = 0, UtcCreated = DateTime.UtcNow };
 
-            var tmpDir = indexArcFi.ExctractArchive(context);
+            var tmpDir = indexArcFi.ExtractArchive(context);
 
             var indexFi = new FileInfo(Path.Combine(tmpDir.FullName, IndexName));
+
 
             var index = !indexFi.Exists ?
                 new CatalogueIndex() { CurrentRevision = 0, UtcCreated = DateTime.UtcNow } :
                 JsonConvert.DeserializeObject<CatalogueIndex>(File.ReadAllText(indexFi.FullName));
+
+            if (indexFi.Exists && !indexFi.VerifySignedFile(index.PublicKey))
+            {
+                context.L.Warn($"{indexFi.FullName} failed signature verification as is being ignored.");
+                index = new CatalogueIndex() {CurrentRevision = 0, UtcCreated = DateTime.UtcNow};
+            }
 
             tmpDir.Delete(true);
 
@@ -47,7 +54,7 @@ namespace Prime.Radiant
 
         public static ICatalogue ExtractCatalogue(PrimeContext context, FileInfo catArchiveFi, Type catalogueType)
         {
-            var tmpDir = catArchiveFi.ExctractArchive(context);
+            var tmpDir = catArchiveFi.ExtractArchive(context);
             var extr = tmpDir.EnumerateFiles().ToList();
 
             var catFi = extr.FirstOrDefault(x => x.Name.EndsWith(".json"));
@@ -56,6 +63,18 @@ namespace Prime.Radiant
             if (!(JsonConvert.DeserializeObject(File.ReadAllText(catFi.FullName), catalogueType) is ICatalogue catalogue))
             {
                 context.L.Fatal("Retreived the catalogue file from IPFS, but was unable to deserialise it. Aborting.");
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(catalogue.PublicKey))
+            {
+                context.L.Fatal("Retreived the catalogue but it does not contain a public key. Aborting.");
+                return null;
+            }
+
+            if (!catFi.VerifySignedFile(catalogue.PublicKey.ToPublicKey()))
+            {
+                context.L.Fatal("Retreived the catalogue but it failed signature verification. Aborting.");
                 return null;
             }
 

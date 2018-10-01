@@ -14,6 +14,6 @@ namespace Prime.Base
 
         public string Title { get; } = "Prime Base";
 
-        public Version Version { get; } = new Version("1.0.2");
+        public Version Version { get; } = new Version("1.0.4");
     }
 }

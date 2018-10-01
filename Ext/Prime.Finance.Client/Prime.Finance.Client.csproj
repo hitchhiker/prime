@@ -4,12 +4,15 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="finance-ui\**" />
     <Compile Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="finance-ui\**" />
     <EmbeddedResource Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="finance-ui\**" />
     <None Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>

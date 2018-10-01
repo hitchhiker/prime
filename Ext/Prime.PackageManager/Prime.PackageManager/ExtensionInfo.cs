@@ -16,7 +16,7 @@ namespace Prime.Core
         private static readonly ObjectId _id = "prime:pm".GetObjectIdHashCode();
         public ObjectId Id => _id;
         public string Title => "Prime Package Manager";
-        public Version Version => new Version("1.0.2");
+        public Version Version => new Version("1.0.4");
 
         public void Init(PrimeInstance instance)
         {

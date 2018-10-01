@@ -13,6 +13,6 @@ namespace Prime.Core
 
         public string Title { get; } = "Prime";
 
-        public Version Version { get; } = new Version("1.0.2");
+        public Version Version { get; } = new Version("1.0.4");
     }
 }

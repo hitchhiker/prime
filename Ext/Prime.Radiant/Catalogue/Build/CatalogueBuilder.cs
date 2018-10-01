@@ -29,6 +29,7 @@ namespace Prime.Radiant
                 return new ContentUri();
 
             catalogue.Name = _config.CatalogueName;
+            catalogue.PublicKey = _config.PubKey;
 
             if (!WriteContent(catalogue))
                 return new ContentUri();
@@ -120,6 +121,7 @@ namespace Prime.Radiant
 
             index.CatalogueType = _builder.TypeName; 
             index.Name = _config.CatalogueName;
+            index.PublicKey = _config.PubKey;
             index.CurrentRevision++;
             index.Entries.Add(new CatalogueIndexEntry {Revision =  index.CurrentRevision, ArchiveUri = catArchiveUri, UtcCreated = DateTime.UtcNow});
 

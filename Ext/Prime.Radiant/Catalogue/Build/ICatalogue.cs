@@ -6,6 +6,8 @@ namespace Prime.Radiant
 {
     public interface ICatalogue
     {
+        string PublicKey { get; set; }
+
         string CatalogueTypeName { get; }
 
         string Name { get; set; }

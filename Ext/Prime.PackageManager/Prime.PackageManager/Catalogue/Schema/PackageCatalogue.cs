@@ -14,6 +14,9 @@ namespace Prime.PackageManager
 
         public string CatalogueTypeName => "packages";
 
+        [JsonProperty("pub_key")]
+        public string PublicKey { get; set; }
+
         [JsonProperty("name")]
         public string Name { get; set; }
 

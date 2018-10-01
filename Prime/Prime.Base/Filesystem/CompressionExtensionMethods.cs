@@ -42,12 +42,12 @@ namespace Prime.Base
             return Compression.CreateArchive(root, files, destination);
         }
 
-        public static void ExctractArchive(this FileInfo archiveInfo, string destinationPath)
+        public static void ExtractArchive(this FileInfo archiveInfo, string destinationPath)
         {
             Compression.ExctractArchive(archiveInfo, destinationPath);
         }
 
-        public static DirectoryInfo ExctractArchive(this FileInfo archiveInfo, PrimeContext context)
+        public static DirectoryInfo ExtractArchive(this FileInfo archiveInfo, PrimeContext context)
         {
             var tmpDir = context.FileSystem.GetTmpSubDirectory("tmp-extract", ObjectId.NewObjectId().ToString());
             Compression.ExctractArchive(archiveInfo, tmpDir.FullName);

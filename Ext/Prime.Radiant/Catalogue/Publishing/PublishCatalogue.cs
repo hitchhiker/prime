@@ -60,7 +60,7 @@ namespace Prime.Radiant
 
             var indexPath = Path.Combine(tmpDir.FullName, "index.json");
 
-            L.Info($"Attempting downloaded of catalogue index from: {indexUri}..");
+            L.Info($"Attempting download of catalogue index from: {indexUri}..");
 
             var response = M.SendAndWait<GetContentRequest, GetContentResponse>(new GetContentRequest(indexPath, indexUri.Path));
             if (response == null || !response.Success)
@@ -95,7 +95,7 @@ namespace Prime.Radiant
           
             var catPath = Path.Combine(tmpDir.FullName, CatalogueHelper.CatArchiveName);
 
-            L.Info($"Attempting downloaded of catalogue from: {latest.ArchiveUri}..");
+            L.Info($"Attempting download of catalogue from: {latest.ArchiveUri}..");
 
             var response = M.SendAndWait<GetContentRequest, GetContentResponse>(new GetContentRequest(catPath, latest.ArchiveUri.Path));
             if (response == null || !response.Success)
