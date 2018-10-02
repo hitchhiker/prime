@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Threading;
-using Prime.Scratch.Alyasko;
+using System.IO;
+using Newtonsoft.Json;
 using Prime.Core;
 using Prime.Core.Messaging;
+using Prime.Radiant;
 using Prime.Scratch;
+using Prime.Scratch.Alyasko;
 
-namespace TestConsole
+namespace Prime.Console.Win
 {
     public class Program
     {
@@ -23,7 +25,7 @@ namespace TestConsole
                 client.Stop();
             };
 
-            Console.CancelKeyPress += (o, eventArgs) =>
+            System.Console.CancelKeyPress += (o, eventArgs) =>
             {
                 server.Stop();
                 client.Stop();

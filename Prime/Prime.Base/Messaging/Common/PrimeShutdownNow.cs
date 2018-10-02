@@ -8,4 +8,8 @@ namespace Prime.Base.Messaging.Common
     public class PrimeShutdownNow : BaseTransportMessage
     {
     }
+
+    public class PrimeStopped : BaseTransportMessage
+    {
+    }
 }

@@ -1,4 +1,6 @@
-﻿namespace Prime.Core
+﻿using Prime.Base;
+
+namespace Prime.Core
 {
     public static class ExtensionLoaderExtensionMethods 
     {

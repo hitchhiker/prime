@@ -1,4 +1,5 @@
 ﻿using System.Composition;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.IPFS.Lin64

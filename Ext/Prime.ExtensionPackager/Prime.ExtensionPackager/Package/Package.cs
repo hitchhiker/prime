@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.ExtensionPackager

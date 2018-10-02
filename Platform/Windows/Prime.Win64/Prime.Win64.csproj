@@ -6,6 +6,10 @@
     <OutputType>Exe</OutputType>
     <StartupObject />
     <AssemblyName>Prime</AssemblyName>
+    <Version>1.0.0.0</Version>
+    <AssemblyVersion>0.3.*</AssemblyVersion>
+    <Deterministic>False</Deterministic>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

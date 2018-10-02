@@ -1,4 +1,5 @@
-﻿using Prime.Core;
+﻿using Prime.Base;
+using Prime.Core;
 
 namespace Prime.MessagingServer
 {

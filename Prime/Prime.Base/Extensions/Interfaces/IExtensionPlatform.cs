@@ -1,4 +1,6 @@
-﻿namespace Prime.Core
+﻿using Prime.Core;
+
+namespace Prime.Base
 {
     public interface IExtensionPlatform : IExtension
     {

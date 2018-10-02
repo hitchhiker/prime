@@ -7,17 +7,31 @@ using Prime.Radiant.Catalogue;
 
 namespace Prime.Radiant
 {
-    public static class CatalogueBootEntry
+    public static class RadiantEntry
     {
-        public static void Update(PrimeInstance prime)
+        public static void EnterUpdate(PrimeInstance prime, RadiantArguments.UpdateArguments args)
+        {
+            if (args.DoAll)
+                UpdateAll(prime);
+            else if (args.CataloguePubKey != null)
+                Update(prime, args.CataloguePubKey);
+        }
+
+        public static void EnterPublish(PrimeInstance prime, RadiantArguments.PublishArguments args)
+        {
+            Publish(prime, args.PubConfigPath);
+        }
+
+        public static void Update(PrimeInstance prime, string publicKey)
+        {
+            var u = new Update(prime);
+            u.UpdateCatalogue(publicKey);
+        }
+
+        public static void UpdateAll(PrimeInstance prime)
         {
             var u = new Update(prime);
             u.UpdateAll();
-        }
-
-        public static void Publish(PrimeInstance prime, PrimeBootOptions.Publish options)
-        {
-            Publish(prime, options.PubConfigPath);
         }
 
         public static void Publish(PrimeInstance prime, string pubConfigPath)

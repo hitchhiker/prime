@@ -1,4 +1,5 @@
 using System.IO;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.IPFS

@@ -25,6 +25,12 @@ namespace Prime.Radiant.Catalogue
             return true;
         }
 
+        public bool UpdateCatalogue(string publicKey)
+        {
+            var cat = C.Config.CatalogueConfig.Subscribed.Entries.FirstOrDefault(x => x.PublicKey == publicKey);
+            return cat != null && UpdateCatalogue(cat.GetRandomNotSelf());
+        }
+
         public bool UpdateCatalogue(ContentUri uri)
         {
             L.Info($"Attempting to resolve {uri}");

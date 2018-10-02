@@ -32,7 +32,18 @@ namespace Prime.Scratch
 
             //AuthManagerTest.Key1(c);
 
-            PackageTests.Go(client);
+            CommandArgsTester.Go(client, "package compile -p [src]/instance/prime_package.config");
+
+            //CommandArgsTester.Go(client, "package build -p [src]/instance/prime_package_catalogue.config");
+
+            //CommandArgsTester.Go(client, "catalogue publish -p [src]/instance/prime_package_catalogue.config");
+            //
+            
+            //CommandArgsTester.Go(client, "--help");
+
+            //CommandArgsTester.Go(client, "catalogue");
+
+            //PackageTests.Go(client);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Prime.Core;
 
-namespace Prime.Base.Messaging.Common
+namespace Prime.PackageManager.Messages
 {
     public class PrimePackagesResponse : BaseTransportResponseMessage
     {

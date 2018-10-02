@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Prime.Base;
 using Prime.Extensions;
 
@@ -28,17 +29,21 @@ namespace Prime.Core
 
         public void LoadInstallConfig()
         {
+            if (Context.DllLocal)
+                Context.L.Log("[DEVELOPMENT ONLY] Loading extensions from the executing application's directory.");
+
             foreach (var i in Config.InstallConfig.Installs)
-                Load<IExtension>(i.Id);
+                Load<IExtension>(i.Id, Context.DllLocal);
         }
 
-        public T Load<T>(ObjectId id) where T : class, IExtension
+        public T Load<T>(ObjectId id, bool fromAppDir = false) where T : class, IExtension
         {
             var ext = Instances.PreCheck<T>(id);
             if (ext != null)
                 return ext;
 
-            var dir = Instances.GetPackageDirectory(id);
+            var dir = fromAppDir ? new FileInfo(Assembly.GetExecutingAssembly().Location).Directory : Instances.GetPackageDirectory(id);
+
             if (dir == null)
             {
                 Context.L.Fatal("Can't find directory for package: " + id);

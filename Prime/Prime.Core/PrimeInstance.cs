@@ -12,8 +12,11 @@ namespace Prime.Core
     {
         public readonly ExtensionManager ExtensionManager;
 
-        private bool _isStarted;
+        public bool IsStarted { get; private set; }
+
         private readonly object _startLock = new object();
+
+        public readonly CommandArgs CommandArgs = new CommandArgs();
 
         public PrimeInstance(PrimeContext c) : base(c)
         {
@@ -22,31 +25,50 @@ namespace Prime.Core
 
         public void Start()
         {
+            L.Log($"Prime instance starting..");
+
+            if (ExtensionManager == null)
+            {
+                L.Fatal("No extension manager was registered. Prime cannot start.");
+                return;
+            }
+
             lock (_startLock)
             {
-                if (_isStarted)
+                if (IsStarted)
                     return;
-                _isStarted = true;
+                IsStarted = true;
             }
 
             ExtensionManager.LoadInstallConfig();
-            ExtensionManager.Instances.Select(s => s.Extension).OfType<IExtensionStartup>().ForEach(x => x.PrimeStarted());
-            L.Log($"Prime instance loaded {ExtensionManager.Instances.Count()} extensions.");
+            var exts = ExtensionManager.Instances.Select(s => s.Extension).ToList();
+
+            exts.OfType<IExtensionInstanceCommandArgs>().ForEach(x => x.InitialiseCommandArgs(this, CommandArgs));
+            exts.OfType<IExtensionCommandArgs>().ForEach(x => x.InitialiseCommandArgs(C, CommandArgs));
+            exts.OfType<IExtensionStartup>().ForEach(x => x.PrimeStarted());
+
+            L.Log($"Prime has registered {ExtensionManager.Instances.Count()} extension(s).");
             L.Log("Prime instance started.");
+            L.Log("");
         }
 
         public void Stop()
         {
             lock (_startLock)
             {
-                if (!_isStarted)
+                if (!IsStarted)
                     return;
+
+                L.Log($"Prime instance stopping..");
 
                 M.SendAsync(new PrimeShutdownNow());
                 do
                 {
                     Thread.Sleep(1);
                 } while (ExtensionManager.Instances.OfType<IExtensionGracefullShutdown>().Any(x => !x.HasShutdown));
+
+                IsStarted = false;
+                M.SendAsync(new PrimeStopped());
             }
         }
     }

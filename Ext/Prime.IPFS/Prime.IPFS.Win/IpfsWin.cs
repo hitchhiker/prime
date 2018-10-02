@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Prime.Base;
 using Prime.Core;
 using Prime.Core.Windows;
 

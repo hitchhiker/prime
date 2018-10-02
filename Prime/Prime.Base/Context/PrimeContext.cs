@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using GalaSoft.MvvmLight.Messaging;
+using Prime.Base;
 
 namespace Prime.Core
 {
@@ -20,9 +21,10 @@ namespace Prime.Core
         public readonly TypeCatalogue Types;
         public IReadOnlyList<IExtension> Extensions => _extensions;
         private readonly List<IExtension> _extensions = new List<IExtension>();
+        public bool DllLocal { get; set; }
         public readonly string Name;
 
-        public static PrimeContext ForDevelopment(string configName) => new PrimeContext("[src]/instance/" + configName) { L = new ConsoleLogger() };
+        public static PrimeContext ForDevelopment(string configName) => new PrimeContext("[src]/instance/" + configName) { L = new ConsoleLogger(), DllLocal = true};
 
         public static PrimeContext ForDevelopmentClient() => ForDevelopment("prime-client.config");
 
@@ -67,7 +69,6 @@ namespace Prime.Core
             _extensions.Add(extension);
         }
 
-    
         private static PrimeContext _testing;
         public static PrimeContext Testing => _testing;
 

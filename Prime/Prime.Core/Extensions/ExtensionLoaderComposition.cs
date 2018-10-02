@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
+using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Extensions

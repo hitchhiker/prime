@@ -51,7 +51,7 @@ namespace Prime.ExtensionPackager
 
         static void Run(Options opts)
         {
-            ExtensionInfo.DummyRef();
+            ExtensionPackerExtensionInfo.DummyRef();
 
             var extPath = "./";
             var configPath = "./";

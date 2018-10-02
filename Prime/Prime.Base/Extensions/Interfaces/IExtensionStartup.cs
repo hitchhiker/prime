@@ -1,4 +1,4 @@
-﻿namespace Prime.Core
+﻿namespace Prime.Base
 {
     public interface IExtensionStartup : IExtension
     {

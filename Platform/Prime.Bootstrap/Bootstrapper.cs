@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using CommandLine;
-using Prime.Core;
 
 namespace Prime.Bootstrap
 {
@@ -14,17 +9,37 @@ namespace Prime.Bootstrap
     {
         public static void Boot(string[] args)
         {
-            Parser.Default.ParseArguments<PrimeBootOptions.Start, PrimeBootOptions.Publish, PrimeBootOptions.Update, PrimeBootOptions.Packages>(args).MapResult(
-                (PrimeBootOptions.Start o) => Run(o, args),
-                (PrimeBootOptions.Publish o) => Run(o, args),
-                (PrimeBootOptions.Update o) => Run(o, args),
-                (PrimeBootOptions.Packages o) => Run(o, args),
-                errs => 1);
+            var argl = args.ToList();
+            var io = argl.IndexOf("-c");
+            if (io == -1 || io == argl.Count - 1)
+            {
+                Error();
+                return;
+            }
+
+            var confp = argl[io + 1];
+            if (string.IsNullOrWhiteSpace(confp))
+            {
+                Error();
+                return;
+            }
+
+            argl.RemoveAt(io + 1);
+            argl.RemoveAt(io);
+
+            Run(confp, args);
         }
 
-        private static int Run(PrimeBootOptionsBase config, string[] args)
+        private static void Error()
         {
-            var configp = ResolveSpecial(config.ConfigPath);
+            Console.WriteLine("You must specify the location of the .config file.");
+            Console.WriteLine("");
+            Console.WriteLine("example: -c ../instance/prime.config");
+        }
+
+        private static int Run(string configPath, string[] args)
+        {
+            var configp = ResolveSpecial(configPath);
 
             if (!File.Exists(configp))
             {
@@ -64,7 +79,7 @@ namespace Prime.Bootstrap
             
             Console.WriteLine("Args: " + string.Join(" ", args));
 
-            mi.Invoke(null, new object[] {args});
+            mi.Invoke(null, new object[] {args, configPath});
             return 0;
         }
 

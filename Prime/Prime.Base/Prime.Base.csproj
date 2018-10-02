@@ -5,7 +5,11 @@
     <OutputType>Library</OutputType>
     <StartupObject />
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.1</Version>
+
+    <Version>1.0.0.0</Version>
+    <AssemblyVersion>0.3.*</AssemblyVersion>
+    <Deterministic>False</Deterministic>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
@@ -36,8 +40,5 @@
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.3" />
     <PackageReference Include="SharpCompress" Version="0.22.0" />
     <PackageReference Include="System.Composition" Version="1.2.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Platform\Prime.Bootstrap\Prime.Bootstrap.csproj" />
   </ItemGroup>
 </Project>

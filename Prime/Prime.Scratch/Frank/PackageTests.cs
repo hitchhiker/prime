@@ -13,7 +13,7 @@ namespace Prime.Scratch
     {
         public static void Go(PrimeInstance prime)
         {
-            var opt = new PrimeBootOptions.Packages() {PubConfigPath = "[src]/instance/prime_package_catalogue.config" };
+            //var opt = new PrimeBootOptions.Packages() {PubConfigPath = "[src]/instance/prime_package_catalogue.config" };
 
             prime.Start();
             //CatalogueBootEntry.Publish(prime, opt.PubConfigPath);
@@ -40,7 +40,7 @@ namespace Prime.Scratch
         }
 
         public static void PackageUpdate(PrimeInstance prime)
-        {
+        {/*
             prime.Start();
 
             PackageCatalogueEntry.Request(prime,
@@ -48,7 +48,7 @@ namespace Prime.Scratch
                 {
                     DoBuild = true,
                     PubConfigPath = Path.Combine(prime.C.Config.ConfigLoadedFrom.Directory.FullName, "prime_package_catalogue.config")
-                });
+                });*/
         }
 
         public static void PackageCoordinator(PrimeContext context)
