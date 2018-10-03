@@ -1,8 +1,4 @@
-﻿using Prime.Base.DStore;
-using Prime.Base.Encryption;
-using Prime.Core;
-using Prime.Radiant;
-using Prime.Radiant.Catalogue;
+﻿using Prime.Core;
 
 namespace Prime.Scratch
 {
@@ -35,7 +31,9 @@ namespace Prime.Scratch
             //new Prime.NetCoreExtensionPackager.ReflectionTest(c).Go();
             //new ReflectionTests3(client).Go();
 
-            CommandArgsTester.Go(client, "package compile -p [src]/instance/prime_package_compile.config");
+            //CommandArgsTester.Go(client, "package compile -p [src]/instance/prime_package_compile.config");
+
+            //CommandArgsTester.Go(client, "package bundle -p [src]/instance/prime_package_compile.config");
 
             //CommandArgsTester.Go(client, "package build -p [src]/instance/prime_package_catalogue.config");
 

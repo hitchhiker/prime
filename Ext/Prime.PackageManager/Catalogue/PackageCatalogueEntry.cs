@@ -10,14 +10,14 @@ using Prime.Radiant;
 
 namespace Prime.PackageManager
 {
-    public class PackageCatalogueBuilder : CommonBase, ICatalogueBuilder
+    public class PackageCatalogueEntry : CommonBase, ICatalogueBuilder
     {
-        private PackageCatalogueBuilder() : base((PrimeContext)null) { }
+        private PackageCatalogueEntry() : base((PrimeContext)null) { }
 
         public string TypeName => "packages";
         private readonly CatalogueBuilder _builder;
 
-        public PackageCatalogueBuilder(PrimeInstance prime, CataloguePublisherConfig config) : base(prime.C)
+        public PackageCatalogueEntry(PrimeInstance prime, CataloguePublisherConfig config) : base(prime.C)
         {
             _builder = new CatalogueBuilder(prime, this, config);
         }

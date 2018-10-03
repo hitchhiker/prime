@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
@@ -15,6 +16,9 @@ namespace Prime.NetCoreExtensionPackager.Compiler
     {
         public static bool Compile(PrimeContext context, string projectPath, string destinationPath)
         {
+            if (Directory.Exists(destinationPath))
+                Directory.Delete(destinationPath, true);
+
             var b = new List<string>();
             var result = AsyncContext.Run(() => Process("dotnet", $"publish {projectPath} -c Release -o {destinationPath}", b));
             var success= result == 0;

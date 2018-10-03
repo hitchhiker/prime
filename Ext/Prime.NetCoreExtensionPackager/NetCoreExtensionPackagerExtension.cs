@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Text;
 using Newtonsoft.Json;
 using Prime.Base;
@@ -7,6 +8,7 @@ using Prime.Core;
 
 namespace Prime.NetCoreExtensionPackager
 {
+    [Export(typeof(IExtension))]
     public class NetCoreExtensionPackagerExtension : IExtension
     {
         private static readonly ObjectId _id = "prime:netcoreextensionpacker".GetObjectIdHashCode();

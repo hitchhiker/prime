@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Text;
 using System.Threading;
 using Prime.Base;
@@ -9,9 +10,10 @@ using Prime.IPFS.Messaging;
 
 namespace Prime.IPFS
 {
+    [Export(typeof(IExtensionExecute))]
     public abstract class IpfsExtensionBase : IExtensionExecute, IExtensionPlatform, IExtensionGracefullShutdown
     {
-        private static readonly ObjectId _id = new ObjectId("3575ddcb0d8647d75fbf044c"); // "prime:ipfs";
+        private static readonly ObjectId _id = "prime:ipfs".GetObjectIdHashCode();
 
         public ObjectId Id => _id;
 

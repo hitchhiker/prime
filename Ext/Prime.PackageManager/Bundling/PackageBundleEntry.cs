@@ -8,30 +8,26 @@ using PackageConfig = Prime.Radiant.PackageConfig;
 
 namespace Prime.PackageManager
 {
-    public class PackageCompilation : CommonBase
+    public class PackageBundleEntry : CommonBase
     {
-        public PackageCompilation(PrimeContext context) : base(context)
-        {
-        }
+        public PackageBundleEntry(PrimeContext context) : base(context) { }
 
-        public PackageCompilation(CommonBase otherBase) : base(otherBase)
-        {
-        }
+        public PackageBundleEntry(CommonBase otherBase) : base(otherBase) { }
 
-        public bool Compile(PackageConfig config)
+        public bool Bundle(PackageConfig config)
         {
             foreach (var packageConfigItem in config.Packages)
             {
-                if (!Compile(packageConfigItem))
+                if (!Bundle(packageConfigItem))
                     return false;
             }
 
             return true;
         }
 
-        public bool Compile(PackageConfigItem packageItem)
+        public bool Bundle(PackageConfigItem packageItem)
         {
-            L.Log("Starting compilation for: " + packageItem.Source);
+            L.Log("Starting bundling for: " + packageItem.Source);
 
             if (packageItem.Type != "netcore")
             {
@@ -42,24 +38,10 @@ namespace Prime.PackageManager
             var sourceDir = new DirectoryInfo(packageItem.Source.ResolveSpecial());
             var tmpPublishDir = C.FileSystem.GetTmpSubDirectory("publish");
             var destinationDir = new DirectoryInfo(Path.Combine(tmpPublishDir.FullName, sourceDir.Name));
-            
-            //if (!CoreCompile(packageItem, sourceDir, destinationDir))
-            //    return false;
 
             return Bundle(packageItem, destinationDir);
         }
 
-        private bool CoreCompile(PackageConfigItem packageItem, DirectoryInfo sourceDir, DirectoryInfo destinationDir)
-        {
-            var success = NetCoreNativeCompiler.Compile(C, sourceDir.FullName, destinationDir.FullName);
-
-            if (success)
-                L.Log($"{packageItem.Source} compiled as 'Release' successfully.");
-            else
-                L.Error($"{packageItem.Source} failed to compile, aborting.");
-
-            return success;
-        }
 
         private bool Bundle(PackageConfigItem packageItem, DirectoryInfo destinationDir)
         {
@@ -67,7 +49,7 @@ namespace Prime.PackageManager
             var packageSuccess = NetCorePackager.PackageItem(ctx);
 
             if (packageSuccess)
-                L.Log($"{packageItem.Source} compiled and packaged successfully.");
+                L.Log($"{packageItem.Source} bundled successfully.");
             else
                 L.Error($"{packageItem.Source} failed.");
 

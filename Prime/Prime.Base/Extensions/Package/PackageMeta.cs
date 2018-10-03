@@ -12,12 +12,12 @@ namespace Prime.Core
     {
         public PackageMeta() { }
 
-        public PackageMeta(IExtension ext)
+        public PackageMeta(IExtension ext, Version assemblyVersion = null)
         {
             Title = ext.Title;
             Id = ext.Id;
 
-            Version = ext.Version;
+            Version = assemblyVersion ?? ext.Version;
 
             if (ext is IExtensionPlatform plat)
                 Platform = plat.Platform;

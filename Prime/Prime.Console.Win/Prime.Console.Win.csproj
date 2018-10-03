@@ -35,6 +35,7 @@
     <ProjectReference Include="..\..\Ext\Prime.Manager.Client\Prime.Manager.Client.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.Manager\Prime.Manager.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.NetCoreExtensionPackager\Prime.NetCoreExtensionPackager.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.PackageManager\Prime.PackageManager.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />

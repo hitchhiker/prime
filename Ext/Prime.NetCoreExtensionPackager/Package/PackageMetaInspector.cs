@@ -132,7 +132,7 @@ namespace Prime.NetCoreExtensionPackager
                 return null;
 
             var pm = foundType.InstanceAny<IExtension>();
-            var meta = new PackageMeta(pm);
+            var meta = new PackageMeta(pm, a.GetName().Version);
 
             if (!Context.IsBase && meta.Id == "prime:base".GetObjectIdHashCode())
                 return null;
