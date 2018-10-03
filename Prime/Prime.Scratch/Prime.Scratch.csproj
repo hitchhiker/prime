@@ -23,6 +23,7 @@
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.1" />
     <PackageReference Include="SharpCompress" Version="0.22.0" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Composition" Version="1.2.0" />
     <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
     <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
@@ -45,7 +46,7 @@
     <ProjectReference Include="..\..\Ext\Prime.Finance\Prime.Finance.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.IPFS\Prime.IPFS\Prime.IPFS.Go.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />
-    <ProjectReference Include="..\..\Ext\Prime.PackageManager\Prime.PackageManager\Prime.PackageManager.csproj" />
+    <ProjectReference Include="..\..\Ext\Prime.PackageManager\Prime.PackageManager.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.Radiant\Prime.Radiant.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.SocketServer\Prime.SocketServer.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.WebSocketServer\Prime.WebSocketServer.csproj" />

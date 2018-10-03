@@ -7,7 +7,7 @@ using Prime.Core;
 
 namespace Prime.Radiant
 {
-    public class PackageConfig
+    public class PackageConfig : JsonConfigBase<PackageConfig>
     {
         [JsonProperty("packages")]
         public List<PackageConfigItem> Packages { get; set; } = new List<PackageConfigItem>();

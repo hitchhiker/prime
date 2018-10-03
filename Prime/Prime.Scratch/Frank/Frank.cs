@@ -32,18 +32,23 @@ namespace Prime.Scratch
 
             //AuthManagerTest.Key1(c);
 
-            CommandArgsTester.Go(client, "package compile -p [src]/instance/prime_package.config");
+            //new Prime.NetCoreExtensionPackager.ReflectionTest(c).Go();
+            //new ReflectionTests3(client).Go();
+
+            CommandArgsTester.Go(client, "package compile -p [src]/instance/prime_package_compile.config");
 
             //CommandArgsTester.Go(client, "package build -p [src]/instance/prime_package_catalogue.config");
 
             //CommandArgsTester.Go(client, "catalogue publish -p [src]/instance/prime_package_catalogue.config");
-            //
-            
+
             //CommandArgsTester.Go(client, "--help");
 
             //CommandArgsTester.Go(client, "catalogue");
 
             //PackageTests.Go(client);
+
+            //var config = Radiant.PackageConfig.Get(c, "D:\\hh\\git\\prime\\src\\instance\\prime_package_compile.config", false);
+            //config.Save();
         }
     }
 }

@@ -5,17 +5,17 @@ using System.Linq;
 using Prime.Base;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
     public class PackageBundler
     {
         public static readonly string ArchiveName = "arc.bz2";
 
         private readonly Package _package;
-        public readonly ProgramContext Context;
+        public readonly NetCorePackagerContext Context;
         private int _inc = 1;
 
-        public PackageBundler(Package package, ProgramContext context)
+        public PackageBundler(Package package, NetCorePackagerContext context)
         {
             _package = package;
             Context = context;
@@ -26,7 +26,7 @@ namespace Prime.ExtensionPackager
             if (_package.StagedFiles?.Count != 0)
                 Process();
             else
-                Context.Logger.Warn("No staged files to process.");
+                Context.L.Warn("No staged files to process.");
         }
 
         private void Process()
@@ -62,7 +62,7 @@ namespace Prime.ExtensionPackager
             var dMetaPath = Path.Combine(distDir.FullName, PackageMetaInspector.ExtFileName);
             _package.StagedMeta.CopyTo(dMetaPath, true);
 
-            Context.Logger.Info("Compression complete.");
+            Context.L.Info("Compression complete.");
         }
 
         private void Filter(List<FileInfo> items)
@@ -88,7 +88,7 @@ namespace Prime.ExtensionPackager
             {
                 var vp = fi.FullName.Substring(vpOffset);
 
-                if (vp.StartsWith(Path.DirectorySeparatorChar))
+                if (vp.StartsWith(Path.DirectorySeparatorChar.ToString()))
                     vp = vp.Substring(1);
 
                 var dst = new FileInfo(Path.Combine(distDir.FullName, vp));
@@ -99,7 +99,8 @@ namespace Prime.ExtensionPackager
                 fi.CopyTo(dst.FullName, true);
             }
 
-            Context.Logger.Info($"Moved {items.Count} existing archives(s).");
+            if (items.Count!=0)
+                Context.L.Info($"Preserved {items.Count} existing archives(s).");
 
             remaining.RemoveAll(items.Contains);
         }
@@ -117,7 +118,7 @@ namespace Prime.ExtensionPackager
             else
                 _package.StagedRoot.CreateArchive(items.OrderBy(x => x.Name), Path.Combine(distDir.FullName, $"{ArchiveName}.{_inc++}"));
             
-            Context.Logger.Info($"Compressed {items.Count} files(s).");
+            Context.L.Info($"Compressed {items.Count} files(s).");
             remaining.RemoveAll(items.Contains);
         }
 

@@ -6,14 +6,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
     public class NugetExtractor
     {
-        private readonly ProgramContext _context;
+        private readonly NetCorePackagerContext _context;
         private readonly Package _package;
 
-        public NugetExtractor(ProgramContext context, Package package)
+        public NugetExtractor(NetCorePackagerContext context, Package package)
         {
             _context = context;
             _package = package;

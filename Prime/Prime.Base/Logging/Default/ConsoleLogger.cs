@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,8 @@ namespace Prime.Core
             else
                 _lastTime = t;
 
+            var oc = Console.ForegroundColor;
+
             switch (level)
             {
                 case LoggingLevel.Status:
@@ -37,15 +40,20 @@ namespace Prime.Core
                     Console.WriteLine(ColumnString, t, message);
                     break;
                 case LoggingLevel.Warning:
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine(ColumnString, t, $"Warn: {message}");
                     break;
                 case LoggingLevel.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(ColumnString, t, $"ERROR: {message}");
                     break;
                 case LoggingLevel.Panic:
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(ColumnString, t, $"FATAL: {message}");
                     break;
             }
+
+            Console.ForegroundColor = oc;
         }
     }
 }

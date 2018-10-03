@@ -7,7 +7,7 @@ using System.Reflection;
 using Prime.Base;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
     public class Package : IEnumerable<FileInfo>
     {

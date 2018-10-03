@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
     public class PackageStaging
     {
         private readonly Package _package;
-        public readonly ProgramContext Context;
+        public readonly NetCorePackagerContext Context;
 
-        public PackageStaging(Package package, ProgramContext context)
+        public PackageStaging(Package package, NetCorePackagerContext context)
         {
             _package = package;
             Context = context;
@@ -38,7 +38,7 @@ namespace Prime.ExtensionPackager
 
                 var vp = fi.FullName.Substring(vpOffset);
 
-                if (vp.StartsWith(Path.DirectorySeparatorChar))
+                if (vp.StartsWith(Path.DirectorySeparatorChar.ToString()))
                     vp = vp.Substring(1);
 
                 var dst = new FileInfo(Path.Combine(stageDir.FullName, vp));
@@ -55,8 +55,8 @@ namespace Prime.ExtensionPackager
 
             package.AddStaged(stageDir, staged, new FileInfo(sMetaPath));
 
-            Context.Logger.Info("");
-            Context.Logger.Info($"{package.Count() + 1} file(s) copied to " + stageDir.FullName);
+            Context.L.Info("");
+            Context.L.Info($"{package.Count() + 1} file(s) copied to " + stageDir.FullName);
 
             if (Context.ExtractNuget)
             {

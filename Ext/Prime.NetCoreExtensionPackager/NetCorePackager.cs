@@ -1,19 +1,19 @@
 ﻿using System;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
-    public static class Process
+    public static class NetCorePackager
     {
-        public static void Go(ProgramContext ctx)
+        public static bool PackageItem(NetCorePackagerContext ctx)
         {
             var pmi = new PackageMetaInspector(ctx);
             pmi.Inspect();
 
             if (pmi.Package == null)
             {
-                ctx.Logger.Info("No package created.");
-                return;
+                ctx.L.Info("No package created.");
+                return false;
             }
 
             var staging = new PackageStaging(pmi.Package, ctx);
@@ -21,6 +21,8 @@ namespace Prime.ExtensionPackager
 
             var bundler = new PackageBundler(pmi.Package, ctx);
             bundler.Bundle();
+
+            return true;
         }
     }
 }
