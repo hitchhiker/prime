@@ -23,12 +23,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": [
-              "src/scripts/d3.v3.min.js",
-              "src/scripts/d3-queue.v3.min.js",
-              "src/scripts/topojson.v1.min.js",
               "src/scripts/plotly-latest.min.js",
               "src/scripts/ohlc-chart.js"
             ]
@@ -80,7 +77,11 @@
             "styles": [
               "styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "../node_modules/jquery/dist/jquery.js",
+              "../node_modules/tether/dist/js/popper.js",
+              "../node_modules/bootstrap/dist/js/bootstrap.js"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"

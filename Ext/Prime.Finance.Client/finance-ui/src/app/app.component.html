@@ -3,14 +3,42 @@
 
   <div class="columns-wrapper">
     <div class="column-left">
-      <app-tickers></app-tickers>
-      <app-last-trades></app-last-trades>
+      <div class="title">
+        Tickers
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Volume</th>
+            <th>Last</th>
+          </tr>
+        </thead>
+      </table>
+      <div class="tickers-wrapper">
+        <app-tickers></app-tickers>
+      </div>
+      <div class="title">
+        Market history
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+      </table>
+      <div class="last-trades-wrapper">
+        <app-last-trades></app-last-trades>
+      </div>
     </div>
     <div class="column-center">
       <app-chart></app-chart>
     </div>
-    <div class="column-right">
-
-    </div>
   </div>
+
+  <app-status-bar></app-status-bar>
 </div>

@@ -1,0 +1,21 @@
+@import "../../styles/common/defs.scss";
+
+.title-bar {
+    display: flex;
+    flex-grow: 0;
+    background-color: $color-accent;
+}
+
+h3 {
+    flex-shrink: 0;
+    width: 300px;
+    color: white;
+    margin: 12px 0 0 15px;
+}
+
+.title-bar {
+    button {
+        flex-shrink: 0;
+        margin: 10px 10px 10px 0;
+    }
+}

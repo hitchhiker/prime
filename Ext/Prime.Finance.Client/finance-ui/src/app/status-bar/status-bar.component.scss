@@ -1,0 +1,10 @@
+@import "../../styles/common/defs.scss";
+
+.status-bar {
+    margin-top: auto;
+    background-color: $color-accent;
+    color: white;
+    flex-grow: 0;
+
+    padding: 2px 10px;
+}

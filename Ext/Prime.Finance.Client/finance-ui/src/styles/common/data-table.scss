@@ -1,0 +1,28 @@
+@import "../../styles/common/defs.scss";
+$color-table-head: rgba(138, 138, 138, 0.2);
+table {
+    width: 100%;
+    thead {
+        tr {
+            th {
+                padding: 3px 10px;
+                font-weight: normal;
+                background-color: $color-table-head;
+            }
+        }
+    }
+    tbody {
+        td {
+            padding: 3px 10px;
+        }
+        tr {
+            cursor: pointer;
+            &:hover {
+                background-color: rgba(207, 207, 207, 0.2);
+            }
+            &:active {
+                background-color: rgba(207, 207, 207, 0.5);
+            }
+        }
+    }
+}
