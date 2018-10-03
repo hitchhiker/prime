@@ -1,0 +1,39 @@
+@import "../../styles/common/defs.scss";
+
+.title {
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.096);
+    font-weight: bold;
+    background-color: $color-accent;
+    color: white;
+}
+
+table {
+    width: 100%;
+    thead th {
+        padding: 3px 10px;
+        font-weight: normal;
+        font-size: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.096);
+    }
+    tbody {
+        td {
+            font-size: 12px;
+            padding: 3px 10px;
+        }
+
+        tr {
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgba(207, 207, 207, 0.2);
+            }
+
+            &:active {
+                background-color: rgba(207, 207, 207, 0.5);
+            }
+        }
+    }
+}
+
