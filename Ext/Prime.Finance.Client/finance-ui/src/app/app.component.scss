@@ -1,7 +1,7 @@
 .app-container {
-    width: 1100px;
-
     background-color: white;
+    height: 100vh;
+    min-width: 950px;
 
     .columns-wrapper {
         display: flex;
