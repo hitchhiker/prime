@@ -44,15 +44,6 @@ $color-table-title: rgba(88, 88, 88, 0.2);
         .column-center {
             flex-grow: 1;
         }
-        
-        .column-right {
-            display: none;
-            width: 300px;
-        
-            flex-shrink: 0;
-        
-            background-color: burlywood;
-        }
     }
 }
 
