@@ -6,6 +6,7 @@ import { ChartComponent } from './chart/chart.component';
 import { TickersComponent } from './tickers/tickers.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LastTradesComponent } from './last-trades/last-trades.component';
+import { StatusBarComponent } from './status-bar/status-bar.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { LastTradesComponent } from './last-trades/last-trades.component';
     ChartComponent,
     TickersComponent,
     NavbarComponent,
-    LastTradesComponent
+    LastTradesComponent,
+    StatusBarComponent
   ],
   imports: [
     BrowserModule

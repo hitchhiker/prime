@@ -1,31 +1,30 @@
+@import "../styles/common/defs.scss";
+
 .app-container {
     background-color: white;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     min-width: 950px;
+    display: flex;
+    flex-direction: column;
 
     .columns-wrapper {
         display: flex;
+        flex-grow: 1;
         flex-direction: row;
-    
-        border: 1px solid rgba(0, 0, 0, 0.2);
+        margin-bottom: auto;
 
         .column-left {
             width: 300px;
             flex-shrink: 0;
-            border-right: none;
-        
-            border-right: 1px solid rgba(0, 0, 0, 0.2);
         }
         
         .column-center {
             flex-grow: 1;
-        
-            height: 600px;
         }
         
         .column-right {
             display: none;
-            height: 300px;
             width: 300px;
         
             flex-shrink: 0;

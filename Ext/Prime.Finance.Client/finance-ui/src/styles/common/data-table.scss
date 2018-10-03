@@ -1,11 +1,12 @@
 @import "../../styles/common/defs.scss";
 
+$color-table-head: rgba(138, 138, 138, 0.2);
+$color-table-title: rgba(88, 88, 88, 0.2);
+
 .title {
     padding: 5px 10px;
-    background-color: rgba(0, 0, 0, 0.096);
     font-weight: bold;
-    background-color: $color-accent;
-    color: white;
+    background-color: $color-table-title;
 }
 
 table {
@@ -13,13 +14,10 @@ table {
     thead th {
         padding: 3px 10px;
         font-weight: normal;
-        font-size: 14px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        background-color: rgba(0, 0, 0, 0.096);
+        background-color: $color-table-head;
     }
     tbody {
         td {
-            font-size: 12px;
             padding: 3px 10px;
         }
 

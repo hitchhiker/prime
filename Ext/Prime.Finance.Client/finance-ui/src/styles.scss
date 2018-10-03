@@ -1,7 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import 'src/styles/bs-overrides';
+
+@import '~bootstrap/scss/bootstrap-reboot';
+@import '~bootstrap/scss/bootstrap-grid';
+@import '~bootstrap/scss/bootstrap';
+
 @import "src/styles/cschart.css";
 @import "src/styles/fa/css/all.css";
+
 
 .flex-fill {
     flex: 1;    
@@ -9,4 +16,9 @@
 
 body {
     background-color: #1B4267;
+    height: 100%;
+}
+
+html {
+    height: 100%;
 }
