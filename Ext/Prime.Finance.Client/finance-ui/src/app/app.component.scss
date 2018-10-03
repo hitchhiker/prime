@@ -17,6 +17,17 @@
         .column-left {
             width: 300px;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+
+            .tickers-wrapper {
+                flex-grow: 1;
+            }
+
+            .last-trades-wrapper {
+                flex-grow: 1;
+            }
         }
         
         .column-center {

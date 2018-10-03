@@ -58,7 +58,7 @@ window.onload = function () {
             }
         };
 
-        Plotly.plot('plotly-div', data, layout);
+        Plotly.plot('plotly-div', data, layout, {scrollZoom: true});
     });
 };
 
