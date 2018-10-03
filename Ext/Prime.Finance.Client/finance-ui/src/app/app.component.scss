@@ -1,4 +1,7 @@
 @import "../styles/common/defs.scss";
+@import "../styles/common/data-table.scss";
+
+$color-table-title: rgba(88, 88, 88, 0.2);
 
 .app-container {
     background-color: white;
@@ -21,12 +24,20 @@
             flex-direction: column;
             align-items: stretch;
 
+            .title {
+                padding: 5px 10px;
+                font-weight: bold;
+                background-color: $color-table-title;
+            }
+
             .tickers-wrapper {
                 flex-grow: 1;
+                overflow-y: scroll;
             }
 
             .last-trades-wrapper {
                 flex-grow: 1;
+                overflow-y: scroll;
             }
         }
         
