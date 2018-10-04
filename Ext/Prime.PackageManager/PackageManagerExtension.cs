@@ -25,10 +25,16 @@ namespace Prime.Core
         {
             argsParser.Add(new CommandArg("package", "Packages management.", args =>
             {
-                Parser.Default.ParseArguments<PackageManagerArguments.BuildArguments, PackageManagerArguments.CompileArguments, PackageManagerArguments.BundleArguments> (args)
-                    .WithParsed<PackageManagerArguments.CompileArguments>(o => PackageManagerEntry.RequestCompile(instance, o))
-                    .WithParsed<PackageManagerArguments.BundleArguments>(o => PackageManagerEntry.RequestBundle(instance, o))
-                    .WithParsed<PackageManagerArguments.BuildArguments>(o => PackageManagerEntry.RequestBuild(instance, o));
+                Parser.Default.ParseArguments<PackageManagerArguments.BuildArguments,
+                        PackageManagerArguments.CompileArguments,
+                        PackageManagerArguments.BundleArguments,
+                        PackageManagerArguments.PublishArguments,
+                        PackageManagerArguments.UpgradeArguments>(args)
+                        .WithParsed<PackageManagerArguments.PublishArguments>(o =>PackageManagerEntry.RequestPublish(instance, o))
+                    .WithParsed<PackageManagerArguments.CompileArguments>(o =>PackageManagerEntry.RequestCompile(instance, o))
+                    .WithParsed<PackageManagerArguments.BundleArguments>(o =>PackageManagerEntry.RequestBundle(instance, o))
+                    .WithParsed<PackageManagerArguments.BuildArguments>(o =>PackageManagerEntry.RequestBuild(instance, o))
+                    .WithParsed<PackageManagerArguments.UpgradeArguments>(o =>PackageManagerEntry.RequestUpgrade(instance, o));
             }));
         }
 

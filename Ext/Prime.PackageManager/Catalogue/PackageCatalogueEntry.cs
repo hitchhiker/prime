@@ -57,8 +57,9 @@ namespace Prime.PackageManager
                 var ces = new PackageEntry() { Id = group.Key, Title = group.First().MetaData?.Title };
                 cs.Packages.Add(ces);
 
-                foreach (var i in group)
-                    ces.PackageInstances.Add(CreateInstance(i));
+                foreach (var i in group.GroupBy(x=>x.MetaData.Platform))
+                    foreach (var p in i.OrderByDescending(x=>x.MetaData.Version).Take(1))
+                        ces.PackageInstances.Add(CreateInstance(p));
             }
 
             L.Info("Package catalogue compiled.");

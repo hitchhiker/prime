@@ -14,17 +14,34 @@ namespace Prime.Core
             public string CataloguePubKey { get; set; }
         }
 
+        [Verb("upgrade", HelpText = "Upgrade packages from the catalogue.")]
+        public class UpgradeArguments
+        {
+            [Option('p', "packconfig", Required = true, HelpText = "Path to the package config file.")]
+            public string PackageConfigPath { get; set; }
+        }
+
+        [Verb("publish", HelpText = "Compile, Bundle, Build and Publish package catalogue")]
+        public class PublishArguments
+        {
+            [Option('p', "packconfig", Required = true, HelpText = "Path to the package config file.")]
+            public string PackageConfigPath { get; set; }
+
+            [Option("pubconfig", Required = true, HelpText = "Path to the publisher config file.")]
+            public string PubConfigPath { get; set; }
+        }
+
         [Verb("compile", HelpText = "Compile package catalogue source projects")]
         public class CompileArguments
         {
-            [Option('p', "packageConfig", Required = true, HelpText = "Path to the package config file.")]
+            [Option('p', "packconfig", Required = true, HelpText = "Path to the package config file.")]
             public string PackageConfigPath { get; set; }
         }
 
         [Verb("bundle", HelpText = "Bundles the packages in the catalogue")]
         public class BundleArguments : BaseArguments
         {
-            [Option('p', "packageConfig", Required = true, HelpText = "Path to the package config file.")]
+            [Option('p', "packconfig", Required = true, HelpText = "Path to the package config file.")]
             public string PackageConfigPath { get; set; }
         }
 

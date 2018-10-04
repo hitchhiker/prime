@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
+using Newtonsoft.Json;
 using Prime.Base;
 using Prime.Core;
 
 namespace Prime.NetCoreExtensionPackager
 {
-    public class PackageMetaInspector
+    public partial class PackageMetaInspector : AssemblyLoadContext
     {
         public static string ExtFileName = "prime-ext.json";
 
@@ -90,7 +92,7 @@ namespace Prime.NetCoreExtensionPackager
                         fi.Name.StartsWith("microsoft.", StringComparison.OrdinalIgnoreCase))
                         continue;
 
-                    var a = Assembly.LoadFrom(fi.FullName);
+                    var a = LoadFromAssemblyPath(fi.FullName);
                     possible.Add((a, fi));
                 }
                 catch (Exception e)
@@ -100,12 +102,16 @@ namespace Prime.NetCoreExtensionPackager
                 }
             }
 
+            var comp = new CompositionTranslation(Context.C, possible);
+            if (!comp.Success)
+                return new List<Package>();
+            
             foreach (var i in possible)
             {
                 if (i.Item2.FullName.Contains("dotnet" + Path.DirectorySeparatorChar + "shared"))
                     continue;
 
-                var package = LoadPossibleExtensionDll(i.Item1, dir, i.Item2);
+                var package = InspectAssembly(i.Item1, dir, i.Item2, comp);
                 if (package != null)
                     foundPackages.Add(package);
             }
@@ -113,7 +119,7 @@ namespace Prime.NetCoreExtensionPackager
             return foundPackages;
         }
 
-        private Package LoadPossibleExtensionDll(Assembly a, DirectoryInfo dir, FileInfo file)
+        private Package InspectAssembly(Assembly a, DirectoryInfo dir, FileInfo file, CompositionTranslation comp)
         {
             if (a == null)
                 return null;
@@ -127,14 +133,13 @@ namespace Prime.NetCoreExtensionPackager
             if (a.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright?.Contains("microsoft", StringComparison.OrdinalIgnoreCase) == true)
                 return null;
 
-            var foundType = DetermineExtension(a, file);
-            if (foundType == null || foundType == typeof(PackageMeta))
+            var foundType = DetermineExtension(a, file, comp);
+            if (foundType == null)
                 return null;
 
-            var pm = foundType.InstanceAny<IExtension>();
-            var meta = new PackageMeta(pm, a.GetName().Version);
+            var meta = new PackageMeta(foundType, a.GetName().Version);
 
-            if (!Context.IsBase && meta.Id == "prime:base".GetObjectIdHashCode())
+            if (!Context.IsBase && meta.Id == PrimeBaseExtension.StaticId)
                 return null;
 
             var metaInfo = new FileInfo(Path.Combine(dir.FullName, ExtFileName));
@@ -142,24 +147,32 @@ namespace Prime.NetCoreExtensionPackager
             return new Package(a, meta, metaInfo);
         }
 
-        private Type DetermineExtension(Assembly a, FileInfo file)
+        private CompositionHelper DetermineExtension(Assembly a, FileInfo file, CompositionTranslation comp)
         {
-            var extt = typeof(IExtension);
             var pmType = typeof(PackageMeta);
 
-            var types = a.GetLoadableTypes().Where(x => !x.IsAbstract && extt.IsAssignableFrom(x) && x != pmType).ToList();
+            var types = a.GetLoadableTypes().Where(x => !x.IsAbstract && comp.ExtensionIType.IsAssignableFrom(x) && x != pmType).ToList();
 
-            if (types.Count <= 1)
-                return types.FirstOrDefault();
+            var found = new List<CompositionHelper>();
 
-            if (Context.ExtId != null)
+            foreach (var t in types)
             {
-                var type = types.FirstOrDefault(x => x.InstanceAny<IExtension>()?.Id == Context.ExtId);
-                if (type != null)
-                    return type;
+                var r = comp.GetHelper(t);
+                if (r == null || r.Id.IsNullOrEmpty())
+                    continue;
+
+                if (Context.ExtId != null && r.Id == Context.ExtId)
+                    return r;
+
+                found.Add(r);
             }
 
-            Context.L.Warn("Found multiple types in '" + file.FullName + "' implementing '" + extt + "'. You can specify the extension if required.");
+            if (found.Count == 1)
+                return found[0];
+
+            if (found.Count > 1)
+                Context.L.Error("Found multiple types'" + string.Join(", ", found.Select(x=>x.Title)) + "' in '" + file.FullName + "' implementing '" + comp.ExtensionIType.Name + "'. You must specify the extension.");
+
             return null;
         }
 
@@ -196,6 +209,11 @@ namespace Prime.NetCoreExtensionPackager
                     list.Add(new PackageReference(pm) {Assembly = a});
             }
             return list;
+        }
+
+        protected override Assembly Load(AssemblyName assemblyName)
+        {
+            return null;
         }
     }
 }

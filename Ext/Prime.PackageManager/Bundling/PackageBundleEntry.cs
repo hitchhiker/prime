@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using Prime.Base;
 using Prime.Core;
 using Prime.NetCoreExtensionPackager;
@@ -14,9 +15,9 @@ namespace Prime.PackageManager
 
         public PackageBundleEntry(CommonBase otherBase) : base(otherBase) { }
 
-        public bool Bundle(PackageConfig config)
+        public bool Bundle(PackageConfig packageConfig)
         {
-            foreach (var packageConfigItem in config.Packages)
+            foreach (var packageConfigItem in packageConfig.Packages.Where(x=>!x.IsSuspended))
             {
                 if (!Bundle(packageConfigItem))
                     return false;
@@ -25,33 +26,39 @@ namespace Prime.PackageManager
             return true;
         }
 
-        public bool Bundle(PackageConfigItem packageItem)
+        public bool Bundle(PackageConfigItem packageConfigItem)
         {
-            L.Log("Starting bundling for: " + packageItem.Source);
-
-            if (packageItem.Type != "netcore")
+            if (packageConfigItem.IsSuspended)
             {
-                L.Error("Unable to compile item of type: " + packageItem.Type + " - aborting.");
+                L.Log("Package is suspended, aborting.");
                 return false;
             }
 
-            var sourceDir = new DirectoryInfo(packageItem.Source.ResolveSpecial());
+            L.Log("Starting bundling for: " + packageConfigItem.Source);
+
+            if (packageConfigItem.Type != "netcore")
+            {
+                L.Error("Unable to compile item of type: " + packageConfigItem.Type + " - aborting.");
+                return false;
+            }
+
+            var sourceDir = new DirectoryInfo(packageConfigItem.Source.ResolveSpecial());
             var tmpPublishDir = C.FileSystem.GetTmpSubDirectory("publish");
             var destinationDir = new DirectoryInfo(Path.Combine(tmpPublishDir.FullName, sourceDir.Name));
 
-            return Bundle(packageItem, destinationDir);
+            return Bundle(packageConfigItem, destinationDir);
         }
 
 
-        private bool Bundle(PackageConfigItem packageItem, DirectoryInfo destinationDir)
+        private bool Bundle(PackageConfigItem packageConfigItem, DirectoryInfo destinationDir)
         {
-            var ctx = new NetCorePackagerContext(C) { SourceDirectory = destinationDir, ExtId = packageItem.GetId() };
+            var ctx = new NetCorePackagerContext(C) { SourceDirectory = destinationDir, ExtId = packageConfigItem.GetId() };
             var packageSuccess = NetCorePackager.PackageItem(ctx);
 
             if (packageSuccess)
-                L.Log($"{packageItem.Source} bundled successfully.");
+                L.Log($"{packageConfigItem.Source} bundled successfully.");
             else
-                L.Error($"{packageItem.Source} failed.");
+                L.Error($"{packageConfigItem.Source} failed.");
 
             L.Log("");
             return packageSuccess;

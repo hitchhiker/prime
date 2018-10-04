@@ -6,6 +6,7 @@
     <AssemblyVersion>0.3.*</AssemblyVersion>
     <Deterministic>False</Deterministic>
     <FileVersion>1.1.0.0</FileVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Prime\Prime.Base\Prime.Base.csproj" />
-    <ProjectReference Include="..\..\..\Prime\Prime.Core\Prime.Core.csproj" />
   </ItemGroup>
 
 </Project>

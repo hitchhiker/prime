@@ -3,7 +3,7 @@ using Prime.Base;
 
 namespace Prime.Core
 {
-    public class PackageConfig
+    public class ConfigPackageNode
     {
         [XmlElement("redirects")]
         public RedirectConfig RedirectConfig { get; set; } = new RedirectConfig();

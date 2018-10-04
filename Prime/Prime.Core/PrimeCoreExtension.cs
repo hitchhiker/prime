@@ -11,8 +11,8 @@ namespace Prime.Core
     [Export(typeof(IExtension))]
     public class PrimeCoreExtension : IPrime, IExtensionInstanceCommandArgs
     {
-        private static readonly ObjectId _id = "prime:core".GetObjectIdHashCode();
-        public ObjectId Id => _id;
+        public static readonly ObjectId StaticId = "prime:core".GetObjectIdHashCode();
+        public ObjectId Id => StaticId;
 
         public string Title { get; } = "Prime";
 

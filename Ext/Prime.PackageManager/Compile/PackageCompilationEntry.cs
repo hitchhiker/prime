@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using Prime.Base;
 using Prime.Core;
 using Prime.NetCoreExtensionPackager;
@@ -14,9 +15,9 @@ namespace Prime.PackageManager
 
         public PackageCompilationEntry(CommonBase otherBase) : base(otherBase) { }
 
-        public bool Compile(PackageConfig config)
+        public bool Compile(PackageConfig packageConfig)
         {
-            foreach (var packageConfigItem in config.Packages)
+            foreach (var packageConfigItem in packageConfig.Packages.Where(x => !x.IsSuspended))
             {
                 if (!Compile(packageConfigItem))
                     return false;
@@ -25,31 +26,37 @@ namespace Prime.PackageManager
             return true;
         }
 
-        public bool Compile(PackageConfigItem packageItem)
+        public bool Compile(PackageConfigItem packageConfigItem)
         {
-            L.Log("Starting compilation for: " + packageItem.Source);
-
-            if (packageItem.Type != "netcore")
+            if (packageConfigItem.IsSuspended)
             {
-                L.Error("Unable to compile item of type: " + packageItem.Type + " - aborting.");
+                L.Log("Package is suspended, aborting.");
                 return false;
             }
 
-            var sourceDir = new DirectoryInfo(packageItem.Source.ResolveSpecial());
+            L.Log("Starting compilation for: " + packageConfigItem.Source);
+
+            if (packageConfigItem.Type != "netcore")
+            {
+                L.Error("Unable to compile item of type: " + packageConfigItem.Type + " - aborting.");
+                return false;
+            }
+
+            var sourceDir = new DirectoryInfo(packageConfigItem.Source.ResolveSpecial());
             var tmpPublishDir = C.FileSystem.GetTmpSubDirectory("publish");
             var destinationDir = new DirectoryInfo(Path.Combine(tmpPublishDir.FullName, sourceDir.Name));
 
-            return CoreCompile(packageItem, sourceDir, destinationDir);
+            return CoreCompile(packageConfigItem, sourceDir, destinationDir);
         }
 
-        private bool CoreCompile(PackageConfigItem packageItem, DirectoryInfo sourceDir, DirectoryInfo destinationDir)
+        private bool CoreCompile(PackageConfigItem packageConfigItem, DirectoryInfo sourceDir, DirectoryInfo destinationDir)
         {
             var success = NetCoreNativeCompiler.Compile(C, sourceDir.FullName, destinationDir.FullName);
 
             if (success)
-                L.Log($"{packageItem.Source} compiled as 'Release' successfully.");
+                L.Log($"{packageConfigItem.Source} compiled as 'Release' successfully.");
             else
-                L.Error($"{packageItem.Source} failed to compile, aborting.");
+                L.Error($"{packageConfigItem.Source} failed to compile, aborting.");
 
             return success;
         }

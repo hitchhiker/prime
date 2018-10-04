@@ -10,6 +10,7 @@
     <AssemblyVersion>0.3.*</AssemblyVersion>
     <Deterministic>False</Deterministic>
     <FileVersion>1.0.0.0</FileVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

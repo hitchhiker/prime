@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -40,9 +41,9 @@ namespace Prime.Core
                 _exts.Add(new ExtensionInstance(ext), true);
         }
 
-        public DirectoryInfo GetPackageDirectory(ObjectId extensionId)
+        public DirectoryInfo GetPackageDirectory(ObjectId extensionId, Version version = null)
         {
-            var config = _manager.Config;
+            var config = _manager.PackageConfig;
 
             if (config.InstallConfig.Installs.All(x => x.Id != extensionId))
                 return null;
@@ -57,19 +58,23 @@ namespace Prime.Core
                 return null;
 
             var topdir = dirs.First();
-            return GetPackageInstance(topdir);
+            return GetPackageInstance(topdir, version);
         }
 
-        public DirectoryInfo GetPackageInstance(DirectoryInfo packageDirectory)
+        public DirectoryInfo GetPackageInstance(DirectoryInfo packageDirectory, Version version = null) //TODO: seriously sort this out, rushed!
         {
             var c = _manager.Context.PlatformCurrent.ToString().ToLower();
             var dirs = packageDirectory.GetDirectories().OrderByDescending(x => x.Name).ToList();
+
+            if (version != null) 
+                dirs = dirs.Where(x => x.Name.Contains(version.ToString())).ToList(); 
+
             return dirs.FirstOrDefault(x => x.Name.EndsWith(c)) ?? dirs.FirstOrDefault();
         }
 
         public DirectoryInfo GetPackageRedirection(ObjectId extensionId)
         {
-            var redirectPath = _manager.Config.RedirectConfig.Redirects.FirstOrDefault(x => x.Id == extensionId)?.Path;
+            var redirectPath = _manager.PackageConfig.RedirectConfig.Redirects.FirstOrDefault(x => x.Id == extensionId)?.Path;
             return redirectPath != null ? new DirectoryInfo(redirectPath.GetFullPath(_manager.Context.ConfigDirectoryInfo)) : null;
         }
 
