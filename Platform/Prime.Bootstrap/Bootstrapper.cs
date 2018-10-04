@@ -27,7 +27,7 @@ namespace Prime.Bootstrap
             argl.RemoveAt(io + 1);
             argl.RemoveAt(io);
 
-            Run(confp, args);
+            Run(confp, argl.ToArray());
         }
 
         private static void Error()
@@ -77,8 +77,6 @@ namespace Prime.Bootstrap
                 return 1;
             }
             
-            Console.WriteLine("Args: " + string.Join(" ", args));
-
             mi.Invoke(null, new object[] {args, configPath});
             return 0;
         }

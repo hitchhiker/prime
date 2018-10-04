@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using Prime.Base;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
     public class PackageMetaInspector
     {
         public static string ExtFileName = "prime-ext.json";
 
-        public readonly ProgramContext Context;
+        public readonly NetCorePackagerContext Context;
 
-        public PackageMetaInspector(ProgramContext context)
+        public PackageMetaInspector(NetCorePackagerContext context)
         {
             Context = context;
         }
@@ -32,13 +31,13 @@ namespace Prime.ExtensionPackager
             var fis = dir.GetFiles("*", SearchOption.AllDirectories).ToList();
             var extj = fis.FirstOrDefault(x => string.Equals(x.Name, ExtFileName, StringComparison.OrdinalIgnoreCase));
 
-            if (extj == null)
-                Context.Logger.Info("Currently no '" + ExtFileName + "' in " + dir.FullName);
+            //if (extj == null)
+            //    Context.L.Info("Currently no '" + ExtFileName + "' in " + dir.FullName);
 
             var exts = FindExtensionsFromDirectory(dir, fis);
             if (exts.Count == 0)
             {
-                Context.Logger.Warn("Cannot find any extensions in " + dir.FullName);
+                Context.L.Warn("Cannot find any extensions in " + dir.FullName);
                 return;
             }
 
@@ -53,7 +52,7 @@ namespace Prime.ExtensionPackager
                 
                 if (found == null)
                 {
-                    Context.Logger.Error("Cant determine which package to bundle: " + string.Join(", ", exts.Select(x=>x.Name)));
+                    Context.L.Error("Cant determine which package to bundle: " + string.Join(", ", exts.Select(x=>x.Name)));
                     return;
                 }
             }
@@ -97,7 +96,7 @@ namespace Prime.ExtensionPackager
                 catch (Exception e)
                 {
                     if (!e.Message.Contains("Reference assemblies", StringComparison.OrdinalIgnoreCase))
-                        Context.Logger.Info(e.Message + ": " + fi.FullName);
+                        Context.L.Info(e.Message + ": " + fi.FullName);
                 }
             }
 
@@ -133,7 +132,7 @@ namespace Prime.ExtensionPackager
                 return null;
 
             var pm = foundType.InstanceAny<IExtension>();
-            var meta = new PackageMeta(pm);
+            var meta = new PackageMeta(pm, a.GetName().Version);
 
             if (!Context.IsBase && meta.Id == "prime:base".GetObjectIdHashCode())
                 return null;
@@ -160,7 +159,7 @@ namespace Prime.ExtensionPackager
                     return type;
             }
 
-            Context.Logger.Warn("Found multiple types in '" + file.FullName + "' implementing '" + extt + "'. You can specify the extension if required.");
+            Context.L.Warn("Found multiple types in '" + file.FullName + "' implementing '" + extt + "'. You can specify the extension if required.");
             return null;
         }
 

@@ -16,7 +16,7 @@ namespace Prime.Core
         public ExtensionInstance(IExtension ext)
         {
             Id = ext.Id;
-            Version = ext.Version;
+            Version = ext.GetType().Assembly.GetName().Version;
             Extension = ext;
             IsLoaded = true;
         }

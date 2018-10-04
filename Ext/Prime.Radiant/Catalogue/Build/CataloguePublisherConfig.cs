@@ -6,7 +6,7 @@ using Prime.Core;
 
 namespace Prime.Radiant
 {
-    public class CataloguePublisherConfig
+    public class CataloguePublisherConfig : JsonConfigBase<CataloguePublisherConfig>
     {
         [JsonProperty("name")]
         public string CatalogueName { get; set; }

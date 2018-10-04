@@ -2,15 +2,12 @@
 using Prime.Base;
 using Prime.Core;
 
-namespace Prime.ExtensionPackager
+namespace Prime.NetCoreExtensionPackager
 {
-    public class ProgramContext
+    public class NetCorePackagerContext : CommonBase
     {
-        public readonly PrimeContext C;
-
-        public ProgramContext(PrimeContext c)
+        public NetCorePackagerContext(PrimeContext c) : base(c)
         {
-            C = c;
         }
 
         public DirectoryInfo SourceDirectory { get; set; }
@@ -19,11 +16,9 @@ namespace Prime.ExtensionPackager
 
         public DirectoryInfo DistributionDirectory => C.FileSystem.DistributionDirectory;
 
-        public bool IsBase { get; set; }
+        public bool IsBase => ExtId == new ObjectId("ded1293613356d85c37e509a");
 
         public ObjectId ExtId { get; set; }
-
-        public ILogger Logger { get; set; }
 
         public bool ExtractNuget { get; set; }
     }

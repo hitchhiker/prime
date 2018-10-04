@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Version>1.0.0.0</Version>
     <AssemblyVersion>0.3.*</AssemblyVersion>
     <Deterministic>False</Deterministic>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,10 +13,6 @@
     <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>DEBUG;;RELEASE;NETCOREAPP2_0</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Package\PackageBundler2.cs" />
     <Compile Remove="Package\PackageFiller.cs" />
@@ -26,21 +22,16 @@
   <ItemGroup>
     <PackageReference Include="CommandLine" Version="1.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="ProcessStartAsync" Version="0.1.1" />
     <PackageReference Include="System.Composition" Version="1.2.0" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Prime\Prime.Base\Prime.Base.csproj" />
+    <ProjectReference Include="..\..\Prime\Prime.Base\Prime.Base.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <ItemGroup>
-      <AllFiles Include="$(TargetDir)*" />
-    </ItemGroup>
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\instance\util\packer" ContinueOnError="WarnAndContinue" />
-    <Microsoft.Build.Tasks.Copy SourceFiles="@(AllFiles)" DestinationFolder="$(SolutionDir)\lib\prime" ContinueOnError="WarnAndContinue" />
-  </Target>
-
 </Project>

@@ -48,6 +48,7 @@ namespace Prime.Core
             exts.OfType<IExtensionStartup>().ForEach(x => x.PrimeStarted());
 
             L.Log($"Prime has registered {ExtensionManager.Instances.Count()} extension(s).");
+            L.Log($"Verbs: {string.Join(", ", CommandArgs.Select(x => x.Verb.ToUpper()).OrderBy(x => x))}");
             L.Log("Prime instance started.");
             L.Log("");
         }

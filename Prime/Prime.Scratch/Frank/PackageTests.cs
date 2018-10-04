@@ -64,7 +64,7 @@ namespace Prime.Scratch
         {
             prime.Start();
 
-            var packageBuilder = new PackageCatalogueBuilder(prime, pubConfig);
+            var packageBuilder = new PackageCatalogueEntry(prime, pubConfig);
 
             return packageBuilder.Build();
         }

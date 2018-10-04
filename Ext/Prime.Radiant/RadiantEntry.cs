@@ -36,7 +36,7 @@ namespace Prime.Radiant
 
         public static void Publish(PrimeInstance prime, string pubConfigPath)
         {
-            var config = GetPublisherConfig(prime, pubConfigPath);
+            var config = CataloguePublisherConfig.Get(prime, pubConfigPath);
             if (config == null)
                 return;
             
@@ -46,27 +46,6 @@ namespace Prime.Radiant
                 PublishCatalogue(prime, config, new ContentUri() {Path = config.HashSource, Protocol = "ipfs"});
             else if (!string.IsNullOrWhiteSpace(config.IpnsSource))
                 PublishCatalogueViaNs(prime, config);
-        }
-
-        public static CataloguePublisherConfig GetPublisherConfig(PrimeInstance prime, string pubConfigPath)
-        {
-            pubConfigPath = pubConfigPath.ResolveSpecial();
-
-            if (!File.Exists(pubConfigPath))
-            {
-                prime.L.Error("'" + pubConfigPath + "' does not exist. Aborting.");
-                return null;
-            }
-
-            var txt = File.ReadAllText(pubConfigPath);
-            var config = JsonConvert.DeserializeObject<CataloguePublisherConfig>(txt);
-
-            if (config == null)
-            {
-                prime.L.Error(pubConfigPath + " isn't a valid configuration file. Aborting.");
-                return null;
-            }
-            return config;
         }
 
         private static void PublishCatalogueLocal(PrimeInstance prime, CataloguePublisherConfig config)

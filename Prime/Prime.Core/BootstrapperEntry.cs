@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
+using Prime.Base;
 using Prime.Base.Messaging.Common;
 
 namespace Prime.Core
@@ -21,19 +22,20 @@ namespace Prime.Core
             var c = new PrimeContext(configPath) { L = new ConsoleLogger() };
             var prime = new PrimeInstance(c);
 
-            prime.L.Log("Entered via Bootstrap with config: " + configPath);
             WriteEntranceHeader(prime);
+            prime.L.Log("Entered via Bootstrap with config: " + configPath);
+            prime.L.Log("Args: " + string.Join(" ", args));
 
             prime.Start();
-            Final(prime, args, configPath);
+            Final(prime, args);
         }
 
-        public static void EnterSecondary(PrimeInstance prime, string[] args, string configPath)
+        public static void EnterSecondary(PrimeInstance prime, string[] args)
         {
-            Final(prime, args, configPath);
+            Final(prime, args);
         }
 
-        private static void Final(PrimeInstance prime, string[] args, string configPath)
+        private static void Final(PrimeInstance prime, string[] args)
         {
             CatchProcessExit(prime);
 
@@ -47,7 +49,7 @@ namespace Prime.Core
         public static void WriteEntranceHeader(PrimeInstance prime)
         {
             var asm = Assembly.GetExecutingAssembly().GetName();
-            prime.L.Log($"VERSION: {asm.Name} {Assembly.GetExecutingAssembly().GetName().Version}");
+            prime.L.Log($"{asm.Name} {asm.Version}".ToUpper());
             prime.L.Log("");
         }
 
@@ -68,38 +70,5 @@ namespace Prime.Core
             instance.L.Log("Prime: Stop signal detected...");
             instance.Stop();
         }
-
-        /*
-        private static int Pub(PrimeBootOptions.Publish options)
-        {
-            Console.WriteLine("Prime Publisher starting.");
-
-            options.PubConfigPath = options.PubConfigPath.ResolveSpecial();
-
-            c.M.SendAndWait<PrimePublishRequest, PrimePublishResponse>(new PrimePublishRequest() { PublisherConfigPath = options.PubConfigPath});
-
-            prime.Stop();
-            return 0;
-        }
-
-        private static int Update(PrimeBootOptions.Update options)
-        {
-            Console.WriteLine("Prime Update starting.");
-
-            c.M.SendAndWait<PrimeUpdateRequest, PrimeUpdateResponse>(new PrimeUpdateRequest() {  });
-
-            prime.Stop();
-            return 0;
-        }
-
-        private static int Packages(PrimeBootOptions.Packages options)
-        {
-            Console.WriteLine("Prime packages starting.");
-
-            c.M.SendAndWait<PrimePackagesRequest, PrimePackagesResponse>(new PrimePackagesRequest(options) { });
-
-            prime.Stop();
-            return 0;
-        }*/
     }
 }

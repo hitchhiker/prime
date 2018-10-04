@@ -21,6 +21,13 @@ namespace Prime.Core
             public string PackageConfigPath { get; set; }
         }
 
+        [Verb("bundle", HelpText = "Bundles the packages in the catalogue")]
+        public class BundleArguments : BaseArguments
+        {
+            [Option('p', "packageConfig", Required = true, HelpText = "Path to the package config file.")]
+            public string PackageConfigPath { get; set; }
+        }
+
         [Verb("build", HelpText = "Build the packages catalogue")]
         public class BuildArguments : BaseArguments
         {
