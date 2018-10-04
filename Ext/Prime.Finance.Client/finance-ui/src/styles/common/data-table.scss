@@ -1,8 +1,49 @@
 @import "../../styles/common/defs.scss";
 $color-table-head: rgba(138, 138, 138, 0.2);
+
+.table-head {
+    position: absolute;
+    display: flex;
+    background-color: $color-accent;
+    div {
+        flex: 1;
+        text-align: right;
+        padding: 3px 10px;
+    }
+}
+.table-body {
+    margin-top: 23px;
+    .table-row {
+        display: flex;
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        div {
+            flex: 1;
+            text-align: right;
+            padding: 3px 10px;
+        }
+    }
+}
+
+.ask {
+    .table-head>div {
+        text-align: left;
+    }
+
+    .table-row>div{
+        text-align: left;
+    }
+}
+
 table {
+    position: relative;
     width: 100%;
     thead {
+        position: absolute;
+        width: 100%;
         tr {
             th {
                 padding: 3px 10px;
@@ -12,16 +53,14 @@ table {
         }
     }
     tbody {
-        td {
+         td {
             padding: 3px 10px;
+            text-align: right;
         }
         tr {
             cursor: pointer;
             &:hover {
-                background-color: rgba(207, 207, 207, 0.2);
-            }
-            &:active {
-                background-color: rgba(207, 207, 207, 0.5);
+                background-color: rgba(255, 255, 255, 0.1);
             }
         }
     }

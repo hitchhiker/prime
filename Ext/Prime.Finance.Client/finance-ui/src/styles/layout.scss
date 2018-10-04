@@ -1,0 +1,69 @@
+
+@import "../styles/common/defs.scss";
+
+.app-container {
+    height: 100%;
+    width: 100%;
+    min-width: 950px;
+    display: flex;
+    flex-direction: column;
+
+    .columns-wrapper {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: row;
+        margin-bottom: auto;
+
+        .column-left {
+            width: 300px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+
+            .tickers-wrapper {
+                flex-grow: 1;
+                overflow-y: scroll;
+            }
+
+            .last-trades-wrapper {
+                flex-grow: 1;
+                overflow-y: scroll;
+            }
+        }
+        
+        .column-center {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+
+            .footer{
+                display: flex;
+
+                app-trading-panel {
+                    flex: 1;
+                }
+
+                app-orderbook {
+                    flex: 1;
+                    display: flex;
+
+                    .orderbook {
+                        width: 100%;
+
+                        .bid {
+                            overflow: scroll;
+                        }
+    
+                        .ask {
+                            overflow: scroll;
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+}
+
+
+

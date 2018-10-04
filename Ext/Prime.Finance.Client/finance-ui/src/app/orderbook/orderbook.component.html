@@ -1,0 +1,35 @@
+<div class="orderbook">
+
+  <div class="bid" #bidContainer>
+    <div class="table-head" [style.width.px]="tableHeadWitdhBid">
+      <div>Sum</div>
+      <div>Value</div>
+      <div>Amount</div>
+      <div>Bid</div>
+    </div>
+    <div class="table-body">
+      <div class="table-row" *ngFor="let bid of orderbookBids">
+        <div>{{bid.Sum}}</div>
+        <div>{{bid.Value}}</div>
+        <div>{{bid.Amount}}</div>
+        <div class="color-bid">{{bid.BidAsk}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="ask" #askContainer>
+    <div class="table-head" [style.width.px]="tableHeadWitdhAsk">
+      <div>Ask</div>
+      <div>Amount</div>
+      <div>Value</div>
+      <div>Sum</div>
+    </div>
+    <div class="table-body">
+      <div class="table-row" *ngFor="let bid of orderbookAsks">
+        <div class="color-ask">{{bid.BidAsk}}</div>
+        <div>{{bid.Amount}}</div>
+        <div>{{bid.Value}}</div>
+        <div>{{bid.Sum}}</div>
+      </div>
+    </div>
+  </div>
+</div>

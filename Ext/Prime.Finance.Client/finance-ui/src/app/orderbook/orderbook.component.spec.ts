@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StatusBarComponent } from './status-bar.component';
+import { OrderbookComponent } from './orderbook.component';
 
-describe('StatusBarComponent', () => {
-  let component: StatusBarComponent;
-  let fixture: ComponentFixture<StatusBarComponent>;
+describe('OrderbookComponent', () => {
+  let component: OrderbookComponent;
+  let fixture: ComponentFixture<OrderbookComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StatusBarComponent ]
+      declarations: [ OrderbookComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StatusBarComponent);
+    fixture = TestBed.createComponent(OrderbookComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
