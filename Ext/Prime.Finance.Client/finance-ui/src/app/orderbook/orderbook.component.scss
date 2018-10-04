@@ -1,0 +1,24 @@
+@import "../../styles/common/defs.scss";
+@import "../../styles/common/data-table.scss";
+@import "../../styles/common/common.scss";
+
+.orderbook {
+    display: flex;
+    align-content: stretch;
+    color: white;
+
+    .bid {
+        flex: 1;
+
+        th, td {
+            text-align: right;
+        }
+    }
+
+    .ask {
+        flex: 1;
+    }
+
+}
+
+

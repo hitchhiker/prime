@@ -6,7 +6,8 @@ import { ChartComponent } from './chart/chart.component';
 import { TickersComponent } from './tickers/tickers.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LastTradesComponent } from './last-trades/last-trades.component';
-import { StatusBarComponent } from './status-bar/status-bar.component';
+import { OrderbookComponent } from './orderbook/orderbook.component';
+import { TradingPanelComponent } from './trading-panel/trading-panel.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { StatusBarComponent } from './status-bar/status-bar.component';
     TickersComponent,
     NavbarComponent,
     LastTradesComponent,
-    StatusBarComponent
+    OrderbookComponent,
+    TradingPanelComponent
   ],
   imports: [
     BrowserModule
