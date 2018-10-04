@@ -20,7 +20,13 @@ window.onload = function () {
 
             type: 'candlestick',
             xaxis: 'x',
-            yaxis: 'y'
+            yaxis: 'y',
+
+            hoverlabel: {
+                font: {
+                    family: "sans-serif"
+                }
+            }
         };
 
         var data = [trace];
@@ -28,30 +34,15 @@ window.onload = function () {
         var layout = {
             dragmode: 'pan',
             showlegend: false,
-            height: 600,
+            height: 400,
+            paper_bgcolor: "#182e42",
+            plot_bgcolor: "transparent",
+            font: {
+                color: "white"
+            },
             xaxis: {
                 autorange: true,
                 title: 'Date',
-                rangeselector: {
-                    x: 0,
-                    y: 1.2,
-                    xanchor: 'left',
-                    font: { size: 8 },
-                    buttons: [{
-                        step: 'month',
-                        stepmode: 'backward',
-                        count: 1,
-                        label: '1 month'
-                    }, {
-                        step: 'month',
-                        stepmode: 'backward',
-                        count: 6,
-                        label: '6 months'
-                    }, {
-                        step: 'all',
-                        label: 'All dates'
-                    }]
-                }
             },
             yaxis: {
                 autorange: true,
