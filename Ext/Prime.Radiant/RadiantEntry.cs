@@ -37,9 +37,14 @@ namespace Prime.Radiant
         public static void Publish(PrimeInstance prime, string pubConfigPath)
         {
             var config = CataloguePublisherConfig.Get(prime, pubConfigPath);
+            Publish(prime, config);
+        }
+
+        public static void Publish(PrimeInstance prime, CataloguePublisherConfig config)
+        {
             if (config == null)
                 return;
-            
+
             if (config.IsLocalSource)
                 PublishCatalogueLocal(prime, config);
             else if (!string.IsNullOrWhiteSpace(config.HashSource))

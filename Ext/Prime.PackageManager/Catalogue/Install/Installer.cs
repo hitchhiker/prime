@@ -22,7 +22,7 @@ namespace Prime.PackageManager.Catalogue
 
         public bool Install()
         {
-            var ids = C.Config.PackageConfig.InstallConfig.Installs.Select(x => x.Id).ToUniqueList();
+            var ids = C.Config.ConfigPackageNode.InstallConfig.Installs.Select(x => x.Id).ToUniqueList();
             var packages = _cat.Packages.Where(x => ids.Contains(x.Id)).ToList();
 
             L.Info($"Installing {packages.Count} packages.");

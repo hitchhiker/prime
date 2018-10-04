@@ -12,7 +12,7 @@ namespace Prime.Core
         public readonly DirectoryInfo PackagesDir;
         public readonly Packages Distribution;
         public readonly Packages Installed;
-        public InstallConfig InstallConfig => C.Config.PackageConfig.InstallConfig;
+        public InstallConfig InstallConfig => C.Config.ConfigPackageNode.InstallConfig;
 
         public static string PrimeExtName = "prime-ext.json";
         public static readonly string ArchiveName = "arc.bz2";

@@ -18,6 +18,9 @@ namespace Prime.Radiant
         [JsonProperty("id", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string PackageId { get; set; }
 
+        [JsonProperty("suspend", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool IsSuspended { get; set; }
+
         public ObjectId GetId()
         {
             if (!string.IsNullOrWhiteSpace(PackageId))

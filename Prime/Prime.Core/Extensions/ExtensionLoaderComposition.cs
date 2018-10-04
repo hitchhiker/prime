@@ -6,14 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
-using System.Threading;
 using Prime.Base;
 using Prime.Core;
 
 namespace Prime.Extensions
 {
-    public class ExtensionLoaderComposition
+    public class ExtensionLoaderComposition : AssemblyLoadContext
     {
         [ImportMany]
         public IEnumerable<IExtension> ExtensionsComposed { get; private set; }
@@ -29,7 +27,7 @@ namespace Prime.Extensions
 
             Assembly SafeLoadAssembly(FileInfo x)
             {
-                try { return AssemblyLoadContext.Default.LoadFromAssemblyPath(x.FullName); }
+                try { return Default.LoadFromAssemblyPath(x.FullName); }
                 catch { return null; }
             }
 
@@ -54,6 +52,11 @@ namespace Prime.Extensions
             }
 
             ExtensionsAll = ExtensionsComposed.Concat(ExtensionsExecuteComposed).ToList();
+        }
+
+        protected override Assembly Load(AssemblyName assemblyName)
+        {
+            return null;
         }
     }
 }

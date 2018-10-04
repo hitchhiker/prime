@@ -9,8 +9,8 @@ namespace Prime.Base
     [Export(typeof(IExtension))]
     public class PrimeBaseExtension : IExtension
     {
-        private static readonly ObjectId _id = "prime:base".GetObjectIdHashCode();
-        public ObjectId Id => _id;
+        public static readonly ObjectId StaticId = "prime:base".GetObjectIdHashCode();
+        public ObjectId Id => StaticId;
 
         public string Title { get; } = "Prime Base";
 

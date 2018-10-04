@@ -21,6 +21,8 @@ namespace Prime.Core
 
             if (ext is IExtensionPlatform plat)
                 Platform = plat.Platform;
+            else if (ext is CompositionHelper helper)
+                Platform = helper.Platform;
         }
 
         [JsonProperty("title")]

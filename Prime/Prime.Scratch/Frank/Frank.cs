@@ -1,4 +1,8 @@
-﻿using Prime.Core;
+﻿using System;
+using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+using Prime.Base;
+using Prime.Core;
 
 namespace Prime.Scratch
 {
@@ -8,6 +12,7 @@ namespace Prime.Scratch
         {
             var s = server.C;
             var c = client.C;
+
 
             //AuthManagerTest.EcdsaKeySign(s);
             //AuthManagerTest.Key1(s);
@@ -31,11 +36,15 @@ namespace Prime.Scratch
             //new Prime.NetCoreExtensionPackager.ReflectionTest(c).Go();
             //new ReflectionTests3(client).Go();
 
+            //CommandArgsTester.Go(client, "package publish --pubconfig [src]/instance/prime_package_catalogue.config  -p [src]/instance/prime_package_compile.config");
+
             //CommandArgsTester.Go(client, "package compile -p [src]/instance/prime_package_compile.config");
 
             //CommandArgsTester.Go(client, "package bundle -p [src]/instance/prime_package_compile.config");
 
             //CommandArgsTester.Go(client, "package build -p [src]/instance/prime_package_catalogue.config");
+
+            CommandArgsTester.Go(client, "package upgrade -p [src]/instance/prime_package_catalogue.config");
 
             //CommandArgsTester.Go(client, "catalogue publish -p [src]/instance/prime_package_catalogue.config");
 

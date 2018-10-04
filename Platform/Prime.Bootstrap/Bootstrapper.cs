@@ -7,6 +7,10 @@ namespace Prime.Bootstrap
 {
     public class Bootstrapper
     {
+        public static string CoreBasePath = @"{0}\package\install\prime-f7015e4f838b8f7439722bb6\{1}\Prime.Core.dll";
+        public static string TagA = "<installed entry=\"";
+        public static string TagB = "\">";
+
         public static void Boot(string[] args)
         {
             var argl = args.ToList();
@@ -41,53 +45,68 @@ namespace Prime.Bootstrap
         {
             var configp = ResolveSpecial(configPath);
 
-            if (!File.Exists(configp))
+            var configFi = new FileInfo(configp);
+
+            if (!configFi.Exists)
             {
                 Console.WriteLine(configp + " does not exist.");
                 return 1;
             }
 
-            var entry = GetEntry(File.ReadAllText(configp));
-            if (string.IsNullOrWhiteSpace(entry))
+            var entryVersion = GetEntryVersion(File.ReadAllText(configp));
+            if (string.IsNullOrWhiteSpace(entryVersion))
             {
                 Console.WriteLine("Entry point missing from .config file.");
                 return 1;
             }
 
-            var primeCore = Path.Combine(entry, "Prime.Core.dll");
-            if (!File.Exists(primeCore))
+            var confDir = configFi.Directory.FullName;
+            var primeCorePath = Path.Combine(confDir, string.Format(CoreBasePath, configFi.Name.Replace(configFi.Extension, ""), entryVersion));
+            primeCorePath = primeCorePath.Replace(@"/", Path.DirectorySeparatorChar.ToString());
+            primeCorePath = primeCorePath.Replace(@"\", Path.DirectorySeparatorChar.ToString());
+
+            var primeCore= new FileInfo(primeCorePath);
+
+            if (!primeCore.Exists)
             {
-                Console.WriteLine(primeCore + " not found.");
+                Console.WriteLine(primeCore.FullName + " not found.");
                 return 1;
             }
 
-            var asm = LoadAssemblyLegacy(primeCore);
+            var asm = LoadAssemblyLegacy(primeCore.FullName);
 
             var t = asm.GetType("Prime.Core.BootstrapperEntry");
             if (t == null)
             {
-                Console.WriteLine("Unable to find Prime's entry class in: " + primeCore);
+                Console.WriteLine("Unable to find Prime's entry class in: " + primeCore.FullName);
                 return 1;
             }
 
             var mi = t.GetMethod("Enter", BindingFlags.Static | BindingFlags.Public);
             if (mi == null)
             {
-                Console.WriteLine("Unable to find Prime's entry method in: " + primeCore);
+                Console.WriteLine("Unable to find Prime's entry method in: " + primeCore.FullName);
                 return 1;
             }
-            
+
+            var c = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("PRIME.BOOTSTRAP " + Assembly.GetExecutingAssembly().GetName().Version);
+            Console.ForegroundColor = c;
+
             mi.Invoke(null, new object[] {args, configPath});
             return 0;
         }
 
-        public static string GetEntry(string configText)
+        public static string GetEntryVersion(string configText)
         {
-            var i1 = configText.IndexOf("<entry>", 0, StringComparison.OrdinalIgnoreCase);
+
+            var i1 = configText.IndexOf(TagA, 0, StringComparison.OrdinalIgnoreCase);
             if (i1 == -1)
                 return null;
-            var i2 = configText.IndexOf("</entry>", i1, StringComparison.OrdinalIgnoreCase);
-            return i1 == -1 ? null : configText.Substring(i1 + 7, i2 - i1 - 7);
+            i1 = i1 + TagA.Length;
+            var i2 = configText.IndexOf(TagB, i1, StringComparison.OrdinalIgnoreCase);
+            return i1 == -1 ? null : configText.Substring(i1, i2 - i1);
         }
 
         public static Assembly LoadAssemblyLegacy(string dll)

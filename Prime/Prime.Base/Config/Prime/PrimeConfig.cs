@@ -55,7 +55,7 @@ namespace Prime.Core
         public string Entry { get; set; }
 
         [XmlElement("packages")]
-        public PackageConfig PackageConfig { get; set; } = new PackageConfig();
+        public ConfigPackageNode ConfigPackageNode { get; set; } = new ConfigPackageNode();
 
         [XmlElement("catalogue")]
         public CatalogueConfig CatalogueConfig { get; set; } = new CatalogueConfig();
