@@ -6,6 +6,9 @@ using System.Xml;
 
 namespace Prime.Bootstrap
 {
+    /// <summary>
+    /// TODO - UNPACK prime.config.default during first run
+    /// </summary>
     public class Bootstrapper
     {
         public static string CoreBaseDirPath = @"{0}\package\install\prime-f7015e4f838b8f7439722bb6\";

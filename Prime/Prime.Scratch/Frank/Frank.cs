@@ -52,6 +52,8 @@ namespace Prime.Scratch
 
             //CommandArgsTester.Go(client, "catalogue");
 
+            CommandArgsTester.Go(client, "daemon");
+
             //PackageTests.Go(client);
 
             //var config = Radiant.PackageConfig.Get(c, "D:\\hh\\git\\prime\\src\\instance\\prime_package_compile.config", false);
