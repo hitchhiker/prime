@@ -66,11 +66,7 @@ namespace Prime.PackageManager
 
         public static void RequestUpgrade(PrimeInstance prime, PackageManagerArguments.UpgradeArguments arguments)
         {
-            var config = PackageConfig.Get(prime, arguments.PackageConfigPath);
-            if (config == null)
-                return;
-
-            var work = new UpgradeEntry(prime, config);
+            var work = new UpgradeEntry(prime);
             work.Upgrade();
         }
     }

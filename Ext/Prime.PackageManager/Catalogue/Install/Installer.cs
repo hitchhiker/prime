@@ -63,6 +63,11 @@ namespace Prime.PackageManager.Catalogue
                 if (i.Name.StartsWith("arc.bz2"))
                     Decompression.ExtractArchive(i, installPath);
             }
+
+            var pm = Path.Combine(distPath, PackageMeta.CommonName);
+            if (File.Exists(pm))
+                File.Copy(Path.Combine(distPath, PackageMeta.CommonName), Path.Combine(installPath, PackageMeta.CommonName), true);
+
             L.Info("Unpacked to " + installPath);
         }
 

@@ -44,7 +44,7 @@ namespace Prime.Scratch
 
             //CommandArgsTester.Go(client, "package build -p [src]/instance/prime_package_catalogue.config");
 
-            CommandArgsTester.Go(client, "package upgrade -p [src]/instance/prime_package_catalogue.config");
+            //CommandArgsTester.Go(client, "package upgrade");
 
             //CommandArgsTester.Go(client, "catalogue publish -p [src]/instance/prime_package_catalogue.config");
 

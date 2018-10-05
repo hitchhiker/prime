@@ -12,6 +12,9 @@ namespace Prime.Core
         [XmlAttribute("version")]
         public string VersionString { get; set; }
 
+        [XmlAttribute("title")]
+        public string Title { get; set; }
+
         private ObjectId _id;
         [XmlIgnore]
         public ObjectId Id => _id ?? (_id = new ObjectId(IdString));

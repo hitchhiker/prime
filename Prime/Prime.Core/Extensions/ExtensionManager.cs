@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Prime.Base;
+using Prime.Core.Extensions;
 using Prime.Extensions;
 
 namespace Prime.Core
 {
-    public class ExtensionManager
+    public class ExtensionManager : CommonBase
     {
         public readonly PrimeInstance Prime;
         public readonly PrimeContext Context;
@@ -18,7 +19,7 @@ namespace Prime.Core
         public readonly ExtensionList Instances;
         public readonly InstallConfig InstallConfig;
 
-        public ExtensionManager(PrimeInstance prime, PrimeContext context)
+        public ExtensionManager(PrimeInstance prime, PrimeContext context) : base(prime)
         {
             Prime = prime;
             Context = context;
@@ -32,86 +33,36 @@ namespace Prime.Core
         public void LoadInstallConfig()
         {
             if (Context.DllLocal)
-                Context.L.Log("[DEVELOPMENT ONLY] Loading extensions from the executing application's directory.");
+                L.Log("[DEVELOPMENT ONLY] Loading extensions from the executing application's directory.");
 
-            if (InstallConfig.Installs.All(x => x.Id != PrimeBaseExtension.StaticId))
-                InstallConfig.Installs.Add(new InstallEntry() {IdString = PrimeBaseExtension.StaticId.ToString()});
-           
-            if (InstallConfig.Installs.All(x => x.Id != PrimeCoreExtension.StaticId))
-                InstallConfig.Installs.Add(new InstallEntry() {IdString = PrimeCoreExtension.StaticId.ToString()});
+            EnsureCoreExtensions();
 
-            foreach (var i in InstallConfig.Installs)
+            if (!C.DllLocal)
+                new PrimeUpgrade(this).CheckInstallVersions();
+
+            var exts = C.DllLocal
+                ? InstallConfig.Installs
+                : InstallConfig.Installs.Where(x => x.Version != null);
+
+            foreach (var i in exts)
                 Load<IExtension>(i, Context.DllLocal);
-
-            CheckInstallVersions();
         }
 
-        private void CheckInstallVersions()
+        public void SaveConfig()
         {
-            var changed = false;
-
-            var missing = InstallConfig.Installs.Where(x => x.Version == null).ToList();
-
-            foreach (var p in missing)
-                changed = changed | CheckInstallVersion(p);
-
-            if (!changed || Context.Config.ConfigLoadedFrom == null)
+            if (C.Config.ConfigLoadedFrom == null)
                 return;
 
-            Context.L.Info("Updating main config with current versions for installed packages.");
-            Context.Config.Save(Context.Config.ConfigLoadedFrom);
+            C.Config.Save(C.Config.ConfigLoadedFrom, true);
         }
 
-        public bool UpgradeInstallVersions()
+        public void EnsureCoreExtensions()
         {
-            var changed = false;
+            if (InstallConfig.Installs.All(x => x.Id != PrimeBaseExtension.StaticId))
+                InstallConfig.Installs.Add(new InstallEntry() {IdString = PrimeBaseExtension.StaticId.ToString()});
 
-            foreach (var p in InstallConfig.Installs)
-                changed = changed | UpgradeInstallVersion(p);
-
-            var core = new InstallEntry() {IdString = PrimeCoreExtension.StaticId.ToString()};
-            UpgradeInstallVersion(core);
-
-            if (InstallConfig.EntryPointCore != core.VersionString && !string.IsNullOrWhiteSpace(core.VersionString))
-            {
-                InstallConfig.EntryPointCore = core.VersionString;
-                changed = true;
-            }
-            if (!changed)
-                return false;
-
-            Context.L.Info("Updating main config with latest versions for installed packages.");
-            Context.Config.Save(Context.Config.ConfigLoadedFrom);
-            return true;
-        }
-
-        private bool CheckInstallVersion(InstallEntry p)
-        {
-            var loaded = Instances.FirstOrDefault(x => x.IsLoaded && x.Id == p.Id);
-            if (loaded == null)
-                return false;
-
-            p.VersionString = loaded.Version.ToString();
-            return true;
-        }
-
-        private bool UpgradeInstallVersion(InstallEntry p)
-        {
-            var dir = Instances.GetPackageDirectory(p.Id);
-            if (dir == null)
-                return false;
-
-            var fi = new FileInfo(Path.Combine(dir.FullName, "prime-ext.json"));
-            var pm = PackageMeta.From(fi);
-            if (pm == null)
-                return false;
-
-            if (p.Version == pm.Version)
-                return false;
-
-            p.VersionString = pm.Version.ToString();
-
-            return true;
+            if (InstallConfig.Installs.All(x => x.Id != PrimeCoreExtension.StaticId))
+                InstallConfig.Installs.Add(new InstallEntry() {IdString = PrimeCoreExtension.StaticId.ToString()});
         }
 
         public T Load<T>(InstallEntry p, bool fromAppDir = false) where T : class, IExtension
@@ -127,20 +78,20 @@ namespace Prime.Core
 
             if (dir == null)
             {
-                Context.L.Fatal("Can't find directory for package: " + p.Id);
+                L.Fatal("Can't find directory for package: " + p.Id);
                 return default;
             }
 
             var loaded = LoadExtension<T>(p, dir);
             if (loaded == null)
             {
-                Context.L.Fatal("Can't load extension " + p.Id + " for platform '" + Context.PlatformCurrent + "' from directory: " + dir);
+                L.Fatal("Can't load extension " + p.Id + " for platform '" + Context.PlatformCurrent + "' from directory: " + dir);
                 return default;
             }
 
             Instances.Init(loaded);
             Context.AddInitialisedExtension(loaded);
-            Context.L.Info($"Extension \'{loaded.Title} {loaded.Version} {(loaded as IExtensionPlatform)?.Platform}\' loaded from {dir.FullName}.");
+            L.Info($"Extension \'{loaded.Title} {loaded.Version} {(loaded as IExtensionPlatform)?.Platform}\' loaded from {dir.FullName}.");
             return loaded;
         }
 

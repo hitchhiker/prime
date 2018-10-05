@@ -7,7 +7,7 @@ namespace Prime.Lin64
     {
         static void Main(string[] args)
         {
-            Bootstrapper.Boot(args);
+            Bootstrapper.Boot(args, "prime");
         }
     }
 }

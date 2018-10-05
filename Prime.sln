@@ -101,6 +101,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.NetCoreExtensionPacka
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prime.PackageManager", "Ext\Prime.PackageManager\Prime.PackageManager.csproj", "{B1602C99-3877-46A3-970B-3EF59CEDEEBE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prime.BootstrapInstallCreator", "Ext\Prime.BootstrapInstallCreator\Prime.BootstrapInstallCreator.csproj", "{2398D839-407C-4AA3-B65D-7474566E2927}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All_Debug|Any CPU = All_Debug|Any CPU
@@ -300,6 +302,12 @@ Global
 		{B1602C99-3877-46A3-970B-3EF59CEDEEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1602C99-3877-46A3-970B-3EF59CEDEEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1602C99-3877-46A3-970B-3EF59CEDEEBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2398D839-407C-4AA3-B65D-7474566E2927}.All_Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2398D839-407C-4AA3-B65D-7474566E2927}.All_Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2398D839-407C-4AA3-B65D-7474566E2927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2398D839-407C-4AA3-B65D-7474566E2927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2398D839-407C-4AA3-B65D-7474566E2927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2398D839-407C-4AA3-B65D-7474566E2927}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -349,6 +357,7 @@ Global
 		{05E8C818-1EBA-4AE5-9695-E815AC881A5B} = {F9F7DD6A-4A08-4569-8CBD-1028BA95A228}
 		{740BDF54-BFF2-4B6F-A84A-06B231EE4C7B} = {A300DDF7-E48B-4B2D-A346-0A1DF2EDC435}
 		{B1602C99-3877-46A3-970B-3EF59CEDEEBE} = {A300DDF7-E48B-4B2D-A346-0A1DF2EDC435}
+		{2398D839-407C-4AA3-B65D-7474566E2927} = {A300DDF7-E48B-4B2D-A346-0A1DF2EDC435}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71EB1177-FFB8-48AA-BE39-14BBC3A402C8}

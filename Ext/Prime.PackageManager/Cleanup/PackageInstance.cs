@@ -38,15 +38,8 @@ namespace Prime.Core
 
         public static PackageInstance Inspect(Package container, DirectoryInfo directory)
         {
-            var pm = directory.GetFiles(PackageCoordinator.PrimeExtName);
-            if (pm.Length != 1)
-                return null;
-
-            var mi = PackageMeta.From(pm[0]);
-            if (mi == null)
-                return null;
-
-            return new PackageInstance(container, directory, mi);
+            var mi = PackageMeta.From(directory);
+            return mi == null ? null : new PackageInstance(container, directory, mi);
         }
 
         public bool Equals(PackageInstance other)

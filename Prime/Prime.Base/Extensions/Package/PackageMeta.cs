@@ -10,6 +10,8 @@ namespace Prime.Core
 {
     public class PackageMeta : IExtensionPlatform
     {
+        public static string CommonName = "prime-ext.json";
+
         public PackageMeta() { }
 
         public PackageMeta(IExtension ext, Version assemblyVersion = null)
@@ -45,6 +47,12 @@ namespace Prime.Core
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
+        public static PackageMeta From(DirectoryInfo dir)
+        {
+            var fi = new FileInfo(Path.Combine(dir.FullName, CommonName));
+            return From(fi);
+        }
+
         public static PackageMeta From(FileInfo fileInfo)
         {
             if (!fileInfo.Exists)
@@ -56,7 +64,14 @@ namespace Prime.Core
 
         public static PackageMeta From(string json)
         {
-            return string.IsNullOrWhiteSpace(json) ? null : JsonConvert.DeserializeObject<PackageMeta>(json);
+            try
+            {
+                return string.IsNullOrWhiteSpace(json) ? null : JsonConvert.DeserializeObject<PackageMeta>(json);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

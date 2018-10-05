@@ -17,8 +17,7 @@ namespace Prime.Core
         [Verb("upgrade", HelpText = "Upgrade packages from the catalogue.")]
         public class UpgradeArguments
         {
-            [Option('p', "packconfig", Required = true, HelpText = "Path to the package config file.")]
-            public string PackageConfigPath { get; set; }
+
         }
 
         [Verb("publish", HelpText = "Compile, Bundle, Build and Publish package catalogue")]

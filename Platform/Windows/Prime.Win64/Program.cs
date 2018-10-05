@@ -7,8 +7,7 @@ namespace Prime.Win64
     {
         static void Main(string[] args)
         {
-            //args = new[] { @"D:\hh\scratch\prime\prime-booted.config" };
-            Bootstrapper.Boot(args);
+            Bootstrapper.Boot(args, "Prime.exe");
         }
     }
 }
