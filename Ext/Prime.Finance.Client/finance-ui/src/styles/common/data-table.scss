@@ -5,6 +5,7 @@ $color-table-head: rgba(138, 138, 138, 0.2);
     position: absolute;
     display: flex;
     background-color: $color-accent;
+    margin-top: -$table-head-offset;
     div {
         flex: 1;
         text-align: right;
@@ -12,7 +13,6 @@ $color-table-head: rgba(138, 138, 138, 0.2);
     }
 }
 .table-body {
-    margin-top: 23px;
     .table-row {
         display: flex;
         cursor: pointer;

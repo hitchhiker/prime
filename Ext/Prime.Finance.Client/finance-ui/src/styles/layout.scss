@@ -1,4 +1,3 @@
-
 @import "../styles/common/defs.scss";
 
 .app-container {
@@ -39,6 +38,7 @@
 
             .footer{
                 display: flex;
+                padding-top: $table-head-offset;
 
                 app-trading-panel {
                     flex: 1;
@@ -52,11 +52,11 @@
                         width: 100%;
 
                         .bid {
-                            overflow: scroll;
+                            overflow-y: scroll;
                         }
     
                         .ask {
-                            overflow: scroll;
+                            overflow-y: scroll;
                         }
                     }                    
                 }
