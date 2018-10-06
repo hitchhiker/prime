@@ -29,8 +29,13 @@ namespace Prime.PackageManager.Catalogue
 
             foreach (var p in packages)
             {
-                var v = p.PackageInstances.Max(x => x.Version);
-                foreach (var i in p.PackageInstances.Where(x=>x.Version == v))
+                var hasPlat = p.PackageInstances.Any(x => x.Platform != Platform.NotSpecified);
+                var insts = hasPlat
+                    ? p.PackageInstances.Where(x => x.Platform == C.PlatformCurrent).ToList()
+                    : p.PackageInstances;
+
+                var v = insts.Max(x => x.Version);
+                foreach (var i in insts.Where(x=>x.Version == v))
                 {
                     Install(p, i);
                 }
@@ -55,6 +60,12 @@ namespace Prime.PackageManager.Catalogue
             L.Info($"Downloading package '{entry.Title}' to {distPath}");
 
             var response = M.SendAndWait<GetContentRequest, GetContentResponse>(new GetContentRequest(distPath, package.ContentUri.Path) {IsDirectory = true});
+            if (!response.Success)
+            {
+                L.Error("Unable to download: " + package.ContentUri.Path);
+                return;
+            }
+
             L.Info("Downloaded.");
             L.Info("Unpacking..");
 

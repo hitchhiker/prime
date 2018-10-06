@@ -41,10 +41,22 @@ namespace Prime.IPFS.Messaging
         private async Task<string> PublishNs(PublishNsRequest m)
         {
             var c = _i.Client;
-
-            var r = await c.Name.PublishAsync(m.LocalHash, m.Key, TimeSpan.FromDays(365 * 5));
-
-            return r.NamePath;
+            var attemptsLeft = 3;
+            do
+            {
+                try
+                {
+                    var r = await c.Name.PublishAsync(m.LocalHash, m.Key, TimeSpan.FromDays(365 * 5));
+                    return r.NamePath;
+                }
+                catch (Exception e)
+                {
+                    if (attemptsLeft-- <= 0)
+                        throw;
+                        
+                    L.Log("NS Publish failed, trying again..");
+                }
+            } while (true);
         }
 
         private void GetNsRequest(GetNsResolveRequest m)

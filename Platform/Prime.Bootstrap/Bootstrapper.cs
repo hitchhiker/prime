@@ -62,7 +62,19 @@ namespace Prime.Bootstrap
             if (!configFi.Exists)
             {
                 Console.WriteLine("BOOTSTRAP: " + configp + " does not exist.");
-                return 1;
+                var defaultFi = new FileInfo(configFi.FullName + ".default");
+                if (defaultFi.Exists)
+                {
+                    Console.WriteLine("BOOTSTRAP: Using .default config file.");
+                    defaultFi.CopyTo(configFi.FullName);
+                    configFi.Refresh();
+                    if (!configFi.Exists)
+                    {
+                        Console.WriteLine("BOOTSTRAP: Unable to restor .default config file.");
+                        return 1;
+                    }
+                } else
+                    return 1;
             }
 
             var confDir = configFi.Directory.FullName;

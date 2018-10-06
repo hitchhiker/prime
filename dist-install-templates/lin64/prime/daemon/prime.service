@@ -1,0 +1,16 @@
+[Unit]
+Description=Prime Daemon
+After=network.target
+
+[Service]
+User=prime
+Group=prime
+
+Type=simple
+ExecStart=/opt/prime/prime daemon
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

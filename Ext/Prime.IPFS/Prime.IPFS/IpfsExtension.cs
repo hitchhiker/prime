@@ -27,17 +27,22 @@ namespace Prime.IPFS
             void Shutdown(PrimeShutdownNow obj)
             {
                 if (IpfsInstance.Daemon.CurrentState == DaemonState.System)
+                {
+                    HasShutdown = true;
                     return;
+                }
 
-                context.M.Send(new IpfsStopRequest());
+                context.M.SendAsync(new IpfsStopRequest());
                 do
                 {
                     Thread.Sleep(1);
-                } while (IpfsInstance.Daemon.CurrentState == DaemonState.Stopped);
+                } while (!IpfsInstance.Daemon.IsStoppedOrSystem());
+                context.L.Log("IPFS has shutdown.");
+
                 HasShutdown = true;
             }
 
-            context.M.Register<PrimeShutdownNow>(this, Shutdown);
+            context.M.RegisterAsync<PrimeShutdownNow>(this, Shutdown);
         }
 
         public string Title => "Prime Ipfs Go";

@@ -49,7 +49,7 @@ namespace Prime.Core
         public static void WriteEntranceHeader(PrimeInstance prime)
         {
             var asm = Assembly.GetExecutingAssembly().GetName();
-            prime.L.Log($"{asm.Name} {asm.Version}".ToUpper());
+            prime.L.Log($"{asm.Name} {asm.Version} [{prime.C.PlatformCurrent}]".ToUpper());
             prime.L.Log("");
         }
 

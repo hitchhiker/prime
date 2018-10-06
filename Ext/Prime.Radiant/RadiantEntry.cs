@@ -90,7 +90,6 @@ namespace Prime.Radiant
 
         private static void PublishCatalogue(PrimeInstance prime, CataloguePublisherConfig config, ContentUri indexUri)
         {
-            prime.Start();
             var publisher = new PublishCatalogue(prime);
             publisher.Publish(config, indexUri);
         }

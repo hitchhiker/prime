@@ -5,7 +5,7 @@ using Prime.Base;
 namespace Prime.IPFS.Win64
 {
     [Export(typeof(IExtension))]
-    public class IpfsWin64Extension : IpfsExtensionBase
+    public class IpfsWin64Extension : IpfsWinExtensionBase
     {
         public override Platform Platform => Platform.WinAmd64;
 

@@ -60,16 +60,18 @@ namespace Prime.Core
                 if (!IsStarted)
                     return;
 
-                L.Log($"Prime instance stopping..");
+                L.Log("Prime instance stopping..");
 
+                C.IsInstanceStopping = true;
                 M.SendAsync(new PrimeShutdownNow());
                 do
                 {
                     Thread.Sleep(1);
-                } while (ExtensionManager.Instances.OfType<IExtensionGracefullShutdown>().Any(x => !x.HasShutdown));
+                } while (ExtensionManager.Instances.Select(x=>x.Extension).OfType<IExtensionGracefullShutdown>().Any(x => !x.HasShutdown));
 
                 IsStarted = false;
                 M.SendAsync(new PrimeStopped());
+                L.Log("Prime instance stopped.");
             }
         }
     }

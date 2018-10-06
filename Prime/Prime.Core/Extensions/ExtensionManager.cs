@@ -56,13 +56,19 @@ namespace Prime.Core
             C.Config.Save(C.Config.ConfigLoadedFrom, true);
         }
 
-        public void EnsureCoreExtensions()
+        private void EnsureCoreExtensions()
         {
             if (InstallConfig.Installs.All(x => x.Id != PrimeBaseExtension.StaticId))
                 InstallConfig.Installs.Add(new InstallEntry() {IdString = PrimeBaseExtension.StaticId.ToString()});
 
             if (InstallConfig.Installs.All(x => x.Id != PrimeCoreExtension.StaticId))
                 InstallConfig.Installs.Add(new InstallEntry() {IdString = PrimeCoreExtension.StaticId.ToString()});
+
+            foreach (var ext in new List<IExtension>(){new PrimeCoreExtension(), new PrimeBaseExtension()})
+            {
+                Instances.Init(ext);
+                Context.AddInitialisedExtension(ext);
+            }
         }
 
         public T Load<T>(InstallEntry p, bool fromAppDir = false) where T : class, IExtension

@@ -5,7 +5,7 @@ using Prime.Core;
 namespace Prime.IPFS.Win32
 {
     [Export(typeof(IExtensionExecute))]
-    public class IpfsWin32Extension : IpfsExtensionBase
+    public class IpfsWin32Extension : IpfsWinExtensionBase
     {
         public override Platform Platform => Platform.Win386;
 

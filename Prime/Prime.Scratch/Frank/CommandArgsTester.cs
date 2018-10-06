@@ -11,8 +11,6 @@ namespace Prime.Scratch
 
             BootstrapperEntry.WriteEntranceHeader(prime);
 
-            var configPath = prime.C.Config.ConfigLoadedFrom.FullName;
-
             prime.Start();
 
             BootstrapperEntry.EnterSecondary(prime, args.Split(' '));

@@ -24,10 +24,12 @@ namespace Prime.Core
             {
                 void ServerWaitLoop(PrimeCoreArguments.Start o)
                 {
+                    instance.L.Log("Prime running in DAEMON mode.");
                     do
                     {
                         Thread.Sleep(1);
                     } while (instance.IsStarted);
+                    instance.L.Log("DAEMON exiting..");
                 }
 
                 Parser.Default.ParseArguments<PrimeCoreArguments.Start>(args).WithParsed(ServerWaitLoop);

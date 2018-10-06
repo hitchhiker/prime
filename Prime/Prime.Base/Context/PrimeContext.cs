@@ -97,5 +97,7 @@ namespace Prime.Core
 
             return new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
         }
+
+        public bool IsInstanceStopping { get; set; }
     }
 }

@@ -10,6 +10,11 @@ namespace Prime.IPFS
             return daemon.State() == DaemonState.Running || daemon.State() == DaemonState.System;
         }
 
+        public static bool IsStoppedOrSystem(this IpfsDaemonBase daemon)
+        {
+            return daemon.State() == DaemonState.Stopped || daemon.State() == DaemonState.System;
+        }
+
         public static void WaitTillRunning(this IpfsInstance instance, Action onRunning, TimeSpan? timeout = null)
         {
             instance.Daemon.WaitTillRunning(onRunning, timeout);

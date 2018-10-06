@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommandLine" Version="1.0.0" />
     <PackageReference Include="Ipfs.Api" Version="0.22.1" />
     <PackageReference Include="Ipfs.Core" Version="0.31.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />

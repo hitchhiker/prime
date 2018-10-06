@@ -48,11 +48,15 @@ namespace Prime.Scratch
 
             //CommandArgsTester.Go(client, "catalogue publish -p [src]/instance/prime_package_catalogue.config");
 
+            //CommandArgsTester.Go(client, "catalogue update --all");
+
             //CommandArgsTester.Go(client, "--help");
 
             //CommandArgsTester.Go(client, "catalogue");
 
-            CommandArgsTester.Go(client, "daemon");
+            //CommandArgsTester.Go(client, "daemon");
+
+            CommandArgsTester.Go(client, "ipfs --././upgr   daemon");
 
             //PackageTests.Go(client);
 
