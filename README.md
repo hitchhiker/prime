@@ -1,5 +1,11 @@
 ### 'PRIME'
 
+The following information below is now being moved to the Prime.Finance project.
+
+Prime is now running in alpha with the first packagemanagement test having happened on Windows in 2017, and now all platforms on 5th Oct 2018. The first transfer of compiled software without the use of servers, via our package management system was from Malta to the Ukraine :) on that day.
+
+--------------------------------------------------------------------------------
+
 https://getprime.org
 
 Project status: PRE-ALPHA - not production ready.
