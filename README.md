@@ -6,6 +6,13 @@ Prime is now running in alpha with the first prototype tests having happened in 
 
 We are currently using the IPFS Merkle DAG, but will support all types of DAG, and projects as they become available.
 
+
+
+--------------------------------------------------------------------------------
+
+THIS INFORMATION BELOW IS GOING TO BE MOVED TO THE FINANCE APPLICATION.
+WE ARE IN THE PROCESS OF UPDATING THE DOCUMENTATION AROUND THESE PROJECTS.
+
 --------------------------------------------------------------------------------
 
 ### PRIME FINANCE 
