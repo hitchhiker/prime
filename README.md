@@ -6,6 +6,8 @@ Prime is now running in alpha with the first prototype tests having happened in 
 
 --------------------------------------------------------------------------------
 
+### PRIME FINANCE 
+
 https://getprime.org
 
 Project status: PRE-ALPHA - not production ready.
