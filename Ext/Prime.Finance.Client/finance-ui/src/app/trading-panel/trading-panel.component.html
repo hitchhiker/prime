@@ -1,3 +1,57 @@
 <div class="trading-panel">
-  TRADING PANEL!
+  <div class="order-type">
+    <div class="title">Place order:</div>
+    <a href="#" class="tab-switch" [ngClass]="{ 'selected': selectedTabLimit }" (click)="selectTabLimit()">Limit</a>
+    <a href="#" class="tab-switch" [ngClass]="{ 'selected': selectedTabMarket }" (click)="selectTabMarket()">Market</a>
+  </div>
+  <div class="panel panel-limit" [ngClass]="{ 'hidden': !selectedTabLimit }">
+
+    <div class="section section-buy">
+      <div class="side-title buy">Limit Buy</div>
+      <div class="input-field">
+        <label for="input-amount-buy">Amount: </label>
+        <input type="text" id="input-amount-buy" class="form-control money-input" placeholder="0.000">
+      </div>
+      <div class="input-field">
+        <label for="input-price-buy">Price: </label>
+        <input type="text" id="input-price-buy" class="form-control money-input" placeholder="0.000">
+      </div>
+      <button class="btn btn-place-order bid">Buy</button>
+    </div>
+
+    <div class="section section-sell">
+      <div class="side-title sell">Limit Sell</div>
+      <div class="input-field">
+        <label for="input-amount-sell">Amount: </label>
+        <input type="text" id="input-amount-sell" class="form-control money-input" placeholder="0.000">
+      </div>
+      <div class="input-field">
+        <label for="input-price-sell">Price: </label>
+        <input type="text" id="input-price-sell" class="form-control money-input" placeholder="0.000">
+      </div>
+      <button class="btn btn-place-order sell">Sell</button>
+    </div>
+
+  </div>
+  <div class="panel panel-market" [ngClass]="{ 'hidden': !selectedTabMarket }">
+
+    <div class="section section-buy">
+      <div class="side-title buy">Market Buy</div>
+      <div class="input-field">
+        <label for="input-amount-buy">Amount: </label>
+        <input type="text" id="input-amount-buy" class="form-control money-input" placeholder="0.000">
+      </div>
+      <button class="btn btn-place-order bid">Buy</button>
+    </div>
+
+    <div class="section section-sell">
+      <div class="side-title sell">Market Sell</div>
+      <div class="input-field">
+        <label for="input-amount-sell">Amount: </label>
+        <input type="text" id="input-amount-sell" class="form-control money-input" placeholder="0.000">
+      </div>
+      <button class="btn btn-place-order sell">Sell</button>
+    </div>
+
+  </div>
 </div>

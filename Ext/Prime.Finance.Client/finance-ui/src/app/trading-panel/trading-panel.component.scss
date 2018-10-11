@@ -1,0 +1,87 @@
+@import "../../styles/common/defs.scss";
+
+.tab-switch {
+    display: inline-block;
+    padding: 3px 15px;
+    //margin: 5px 0 5px 5px;
+
+    color: white;
+
+    &:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+
+    &.selected {
+        color: $color-accent;
+        background-color: white;
+    }
+}
+
+.trading-panel {
+    padding: 0 10px; 
+    margin-top: -$table-head-offset;
+    margin-left: 20px;
+
+    .order-type {
+        .title {
+            display: inline-block;
+            text-transform: uppercase;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .market-type {
+            
+        }
+
+        .limit-type {
+
+        }
+    }
+
+    .panel {
+        color: white;
+
+        &.hidden {
+            display: none;
+        }
+
+        .section {
+            display: inline-block;
+            width: 50%;
+            margin: 10px 0;
+            vertical-align: top;
+
+            .side-title {
+                text-transform: uppercase;
+                font-weight: bold;
+
+                &.buy {
+                    color: $color-bid;
+                }
+
+                &.sell {
+                    color: $color-ask;
+                }
+            }
+
+            &.section-buy {
+                padding-right: 10px;
+            }
+
+            &.section-sell {
+
+            }
+        }
+
+        &.panel-limit {
+
+        }
+    
+        &.panel-market {
+    
+        }
+    }
+}
+

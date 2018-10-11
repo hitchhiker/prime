@@ -1,4 +1,4 @@
 export enum OrderType {
-    Buy,
+    Buy = 0,
     Sell
 }

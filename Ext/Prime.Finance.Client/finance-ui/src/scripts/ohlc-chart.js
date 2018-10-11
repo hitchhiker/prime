@@ -1,4 +1,6 @@
 window.onload = function () {
+    return;
+
     Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv', function (err, rows) {
 
         function unpack(rows, key) {

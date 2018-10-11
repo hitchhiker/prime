@@ -1,5 +1,17 @@
 @import "../../styles/common/data-table.scss";
 
-table {
+.last-trades {
     color: white;
+
+    .dimmed {
+        opacity: 0.5;
+    }
+
+    .bid {
+        color: $color-bid;
+    }
+
+    .ask {
+        color: $color-ask;
+    }
 }

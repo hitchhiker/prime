@@ -6,12 +6,15 @@ $color-table-head: rgba(138, 138, 138, 0.2);
     display: flex;
     background-color: $color-accent;
     margin-top: -$table-head-offset;
+    text-transform: uppercase;
+    font-weight: bold;
     div {
         flex: 1;
         text-align: right;
         padding: 3px 10px;
     }
 }
+
 .table-body {
     .table-row {
         display: flex;

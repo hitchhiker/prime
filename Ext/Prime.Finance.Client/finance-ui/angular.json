@@ -27,7 +27,8 @@
             ],
             "scripts": [
               "src/scripts/plotly-latest.min.js",
-              "src/scripts/ohlc-chart.js"
+              "src/scripts/ohlc-chart.js",
+              "src/scripts/d3.v4.min.js"
             ]
           },
           "configurations": {
