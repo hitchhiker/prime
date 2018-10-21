@@ -26,9 +26,10 @@
               "src/styles.scss"
             ],
             "scripts": [
+              "src/scripts/d3.v4.min.js",
+              "src/scripts/techan.min.js",
               "src/scripts/plotly-latest.min.js",
-              "src/scripts/ohlc-chart.js",
-              "src/scripts/d3.v4.min.js"
+              "src/scripts/ohlc-chart.js"
             ]
           },
           "configurations": {

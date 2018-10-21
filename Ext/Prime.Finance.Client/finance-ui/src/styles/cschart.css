@@ -66,3 +66,31 @@
 #volchart .volbar .volfill { fill: crimson; } 
 #volchart .sigbar .sigfill { fill: crimson; } 
 #volchart input { cursor: pointer; }
+
+
+
+svg {
+    overflow: hidden;
+}
+
+text {
+    fill: white;
+}
+
+path.candle {
+    stroke: white;
+}
+
+path.candle.body {
+    stroke-width: 0;
+}
+
+path.candle.up {
+    fill: lime;
+    stroke: lime;
+}
+
+path.candle.down {
+    fill: #ff0078;
+    stroke: #ff0078;
+}

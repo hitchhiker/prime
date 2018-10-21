@@ -36,6 +36,10 @@
             flex-direction: column;
             flex-grow: 1;
 
+            app-chart {
+                width: 100%;
+            }
+
             .footer{
                 display: flex;
                 padding-top: $table-head-offset;
