@@ -8,6 +8,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LastTradesComponent } from './last-trades/last-trades.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { TradingPanelComponent } from './trading-panel/trading-panel.component';
+import { PrimeSocketService } from './services/prime-socket.service';
+import { WsClientService } from './services/ws-client.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,10 @@ import { TradingPanelComponent } from './trading-panel/trading-panel.component';
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [
+    {provide: "SocketClient", useClass: WsClientService },
+    PrimeSocketService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

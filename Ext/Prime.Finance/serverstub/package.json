@@ -1,0 +1,14 @@
+{
+  "name": "finance-server-stub",
+  "version": "1.0.0",
+  "description": "Server stub for Finance.UI client.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws-server": "^1.0.0"
+  }
+}

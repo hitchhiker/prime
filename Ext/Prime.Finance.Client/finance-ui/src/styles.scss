@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import 'src/styles/common/defs.scss';
+
 @import 'src/styles/bs-overrides';
 
 @import '~bootstrap/scss/bootstrap-reboot';
@@ -19,7 +21,7 @@
 }
 
 body {
-    background-color: #1B4267;
+    background-color: $color-accent;
     height: 100%;
 }
 
