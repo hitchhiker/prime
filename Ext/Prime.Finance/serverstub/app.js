@@ -12,6 +12,11 @@ let server = wsServer({ server: httpServer }, {
     
     connectionHandler: function(client) {
         console.log("Connection opened:", client.request.connection.remoteAddress);
+
+        setInterval(() => {
+            server.broadcast("Hello!");
+        }, 1000);
+        
     },
     
     messageHandler: function(data, client) {

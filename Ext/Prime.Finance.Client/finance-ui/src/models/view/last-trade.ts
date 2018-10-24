@@ -1,8 +1,9 @@
-import { OrderType } from "../order-type";
+import { OrderSide } from "src/app/models/trading/order-side";
 
 export class LastTrade {
+    Id: number;
     Date: string;
-    Type: OrderType;
+    Type: OrderSide;
     Price: number;
     Amount: number;
 }

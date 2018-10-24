@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppService } from '../services/app.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,7 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  get ticker(): string {
+    return this.app.state.market.tickerUi;
+  }
+
+  get latestPrice(): string {
+    return this.app.state.latestPrice.toFixed(4);
+  }
+
+  constructor(
+    private app: AppService
+  ) { }
 
   ngOnInit() {
   }

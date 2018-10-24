@@ -8,12 +8,23 @@
 
 h3 {
     flex-shrink: 0;
-    width: 300px;
     color: white;
     margin: 10px 10px 8px 10px;
 }
 
 .title-bar {
+
+    .price {
+        padding-top: 12px;
+        padding-left: 20px;
+        font-size: 0.875rem;
+        color: white;
+
+        .label {
+            opacity: 0.5;
+        }
+    }
+
     button {
         flex-shrink: 0;
         margin: 10px 10px 10px 0;

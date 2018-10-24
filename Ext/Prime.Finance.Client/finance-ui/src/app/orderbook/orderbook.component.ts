@@ -1,6 +1,5 @@
 import { Component, OnInit, HostListener, ViewChild, TemplateRef } from '@angular/core';
 import { OrderbookOrder } from 'src/models/view/orderbook-order';
-import { OrderType } from 'src/models/order-type';
 
 @Component({
   selector: 'app-orderbook',
