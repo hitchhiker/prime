@@ -15,17 +15,13 @@ export class LastTradesComponent implements OnInit {
   constructor(
     private lastTradesService: LastTradesService
   ) { 
-    console.log(lastTradesService);
-    
-    lastTradesService.test();
-
   }
 
   public lastTrades: LastTrade[];
   private static readonly maxNumberOfLastTrades = 60;
 
   ngOnInit() {
-    
+    this.lastTradesService.connect();
 
     this.lastTradesService.lastTrades.subscribe((data) => {
       if (data) {

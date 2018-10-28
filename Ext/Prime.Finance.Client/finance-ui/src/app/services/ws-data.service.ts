@@ -16,22 +16,12 @@ export class WsDataService {
   protected wsOnConnected: Observable<MessageEvent> = this._wsOnOpen.asObservable();
   protected wsOnMessage: Observable<MessageEvent> = this._wsOnMessage.asObservable();
 
-  private _endpointURL: string;
-
-  protected setEndpointUrl(url: string) {
-    this._endpointURL = url;
-
-    console.log(this._endpointURL);
-  }
-
   constructor(
+    private endpointURL: string,
     private ws: WebsocketService
   ) { }
 
   protected subscribeToMessages(action: (msg: MessageEvent) => void) {
-    if (!this.wsSubject)
-      Error("WS client should be connected first.");
-
     this.wsSubject.subscribe(action);
   }
 
@@ -39,11 +29,8 @@ export class WsDataService {
     this.wsSubject.next(msg);
   }
 
-  protected connectToEndpoint() {
-    if (!this._endpointURL)
-      Error("WS endpoint is not set.");
-      
-    this.wsSubject = <Subject<any>>this.ws.connect(this._endpointURL)
+  protected connectToEndpoint() {     
+    this.wsSubject = <Subject<any>>this.ws.connect(this.endpointURL)
       .pipe(map((msg): MessageEvent => {
         return msg;
       }));

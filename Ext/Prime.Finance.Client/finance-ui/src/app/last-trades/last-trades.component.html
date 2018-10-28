@@ -1,7 +1,7 @@
 <div class="last-trades">
   <div class="table-body">
     <div class="table-row" *ngFor="let lastTrade of lastTrades">
-      <div class="dimmed">{{lastTrade.Date}}</div>
+      <div class="dimmed">{{lastTrade.Date.timeString}}</div>
       <div [className]="lastTrade.Type == 0 ? 'bid': 'ask'">{{(lastTrade.Type === 0 ? "Bid": "Ask")}}</div>
       <div>{{lastTrade.Price.toFixed(2)}}</div>
       <div>{{lastTrade.Amount.toFixed(4)}}</div>
