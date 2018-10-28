@@ -12,7 +12,7 @@ import { Asset } from './models/trading/asset';
 export class AppComponent implements OnInit {
   ngOnInit(): void {
     //this.primeClient.connect();
-    
+
     this.app.state.setMarket(AssetPair.fromAssetCodes("BTC", "USD"));
     this.app.state.setLatestPrice(6312.4232);
   }
@@ -22,6 +22,8 @@ export class AppComponent implements OnInit {
   constructor(
     private app: AppService,
     private primeClient: PrimeSocketService) {
-  }
 
+
+    this.title = "Hello!";
+  }
 }

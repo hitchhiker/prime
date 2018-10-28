@@ -7,50 +7,42 @@ import { map } from 'rxjs/operators';
 import { LastTradeRespose } from './bitfinex/last-trade-response';
 import { TradeInfo } from './bitfinex/trade-info';
 import { ResponseType } from './bitfinex/response-type';
+import { WsDataService } from '../ws-data.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LastTradesService {
+export class LastTradesService extends WsDataService {
   private _lastTrades: BehaviorSubject<TradeInfo> = new BehaviorSubject(null);
   public readonly lastTrades: Observable<TradeInfo> = this._lastTrades.asObservable();
 
-  public lastTradesObs: Observable<any>;
-
-  private static readonly endpointUrl = "wss://api.bitfinex.com/ws/2";
-
-  private wsSubject: Subject<any>;
-
   constructor(
-    private ws: WebsocketService
+    ws: WebsocketService
   ) {
-    // this._lastTrades.next([
-    //   { Date: "14:52:32", Type: OrderSide.Buy, Price: 7600, Amount: 1.3 },
-    //   { Date: "14:52:33", Type: OrderSide.Buy, Price: 7600, Amount: 1.3 },
-    //   { Date: "14:52:34", Type: OrderSide.Buy, Price: 7600, Amount: 1.3 },
-    //   { Date: "14:52:35", Type: OrderSide.Buy, Price: 7600, Amount: 1.3 },
-    //   { Date: "14:52:36", Type: OrderSide.Buy, Price: 7600, Amount: 1.3 }
-    // ]);
+    super(ws);
+
+    this.setEndpointUrl("wss://api.bitfinex.com/ws/2");
   }
 
-  public connect() {
-    this.wsSubject = <Subject<any>>this.ws.connect(LastTradesService.endpointUrl)
-      .pipe(map((msg, ind): MessageEvent => {
-        return msg;
-      }));
-    this.wsSubject.subscribe((msg: MessageEvent) => {
-      if (msg.type === "open") {
-        this.onConnected(msg);
-      } else if (msg.type === "message") {
-        this.onMessage(msg);
-      }
+  public test() {
+  }
+
+  public connect1() {
+    this.connectToEndpoint();
+
+    this.wsOnConnected.subscribe((msg: MessageEvent) => {
+      this.onConnected(msg);
+    });
+
+    this.wsOnMessage.subscribe((msg: MessageEvent) => {
+      this.onMessage(msg);
     });
   }
 
   private onConnected(msg: MessageEvent) {
     console.log("Connected to Bitfinex last trades");
 
-    this.wsSubject.next({
+    this.sendMessage({
       event: 'subscribe',
       channel: 'trades',
       symbol: 'tBTCUSD'
@@ -125,17 +117,5 @@ export class LastTradesService {
         });
       }
     }
-
-    // for (let i = 0; i < obj[1].length; i++) {
-    //   const r = obj[i];
-    //   console.log(r);
-    // }
-
-    //console.log(LastTradeRespose.fromArray(obj));
-  }
-
-  public addLastTrade(lastTrade: LastTrade) {
-    //this._lastTrades.getValue().push(lastTrade);
-    //this._lastTrades.next(this._lastTrades.getValue());
   }
 }
