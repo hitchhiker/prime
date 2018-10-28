@@ -23,7 +23,6 @@ export class AppComponent implements OnInit {
     private app: AppService,
     private primeClient: PrimeSocketService) {
 
-
     this.title = "Hello!";
   }
 }
