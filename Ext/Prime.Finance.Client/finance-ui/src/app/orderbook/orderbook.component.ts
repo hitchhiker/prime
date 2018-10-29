@@ -14,7 +14,9 @@ export class OrderbookComponent implements OnInit {
   orderbookBids: OrderbookOrder[];
   orderbookAsks: OrderbookOrder[];
 
-  private readonly maxNumberOfOrderbookOrders: 100;
+  private readonly maxNumberOfOrderbookOrders: number = 30;
+  private readonly ordersResetCount: number = this.maxNumberOfOrderbookOrders * 1.5;
+
 
   constructor(
     private orderBookService: OrderbookService
@@ -64,10 +66,13 @@ export class OrderbookComponent implements OnInit {
           }
         }
 
-        if(this.orderbookBids.length > this.maxNumberOfOrderbookOrders) {
+        console.log(this.orderbookBids.length);
+        
+
+        if(this.orderbookBids.length > this.ordersResetCount) {
           this.orderbookBids.length = this.maxNumberOfOrderbookOrders;
         }
-        if(this.orderbookAsks.length > this.maxNumberOfOrderbookOrders) {
+        if(this.orderbookAsks.length > this.ordersResetCount) {
           this.orderbookAsks.length = this.maxNumberOfOrderbookOrders;
         }
   
