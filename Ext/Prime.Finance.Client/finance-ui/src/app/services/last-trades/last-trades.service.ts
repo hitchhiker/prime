@@ -1,34 +1,30 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { LastTrade } from 'src/models/view/last-trade';
-import { OrderSide } from 'src/app/models/trading/order-side';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { WebsocketService } from '../websocket.service';
-import { map } from 'rxjs/operators';
 import { LastTradeRespose } from './bitfinex/last-trade-response';
-import { TradeInfo } from './bitfinex/trade-info';
-import { ResponseType } from './bitfinex/response-type';
+import { RemoteResponse } from '../../models/remote-response';
 import { WsDataService } from '../ws-data.service';
-import { getLocaleDateTimeFormat } from '@angular/common';
-import { DateTime } from './date-time';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LastTradesService extends WsDataService {
-  private _lastTrades: BehaviorSubject<TradeInfo> = new BehaviorSubject(null);
-  public readonly lastTrades: Observable<TradeInfo> = this._lastTrades.asObservable();
+  protected endpointURL: string = "wss://api.bitfinex.com/ws/2";
+  
+  private _lastTrades: BehaviorSubject<RemoteResponse> = new BehaviorSubject(null);
+  public readonly lastTrades: Observable<RemoteResponse> = this._lastTrades.asObservable();
 
   constructor(
     ws: WebsocketService
   ) {
-    super("wss://api.bitfinex.com/ws/2", ws);
+    super(ws);
   }
 
   public connect() {
     this.connectToEndpoint();
 
     this.wsOnConnected.subscribe((msg: MessageEvent) => {
-      this.onConnected(msg);
+      this.onConnected();
     });
 
     this.wsOnMessage.subscribe((msg: MessageEvent) => {
@@ -36,21 +32,21 @@ export class LastTradesService extends WsDataService {
     });
   }
 
-  private onConnected(msg: MessageEvent) {
-    console.log("Connected to Bitfinex last trades");
-
+  private onConnected() {
     // Start getting latest trades.
     this.sendMessage({
       event: 'subscribe',
       channel: 'trades',
       symbol: 'tBTCUSD'
     });
+
+    console.log("Connected to Bitfinex last trades");
   }
 
   private onMessage(msg: MessageEvent) {
     // Messages parsing.
     let rRaw = JSON.parse(msg.data);
-    let lastTrades = LastTradeRespose.fromRawResponse(rRaw);
+    let lastTrades = new LastTradeRespose(rRaw).toRemoteResponse();
 
     this._lastTrades.next(lastTrades);
   }

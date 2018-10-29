@@ -1,5 +1,8 @@
 import { Component, OnInit, HostListener, ViewChild, TemplateRef } from '@angular/core';
 import { OrderbookOrder } from 'src/models/view/orderbook-order';
+import { OrderbookService } from '../services/orderbook/orderbook.service';
+import { ResponseType } from '../services/last-trades/bitfinex/response-type';
+import { OrderSide } from '../models/trading/order-side';
 
 @Component({
   selector: 'app-orderbook',
@@ -8,77 +11,14 @@ import { OrderbookOrder } from 'src/models/view/orderbook-order';
 })
 export class OrderbookComponent implements OnInit {
 
-  orderbookBids: OrderbookOrder[] = [
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6700 }
-  ];
+  orderbookBids: OrderbookOrder[];
+  orderbookAsks: OrderbookOrder[];
 
-  orderbookAsks: OrderbookOrder[] = [
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 },
-    { Sum: 12, Amount: 1.3, Value: 12412, BidAsk: 6800 }
-  ];
+  private readonly maxNumberOfOrderbookOrders: 100;
 
-  constructor() { }
+  constructor(
+    private orderBookService: OrderbookService
+  ) { }
 
   tableHeadWitdhBid: number;
   tableHeadWitdhAsk: number;
@@ -97,5 +37,47 @@ export class OrderbookComponent implements OnInit {
 
   ngOnInit() {
     this.checkWidth();
+
+    this.orderBookService.connect();
+    this.orderBookService.orderbook.subscribe((msg) => {
+      if (msg) {
+        if (msg.responseType === ResponseType.Snapshot) {
+          this.orderbookBids = (<OrderbookOrder[]>msg.payload).filter((o) => o.Side === OrderSide.Buy);
+          this.orderbookAsks = (<OrderbookOrder[]>msg.payload).filter((o) => o.Side === OrderSide.Sell);
+        }
+        else if(msg.responseType === ResponseType.TransactionUpdated) {
+          let record = <OrderbookOrder>msg.payload;
+          if(record.Price === 0) {
+            this.orderbookAsks = this.orderbookAsks.filter((r) => {
+              return r.Id !== record.Id;
+            });
+            this.orderbookBids = this.orderbookBids.filter((r) => {
+              return r.Id !== record.Id;
+            });
+
+          } else {
+            if(record.Side === OrderSide.Buy) {
+              this.orderbookBids.unshift(record);
+            } else {
+              this.orderbookAsks.unshift(record);
+            }
+          }
+        }
+
+        if(this.orderbookBids.length > this.maxNumberOfOrderbookOrders) {
+          this.orderbookBids.length = this.maxNumberOfOrderbookOrders;
+        }
+        if(this.orderbookAsks.length > this.maxNumberOfOrderbookOrders) {
+          this.orderbookAsks.length = this.maxNumberOfOrderbookOrders;
+        }
+  
+        this.orderbookBids = this.orderbookBids.sort((a, b) => {
+          return a.Price > b.Price ? -1: 1;
+        });
+        this.orderbookAsks = this.orderbookAsks.sort((a, b) => {
+          return a.Price > b.Price ? 1: -1;
+        });
+      }
+    });
   }
 }

@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class WsDataService {
+export abstract class WsDataService {
 
   private wsSubject: Subject<any>;
 
@@ -16,10 +16,13 @@ export class WsDataService {
   protected wsOnConnected: Observable<MessageEvent> = this._wsOnOpen.asObservable();
   protected wsOnMessage: Observable<MessageEvent> = this._wsOnMessage.asObservable();
 
+  protected abstract get endpointURL(): string;
+
   constructor(
-    private endpointURL: string,
     private ws: WebsocketService
   ) { }
+
+  public abstract connect();
 
   protected subscribeToMessages(action: (msg: MessageEvent) => void) {
     this.wsSubject.subscribe(action);
