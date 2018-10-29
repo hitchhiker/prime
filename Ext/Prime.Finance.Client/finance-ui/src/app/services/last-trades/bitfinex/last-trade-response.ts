@@ -23,7 +23,7 @@ export class LastTradeRespose implements ResponseBase {
     };
   }
 
-  public toRemoteResponse(): RemoteResponse {
+  public parseResponse(): RemoteResponse {
     if (this.rRaw.length === 2) {
       // Snapshot or heartbeat.
       if (typeof this.rRaw[1] == "string") {

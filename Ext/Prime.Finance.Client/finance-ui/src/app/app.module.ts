@@ -12,6 +12,7 @@ import { PrimeSocketService } from './services/prime-socket.service';
 import { WsClientService } from './services/ws-client.service';
 import { LastTradesService } from './services/last-trades/last-trades.service';
 import { OrderbookService } from './services/orderbook/orderbook.service';
+import { TickerService } from './services/ticker/ticker.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { OrderbookService } from './services/orderbook/orderbook.service';
     {provide: "SocketClient", useClass: WsClientService },
     PrimeSocketService,
     LastTradesService,
-    OrderbookService
+    OrderbookService,
+    TickerService
   ],
   bootstrap: [AppComponent]
 })

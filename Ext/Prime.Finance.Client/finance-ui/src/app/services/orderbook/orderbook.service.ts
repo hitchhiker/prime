@@ -39,7 +39,7 @@ export class OrderbookService extends WsDataService {
       return;
 
     let orderbookResponse = new OrderbookResponse(rRaw);
-    let response = orderbookResponse.toRemoteResponse();
+    let response = orderbookResponse.parseResponse();
 
     this._orderbookSubject.next(response);
   }

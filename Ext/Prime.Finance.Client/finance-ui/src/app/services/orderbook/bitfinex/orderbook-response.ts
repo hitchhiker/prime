@@ -5,10 +5,9 @@ import { RemoteResponse } from "src/app/models/remote-response";
 import { ResponseType } from "../../last-trades/bitfinex/response-type";
 
 export class OrderbookResponse implements ResponseBase {
-    public toRemoteResponse(): RemoteResponse {
+    public parseResponse(): RemoteResponse {
         
         if (this.rRaw) {
-            console.log(this.rRaw);
             if (this.rRaw[1].length > 3 && typeof this.rRaw[1][0] === "object") {
                 // Snapshot.
 

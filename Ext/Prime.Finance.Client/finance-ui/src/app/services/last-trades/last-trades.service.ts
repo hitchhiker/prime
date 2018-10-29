@@ -46,7 +46,7 @@ export class LastTradesService extends WsDataService {
   private onMessage(msg: MessageEvent) {
     // Messages parsing.
     let rRaw = JSON.parse(msg.data);
-    let lastTrades = new LastTradeRespose(rRaw).toRemoteResponse();
+    let lastTrades = new LastTradeRespose(rRaw).parseResponse();
 
     this._lastTrades.next(lastTrades);
   }
