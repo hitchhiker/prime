@@ -1,6 +1,5 @@
 window.onload = function () {
-
-
+    return;
     var margin = { top: 20, right: 20, bottom: 30, left: 50 },
         width = 1000 - margin.left - margin.right,
         height = 450 - margin.top - margin.bottom;

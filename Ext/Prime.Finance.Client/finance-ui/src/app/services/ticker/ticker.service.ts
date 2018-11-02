@@ -27,6 +27,8 @@ export class TickerService extends WsDataService {
   }
 
   private onConnected(msg: MessageEvent): any {
+    console.log("Connected to Bitfinex ticker");
+    
     // Start receiving ticker data.
     this.sendMessage({
       "event": "subscribe",
@@ -37,7 +39,6 @@ export class TickerService extends WsDataService {
 
   private onMessage(msg: MessageEvent): any {
     let rRaw = JSON.parse(msg.data);
-    console.log(rRaw);
     
     let ticker = new TickerResponse(rRaw).parseResponse();
 

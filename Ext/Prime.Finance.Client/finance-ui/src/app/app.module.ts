@@ -13,6 +13,7 @@ import { WsClientService } from './services/ws-client.service';
 import { LastTradesService } from './services/last-trades/last-trades.service';
 import { OrderbookService } from './services/orderbook/orderbook.service';
 import { TickerService } from './services/ticker/ticker.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { TickerService } from './services/ticker/ticker.service';
     TradingPanelComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [
     {provide: "SocketClient", useClass: WsClientService },
