@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { LastTradesService } from './last-trades.service';
 
-import { LastTradesService } from '../last-trades.service';
 
 describe('LastTradesService', () => {
   beforeEach(() => {

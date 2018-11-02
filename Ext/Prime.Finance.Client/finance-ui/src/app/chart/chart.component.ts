@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { OhlcRawResponse } from './ohlc/ohlc-raw-response';
 import { map } from 'rxjs/operators';
 import { OhlcRecord } from './ohlc/ohlc-record';
+import { range } from 'rxjs';
 
 @Component({
   selector: 'app-chart',
@@ -32,7 +33,9 @@ export class ChartComponent implements OnInit {
         };;
       })
 
-      return ohlcs;
+      return ohlcs.sort((a, b) => {
+        return a.time > b.time ? 1 : -1;
+      });
     })).subscribe((d) => {
       this.draw(d);
     });
@@ -49,34 +52,64 @@ export class ChartComponent implements OnInit {
 
     let yScaleMax: number = d3.max(d, (d: OhlcRecord) => {
       return d.high;
-    })
+    });
 
-    var yScale = d3.scaleLinear()
+
+    let yScaleRaw = d3.scaleLinear()
       .domain([yScaleMin, yScaleMax])
       .range([0, svgHeight]);
+    let yScale = function(v) {
+        return yScaleRaw(v).toFixed(4);
+    };
 
-    console.log({yScaleMin, yScaleMax});
-    console.log(yScale(6270));
-    
+
     let svg = d3.select("#plotly-div")
       .append("svg").attr("width", "100%").attr("height", svgHeight);
 
-    svg.selectAll("rect")
+    let data = svg.selectAll("rect")
       .data(d)
-      .enter()
-      .append("rect")
-      .attr("width", 4)
-      .attr("height", (o: OhlcRecord) => {
-        return Math.abs(yScale(o.open) - yScale(o.close));
-      })
-      .attr("fill", "red")
-      .attr("x", (x: OhlcRecord, i) => {
 
-        return i * 5;
-      })
-      .attr("y", (y: OhlcRecord, i) => {
-        return svgHeight - yScale(y.open);
+    let groups = data.enter().append("g")
+      .attr("transform", (x: OhlcRecord, i) => {
+        return `translate(${i * 10}, ${yScale(x.low)})`;
       });
+
+    groups.append("line");
+    groups.append("rect");
+
+    groups.selectAll("line")
+      .attr("transform", (x: OhlcRecord, i) => {
+        return `translate(${4}, ${0})`;
+      })
+      .attr("x1", 0).attr("x2", 0)
+      .attr("y1", 0)
+      .attr("y2", (x: OhlcRecord, i) => {
+        return (yScale(x.high) - yScale(x.low));
+      })
+      .attr("stroke-width", 1)
+      .attr("stroke", (o: OhlcRecord) => {
+        return getColor(o);
+      })
+      .exit().remove();
+
+    groups.selectAll("rect")
+      .attr("width", 9)
+      .attr("height", (o: OhlcRecord) => {
+        return Math.abs(yScale(o.open) - yScale(o.close);
+      })
+      .attr("fill", (o: OhlcRecord) => {
+        return getColor(o);
+      })
+      .attr("x", 0)
+      .attr("y", (x: OhlcRecord, i) => {
+        let openLow = yScale(x.open) - yScale(x.low);
+        let closeLow = yScale(x.close) - yScale(x.low)
+        return openLow < closeLow ? openLow : closeLow;
+      }).exit().remove();
+
+    function getColor(o: OhlcRecord): string {
+      return o.open - o.close >= 0 ? "red" : "green";
+    }
 
     // d3.json("", function (data) {
     //   console.log(data[0]);
