@@ -41,35 +41,38 @@ export class ChartComponent implements OnInit {
     });
   }
 
-  private draw(d: OhlcRecord[]) {
+  private draw(data: OhlcRecord[]) {
     // "https://api.kraken.com/0/public/OHLC?pair=XBTUSD"
     let xPos: number = 0;
-    let svgHeight = 450;
+    let svgH = 450;
 
-    let yScaleMin: number = d3.min(d, (d: OhlcRecord) => {
+    // Svg setup.
+    let svg = d3.select("#plotly-div")
+      .append("svg").attr("width", "100%").attr("height", svgH);
+
+
+    let yScaleMin: number = d3.min(data, (d: OhlcRecord) => {
       return d.low;
     });
-
-    let yScaleMax: number = d3.max(d, (d: OhlcRecord) => {
+    let yScaleMax: number = d3.max(data, (d: OhlcRecord) => {
       return d.high;
     });
 
-
+    // Scales.
     let yScaleRaw = d3.scaleLinear()
-      .domain([yScaleMin, yScaleMax])
-      .range([0, svgHeight]);
-    let yScale = function(v) {
-        return yScaleRaw(v).toFixed(4);
+      .domain([yScaleMin, yScaleMax]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
+      .range([svgH, 0]);
+    let yScale = function (v) {
+      return yScaleRaw(v).toFixed(4);
     };
 
+    // Populate data.
+    let g = svg.append("g");
+    let svgData = g.selectAll("rect")
+      .data(data);
 
-    let svg = d3.select("#plotly-div")
-      .append("svg").attr("width", "100%").attr("height", svgHeight);
-
-    let data = svg.selectAll("rect")
-      .data(d)
-
-    let groups = data.enter().append("g")
+    // Add groups.
+    let groups = svgData.enter().append("g")
       .attr("transform", (x: OhlcRecord, i) => {
         return `translate(${i * 10}, ${yScale(x.low)})`;
       });
@@ -77,6 +80,41 @@ export class ChartComponent implements OnInit {
     groups.append("line");
     groups.append("rect");
 
+    // Axis.
+    let xAxis = d3.axisBottom(yScaleRaw);
+    svg.append("g").call(xAxis);
+
+    let gW = g.node().getBBox().width;
+    
+      
+    // Zoom.
+    svg
+      .call(d3.zoom()
+        .scaleExtent([1 / 2, 4])
+        .translateExtent([[-100, svgH / 2], [gW + 100, svgH / 2]])
+        .on("zoom", zoomed));
+
+    function zoomed() {
+      g.attr("transform", d3.event.transform);
+    }
+
+    // Line test.
+    function lineTest() {
+      let line = d3.line()
+        .x((d: OhlcRecord, i) => {
+          return i * 10;
+        })
+        .y((da: OhlcRecord, i) => {
+          return yScaleRaw(da.open);
+        });
+      svg.append("path")
+        .attr("stroke-width", 1)
+        .attr("stroke", "white")
+        .attr("fill", "transparent")
+        .attr("d", line(data));
+    }
+
+    // Process lines.
     groups.selectAll("line")
       .attr("transform", (x: OhlcRecord, i) => {
         return `translate(${4}, ${0})`;
@@ -92,10 +130,11 @@ export class ChartComponent implements OnInit {
       })
       .exit().remove();
 
+    // Process rects.
     groups.selectAll("rect")
       .attr("width", 9)
       .attr("height", (o: OhlcRecord) => {
-        return Math.abs(yScale(o.open) - yScale(o.close);
+        return Math.abs(yScale(o.open) - yScale(o.close));
       })
       .attr("fill", (o: OhlcRecord) => {
         return getColor(o);
@@ -110,12 +149,5 @@ export class ChartComponent implements OnInit {
     function getColor(o: OhlcRecord): string {
       return o.open - o.close >= 0 ? "red" : "green";
     }
-
-    // d3.json("", function (data) {
-    //   console.log(data[0]);
-    // });
-
-
-    //svg.append("rect").attr("width", 100).attr("height", 50).attr("fill", "red").attr("x", 50).attr("y", 100);
   }
 }
