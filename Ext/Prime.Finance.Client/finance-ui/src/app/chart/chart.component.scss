@@ -1,6 +1,12 @@
 
 #plotly-div {
     height: 450px;
+
+    .controls {
+        position: absolute;
+        opacity: 0.8;
+        top: 16px;
+    }
 }
 
 
