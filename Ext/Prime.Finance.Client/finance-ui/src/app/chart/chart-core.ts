@@ -1,8 +1,13 @@
 import { OhlcRecord } from "./ohlc/ohlc-record";
 import * as d3 from "d3";
 
+class OhlcItem {
+    ohlc: OhlcRecord;
+    posX: number;
+}
+
 class OhlcItems {
-    records: OhlcRecord[];
+    records: OhlcItem[];
     index: number;
 }
 
@@ -16,9 +21,11 @@ export class Viewport {
 }
 
 export class ChartCore {
-    private chartData: OhlcRecord[];
+    private chartData: OhlcItem[];
     private svg;
     private g;
+
+    public chartXOffset: number = 10;
 
     constructor(selector: string) {
         this.initialize(selector);
@@ -48,20 +55,26 @@ export class ChartCore {
 
     public setData(data: OhlcRecord[]) {
         this.viewport = { x1: 50, x2: 0 };
-        this.chartData = data;
+        this.chartData = data.map((x, i) => {
+            let r: OhlcItem = { ohlc: x, posX: this.getBarPosX(i) };
+            return r;
+        });
 
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
 
-    public getXbyIndex(i: number): number {
+    public getBarPosX(i: number): number {
         return i * (this.sizing.bars.width + this.sizing.bars.gap)
     }
 
-    public getInView(data: OhlcRecord[], v: Viewport): OhlcItems {
+    public getInView(data: OhlcItem[], v: Viewport): OhlcItems {
         let startingIndex = -1;
         let inView = data.filter((record, i) => {
-            let currX = this.getXbyIndex(i);
-            let r = currX >= v.x1 && currX <= v.x2;
+            let startX = -this.chartXOffset;
+            let endX = startX + this.sizing.width;
+            let currX = record.posX;
+            
+            let r = currX >= startX && currX <= endX;
 
             if(r === true && startingIndex === -1) {
                 startingIndex = i;
@@ -85,6 +98,7 @@ export class ChartCore {
     }
 
     public render() {
+        let self = this;
         let svg = this.svg;
         let allData = this.chartData;
         let sizing = this.sizing;
@@ -92,12 +106,14 @@ export class ChartCore {
         let g = this.g;
 
         let data = this.getInView(allData, viewport);
+        console.log(this.chartXOffset);
+        
 
-        let yScaleMin: number = d3.min(data.records, (d: OhlcRecord) => {
-            return d.low;
+        let yScaleMin: number = d3.min(data.records, (d: OhlcItem) => {
+            return d.ohlc.low;
         });
-        let yScaleMax: number = d3.max(data.records, (d: OhlcRecord) => {
-            return d.high;
+        let yScaleMax: number = d3.max(data.records, (d: OhlcItem) => {
+            return d.ohlc.high;
         });
 
         // Scales.
@@ -118,8 +134,8 @@ export class ChartCore {
 
         // Add groups.
         let groups = svgData.enter().append("g")
-            .attr("transform", (x: OhlcRecord, i) => {
-                return `translate(${i * (sizing.bars.width + sizing.bars.gap)}, ${yScale(x.low)})`;
+            .attr("transform", (item: OhlcItem, i) => {
+                return `translate(${(item.posX + self.chartXOffset)}, ${yScale(item.ohlc.low)})`;
             });
 
         groups.append("line");
@@ -160,32 +176,32 @@ export class ChartCore {
 
         // Process lines.
         groups.selectAll("line")
-            .attr("transform", (x: OhlcRecord, i) => {
+            .attr("transform", (x: OhlcItem, i) => {
                 return `translate(${(sizing.bars.width / 2)}, ${0})`;
             })
             .attr("x1", 0).attr("x2", 0)
             .attr("y1", 0)
-            .attr("y2", (x: OhlcRecord, i) => {
-                return (yScale(x.high) - yScale(x.low));
+            .attr("y2", (x: OhlcItem, i) => {
+                return (yScale(x.ohlc.high) - yScale(x.ohlc.low));
             })
             .attr("stroke-width", 1)
-            .attr("stroke", (o: OhlcRecord) => {
-                return getColor(o);
+            .attr("stroke", (o: OhlcItem) => {
+                return getColor(o.ohlc);
             });
 
         // Process rects.
         groups.selectAll("rect")
             .attr("width", sizing.bars.width)
-            .attr("height", (o: OhlcRecord) => {
-                return Math.abs(yScale(o.open) - yScale(o.close));
+            .attr("height", (o: OhlcItem) => {
+                return Math.abs(yScale(o.ohlc.open) - yScale(o.ohlc.close));
             })
-            .attr("fill", (o: OhlcRecord) => {
-                return getColor(o);
+            .attr("fill", (o: OhlcItem) => {
+                return getColor(o.ohlc);
             })
             .attr("x", 0)
-            .attr("y", (x: OhlcRecord, i) => {
-                let openLow = yScale(x.open) - yScale(x.low);
-                let closeLow = yScale(x.close) - yScale(x.low)
+            .attr("y", (x: OhlcItem, i) => {
+                let openLow = yScale(x.ohlc.open) - yScale(x.ohlc.low);
+                let closeLow = yScale(x.ohlc.close) - yScale(x.ohlc.low)
                 return openLow < closeLow ? openLow : closeLow;
             });
 
