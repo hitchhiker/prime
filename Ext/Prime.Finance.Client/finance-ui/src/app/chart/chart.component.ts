@@ -5,7 +5,7 @@ import { OhlcRawResponse } from './ohlc/ohlc-raw-response';
 import { map } from 'rxjs/operators';
 import { OhlcRecord } from './ohlc/ohlc-record';
 import { range } from 'rxjs';
-import { ChartCore, Viewport } from './chart-core';
+import { ChartCore } from './chart-core';
 
 @Component({
   selector: 'app-chart',
@@ -54,24 +54,20 @@ export class ChartComponent implements OnInit {
 
   public moveLeft() {
     //this.chartCore.viewport = new Viewport(this.chartCore.viewport.x1 - 50);
-    this.chartCore.chartXOffset += 50;
-
-    this.chartCore.render();
+    this.chartCore.chartOffsetX += 50;
   }
 
   public moveRight() {
     //this.chartCore.viewport = new Viewport(this.chartCore.viewport.x1 + 50);
-    this.chartCore.chartXOffset -= 50;
-
-    this.chartCore.render();
+    this.chartCore.chartOffsetX -= 50;
   }
 
   public zoomIn() {
-
+    this.chartCore.barWidth += 2;
   }
 
   public zoomOut() {
-
+    this.chartCore.barWidth -= 2;
   }
 
   // data should be sorted by time.

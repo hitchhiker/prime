@@ -6,56 +6,63 @@ class OhlcItem {
     posX: number;
 }
 
-class OhlcItems {
-    records: OhlcItem[];
-    index: number;
-}
-
-export class Viewport {
-    constructor(x1) {
-        this.x1 = x1;
-    }
-
-    x1: number;
-    x2: number;
-}
-
 export class ChartCore {
-    private chartData: OhlcItem[];
+    private _chartData: OhlcItem[];
+    private _chartDataInView: OhlcItem[];
+
     private svg;
     private g;
 
-    public chartXOffset: number = 10;
+    private _chartOffsetX: number = -600;
 
     constructor(selector: string) {
         this.initialize(selector);
     }
 
-    public sizing = {
+    private _sizing = {
         margin: {
             top: 10, right: 10, bottom: 10, left: 10
         },
         bars: {
             width: 10,
-            gap: 2
+            gap: 3
         },
         height: 450,
         width: 600
     };
 
-    private _viewport: Viewport = new Viewport(0);
-    public set viewport(v: Viewport) {
-        this._viewport.x1 = v.x1;
-        this._viewport.x2 = v.x1 + this.sizing.width;
-        console.log(this._viewport);
+    public set chartOffsetX(v: number) {
+        this._chartOffsetX = v;
+
+        this.render();
     }
-    public get viewport(): Viewport {
-        return this._viewport;
+    public get chartOffsetX() : number {
+        return this._chartOffsetX;
+    }
+    
+    public set barWidth(v: number) {
+        let displacement = this.calcZoomOffsetDisplacement(v);
+        console.log([displacement, this.chartOffsetX]);
+        
+        this._sizing.bars.width = v;
+
+        this.chartOffsetX -= displacement;
+        this.render();
+    }
+    public get barWidth(): number {
+        return this._sizing.bars.width;
+    }
+
+    public initialize(selector: string) {
+        this.svg = d3.select(selector)
+            .append("svg").attr("width", this._sizing.width).attr("height", this._sizing.height);
+
+        this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
+        this.g = this.svg.append("g");
     }
 
     public setData(data: OhlcRecord[]) {
-        this.viewport = { x1: 50, x2: 0 };
-        this.chartData = data.map((x, i) => {
+        this._chartData = data.map((x, i) => {
             let r: OhlcItem = { ohlc: x, posX: this.getBarPosX(i) };
             return r;
         });
@@ -63,58 +70,56 @@ export class ChartCore {
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
 
-    public getBarPosX(i: number): number {
-        return i * (this.sizing.bars.width + this.sizing.bars.gap)
+    private recalcItemsPosX(data: OhlcItem[]): OhlcItem[] {
+        data.forEach((v, i) => {
+            v.posX = this.getBarPosX(i);
+        });
+
+        return data;
     }
 
-    public getInView(data: OhlcItem[], v: Viewport): OhlcItems {
-        let startingIndex = -1;
+    public getBarPosX(i: number): number {
+        return i * (this._sizing.bars.width + this._sizing.bars.gap)
+    }
+
+    public getInView(data: OhlcItem[]): OhlcItem[] {
         let inView = data.filter((record, i) => {
-            let startX = -this.chartXOffset;
-            let endX = startX + this.sizing.width;
+            let startX = -this._chartOffsetX;
+            let endX = startX + this._sizing.width;
             let currX = record.posX;
             
             let r = currX >= startX && currX <= endX;
 
-            if(r === true && startingIndex === -1) {
-                startingIndex = i;
-            }
-
             return r;
         });
 
-        return { 
-            index: startingIndex,
-            records: inView
-        };
+        return inView;
     }
 
-    public initialize(selector: string) {
-        this.svg = d3.select(selector)
-            .append("svg").attr("width", this.sizing.width).attr("height", this.sizing.height);
+    // Calculates center of chart view (SVG view) in chart data coordinates (taking into account chart offset X).
+    private calcZoomOffsetDisplacement(newWidth: number): number {
+        let offsetAndWidth = -this._chartOffsetX + this._sizing.width;
+        let itemsInViewOld = offsetAndWidth / (this._sizing.bars.width + this._sizing.bars.gap);
+        let itemsInViewNew = offsetAndWidth / (newWidth + this._sizing.bars.gap);
+        let rel = itemsInViewOld / itemsInViewNew ;
+        let diff = itemsInViewNew - itemsInViewOld;
+        let partDiff = (rel * offsetAndWidth - offsetAndWidth) * ((offsetAndWidth - (this._sizing.width / 2)) / offsetAndWidth);
 
-        this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
-        this.g = this.svg.append("g");
+        return partDiff;
     }
 
     public render() {
         let self = this;
         let svg = this.svg;
-        let allData = this.chartData;
-        let sizing = this.sizing;
-        let viewport = this.viewport;
+        let allData = this.recalcItemsPosX(this._chartData);
+        let sizing = this._sizing;
         let g = this.g;
 
-        let data = this.getInView(allData, viewport);
-        console.log(this.chartXOffset);
-        
+        this._chartDataInView = this.getInView(allData);
+        let data = this._chartDataInView;
 
-        let yScaleMin: number = d3.min(data.records, (d: OhlcItem) => {
-            return d.ohlc.low;
-        });
-        let yScaleMax: number = d3.max(data.records, (d: OhlcItem) => {
-            return d.ohlc.high;
-        });
+        let yScaleMin: number = d3.min(data, (d: OhlcItem) => { return d.ohlc.low; });
+        let yScaleMax: number = d3.max(data, (d: OhlcItem) => { return d.ohlc.high; });
 
         // Scales.
         let yScaleRaw = d3.scaleLinear()
@@ -130,12 +135,12 @@ export class ChartCore {
         // Populate data.
         let svgData = g
             .selectAll("g")
-            .data(data.records);
+            .data(data);
 
         // Add groups.
         let groups = svgData.enter().append("g")
             .attr("transform", (item: OhlcItem, i) => {
-                return `translate(${(item.posX + self.chartXOffset)}, ${yScale(item.ohlc.low)})`;
+                return `translate(${(item.posX + self._chartOffsetX)}, ${yScale(item.ohlc.low)})`;
             });
 
         groups.append("line");
