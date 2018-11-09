@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from "d3";
 import { HttpClient } from '@angular/common/http';
 import { OhlcRawResponse } from './ohlc/ohlc-raw-response';
-import { map } from 'rxjs/operators';
+import { map, debounceTime } from 'rxjs/operators';
 import { OhlcRecord } from './ohlc/ohlc-record';
-import { range } from 'rxjs';
+import { range, Subject } from 'rxjs';
 import { ChartCore } from './chart-core';
 
 @Component({
@@ -15,13 +15,14 @@ import { ChartCore } from './chart-core';
 export class ChartComponent implements OnInit {
 
   private chartCore: ChartCore;
+  private onResizedObs: Subject<any> = new Subject();
 
   constructor(
     private httpClient: HttpClient
   ) { }
 
   ngOnInit() {
-    this.chartCore = new ChartCore("#plotly-div");
+    this.chartCore = new ChartCore("#plotly-div svg");
 
     this.httpClient.get("/assets/ohlc.json").pipe(map((o) => {
       let rRaw = (<OhlcRawResponse>o).result["XXBTZUSD"];
@@ -50,6 +51,19 @@ export class ChartComponent implements OnInit {
       this.chartCore.setData(d);
       this.draw(d);
     });
+
+    this.onResizedObs.pipe(debounceTime(100)).subscribe((d) => {
+      this.onResizeDeb(d);
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  public onResize(event) {
+    this.onResizedObs.next(event);
+  }
+
+  private onResizeDeb(event) {
+    this.chartCore.updateSvgWidth();
   }
 
   public moveLeft() {

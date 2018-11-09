@@ -13,7 +13,7 @@ export class ChartCore {
     private svg;
     private g;
 
-    private _chartOffsetX: number = -600;
+    private _chartOffsetX: number = 0;
 
     constructor(selector: string) {
         this.initialize(selector);
@@ -23,27 +23,42 @@ export class ChartCore {
         margin: {
             top: 10, right: 10, bottom: 10, left: 10
         },
+        chartOffset: {
+            max: 100,
+            min: 0 // Initialized during runtime.
+        },
         bars: {
             width: 10,
-            gap: 3
+            gap: 3,
+            maxWidth: 50,
+            minWidth: 3
         },
         height: 450,
-        width: 600
+        width: 0
     };
+
+    public updateSvgWidth() {
+        let w = this.svg.node().getBBox().width;
+
+        this._sizing.width = this.svg.node().getBBox().width;
+        this.render();
+    }
 
     public set chartOffsetX(v: number) {
         this._chartOffsetX = v;
-
         this.render();
     }
-    public get chartOffsetX() : number {
+    public get chartOffsetX(): number {
         return this._chartOffsetX;
     }
-    
+
     public set barWidth(v: number) {
+        if (v > this._sizing.bars.maxWidth || v < this._sizing.bars.minWidth)
+            return;
+
         let displacement = this.calcZoomOffsetDisplacement(v);
-        console.log([displacement, this.chartOffsetX]);
-        
+        console.log(v);
+
         this._sizing.bars.width = v;
 
         this.chartOffsetX -= displacement;
@@ -54,8 +69,10 @@ export class ChartCore {
     }
 
     public initialize(selector: string) {
-        this.svg = d3.select(selector)
-            .append("svg").attr("width", this._sizing.width).attr("height", this._sizing.height);
+        this.svg = d3.select(selector);
+
+        let w = this.svg.node().clientWidth;
+        this._sizing.width = w;
 
         this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
         this.g = this.svg.append("g");
@@ -67,6 +84,7 @@ export class ChartCore {
             return r;
         });
 
+        this._chartOffsetX = -this._chartData[this._chartData.length - 1].posX + 1000;
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
 
@@ -74,6 +92,10 @@ export class ChartCore {
         data.forEach((v, i) => {
             v.posX = this.getBarPosX(i);
         });
+
+        let lastItem = data[data.length - 1];
+        this._sizing.chartOffset.min = -lastItem.posX + this._sizing.width - 100;
+        console.log("Min: " + this._sizing.chartOffset.min);
 
         return data;
     }
@@ -87,7 +109,7 @@ export class ChartCore {
             let startX = -this._chartOffsetX;
             let endX = startX + this._sizing.width;
             let currX = record.posX;
-            
+
             let r = currX >= startX && currX <= endX;
 
             return r;
@@ -101,10 +123,8 @@ export class ChartCore {
         let offsetAndWidth = -this._chartOffsetX + this._sizing.width;
         let itemsInViewOld = offsetAndWidth / (this._sizing.bars.width + this._sizing.bars.gap);
         let itemsInViewNew = offsetAndWidth / (newWidth + this._sizing.bars.gap);
-        let rel = itemsInViewOld / itemsInViewNew ;
-        let diff = itemsInViewNew - itemsInViewOld;
+        let rel = itemsInViewOld / itemsInViewNew;
         let partDiff = (rel * offsetAndWidth - offsetAndWidth) * ((offsetAndWidth - (this._sizing.width / 2)) / offsetAndWidth);
-
         return partDiff;
     }
 
