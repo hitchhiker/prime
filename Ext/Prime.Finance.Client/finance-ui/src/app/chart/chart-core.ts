@@ -179,15 +179,13 @@ export class ChartCore {
         //let gW = g.node().getBBox().width;
 
         // Zoom.
-        // svg
-        //   .call(d3.zoom()
-        //     .scaleExtent([1 / 2, 4])
-        //     .translateExtent([[-100, svgH / 2], [gW + 100, svgH / 2]])
-        //     .on("zoom", zoomed));
-
-        // function zoomed() {
-        //   //console.log(d3.event.transform);
-        // }
+        svg
+            .call(d3.zoom()
+                .scaleExtent([1, 1])
+                //.translateExtent([[-allData[allData.length - 1].posX, 0], [allData[allData.length - 1].posX + 100, 0]])
+                .on("zoom", (e) => {
+                    this.onTransformed(e);
+                }));
 
         // Line test.
         // function lineTest() {
@@ -241,5 +239,15 @@ export class ChartCore {
         function getColor(o: OhlcRecord): string {
             return o.open - o.close >= 0 ? "red" : "green";
         }
+    }
+
+    private chartOffsetXInitialDiff: number = null;
+    private onTransformed(e) {
+        let x = d3.event.transform.x;
+        if (this.chartOffsetXInitialDiff === null) {
+            this.chartOffsetXInitialDiff = x + this._chartOffsetX;
+        }
+        this.chartOffsetX = x + this.chartOffsetXInitialDiff;
+        console.log([x, this.chartOffsetX]);
     }
 }
