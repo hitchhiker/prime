@@ -23,6 +23,7 @@ export class ChartComponent implements OnInit {
 
   ngOnInit() {
     this.chartCore = new ChartCore("#plotly-div svg");
+    this.zoomValue = this.chartCore.barWidth;
 
     this.httpClient.get("/assets/ohlc.json").pipe(map((o) => {
       let rRaw = (<OhlcRawResponse>o).result["XXBTZUSD"];
@@ -64,6 +65,12 @@ export class ChartComponent implements OnInit {
 
   private onResizeDeb(event) {
     this.chartCore.updateSvgWidth();
+  }
+
+  public zoomValue;
+  public zoomChanged() {
+    console.log(this.zoomValue);
+    this.chartCore.barWidth = parseInt(this.zoomValue);
   }
 
   public moveLeft() {

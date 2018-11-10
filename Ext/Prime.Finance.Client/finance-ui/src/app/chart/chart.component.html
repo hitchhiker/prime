@@ -1,11 +1,6 @@
 <div id="plotly-div">
     <div class="controls">
-        <button  (click)="zoomIn()">+</button>
-        <button (click)="zoomOut()">-</button>
-
-        <button (click)="moveLeft()"><<</button>
-        <button (click)="moveRight()">>></button>
+        <input type="range" min="3" max="50" [(ngModel)]="zoomValue" (input)="zoomChanged()" class="slider" id="myRange">
     </div>
     <svg width="100%" height="450"></svg>
 </div>
-

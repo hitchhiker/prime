@@ -68,6 +68,7 @@ export class ChartCore {
         let displacement = this.calcZoomOffsetDisplacement(v);
 
         this._sizing.bars.width = v;
+        this.chartOffsetXInitialDiff = null;
 
         this.chartOffsetX -= displacement;
         this.render();
@@ -237,17 +238,22 @@ export class ChartCore {
         svgData.exit().remove();
 
         function getColor(o: OhlcRecord): string {
-            return o.open - o.close >= 0 ? "red" : "green";
+            return o.open - o.close >= 0 ? "#d81571" : "#4caf0e";
         }
     }
 
     private chartOffsetXInitialDiff: number = null;
     private onTransformed(e) {
         let x = d3.event.transform.x;
+        let k = d3.event.transform.k;
+        console.log(k);
+        
         if (this.chartOffsetXInitialDiff === null) {
-            this.chartOffsetXInitialDiff = x + this._chartOffsetX;
+            this.chartOffsetXInitialDiff = this._chartOffsetX - x;
+            //console.log("reset");
+            //console.log(`Offset: ${}`)
         }
         this.chartOffsetX = x + this.chartOffsetXInitialDiff;
-        console.log([x, this.chartOffsetX]);
+        //console.log({"transform": x, "offset": this.chartOffsetX, "diff": this.chartOffsetXInitialDiff});
     }
 }
