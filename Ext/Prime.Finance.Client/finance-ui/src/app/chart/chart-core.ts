@@ -40,7 +40,8 @@ export class ChartCore {
     public updateSvgWidth() {
         let w = this.svg.node().getBBox().width;
 
-        this._sizing.width = this.svg.node().getBBox().width;
+        this._sizing.width = this.svg.node().clientWidth;
+        console.log(`New width: ${this._sizing.width}`);
         this.render();
     }
 
@@ -71,8 +72,7 @@ export class ChartCore {
     public initialize(selector: string) {
         this.svg = d3.select(selector);
 
-        let w = this.svg.node().clientWidth;
-        this._sizing.width = w;
+        this._sizing.width = this.svg.node().clientWidth;
 
         this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
         this.g = this.svg.append("g");
@@ -95,7 +95,6 @@ export class ChartCore {
 
         let lastItem = data[data.length - 1];
         this._sizing.chartOffset.min = -lastItem.posX + this._sizing.width - 100;
-        console.log("Min: " + this._sizing.chartOffset.min);
 
         return data;
     }
