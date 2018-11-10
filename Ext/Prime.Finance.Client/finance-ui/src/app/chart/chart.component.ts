@@ -68,12 +68,12 @@ export class ChartComponent implements OnInit {
 
   public moveLeft() {
     //this.chartCore.viewport = new Viewport(this.chartCore.viewport.x1 - 50);
-    this.chartCore.chartOffsetX += 50;
+    this.chartCore.moveLeft();
   }
 
   public moveRight() {
     //this.chartCore.viewport = new Viewport(this.chartCore.viewport.x1 + 50);
-    this.chartCore.chartOffsetX -= 50;
+    this.chartCore.moveRight();
   }
 
   public zoomIn() {

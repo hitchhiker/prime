@@ -21,7 +21,7 @@ export class ChartCore {
 
     private _sizing = {
         margin: {
-            top: 10, right: 10, bottom: 10, left: 10
+            top: 10, right: 10, bottom: 10, left: 0
         },
         chartOffset: {
             max: 100,
@@ -37,12 +37,20 @@ export class ChartCore {
         width: 0
     };
 
-    public updateSvgWidth() {
-        let w = this.svg.node().getBBox().width;
-
+    private setSvgWidth() {
         this._sizing.width = this.svg.node().clientWidth;
-        console.log(`New width: ${this._sizing.width}`);
+    }
+
+    public updateSvgWidth() {
+        this.setSvgWidth();
         this.render();
+    }
+
+    public moveLeft() {
+        this.chartOffsetX += this._sizing.bars.width + this._sizing.bars.gap;
+    }
+    public moveRight() {
+        this.chartOffsetX -= this._sizing.bars.width + this._sizing.bars.gap;
     }
 
     public set chartOffsetX(v: number) {
@@ -58,7 +66,6 @@ export class ChartCore {
             return;
 
         let displacement = this.calcZoomOffsetDisplacement(v);
-        console.log(v);
 
         this._sizing.bars.width = v;
 
@@ -72,10 +79,10 @@ export class ChartCore {
     public initialize(selector: string) {
         this.svg = d3.select(selector);
 
-        this._sizing.width = this.svg.node().clientWidth;
+        this.setSvgWidth();
 
         this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
-        this.g = this.svg.append("g");
+        this.g = this.svg.append("g").attr("transform", `translate(${this._sizing.margin.left}, ${this._sizing.margin.top})`);
     }
 
     public setData(data: OhlcRecord[]) {
@@ -84,7 +91,7 @@ export class ChartCore {
             return r;
         });
 
-        this._chartOffsetX = -this._chartData[this._chartData.length - 1].posX + 1000;
+        this._chartOffsetX = -this._chartData[this._chartData.length - 50].posX;
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
 
@@ -105,8 +112,8 @@ export class ChartCore {
 
     public getInView(data: OhlcItem[]): OhlcItem[] {
         let inView = data.filter((record, i) => {
-            let startX = -this._chartOffsetX;
-            let endX = startX + this._sizing.width;
+            let startX = -(this._chartOffsetX);
+            let endX = startX + this._sizing.width - (this._sizing.margin.right + this._sizing.bars.width) - this._sizing.margin.left;
             let currX = record.posX;
 
             let r = currX >= startX && currX <= endX;
@@ -143,7 +150,7 @@ export class ChartCore {
         // Scales.
         let yScaleRaw = d3.scaleLinear()
             .domain([yScaleMin, yScaleMax]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
-            .range([sizing.height, 0]);
+            .range([sizing.height - sizing.margin.bottom - sizing.margin.top, 0]);
         let yScale = function (v) {
             return yScaleRaw(v).toFixed(4);
         };
