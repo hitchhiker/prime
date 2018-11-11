@@ -1,10 +1,48 @@
+@import "../../styles/common/common.scss";
 
 #plotly-div {
     height: 450px;
+    position: relative;
 
     .controls {
+        width: 100%;
         position: absolute;
         opacity: 0.8;
+
+        .zoom {
+            float: left;
+        }
+
+        .info {
+            float: right;
+            margin-right: 50px;
+
+            .ohlc {
+                display: inline-block;
+                margin-left: 30px;
+                width: 60px;
+
+                &.open {
+
+                }
+
+                &.high {
+
+                }
+
+                &.low {
+
+                }
+
+                &.cl {
+
+                }
+            }
+        
+            .dimmed {
+                opacity: 0.7;
+            }
+        }
     }
 }
 

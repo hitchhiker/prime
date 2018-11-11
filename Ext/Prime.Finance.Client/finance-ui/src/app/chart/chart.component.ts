@@ -21,6 +21,8 @@ export class ChartComponent implements OnInit {
     private httpClient: HttpClient
   ) { }
 
+  public selectedOhlc: OhlcRecord = null;
+
   ngOnInit() {
     this.chartCore = new ChartCore("#plotly-div svg");
     this.zoomValue = this.chartCore.barWidth;
@@ -45,9 +47,9 @@ export class ChartComponent implements OnInit {
       });
     })).subscribe((d) => {
       // Chanhe all time to indexes. FOR DEBUG.
-      d.forEach((v, i) => {
-        v.time = i;
-      });
+      // d.forEach((v, i) => {
+      //   v.time = i;
+      // });
 
       this.chartCore.setData(d);
       this.draw(d);
@@ -56,6 +58,16 @@ export class ChartComponent implements OnInit {
     this.onResizedObs.pipe(debounceTime(100)).subscribe((d) => {
       this.onResizeDeb(d);
     });
+
+    this.chartCore.onOhlcItemSelected.subscribe((d) => {
+      this.selectedOhlc = d;
+    });
+  }
+
+  public get isBid (): boolean {
+    if(!this.selectedOhlc)
+      return false;
+    return this.selectedOhlc.open < this.selectedOhlc.close;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -69,7 +81,6 @@ export class ChartComponent implements OnInit {
 
   public zoomValue;
   public zoomChanged() {
-    console.log(this.zoomValue);
     this.chartCore.barWidth = parseInt(this.zoomValue);
   }
 

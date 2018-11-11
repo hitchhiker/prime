@@ -1,6 +1,15 @@
 <div id="plotly-div">
     <div class="controls">
-        <input type="range" min="3" max="50" [(ngModel)]="zoomValue" (input)="zoomChanged()" class="slider" id="myRange">
+        <div class="zoom">
+            <input type="range" min="3" max="50" [(ngModel)]="zoomValue" (input)="zoomChanged()" class="slider" id="myRange">
+        </div>
+
+        <div class="info " [ngClass]="{ 'color-bid': isBid, 'color-ask': !isBid }">
+            <span class="ohlc open"><span class="dimmed">O: </span>{{ selectedOhlc?.open }}</span>
+            <span class="ohlc high"><span class="dimmed">H: </span>{{ selectedOhlc?.high }}</span>
+            <span class="ohlc low"><span class="dimmed">L: </span>{{ selectedOhlc?.low }}</span>
+            <span class="ohlc cl"><span class="dimmed">C: </span>{{ selectedOhlc?.close }}</span>
+        </div>
     </div>
     <svg width="100%" height="450"></svg>
 </div>

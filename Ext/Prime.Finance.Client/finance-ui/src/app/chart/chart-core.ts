@@ -1,5 +1,6 @@
 import { OhlcRecord } from "./ohlc/ohlc-record";
 import * as d3 from "d3";
+import { Observable, Subject } from "rxjs";
 
 class OhlcItem {
     ohlc: OhlcRecord;
@@ -11,9 +12,16 @@ export class ChartCore {
     private _chartDataInView: OhlcItem[];
 
     private svg;
-    private g;
+    private gMain;
+    private gLeftAxis;
+    private selectionLine;
 
     private _chartOffsetX: number = 0;
+
+    private _onOhlcItemSelected: Subject<OhlcRecord> = new Subject();
+    public onOhlcItemSelected: Observable<OhlcRecord> = this._onOhlcItemSelected.asObservable();
+
+    private selectedOhlcRecord: OhlcRecord;
 
     constructor(selector: string) {
         this.initialize(selector);
@@ -21,7 +29,7 @@ export class ChartCore {
 
     private _sizing = {
         margin: {
-            top: 10, right: 10, bottom: 10, left: 0
+            top: 20, right: 50, bottom: 10, left: 0
         },
         chartOffset: {
             max: 100,
@@ -82,8 +90,57 @@ export class ChartCore {
 
         this.setSvgWidth();
 
-        this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
-        this.g = this.svg.append("g").attr("transform", `translate(${this._sizing.margin.left}, ${this._sizing.margin.top})`);
+        // Rect to see SVG's boundaries.
+        //this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
+
+        // Drawing area rect.
+        this.svg.on("mousemove", () => {
+            this.onSvgMouseMove(d3.mouse(d3.event.currentTarget));
+        })
+
+        // Selection line.
+        this.selectionLine = this.svg.append("line")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", 0)
+            .attr("y2", this._sizing.height)
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "5,5")
+            .attr("stroke", "rgba(255, 255, 255, 0.5)");
+
+        // append("rect")
+        //     .attr("width", this._sizing.width - (this._sizing.margin.left + this._sizing.margin.right))
+        //     .attr("height", this._sizing.height - (this._sizing.margin.top + this._sizing.margin.bottom))
+        //     .attr("transform", `translate(${this._sizing.margin.left}, ${this._sizing.margin.top})`)
+        //     .attr("fill", "transparent")
+
+        // Drawing area group.
+        this.gMain = this.svg.append("g").attr("transform", `translate(${this._sizing.margin.left}, ${this._sizing.margin.top})`);
+        this.gLeftAxis = this.svg.append("g");
+    }
+
+    private onSvgMouseMove([x, y]) {
+        this.selectionLine.attr("transform", `translate(${x}, 0)`);
+        if (this._chartDataInView && this._chartDataInView.length > 0) {
+            let chartOffset = -this._chartOffsetX + x;
+
+            let dists = this._chartDataInView.map((x) => {
+                return { dist: Math.abs(chartOffset - (x.posX + this._sizing.bars.width / 2)), item: x };
+            });
+
+            let min = dists[0].dist;
+            let prevSelected = this.selectedOhlcRecord ? Object.assign({}, this.selectedOhlcRecord): null;
+            this.selectedOhlcRecord = dists[0].item.ohlc;
+            dists.forEach(v => {
+                if (v.dist < min) {
+                    min = v.dist;
+                    this.selectedOhlcRecord = v.item.ohlc;
+                }
+            });
+
+            if(!prevSelected || prevSelected.time !== this.selectedOhlcRecord.time)
+                this._onOhlcItemSelected.next(this.selectedOhlcRecord);
+        }
     }
 
     public setData(data: OhlcRecord[]) {
@@ -93,6 +150,7 @@ export class ChartCore {
         });
 
         this._chartOffsetX = -this._chartData[this._chartData.length - 50].posX;
+        this._onOhlcItemSelected.next(this._chartData[this._chartData.length - 1].ohlc);
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
 
@@ -140,7 +198,8 @@ export class ChartCore {
         let svg = this.svg;
         let allData = this.recalcItemsPosX(this._chartData);
         let sizing = this._sizing;
-        let g = this.g;
+        let gMain = this.gMain;
+        let gLeftAxis = this.gLeftAxis;
 
         this._chartDataInView = this.getInView(allData);
         let data = this._chartDataInView;
@@ -157,10 +216,11 @@ export class ChartCore {
         };
 
         // Clear everything.
-        g.selectAll("*").remove();
+        gMain.selectAll("*").remove();
+        gLeftAxis.selectAll("*").remove();
 
         // Populate data.
-        let svgData = g
+        let svgData = gMain
             .selectAll("g")
             .data(data);
 
@@ -168,25 +228,19 @@ export class ChartCore {
         let groups = svgData.enter().append("g")
             .attr("transform", (item: OhlcItem, i) => {
                 return `translate(${(item.posX + self._chartOffsetX)}, ${yScale(item.ohlc.low)})`;
+            })
+            .attr("id", (item: OhlcItem, i) => {
+                return "item-" + item.ohlc.time;
             });
 
         groups.append("line");
         groups.append("rect");
 
         // Axis.
-        // let xAxis = d3.axisBottom(yScaleRaw);
+        //let xAxis = d3.axisLeft(yScaleRaw);
         // svg.append("g").call(xAxis);
 
         //let gW = g.node().getBBox().width;
-
-        // Zoom.
-        svg
-            .call(d3.zoom()
-                .scaleExtent([1, 1])
-                //.translateExtent([[-allData[allData.length - 1].posX, 0], [allData[allData.length - 1].posX + 100, 0]])
-                .on("zoom", (e) => {
-                    this.onTransformed(e);
-                }));
 
         // Line test.
         // function lineTest() {
@@ -235,7 +289,17 @@ export class ChartCore {
                 return openLow < closeLow ? openLow : closeLow;
             });
 
-        svgData.exit().remove();
+        groups.exit().remove();
+
+        // Zoom.
+        svg.call(d3.zoom()
+            .scaleExtent([1, 1])
+            //.translateExtent([[-allData[allData.length - 1].posX, 0], [allData[allData.length - 1].posX + 100, 0]])
+            .on("zoom", (e) => {
+                this.onTransformed(e);
+            }));
+        let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
+        gLeftAxis.attr("transform", `translate(${this._sizing.width - this._sizing.margin.right}, ${this._sizing.margin.top})`).call(rightAxis);
 
         function getColor(o: OhlcRecord): string {
             return o.open - o.close >= 0 ? "#d81571" : "#4caf0e";
@@ -247,7 +311,7 @@ export class ChartCore {
         let x = d3.event.transform.x;
         let k = d3.event.transform.k;
         console.log(k);
-        
+
         if (this.chartOffsetXInitialDiff === null) {
             this.chartOffsetXInitialDiff = this._chartOffsetX - x;
             //console.log("reset");
