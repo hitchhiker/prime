@@ -17,7 +17,7 @@ export class ChartCore {
     private svg;
     private gMain;
     private gLeftAxis;
-    private selectionLine;
+    private selectionCrosshair = { horizontal: null, vertical: null };
 
     private _chartOffsetX: number = 0;
 
@@ -41,7 +41,9 @@ export class ChartCore {
     }
 
     private onSvgMouseMove([x, y]) {
-        this.selectionLine.attr("transform", `translate(${x}, 0)`);
+        this.selectionCrosshair.vertical.attr("transform", `translate(${x}, 0)`);
+        this.selectionCrosshair.horizontal.attr("transform", `translate(0, ${y})`);
+
         if (this._chartDataInView && this._chartDataInView.length > 0) {
             let chartOffset = -this._chartOffsetX + x;
 
@@ -64,19 +66,26 @@ export class ChartCore {
         }
     }
 
+    private chartOffsetXInitialDiff: number = null;
     onSvgDragMoving(dp: Point): any {
-        this.onTransformed(dp);
+        if (this.chartOffsetXInitialDiff === null) {
+            this.chartOffsetXInitialDiff = this._chartOffsetX + dp.x;
+            //console.log(`Offset: ${}`)
+        }
+        this.chartOffsetX = dp.x + this.chartOffsetXInitialDiff;
     }
 
     private onSvgMouseEnter(): any {
-        this.selectionLine.style("opacity", 1);
+        this.selectionCrosshair.horizontal.style("opacity", 1);
+        this.selectionCrosshair.vertical.style("opacity", 1);
     }
     private onSvgMouseLeave(): any {
-        this.selectionLine.style("opacity", 0);
+        this.selectionCrosshair.horizontal.style("opacity", 0);
+        this.selectionCrosshair.vertical.style("opacity", 0);
     }
 
     private onSvgDragStarted(p: Point): any {
-        console.log("started: ");
+        
     }
 
     private onSvgDragEnded(dp: Point): any {
@@ -161,6 +170,10 @@ export class ChartCore {
         this.svg.on("mouseenter", () => {
             this.onSvgMouseEnter();
         });
+        this.svg.on("mousewheel", (e) => {
+            let scrollValue = d3.event.wheelDeltaY;
+            this.barWidth += scrollValue / 100;
+        });
 
         this.svg.on("mousedown", () => {
             this._chartDragger.dragStart();
@@ -169,11 +182,19 @@ export class ChartCore {
         });
 
         // Selection line.
-        this.selectionLine = this.svg.append("line")
+        this.selectionCrosshair.vertical = this.svg.append("line")
             .attr("x1", 0)
             .attr("x2", 0)
             .attr("y1", 0)
             .attr("y2", this._sizing.height)
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "5,5")
+            .attr("stroke", "rgba(255, 255, 255, 0.5)");
+        this.selectionCrosshair.horizontal = this.svg.append("line")
+            .attr("x1", 0)
+            .attr("x2", this._sizing.width)
+            .attr("y1", 0)
+            .attr("y2", 0)
             .attr("stroke-width", 1)
             .attr("stroke-dasharray", "5,5")
             .attr("stroke", "rgba(255, 255, 255, 0.5)");
@@ -350,21 +371,5 @@ export class ChartCore {
         function getColor(o: OhlcRecord): string {
             return o.open - o.close >= 0 ? "#d81571" : "#4caf0e";
         }
-    }
-
-    private chartOffsetXInitialDiff: number = null;
-    private onTransformed(dp: Point) {
-        console.log(dp);
-        
-        let x = 0;//d3.event.transform.x;
-        
-        //console.log([d3.event.sourceEvent.offsetX]); // d3.event.sourceEvent.wheelDelta
-
-        if (this.chartOffsetXInitialDiff === null) {
-            this.chartOffsetXInitialDiff = this._chartOffsetX + dp.x;
-            //console.log(`Offset: ${}`)
-        }
-        this.chartOffsetX = dp.x + this.chartOffsetXInitialDiff;
-        //console.log({"transform": x, "offset": this.chartOffsetX, "diff": this.chartOffsetXInitialDiff});
     }
 }

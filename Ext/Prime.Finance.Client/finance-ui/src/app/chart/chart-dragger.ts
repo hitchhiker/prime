@@ -25,7 +25,6 @@ export class ChartDragger {
     public dragStart() {
         if (this._isDragging === false) {
             this._isDragging = true;
-            console.log(this._mousePos);
             this._dragStartPos = Point.fromPoint(this._mousePos);
             this._dragStarted.next(this._mousePos);
         }
