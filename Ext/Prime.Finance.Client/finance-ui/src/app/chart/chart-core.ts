@@ -1,6 +1,7 @@
 import { OhlcRecord } from "./ohlc/ohlc-record";
 import * as d3 from "d3";
 import { Observable, Subject } from "rxjs";
+import { ChartDragger, Point } from "./chart-dragger";
 
 class OhlcItem {
     ohlc: OhlcRecord;
@@ -10,6 +11,8 @@ class OhlcItem {
 export class ChartCore {
     private _chartData: OhlcItem[];
     private _chartDataInView: OhlcItem[];
+
+    private _chartDragger: ChartDragger = new ChartDragger();
 
     private svg;
     private gMain;
@@ -25,6 +28,59 @@ export class ChartCore {
 
     constructor(selector: string) {
         this.initialize(selector);
+
+        this._chartDragger.dragMoved.subscribe((dp) => {
+            this.onSvgDragMoving(dp);
+        });
+        this._chartDragger.dragStarted.subscribe((p) => {
+            this.onSvgDragStarted(p);
+        });
+        this._chartDragger.dragEnded.subscribe((dp) => {
+            this.onSvgDragEnded(dp);
+        });
+    }
+
+    private onSvgMouseMove([x, y]) {
+        this.selectionLine.attr("transform", `translate(${x}, 0)`);
+        if (this._chartDataInView && this._chartDataInView.length > 0) {
+            let chartOffset = -this._chartOffsetX + x;
+
+            let dists = this._chartDataInView.map((x) => {
+                return { dist: Math.abs(chartOffset - (x.posX + this._sizing.bars.width / 2)), item: x };
+            });
+
+            let min = dists[0].dist;
+            let prevSelected = this.selectedOhlcRecord ? Object.assign({}, this.selectedOhlcRecord) : null;
+            this.selectedOhlcRecord = dists[0].item.ohlc;
+            dists.forEach(v => {
+                if (v.dist < min) {
+                    min = v.dist;
+                    this.selectedOhlcRecord = v.item.ohlc;
+                }
+            });
+
+            if (!prevSelected || prevSelected.time !== this.selectedOhlcRecord.time)
+                this._onOhlcItemSelected.next(this.selectedOhlcRecord);
+        }
+    }
+
+    onSvgDragMoving(dp: Point): any {
+        this.onTransformed(dp);
+    }
+
+    private onSvgMouseEnter(): any {
+        this.selectionLine.style("opacity", 1);
+    }
+    private onSvgMouseLeave(): any {
+        this.selectionLine.style("opacity", 0);
+    }
+
+    private onSvgDragStarted(p: Point): any {
+        console.log("started: ");
+    }
+
+    private onSvgDragEnded(dp: Point): any {
+        this.chartOffsetXInitialDiff = null;
     }
 
     private _sizing = {
@@ -95,8 +151,22 @@ export class ChartCore {
 
         // Drawing area rect.
         this.svg.on("mousemove", () => {
-            this.onSvgMouseMove(d3.mouse(d3.event.currentTarget));
-        })
+            let coords = d3.mouse(d3.event.currentTarget);
+            this._chartDragger.mouseMove(coords);
+            this.onSvgMouseMove(coords);
+        });
+        this.svg.on("mouseleave", () => {
+            this.onSvgMouseLeave();
+        });
+        this.svg.on("mouseenter", () => {
+            this.onSvgMouseEnter();
+        });
+
+        this.svg.on("mousedown", () => {
+            this._chartDragger.dragStart();
+        }).on("mouseup", () => {
+            this._chartDragger.dragEnd();
+        });
 
         // Selection line.
         this.selectionLine = this.svg.append("line")
@@ -117,30 +187,6 @@ export class ChartCore {
         // Drawing area group.
         this.gMain = this.svg.append("g").attr("transform", `translate(${this._sizing.margin.left}, ${this._sizing.margin.top})`);
         this.gLeftAxis = this.svg.append("g");
-    }
-
-    private onSvgMouseMove([x, y]) {
-        this.selectionLine.attr("transform", `translate(${x}, 0)`);
-        if (this._chartDataInView && this._chartDataInView.length > 0) {
-            let chartOffset = -this._chartOffsetX + x;
-
-            let dists = this._chartDataInView.map((x) => {
-                return { dist: Math.abs(chartOffset - (x.posX + this._sizing.bars.width / 2)), item: x };
-            });
-
-            let min = dists[0].dist;
-            let prevSelected = this.selectedOhlcRecord ? Object.assign({}, this.selectedOhlcRecord): null;
-            this.selectedOhlcRecord = dists[0].item.ohlc;
-            dists.forEach(v => {
-                if (v.dist < min) {
-                    min = v.dist;
-                    this.selectedOhlcRecord = v.item.ohlc;
-                }
-            });
-
-            if(!prevSelected || prevSelected.time !== this.selectedOhlcRecord.time)
-                this._onOhlcItemSelected.next(this.selectedOhlcRecord);
-        }
     }
 
     public setData(data: OhlcRecord[]) {
@@ -292,12 +338,12 @@ export class ChartCore {
         groups.exit().remove();
 
         // Zoom.
-        svg.call(d3.zoom()
-            .scaleExtent([1, 1])
-            //.translateExtent([[-allData[allData.length - 1].posX, 0], [allData[allData.length - 1].posX + 100, 0]])
-            .on("zoom", (e) => {
-                this.onTransformed(e);
-            }));
+        // svg.call(d3.zoom()
+        //     .scaleExtent([1, 10])
+        //     //.translateExtent([[-allData[allData.length - 1].posX, 0], [allData[allData.length - 1].posX + 100, 0]])
+        //     .on("zoom", () => {
+        //         this.onTransformed();
+        //     }));
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
         gLeftAxis.attr("transform", `translate(${this._sizing.width - this._sizing.margin.right}, ${this._sizing.margin.top})`).call(rightAxis);
 
@@ -307,17 +353,18 @@ export class ChartCore {
     }
 
     private chartOffsetXInitialDiff: number = null;
-    private onTransformed(e) {
-        let x = d3.event.transform.x;
-        let k = d3.event.transform.k;
-        console.log(k);
+    private onTransformed(dp: Point) {
+        console.log(dp);
+        
+        let x = 0;//d3.event.transform.x;
+        
+        //console.log([d3.event.sourceEvent.offsetX]); // d3.event.sourceEvent.wheelDelta
 
         if (this.chartOffsetXInitialDiff === null) {
-            this.chartOffsetXInitialDiff = this._chartOffsetX - x;
-            //console.log("reset");
+            this.chartOffsetXInitialDiff = this._chartOffsetX + dp.x;
             //console.log(`Offset: ${}`)
         }
-        this.chartOffsetX = x + this.chartOffsetXInitialDiff;
+        this.chartOffsetX = dp.x + this.chartOffsetXInitialDiff;
         //console.log({"transform": x, "offset": this.chartOffsetX, "diff": this.chartOffsetXInitialDiff});
     }
 }
