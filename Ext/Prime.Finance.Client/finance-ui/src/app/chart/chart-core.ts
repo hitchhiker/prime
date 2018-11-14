@@ -85,7 +85,7 @@ export class ChartCore {
     }
 
     private onSvgDragStarted(p: Point): any {
-        
+
     }
 
     private onSvgDragEnded(dp: Point): any {
@@ -150,6 +150,15 @@ export class ChartCore {
         return this._sizing.bars.width;
     }
 
+    private pauseEvent() {
+        let e = d3.event || window.event;
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+        e.cancelBubble = true;
+        e.returnValue = false;
+        return false;
+    }
+
     public initialize(selector: string) {
         this.svg = d3.select(selector);
 
@@ -176,10 +185,19 @@ export class ChartCore {
         });
 
         this.svg.on("mousedown", () => {
+            this.pauseEvent();
             this._chartDragger.dragStart();
         }).on("mouseup", () => {
             this._chartDragger.dragEnd();
         });
+
+        function pauseEvent(e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
+            e.cancelBubble = true;
+            e.returnValue = false;
+            return false;
+        }
 
         // Selection line.
         this.selectionCrosshair.vertical = this.svg.append("line")
