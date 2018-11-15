@@ -10,7 +10,7 @@ export class Point {
 
 export class ChartDragger {
     private _isDragging: boolean = false;
-    private _mousePos: Point = new Point(0, 0);
+    public mousePos: Point = new Point(0, 0);
     private _dragStartPos: Point;
 
     private _dragStarted: Subject<Point> = new Subject<Point>();
@@ -25,8 +25,8 @@ export class ChartDragger {
     public dragStart() {
         if (this._isDragging === false) {
             this._isDragging = true;
-            this._dragStartPos = Point.fromPoint(this._mousePos);
-            this._dragStarted.next(this._mousePos);
+            this._dragStartPos = Point.fromPoint(this.mousePos);
+            this._dragStarted.next(this.mousePos);
         }
     }
 
@@ -34,7 +34,7 @@ export class ChartDragger {
         if (this._isDragging == true) {
             this._isDragging = false;
 
-            let endPoint = Point.fromPoint(this._mousePos);
+            let endPoint = Point.fromPoint(this.mousePos);
             let pDispl = this.calcDragDisplacement(this._dragStartPos, endPoint);
 
             this._dragEnded.next(pDispl);
@@ -44,11 +44,11 @@ export class ChartDragger {
     }
 
     public mouseMove([x, y]) {
-        this._mousePos.x = x;
-        this._mousePos.y = y;
+        this.mousePos.x = x;
+        this.mousePos.y = y;
 
         if (this._isDragging) {
-            let dp = this.calcDragDisplacement(this._dragStartPos, this._mousePos);
+            let dp = this.calcDragDisplacement(this._dragStartPos, this.mousePos);
             this._dragMoved.next(dp);
         }
     }

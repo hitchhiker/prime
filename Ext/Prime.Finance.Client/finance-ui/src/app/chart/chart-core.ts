@@ -18,6 +18,7 @@ export class ChartCore {
     private gMain;
     private gLeftAxis;
     private selectionCrosshair = { horizontal: null, vertical: null };
+    private crosshairPrice;
 
     private _chartOffsetX: number = 0;
 
@@ -216,6 +217,13 @@ export class ChartCore {
             .attr("stroke-width", 1)
             .attr("stroke-dasharray", "5,5")
             .attr("stroke", "rgba(255, 255, 255, 0.5)");
+        // Selection price.
+
+        this.crosshairPrice = this.svg.append("g");
+        this.crosshairPrice.append("rect").attr("width", 70).attr("height", 15).attr("fill", "black")
+        let text = this.crosshairPrice.append("text").attr("y", 12).attr("color", "red").text(6500);
+
+        console.log(text.width());
 
         // append("rect")
         //     .attr("width", this._sizing.width - (this._sizing.margin.left + this._sizing.margin.right))
@@ -274,7 +282,7 @@ export class ChartCore {
         let itemsInViewOld = offsetAndWidth / (this._sizing.bars.width + this._sizing.bars.gap);
         let itemsInViewNew = offsetAndWidth / (newWidth + this._sizing.bars.gap);
         let rel = itemsInViewOld / itemsInViewNew;
-        let partDiff = (rel * offsetAndWidth - offsetAndWidth) * ((offsetAndWidth - (this._sizing.width / 2)) / offsetAndWidth);
+        let partDiff = (rel * offsetAndWidth - offsetAndWidth) * ((offsetAndWidth - (this._sizing.width - this._chartDragger.mousePos.x)) / offsetAndWidth);
         return partDiff;
     }
 
@@ -303,6 +311,9 @@ export class ChartCore {
         // Clear everything.
         gMain.selectAll("*").remove();
         gLeftAxis.selectAll("*").remove();
+
+        this.selectionCrosshair.vertical.attr("y2", this._sizing.height);
+        this.selectionCrosshair.horizontal.attr("x2", this._sizing.width);
 
         // Populate data.
         let svgData = gMain
