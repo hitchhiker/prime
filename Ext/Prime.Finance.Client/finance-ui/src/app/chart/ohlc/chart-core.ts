@@ -1,10 +1,10 @@
-import { OhlcRecord } from "./ohlc/ohlc-record";
+import { OhlcDataRecord } from "./ohlc-data-record";
 import * as d3 from "d3";
 import { Observable, Subject } from "rxjs";
-import { ChartDragger, Point } from "./chart-dragger";
+import { ChartDragger, Point } from "../chart-dragger";
 
 class OhlcItem {
-    ohlc: OhlcRecord;
+    ohlc: OhlcDataRecord;
     posX: number;
 }
 
@@ -19,13 +19,15 @@ export class ChartCore {
     private gLeftAxis;
     private selectionCrosshair = { horizontal: null, vertical: null };
     private crosshairPrice;
+    private crosshairPriceText;
+    private selectionAxisPrice: number = 0;
 
     private _chartOffsetX: number = 0;
 
-    private _onOhlcItemSelected: Subject<OhlcRecord> = new Subject();
-    public onOhlcItemSelected: Observable<OhlcRecord> = this._onOhlcItemSelected.asObservable();
+    private _onOhlcItemSelected: Subject<OhlcDataRecord> = new Subject();
+    public onOhlcItemSelected: Observable<OhlcDataRecord> = this._onOhlcItemSelected.asObservable();
 
-    private selectedOhlcRecord: OhlcRecord;
+    private selectedOhlcRecord: OhlcDataRecord;
 
     constructor(selector: string) {
         this.initialize(selector);
@@ -42,8 +44,12 @@ export class ChartCore {
     }
 
     private onSvgMouseMove([x, y]) {
+        this.selectionAxisPrice = this.yScaleRawReversed ? parseFloat(this.yScaleRawReversed(y)) : 0;
+        console.log(y);
         this.selectionCrosshair.vertical.attr("transform", `translate(${x}, 0)`);
         this.selectionCrosshair.horizontal.attr("transform", `translate(0, ${y})`);
+        this.crosshairPrice.attr("transform", `translate(${this._sizing.width - this.crosshairPrice.node().getBBox().width}, ${y})`);
+        this.crosshairPriceText.text(this.selectionAxisPrice.toFixed(2));
 
         if (this._chartDataInView && this._chartDataInView.length > 0) {
             let chartOffset = -this._chartOffsetX + x;
@@ -219,11 +225,10 @@ export class ChartCore {
             .attr("stroke", "rgba(255, 255, 255, 0.5)");
         // Selection price.
 
-        this.crosshairPrice = this.svg.append("g");
-        this.crosshairPrice.append("rect").attr("width", 70).attr("height", 15).attr("fill", "black")
-        let text = this.crosshairPrice.append("text").attr("y", 12).attr("color", "red").text(6500);
-
-        console.log(text.width());
+        this.crosshairPrice = this.svg.append("g").attr("transform", "translate(-100, 0)");
+        this.crosshairPriceText = this.crosshairPrice.append("text").attr("y", 14).attr("x", 2).attr("color", "red").text(6500);
+        this.crosshairPrice.append("rect").attr("width", this.crosshairPriceText.node().getBBox().width + 5).attr("height", 18).attr("fill", "#385571");
+        this.crosshairPriceText.raise();
 
         // append("rect")
         //     .attr("width", this._sizing.width - (this._sizing.margin.left + this._sizing.margin.right))
@@ -236,7 +241,7 @@ export class ChartCore {
         this.gLeftAxis = this.svg.append("g");
     }
 
-    public setData(data: OhlcRecord[]) {
+    public setData(data: OhlcDataRecord[]) {
         this._chartData = data.map((x, i) => {
             let r: OhlcItem = { ohlc: x, posX: this.getBarPosX(i) };
             return r;
@@ -286,6 +291,8 @@ export class ChartCore {
         return partDiff;
     }
 
+    private yScaleRawReversed;
+
     public render() {
         let self = this;
         let svg = this.svg;
@@ -307,6 +314,10 @@ export class ChartCore {
         let yScale = function (v) {
             return yScaleRaw(v).toFixed(4);
         };
+        let yScaleRawReversed = d3.scaleLinear()
+            .domain([sizing.height - sizing.margin.bottom - sizing.margin.top, 0]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
+            .range([yScaleMin, yScaleMax]);
+        this.yScaleRawReversed = yScaleRawReversed;
 
         // Clear everything.
         gMain.selectAll("*").remove();
@@ -397,7 +408,7 @@ export class ChartCore {
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
         gLeftAxis.attr("transform", `translate(${this._sizing.width - this._sizing.margin.right}, ${this._sizing.margin.top})`).call(rightAxis);
 
-        function getColor(o: OhlcRecord): string {
+        function getColor(o: OhlcDataRecord): string {
             return o.open - o.close >= 0 ? "#d81571" : "#4caf0e";
         }
     }

@@ -1,5 +1,5 @@
 
-export class OhlcRecord {
+export class OhlcDataRecord {
     time: number;
     open: number;
     high: number;

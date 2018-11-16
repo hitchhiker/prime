@@ -3,9 +3,9 @@ import * as d3 from "d3";
 import { HttpClient } from '@angular/common/http';
 import { OhlcRawResponse } from './ohlc/ohlc-raw-response';
 import { map, debounceTime } from 'rxjs/operators';
-import { OhlcRecord } from './ohlc/ohlc-record';
+import { OhlcDataRecord } from './ohlc/ohlc-data-record';
 import { range, Subject } from 'rxjs';
-import { ChartCore } from './chart-core';
+import { ChartCore } from './core/chart-core';
 
 @Component({
   selector: 'app-chart',
@@ -21,15 +21,14 @@ export class ChartComponent implements OnInit {
     private httpClient: HttpClient
   ) { }
 
-  public selectedOhlc: OhlcRecord = null;
+  public selectedOhlc: OhlcDataRecord = null;
 
   ngOnInit() {
     this.chartCore = new ChartCore("#plotly-div svg");
-    this.zoomValue = this.chartCore.barWidth;
 
-    this.httpClient.get("/assets/ohlc.json").pipe(map((o) => {
+    this.httpClient.get("./assets/ohlc.json").pipe(map((o) => {
       let rRaw = (<OhlcRawResponse>o).result["XXBTZUSD"];
-      let ohlcs: OhlcRecord[] = rRaw.map((v) => {
+      let ohlcs: OhlcDataRecord[] = rRaw.map((v) => {
         return {
           time: v[0],
           open: v[1],
@@ -40,7 +39,7 @@ export class ChartComponent implements OnInit {
           volume: v[6],
           count: v[7]
         };;
-      })
+      });
 
       return ohlcs.sort((a, b) => {
         return a.time > b.time ? 1 : -1;
@@ -52,7 +51,9 @@ export class ChartComponent implements OnInit {
       // });
 
       this.chartCore.setData(d);
-      this.draw(d);
+
+      // "https://api.kraken.com/0/public/OHLC?pair=XBTUSD"
+      this.chartCore.render();
     });
 
     this.onResizedObs.pipe(debounceTime(100)).subscribe((d) => {
@@ -77,35 +78,5 @@ export class ChartComponent implements OnInit {
 
   private onResizeDeb(event) {
     this.chartCore.updateSvgWidth();
-  }
-
-  public zoomValue;
-  public zoomChanged() {
-    this.chartCore.barWidth = parseInt(this.zoomValue);
-  }
-
-  public moveLeft() {
-    //this.chartCore.viewport = new Viewport(this.chartCore.viewport.x1 - 50);
-    this.chartCore.moveLeft();
-  }
-
-  public moveRight() {
-    //this.chartCore.viewport = new Viewport(this.chartCore.viewport.x1 + 50);
-    this.chartCore.moveRight();
-  }
-
-  public zoomIn() {
-    this.chartCore.barWidth += 2;
-  }
-
-  public zoomOut() {
-    this.chartCore.barWidth -= 2;
-  }
-
-  // data should be sorted by time.
-  private draw(data: OhlcRecord[]) {
-    // "https://api.kraken.com/0/public/OHLC?pair=XBTUSD"
-
-    this.chartCore.render();
   }
 }
