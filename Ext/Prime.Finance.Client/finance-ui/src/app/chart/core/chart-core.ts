@@ -119,7 +119,7 @@ export class ChartCore {
         });
 
         this._svgCore.chartOffsetX = -this._chartItems[this._chartItems.length - 50].posX;
-        
+
         this._onOhlcItemSelected.next(this._chartItems[this._chartItems.length - 1].ohlc);
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
@@ -176,10 +176,26 @@ export class ChartCore {
         this._chartItemsInView = this.getInView(allData);
         let dataInView = this._chartItemsInView;
 
-        let ctx: RenderingCtx = {
+        let yScaleMin = d3.min(dataInView, (d: OhlcChartItem) => { return d.ohlc.low; });
+        let yScaleMax = d3.max(dataInView, (d: OhlcChartItem) => { return d.ohlc.high; });
+        let yScaleRaw = d3.scaleLinear()
+            .domain([yScaleMin, yScaleMax]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
+            .range([this._sizing.height - this._sizing.margin.bottom - this._sizing.margin.top, 0]);
 
+        let yScaleRawReversed = d3.scaleLinear()
+            .domain([this._sizing.height - this._sizing.margin.bottom - this._sizing.margin.top, 0]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
+            .range([yScaleMin, yScaleMax]);
+        this.yScaleRawReversed = yScaleRawReversed;
+
+        let ctx: RenderingCtx = {
+            yScaleMin: yScaleMin,
+            yScaleMax: yScaleMax,
+            yScaleRaw: yScaleRaw,
+            yScale: function (v) {
+                return yScaleRaw(v).toFixed(4);
+            }
         };
 
-        this._svgCore.render(dataInView);
+        this._svgCore.render(dataInView, ctx);
     }
 }
