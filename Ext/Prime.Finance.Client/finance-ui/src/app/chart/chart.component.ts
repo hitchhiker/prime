@@ -51,7 +51,6 @@ export class ChartComponent implements OnInit {
       // });
 
       this.chartCore.setData(d);
-
       // "https://api.kraken.com/0/public/OHLC?pair=XBTUSD"
       this.chartCore.render();
     });

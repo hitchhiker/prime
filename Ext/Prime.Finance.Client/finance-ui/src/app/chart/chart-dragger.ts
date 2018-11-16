@@ -43,9 +43,9 @@ export class ChartDragger {
         }
     }
 
-    public mouseMove([x, y]) {
-        this.mousePos.x = x;
-        this.mousePos.y = y;
+    public mouseMove(p: Point) {
+        this.mousePos.x = p.x;
+        this.mousePos.y = p.y;
 
         if (this._isDragging) {
             let dp = this.calcDragDisplacement(this._dragStartPos, this.mousePos);

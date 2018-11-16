@@ -17,24 +17,22 @@ export class ChartCore {
     private svg;
     private gMain;
     private gLeftAxis;
-    private selectionCrosshair = { horizontal: null, vertical: null };
 
     private _onOhlcItemSelected: Subject<OhlcDataRecord> = new Subject();
     public onOhlcItemSelected: Observable<OhlcDataRecord> = this._onOhlcItemSelected.asObservable();
-
-    private selectedOhlcRecord: OhlcDataRecord;
 
     constructor(selector: string) {
         this.initialize(selector);
 
         this._chartDragger.dragMoved.subscribe((p) => {
             this._svgCore.svgDragMovingHandler(p);
+            this.render();
         });
         this._chartDragger.dragStarted.subscribe((p) => {
             this._svgCore.svgDragStartedHandler(p);
         });
         this._chartDragger.dragEnded.subscribe((dp) => {
-            this._svgCore.svgDragStartedHandler(dp);
+            this._svgCore.svgDragEndedHandler(dp);
         });
     }
 
@@ -108,6 +106,9 @@ export class ChartCore {
         this._svgCore.onSvgMouseUp.subscribe((o) => {
             this._chartDragger.dragEnd();
         });
+        this._svgCore.onOhlcItemSelected.subscribe((r) => {
+            this._onOhlcItemSelected.next(r);
+        })
 
         this._svgCore.createControls();
     }
@@ -121,6 +122,7 @@ export class ChartCore {
         this._svgCore.chartOffsetX = -this._chartItems[this._chartItems.length - 50].posX;
 
         this._onOhlcItemSelected.next(this._chartItems[this._chartItems.length - 1].ohlc);
+        this.updateSvgWidth();
         //this.viewPort.x1 = this.getXbyIndex(data.length - 1);
     }
 
@@ -140,9 +142,10 @@ export class ChartCore {
     }
 
     public getInView(data: OhlcChartItem[]): OhlcChartItem[] {
+        let self = this;
         let inView = data.filter((record, i) => {
-            let startX = -(this._svgCore.chartOffsetX);
-            let endX = startX + this._sizing.width - (this._sizing.margin.right + this._sizing.bars.width) - this._sizing.margin.left;
+            let startX = -(self._svgCore.chartOffsetX);
+            let endX = startX + self._sizing.width - (self._sizing.margin.right + self._sizing.bars.width) - self._sizing.margin.left;
             let currX = record.posX;
 
             let r = currX >= startX && currX <= endX;

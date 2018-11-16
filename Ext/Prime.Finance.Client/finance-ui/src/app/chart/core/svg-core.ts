@@ -43,6 +43,8 @@ export class SvgCore {
     public initialize(svg, sizing) {
         this._svg = svg;
         this.sizing = sizing;
+
+        this.setSvgWidth();
     }
 
     public registerSvgHandlers() {
@@ -247,6 +249,10 @@ export class SvgCore {
         this._gCrosshairPrice.attr("transform", `translate(${this.sizing.width - this._gCrosshairPrice.node().getBBox().width}, ${p.y})`);
         this._textCrosshairPrice.text(this.selectionAxisPrice.toFixed(2));
 
+        this.selectOhlcRecord(p);
+    }
+
+    private selectOhlcRecord(p: Point) {
         if (this._chartItemsInView && this._chartItemsInView.length > 0) {
             let chartOffset = -this.chartOffsetX + p.x;
 
