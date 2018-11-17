@@ -4,24 +4,21 @@ import * as d3 from "d3";
 import { OhlcChartItem } from "./ohlc-chart-item";
 import { OhlcDataRecord } from "../ohlc/ohlc-data-record";
 import { RenderingCtx } from "./rendering-ctx";
+import { ChartDimensions } from "./chart-dimensions";
 
 export class SvgCore {
     private _svg;
-    public sizing;
+    public sizing: ChartDimensions;
 
     private _gMain;
-    private _gLeftAxis;
+    private _gRightAxis;
     private _selectionCrosshair = { horizontal: null, vertical: null };
-    private _gCrosshairPrice;
-    private _textCrosshairPrice;
+    private _gCrosshairPriceTicker;
+    private _rectCrosshairTickerBackgroud;
+    private _textCrosshairPriceTicker;
     private _chartItemsInView: OhlcChartItem[];
 
-    private _selectedOhlcRecord: OhlcDataRecord;
-
     public chartOffsetX: number = 0;
-
-    public yScaleRawReversed; // Remove.
-    public selectionAxisPrice; // Remove.
 
     public chartOffsetXInitialDiff: number = null;
 
@@ -44,7 +41,7 @@ export class SvgCore {
         this._svg = svg;
         this.sizing = sizing;
 
-        this.setSvgWidth();
+        this.updateSvgWidth();
     }
 
     public registerSvgHandlers() {
@@ -52,7 +49,7 @@ export class SvgCore {
             let [x, y] = d3.mouse(d3.event.currentTarget);
             let p: Point = new Point(x, y);
 
-            this._onSvgMouseMove.next(p);
+            this._onSvgMouseMove.next(p); // May update text of crosshair ticker.
             this.svgMouseMoveHandler(p);
         });
 
@@ -103,14 +100,25 @@ export class SvgCore {
         //this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
 
 
-        this._gCrosshairPrice = this._svg.append("g").attr("transform", "translate(-100, 0)");
-        this._textCrosshairPrice = this._gCrosshairPrice.append("text").attr("y", 14).attr("x", 2).attr("color", "red").text(6500);
-        this._gCrosshairPrice.append("rect").attr("width", this._textCrosshairPrice.node().getBBox().width + 5).attr("height", 18).attr("fill", "#385571");
-        this._textCrosshairPrice.raise();
+        this._gCrosshairPriceTicker = this._svg
+            .append("g")
+            .attr("transform", "translate(-100, 0)");
+        this._textCrosshairPriceTicker = this._gCrosshairPriceTicker
+            .append("text")
+            .attr("y", 14)
+            .attr("x", 2)
+            .attr("color", "red")
+            .text(6500);
+        this._rectCrosshairTickerBackgroud = this._gCrosshairPriceTicker
+            .append("rect")
+            .attr("width", this._textCrosshairPriceTicker.node().getBBox().width + 5)
+            .attr("height", 18)
+            .attr("fill", "#385571");
+        this._textCrosshairPriceTicker.raise();
 
         // Drawing area group.
         this._gMain = this._svg.append("g").attr("transform", `translate(${this.sizing.margin.left}, ${this.sizing.margin.top})`);
-        this._gLeftAxis = this._svg.append("g");
+        this._gRightAxis = this._svg.append("g");
     }
 
     public render(data: OhlcChartItem[], ctx: RenderingCtx) {
@@ -118,26 +126,15 @@ export class SvgCore {
 
         // Clear everything.
         this._gMain.selectAll("*").remove();
-        this._gLeftAxis.selectAll("*").remove();
+        this._gRightAxis.selectAll("*").remove();
 
         // Move crosshair.
         this._selectionCrosshair.vertical.attr("y2", this.sizing.height);
         this._selectionCrosshair.horizontal.attr("x2", this.sizing.width);
 
-        let yScaleMin: number = ctx.yScaleMin;
-        let yScaleMax: number = ctx.yScaleMax;
-
         // Scales.
         let yScaleRaw = ctx.yScaleRaw;
         let yScale = ctx.yScale;
-
-        // ------------- REMOVE TO CHARTCORE ------------ //
-        let yScaleRawReversed = d3.scaleLinear()
-            .domain([this.sizing.height - this.sizing.margin.bottom - this.sizing.margin.top, 0]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
-            .range([yScaleMin, yScaleMax]);
-        this.yScaleRawReversed = yScaleRawReversed;
-        // ----------------------------------------------- //
-
 
         // Populate data.
         let svgData = this._gMain
@@ -191,32 +188,15 @@ export class SvgCore {
         groups.exit().remove();
 
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
-        this._gLeftAxis.attr("transform", `translate(${this.sizing.width - this.sizing.margin.right}, ${this.sizing.margin.top})`).call(rightAxis);
-
+        this._gRightAxis.attr("transform", `translate(${this.sizing.width - this.sizing.margin.right}, ${this.sizing.margin.top})`).call(rightAxis);
+        // Put price ticker on top of the right axis.
+        this._gCrosshairPriceTicker.raise();
 
         // Axis.
         //let xAxis = d3.axisLeft(yScaleRaw);
         // svg.append("g").call(xAxis);
 
         //let gW = g.node().getBBox().width;
-
-        // Line test.
-        // function lineTest() {
-        //     let line = d3.line()
-        //         .x((d: OhlcRecord, i) => {
-        //             return i * 10;
-        //         })
-        //         .y((da: OhlcRecord, i) => {
-        //             return yScaleRaw(da.open);
-        //         });
-        //     svg.append("path")
-        //         .attr("stroke-width", 1)
-        //         .attr("stroke", "white")
-        //         .attr("fill", "transparent")
-        //         .attr("d", line(data));
-        // }
-
-
 
         // Zoom.
         // svg.call(d3.zoom()
@@ -242,37 +222,15 @@ export class SvgCore {
     }
 
     private svgMouseMoveHandler(p: Point) {
-        this.selectionAxisPrice = this.yScaleRawReversed ? parseFloat(this.yScaleRawReversed(p.y)) : 0;
-
         this._selectionCrosshair.vertical.attr("transform", `translate(${p.x}, 0)`);
         this._selectionCrosshair.horizontal.attr("transform", `translate(0, ${p.y})`);
-        this._gCrosshairPrice.attr("transform", `translate(${this.sizing.width - this._gCrosshairPrice.node().getBBox().width}, ${p.y})`);
-        this._textCrosshairPrice.text(this.selectionAxisPrice.toFixed(2));
-
-        this.selectOhlcRecord(p);
+        let bBox = this._gCrosshairPriceTicker.node().getBBox();
+        this._gCrosshairPriceTicker.attr("transform", `translate(${this.sizing.width - bBox.width}, ${p.y - bBox.height / 2})`);
+        this._rectCrosshairTickerBackgroud.attr("width", this._textCrosshairPriceTicker.node().getBBox().width + 5);
     }
 
-    private selectOhlcRecord(p: Point) {
-        if (this._chartItemsInView && this._chartItemsInView.length > 0) {
-            let chartOffset = -this.chartOffsetX + p.x;
-
-            let dists = this._chartItemsInView.map((x) => {
-                return { dist: Math.abs(chartOffset - (x.posX + this.sizing.bars.width / 2)), item: x };
-            });
-
-            let min = dists[0].dist;
-            let prevSelected = this._selectedOhlcRecord ? Object.assign({}, this._selectedOhlcRecord) : null;
-            this._selectedOhlcRecord = dists[0].item.ohlc;
-            dists.forEach(v => {
-                if (v.dist < min) {
-                    min = v.dist;
-                    this._selectedOhlcRecord = v.item.ohlc;
-                }
-            });
-
-            if (!prevSelected || prevSelected.time !== this._selectedOhlcRecord.time)
-                this._onOhlcItemSelected.next(this._selectedOhlcRecord);
-        }
+    public setCrosshairTickerPrice(price: number) {
+        this._textCrosshairPriceTicker.text(price.toFixed(2));
     }
 
     private svgMouseEnterHandler(): any {
@@ -285,7 +243,7 @@ export class SvgCore {
         this._selectionCrosshair.vertical.style("opacity", 0);
     }
 
-    public setSvgWidth() {
+    public updateSvgWidth() {
         this.sizing.width = this._svg.node().clientWidth;
     }
 
