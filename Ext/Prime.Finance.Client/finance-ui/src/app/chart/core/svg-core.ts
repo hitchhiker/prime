@@ -236,11 +236,13 @@ export class SvgCore {
     private svgMouseEnterHandler(): any {
         this._selectionCrosshair.horizontal.style("opacity", 1);
         this._selectionCrosshair.vertical.style("opacity", 1);
+        this._gCrosshairPriceTicker.style("opacity", 1);
     }
 
     private svgMouseLeaveHandler(): any {
         this._selectionCrosshair.horizontal.style("opacity", 0);
         this._selectionCrosshair.vertical.style("opacity", 0);
+        this._gCrosshairPriceTicker.style("opacity", 0);
     }
 
     public updateSvgWidth() {
