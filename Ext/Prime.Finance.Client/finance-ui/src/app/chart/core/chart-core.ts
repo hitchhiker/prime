@@ -21,7 +21,8 @@ export class ChartCore {
     private _onOhlcItemSelected: Subject<OhlcDataRecord> = new Subject();
     public onOhlcItemSelected: Observable<OhlcDataRecord> = this._onOhlcItemSelected.asObservable();
 
-    constructor(selector: string) {
+    constructor(selector: string, height: number) {
+        this.sizing.height = height;
         this.initialize(selector);
 
         this._chartDragger.dragMoved.subscribe((p) => {
@@ -36,7 +37,7 @@ export class ChartCore {
         });
     }
 
-    private _sizing: ChartDimensions = {
+    public sizing: ChartDimensions = {
         margin: {
             top: 20, right: 50, bottom: 10, left: 0
         },
@@ -50,7 +51,7 @@ export class ChartCore {
             maxWidth: 50,
             minWidth: 3
         },
-        height: 450,
+        height: 600,
         width: 0
     };
 
@@ -60,13 +61,13 @@ export class ChartCore {
     }
 
     private setZoomLevel(delta: number) {
-        let v = this._sizing.bars.width + delta;
-        if (v > this._sizing.bars.maxWidth || v < this._sizing.bars.minWidth)
+        let v = this.sizing.bars.width + delta;
+        if (v > this.sizing.bars.maxWidth || v < this.sizing.bars.minWidth)
             return;
 
         let displacement = this.calcZoomChartDisplacement(v);
 
-        this._sizing.bars.width = v;
+        this.sizing.bars.width = v;
         this._svgCore.chartOffsetXInitialDiff = null;
 
         this._svgCore.chartOffsetX -= displacement;
@@ -74,7 +75,7 @@ export class ChartCore {
     }
 
     public initialize(selector: string) {
-        this._svgCore.initialize(d3.select(selector), this._sizing);
+        this._svgCore.initialize(d3.select(selector), this.sizing);
         this._svgCore.registerSvgHandlers();
 
         this._svgCore.onSvgMouseMove.subscribe((p) => {
@@ -101,7 +102,7 @@ export class ChartCore {
     }
 
     private svgMouseMoveHandler(p: Point) {
-        let svgY = p.y - this._sizing.margin.top;
+        let svgY = p.y - this.sizing.margin.top;
         let crosshairTickerPrice: number = this._yScaleRawReversed ? parseFloat(this._yScaleRawReversed(svgY)) : 0;
         this._svgCore.setCrosshairTickerPrice(crosshairTickerPrice);
 
@@ -115,7 +116,7 @@ export class ChartCore {
             let chartOffset = -this._svgCore.chartOffsetX + p.x;
 
             let dists = this._chartItemsInView.map((x) => {
-                return { dist: Math.abs(chartOffset - (x.posX + this._sizing.bars.width / 2)), item: x };
+                return { dist: Math.abs(chartOffset - (x.posX + this.sizing.bars.width / 2)), item: x };
             });
 
             let min = dists[0].dist;
@@ -151,20 +152,20 @@ export class ChartCore {
         });
 
         let lastItem = data[data.length - 1];
-        this._sizing.chartOffset.min = -lastItem.posX + this._sizing.width - 100;
+        this.sizing.chartOffset.min = -lastItem.posX + this.sizing.width - 100;
 
         return data;
     }
 
     private getBarPosX(i: number): number {
-        return i * (this._sizing.bars.width + this._sizing.bars.gap)
+        return i * (this.sizing.bars.width + this.sizing.bars.gap)
     }
 
     private getInView(data: OhlcChartItem[]): OhlcChartItem[] {
         let self = this;
         let inView = data.filter((record, i) => {
             let startX = -(self._svgCore.chartOffsetX);
-            let endX = startX + self._sizing.width - (self._sizing.margin.right + self._sizing.bars.width) - self._sizing.margin.left;
+            let endX = startX + self.sizing.width - (self.sizing.margin.right + self.sizing.bars.width) - self.sizing.margin.left;
             let currX = record.posX;
 
             let r = currX >= startX && currX <= endX;
@@ -177,11 +178,11 @@ export class ChartCore {
 
     // Calculates center of chart view (SVG view) in chart data coordinates (taking into account chart offset X).
     private calcZoomChartDisplacement(newWidth: number): number {
-        let offsetAndWidth = -this._svgCore.chartOffsetX + this._sizing.width;
-        let itemsInViewOld = offsetAndWidth / (this._sizing.bars.width + this._sizing.bars.gap);
-        let itemsInViewNew = offsetAndWidth / (newWidth + this._sizing.bars.gap);
+        let offsetAndWidth = -this._svgCore.chartOffsetX + this.sizing.width;
+        let itemsInViewOld = offsetAndWidth / (this.sizing.bars.width + this.sizing.bars.gap);
+        let itemsInViewNew = offsetAndWidth / (newWidth + this.sizing.bars.gap);
         let rel = itemsInViewOld / itemsInViewNew;
-        let partDiff = (rel * offsetAndWidth - offsetAndWidth) * ((offsetAndWidth - (this._sizing.width - this._chartDragger.mousePos.x)) / offsetAndWidth);
+        let partDiff = (rel * offsetAndWidth - offsetAndWidth) * ((offsetAndWidth - (this.sizing.width - this._chartDragger.mousePos.x)) / offsetAndWidth);
         return partDiff;
     }
 
@@ -195,10 +196,10 @@ export class ChartCore {
         let yScaleMax = d3.max(dataInView, (d: OhlcChartItem) => { return d.ohlc.high; });
         let yScaleRaw = d3.scaleLinear()
             .domain([yScaleMin, yScaleMax]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
-            .range([this._sizing.height - this._sizing.margin.bottom - this._sizing.margin.top, 0]);
+            .range([this.sizing.height - this.sizing.margin.bottom - this.sizing.margin.top, 0]);
 
         let yScaleRawReversed = d3.scaleLinear()
-            .domain([this._sizing.height - this._sizing.margin.bottom - this._sizing.margin.top, 0]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
+            .domain([this.sizing.height - this.sizing.margin.bottom - this.sizing.margin.top, 0]) // // d3.extent(data, (x: OhlcRecord) => { return x.open; })
             .range([yScaleMin, yScaleMax]);
         this._yScaleRawReversed = yScaleRawReversed;
 

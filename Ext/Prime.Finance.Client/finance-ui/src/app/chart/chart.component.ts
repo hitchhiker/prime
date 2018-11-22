@@ -17,6 +17,8 @@ export class ChartComponent implements OnInit {
   private chartCore: ChartCore;
   private onResizedObs: Subject<any> = new Subject();
 
+  public svgHeight: number = 600;
+
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -24,7 +26,7 @@ export class ChartComponent implements OnInit {
   public selectedOhlc: OhlcDataRecord = null;
 
   ngOnInit() {
-    this.chartCore = new ChartCore("#plotly-div svg");
+    this.chartCore = new ChartCore("#plotly-div svg", this.svgHeight);
 
     this.httpClient.get("./assets/ohlc.json").pipe(map((o) => {
       let rRaw = (<OhlcRawResponse>o).result["XXBTZUSD"];

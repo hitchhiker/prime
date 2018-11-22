@@ -38,8 +38,8 @@ export class SvgCore {
     public onOhlcItemSelected: Observable<OhlcDataRecord> = this._onOhlcItemSelected.asObservable();
 
     public initialize(svg, sizing) {
-        this._svg = svg;
         this.sizing = sizing;
+        this._svg = svg.attr("height", this.sizing.height);
 
         this.updateSvgWidth();
     }
