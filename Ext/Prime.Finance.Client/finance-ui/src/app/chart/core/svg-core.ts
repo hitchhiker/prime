@@ -12,6 +12,7 @@ export class SvgCore {
 
     private _gMain;
     private _gRightAxis;
+    private _gBottomAxis;
     private _selectionCrosshair = { horizontal: null, vertical: null };
     private _gCrosshairPriceTicker;
     private _rectCrosshairTickerBackgroud;
@@ -119,6 +120,7 @@ export class SvgCore {
         // Drawing area group.
         this._gMain = this._svg.append("g").attr("transform", `translate(${this.sizing.margin.left}, ${this.sizing.margin.top})`);
         this._gRightAxis = this._svg.append("g");
+        this._gBottomAxis = this._svg.append("g");
     }
 
     public render(data: OhlcChartItem[], ctx: RenderingCtx) {
@@ -127,6 +129,7 @@ export class SvgCore {
         // Clear everything.
         this._gMain.selectAll("*").remove();
         this._gRightAxis.selectAll("*").remove();
+        this._gBottomAxis.selectAll("*").remove();
 
         // Move crosshair.
         this._selectionCrosshair.vertical.attr("y2", this.sizing.height);
@@ -188,7 +191,19 @@ export class SvgCore {
         groups.exit().remove();
 
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
-        this._gRightAxis.attr("transform", `translate(${this.sizing.width - this.sizing.margin.right}, ${this.sizing.margin.top})`).call(rightAxis);
+        this._gRightAxis.call(rightAxis).attr("transform", `translate(${this.sizing.width - this.sizing.margin.right}, ${this.sizing.margin.top})`);
+
+        let x = d3.scaleTime()
+            .domain(d3.extent(data, (d: OhlcChartItem) => d.ohlc.time))
+            .range([this.sizing.margin.left, this.sizing.width - this.sizing.margin.right]);
+
+        let xAxis = d3
+            .axisBottom(x)
+            //.ticks(d3.timeDay, 1);
+            .tickFormat(d3.timeFormat("%s"));
+
+        this._gBottomAxis.attr('transform', 'translate(0, ' + (this.sizing.height - this.sizing.margin.bottom - this.sizing.margin.top) + ')').call(xAxis);
+
         // Put price ticker on top of the right axis.
         this._gCrosshairPriceTicker.raise();
 

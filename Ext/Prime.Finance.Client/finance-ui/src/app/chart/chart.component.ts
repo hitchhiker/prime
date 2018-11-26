@@ -6,6 +6,7 @@ import { map, debounceTime } from 'rxjs/operators';
 import { OhlcDataRecord } from './ohlc/ohlc-data-record';
 import { range, Subject } from 'rxjs';
 import { ChartCore } from './core/chart-core';
+import { CandlesService } from '../services/ohlc/candles.service';
 
 @Component({
   selector: 'app-chart',
@@ -20,12 +21,15 @@ export class ChartComponent implements OnInit {
   public svgHeight: number = 600;
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private candles: CandlesService
   ) { }
 
   public selectedOhlc: OhlcDataRecord = null;
 
   ngOnInit() {
+    this.candles.connect();
+
     this.chartCore = new ChartCore("#plotly-div svg", this.svgHeight);
 
     this.httpClient.get("./assets/ohlc.json").pipe(map((o) => {

@@ -11,8 +11,9 @@ import { Subscription, Subject } from 'rxjs';
     providedIn: 'root'
 })
 export class PrimeSocketService {
-
-    constructor(@Inject("SocketClient") private socketClient: SocketClient) { }
+    private socketClient: SocketClient;
+    
+    constructor() { }
 
     private responseBuffer: any[];
     private dataHandlerChannel: string;

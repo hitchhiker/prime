@@ -10,11 +10,11 @@ import { LastTradesComponent } from './last-trades/last-trades.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { TradingPanelComponent } from './trading-panel/trading-panel.component';
 import { PrimeSocketService } from './services/prime-socket.service';
-import { WsClientService } from './services/ws-client.service';
 import { LastTradesService } from './services/last-trades/last-trades.service';
 import { OrderbookService } from './services/orderbook/orderbook.service';
 import { TickerService } from './services/ticker/ticker.service';
 import { HttpClientModule } from '@angular/common/http';
+import { CandlesService } from './services/ohlc/candles.service';
 
 @NgModule({
   declarations: [
@@ -32,11 +32,11 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule
   ],
   providers: [
-    {provide: "SocketClient", useClass: WsClientService },
     PrimeSocketService,
     LastTradesService,
     OrderbookService,
-    TickerService
+    TickerService,
+    CandlesService
   ],
   bootstrap: [AppComponent]
 })

@@ -129,6 +129,9 @@ export class ChartCore {
                 }
             });
 
+            console.log(this._selectedOhlcRecord.time);
+            
+
             if (!prevSelected || prevSelected.time !== this._selectedOhlcRecord.time)
                 this._onOhlcItemSelected.next(this._selectedOhlcRecord);
         }

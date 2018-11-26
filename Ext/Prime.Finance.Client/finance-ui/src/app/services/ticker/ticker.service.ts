@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WsDataService } from '../ws-data.service';
+import { WsBitfinexDataServiceBase } from '../ws-bitfinex-data-base.service';
 import { WebsocketService } from '../websocket.service';
 import { Subject, Observable } from 'rxjs';
 import { TickerResponse } from './bitfinex/ticker-response';
@@ -8,27 +8,10 @@ import { RemoteResponse } from 'src/app/models/remote-response';
 @Injectable({
   providedIn: 'root'
 })
-export class TickerService extends WsDataService {
-  protected endpointURL: string = "wss://api.bitfinex.com/ws/2";
-
-  private _ticker: Subject<RemoteResponse> = new Subject();
-  public ticker: Observable<RemoteResponse> = this._ticker.asObservable();
-
-  public connect() {
-    this.connectToEndpoint();
-
-    this.wsOnConnected.subscribe((msg) => {
-      this.onConnected(msg);
-    });
-
-    this.wsOnMessage.subscribe((msg) => {
-      this.onMessage(msg);
-    });
-  }
-
-  private onConnected(msg: MessageEvent): any {
+export class TickerService extends WsBitfinexDataServiceBase {
+  public onConnectedHandler(msgEvent: MessageEvent) {
     console.log("Connected to Bitfinex ticker");
-    
+
     // Start receiving ticker data.
     this.sendMessage({
       "event": "subscribe",
@@ -37,15 +20,18 @@ export class TickerService extends WsDataService {
     });
   }
 
-  private onMessage(msg: MessageEvent): any {
-    let rRaw = JSON.parse(msg.data);
-    
+  public onMessageHandler(msgEvent: MessageEvent) {
+    let rRaw = JSON.parse(msgEvent.data);
+
     let ticker = new TickerResponse(rRaw).parseResponse();
 
     if (ticker !== null) {
       this._ticker.next(ticker);
     }
   }
+
+  private _ticker: Subject<RemoteResponse> = new Subject();
+  public ticker: Observable<RemoteResponse> = this._ticker.asObservable();
 
   constructor(
     ws: WebsocketService
