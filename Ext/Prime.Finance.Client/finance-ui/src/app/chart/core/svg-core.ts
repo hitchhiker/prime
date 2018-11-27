@@ -193,14 +193,15 @@ export class SvgCore {
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
         this._gRightAxis.call(rightAxis).attr("transform", `translate(${this.sizing.width - this.sizing.margin.right}, ${this.sizing.margin.top})`);
 
+        let normalDates = data.map((d: OhlcChartItem) => new Date(d.ohlc.time * 1000));
         let x = d3.scaleTime()
-            .domain(d3.extent(data, (d: OhlcChartItem) => d.ohlc.time))
+            .domain(d3.extent(data, (d: OhlcChartItem) => new Date(d.ohlc.time * 1000)))
             .range([this.sizing.margin.left, this.sizing.width - this.sizing.margin.right]);
 
         let xAxis = d3
             .axisBottom(x)
-            //.ticks(d3.timeDay, 1);
-            .tickFormat(d3.timeFormat("%s"));
+            .ticks(5)
+            .tickFormat(d3.timeFormat("%d-%b-%y %H:%M:%S"));
 
         this._gBottomAxis.attr('transform', 'translate(0, ' + (this.sizing.height - this.sizing.margin.bottom - this.sizing.margin.top) + ')').call(xAxis);
 
