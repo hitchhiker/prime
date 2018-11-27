@@ -107,7 +107,7 @@ export class SvgCore {
             .attr("transform", "translate(-100, -100)");
 
         // Rect to see SVG's boundaries.
-        //this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
+        //this._svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
 
         // Price crosshair ticker.
         this._pointerPrice.g = this._svg
@@ -161,7 +161,8 @@ export class SvgCore {
         this._pointer.lineVertical.attr("y2", this.dimensions.height);
         this._pointer.lineHorizontal.attr("x2", this.dimensions.width);
 
-        // Scales.
+        // ---------- Draw OHLC --------- //
+
         let yScaleRaw = ctx.yScaleRaw;
         let yScale = ctx.yScale;
         let xScaleRaw = ctx.xScaleRaw;
@@ -217,6 +218,8 @@ export class SvgCore {
 
         groups.exit().remove();
 
+        // --------- Axes ----------- //
+        
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
         this._gAxisPrice.call(rightAxis).attr("transform", `translate(${this.dimensions.width - this.dimensions.margin.right}, ${this.dimensions.margin.top})`);
 
