@@ -68,7 +68,8 @@ export class ChartCore {
         let displacement = this.calcZoomChartDisplacement(v);
 
         this.sizing.bars.width = v;
-        this._svgCore.chartOffsetXInitialDiff = null;
+
+        this._svgCore.resetChartOffsetXInitialDiff();
 
         this._svgCore.chartOffsetX -= displacement;
         this.render();
@@ -94,9 +95,9 @@ export class ChartCore {
             this._chartDragger.dragEnd();
         });
 
-        this._svgCore.onOhlcItemSelected.subscribe((r) => {
-            this._onOhlcItemSelected.next(r);
-        })
+        this.onOhlcItemSelected.subscribe((d) => {
+            this._svgCore.setCrosshairTickerDate(new Date(d.time * 1000));
+        });
 
         this._svgCore.createControls();
     }
@@ -128,9 +129,6 @@ export class ChartCore {
                     this._selectedOhlcRecord = v.item.ohlc;
                 }
             });
-
-            console.log(this._selectedOhlcRecord.time);
-            
 
             if (!prevSelected || prevSelected.time !== this._selectedOhlcRecord.time)
                 this._onOhlcItemSelected.next(this._selectedOhlcRecord);
@@ -206,15 +204,16 @@ export class ChartCore {
             .range([yScaleMin, yScaleMax]);
         this._yScaleRawReversed = yScaleRawReversed;
 
-        // let init = 6320;
-        // let forw = yScaleRaw(6320);
-        // let back = yScaleRawReversed(forw);
-        // console.log(`init: ${init}, forw: ${forw}, back: ${back}`);
+        let xScaleRaw = d3.scaleTime()
+            .domain(d3.extent(dataInView, (d: OhlcChartItem) => new Date(d.ohlc.time * 1000)))
+            .range([this.sizing.margin.left, this.sizing.width - this.sizing.margin.right]);
+
 
         let ctx: RenderingCtx = {
             yScaleMin: yScaleMin,
             yScaleMax: yScaleMax,
             yScaleRaw: yScaleRaw,
+            xScaleRaw: xScaleRaw,
             yScale: function (v) {
                 return yScaleRaw(v).toFixed(4);
             }

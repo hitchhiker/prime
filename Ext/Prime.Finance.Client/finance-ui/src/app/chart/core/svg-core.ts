@@ -8,19 +8,29 @@ import { ChartDimensions } from "./chart-dimensions";
 
 export class SvgCore {
     private _svg;
-    public sizing: ChartDimensions;
+    public dimensions: ChartDimensions;
 
     private _gMain;
-    private _gRightAxis;
-    private _gBottomAxis;
-    private _selectionCrosshair = { horizontal: null, vertical: null };
-    private _gCrosshairPriceTicker;
-    private _rectCrosshairTickerBackgroud;
-    private _textCrosshairPriceTicker;
+    private _gAxisPrice;
+    private _gAxisTime;
+
+    private _pointer = { lineHorizontal: null, lineVertical: null };
+    private _pointerPrice = {
+        g: null,
+        bg: null,
+        ticker: null
+    };
+    private _pointerDate = {
+        g: null,
+        bg: null,
+        ticker: null  
+    };
+
+    private _xAxisTimeFormat: any = d3.timeFormat("%d-%b-%y %H:%M:%S");
+
     private _chartItemsInView: OhlcChartItem[];
 
     public chartOffsetX: number = 0;
-
     public chartOffsetXInitialDiff: number = null;
 
     private _onSvgMouseMove: Subject<Point> = new Subject<Point>();
@@ -35,12 +45,9 @@ export class SvgCore {
     private _onSvgMouseUp: Subject<object> = new Subject<object>();
     public onSvgMouseUp: Observable<object> = this._onSvgMouseUp.asObservable();
 
-    private _onOhlcItemSelected: Subject<OhlcDataRecord> = new Subject();
-    public onOhlcItemSelected: Observable<OhlcDataRecord> = this._onOhlcItemSelected.asObservable();
-
     public initialize(svg, sizing) {
-        this.sizing = sizing;
-        this._svg = svg.attr("height", this.sizing.height);
+        this.dimensions = sizing;
+        this._svg = svg.attr("height", this.dimensions.height);
 
         this.updateSvgWidth();
     }
@@ -80,17 +87,17 @@ export class SvgCore {
 
     public createControls() {
         // Selection line.
-        this._selectionCrosshair.vertical = this._svg.append("line")
+        this._pointer.lineVertical = this._svg.append("line")
             .attr("x1", 0)
             .attr("x2", 0)
             .attr("y1", 0)
-            .attr("y2", this.sizing.height)
+            .attr("y2", this.dimensions.height)
             .attr("stroke-width", 1)
             .attr("stroke-dasharray", "5,5")
             .attr("stroke", "rgba(255, 255, 255, 0.5)");
-        this._selectionCrosshair.horizontal = this._svg.append("line")
+        this._pointer.lineHorizontal = this._svg.append("line")
             .attr("x1", 0)
-            .attr("x2", this.sizing.width)
+            .attr("x2", this.dimensions.width)
             .attr("y1", 0)
             .attr("y2", 0)
             .attr("stroke-width", 1)
@@ -100,27 +107,44 @@ export class SvgCore {
         // Rect to see SVG's boundaries.
         //this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
 
-
-        this._gCrosshairPriceTicker = this._svg
+        // Price crosshair ticker.
+        this._pointerPrice.g = this._svg
             .append("g")
             .attr("transform", "translate(-100, 0)");
-        this._textCrosshairPriceTicker = this._gCrosshairPriceTicker
+        this._pointerPrice.ticker = this._pointerPrice.g
+            .append("text")
+            .attr("y", 14)
+            .attr("x", 2)
+            .attr("color", "red")
+            .text("");
+        this._pointerPrice.bg = this._pointerPrice.g
+            .append("rect")
+            .attr("width", this._pointerPrice.ticker.node().getBBox().width + 5)
+            .attr("height", 18)
+            .attr("fill", "#385571");
+        this._pointerPrice.ticker.raise();
+
+        // Date crosshair ticker.
+        this._pointerDate.g = this._svg
+            .append("g")
+            .attr("transform", "translate(-100, 0)");
+        this._pointerDate.ticker = this._pointerDate.g
             .append("text")
             .attr("y", 14)
             .attr("x", 2)
             .attr("color", "red")
             .text(6500);
-        this._rectCrosshairTickerBackgroud = this._gCrosshairPriceTicker
+        this._pointerDate.bg = this._pointerDate.g
             .append("rect")
-            .attr("width", this._textCrosshairPriceTicker.node().getBBox().width + 5)
+            .attr("width", this._pointerDate.ticker.node().getBBox().width + 5)
             .attr("height", 18)
             .attr("fill", "#385571");
-        this._textCrosshairPriceTicker.raise();
+        this._pointerDate.ticker.raise();
 
         // Drawing area group.
-        this._gMain = this._svg.append("g").attr("transform", `translate(${this.sizing.margin.left}, ${this.sizing.margin.top})`);
-        this._gRightAxis = this._svg.append("g");
-        this._gBottomAxis = this._svg.append("g");
+        this._gMain = this._svg.append("g").attr("transform", `translate(${this.dimensions.margin.left}, ${this.dimensions.margin.top})`);
+        this._gAxisPrice = this._svg.append("g");
+        this._gAxisTime = this._svg.append("g");
     }
 
     public render(data: OhlcChartItem[], ctx: RenderingCtx) {
@@ -128,16 +152,17 @@ export class SvgCore {
 
         // Clear everything.
         this._gMain.selectAll("*").remove();
-        this._gRightAxis.selectAll("*").remove();
-        this._gBottomAxis.selectAll("*").remove();
+        this._gAxisPrice.selectAll("*").remove();
+        this._gAxisTime.selectAll("*").remove();
 
         // Move crosshair.
-        this._selectionCrosshair.vertical.attr("y2", this.sizing.height);
-        this._selectionCrosshair.horizontal.attr("x2", this.sizing.width);
+        this._pointer.lineVertical.attr("y2", this.dimensions.height);
+        this._pointer.lineHorizontal.attr("x2", this.dimensions.width);
 
         // Scales.
         let yScaleRaw = ctx.yScaleRaw;
         let yScale = ctx.yScale;
+        let xScaleRaw = ctx.xScaleRaw;
 
         // Populate data.
         let svgData = this._gMain
@@ -159,7 +184,7 @@ export class SvgCore {
         // Process lines.
         groups.selectAll("line")
             .attr("transform", (x: OhlcChartItem, i) => {
-                return `translate(${(this.sizing.bars.width / 2)}, ${0})`;
+                return `translate(${(this.dimensions.bars.width / 2)}, ${0})`;
             })
             .attr("x1", 0).attr("x2", 0)
             .attr("y1", 0)
@@ -174,7 +199,7 @@ export class SvgCore {
 
         // Process rects.
         groups.selectAll("rect")
-            .attr("width", this.sizing.bars.width)
+            .attr("width", this.dimensions.bars.width)
             .attr("height", (o: OhlcChartItem) => {
                 return Math.abs(yScale(o.ohlc.open) - yScale(o.ohlc.close));
             })
@@ -191,38 +216,17 @@ export class SvgCore {
         groups.exit().remove();
 
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
-        this._gRightAxis.call(rightAxis).attr("transform", `translate(${this.sizing.width - this.sizing.margin.right}, ${this.sizing.margin.top})`);
+        this._gAxisPrice.call(rightAxis).attr("transform", `translate(${this.dimensions.width - this.dimensions.margin.right}, ${this.dimensions.margin.top})`);
 
-        let normalDates = data.map((d: OhlcChartItem) => new Date(d.ohlc.time * 1000));
-        let x = d3.scaleTime()
-            .domain(d3.extent(data, (d: OhlcChartItem) => new Date(d.ohlc.time * 1000)))
-            .range([this.sizing.margin.left, this.sizing.width - this.sizing.margin.right]);
-
-        let xAxis = d3
-            .axisBottom(x)
-            .ticks(5)
-            .tickFormat(d3.timeFormat("%d-%b-%y %H:%M:%S"));
-
-        this._gBottomAxis.attr('transform', 'translate(0, ' + (this.sizing.height - this.sizing.margin.bottom - this.sizing.margin.top) + ')').call(xAxis);
+        let xAxis = d3.axisTop(xScaleRaw).ticks(5).tickFormat(this._xAxisTimeFormat);
+        this._gAxisTime.attr('transform', 'translate(0, ' + (this.dimensions.height - this.dimensions.margin.bottom + 14) + ')').call(xAxis);
 
         // Put price ticker on top of the right axis.
-        this._gCrosshairPriceTicker.raise();
+        this._pointer.lineHorizontal.raise();
+        this._pointer.lineVertical.raise();
+        this._pointerPrice.g.raise();
+        this._pointerDate.g.raise();
 
-        // Axis.
-        //let xAxis = d3.axisLeft(yScaleRaw);
-        // svg.append("g").call(xAxis);
-
-        //let gW = g.node().getBBox().width;
-
-        // Zoom.
-        // svg.call(d3.zoom()
-        //     .scaleExtent([1, 10])
-        //     //.translateExtent([[-allData[allData.length - 1].posX, 0], [allData[allData.length - 1].posX + 100, 0]])
-        //     .on("zoom", () => {
-        //         this.onTransformed();
-        //     }));
-
-        // TODO: remove.
         function getColor(o: OhlcDataRecord): string {
             return o.open - o.close >= 0 ? "#d81571" : "#4caf0e";
         }
@@ -238,31 +242,44 @@ export class SvgCore {
     }
 
     private svgMouseMoveHandler(p: Point) {
-        this._selectionCrosshair.vertical.attr("transform", `translate(${p.x}, 0)`);
-        this._selectionCrosshair.horizontal.attr("transform", `translate(0, ${p.y})`);
-        let bBox = this._gCrosshairPriceTicker.node().getBBox();
-        this._gCrosshairPriceTicker.attr("transform", `translate(${this.sizing.width - bBox.width}, ${p.y - bBox.height / 2})`);
-        this._rectCrosshairTickerBackgroud.attr("width", this._textCrosshairPriceTicker.node().getBBox().width + 5);
+        this._pointer.lineVertical.attr("transform", `translate(${p.x}, 0)`);
+        this._pointer.lineHorizontal.attr("transform", `translate(0, ${p.y})`);
+
+        // Price ticker.
+        let bPrice = this._pointerPrice.ticker.node().getBBox();
+        this._pointerPrice.g.attr("transform", `translate(${this.dimensions.width - 55}, ${p.y - bPrice.height / 2 - 2})`);
+        this._pointerPrice.bg.attr("width", 55); // this._pointerPrice.ticker.node().getBBox().width + 5
+
+        // Date ticker.
+        let bDate = this._pointerDate.ticker.node().getBBox();
+        this._pointerDate.g.attr("transform", `translate(${p.x - bDate.width / 2}, ${this.dimensions.height - bDate.height - 5})`);
+        this._pointerDate.bg.attr("width", this._pointerDate.ticker.node().getBBox().width + 5);
     }
 
     public setCrosshairTickerPrice(price: number) {
-        this._textCrosshairPriceTicker.text(price.toFixed(2));
+        this._pointerPrice.ticker.text(price.toFixed(2));
+    }
+
+    public setCrosshairTickerDate(date: Date) {
+        this._pointerDate.ticker.text(this._xAxisTimeFormat(date));
     }
 
     private svgMouseEnterHandler(): any {
-        this._selectionCrosshair.horizontal.style("opacity", 1);
-        this._selectionCrosshair.vertical.style("opacity", 1);
-        this._gCrosshairPriceTicker.style("opacity", 1);
+        this._pointer.lineHorizontal.style("opacity", 1);
+        this._pointer.lineVertical.style("opacity", 1);
+        this._pointerPrice.g.style("opacity", 1);
+        this._pointerDate.g.style("opacity", 1);
     }
 
     private svgMouseLeaveHandler(): any {
-        this._selectionCrosshair.horizontal.style("opacity", 0);
-        this._selectionCrosshair.vertical.style("opacity", 0);
-        this._gCrosshairPriceTicker.style("opacity", 0);
+        this._pointer.lineHorizontal.style("opacity", 0);
+        this._pointer.lineVertical.style("opacity", 0);
+        this._pointerPrice.g.style("opacity", 0);
+        this._pointerDate.g.style("opacity", 0);
     }
 
     public updateSvgWidth() {
-        this.sizing.width = this._svg.node().clientWidth;
+        this.dimensions.width = this._svg.node().clientWidth;
     }
 
     public svgDragMovingHandler(p: Point) {
@@ -278,6 +295,10 @@ export class SvgCore {
     }
 
     public svgDragEndedHandler(dp: Point) {
+        this.resetChartOffsetXInitialDiff();
+    }
+
+    public resetChartOffsetXInitialDiff() {
         this.chartOffsetXInitialDiff = null;
     }
 }
