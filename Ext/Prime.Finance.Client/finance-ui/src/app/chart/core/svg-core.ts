@@ -26,7 +26,7 @@ export class SvgCore {
         ticker: null  
     };
 
-    private _xAxisTimeFormat: any = d3.timeFormat("%d-%b-%y %H:%M:%S");
+    private _dateTimeFormat: any = d3.timeFormat("%d-%b-%y %H:%M:%S");
 
     private _chartItemsInView: OhlcChartItem[];
 
@@ -94,7 +94,8 @@ export class SvgCore {
             .attr("y2", this.dimensions.height)
             .attr("stroke-width", 1)
             .attr("stroke-dasharray", "5,5")
-            .attr("stroke", "rgba(255, 255, 255, 0.5)");
+            .attr("stroke", "rgba(255, 255, 255, 0.5)")
+            .attr("transform", "translate(-100, -100)");
         this._pointer.lineHorizontal = this._svg.append("line")
             .attr("x1", 0)
             .attr("x2", this.dimensions.width)
@@ -102,7 +103,8 @@ export class SvgCore {
             .attr("y2", 0)
             .attr("stroke-width", 1)
             .attr("stroke-dasharray", "5,5")
-            .attr("stroke", "rgba(255, 255, 255, 0.5)");
+            .attr("stroke", "rgba(255, 255, 255, 0.5)")
+            .attr("transform", "translate(-100, -100)");
 
         // Rect to see SVG's boundaries.
         //this.svg.append("rect").attr("width", "100%").attr("height", "100%").attr("fill", "rgb(30, 30, 30)");
@@ -110,7 +112,7 @@ export class SvgCore {
         // Price crosshair ticker.
         this._pointerPrice.g = this._svg
             .append("g")
-            .attr("transform", "translate(-100, 0)");
+            .attr("transform", "translate(-1000, 0)");
         this._pointerPrice.ticker = this._pointerPrice.g
             .append("text")
             .attr("y", 14)
@@ -127,7 +129,7 @@ export class SvgCore {
         // Date crosshair ticker.
         this._pointerDate.g = this._svg
             .append("g")
-            .attr("transform", "translate(-100, 0)");
+            .attr("transform", "translate(-1000, 0)");
         this._pointerDate.ticker = this._pointerDate.g
             .append("text")
             .attr("y", 14)
@@ -218,7 +220,7 @@ export class SvgCore {
         let rightAxis = d3.axisRight(yScaleRaw).ticks(10);
         this._gAxisPrice.call(rightAxis).attr("transform", `translate(${this.dimensions.width - this.dimensions.margin.right}, ${this.dimensions.margin.top})`);
 
-        let xAxis = d3.axisTop(xScaleRaw).ticks(5).tickFormat(this._xAxisTimeFormat);
+        let xAxis = d3.axisTop(xScaleRaw).ticks(5).tickFormat(this._dateTimeFormat);
         this._gAxisTime.attr('transform', 'translate(0, ' + (this.dimensions.height - this.dimensions.margin.bottom + 14) + ')').call(xAxis);
 
         // Put price ticker on top of the right axis.
@@ -261,7 +263,7 @@ export class SvgCore {
     }
 
     public setCrosshairTickerDate(date: Date) {
-        this._pointerDate.ticker.text(this._xAxisTimeFormat(date));
+        this._pointerDate.ticker.text(this._dateTimeFormat(date));
     }
 
     private svgMouseEnterHandler(): any {
