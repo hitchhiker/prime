@@ -3,6 +3,10 @@
 This project is a front-end for Prime.Finance app. It is based on Angular v6.0.0.
 It can be built as an Electron app as well as launched on a development web server.
 
+## Initial setup
+
+Run `npm install` to download all dependencies required for the project.
+
 ## Development web server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
