@@ -1,27 +1,20 @@
-# FinanceUi
+# Finance UI
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.0.
+This project is a front-end for Prime.Finance app. It is based on Angular v6.0.0.
+It can be built as an Electron app as well as launched on a development web server.
 
-## Development server
+## Development web server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Electron app
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Rename `electron-main.js` file to `main.js`. 
+The `main.js` file is used to start Prime.Finance in the Electron container. In order to make Angular app debugging working there should be no file called `main.js` in the root folder. That's why before running and testing inside electron it has to be named differently, for example `electron-main.js`.
+2. Run `npm run electron`.
+This command builds Angular app and runs Electron container.
+3. Rename `main.js` to `electron-main.js` to enable Angular web app debugging.
 
-## Build
+## Screenshot (demo)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+![Prime.Finance demo inside Electron container](https://raw.githubusercontent.com/hitchhiker/prime/master/Ext/Prime.Finance.Client/finance-ui/sc-electron-1.png)
