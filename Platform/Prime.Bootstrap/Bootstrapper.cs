@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,31 +27,32 @@ namespace Prime.Bootstrap
             }
 
             var argl = args.ToList();
-            var io = argl.IndexOf("-c");
-            if (io == -1 || io == argl.Count - 1)
+            var confp = ExtractConfigPath(argl);
+            if (confp == null)
             {
-                Error();
+                Console.WriteLine("You must specify the location of the .config file.");
+                Console.WriteLine();
+                Console.WriteLine("example: -c ../instance/prime.config");
                 return;
             }
-
-            var confp = argl[io + 1];
-            if (string.IsNullOrWhiteSpace(confp))
-            {
-                Error();
-                return;
-            }
-
-            argl.RemoveAt(io + 1);
-            argl.RemoveAt(io);
 
             Run(confp, argl.ToArray());
         }
 
-        private static void Error()
+        private static string ExtractConfigPath(List<string> argl)
         {
-            Console.WriteLine("You must specify the location of the .config file.");
-            Console.WriteLine("");
-            Console.WriteLine("example: -c ../instance/prime.config");
+            var io = argl.IndexOf("-c");
+            if (io == -1 || io == argl.Count - 1)
+                return null;
+
+            var confp = argl[io + 1];
+            if (string.IsNullOrWhiteSpace(confp))
+                return null;
+
+            argl.RemoveAt(io + 1);
+            argl.RemoveAt(io);
+
+            return confp;
         }
 
         private static int Run(string configPath, string[] args)

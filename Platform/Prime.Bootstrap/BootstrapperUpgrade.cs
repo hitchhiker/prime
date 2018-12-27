@@ -47,7 +47,7 @@ namespace Prime.Bootstrap
             Console.WriteLine("BOOTSTRAP: Upgrading Bootstrapper..");
 
             var currentDirPath = currentDir.FullName;
-            var origDir = new DirectoryInfo(currentDirPath.Substring(0, currentDirPath.Length - 8));
+            var origDir = new DirectoryInfo(currentDirPath.Substring(0, currentDirPath.Length - 8)); // BUG: what is 8?
             var backupDirName = origDir.FullName + "_" + Guid.NewGuid().ToString().Replace("-", "");
             Directory.Move(origDir.FullName, backupDirName);
             Utilities.CopyAll(currentDir, origDir);
