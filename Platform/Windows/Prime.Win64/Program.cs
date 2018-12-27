@@ -5,9 +5,9 @@ namespace Prime.Win64
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            Bootstrapper.Boot(args, "Prime.exe");
+            return Bootstrapper.Boot(args, "Prime.exe");
         }
     }
 }
