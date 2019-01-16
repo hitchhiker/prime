@@ -10,14 +10,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="finance-ui\**" />
+    <Compile Remove="prime.finance.angular\node_modules\**" />
+    <Compile Remove="prime.finance.react\node_modules\**" />
+    <Compile Remove="prime.ui.old\node_modules\**" />
     <Compile Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="finance-ui\**" />
+    <EmbeddedResource Remove="prime.finance.angular\node_modules\**" />
+    <EmbeddedResource Remove="prime.finance.react\node_modules\**" />
+    <EmbeddedResource Remove="prime.ui.old\node_modules\**" />
     <EmbeddedResource Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="finance-ui\**" />
+    <None Remove="prime.finance.angular\node_modules\**" />
+    <None Remove="prime.finance.react\node_modules\**" />
+    <None Remove="prime.ui.old\node_modules\**" />
     <None Remove="ui\**" />
   </ItemGroup>
   <ItemGroup>

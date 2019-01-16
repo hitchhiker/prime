@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,40 +18,41 @@ namespace Prime.Bootstrap
         public static string TagA = "<installed entry=\"";
         public static string TagB = "\">";
 
-        public static void Boot(string[] args, string execName)
+        public static int Boot(string[] args, string execName)
         {
             if (BootstrapperUpgrade.Check(args, execName))
             {
                 Console.WriteLine("BOOTSTRAP: Bootstrap exiting during upgrade.");
-                return;
+                return 1;
             }
 
             var argl = args.ToList();
+            var confp = ExtractConfigPath(argl);
+            if (confp == null)
+            {
+                Console.WriteLine("You must specify the location of the .config file.");
+                Console.WriteLine();
+                Console.WriteLine("example: -c ../instance/prime.config");
+                return 1;
+            }
+
+            return Run(confp, argl.ToArray());
+        }
+
+        private static string ExtractConfigPath(List<string> argl)
+        {
             var io = argl.IndexOf("-c");
             if (io == -1 || io == argl.Count - 1)
-            {
-                Error();
-                return;
-            }
+                return null;
 
             var confp = argl[io + 1];
             if (string.IsNullOrWhiteSpace(confp))
-            {
-                Error();
-                return;
-            }
+                return null;
 
             argl.RemoveAt(io + 1);
             argl.RemoveAt(io);
 
-            Run(confp, argl.ToArray());
-        }
-
-        private static void Error()
-        {
-            Console.WriteLine("You must specify the location of the .config file.");
-            Console.WriteLine("");
-            Console.WriteLine("example: -c ../instance/prime.config");
+            return confp;
         }
 
         private static int Run(string configPath, string[] args)
@@ -61,6 +63,7 @@ namespace Prime.Bootstrap
 
             if (!configFi.Exists)
             {
+                // Try using .default config file.
                 Console.WriteLine("BOOTSTRAP: " + configp + " does not exist.");
                 var defaultFi = new FileInfo(configFi.FullName + ".default");
                 if (defaultFi.Exists)
@@ -73,7 +76,8 @@ namespace Prime.Bootstrap
                         Console.WriteLine("BOOTSTRAP: Unable to restore .default config file.");
                         return 1;
                     }
-                } else
+                }
+                else
                     return 1;
             }
 
@@ -88,13 +92,14 @@ namespace Prime.Bootstrap
                 var rdir = Utilities.FixDir(Path.Combine(confDir, string.Format(CoreBaseDirPath, confName)));
                 var dir = new DirectoryInfo(rdir);
 
-                if (!dir.Exists) { 
+                if (!dir.Exists)
+                {
                     Console.WriteLine("BOOTSTRAP: No packages found at: " + dir.FullName);
                     return 1;
                 }
 
                 var dirs = dir.EnumerateDirectories().ToList();
-                if (dirs.Count==0)
+                if (dirs.Count == 0)
                 {
                     Console.WriteLine("BOOTSTRAP: No packages found, directory empty at: " + dir.FullName);
                     return 1;
@@ -109,7 +114,7 @@ namespace Prime.Bootstrap
             var primeCorePath = Path.Combine(confDir, string.Format(CoreBasePath, confName, entryVersion));
             primeCorePath = Utilities.FixDir(primeCorePath);
 
-            var primeCore= new FileInfo(primeCorePath);
+            var primeCore = new FileInfo(primeCorePath);
 
             if (!primeCore.Exists)
             {
@@ -138,7 +143,7 @@ namespace Prime.Bootstrap
             Console.WriteLine("BOOTSTRAP: " + Assembly.GetExecutingAssembly().GetName().Version);
             Console.ForegroundColor = c;
 
-            mi.Invoke(null, new object[] {args, configPath});
+            mi.Invoke(null, new object[] { args, configPath });
             return 0;
         }
 
@@ -149,7 +154,7 @@ namespace Prime.Bootstrap
                 return null;
             i1 = i1 + TagA.Length;
             var i2 = configText.IndexOf(TagB, i1, StringComparison.OrdinalIgnoreCase);
-            return i1 == -1 ? null : configText.Substring(i1, i2 - i1);
+            return configText.Substring(i1, i2 - i1);
         }
     }
 }

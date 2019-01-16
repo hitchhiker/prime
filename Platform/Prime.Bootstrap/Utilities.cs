@@ -85,6 +85,5 @@ namespace Prime.Bootstrap
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
-
     }
 }

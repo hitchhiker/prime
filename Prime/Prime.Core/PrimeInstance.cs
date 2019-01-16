@@ -25,7 +25,7 @@ namespace Prime.Core
 
         public void Start()
         {
-            L.Log($"Prime instance starting..");
+            L.Log($"Prime instance starting...");
 
             if (ExtensionManager == null)
             {
