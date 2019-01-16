@@ -70,7 +70,7 @@ namespace Prime.Bootstrap
                     configFi.Refresh();
                     if (!configFi.Exists)
                     {
-                        Console.WriteLine("BOOTSTRAP: Unable to restor .default config file.");
+                        Console.WriteLine("BOOTSTRAP: Unable to restore .default config file.");
                         return 1;
                     }
                 } else
