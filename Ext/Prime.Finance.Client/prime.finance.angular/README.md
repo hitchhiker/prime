@@ -21,4 +21,4 @@ This command builds Angular app and runs Electron container.
 
 ## Screenshot (demo)
 
-![Prime.Finance demo inside Electron container](https://raw.githubusercontent.com/hitchhiker/prime/master/Ext/Prime.Finance.Client/finance-ui/sc-electron-1.png)
+![Prime.Finance demo inside Electron container](https://github.com/hitchhiker/prime/blob/master/Ext/Prime.Finance.Client/prime.finance.angular/sc-electron-1.png?raw=true)
