@@ -1,8 +1,0 @@
-<mat-form-field class="full-width exchange-search">
-    <input matInput type="text" placeholder="Search exchange" [(ngModel)]="exchangeFilter" />
-    <button mat-button *ngIf="exchangeFilter" matSuffix mat-icon-button aria-label="Clear" (click)="exchangeFilter=''">
-        <mat-icon>close</mat-icon>
-    </button>
-</mat-form-field>
-
-<app-exchange *ngFor="let exchange of (exchanges | filter: exchangeFilter)" [exchange]="exchange"></app-exchange>
