@@ -11,7 +11,7 @@ We are currently using the IPFS Merkle DAG, but will support all types of DAG, a
 --------------------------------------------------------------------------------
 
 THIS INFORMATION BELOW IS GOING TO BE MOVED TO THE FINANCE APPLICATION.
-WE ARE IN THE PROCESS OF UPDATING THE DOCUMENTATION AROUND THESE PROJECTS..
+WE ARE IN THE PROCESS OF UPDATING THE DOCUMENTATION AROUND THESE PROJECTS.
 
 --------------------------------------------------------------------------------
 
