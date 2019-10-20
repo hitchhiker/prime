@@ -6,6 +6,6 @@
     "System.Reflection.TypeExtensions": "4.3.0"
   },
   "frameworks": {
-    "netstandard2.0": {}
+    "netstandard2.1": {}
   }
 }
