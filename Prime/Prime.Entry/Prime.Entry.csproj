@@ -1,13 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>Prime</AssemblyName>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ext\Prime.Manager\Prime.Manager.csproj" />
     <ProjectReference Include="..\..\Ext\Prime.MessagingServer\Prime.MessagingServer.csproj" />
@@ -20,5 +16,10 @@
     <Reference Include="NetCrossRun.Core">
       <HintPath>..\..\lib\net-cross-run\NetCrossRun.Core.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

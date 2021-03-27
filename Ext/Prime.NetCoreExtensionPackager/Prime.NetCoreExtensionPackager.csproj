@@ -11,7 +11,7 @@
   <PropertyGroup>
     <NoWarn>MSB3021</NoWarn>
     <FileVersion>1.1.0.0</FileVersion>
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
   
   <ItemGroup>
@@ -22,13 +22,12 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLine" Version="1.0.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
     <PackageReference Include="ProcessStartAsync" Version="0.1.1" />
-    <PackageReference Include="System.Composition" Version="1.2.0" />
-    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+    <PackageReference Include="System.Composition" Version="5.0.1" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 

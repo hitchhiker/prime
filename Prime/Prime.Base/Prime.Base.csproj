@@ -12,10 +12,10 @@
     <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
@@ -35,10 +35,10 @@
     <None Remove="Prime.Base.csproj.DotSettings" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.3.37" />
-    <PackageReference Include="SharpCompress" Version="0.22.0" />
-    <PackageReference Include="System.Composition" Version="1.2.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
+    <PackageReference Include="SharpCompress" Version="0.28.1" />
+    <PackageReference Include="System.Composition" Version="5.0.1" />
   </ItemGroup>
 </Project>

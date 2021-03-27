@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,22 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="NodaTime" Version="2.4.0" />
-    <PackageReference Include="System.Collections" Version="4.3.0" />
-    <PackageReference Include="System.Composition" Version="1.2.0" />
-    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-    <PackageReference Include="System.Globalization" Version="4.3.0" />
-    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />
+    <PackageReference Include="System.Composition" Version="5.0.1" />
   </ItemGroup>
 
 </Project>

@@ -7,13 +7,12 @@
 
   <PropertyGroup>
     <NoWarn>1701;1702;1705;NU1701</NoWarn>
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="15.131.1" />
-    <PackageReference Include="System.Composition" Version="1.2.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201" />
+    <PackageReference Include="System.Composition" Version="5.0.1" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

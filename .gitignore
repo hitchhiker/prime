@@ -351,3 +351,5 @@ lib/prime/
 dist/
 Prime-arb.sln
 Prime-arb.sln
+.upgrade-assistant
+log.txt

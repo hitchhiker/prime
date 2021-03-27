@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Prime.Base;
+﻿using Prime.Base;
 using Prime.Core;
-using Prime.Core.Windows;
+using System;
+using System.IO;
 
 namespace Prime.IPFS
 {
@@ -43,14 +38,14 @@ namespace Prime.IPFS
 
             tmp.Delete(true);
 
-            try
+            /*try
             {
-                FirewallHelper.Instance.GrantAuthorization(instance.NativeExecutable.FullName, "prime-ipfs");
+                //FirewallHelper.Instance.GrantAuthorization(instance.NativeExecutable.FullName, "prime-ipfs");
             }
             catch
             {
                 instance.L.Warn("Unable to modify the Windows Firewall for IPFS. Please do this manually.");
-            }
+            }*/
         }
     }
 }

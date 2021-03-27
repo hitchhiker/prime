@@ -6,16 +6,16 @@
     <AssemblyVersion>0.3.*</AssemblyVersion>
     <Deterministic>False</Deterministic>
     <FileVersion>1.0.0.0</FileVersion>
-    <LangVersion>7.3</LangVersion>
+    
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ipfs.Api" Version="0.22.1" />
-    <PackageReference Include="Ipfs.Core" Version="0.32.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0-pre-05" />
-    <PackageReference Include="System.Composition" Version="1.2.0" />
+    <PackageReference Include="Ipfs.Api" Version="0.23.6" />
+    <PackageReference Include="Ipfs.Core" Version="0.55.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
+    <PackageReference Include="System.Composition" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,18 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.217201">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="Ipfs.Api" Version="0.23.6" />
+    <PackageReference Include="Ipfs.Core" Version="0.55.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\Prime\Prime.Base\Prime.Base.csproj" />
     <ProjectReference Include="..\Prime.IPFS.Win64\Prime.IPFS.Win64.csproj" />
     <ProjectReference Include="..\Prime.IPFS.Win\Prime.IPFS.Win.csproj" />
     <ProjectReference Include="..\Prime.IPFS\Prime.IPFS.Go.csproj" />
   </ItemGroup>
+
 </Project>
